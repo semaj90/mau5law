@@ -37,7 +37,7 @@ let redisClient: ReturnType<typeof createClient> | null = null;
 async function getRedisClient(): Promise<any> {
   if (!redisClient) {
     redisClient = createClient({
-      url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+      url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
     });
     redisClient.on("error", (err) => console.error("Redis Client Error", err);
     await redisClient.connect();
@@ -66,7 +66,7 @@ export async function getEnhancedContext(query: string): Promise<any> {
     const embeddings = new OpenAIEmbeddings();
     // Simplified vector search using mock pool;
     const vectorStore = {
-      similaritySearch: async (_query: string, _k: number) => [] as any[],
+      similaritySearch: async (_query: string, _k: number) => [] as any[]
     };
     // Generate embedding and search for top results
     const results = await vectorStore.similaritySearch(query, 8);
@@ -116,7 +116,7 @@ export interface CopilotSelfPromptResult {
     processingTime: number;
     confidence: number;
     sources: string[];
-    tokensUsed: number;,
+    tokensUsed: number;
   };
 }
 
@@ -137,14 +137,14 @@ export interface Recommendation {
   description: string;
   impact: 'low' | 'medium' | 'high';
   effort: 'low' | 'medium' | 'high';
-  priority: number;,
+  priority: number;
 }
 
 export interface ExecutionPlan {
   phases: ExecutionPhase[];
   totalEstimatedTime: number;
   parallelizable: boolean;
-  criticalPath: string[];,
+  criticalPath: string[];
 }
 
 export interface ExecutionPhase {
@@ -152,7 +152,7 @@ export interface ExecutionPhase {
   name: string;
   actions: string[];
   order: number;
-  canRunInParallel: boolean;,
+  canRunInParallel: boolean;
 }
 
 /**
@@ -172,7 +172,7 @@ export async function copilotSelfPrompt(
     useAutonomousEngineering = true,
     enableSelfSynthesis = true,
     context = {},
-    outputFormat = 'structured',
+    outputFormat = 'structured'
   } = options;
 
   let contextResults: any[] = [];
@@ -206,7 +206,7 @@ export async function copilotSelfPrompt(
         projectPath: context.projectPath,
         platform: context.platform || 'webapp',
         urgency: context.urgency || 'medium',
-        includeTests: context.includeTests || true,
+        includeTests: context.includeTests || true
       });
       console.log('🔧 Autonomous engineering analysis completed');
     }
@@ -254,8 +254,8 @@ export async function copilotSelfPrompt(
         processingTime,
         confidence: calculateConfidence(contextResults, agentResults, engineeringAnalysis),
         sources: extractSources(contextResults, memoryResults, agentResults),
-        tokensUsed,
-      },
+        tokensUsed
+      }
     };
   } catch (error: any) {
     // Log error to MCP_TODO_LOG.md for productionization;
@@ -290,8 +290,8 @@ async function performSemanticSearch(prompt: string, context: any): Promise<any[
           limit: 20,
           threshold: 0.7,
           includeCode: true,
-          includeDocs: true,
-        }),
+          includeDocs: true
+        })
       });
       clearTimeout(timeoutId);
 
@@ -332,8 +332,8 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
           query: prompt,
           context: context,
           includeGraph: true,
-          includeHistory: true,
-        }),
+          includeHistory: true
+        })
       });
       clearTimeout(timeoutId);
 
@@ -371,7 +371,7 @@ async function orchestrateMultiAgentAnalysis(prompt: string, context: any): Prom
     results.push({
       source: 'autogen',
       type: 'conversational_analysis',
-      ...autogenResult,
+      ...autogenResult
     });
     // CrewAI analysis (production)
     const crewaiResult = await analyzeLegalCaseWithCrew(
@@ -382,7 +382,7 @@ async function orchestrateMultiAgentAnalysis(prompt: string, context: any): Prom
     results.push({
       source: 'crewai',
       type: 'task_based_analysis',
-      ...crewaiResult,
+      ...crewaiResult
     });
   } catch (error: any) {
     console.error('Multi-agent analysis failed:', error);
@@ -441,7 +441,7 @@ Format your response as a structured analysis with clear sections and actionable
       timestamp: Date.now(),
       priority: 'high',
       temperature: 0.2,
-      maxTokens: 3072,
+      maxTokens: 3072
     };
 
     const taskId = await aiWorkerManager.submitTask(synthesisTask);
@@ -513,7 +513,7 @@ async function generateNextActions(
           commands: step.commands || [],
           targetFiles: step.targetFiles || [],
           estimatedTime: Math.floor(solution.estimatedTime / solution.steps.length),
-          dependencies: step.dependencies || [],
+          dependencies: step.dependencies || []
         });
       });
     });
@@ -527,7 +527,7 @@ async function generateNextActions(
       priority: 'medium',
       description: 'Investigate the reported issue or request',
       estimatedTime: 15,
-      dependencies: [],
+      dependencies: []
     });
   }
 
@@ -551,7 +551,7 @@ async function generateRecommendations(
         description: rec.description,
         impact: rec.impact || 'medium',
         effort: rec.effort || 'medium',
-        priority: rec.priority || 50,
+        priority: rec.priority || 50
       });
     });
   }
@@ -564,7 +564,7 @@ async function generateRecommendations(
       description: 'Ensure solutions work across webapp, desktop, and mobile platforms',
       impact: 'high',
       effort: 'medium',
-      priority: 80,
+      priority: 80
     });
   }
 
@@ -594,7 +594,7 @@ async function createExecutionPlan(
       name: 'Critical Issues',
       actions: criticalActions.map((a) => a.id),
       order: phaseOrder++,
-      canRunInParallel: false,
+      canRunInParallel: false
     });
   }
 
@@ -604,7 +604,7 @@ async function createExecutionPlan(
       name: 'High Priority Tasks',
       actions: highActions.map((a) => a.id),
       order: phaseOrder++,
-      canRunInParallel: true,
+      canRunInParallel: true
     });
   }
 
@@ -614,7 +614,7 @@ async function createExecutionPlan(
       name: 'Medium Priority Tasks',
       actions: mediumActions.map((a) => a.id),
       order: phaseOrder++,
-      canRunInParallel: true,
+      canRunInParallel: true
     });
   }
 
@@ -624,7 +624,7 @@ async function createExecutionPlan(
       name: 'Low Priority Tasks',
       actions: lowActions.map((a) => a.id),
       order: phaseOrder++,
-      canRunInParallel: true,
+      canRunInParallel: true
     });
   }
 
@@ -639,7 +639,7 @@ async function createExecutionPlan(
     phases,
     totalEstimatedTime: parallelTime,
     parallelizable: parallelTime < totalTime,
-    criticalPath: phases.filter((p) => !p.canRunInParallel).map((p) => p.id),
+    criticalPath: phases.filter((p) => !p.canRunInParallel).map((p) => p.id)
   };
 }
 
@@ -802,7 +802,7 @@ export interface RLRankingSummary {
   userFeedback?: 'positive' | 'negative' | 'neutral';
   effectiveness: number; // 0-1 score
   nextActions: NextAction[];
-  recommendations: Recommendation[];,
+  recommendations: Recommendation[];
 }
 
 export class RLRankingDatastore {
@@ -837,7 +837,7 @@ export class RLRankingDatastore {
       agentsUsed: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).metadata.sources,
       effectiveness: this.calculateEffectiveness(result),
       nextActions: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).nextActions,
-      recommendations: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).recommendations,
+      recommendations: (result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).recommendations
     };
 
     try {

@@ -7,7 +7,7 @@ import { mcpContext72GetLibraryDocs, type LibraryDocsResponse } from './mcp-cont
 export async function getRabbitMQDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/amqplib/amqplib', topic, { 
     format: 'typescript',
-    tokens: 12000 ,
+    tokens: 12000 
   }, fetchFn);
 }
 
@@ -15,7 +15,7 @@ export async function getRabbitMQDocs(topic?: string, fetchFn?: typeof fetch): P
 export async function getRedisDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/ioredis/ioredis', topic, { 
     format: 'typescript',
-    tokens: 10000 ,
+    tokens: 10000 
   }, fetchFn);
 }
 
@@ -23,7 +23,7 @@ export async function getRedisDocs(topic?: string, fetchFn?: typeof fetch): Prom
 export async function getNodeRedisDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/redis/node-redis', topic, { 
     format: 'typescript',
-    tokens: 8000 ,
+    tokens: 8000 
   }, fetchFn);
 }
 
@@ -31,7 +31,7 @@ export async function getNodeRedisDocs(topic?: string, fetchFn?: typeof fetch): 
 export async function getLokiJSDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/lokijs/lokijs', topic, { 
     format: 'typescript',
-    tokens: 8000 ,
+    tokens: 8000 
   }, fetchFn);
 }
 
@@ -39,7 +39,7 @@ export async function getLokiJSDocs(topic?: string, fetchFn?: typeof fetch): Pro
 export async function getMessageQueueRedisBestPractices(fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/patterns/message-queue-redis', 'integration-patterns', { 
     format: 'typescript',
-    tokens: 15000 ,
+    tokens: 15000 
   }, fetchFn);
 }
 

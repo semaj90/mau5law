@@ -53,7 +53,7 @@ export interface AIInsights {
   summary: string;
   confidence: number;
   processingTime: number;
-  analyzedAt: Date;,
+  analyzedAt: Date;
 }
 
 export interface LegalEntity {
@@ -72,7 +72,7 @@ export interface LegalEntity {
   confidence: number;
   position: {
     start: number;
-    end: number;,
+    end: number;
   };
   context?: string;
   normalizedValue?: string;
@@ -101,7 +101,7 @@ export interface RiskFactor {
   severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
   description: string;
   impact: string;
-  likelihood: number; // 0-1,
+  likelihood: number; // 0-1
 }
 
 export interface LegalAnalysis {
@@ -109,7 +109,7 @@ export interface LegalAnalysis {
   insights: AIInsights;
   complianceChecks: ComplianceCheck[];
   riskAssessment: RiskAssessment;
-  analyzedAt: Date;,
+  analyzedAt: Date;
 }
 
 export interface AIAnalysisResult {
@@ -138,7 +138,7 @@ export interface AuditLogEntry {
   userAgent?: string;
   details?: Record<string, any>;
   timestamp: Date;
-  severity: "INFO" | "WARNING" | "ERROR" | "CRITICAL";,
+  severity: "INFO" | "WARNING" | "ERROR" | "CRITICAL";
 }
 
 export interface User {
@@ -150,7 +150,7 @@ export interface User {
   permissions: string[];
   lastLoginAt?: Date;
   createdAt: Date;
-  isActive: boolean;,
+  isActive: boolean;
 }
 
 export interface CacheMetrics {
@@ -159,7 +159,7 @@ export interface CacheMetrics {
   totalRequests: number;
   averageResponseTime: number;
   cacheSize: number;
-  hitRate: string;,
+  hitRate: string;
 }
 
 export interface SystemHealth {
@@ -168,16 +168,16 @@ export interface SystemHealth {
     database: ServiceStatus;
     ai: ServiceStatus;
     cache: ServiceStatus;
-    search: ServiceStatus;,
+    search: ServiceStatus;
   };
   metrics: {
     totalCases: number;
     totalDocuments: number;
     pendingAnalyses: number;
     systemLoad: number;
-    memoryUsage: number;,
+    memoryUsage: number;
   };
-  lastChecked: Date;,
+  lastChecked: Date;
 }
 
 export interface ServiceStatus {
@@ -203,7 +203,7 @@ export interface AIModelConfig {
   temperature: number;
   timeout: number;
   retryAttempts: number;
-  capabilities: string[];,
+  capabilities: string[];
 }
 
 // Search and Filter Types;
@@ -214,7 +214,7 @@ export interface SearchQuery {
     documentType?: string[];
     dateRange?: {
       start: Date;
-      end: Date;,
+      end: Date;
     };
     priority?: string[];
     confidentialityLevel?: number;
@@ -230,7 +230,7 @@ export interface SearchResult<T> {
   total: number;
   hasMore: boolean;
   aggregations?: Record<string, any>;
-  query: SearchQuery;,
+  query: SearchQuery;
 }
 
 // API Response Types;
@@ -245,7 +245,7 @@ export interface ApiResponse<T> {
   metadata?: {
     timestamp: Date;
     requestId: string;
-    processingTime: number;,
+    processingTime: number;
   };
 }
 
@@ -257,7 +257,7 @@ export interface PaginatedResponse<T> {
     total: number;
     totalPages: number;
     hasNext: boolean;
-    hasPrev: boolean;,
+    hasPrev: boolean;
   };
 }
 
@@ -272,7 +272,7 @@ export interface DocumentProcessingJob {
   completedAt?: Date;
   result?: unknown;
   error?: string;
-  retryCount: number;,
+  retryCount: number;
 }
 
 export interface UploadedFile {
@@ -300,7 +300,7 @@ export interface SystemNotification {
 export interface NotificationAction {
   label: string;
   action: string;
-  style: "primary" | "secondary" | "destructive";,
+  style: "primary" | "secondary" | "destructive";
 }
 
 // Configuration Types;
@@ -308,12 +308,12 @@ export interface AppConfig {
   app: {
     name: string;
     version: string;
-    environment: "development" | "staging" | "production";,
+    environment: "development" | "staging" | "production";
   };
   database: {
     host: string;
     port: number;
-    name: string;,
+    name: string;
   };
   ai: {
     enabled: boolean;
@@ -321,20 +321,20 @@ export interface AppConfig {
     cache: {
       enabled: boolean;
       ttl: number;
-      maxSize: number;,
+      maxSize: number;
     };
   };
   security: {
     jwtSecret: string;
     sessionTimeout: number;
     maxLoginAttempts: number;
-    passwordMinLength: number;,
+    passwordMinLength: number;
   };
   features: {
     documentAnalysis: boolean;
     realTimeChat: boolean;
     auditLogging: boolean;
-    encryption: boolean;,
+    encryption: boolean;
   };
 }
 
@@ -364,7 +364,7 @@ export interface LegalPrecedent {
   court: string;
   relevance: number;
   summary: string;
-  keyHoldings: string[];,
+  keyHoldings: string[];
 }
 
 export interface ContractClause {

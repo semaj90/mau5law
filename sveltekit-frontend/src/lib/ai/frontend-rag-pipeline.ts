@@ -21,7 +21,7 @@ export interface SemanticChunk {
     timestamp: number;
     source: string;
     relevance: number;
-    semanticGroup: string;,
+    semanticGroup: string;
   };
 }
 
@@ -31,7 +31,7 @@ export interface SIMDTensor {
   simdOps: {
     dotProduct: (a: Float32Array, b: Float32Array) => number;
     cosineDistance: (a: Float32Array, b: Float32Array) => number;
-    normalize: (vec: Float32Array) => Float32Array;,
+    normalize: (vec: Float32Array) => Float32Array;
   };
 }
 
@@ -61,12 +61,12 @@ class FrontendRAGPipeline {
         if (!this.semanticCollection) {
           this.semanticCollection = this.lokiDb.addCollection('semantic_chunks', {
             indices: ['semanticGroup', 'relevance', 'timestamp'],
-            unique: ['id'],
+            unique: ['id']
           });
         }
       },
       autosave: true,
-      autosaveInterval: 2000,
+      autosaveInterval: 2000
     });
   }
 
@@ -106,7 +106,7 @@ class FrontendRAGPipeline {
       return {
         data: this.simdProcessor.optimize(embedding),
         shape: (result as { data?: any; dims?: any }).dims,
-        simdOps: this.simdProcessor.getOperations(),
+        simdOps: this.simdProcessor.getOperations()
       };
     } catch (error: any) {
       console.error('Frontend embedding generation failed:', error);
@@ -152,18 +152,18 @@ class FrontendRAGPipeline {
     memoryUsage: number;
     pipelineStatus: {
       embedding: boolean;
-      generation: boolean;,
+      generation: boolean;
     };
-    simdOptimizations: boolean;,
+    simdOptimizations: boolean;
   } {
     return {
       documentsIndexed: this.semanticCollection?.count() || 0,
       memoryUsage: browser ? (performance as any).memory?.usedJSHeapSize || 0 : 0,
       pipelineStatus: {
         embedding: !!this.embeddingPipeline,
-        generation: !!this.generationPipeline,
+        generation: !!this.generationPipeline
       },
-      simdOptimizations: this.simdProcessor.isOptimized(),
+      simdOptimizations: this.simdProcessor.isOptimized()
     };
   }
 }
@@ -220,7 +220,7 @@ class SIMDProcessor {
     return {
       dotProduct: this.dotProduct.bind(this),
       cosineDistance: this.cosineDistance.bind(this),
-      normalize: this.normalize.bind(this),
+      normalize: this.normalize.bind(this)
     };
   }
 
@@ -275,7 +275,7 @@ class G0llamaService {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(2000),
+        signal: AbortSignal.timeout(2000)
       });
       this.isAvailable = (response as { ok?: any; json?: any }).ok;
     } catch {
@@ -302,9 +302,9 @@ class G0llamaService {
         body: JSON.stringify({
           prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
           max_tokens: options.maxTokens || 150,
-          temperature: options.temperature || 0.7,
+          temperature: options.temperature || 0.7
         }),
-        signal: AbortSignal.timeout(10000),
+        signal: AbortSignal.timeout(10000)
       });
 
       const data = await (response as { ok?: any; json?: any }).json();

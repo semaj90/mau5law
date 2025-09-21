@@ -14,7 +14,7 @@ export interface AIProviderConfig {
   type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
   endpoint: string;
   timeout: number;
-  retries: number;,
+  retries: number;
 }
 
 // UUID helper compatible with Web Workers without Node polyfills;
@@ -47,7 +47,7 @@ class AIServiceWorker {
       type: 'ollama',
       endpoint: 'http://localhost:11434',
       timeout: 30000,
-      retries: 2,
+      retries: 2
     });
 
     this.providers.set('llamacpp', {
@@ -55,7 +55,7 @@ class AIServiceWorker {
       type: 'llamacpp',
       endpoint: 'http://localhost:8000',
       timeout: 15000,
-      retries: 3,
+      retries: 3
     });
 
     this.providers.set('autogen', {
@@ -63,7 +63,7 @@ class AIServiceWorker {
       type: 'autogen',
       endpoint: 'http://localhost:8001',
       timeout: 45000,
-      retries: 1,
+      retries: 1
     });
 
     this.providers.set('crewai', {
@@ -71,7 +71,7 @@ class AIServiceWorker {
       type: 'crewai',
       endpoint: 'http://localhost:8002',
       timeout: 60000,
-      retries: 1,
+      retries: 1
     });
   }
 
@@ -109,7 +109,7 @@ class AIServiceWorker {
       this.sendMessage({
         type: 'TASK_QUEUED',
         taskId,
-        payload: { position: this.requestQueue.length },
+        payload: { position: this.requestQueue.length }
       });
       return;
     }
@@ -122,7 +122,7 @@ class AIServiceWorker {
       this.sendMessage({
         type: 'TASK_STARTED',
         taskId,
-        payload: { providerId: task.providerId },
+        payload: { providerId: task.providerId }
       });
 
       const result = await this.executeAITask(task, abortController.signal);
@@ -130,14 +130,14 @@ class AIServiceWorker {
       this.sendMessage({
         type: 'TASK_COMPLETED',
         taskId,
-        payload: result,
+        payload: result
       });
     } catch (error: any) {
       if (error instanceof Error && error.name === 'AbortError') {
         this.sendMessage({
           type: 'TASK_CANCELLED',
           taskId,
-          payload: null,
+          payload: null
         });
       } else {
         this.sendError(taskId, error as Error);
@@ -221,10 +221,10 @@ class AIServiceWorker {
           temperature: task.temperature || 0.1,
           top_p: task.topP || 0.9,
           top_k: task.topK || 40,
-          repeat_penalty: task.repeatPenalty || 1.05,
-        },
+          repeat_penalty: task.repeatPenalty || 1.05
+        }
       }),
-      signal,
+      signal
     });
 
     if (!response.ok) {
@@ -243,8 +243,8 @@ class AIServiceWorker {
       metadata: {
         evalCount: data.eval_count,
         evalDuration: data.eval_duration,
-        loadDuration: data.load_duration,
-      },
+        loadDuration: data.load_duration
+      }
     };
   }
 
@@ -260,9 +260,9 @@ class AIServiceWorker {
         agents: task.agents || ['assistant'],
         message: task.prompt,
         max_rounds: task.maxRounds || 5,
-        context: task.context || {},
+        context: task.context || {}
       }),
-      signal,
+      signal
     });
 
     if (!response.ok) {
@@ -281,8 +281,8 @@ class AIServiceWorker {
       metadata: {
         rounds: data.rounds,
         agents: data.agent_responses,
-        conversationId: data.conversation_id,
-      },
+        conversationId: data.conversation_id
+      }
     };
   }
 
@@ -298,9 +298,9 @@ class AIServiceWorker {
         crew_id: task.crewId || 'legal-analysis-crew',
         task: task.prompt,
         context: task.context || {},
-        agents: task.agents || ['researcher', 'analyst', 'writer'],
+        agents: task.agents || ['researcher', 'analyst', 'writer']
       }),
-      signal,
+      signal
     });
 
     if (!response.ok) {
@@ -319,8 +319,8 @@ class AIServiceWorker {
       metadata: {
         taskId: data.task_id,
         agents: data.agent_outputs,
-        executionTime: data.execution_time,
-      },
+        executionTime: data.execution_time
+      }
     };
   }
 
@@ -347,7 +347,7 @@ class AIServiceWorker {
   private updateProviderConfig(config: Partial<AIProviderConfig>) {
     if (config.id && this.providers.has(config.id)) {
       const existing = this.providers.get(config.id)!;
-      this.providers.set(config.id, { ...existing, ...config ,});
+      this.providers.set(config.id, { ...existing, ...config });
     }
   }
 
@@ -359,8 +359,8 @@ class AIServiceWorker {
         activeRequests: this.activeRequestCount,
         queueLength: this.requestQueue.length,
         providers: Array.from(this.providers.values()),
-        maxConcurrent: this.maxConcurrentRequests,
-      },
+        maxConcurrent: this.maxConcurrentRequests
+      }
     });
   }
 
@@ -375,8 +375,8 @@ class AIServiceWorker {
       payload: {
         name: error.name,
         message: error.message,
-        stack: error.stack,
-      },
+        stack: error.stack
+      }
     });
   }
 

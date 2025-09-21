@@ -21,7 +21,7 @@ export interface LegalAgent {
   model: 'claude' | 'gemma3:legal-latest' | 'gpt-4';
   systemPrompt: string;
   maxTokens: number;
-  temperature: number;,
+  temperature: number;
 }
 
 export interface DocumentReviewTask {
@@ -70,7 +70,7 @@ export const legalAgents: LegalAgent[] = [;
 
     Provide structured analysis with confidence scores.`,
     maxTokens: 2000,
-    temperature: 0.1,
+    temperature: 0.1
   },
   {
     id: 'compliance-auditor',
@@ -86,7 +86,7 @@ export const legalAgents: LegalAgent[] = [;
 
     Flag all potential compliance issues with severity ratings.`,
     maxTokens: 1800,
-    temperature: 0.05,
+    temperature: 0.05
   },
   {
     id: 'risk-assessor',
@@ -102,7 +102,7 @@ export const legalAgents: LegalAgent[] = [;
 
     Quantify risks where possible with probability assessments.`,
     maxTokens: 1500,
-    temperature: 0.2,
+    temperature: 0.2
   }
 ];
 
@@ -177,7 +177,7 @@ export class CrewAILegalReviewSystem {
         baseUrl: "http://localhost:11434",
         model: "gemma3:legal-latest",
         temperature: agent.temperature,
-        maxTokens: agent.maxTokens,
+        maxTokens: agent.maxTokens
       });
 
       const messages = [
@@ -216,7 +216,7 @@ Please provide your analysis in the following JSON format:;
         recommendations: analysis.recommendations,
         riskLevel: analysis.riskLevel,
         confidence: analysis.confidence,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
 
     } catch (error: any) {
@@ -231,7 +231,7 @@ Please provide your analysis in the following JSON format:;
         riskLevel: 'high',
         confidence: 0,
         processingTime: Date.now() - startTime,
-        errors: [error instanceof Error ? error.message: String(error)],
+        errors: [error instanceof Error ? error.message: String(error)]
       };
     }
   }
@@ -253,7 +253,7 @@ Please provide your analysis in the following JSON format:;
       findings: [responseText],
       recommendations: ['Manual review recommended'],
       riskLevel: 'medium' as const,
-      confidence: 0.5,
+      confidence: 0.5
     };
   }
 
@@ -273,7 +273,7 @@ Please provide your analysis in the following JSON format:;
           taskType: 'legal-document-review',
           reviewType: task.reviewType,
           priority: task.priority,
-          agentCount: responses.length,
+          agentCount: responses.length
         }
       });
 

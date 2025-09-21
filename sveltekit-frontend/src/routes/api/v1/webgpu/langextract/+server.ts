@@ -37,23 +37,23 @@ export const GET: RequestHandler = async () => {
         webgpuOptimization: stats.webgpuOptimizer.gpuMetrics.availableComputeUnits > 0,
         embeddingCache: stats.embeddingCache.redisConnected,
         langchainService: stats.langchainService.available,
-        availableModels: stats.langchainService.models || [],
+        availableModels: stats.langchainService.models || []
       },
       systemStats: stats,
       endpoints: {
         process: 'POST with action: "process" - Single document processing',
         batch: 'POST with action: "batch" - Batch document processing', 
         benchmark: 'POST with action: "benchmark" - Performance testing',
-        config: 'POST with action: "config" - Update configuration',
+        config: 'POST with action: "config" - Update configuration'
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to get WebGPU LangExtract status',
-      details: error instanceof Error ? error.message: String(error),
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         processingTime,
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        webgpuEnabled: config.useWebGPUCache !== false,
+        webgpuEnabled: config.useWebGPUCache !== false
       }
     });
     
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json({
       success: false,
       error: 'WebGPU LangExtract processing failed',
-      details: error instanceof Error ? error.message: String(error),
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -197,7 +197,7 @@ async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) 
       performance: {
         processingTime: r.performance.totalTime,
         webgpuUtilized: r.performance.webgpuUtilized,
-        cacheHit: r.embeddings.cacheHit,
+        cacheHit: r.embeddings.cacheHit
       }
     })),
     aggregateStats: {
@@ -222,7 +222,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
   const sampleDocuments = [
     "This Employment Agreement is entered into between Company X and Employee Y. The employee agrees to perform duties as Software Engineer with annual compensation of $120,000. This agreement includes confidentiality clauses and non-compete restrictions.",
     "Software License Agreement grants licensee non-exclusive rights to use proprietary software. The license fee is $50,000 annually with maintenance support included. Reverse engineering and redistribution are prohibited without written consent.",
-    "Real Estate Purchase Agreement for property located at 123 Main Street. Purchase price is $500,000 with 20% down payment required. Closing date is scheduled for March 15, 2024 with standard title insurance requirements.",
+    "Real Estate Purchase Agreement for property located at 123 Main Street. Purchase price is $500,000 with 20% down payment required. Closing date is scheduled for March 15, 2024 with standard title insurance requirements."
   ];
   
   console.log(`🧪 Running WebGPU benchmark: ${iterations} iterations`);
@@ -235,7 +235,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
     const doc = sampleDocuments[i % sampleDocuments.length];
     const result = await processLegalDocumentWithWebGPU(doc, {
       useWebGPUCache: true,
-      compressVectors: true,
+      compressVectors: true
     });
     webgpuResults.push(result);
   }
@@ -253,7 +253,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
       const doc = sampleDocuments[i % sampleDocuments.length];
       const result = await processLegalDocumentWithWebGPU(doc, {
         useWebGPUCache: false,
-        compressVectors: false,
+        compressVectors: false
       });
       standardResults.push(result);
     }
@@ -264,7 +264,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
   return {
     benchmark: {
       iterations,
-      sampleDocumentLength: sampleDocuments[0].length,
+      sampleDocumentLength: sampleDocuments[0].length
     },
     webgpuResults: {
       totalTime: webgpuTime,
@@ -277,12 +277,12 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
       totalTime: standardTime,
       avgTimePerDoc: standardTime / iterations,
       throughput: (iterations / standardTime) * 1000,
-      speedupRatio: standardTime / webgpuTime,
+      speedupRatio: standardTime / webgpuTime
     } : null,
     recommendations: {
       useWebGPU: webgpuTime < standardTime,
       optimalBatchSize: Math.min(128, Math.max(32, Math.floor(iterations / 4))),
-      compressionBenefit: webgpuResults[0]?.embeddings.compressionRatio > 2,
+      compressionBenefit: webgpuResults[0]?.embeddings.compressionRatio > 2
     }
   };
 }
@@ -300,7 +300,7 @@ async function handleConfigurationUpdate(request: WebGPULangExtractRequest) {
   return {
     message: 'Configuration updated successfully',
     newConfig: request.config,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
 }
 
@@ -315,14 +315,14 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'WebGPU LangExtract configuration updated',
       config,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to update configuration',
-      details: error instanceof Error ? error.message: String(error),
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -340,20 +340,20 @@ export const DELETE: RequestHandler = async () => {
       cacheEmbeddings: true,
       compressVectors: true,
       practiceArea: 'legal-ai',
-      documentType: 'general',
+      documentType: 'general'
     });
     
     return json({
       success: true,
       message: 'WebGPU LangExtract system reset successfully',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to reset system',
-      details: error instanceof Error ? error.message: String(error),
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };

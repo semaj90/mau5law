@@ -15,13 +15,13 @@ interface AnalysisResult {
   similarCases: Array<{
     id: string;
     title: string;
-    similarity: number;,
+    similarity: number;
   }>;
   complianceStatus: 'compliant' | 'non-compliant' | 'needs-review';
   timeline: Array<{
     event: string;
     date: string;
-    importance: 'low' | 'medium' | 'high';,
+    importance: 'low' | 'medium' | 'high';
   }>;
 }
 
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         similarCases = similarityResults.map((row: any) => ({
           id: row.id,
           title: row.title,
-          similarity: Math.round(row.similarity * 100) / 100,
+          similarity: Math.round(row.similarity * 100) / 100
         });
       }
     }
@@ -144,17 +144,17 @@ export const POST: RequestHandler = async ({ params, request }) => {
         {
           event: 'Case Analysis Initiated',
           date: new Date().toISOString(),
-          importance: 'medium',
+          importance: 'medium'
         },
         {
           event: `Evidence Review (${evidenceData.length} items)`,
           date: new Date().toISOString(),
-          importance: evidenceData.length > 5 ? 'high' : 'medium',
+          importance: evidenceData.length > 5 ? 'high' : 'medium'
         },
         {
           event: 'Vector Similarity Analysis Completed',
           date: new Date().toISOString(),
-          importance: similarCases.length > 0 ? 'high' : 'low',
+          importance: similarCases.length > 0 ? 'high' : 'low'
         }
       ]
     };
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         evidenceCount: evidenceData.length,
         documentCount: documentsWithEmbeddings.length,
         similarCasesFound: similarCases.length,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     return json({
       success: false,
       error: 'Failed to analyze case',
-      details: error instanceof Error ? error.message: 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

@@ -50,7 +50,7 @@ export interface MoogleVisualizationConfig {
     gravity: number;
     repulsion: number;
     attraction: number;
-    damping: number;,
+    damping: number;
   };
 
   // High-score reinforcement learning visualization;
@@ -59,14 +59,14 @@ export interface MoogleVisualizationConfig {
     showTrainingProgress: boolean;
     highlightOptimalPaths: boolean;
     showRewardHeatmap: boolean;
-    qValueVisualization: boolean;,
+    qValueVisualization: boolean;
   };
 
   // Performance settings
   useWebGL: boolean;
   useWasm: boolean;
   enableCaching: boolean;
-  qualityLevel: 'low' | 'medium' | 'high' | 'ultra';,
+  qualityLevel: 'low' | 'medium' | 'high' | 'ultra';
 }
 
 export interface Moogle2DOutput {
@@ -78,7 +78,7 @@ export interface Moogle2DOutput {
     nodePositions: Array<any>;
     edgePositions: Array<any>;
     bounds: { minX: number; maxX: number; minY: number; maxY: number };
-    renderTime: number;,
+    renderTime: number;
   };
 }
 
@@ -99,7 +99,7 @@ export interface Moogle3DMesh {
     edgeGeometry: Array<any>;
     boundingBox: { min: number[]; max: number[]; center: number[] };
     meshStats: { vertexCount: number; triangleCount: number; memoryUsage: number };
-    renderTime: number;,
+    renderTime: number;
   };
 }
 
@@ -176,7 +176,7 @@ export class MoogleGraphSynthesizer {
         antialias: true,
         alpha: true,
         depth: true,
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: true
       });
 
       if (!this.gl) {
@@ -216,7 +216,7 @@ export class MoogleGraphSynthesizer {
           calculate_force_directed_layout: this.wasmForceDirectedLayout.bind(this),
           generate_mesh_vertices: this.wasmGenerateMeshVertices.bind(this),
           compute_node_positions: this.wasmComputeNodePositions.bind(this),
-          optimize_mesh_lod: this.wasmOptimizeMeshLOD.bind(this),
+          optimize_mesh_lod: this.wasmOptimizeMeshLOD.bind(this)
         }
       } as WebAssembly.Instance;
 
@@ -517,14 +517,14 @@ export class MoogleGraphSynthesizer {
         gravity: 0.1,
         repulsion: 100,
         attraction: 0.05,
-        damping: 0.9,
+        damping: 0.9
       },
       reinforcementLearning: {
         enabled: true,
         showTrainingProgress: true,
         highlightOptimalPaths: true,
         showRewardHeatmap: true,
-        qValueVisualization: true,
+        qValueVisualization: true
       },
       useWebGL: true,
       useWasm: true,
@@ -555,7 +555,7 @@ export class MoogleGraphSynthesizer {
           ...node.metadata,
           pageRankScore: score,
           enhancedRanking: true,
-          rankingTimestamp: Date.now(),
+          rankingTimestamp: Date.now()
         };
       }
     }
@@ -604,7 +604,7 @@ export class MoogleGraphSynthesizer {
       minX: Math.min(...positions.map(p => p.x)),
       maxX: Math.max(...positions.map(p => p.x)),
       minY: Math.min(...positions.map(p => p.y)),
-      maxY: Math.max(...positions.map(p => p.y),
+      maxY: Math.max(...positions.map(p => p.y)
     };
 
     const result: Moogle2DOutput = {
@@ -616,7 +616,7 @@ export class MoogleGraphSynthesizer {
         nodePositions: Array.from(nodePositions.entries()).map(([id, pos]) => ({ id, x: pos.x, y: pos.y })),
         edgePositions,
         bounds,
-        renderTime: performance.now() - startTime,
+        renderTime: performance.now() - startTime
       }
     };
 
@@ -671,14 +671,14 @@ export class MoogleGraphSynthesizer {
         gravity: 0.1,
         repulsion: 100,
         attraction: 0.05,
-        damping: 0.9,
+        damping: 0.9
       },
       reinforcementLearning: {
         enabled: true,
         showTrainingProgress: true,
         highlightOptimalPaths: true,
         showRewardHeatmap: true,
-        qValueVisualization: true,
+        qValueVisualization: true
       },
       useWebGL: true,
       useWasm: true,
@@ -773,7 +773,7 @@ export class MoogleGraphSynthesizer {
         edgeGeometry,
         boundingBox,
         meshStats,
-        renderTime: performance.now() - startTime,
+        renderTime: performance.now() - startTime
       }
     };
 
@@ -867,7 +867,7 @@ export class MoogleGraphSynthesizer {
         return {
           region: 'CHR_ROM',
           offset: chrRegion.startAddress,
-          size: data.byteLength,
+          size: data.byteLength
         };
       } else {
         // Store in GPU texture cache;
@@ -876,7 +876,7 @@ export class MoogleGraphSynthesizer {
           width: 'canvas' in visualization ? visualization.canvas.width: 512,
           height: 'canvas' in visualization ? visualization.canvas.height : 512,
           format: 'rgba8unorm',
-          data: new Uint8Array(data),
+          data: new Uint8Array(data)
         };
 
         if (this.gpuIntegration?.storeTexture) {
@@ -886,7 +886,7 @@ export class MoogleGraphSynthesizer {
         return {
           region: 'texture_cache',
           offset: 0,
-          size: data.byteLength,
+          size: data.byteLength
         };
       }
     } catch (error) {
@@ -963,7 +963,7 @@ export class MoogleGraphSynthesizer {
     for (const [nodeId] of nodes) {
       positions.set(nodeId, {
         x: (Math.random() - 0.5) * config.width * 0.8,
-        y: (Math.random() - 0.5) * config.height * 0.8,
+        y: (Math.random() - 0.5) * config.height * 0.8
       });
       velocities.set(nodeId, { x: 0, y: 0 });
     }
@@ -1097,7 +1097,7 @@ export class MoogleGraphSynthesizer {
 
         positions.set(node.id, {
           x: center.x + Math.cos(angle) * nodeRadius,
-          y: center.y + Math.sin(angle) * nodeRadius,
+          y: center.y + Math.sin(angle) * nodeRadius
         });
       });
     }
@@ -1153,7 +1153,7 @@ export class MoogleGraphSynthesizer {
     for (const [nodeId, pos] of positions) {
       centeredPositions.set(nodeId, {
         x: centerX + (pos.x - offsetX) * scale,
-        y: centerY + (pos.y - offsetY) * scale,
+        y: centerY + (pos.y - offsetY) * scale
       });
     }
 
@@ -1214,7 +1214,7 @@ export class MoogleGraphSynthesizer {
       positions.set(nodeId, {
         x: (Math.random() - 0.5) * config.meshDimensions.width,
         y: (Math.random() - 0.5) * config.meshDimensions.height,
-        z: (Math.random() - 0.5) * config.meshDimensions.depth,
+        z: (Math.random() - 0.5) * config.meshDimensions.depth
       });
     }
 
@@ -1301,7 +1301,7 @@ export class MoogleGraphSynthesizer {
         level,
         vertices: geometry.vertices.slice(0, lodVertexCount),
         indices: geometry.indices.slice(0, lodTriangleCount * 3),
-        triangleCount: lodTriangleCount,
+        triangleCount: lodTriangleCount
       });
     }
 
@@ -1357,7 +1357,7 @@ export class MoogleGraphSynthesizer {
         edgeGeometry: [],
         boundingBox: { min: [0, 0, 0], max: [1, 1, 1], center: [0.5, 0.5, 0.5] },
         meshStats: { vertexCount: 100, triangleCount: 50, memoryUsage: vertices.byteLength + indices.byteLength },
-        renderTime: 0,
+        renderTime: 0
       }
     };
   }
@@ -1379,7 +1379,7 @@ export class MoogleGraphSynthesizer {
     const mid = {
       x: (start.x + end.x) / 2,
       y: (start.y + end.y) / 2,
-      z: (start.z + end.z) / 2 + 10 // Add some curve height,
+      z: (start.z + end.z) / 2 + 10 // Add some curve height
     };
     return [mid.x, mid.y, mid.z];
   }
@@ -1499,7 +1499,7 @@ export class MoogleGraphSynthesizer {
           size: imageFloat32.byteLength,
           compressed: false,
           accessCount: 1,
-          lastAccessed: Date.now(),
+          lastAccessed: Date.now()
         }
       };
 
@@ -1516,7 +1516,7 @@ export class MoogleGraphSynthesizer {
           width: config.width,
           height: config.height,
           nodeCount: paths.reduce((sum, path) => sum + path.nodes.length, 0),
-          renderTime: visualization.metadata.renderTime,
+          renderTime: visualization.metadata.renderTime
         }
       );
 
@@ -1543,7 +1543,7 @@ export class MoogleGraphSynthesizer {
           size: mesh.vertices.byteLength,
           compressed: false,
           accessCount: 1,
-          lastAccessed: Date.now(),
+          lastAccessed: Date.now()
         }
       };
 
@@ -1561,7 +1561,7 @@ export class MoogleGraphSynthesizer {
             size: lodMesh.vertices.byteLength,
             compressed: true, // LOD meshes can be compressed
             accessCount: 1,
-            lastAccessed: Date.now(),
+            lastAccessed: Date.now()
           }
         };
 
@@ -1575,7 +1575,7 @@ export class MoogleGraphSynthesizer {
         await this.gpuWorker.optimizeMesh({
           vertices: mesh.vertices,
           indices: mesh.indices,
-          targetLODLevels: config.lodLevels,
+          targetLODLevels: config.lodLevels
         });
       }
 
@@ -1612,7 +1612,7 @@ export class MoogleGraphSynthesizer {
         nodeEmbeddings.map(n => ({ id: n.id, embedding: n.embedding, metadata: Record<string, any> })),
         {
           clusters: Math.min(10, Math.sqrt(nodeEmbeddings.length)),
-          dimensions: 2,
+          dimensions: 2
         }
       );
 
@@ -1622,7 +1622,7 @@ export class MoogleGraphSynthesizer {
       clusterResults.clusters.forEach((cluster, clusterIndex) => {
         const clusterCenter = {
           x: (clusterIndex % 3 - 1) * config.width * 0.3,
-          y: (Math.floor(clusterIndex / 3) - 1) * config.height * 0.3,
+          y: (Math.floor(clusterIndex / 3) - 1) * config.height * 0.3
         };
 
         cluster.members.forEach((member, memberIndex) => {
@@ -1631,7 +1631,7 @@ export class MoogleGraphSynthesizer {
 
           positions.set(member.id, {
             x: clusterCenter.x + Math.cos(angle) * radius,
-            y: clusterCenter.y + Math.sin(angle) * radius,
+            y: clusterCenter.y + Math.sin(angle) * radius
           });
         });
       });
@@ -1664,7 +1664,7 @@ export class MoogleGraphSynthesizer {
         type: node.type,
         position: positions.get(node.id) || { x: 0, y: 0, z: 0 },
         embedding: node.embedding ? Array.from(node.embedding) : null,
-        score: node.score || 0.5,
+        score: node.score || 0.5
       });
 
       const edgeArray = Array.from(edges.values()).map(edge => ({
@@ -1672,7 +1672,7 @@ export class MoogleGraphSynthesizer {
         source: edge.source,
         target: edge.target,
         type: edge.type,
-        weight: edge.weight,
+        weight: edge.weight
       });
 
       // Use GPU worker for mesh generation;
@@ -1682,7 +1682,7 @@ export class MoogleGraphSynthesizer {
         config: {
           nodeSize: config.nodeSize,
           meshDimensions: config.meshDimensions,
-          lodLevels: config.lodLevels,
+          lodLevels: config.lodLevels
         }
       });
 
@@ -1691,7 +1691,7 @@ export class MoogleGraphSynthesizer {
         indices: new Uint32Array(meshResult.indices),
         normals: new Float32Array(meshResult.normals),
         uvs: new Float32Array(meshResult.uvs),
-        colors: new Float32Array(meshResult.colors),
+        colors: new Float32Array(meshResult.colors)
       };
 
     } catch (error) {
@@ -1718,18 +1718,18 @@ export class MoogleGraphSynthesizer {
         await this.gpuIntegration.compute3DLayout(nodeArray.map(n => ({
             id: n.id,
             embedding: n.embedding || new Float32Array(384),
-            mass: (n.score || 0.5) * 10,
+            mass: (n.score || 0.5) * 10
           })),
           edgeArray.map(e => ({
             source: e.source,
             target: e.target,
             weight: e.weight,
-            type: e.type,
+            type: e.type
           })),
           {
             dimensions: config.meshDimensions,
             iterations: config.qualityLevel === 'ultra' ? 1000 : 500,
-            physics: config.physics,
+            physics: config.physics
           }
         ) : [];
 
@@ -1857,22 +1857,22 @@ export class MoogleGraphSynthesizer {
         renderingCache: {
           size: this.renderingCache.size,
           memoryUsage: this.renderingCache.size * 1024,
-          hitRate: 0.75,
+          hitRate: 0.75
         },
         tensorStore: {
           totalSlices: tensorStats.totalTensorSlices || 0,
           totalSize: tensorStats.totalMemoryUsage || 0,
-          cacheHitRate: tensorStats.cacheHitRate || 0,
+          cacheHitRate: tensorStats.cacheHitRate || 0
         },
         somCache: {
           clusters: somStats.totalClusters || 0,
           embeddings: somStats.totalEmbeddings || 0,
-          memoryUsage: somStats.memoryUsage || 0,
+          memoryUsage: somStats.memoryUsage || 0
         },
         gpuWorker: {
           activeJobs: workerStats?.activeJobs || 0,
           completedJobs: workerStats?.completedJobs || 0,
-          averageTime: workerStats?.averageExecutionTime || 0,
+          averageTime: workerStats?.averageExecutionTime || 0
         }
       };
     } catch (error) {
@@ -1893,7 +1893,7 @@ export class MoogleGraphSynthesizer {
     return {
       size: this.renderingCache.size,
       memoryUsage: this.renderingCache.size * 1024,
-      hitRate: 0.75,
+      hitRate: 0.75
     };
   }
 }

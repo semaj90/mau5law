@@ -38,13 +38,13 @@ const client = postgres(DATABASE_URL, {
   },
   
   // SSL configuration for production
-  ssl: import.meta.env.NODE_ENV === 'production' ? 'require' : false,
+  ssl: import.meta.env.NODE_ENV === 'production' ? 'require' : false
 });
 
 // Create Drizzle database instance with schema;
 export const db: PostgresJsDatabase<typeof schema> = drizzle(client, {
   schema,
-  logger: import.meta.env.NODE_ENV === 'development',
+  logger: import.meta.env.NODE_ENV === 'development'
 });
 
 // Enhanced connection testing function;
@@ -110,7 +110,7 @@ export async function getDatabaseHealth(): Promise<any> {
       pgvectorEnabled,
       tablesCount,
       version,
-      uptime: uptime?.toString(),
+      uptime: uptime?.toString()
     };
     
   } catch (error) {
@@ -119,7 +119,7 @@ export async function getDatabaseHealth(): Promise<any> {
       connected: false,
       pgvectorEnabled: false,
       tablesCount: 0,
-      version: 'Unknown',
+      version: 'Unknown'
     };
   }
 }

@@ -23,12 +23,12 @@ export const copilotOrchestrator = {
 export const mcpMemoryReadGraph = async () => ({
   nodes: [], 
   edges: [], 
-  disabled: true ,
+  disabled: true 
 });
 
 export const semanticSearch = async () => ({
   results: [], 
-  disabled: true ,
+  disabled: true 
 });
 
 export const generateMCPPrompt = () => 'MCP tools disabled';

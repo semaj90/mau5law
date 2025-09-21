@@ -9,11 +9,11 @@ function createPrimitive() {
     options: Record<string, any>,
     openModal: () => {},
     closeModal: () => {},
-    toggle: () => {},
+    toggle: () => {}
   } as any;
 }
 
-export const melt = (..._args: any[]) => ({,}) as any;
+export const melt = (..._args: any[]) => ({}) as any;
 export const createDialog = (..._args: any[]) => createPrimitive();
 export const createPopover = (..._args: any[]) => createPrimitive();
 export const createDropdownMenu = (..._args: any[]) => createPrimitive();
@@ -34,5 +34,5 @@ export default {
   createSelect,
   createCombobox,
   createToolbar,
-  createResizable,
+  createResizable
 };

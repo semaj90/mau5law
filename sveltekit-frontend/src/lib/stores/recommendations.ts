@@ -41,7 +41,7 @@ export interface UserAnalytics {
       mostActiveHours: number[];
       averageSessionLength: number;
       documentsPerWeek: number;
-      casesHandled: number;,
+      casesHandled: number;
     };
   };
   behavior: {
@@ -49,7 +49,7 @@ export interface UserAnalytics {
     documentTypes: string[];
     commonQueries: string[];
     toolUsage: Record<string, number>;
-    navigationPaths: string[];,
+    navigationPaths: string[];
   };
   performance: {
     averageTaskTime: Record<string, number>;
@@ -58,7 +58,7 @@ export interface UserAnalytics {
   preferences: {
     aiAssistanceLevel: 'minimal' | 'moderate' | 'extensive';
     notificationFrequency: 'real-time' | 'hourly' | 'daily';
-    recommendationTypes: string[];,
+    recommendationTypes: string[];
   };
 }
 
@@ -81,7 +81,7 @@ export interface RecommendationState {
   aiModelsStatus: {
     nvidia_llama: boolean;
     gemma3_legal: boolean;
-    recommendation_engine: boolean;,
+    recommendation_engine: boolean;
   };
 
   // Performance
@@ -92,7 +92,7 @@ export interface RecommendationState {
   enableRealTimeAnalysis: boolean;
   privacyLevel: 'minimal' | 'standard' | 'enhanced';
 
-  error: string | null;,
+  error: string | null;
 }
 
 const initialState: RecommendationState = {
@@ -103,20 +103,20 @@ const initialState: RecommendationState = {
   behaviorInsights: {
     patterns: [],
     suggestions: [],
-    trends: [],
+    trends: []
   },
   isAnalyzing: false,
   lastAnalysisTime: null,
   aiModelsStatus: {
     nvidia_llama: false,
     gemma3_legal: false,
-    recommendation_engine: false,
+    recommendation_engine: false
   },
   analyticsLatency: 0,
   recommendationAccuracy: 0,
   enableRealTimeAnalysis: true,
   privacyLevel: 'standard',
-  error: null,
+  error: null
 };
 
 // Core store
@@ -158,7 +158,7 @@ export const recommendationActions = {
     recommendationStore.update(state => ({
       ...state,
       isAnalyzing: true,
-      error: null,
+      error: null
     });
 
     const startTime = Date.now();
@@ -171,7 +171,7 @@ export const recommendationActions = {
           model: 'nvidia-llama',
           analysisDepth: 'comprehensive',
           includeUserAnalytics: true,
-          maxRecommendations: 10,
+          maxRecommendations: 10
         }
       });
 
@@ -184,7 +184,7 @@ export const recommendationActions = {
         behaviorInsights: response.insights || state.behaviorInsights,
         analyticsLatency: latency,
         lastAnalysisTime: Date.now(),
-        isAnalyzing: false,
+        isAnalyzing: false
       });
 
     } catch (error: any) {
@@ -192,7 +192,7 @@ export const recommendationActions = {
       recommendationStore.update(state => ({
         ...state,
         isAnalyzing: false,
-        error: error instanceof Error ? error.message: 'Failed to generate recommendations',
+        error: error instanceof Error ? error.message: 'Failed to generate recommendations'
       });
     }
   },
@@ -214,14 +214,14 @@ export const recommendationActions = {
         activity: activityData,
         options: {
           updateProfile: true,
-          generateInsights: true,
+          generateInsights: true
         }
       });
 
       recommendationStore.update(state => ({
         ...state,
         userAnalytics: response.userAnalytics || state.userAnalytics,
-        behaviorInsights: response.insights || state.behaviorInsights,
+        behaviorInsights: response.insights || state.behaviorInsights
       });
 
     } catch (error: any) {
@@ -249,7 +249,7 @@ export const recommendationActions = {
         recommendations: state.recommendations.map(r =>
           r.id === recommendationId ? { ...r, accepted: true } : r
         ),
-        activeRecommendations: state.activeRecommendations.filter(r => r.id !== recommendationId),
+        activeRecommendations: state.activeRecommendations.filter(r => r.id !== recommendationId)
       });
 
     } catch (error: any) {
@@ -294,20 +294,20 @@ export const recommendationActions = {
         userId,
         includePerformance: true,
         includeBehavior: true,
-        timeRange: '30d',
+        timeRange: '30d'
       });
 
       recommendationStore.update(state => ({
         ...state,
         userAnalytics: response.analytics,
-        behaviorInsights: response.insights || state.behaviorInsights,
+        behaviorInsights: response.insights || state.behaviorInsights
       });
 
     } catch (error: any) {
       console.error('Failed to load user analytics:', error);
       recommendationStore.update(state => ({
         ...state,
-        error: error instanceof Error ? error.message: 'Failed to load analytics',
+        error: error instanceof Error ? error.message: 'Failed to load analytics'
       });
     }
   },
@@ -324,7 +324,7 @@ export const recommendationActions = {
 
     recommendationStore.update(state => ({
       ...state,
-      recommendationAccuracy: accuracy,
+      recommendationAccuracy: accuracy
     });
   },
 
@@ -335,7 +335,7 @@ export const recommendationActions = {
     recommendationStore.update(state => ({
       ...state,
       ...settings
-    ,});
+    });
   },
 
   /**
@@ -350,7 +350,7 @@ export const recommendationActions = {
         aiModelsStatus: {
           nvidia_llama: response.nvidia_llama || false,
           gemma3_legal: response.gemma3_legal || false,
-          recommendation_engine: response.recommendation_engine || false,
+          recommendation_engine: response.recommendation_engine || false
         }
       });
 
@@ -367,7 +367,7 @@ export const recommendationActions = {
       ...state,
       recommendations: [],
       activeRecommendations: [],
-      error: null,
+      error: null
     });
   }
 };

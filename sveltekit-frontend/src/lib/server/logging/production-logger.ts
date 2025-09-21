@@ -56,7 +56,7 @@ export class ProductionLogger {
       userId: entry.userId,
       caseId: entry.caseId,
       documentId: entry.documentId,
-      performanceMetrics: entry.performanceMetrics,
+      performanceMetrics: entry.performanceMetrics
     };
 
     // Console output with colors
@@ -65,7 +65,7 @@ export class ProductionLogger {
       info: '\x1b[36m', // Cyan
       warn: '\x1b[33m', // Yellow  
       error: '\x1b[31m', // Red
-      debug: '\x1b[90m'  // Gray,
+      debug: '\x1b[90m'  // Gray
     };
     
     const color = levelColors[logEntry.level];
@@ -101,7 +101,7 @@ export class ProductionLogger {
         error: entry.error ? {
           message: entry.error.message,
           stack: entry.error.stack,
-          name: entry.error.name,
+          name: entry.error.name
         } : undefined
       }) + '\n';
       
@@ -123,12 +123,12 @@ export class ProductionLogger {
         errorDetails: entry.error ? {
           message: entry.error.message,
           stack: entry.error.stack,
-          name: entry.error.name,
+          name: entry.error.name
         } : null,
         data: entry.data ? JSON.stringify(entry.data) : null,
         userId: entry.userId,
         caseId: entry.caseId,
-        documentId: entry.documentId,
+        documentId: entry.documentId
       };
       
       // Since we may not have an errors table, we'll store in a JSON log for now
@@ -159,7 +159,7 @@ export class ProductionLogger {
       error,
       performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {
         duration: 0,
-        memoryUsage: process.memoryUsage().heapUsed,
+        memoryUsage: process.memoryUsage().heapUsed
       }
     });
   }
@@ -173,7 +173,7 @@ export class ProductionLogger {
       error,
       performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {
         duration: 0,
-        memoryUsage: process.memoryUsage().heapUsed,
+        memoryUsage: process.memoryUsage().heapUsed
       }
     });
   }
@@ -196,12 +196,12 @@ export class ProductionLogger {
       data: {
         prompt: typeof prompt === 'string' ? prompt.substring(0, 100) + '...' : 'No prompt',
         responseLength: typeof response === 'string' ? response.length: Array.isArray(response) ? response.length : 0,
-        tokenUsage: (performanceMetrics as any)?.tokens || 0,
+        tokenUsage: (performanceMetrics as any)?.tokens || 0
       },
       error,
       performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {
         duration: 0,
-        memoryUsage: process.memoryUsage().heapUsed,
+        memoryUsage: process.memoryUsage().heapUsed
       }
     });
   }
@@ -214,7 +214,7 @@ export class ProductionLogger {
       data: { fileSize, caseId, result },
       error,
       caseId,
-      documentId: (result as any)?.documentId,
+      documentId: (result as any)?.documentId
     });
   }
 

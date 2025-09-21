@@ -88,8 +88,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       pagination: {
         limit,
         offset,
-        total: totalCount,
-      },
+        total: totalCount
+      }
     });
   } catch (error: any) {
     console.error("Error fetching criminals:", error);
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       notes: data.notes?.trim() || null,
       aiSummary: data.aiSummary?.trim() || null,
       aiTags: data.aiTags || [],
-      createdBy: locals.user.id,
+      createdBy: locals.user.id
     };
 
     const [newCriminal] = await db

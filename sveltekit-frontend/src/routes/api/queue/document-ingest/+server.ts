@@ -6,7 +6,7 @@ const logger = {
   info: (msg: string, data?: unknown) =>
     console.log(`[INFO] ${new Date().toISOString()} - ${msg}`, data ?? ''),
   error: (msg: string, err?: unknown) =>
-    console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, err ?? ''),
+    console.error(`[ERROR] ${new Date().toISOString()} - ${msg}`, err ?? '')
 };
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           success: false,
           error: 'documentId and caseId are required',
-          processingTime: Date.now() - start,
+          processingTime: Date.now() - start
         },
         { status: 400 }
       );
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
       documentId,
       caseId,
       task: task ?? 'ingest',
-      processingTime: Date.now() - start,
+      processingTime: Date.now() - start
     });
   } catch (err) {
     logger.error('Unhandled error in document-ingest handler', err);

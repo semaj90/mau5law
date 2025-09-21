@@ -9,7 +9,7 @@ export interface APIResponse<T = any> {
   meta: {
     timestamp: string;
     cached: boolean;
-    source: 'ssr' | 'api';,
+    source: 'ssr' | 'api';
   };
   error?: string;
 }
@@ -35,20 +35,20 @@ export interface User {
   emailVerified?: string;
   metadata: Record<string, any>;
   createdAt: string;
-  updatedAt: string;,
+  updatedAt: string;
 }
 
 export interface UserActivity {
   totalCases: number;
   activeCases: number;
-  totalEvidence: number;,
+  totalEvidence: number;
 }
 
 export interface AuthMeResponse {
   user: User;
   activity: UserActivity;
   authenticated: true;
-  loadSource: 'cache' | 'database';,
+  loadSource: 'cache' | 'database';
 }
 
 // System Health Schemas;
@@ -58,7 +58,7 @@ export interface SystemHealth {
     healthScore: number;
     healthyServices: number;
     totalServices: number;
-    timestamp: string;,
+    timestamp: string;
   };
   services: {
     databases: Record<string, ServiceStatus>;
@@ -69,7 +69,7 @@ export interface SystemHealth {
   };
   performance: {
     systemUptime: number;
-    memoryUsage: MemoryUsage;,
+    memoryUsage: MemoryUsage;
   };
   architecture: {
     platform: string;
@@ -77,14 +77,14 @@ export interface SystemHealth {
     gpuArchitecture: string;
     microservices: number;
     protocols: string[];
-    features: string[];,
+    features: string[];
   };
 }
 
 export interface ServiceStatus {
   host: string;
   port: number;
-  status: string;,
+  status: string;
 }
 
 export interface GPUServiceStatus {
@@ -96,7 +96,7 @@ export interface MemoryUsage {
   heapUsed: number;
   heapTotal: number;
   external: number;
-  rss: number;,
+  rss: number;
 }
 
 // Dashboard Schemas;
@@ -114,7 +114,7 @@ export interface CognitiveMetrics {
   gpuUtilization: number;
   consciousnessLevel: number;
   quantumCoherence: number;
-  timestamp: string;,
+  timestamp: string;
 }
 
 export interface RecentActivity {
@@ -122,7 +122,7 @@ export interface RecentActivity {
   type: 'case_created' | 'evidence_uploaded' | 'ai_analysis' | 'document_processed';
   title: string;
   timestamp: Date | string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';,
+  priority: 'low' | 'medium' | 'high' | 'urgent';
 }
 
 // Case Management Schemas;
@@ -139,7 +139,7 @@ export interface Case {
   tags: string[];
   metadata: Record<string, any>;
   createdAt: string;
-  updatedAt: string;,
+  updatedAt: string;
 }
 
 export interface Evidence {
@@ -157,7 +157,7 @@ export interface Evidence {
   metadata: Record<string, any>;
   createdBy: string;
   createdAt: string;
-  updatedAt: string;,
+  updatedAt: string;
 }
 
 export interface ChainOfCustodyEntry {
@@ -192,11 +192,11 @@ export interface SearchQuery {
   filters?: Record<string, any>;
   sort?: {
     field: string;
-    direction: 'asc' | 'desc';,
+    direction: 'asc' | 'desc';
   };
   pagination?: {
     page: number;
-    limit: number;,
+    limit: number;
   };
 }
 
@@ -206,7 +206,7 @@ export interface SearchResults<T = any> {
   page: number;
   limit: number;
   hasNextPage: boolean;
-  hasPreviousPage: boolean;,
+  hasPreviousPage: boolean;
 }
 
 // Page Data Schemas for SSR;
@@ -231,7 +231,7 @@ export interface SystemInfo {
   gpuInfo: string;
   memoryUsage: string;
   nodeVersion: string;
-  uptime: number;,
+  uptime: number;
 }
 
 export interface DashboardPageData {
@@ -251,12 +251,12 @@ export interface MulticoreStatus {
   activeTasks: number;
   totalTasks: number;
   completedTasks: number;
-  failedTasks: number;,
+  failedTasks: number;
 }
 
 export interface SystemGraphData {
   nodes: GraphNode[];
-  edges: GraphEdge[];,
+  edges: GraphEdge[];
 }
 
 export interface GraphNode {
@@ -265,7 +265,7 @@ export interface GraphNode {
   label: string;
   position: { x: number; y: number; z: number };
   metrics: Record<string, any>;
-  status: 'healthy' | 'degraded' | 'unhealthy';,
+  status: 'healthy' | 'degraded' | 'unhealthy';
 }
 
 export interface GraphEdge {
@@ -273,7 +273,7 @@ export interface GraphEdge {
   to: string;
   type: 'api' | 'data' | 'grpc';
   traffic: number;
-  latency: number;,
+  latency: number;
 }
 
 // Error Response Schema;
@@ -283,9 +283,9 @@ export interface ErrorResponse {
   meta: {
     timestamp: string;
     cached: false;
-    source: 'ssr' | 'api';,
+    source: 'ssr' | 'api';
   };
-  error: string;,
+  error: string;
 }
 
 // Type Guards for Runtime Validation;

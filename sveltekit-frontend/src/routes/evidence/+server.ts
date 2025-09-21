@@ -18,7 +18,7 @@ export const POST: RequestHandler = (async ({ request }) => {
 
     await putObject('evidence', objectName, buffer, {
       'x-amz-meta-case-id': caseId,
-      'x-amz-meta-original-name': file.name,
+      'x-amz-meta-original-name': file.name
     });
 
     return json({ success: true, id, objectName });

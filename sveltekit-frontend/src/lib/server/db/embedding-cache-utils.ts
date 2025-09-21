@@ -5,7 +5,7 @@
 export interface PackedEmbeddingMeta {
   scale?: number; // scaling factor for symmetric int8 dequantization
   method: 'uint8-linear' | 'int8-symmetric';
-  dims: number;,
+  dims: number;
 }
 
 export function packFloat32ToUint8(vec: Float32Array): Uint8Array {

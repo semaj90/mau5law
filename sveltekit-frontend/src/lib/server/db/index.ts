@@ -16,7 +16,7 @@ import {
   evidence,
   legalDocuments,
   caseActivities,
-  statutes,
+  statutes
 } from './schema-postgres.js';
 
 export {
@@ -26,7 +26,7 @@ export {
   evidence,
   legalDocuments,
   caseActivities,
-  statutes,
+  statutes
 };
 
 // Re-export performance optimizations (optional - may not exist)
@@ -41,7 +41,7 @@ export function getTableByName(tableName: string) {
     evidence,
     legalDocuments,
     caseActivities,
-    statutes,
+    statutes
   };
   
   return tableMap[tableName as keyof typeof tableMap];
@@ -54,7 +54,7 @@ export async function healthCheck() {
       return {
         status: "unhealthy" as const,
         error: "Database not initialized",
-        timestamp: new Date(),
+        timestamp: new Date()
       };
     }
     
@@ -65,7 +65,7 @@ export async function healthCheck() {
     const tableTests = await Promise.allSettled([
       db.select().from(users).limit(1),
       db.select().from(sessions).limit(1),
-      db.select().from(cases).limit(1),
+      db.select().from(cases).limit(1)
     ]);
     
     const failedTests = tableTests.filter((result: any) => (result as { status?: any }).status === 'rejected');
@@ -74,20 +74,20 @@ export async function healthCheck() {
       return {
         status: "degraded" as const,
         error: `${failedTests.length} table(s) inaccessible`,
-        timestamp: new Date(),
+        timestamp: new Date()
       };
     }
     
     return { 
       status: "healthy" as const, 
       timestamp: new Date(),
-      tablesAccessible: tableTests.length ,
+      tablesAccessible: tableTests.length 
     };
   } catch (error: any) {
     return { 
       status: "unhealthy" as const, 
       error: error.message, 
-      timestamp: new Date() ,
+      timestamp: new Date() 
     };
   }
 }

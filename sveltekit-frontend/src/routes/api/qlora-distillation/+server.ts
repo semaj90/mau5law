@@ -31,7 +31,7 @@ const qloraIntegrationAnalyzer = {
         validation_accuracy: 0.89,
         actual_speed_improvement: 2.2,
         actual_quality_retention: 0.91,
-        actual_size_reduction: 0.3,
+        actual_size_reduction: 0.3
       }
     };
   }
@@ -79,7 +79,7 @@ interface DistillationStatus {
     validationAccuracy: number;
     modelSize: number; // MB
     speedImprovement: number;
-    qualityRetention: number;,
+    qualityRetention: number;
   };
   modelPath?: string;
   deploymentReady?: boolean;
@@ -114,8 +114,8 @@ export const POST: RequestHandler = async ({ request }) => {
         validationAccuracy: 0,
         modelSize: 0,
         speedImprovement: 0,
-        qualityRetention: 0,
-      },
+        qualityRetention: 0
+      }
     };
 
     activeDistillations.set(jobId, initialStatus);
@@ -137,14 +137,14 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'queued',
       message: `QLoRA distillation job started for domain: ${distillationRequest.domain}`,
       estimatedDuration: '30-60 minutes',
-      statusUrl: `/api/qlora-distillation/${jobId}`,
+      statusUrl: `/api/qlora-distillation/${jobId}`
     });
   } catch (error) {
     console.error('❌ QLoRA Distillation API error:', error);
     return json({
         success: false,
         error: 'Failed to start distillation job',
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -209,7 +209,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     return json({
       success: true,
       message: 'Distillation job cancelled',
-      jobId,
+      jobId
     });
   } catch (error) {
     console.error('❌ Cancel distillation error:', error);
@@ -228,7 +228,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
   const updateStatus = (updates: Partial<DistillationStatus>) => {
     const current = activeDistillations.get(jobId);
     if (current) {
-      activeDistillations.set(jobId, { ...current, ...updates ,});
+      activeDistillations.set(jobId, { ...current, ...updates });
     }
   };
 
@@ -258,8 +258,8 @@ async function processDistillationJob(jobId: string, request: DistillationReques
         validationAccuracy: 0,
         modelSize: 0,
         speedImprovement: feedbackAnalysis.distillationPlan.expectedMetrics.speed_improvement,
-        qualityRetention: feedbackAnalysis.distillationPlan.expectedMetrics.quality_retention,
-      },
+        qualityRetention: feedbackAnalysis.distillationPlan.expectedMetrics.quality_retention
+      }
     });
 
     // Phase 2: Model Training with Context Switching Optimization;
@@ -291,8 +291,8 @@ async function processDistillationJob(jobId: string, request: DistillationReques
         validationAccuracy: distillationResult.metrics.validation_accuracy,
         modelSize: calculateModelSize(distillationResult.modelPath),
         speedImprovement: distillationResult.metrics.actual_speed_improvement,
-        qualityRetention: distillationResult.metrics.actual_quality_retention,
-      },
+        qualityRetention: distillationResult.metrics.actual_quality_retention
+      }
     });
 
     // Optimize with context switcher
@@ -302,7 +302,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
       {
         modelPath: distillationResult.modelPath,
         performance_target: request.parameters?.optimizeFor || 'balanced',
-        domain: request.domain,
+        domain: request.domain
       }
     );
 
@@ -323,7 +323,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
         path: distillationResult.modelPath,
         size: Math.floor(distillationResult.metrics.actual_size_reduction * 256), // Estimate
         contextLength: 2048,
-        vocabulary: 32000,
+        vocabulary: 32000
       },
       adapter: {
         name: `${request.domain}-adapter`,
@@ -333,7 +333,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
         targetModules:
           feedbackAnalysis.modelPerformanceInsights.recommendedAdjustments.target_modules,
         size: 8, // MB
-      },
+      }
     });
 
     // Run validation tests
@@ -379,8 +379,8 @@ async function processDistillationJob(jobId: string, request: DistillationReques
         validationAccuracy: validationResults.accuracy,
         modelSize: calculateModelSize(distillationResult.modelPath),
         speedImprovement: distillationResult.metrics.actual_speed_improvement,
-        qualityRetention: distillationResult.metrics.actual_quality_retention,
-      },
+        qualityRetention: distillationResult.metrics.actual_quality_retention
+      }
     });
 
     console.log(`✅ Distillation job completed successfully: ${jobId}`);
@@ -392,7 +392,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
     console.error(`❌ Distillation job ${jobId} failed in processing:`, error);
     updateStatus({
       status: 'failed',
-      error: error instanceof Error ? error.message: 'Unknown processing error',
+      error: error instanceof Error ? error.message: 'Unknown processing error'
     });
 
     // Cleanup any partial models
@@ -418,7 +418,7 @@ async function runValidationTests(
     for (const prompt of testPrompts) {
       const result = await qloraWasmLoader.generateText(modelKey, prompt.input, {
         maxTokens: 256,
-        temperature: 0.1,
+        temperature: 0.1
       });
 
       // Simple validation (in production would use more sophisticated metrics)
@@ -439,13 +439,13 @@ async function runValidationTests(
       accuracy: avgAccuracy,
       reason: passed
         ? undefined
-        : `Accuracy ${avgAccuracy.toFixed(2)} below threshold ${qualityThreshold}`,
+        : `Accuracy ${avgAccuracy.toFixed(2)} below threshold ${qualityThreshold}`
     };
   } catch (error) {
     return {
       passed: false,
       accuracy: 0,
-      reason: `Validation error: ${error instanceof Error ? error.message: 'Unknown error'}`,
+      reason: `Validation error: ${error instanceof Error ? error.message: 'Unknown error'}`
     };
   }
 }
@@ -485,7 +485,7 @@ async function getMockFeedbackData(domain: string): Promise<any[]> {
         response:
           'The main risks include termination clauses, non-compete restrictions, and intellectual property assignments.',
         feedback: 'thumbs_up' as const,
-        context: { legalDomain: domain, complexityLevel: 'intermediate', responseTime: 1500 },
+        context: { legalDomain: domain, complexityLevel: 'intermediate', responseTime: 1500 }
       },
       {
         userId: 'user2',
@@ -494,8 +494,8 @@ async function getMockFeedbackData(domain: string): Promise<any[]> {
           'Based on state law precedents, this clause may be overly broad and potentially unenforceable.',
         feedback: 'thumbs_down' as const,
         context: { legalDomain: domain, complexityLevel: 'advanced', responseTime: 2300 },
-        corrections: ['Should mention specific state laws', 'Need case citations'],
-      },
+        corrections: ['Should mention specific state laws', 'Need case citations']
+      }
     ],
     litigation: [;
       {
@@ -504,9 +504,9 @@ async function getMockFeedbackData(domain: string): Promise<any[]> {
         response:
           'Several circuit court decisions support dismissal on jurisdictional grounds, particularly Smith v. Jones (2019).',
         feedback: 'thumbs_up' as const,
-        context: { legalDomain: domain, complexityLevel: 'expert', responseTime: 3200 },
-      },
-    ],
+        context: { legalDomain: domain, complexityLevel: 'expert', responseTime: 3200 }
+      }
+    ]
   };
 
   return mockData[domain as keyof typeof mockData] || mockData.contract;
@@ -521,21 +521,21 @@ function getValidationPrompts(domain: string): Array<any> {
       {
         name: 'Contract Risk Analysis',
         input: 'Analyze the potential risks in a software licensing agreement.',
-        expectedKeywords: ['liability', 'intellectual property', 'termination', 'compliance'],
+        expectedKeywords: ['liability', 'intellectual property', 'termination', 'compliance']
       },
       {
         name: 'Clause Interpretation',
         input: 'Explain the enforceability of a non-compete clause.',
-        expectedKeywords: ['enforceability', 'jurisdiction', 'reasonable', 'duration'],
-      },
+        expectedKeywords: ['enforceability', 'jurisdiction', 'reasonable', 'duration']
+      }
     ],
     litigation: [;
       {
         name: 'Case Strategy',
         input: 'What discovery motions should we file in this contract dispute?',
-        expectedKeywords: ['discovery', 'interrogatories', 'production', 'depositions'],
-      },
-    ],
+        expectedKeywords: ['discovery', 'interrogatories', 'production', 'depositions']
+      }
+    ]
   };
 
   return prompts[domain as keyof typeof prompts] || prompts.contract;

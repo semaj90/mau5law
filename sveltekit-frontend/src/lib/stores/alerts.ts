@@ -17,7 +17,7 @@ export function pushAlert(alert: Omit<Alert, 'id' | 'timestamp'>) {
     ...alert,
     id: crypto.randomUUID(),
     timestamp: Date.now(),
-    duration: alert.duration ?? 5000 // Default 5 second auto-dismiss,
+    duration: alert.duration ?? 5000 // Default 5 second auto-dismiss
   };
 
   alerts.update(currentAlerts => [...currentAlerts, newAlert]);

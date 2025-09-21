@@ -35,12 +35,12 @@ export const DEFAULT_SECURITY_CONFIG: SecurityConfig = {
     "audio/mp3",
     "audio/wav",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    "application/msword",
+    "application/msword"
   ],
   sessionTimeout: 30 * 60 * 1000, // 30 minutes
   maxLoginAttempts: 5,
   passwordMinLength: 8,
-  requireMFA: false,
+  requireMFA: false
 };
 
 // Authentication and session management;
@@ -99,7 +99,7 @@ class SessionManager {
       ...user,
       loginTime: now,
       lastActivity: now,
-      sessionId: this.generateSessionId(),
+      sessionId: this.generateSessionId()
     };
 
     this.startSessionMonitoring();
@@ -108,7 +108,7 @@ class SessionManager {
       userId: user.userId,
       timestamp: now,
       details: { username: user.username, role: user.role },
-      severity: "low",
+      severity: "low"
     });
 
     return this.session;
@@ -121,7 +121,7 @@ class SessionManager {
         userId: this.session.userId,
         timestamp: Date.now(),
         details: { username: this.session.username },
-        severity: "low",
+        severity: "low"
       });
     }
     this.session = null;
@@ -269,7 +269,7 @@ export function sanitizeForJavaScript(input: string): string {
       ">": "&gt;",
       '"': "&quot;",
       "'": "&#x27;",
-      "&": "&amp;",
+      "&": "&amp;"
     };
     return entityMap[match];
   });
@@ -288,7 +288,7 @@ export function sanitizeInput(
     case "js":
       return sanitizeForJavaScript(input);
     default:
-      return sanitizeForHTML(input);,
+      return sanitizeForHTML(input);
   }
 }
 
@@ -332,7 +332,7 @@ export function checkFileSecurityAI(file: File): FileSecurityResult {
     /confidential/,
     /privileged/,
     /attorney/,
-    /legal/,
+    /legal/
   ];
 
   for (const pattern of legalPatterns) {
@@ -357,7 +357,7 @@ export function checkFileSecurityAI(file: File): FileSecurityResult {
     /data:/,
     /<script/,
     /eval\(/,
-    /document\./,
+    /document\./
   ];
 
   for (const pattern of suspiciousPatterns) {
@@ -380,7 +380,7 @@ export function checkFileSecurityAI(file: File): FileSecurityResult {
     issues,
     risk,
     isLegalDocument,
-    requiresPrivilegedAccess,
+    requiresPrivilegedAccess
   };
 }
 
@@ -441,7 +441,7 @@ export function logSecurityEvent(
 ): void {
   const fullEvent: SecurityEvent = {
     ...event,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
 
   if (browser) {
@@ -485,7 +485,7 @@ export function generateCSPNonce(): string {
 export function checkPasswordStrength(password: string): {
   score: number;
   feedback: string[];
-  isStrong: boolean;,
+  isStrong: boolean;
 } {
   const feedback: string[] = [];
   let score = 0;
@@ -552,7 +552,7 @@ export function addChainOfCustodyEvent(
 ): void {
   const fullEvent: ChainOfCustodyEvent = {
     ...event,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
 
   // In a real app, this would be cryptographically signed and stored immutably;
@@ -562,10 +562,10 @@ export function addChainOfCustodyEvent(
     details: {
       action: "chain_of_custody",
       evidenceId,
-      custodyEvent: fullEvent,
+      custodyEvent: fullEvent
     },
     severity: "low",
-    legalContext: event.legalContext,
+    legalContext: event.legalContext
   });
 }
 
@@ -578,10 +578,10 @@ export function secureDataExport(data: any, userId: string, legalContext?: unkno
       dataType: typeof data,
       recordCount: Array.isArray(data) ? data.length: 1,
       fields:
-        Array.isArray(data) && data.length > 0 ? Object.keys(data[0]) : [],
+        Array.isArray(data) && data.length > 0 ? Object.keys(data[0]) : []
     },
     severity: "medium",
-    legalContext,
+    legalContext
   });
 }
 
@@ -626,9 +626,9 @@ export function checkAttorneyClientPrivilege(
       details: {
         reason: "non_legal_professional_access",
         documentId,
-        action,
+        action
       },
-      severity: "high",
+      severity: "high"
     });
     return false;
   }
@@ -655,10 +655,10 @@ export function validateLegalAccess(
       details: {
         requiredPermission,
         caseId,
-        userPermissions: session.permissions,
+        userPermissions: session.permissions
       },
       severity: "medium",
-      legalContext: { caseId },
+      legalContext: { caseId }
     });
   }
 
@@ -682,13 +682,13 @@ export function trackPrivilegedAccess(
         action,
         caseId,
         isLegalProfessional: session.isLegalProfessional,
-        barNumber: session.barNumber,
+        barNumber: session.barNumber
       },
       severity: "medium",
       legalContext: {
         caseId,
-        isPrivileged: true,
-      },
+        isPrivileged: true
+      }
     });
   }
 }

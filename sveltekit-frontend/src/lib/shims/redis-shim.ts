@@ -97,7 +97,7 @@ export async function createClient(opts?: any) {
     ping: async (message?: string) =>
       typeof client.ping === 'function' ? client.ping(message) : Promise.resolve('PONG'),
     // expose raw client if needed
-    _raw: client,
+    _raw: client
   } as any;
 }
 

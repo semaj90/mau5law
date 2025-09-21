@@ -46,7 +46,7 @@ export class ClientEmbeddingGenerator {
         
         this.worker!.postMessage({ 
           type: 'initialize', 
-          model: this.embedModel ,
+          model: this.embedModel 
         });
       });
 
@@ -91,7 +91,7 @@ export class ClientEmbeddingGenerator {
           options: {
             maxLength: 8192, // Legal documents can be long
             normalize: true,
-            legal_mode: true,
+            legal_mode: true
           }
         });
       });
@@ -151,7 +151,7 @@ export class ClientEmbeddingGenerator {
             batchSize: 10, // Process in batches to manage memory
             maxLength: 4096,
             normalize: true,
-            legal_mode: true,
+            legal_mode: true
           }
         });
       });
@@ -283,7 +283,7 @@ export class ClientEmbeddingGenerator {
     return {
       model: this.embedModel,
       dimensions: dimensions,
-      initialized: this.initialized,
+      initialized: this.initialized
     };
   }
 
@@ -393,7 +393,7 @@ export class EmbeddingCache {
     
     this.cache.set(cacheKey, {
       embedding: embedding,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -436,7 +436,7 @@ export class EmbeddingCache {
       size: this.cache.size,
       maxSize: this.maxCacheSize,
       hitRate: 0, // Would need to track hits/misses
-      memoryUsage: this.cache.size * 384 * 4 // Approximate bytes,
+      memoryUsage: this.cache.size * 384 * 4 // Approximate bytes
     };
   }
 }

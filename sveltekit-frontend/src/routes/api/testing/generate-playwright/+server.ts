@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
         todoFile: filename,
         todoPath: todoFilePath,
         testFile: 'tests/generated-legal-ai-workflow.spec.ts',
-        testPath: testFilePath,
+        testPath: testFilePath
       },
       
       // Test generation summary;
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
           'Performance and Load Testing'
         ],
         estimatedRunTime: calculateEstimatedRunTime(testResults),
-        coverage: assessTestCoverage(testResults),
+        coverage: assessTestCoverage(testResults)
       },
 
       // Generated content preview;
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
         todoLines: todoContent.split('\n').length,
         testLines: playwrightTestContent.split('\n').length,
         firstTodoItems: todoContent.split('\n').slice(0, 10),
-        keyTestScenarios: extractKeyTestScenarios(playwrightTestContent),
+        keyTestScenarios: extractKeyTestScenarios(playwrightTestContent)
       }
     };
 
@@ -598,12 +598,12 @@ test.beforeAll(async () => {
   
   // Create test documents if they don't exist
   // This would typically be handled by a setup script
-,});
+});
 
 test.afterAll(async () => {
   // Cleanup test artifacts
   console.log('Cleaning up test artifacts...');
-,});
+});
 
 // Custom test matchers and utilities;
 function expectProcessingTimeWithin(actualTime: number, expectedTime: number, tolerance: number = 0.2) {
@@ -642,7 +642,7 @@ function assessTestCoverage(testResults: any): unknown {
     pgaiIntegration: '85%',
     errorHandling: '90%',
     performance: '87%',
-    overall: '89%',
+    overall: '89%'
   };
 }
 

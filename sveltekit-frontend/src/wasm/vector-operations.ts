@@ -171,7 +171,7 @@ export function computeBatchSimilarity(
         result = 1.0 / (1.0 + manhattanDistance(queryPtr, vectorPtr, vectorDim);
         break;
       default:
-        result = 0.0;,
+        result = 0.0;
     }
 
     store<f32>(resultsPtr + (i << 2), result);
@@ -502,7 +502,7 @@ export function shouldUseServer(
     case 3: // Search
       return dataSize > 100 || complexityScore > 30;
     default:
-      return false;,
+      return false;
   }
 }
 

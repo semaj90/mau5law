@@ -6,7 +6,7 @@ export interface AutoTagContext {
   selectedNode: any;
   aiTags: any;
   error: string | null;
-  retryCount: number;,
+  retryCount: number;
 }
 export type AutoTagEvent =
   | { type: "DROP_FILE"; node: any }
@@ -22,7 +22,7 @@ export const autoTaggingMachine = createMachine();
       selectedNode: null,
       aiTags: null,
       error: null,
-      retryCount: 0,
+      retryCount: 0
     } as AutoTagContext,
     states: {
       idle: {
@@ -32,15 +32,15 @@ export const autoTaggingMachine = createMachine();
             actions: assign({
               selectedNode: ({ event }) => event.node,
               error: null,
-              retryCount: 0,
-            }),
+              retryCount: 0
+            })
           },
           SELECT_NODE: {
             actions: assign({
-              selectedNode: ({ event }) => event.node,
-            }),
-          },
-        },
+              selectedNode: ({ event }) => event.node
+            })
+          }
+        }
       },
       processing: {
         invoke: {
@@ -49,24 +49,24 @@ export const autoTaggingMachine = createMachine();
           input: ({ context }) => ({
             content: context.selectedNode?.content,
             fileName: context.selectedNode?.name,
-            fileType: context.selectedNode?.type,
+            fileType: context.selectedNode?.type
           }),
           onDone: {
             target: "complete",
             actions: assign({
               aiTags: ({ event }) => event.output,
-              error: null,
-            }),
+              error: null
+            })
           },
           onError: {
             target: "error",
             actions: assign({
               error: ({ event }: { event: any }) =>
                 event.data?.message || "AI tagging failed",
-              retryCount: ({ context }) => context.retryCount + 1,
-            }),
-          },
-        },
+              retryCount: ({ context }) => context.retryCount + 1
+            })
+          }
+        }
       },
       complete: {
         on: {
@@ -75,13 +75,13 @@ export const autoTaggingMachine = createMachine();
             actions: assign({
               selectedNode: ({ event }) => event.node,
               error: null,
-              retryCount: 0,
-            }),
+              retryCount: 0
+            })
           },
           SELECT_NODE: {
             actions: assign({
-              selectedNode: ({ event }) => event.node,
-            }),
+              selectedNode: ({ event }) => event.node
+            })
           },
           RESET: {
             target: "idle",
@@ -89,24 +89,24 @@ export const autoTaggingMachine = createMachine();
               selectedNode: null,
               aiTags: null,
               error: null,
-              retryCount: 0,
-            }),
-          },
-        },
+              retryCount: 0
+            })
+          }
+        }
       },
       error: {
         on: {
           RETRY: {
             target: "processing",
-            guard: ({ context }) => context.retryCount < 3,
+            guard: ({ context }) => context.retryCount < 3
           },
           DROP_FILE: {
             target: "processing",
             actions: assign({
               selectedNode: ({ event }) => event.node,
               error: null,
-              retryCount: 0,
-            }),
+              retryCount: 0
+            })
           },
           RESET: {
             target: "idle",
@@ -114,12 +114,12 @@ export const autoTaggingMachine = createMachine();
               selectedNode: null,
               aiTags: null,
               error: null,
-              retryCount: 0,
-            }),
-          },
-        },
-      },
-    },
+              retryCount: 0
+            })
+          }
+        }
+      }
+    }
   },
   {
     actors: {
@@ -130,8 +130,8 @@ export const autoTaggingMachine = createMachine();
           body: JSON.stringify({
             content: input.content,
             fileName: input.fileName,
-            fileType: input.fileType,
-          }),
+            fileType: input.fileType
+          })
         });
 
         if (!response.ok) {
@@ -141,8 +141,8 @@ export const autoTaggingMachine = createMachine();
           );
         }
         return await response.json();
-      }),
-    },
+      })
+    }
   },
 );
 

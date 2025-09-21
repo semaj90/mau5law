@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!body.text && !body.requests) {
       return json({
         success: false,
-        error: 'Missing required field: text or requests',
+        error: 'Missing required field: text or requests'
       }, { status: 400 });
     }
 
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!isAvailable) {
       return json({
         success: false,
-        error: 'Ollama service not available. Please ensure Ollama is running on http://localhost:11434',
+        error: 'Ollama service not available. Please ensure Ollama is running on http://localhost:11434'
       }, { status: 503 });
     }
 
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!body.requests || !Array.isArray(body.requests)) {
           return json({
             success: false,
-            error: 'Batch processing requires requests array',
+            error: 'Batch processing requires requests array'
           }, { status: 400 });
         }
         result = await langExtractService.batchExtract(body.requests);
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       data: result,
       timestamp: new Date().toISOString(),
-      service: 'langextract-ollama',
+      service: 'langextract-ollama'
     });
 
   } catch (error: any) {
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error occurred',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async () => {
         ollama_available: isAvailable,
         available_models: models,
         service_url: 'http://localhost:11434',
-        langextract_version: 'latest',
+        langextract_version: 'latest'
       },
       capabilities: {
         document_types: ['contract', 'case_law', 'statute', 'evidence', 'motion', 'brief'],
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async () => {
             action: 'contract_terms',
             text: 'This Agreement is entered into on January 15, 2024...',
             documentType: 'contract',
-            model: 'gemma2:2b',
+            model: 'gemma2:2b'
           }
         },
         case_citation_extraction: {
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async () => {
           body: {
             action: 'case_citations',
             text: 'In Smith v. Jones, 123 F.3d 456 (9th Cir. 2023)...',
-            documentType: 'case_law',
+            documentType: 'case_law'
           }
         },
         batch_processing: {
@@ -137,12 +137,12 @@ export const GET: RequestHandler = async () => {
               {
                 text: 'Contract text...',
                 documentType: 'contract',
-                extractionType: 'obligations',
+                extractionType: 'obligations'
               },
               {
                 text: 'Case law text...',
                 documentType: 'case_law',
-                extractionType: 'entities',
+                extractionType: 'entities'
               }
             ]
           }
@@ -153,7 +153,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: false,
       error: 'Failed to get service status',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

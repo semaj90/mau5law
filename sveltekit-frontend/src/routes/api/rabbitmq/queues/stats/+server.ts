@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				throughput: {
 					publish_rate: 2.3,
 					deliver_rate: 2.1,
-					ack_rate: 2.1,
+					ack_rate: 2.1
 				}
 			},
 			'legal.chunks.embed': {
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				throughput: {
 					publish_rate: 8.7,
 					deliver_rate: 8.5,
-					ack_rate: 8.3,
+					ack_rate: 8.3
 				}
 			},
 			'legal.chunks.store': {
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				throughput: {
 					publish_rate: 5.2,
 					deliver_rate: 5.0,
-					ack_rate: 4.9,
+					ack_rate: 4.9
 				}
 			},
 			'legal.dlq': {
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				throughput: {
 					publish_rate: 0.1,
 					deliver_rate: 0,
-					ack_rate: 0,
+					ack_rate: 0
 				}
 			}
 		};
@@ -93,13 +93,13 @@ export const GET: RequestHandler = async ({ url }) => {
 								published: Math.floor(Math.random() * 100),
 								delivered: Math.floor(Math.random() * 95),
 								acknowledged: Math.floor(Math.random() * 95),
-								redelivered: Math.floor(Math.random() * 5),
+								redelivered: Math.floor(Math.random() * 5)
 							},
 							last_hour: {
 								published: Math.floor(Math.random() * 1000),
 								delivered: Math.floor(Math.random() * 950),
 								acknowledged: Math.floor(Math.random() * 950),
-								redelivered: Math.floor(Math.random() * 50),
+								redelivered: Math.floor(Math.random() * 50)
 							}
 						},
 						consumer_details: Array.from({ length: queueStats.consumers }, (_, i) => ({
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
 							channel: `channel_${i + 1}`,
 							prefetch_count: 10,
 							ack_required: true,
-							active: true,
+							active: true
 						})
 					}
 				});
@@ -122,7 +122,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			total_queues: Object.keys(baseStats).length,
 			total_messages: Object.values(baseStats).reduce((sum, queue) => sum + queue.messages, 0),
 			total_consumers: Object.values(baseStats).reduce((sum, queue) => sum + queue.consumers, 0),
-			queues: baseStats,
+			queues: baseStats
 		};
 
 		if (detailed) {
@@ -134,10 +134,10 @@ export const GET: RequestHandler = async ({ url }) => {
 				erlang_processes: 428,
 				file_descriptors: {
 					used: 156,
-					available: 65536,
+					available: 65536
 				},
 				connection_count: 12,
-				channel_count: 24,
+				channel_count: 24
 			};
 		}
 
@@ -154,7 +154,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		return json({
 			error: 'Failed to fetch queue statistics',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
 };
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request }) => {
 					queue,
 					result: 'success',
 					messages_purged: Math.floor(Math.random() * 50),
-					timestamp: new Date().toISOString(),
+					timestamp: new Date().toISOString()
 				});
 
 			case 'reset_stats':
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				return json({
 					action: 'reset_stats',
 					result: 'success',
-					timestamp: new Date().toISOString(),
+					timestamp: new Date().toISOString()
 				});
 
 			default:
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			error: 'Queue management action failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
 };

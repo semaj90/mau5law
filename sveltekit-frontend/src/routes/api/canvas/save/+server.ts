@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       ...canvasState,
       reportId,
       updatedAt: new Date().toISOString(),
-      updatedBy: locals.user?.id || "anonymous",
+      updatedBy: locals.user?.id || "anonymous"
     };
 
     // Save to Loki.js (in production this would save to PostgreSQL)
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     return json({
       success: true,
-      canvasState: enhancedCanvasState,
+      canvasState: enhancedCanvasState
     });
   } catch (error: any) {
     console.error("Canvas save error:", error);

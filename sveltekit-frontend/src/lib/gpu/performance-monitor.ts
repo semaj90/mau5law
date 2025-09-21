@@ -13,7 +13,7 @@ export interface PerformanceMetrics {
   cacheHitRate: number;
   chunksPerSecond: number;
   qualityLevel: number;
-  adaptiveEnabled: boolean;,
+  adaptiveEnabled: boolean;
 }
 
 export interface ClientCapabilities {
@@ -26,7 +26,7 @@ export interface ClientCapabilities {
   gpuRenderer: string;
   memoryLimit: number;
   connectionSpeed: 'slow' | 'medium' | 'fast';
-  deviceType: 'mobile' | 'tablet' | 'desktop';,
+  deviceType: 'mobile' | 'tablet' | 'desktop';
 }
 
 export interface QualitySettings {
@@ -39,7 +39,7 @@ export interface QualitySettings {
   adaptiveThresholds: {
     excellent: number;
     good: number;
-    poor: number;,
+    poor: number;
   };
 }
 
@@ -78,7 +78,7 @@ export class PerformanceMonitor {
       cacheHitRate: 0,
       chunksPerSecond: 0,
       qualityLevel: 1.0,
-      adaptiveEnabled: true,
+      adaptiveEnabled: true
     };
 
     // Detect client capabilities
@@ -176,7 +176,7 @@ export class PerformanceMonitor {
       adaptiveThresholds: {
         excellent: 16.67, // 60fps
         good: 33.33, // 30fps
-        poor: 66.67 // 15fps,
+        poor: 66.67 // 15fps
       }
     };
 
@@ -307,7 +307,7 @@ export class PerformanceMonitor {
 
     // Notify listeners;
     if (this.onPerformanceUpdate) {
-      this.onPerformanceUpdate({ ...this.metrics ,});
+      this.onPerformanceUpdate({ ...this.metrics });
     }
   }
 
@@ -362,7 +362,7 @@ export class PerformanceMonitor {
 
       // Notify listeners;
       if (this.onQualityChange) {
-        this.onQualityChange({ ...this.qualitySettings ,});
+        this.onQualityChange({ ...this.qualitySettings });
       }
     }
   }
@@ -399,7 +399,7 @@ export class PerformanceMonitor {
     this.qualitySettings.textureResolution = Math.max(0.1, Math.min(1.0, level);
 
     if (this.onQualityChange) {
-      this.onQualityChange({ ...this.qualitySettings ,});
+      this.onQualityChange({ ...this.qualitySettings });
     }
   }
 
@@ -440,7 +440,7 @@ export class PerformanceMonitor {
     memoryScore: number;
     networkScore: number;
     overallScore: number;
-    recommendedQuality: number;,
+    recommendedQuality: number;
   }> {
     console.log('Running performance benchmark...');
 
@@ -450,7 +450,7 @@ export class PerformanceMonitor {
       memoryScore: 0,
       networkScore: 0,
       overallScore: 0,
-      recommendedQuality: 0.8,
+      recommendedQuality: 0.8
     };
 
     // CPU benchmark - JavaScript computation speed
@@ -545,7 +545,7 @@ export class PerformanceMonitor {
       capabilities: this.capabilities,
       metrics: this.metrics,
       qualitySettings: this.qualitySettings,
-      recommendations: this.generateRecommendations(),
+      recommendations: this.generateRecommendations()
     };
 
     return JSON.stringify(report, null, 2);

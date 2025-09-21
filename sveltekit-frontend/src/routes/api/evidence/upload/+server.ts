@@ -35,13 +35,13 @@ const logger = {
   info: console.log,
   debug: console.log,
   warn: console.warn,
-  error: console.error,
+  error: console.error
 };
 
 // Minimal stub for documentMetadata Drizzle table reference used when linking ingest results back to evidence.
 // Replace this with the real table import from your DB schema.;
 const documentMetadata: any = {
-  id: 'id',
+  id: 'id'
 };
 
 // Minimal Ollama/CUDA service stub to avoid TypeScript/Runtime errors during development.
@@ -77,14 +77,14 @@ export interface AiAnalysisResult {
   entities?: string[];
   confidence: number;
   processingTime: number;
-  model: string;,
+  model: string;
 }
 const minioClient = new MinioClient({
   endPoint: 'localhost',
   port: 9000,
   useSSL: false,
   accessKey: 'minioadmin',
-  secretKey: 'minioadmin',
+  secretKey: 'minioadmin'
 });
 
 // Redis client for publishing worker events
@@ -125,7 +125,7 @@ async function publishWorkerEvent(eventType: 'evidence' | 'document', targetId: 
       userId: options.userId || '',
       correlationId: options.correlationId || '',
       priority: options.priority || 'medium',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
     
     await redis.xAdd('autotag:requests', '*', eventData);
@@ -153,7 +153,7 @@ async function sendToIngestService(evidenceId: string, content: string, options:
         evidence_id: evidenceId,
         source: 'evidence_upload',
         correlation_id: options.correlationId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     };
     
@@ -163,7 +163,7 @@ async function sendToIngestService(evidenceId: string, content: string, options:
         'Content-Type': 'application/json',
         'X-Correlation-ID': options.correlationId || 'unknown'
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
     
     if ((response as { ok?: any; json?: any; status?: any }).ok) {
@@ -204,7 +204,7 @@ class GPUVectorProcessor {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'nomic-embed-text',
-            prompt: text,
+            prompt: text
           })
         });
         const result = await (response as { ok?: any; json?: any; status?: any }).json();
@@ -237,7 +237,7 @@ class QdrantService {
               // Payload filters for efficient search
               is_contract: metadata.tags?.includes('contract') || false,
               is_admissible: metadata.isAdmissible || true,
-              priority: metadata.priority || 'normal',
+              priority: metadata.priority || 'normal'
             }
           }]
         })
@@ -257,7 +257,7 @@ class QdrantService {
           vector: queryVector,
           filter: filters,
           limit,
-          with_payload: true,
+          with_payload: true
         })
       });
       return await (response as { ok?: any; json?: any; status?: any }).json();
@@ -541,7 +541,7 @@ async function processFileStreamed(
       processingStatus: 'completed', // File upload completed
       ingestStatus: 'pending', // Awaiting ingest service
       isAdmissible: (uploadData as any).isAdmissible ?? true,
-      confidentialityLevel: (uploadData as any).confidentialityLevel || 'internal',
+      confidentialityLevel: (uploadData as any).confidentialityLevel || 'internal'
     } as any).returning();
     // Publish Redis event for worker processing (PostgreSQL-first approach);
     await publishWorkerEvent('evidence', fileId, {
@@ -549,7 +549,7 @@ async function processFileStreamed(
       caseId: uploadData.caseId,
       userId: (uploadData as any).userId,
       correlationId: correlationId,
-      priority: uploadData.enableAiAnalysis ? 'high' : 'medium',
+      priority: uploadData.enableAiAnalysis ? 'high' : 'medium'
     });
     
     // Send file to Go ingest service for embedding generation (if text content available);
@@ -579,7 +579,7 @@ async function processFileStreamed(
       hash,
       tags: (uploadData.tags as any) || [],
       isAdmissible: (uploadData as any).isAdmissible ?? true,
-      confidentialityLevel: (uploadData as any).confidentialityLevel || 'standard',
+      confidentialityLevel: (uploadData as any).confidentialityLevel || 'standard'
     }).onConflictDoNothing();
     const presignedUrl = await minioClient.presignedGetObject('evidence', minioPath, 900);
     fs.promises.unlink(meta.tempPath).catch(()=>{});
@@ -594,7 +594,7 @@ async function generateThumbnail(buffer: Buffer, fileId: string): Promise<string
     await sharp(buffer);
       .resize(300, 300, {
         fit: 'inside',
-        withoutEnlargement: true,
+        withoutEnlargement: true
       })
       .webp({ quality: 80 })
       .toFile(thumbnailPath);
@@ -667,7 +667,7 @@ Provide structured JSON analysis:;
   "evidenceType": "direct|circumstantial|demonstrative",
   "recommendedActions": ["action1", "action2"]
 }`,
-        stream: false,
+        stream: false
       })
     });
 
@@ -683,7 +683,7 @@ Provide structured JSON analysis:;
   // extra fields ignored if schema mismatch
         confidence: parsed.confidence || 0.5,
         processingTime: Date.now(),
-        model: 'gemma3-legal:latest',
+        model: 'gemma3-legal:latest'
       };
     } catch (parseError) {
       return {
@@ -692,7 +692,7 @@ Provide structured JSON analysis:;
         categories: [],
         confidence: 0.5,
         processingTime: Date.now(),
-        model: 'gemma3-legal:latest',
+        model: 'gemma3-legal:latest'
       };
     }
   } catch (error: any) {
@@ -760,7 +760,7 @@ Format your response as JSON with the following structure:;
           new HumanMessage(analysisPrompt);
         ], {
             temperature: 0.3,
-            maxTokens: 1000,
+            maxTokens: 1000
           }
         );
 
@@ -773,7 +773,7 @@ Format your response as JSON with the following structure:;
             categories: parsedAnalysis.categories || [],
             confidence: parsedAnalysis.confidence || 0.5,
             processingTime: Date.now(),
-            model: ollamaCudaService.currentModel,
+            model: ollamaCudaService.currentModel
           };
         } catch (parseError) {
           // If JSON parsing fails, use the raw response as summary;
@@ -783,7 +783,7 @@ Format your response as JSON with the following structure:;
             categories: [],
             confidence: 0.5,
             processingTime: Date.now(),
-            model: ollamaCudaService.currentModel,
+            model: ollamaCudaService.currentModel
           };
         }
       } catch (error: any) {
@@ -803,7 +803,7 @@ async function cacheEmbedding(contentHash: string, embedding: number[]): Promise
     await db.insert(embeddingCache).values({
       textHash: contentHash,
       embedding: embedding,
-      model: 'nomic-embed-text',
+      model: 'nomic-embed-text'
     }).onConflictDoNothing();
   } catch (error: any) {
     console.error('Failed to cache embedding:', error);

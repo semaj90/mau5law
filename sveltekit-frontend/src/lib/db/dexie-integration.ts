@@ -40,7 +40,7 @@ export interface LegalDocument {
   quantizedEmbedding?: Uint8Array; // Compressed embedding
   created: Date;
   modified: Date;
-  tags: string[];,
+  tags: string[];
 }
 
 export interface GraphNode {
@@ -56,9 +56,9 @@ export interface GraphNode {
     jurisdiction?: string;
     practiceArea?: string;
     confidence: number;
-    lastUpdated: Date;,
+    lastUpdated: Date;
   };
-  connections: string[]; // Connected node IDs,
+  connections: string[]; // Connected node IDs
 }
 
 export interface GraphEdge {
@@ -86,7 +86,7 @@ export interface CacheEntry {
   createdAt: Date;
   expiresAt: Date;
   size: number;
-  hitCount: number;,
+  hitCount: number;
 }
 
 // ============================================================================
@@ -143,7 +143,7 @@ export class LegalAIDatabase extends Dexie {
   async addChatMessage(message: Omit<ChatMessage, 'id' | 'timestamp'>): Promise<number> {
     return await this.chatHistory.add({
       ...message,
-      timestamp: new Date(),
+      timestamp: new Date()
     });
   }
 
@@ -190,7 +190,7 @@ export class LegalAIDatabase extends Dexie {
     return await this.legalDocuments.add({
       ...document,
       created: new Date(),
-      modified: new Date(),
+      modified: new Date()
     });
   }
 
@@ -232,7 +232,7 @@ export class LegalAIDatabase extends Dexie {
       ...node,
       metadata: {
         ...node.metadata,
-        lastUpdated: new Date(),
+        lastUpdated: new Date()
       }
     });
   }
@@ -300,7 +300,7 @@ export class LegalAIDatabase extends Dexie {
       createdAt: new Date(),
       expiresAt,
       size,
-      hitCount: 0,
+      hitCount: 0
     });
   }
 
@@ -334,7 +334,7 @@ export class LegalAIDatabase extends Dexie {
       sessionId,
       userId,
       startTime: new Date(),
-      activities: [],
+      activities: []
     });
   }
 
@@ -346,19 +346,19 @@ export class LegalAIDatabase extends Dexie {
     if (session) {
       const newActivity = {
         ...activity,
-        timestamp: new Date(),
+        timestamp: new Date()
       };
       
       session.activities.push(newActivity);
       await this.userSessions.where('sessionId').equals(sessionId).modify({
-        activities: session.activities,
+        activities: session.activities
       });
     }
   }
 
   async endSession(sessionId: string): Promise<void> {
     await this.userSessions.where('sessionId').equals(sessionId).modify({
-      endTime: new Date(),
+      endTime: new Date()
     });
   }
 
@@ -401,9 +401,9 @@ export class LegalAIDatabase extends Dexie {
       userSessions: sessionsCount,
       cache: {
         entries: cacheCount,
-        totalSize: cacheSize,
+        totalSize: cacheSize
       },
-      estimatedSize: cacheSize + (chatCount * 1000) + (documentsCount * 5000) // Rough estimate,
+      estimatedSize: cacheSize + (chatCount * 1000) + (documentsCount * 5000) // Rough estimate
     };
   }
 
@@ -436,7 +436,7 @@ export class LegalAIDatabase extends Dexie {
       graphNodes: await this.graphNodes.toArray(),
       graphEdges: await this.graphEdges.toArray(),
       userSessions: await this.userSessions.toArray(),
-      exportedAt: new Date().toISOString(),
+      exportedAt: new Date().toISOString()
     };
 
     return data;

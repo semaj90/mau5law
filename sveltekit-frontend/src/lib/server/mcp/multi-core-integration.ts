@@ -17,7 +17,7 @@ export interface MCPWorkerCore {
   models: string[];
   lastHeartbeat: number;
   processingQueue: number;
-  averageResponseTime: number;,
+  averageResponseTime: number;
 }
 
 export interface MCPTask {
@@ -41,7 +41,7 @@ export interface MCPResponse {
     model: string;
     tokens: number;
     cacheHit: boolean;
-    gpuAccelerated: boolean;,
+    gpuAccelerated: boolean;
   };
 }
 
@@ -99,7 +99,7 @@ export class MCPMultiCoreClient {
             models: coreData.models || [],
             lastHeartbeat: Date.now(),
             processingQueue: coreData.processingQueue || 0,
-            averageResponseTime: coreData.averageResponseTime || 1000,
+            averageResponseTime: coreData.averageResponseTime || 1000
           };
 
           this.cores.set(core.id, core);
@@ -183,8 +183,8 @@ export class MCPMultiCoreClient {
           taskId: task.id,
           type: task.type,
           priority: task.priority,
-          payload: task.payload,
-        }),
+          payload: task.payload
+        })
       });
 
       if (!(response as { ok?: any; status?: any; json?: any; statusText?: any }).ok) {
@@ -212,8 +212,8 @@ export class MCPMultiCoreClient {
           model: result?.model || "unknown" // @ts-ignore - Model property access || 'unknown',
           tokens: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).tokens || 0,
           cacheHit: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).cacheHit || false,
-          gpuAccelerated: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).gpuAccelerated || false,
-        },
+          gpuAccelerated: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).gpuAccelerated || false
+        }
       };
 
       logger.info(`[MCP Multi-Core] Task ${task.id} completed in ${processingTime}ms`);
@@ -230,7 +230,7 @@ export class MCPMultiCoreClient {
         coreId: task.assignedCore || 'unknown',
         result: null,
         processingTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       };
     }
   }
@@ -305,7 +305,7 @@ export class MCPMultiCoreClient {
           coreId: 'unknown',
           result: null,
           processingTime: 0,
-          error: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason.message: 'Parallel task failed',
+          error: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason.message: 'Parallel task failed'
         };
       }
     });
@@ -342,7 +342,7 @@ export class MCPMultiCoreClient {
           ? onlineCores.reduce((sum, core) => sum + core.averageResponseTime, 0) /
             onlineCores.length: 0,
       activeTasks: this.activeTasks.size,
-      loadBalancingStrategy: this.loadBalancingStrategy,
+      loadBalancingStrategy: this.loadBalancingStrategy
     };
   }
 

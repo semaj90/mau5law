@@ -19,23 +19,23 @@ const VectorSearchSchema = z.object({
   evidenceTypes: z.array(z.string()).optional(),
   timeRange: z.object({
     start: z.string().optional(),
-    end: z.string().optional(),
+    end: z.string().optional()
   }).optional(),
   weights: z.object({
     semantic: z.number().min(0).max(1).default(0.4),
     legal: z.number().min(0).max(1).default(0.3),
     temporal: z.number().min(0).max(1).default(0.2),
-    contextual: z.number().min(0).max(1).default(0.1),
+    contextual: z.number().min(0).max(1).default(0.1)
   }).optional(),
   minSimilarity: z.number().min(0).max(1).default(0.65),
-  maxResults: z.number().min(1).max(50).default(10),
+  maxResults: z.number().min(1).max(50).default(10)
 });
 
 const ClusterAnalysisSchema = z.object({
   evidenceIds: z.array(z.string().uuid()),
   clusterMethod: z.enum(['kmeans', 'hierarchical', 'dbscan']).default('kmeans'),
   numClusters: z.number().min(2).max(20).optional(),
-  includeOutliers: z.boolean().default(false),
+  includeOutliers: z.boolean().default(false)
 });
 
 // Types;
@@ -47,7 +47,7 @@ interface VectorEmbedding {
     timestamp: string;
     legalContext: string[];
     entityMentions: string[];
-    topicTags: string[];,
+    topicTags: string[];
   };
 }
 
@@ -59,11 +59,11 @@ interface SimilarityResult {
     semantic: number;
     legal: number;
     temporal: number;
-    contextual: number;,
+    contextual: number;
   };
   matchingConcepts: string[];
   relevantEntities: string[];
-  confidenceScore: number;,
+  confidenceScore: number;
 }
 
 interface EvidenceCluster {
@@ -72,7 +72,7 @@ interface EvidenceCluster {
   members: string[];
   commonThemes: string[];
   clusterStrength: number;
-  legalRelevance: string;,
+  legalRelevance: string;
 }
 
 // Advanced similarity calculation with multiple dimensions;
@@ -121,7 +121,7 @@ class AdvancedSimilarityEngine {
         semantic: semanticSim,
         legal: legalSim,
         temporal: temporalSim,
-        contextual: contextualSim,
+        contextual: contextualSim
       }
     };
   }
@@ -240,7 +240,7 @@ class AdvancedSimilarityEngine {
           members,
           commonThemes,
           clusterStrength: members.length / embeddings.length,
-          legalRelevance: this.assessLegalRelevance(commonThemes),
+          legalRelevance: this.assessLegalRelevance(commonThemes)
         });
       }
     }
@@ -383,7 +383,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           timestamp: new Date().toISOString(),
           legalContext: extractLegalTerms(query),
           entityMentions: extractEntities(query),
-          topicTags: extractTopics(query),
+          topicTags: extractTopics(query)
         };
 
         const similarity = AdvancedSimilarityEngine.calculateAdvancedSimilarity(
@@ -421,7 +421,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           searchMetrics: {
             avgSimilarity: results.reduce((sum, r) => sum + r.similarity, 0) / results.length || 0,
             highConfidenceCount: results.filter(item => item.length),
-            processingTimeMs: Date.now() % 1000 // Mock processing time,
+            processingTimeMs: Date.now() % 1000 // Mock processing time
           }
         }
       });
@@ -432,13 +432,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid search parameters',
-          details: error.errors,
+          details: error.errors
         }, { status: 400 });
       }
 
       return json({
         message: 'Vector search failed',
-        details: error.message,
+        details: error.message
       }, { status: 500 });
     }
   }
@@ -463,7 +463,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
 
       if (embeddings.length < 2) {
         return json({
-          message: 'At least 2 evidence items required for clustering',
+          message: 'At least 2 evidence items required for clustering'
         }, { status: 400 });
       }
 
@@ -483,7 +483,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         legalRelevanceDistribution: {
           high: clusters.filter(item => item.length),
           medium: clusters.filter(item => item.length),
-          low: clusters.filter(item => item.length),
+          low: clusters.filter(item => item.length)
         }
       };
 
@@ -493,7 +493,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           clusters,
           statistics: clusterStats,
           method: clusterMethod,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }
       });
 
@@ -503,13 +503,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid clustering parameters',
-          details: error.errors,
+          details: error.errors
         }, { status: 400 });
       }
 
       return json({
         message: 'Clustering analysis failed',
-        details: error.message,
+        details: error.message
       }, { status: 500 });
     }
   }
@@ -525,7 +525,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: EMBEDDING_MODEL,
-        prompt: text,
+        prompt: text
       })
     });
 

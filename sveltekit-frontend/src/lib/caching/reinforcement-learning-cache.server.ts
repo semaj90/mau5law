@@ -6,7 +6,7 @@
 interface LearningModel {
   weights: Map<string, number>;
   learningRate: number;
-  lastUpdate: number;,
+  lastUpdate: number;
 }
 
 class ReinforcementLearningCache {
@@ -34,7 +34,7 @@ class ReinforcementLearningCache {
     this.learningModel = {
       weights: new Map<string, number>(),
       learningRate: 0.01,
-      lastUpdate: Date.now(),
+      lastUpdate: Date.now()
     };
 
     this.isInitialized = true;
@@ -119,13 +119,13 @@ class ReinforcementLearningCache {
     size: number;
     hitRatio: number;
     modelWeights: number;
-    lastUpdate: number;,
+    lastUpdate: number;
   } {
     return {
       size: this.cache.size,
       hitRatio: this.hitRatio,
       modelWeights: this.learningModel?.weights.size ?? 0,
-      lastUpdate: this.learningModel?.lastUpdate ?? 0,
+      lastUpdate: this.learningModel?.lastUpdate ?? 0
     };
   }
 

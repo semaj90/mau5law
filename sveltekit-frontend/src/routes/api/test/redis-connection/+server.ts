@@ -22,7 +22,7 @@ export const GET: RequestHandler = async () => {
         connectTimeout: 5000,
         retryDelayOnFailover: 100,
         maxRetriesPerRequest: 3,
-        lazyConnect: false,
+        lazyConnect: false
       });
     }
 
@@ -62,9 +62,9 @@ export const GET: RequestHandler = async () => {
       testValue,
       redisInfo: {
         server: info.includes('redis_version'),
-        jsonSupported,
+        jsonSupported
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     if (redis) {
@@ -83,9 +83,9 @@ export const GET: RequestHandler = async () => {
           errno: error.errno,
           syscall: error.syscall,
           address: error.address,
-          port: error.port,
+          port: error.port
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

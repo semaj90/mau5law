@@ -43,7 +43,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       bridge: status.bridge,
       orchestrators: {
         server: status.serverOrchestrator,
-        client: status.clientOrchestrator,
+        client: status.clientOrchestrator
       },
       performance: metrics,
       activeRequests: {
@@ -52,8 +52,8 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           id: req.id,
           type: req.type,
           priority: req.options?.priority || 'normal',
-          timestamp: req.metadata?.timestamp || Date.now(),
-        })),
+          timestamp: req.metadata?.timestamp || Date.now()
+        }))
       },
       capabilities: [
         'Smart orchestrator routing',
@@ -64,12 +64,12 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         'Legal domain optimization',
         'Client-side WASM models',
         'Vector search and embeddings',
-        'Document processing workflows',
+        'Document processing workflows'
       ],
       models: {
         server: ['gemma3-legal:latest', 'nomic-embed-text:latest'],
-        client: ['gemma270m', 'legal-bert', 'onnx-embeddings'],
-      },
+        client: ['gemma270m', 'legal-bert', 'onnx-embeddings']
+      }
     });
   } catch (error) {
     logger.error('[Unified Orchestrator] Health check failed:', error);
@@ -78,7 +78,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         service: 'unified-ai-orchestrator',
         status: 'error',
         error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -99,7 +99,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
         {
           success: false,
           error: 'Missing required field: content, messages, or prompt',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 400 }
       );
@@ -121,7 +121,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
         caseId: requestData.caseId || requestData.context?.caseId,
         documentType: requestData.documentType || requestData.context?.documentType,
         legalDomain: requestData.legalDomain || requestData.context?.legalDomain,
-        previousContext: requestData.previousContext || requestData.context?.previousContext,
+        previousContext: requestData.previousContext || requestData.context?.previousContext
       },
       options: {
         model: requestData?.model || requestData.options?.model || 'auto',
@@ -130,13 +130,13 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
         enableStreaming: requestData.stream ?? requestData.options?.enableStreaming ?? false,
         maxLatency: requestData.maxLatency || requestData.options?.maxLatency,
         temperature: requestData.temperature ?? requestData.options?.temperature ?? 0.3,
-        maxTokens: requestData.maxTokens || requestData.max_tokens || requestData.options?.maxTokens || 1024,
+        maxTokens: requestData.maxTokens || requestData.max_tokens || requestData.options?.maxTokens || 1024
       },
       metadata: {
         source: 'api',
         userAgent: request.headers.get('user-agent') || 'unknown',
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     logger.info(`[Unified Orchestrator] Processing ${bridgeRequest.type} request: ${bridgeRequest.id}`);
@@ -165,10 +165,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
       executionMetrics: {
         totalLatency: performance.now() - startTime,
         processingTime: 0,
-        routingTime: 0,
+        routingTime: 0
       },
       requestId: requestData?.id || 'unknown',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     return json(errorResponse, { status: 500 });
@@ -188,12 +188,12 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       options: {
         ...requestData.options,
         enableStreaming: true,
-        priority: 'realtime',
+        priority: 'realtime'
       },
       metadata: {
         source: 'streaming_api',
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     // Create a readable stream for SSE;
@@ -213,15 +213,15 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
           controller.enqueue(new TextEncoder().encode(errorData);
           controller.close();
         }
-      },
+      }
     });
 
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
+        'Connection': 'keep-alive'
+      }
     });
   } catch (error) {
     return json(
@@ -285,11 +285,11 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     model: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).modelUsed,
     executionMetrics: {
       ...result.executionMetrics,
-      apiLatency: performance.now() - startTime,
+      apiLatency: performance.now() - startTime
     },
     confidence: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).confidence,
     requestId: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).requestId,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 
   // Add additional fields based on original request format
@@ -302,17 +302,17 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
         {
           message: {
             role: 'assistant',
-            content: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
+            content: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response
           },
           finish_reason: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).success ? 'stop' : 'error',
-          index: 0,
-        },
+          index: 0
+        }
       ],
       usage: {
         prompt_tokens: Math.ceil((originalRequest.content || '').length / 4),
         completion_tokens: Math.ceil((result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response.length / 4),
-        total_tokens: Math.ceil(((originalRequest.content || '') + (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response).length / 4),
-      },
+        total_tokens: Math.ceil(((originalRequest.content || '') + (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response).length / 4)
+      }
     };
   }
 
@@ -324,8 +324,8 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
         summary: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
         citations: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).citations || [],
         confidence: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).confidence || 0.8,
-        recommendations: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).followupSuggestions || [],
-      },
+        recommendations: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).followupSuggestions || []
+      }
     };
   }
 
@@ -337,8 +337,8 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
         summary: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
         entities: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).entities || [],
         keyTerms: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).keyTerms || [],
-        metadata: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).metadata || {},
-      },
+        metadata: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).metadata || {}
+      }
     };
   }
 
@@ -350,8 +350,8 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
         query: originalRequest.query || originalRequest.content,
         results: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).searchResults || [],
         summary: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).response,
-        totalResults: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).totalResults || 0,
-      },
+        totalResults: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).totalResults || 0
+      }
     };
   }
 
@@ -374,8 +374,8 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
   });
 };
 

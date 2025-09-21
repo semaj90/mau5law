@@ -53,7 +53,7 @@ interface VectorSearchResult {
     case_title?: string;
     jurisdiction?: string;
     practice_area?: string;
-    created_at: string;,
+    created_at: string;
   };
 }
 
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
       vector_types = ['content', 'title', 'summary'],
       filters = {},
       include_content = false,
-      boost_factors = { title: 1.2, content: 1.0, summary: 0.9 },
+      boost_factors = { title: 1.2, content: 1.0, summary: 0.9 }
     } = searchRequest;
 
     // Build cache key
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
       limit,
       entity_types,
       vector_types,
-      filters,
+      filters
     });
     if (cached) {
       const payload = typeof cached === 'string' ? JSON.parse(cached) : cached;
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
               vectorColumn = documents.summary_embedding;
               break;
             default:
-              vectorColumn = documents.embedding;,
+              vectorColumn = documents.embedding;
           }
 
           if (!vectorColumn) return null;
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
           const conditions = [
             eq(documents.is_active, true),
             eq(documents.is_indexed, true),
-            sql`${vectorColumn} IS NOT NULL`,
+            sql`${vectorColumn} IS NOT NULL`
           ];
 
           // Apply filters;
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
               case_title: sql`NULL`,
               jurisdiction: documents.jurisdiction,
               practice_area: documents.practice_area,
-              created_at: documents.created_at,
+              created_at: documents.created_at
             })
             .from(documents)
             .where(and(...conditions)
@@ -199,7 +199,7 @@ export const POST: RequestHandler = async ({ request }) => {
           case_title: cases.title,
           jurisdiction: documents.jurisdiction,
           practice_area: documents.practice_area,
-          created_at: document_chunks.created_at,
+          created_at: document_chunks.created_at
         })
         .from(document_chunks)
         .leftJoin(documents, eq(document_chunks.document_id, documents.id)
@@ -231,7 +231,7 @@ export const POST: RequestHandler = async ({ request }) => {
           case_title: cases.title,
           jurisdiction: cases.jurisdiction,
           practice_area: sql`NULL`,
-          created_at: cases.created_at,
+          created_at: cases.created_at
         })
         .from(cases)
         .where(and(sql`${cases.case_embedding} IS NOT NULL`, eq(cases.status, 'active'))
@@ -270,8 +270,8 @@ export const POST: RequestHandler = async ({ request }) => {
           case_title: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).case_title,
           jurisdiction: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).jurisdiction,
           practice_area: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).practice_area,
-          created_at: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).created_at?.toISOString() || new Date().toISOString(),
-        },
+          created_at: (result as { similarity?: any; vector_type?: any; id?: any; entity_type?: any; title?: any; content?: any; summary?: any; document_type?: any; risk_level?: any; confidence_level?: any; case_title?: any; jurisdiction?: any; practice_area?: any; created_at?: any }).created_at?.toISOString() || new Date().toISOString()
+        }
       };
     });
 
@@ -291,8 +291,8 @@ export const POST: RequestHandler = async ({ request }) => {
         search_time_ms: Date.now(), // Will be calculated by client
         entity_types_searched: entity_types,
         vector_types_searched: vector_types,
-        boost_factors_applied: boost_factors,
-      },
+        boost_factors_applied: boost_factors
+      }
     };
 
     // Cache results;
@@ -301,7 +301,7 @@ export const POST: RequestHandler = async ({ request }) => {
       limit,
       entity_types,
       vector_types,
-      filters,
+      filters
     });
 
     return json(response);
@@ -310,7 +310,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json();
       {
         error: 'Vector search failed',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -334,7 +334,7 @@ export const GET: RequestHandler = async ({ url }) => {
       entity_types: (url.searchParams.get('entity_types')?.split(',') as any) || ['document'],
       vector_types: (url.searchParams.get('vector_types')?.split(',') as any) || ['content'],
       include_content: url.searchParams.get('include_content') === 'true',
-      filters: Record<string, any>,
+      filters: Record<string, any>
     };
 
     // Add filters from URL params
@@ -345,7 +345,7 @@ export const GET: RequestHandler = async ({ url }) => {
       'jurisdiction',
       'practice_area',
       'created_after',
-      'created_before',
+      'created_before'
     ];
     filterParams.forEach((param) => {
       const value = url.searchParams.get(param);
@@ -356,7 +356,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     // Create a fake request object to reuse POST logic;
     const fakeRequest = {
-      json: async () => searchRequest,
+      json: async () => searchRequest
     };
 
     return await exports.POST({ request: fakeRequest as any, url } as any);
@@ -365,7 +365,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json();
       {
         error: 'Vector search failed',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );

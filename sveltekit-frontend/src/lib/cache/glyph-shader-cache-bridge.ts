@@ -16,12 +16,12 @@ export interface GlyphRenderingRequest {
     quantizationLevel: 1 | 4 | 8 | 16; // bit precision
     compressionMethod: 'chr-rom' | 'simd' | 'texture';
     targetResolution: [number, number];
-    colorSpace: 'sRGB' | 'P3' | 'Rec2020';,
+    colorSpace: 'sRGB' | 'P3' | 'Rec2020';
   };
   legalContext?: {
     documentType: 'contract' | 'brief' | 'statute' | 'case';
     confidentialityLevel: 'public' | 'confidential' | 'privileged';
-    renderingPriority: 'standard' | 'high' | 'realtime';,
+    renderingPriority: 'standard' | 'high' | 'realtime';
   };
 }
 
@@ -33,13 +33,13 @@ export interface CachedGlyphShader {
     compileTime: number;
     averageRenderTime: number;
     cacheHitRate: number;
-    memoryFootprint: number;,
+    memoryFootprint: number;
   };
   quantizationData: {
     originalSize: number;
     compressedSize: number;
     compressionRatio: number;
-    qualityScore: number;,
+    qualityScore: number;
   };
 }
 
@@ -136,7 +136,7 @@ class GlyphShaderCacheBridge {
           compileTime,
           averageRenderTime: 0,
           cacheHitRate: 1.0,
-          memoryFootprint: this.calculateMemoryFootprint(glyphTextures),
+          memoryFootprint: this.calculateMemoryFootprint(glyphTextures)
         },
         quantizationData
       };
@@ -149,7 +149,7 @@ class GlyphShaderCacheBridge {
         tier: 'l2',
         ttl: 30 * 60 * 1000, // 30 minutes
         priority: 'normal',
-        type: 'glyph_shader',
+        type: 'glyph_shader'
       });
 
       // Step 9: Cache shader with embedding for future search
@@ -385,7 +385,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
       glyphBuffer: GPUBuffer;
       quantizationBuffer: GPUBuffer;
       outputTexture: GPUTexture;
-      renderParams: GPUBuffer;,
+      renderParams: GPUBuffer;
     }
   ): Promise<any> {
     if (!this.device) {
@@ -429,7 +429,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
       return {
         success: true,
         renderTime,
-        memoryUsed: cachedShader.renderingMetrics.memoryFootprint,
+        memoryUsed: cachedShader.renderingMetrics.memoryFootprint
       };
 
     } catch (error) {
@@ -439,7 +439,7 @@ fn renderTextureGlyph(glyph_index: u32, local_x: u32, local_y: u32) -> vec4<f32>
       return {
         success: false,
         renderTime: performance.now() - startTime,
-        memoryUsed: 0,
+        memoryUsed: 0
       };
     }
   }

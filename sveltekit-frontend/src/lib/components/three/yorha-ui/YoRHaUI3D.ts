@@ -189,7 +189,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
         color: YORHA_COLORS.primary.black,
         blur: 0.5,
         intensity: 0.3,
-        offsetY: -0.1,
+        offsetY: -0.1
       },
       ...style
     };
@@ -203,7 +203,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       opacity: this.style.opacity,
       transparent: (this.style.opacity || 1) < 1,
       metalness: this.style.metalness,
-      roughness: this.style.roughness,
+      roughness: this.style.roughness
     };
 
     // Apply gradient if specified;
@@ -257,7 +257,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     
     return new THREE.MeshStandardMaterial({
       ...baseProps,
-      map: texture,
+      map: texture
     });
   }
 
@@ -286,7 +286,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const borderMaterial = new THREE.MeshStandardMaterial({
       color: this.style.borderColor,
       opacity: this.style.opacity,
-      transparent: (this.style.opacity || 1) < 1,
+      transparent: (this.style.opacity || 1) < 1
     });
     
     const borderMesh = new THREE.Mesh(borderGeometry, borderMaterial);
@@ -316,7 +316,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const shadowMaterial = new THREE.MeshStandardMaterial({
       color: this.style.shadow.color || YORHA_COLORS.primary.black,
       opacity: this.style.shadow.intensity || 0.3,
-      transparent: true,
+      transparent: true
     });
     
     const shadowMesh = new THREE.Mesh(shadowGeometry, shadowMaterial);
@@ -349,7 +349,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
         color: this.style.glow.color || YORHA_COLORS.accent.gold,
         opacity: layerIntensity,
         transparent: true,
-        side: THREE.BackSide,
+        side: THREE.BackSide
       });
       
       const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
@@ -368,7 +368,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       color: this.style.borderColor,
       opacity: 0.3,
       transparent: true,
-      side: THREE.BackSide,
+      side: THREE.BackSide
     });
     
     const glowMesh = new THREE.Mesh(borderMesh.geometry, glowMaterial);
@@ -448,7 +448,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       top: padding.top ?? padding.all ?? 0,
       right: padding.right ?? padding.all ?? 0,
       bottom: padding.bottom ?? padding.all ?? 0,
-      left: padding.left ?? padding.all ?? 0,
+      left: padding.left ?? padding.all ?? 0
     };
     
     // Store padding for child components to use
@@ -463,7 +463,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       top: margin.top ?? margin.all ?? 0,
       right: margin.right ?? margin.all ?? 0,
       bottom: margin.bottom ?? margin.all ?? 0,
-      left: margin.left ?? margin.all ?? 0,
+      left: margin.left ?? margin.all ?? 0
     };
     
     // Apply margin to position

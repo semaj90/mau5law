@@ -25,7 +25,7 @@ export interface PerformanceMetrics {
   renderTime: number;
   memoryUsage: number;
   bundleSize: number;
-  dependencies: string[];,
+  dependencies: string[];
 }
 
 const performanceMetrics = new Map<string, PerformanceMetrics>();
@@ -61,7 +61,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
       renderTime: 0, // Will be updated during render
       memoryUsage: getMemoryUsage(),
       bundleSize: module.size || 0,
-      dependencies: module.dependencies || [],
+      dependencies: module.dependencies || []
     });
 
     return module;
@@ -154,7 +154,7 @@ export class VirtualScrollManager {
       bufferSize: 5,
       overscan: 3,
       scrollElement: document.documentElement,
-      ...options,
+      ...options
     };
   }
 
@@ -183,7 +183,7 @@ export class VirtualScrollManager {
     return {
       start: visibleStart,
       end: visibleEnd,
-      offset,
+      offset
     };
   }
 
@@ -262,7 +262,7 @@ export class LazyLoadManager {
       {
         rootMargin: "50px",
         threshold: 0.1,
-        ...options,
+        ...options
       },
     );
   }
@@ -357,7 +357,7 @@ export class ResourcePool<T> {
       available: this.available.length,
       inUse: this.inUse.size,
       total: this.available.length + this.inUse.size,
-      maxSize: this.maxSize,
+      maxSize: this.maxSize
     };
   }
 }
@@ -370,7 +370,7 @@ export interface BundleAnalysis {
   gzippedSize: number;
   components: Array<any>;
   duplicates: Array<any>;
-  recommendations: string[];,
+  recommendations: string[];
 }
 
 export function analyzeBundleSize(): BundleAnalysis {
@@ -384,39 +384,39 @@ export function analyzeBundleSize(): BundleAnalysis {
         name: "Button",
         size: 12000,
         dependencies: ["bits-ui", "lucide-svelte"],
-        critical: true,
+        critical: true
       },
       {
         name: "Dialog",
         size: 18000,
         dependencies: ["bits-ui", "svelte/transition"],
-        critical: true,
+        critical: true
       },
       {
         name: "Select",
         size: 15000,
         dependencies: ["bits-ui", "lucide-svelte"],
-        critical: false,
+        critical: false
       },
       {
         name: "VectorIntelligenceDemo",
         size: 45000,
         dependencies: ["Button", "Select", "Input", "Card"],
-        critical: false,
-      },
+        critical: false
+      }
     ],
     duplicates: [;
       {
         module: "lucide-svelte",
         count: 3,
-        size: 8000,
-      },
+        size: 8000
+      }
     ],
     recommendations: [
       "Consider lazy loading VectorIntelligenceDemo component",
       "Optimize lucide-svelte imports to reduce duplication",
-      "Use dynamic imports for non-critical components",
-    ],
+      "Use dynamic imports for non-critical components"
+    ]
   };
 }
 
@@ -495,29 +495,29 @@ export const performanceMonitor = new PerformanceMonitor();
 // Register enhanced Bits UI components for lazy loading;
 registerComponent("Button", async () => ({
   name: "Button",
-  default: (await import("./Button.svelte")).default,
+  default: (await import("./Button.svelte")).default
 });
 registerComponent("Dialog", async () => ({
   name: "Dialog", 
-  default: (await import("./Dialog.svelte")).default,
+  default: (await import("./Dialog.svelte")).default
 });
 registerComponent("Select", async () => ({
   name: "Select",
-  default: (await import("./Select.svelte")).default,
+  default: (await import("./Select.svelte")).default
 });
 registerComponent("Input", async () => ({
   name: "Input",
-  default: (await import("./Input.svelte")).default,
+  default: (await import("./Input.svelte")).default
 });
 registerComponent("Card", async () => ({
   name: "Card",
-  default: (await import("./Card.svelte")).default,
+  default: (await import("./Card.svelte")).default
 });
 registerComponent("EnhancedBitsDemo", async () => ({
   name: "EnhancedBitsDemo",
-  default: (await import("./EnhancedBitsDemo.svelte")).default,
+  default: (await import("./EnhancedBitsDemo.svelte")).default
 });
 registerComponent("VectorIntelligenceDemo", async () => ({
   name: "VectorIntelligenceDemo", 
-  default: (await import("./VectorIntelligenceDemo.svelte")).default,
+  default: (await import("./VectorIntelligenceDemo.svelte")).default
 });

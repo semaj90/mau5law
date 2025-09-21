@@ -10,7 +10,7 @@ import { SelfOrganizingMapRAG } from '../ai/som-rag-system.js';
 import crypto from "crypto";
 import {
   SIMDJSONParser,
-  type ParsedLegalDocument,
+  type ParsedLegalDocument
 } from '../parsers/simd-json-parser.js';
 
 // Initialize SIMD parser instance;
@@ -19,7 +19,7 @@ const simdParser = new SIMDJSONParser({
   enableSIMD: true,
   memoryLimit: 512 * 1024 * 1024, // 512MB
   parallelChunks: 4,
-  validateStructure: true,
+  validateStructure: true
 });
 
 // Native memory optimizer mock (Docker dependency removed);
@@ -35,7 +35,7 @@ class DockerResourceOptimizer {
       key,
       data: jsonData,
       compressed: true,
-      size: jsonData.length * 0.7 // Simulate 30% compression,
+      size: jsonData.length * 0.7 // Simulate 30% compression
     };
   }
 
@@ -50,7 +50,7 @@ export interface LODLevel {
   maxMemoryMB: number;
   maxObjects: number;
   quality: number; // 0-1
-  compressionRatio: number;,
+  compressionRatio: number;
 }
 
 export interface ClusterMetrics {
@@ -60,7 +60,7 @@ export interface ClusterMetrics {
   cohesion: number;
   separability: number;
   memoryUsage: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export interface MemoryPool {
@@ -70,7 +70,7 @@ export interface MemoryPool {
   max: number;
   items: Map<string, any>;
   lastAccessed: number;
-  priority: number;,
+  priority: number;
 }
 
 export interface CacheLayer {
@@ -88,7 +88,7 @@ export interface CacheLayer {
   avgResponseTime: number;
   ttl: number;
   priority: number;
-  enabled: boolean;,
+  enabled: boolean;
 }
 
 export class AdvancedMemoryOptimizer {
@@ -126,7 +126,7 @@ export class AdvancedMemoryOptimizer {
         maxMemoryMB: 512,
         maxObjects: 1000,
         quality: 0.3,
-        compressionRatio: 0.1,
+        compressionRatio: 0.1
       },
       {
         id: "medium",
@@ -134,7 +134,7 @@ export class AdvancedMemoryOptimizer {
         maxMemoryMB: 1024,
         maxObjects: 5000,
         quality: 0.6,
-        compressionRatio: 0.4,
+        compressionRatio: 0.4
       },
       {
         id: "high",
@@ -142,7 +142,7 @@ export class AdvancedMemoryOptimizer {
         maxMemoryMB: 2048,
         maxObjects: 10000,
         quality: 0.8,
-        compressionRatio: 0.7,
+        compressionRatio: 0.7
       },
       {
         id: "ultra",
@@ -150,8 +150,8 @@ export class AdvancedMemoryOptimizer {
         maxMemoryMB: 4096,
         maxObjects: 25000,
         quality: 1.0,
-        compressionRatio: 1.0,
-      },
+        compressionRatio: 1.0
+      }
     ];
   }
 
@@ -168,7 +168,7 @@ export class AdvancedMemoryOptimizer {
         avgResponseTime: 1,
         ttl: 300,
         priority: 1,
-        enabled: true,
+        enabled: true
       },
       {
         name: "loki",
@@ -178,7 +178,7 @@ export class AdvancedMemoryOptimizer {
         avgResponseTime: 5,
         ttl: 300,
         priority: 2,
-        enabled: true,
+        enabled: true
       },
       {
         name: "redis",
@@ -188,7 +188,7 @@ export class AdvancedMemoryOptimizer {
         avgResponseTime: 10,
         ttl: 3600,
         priority: 3,
-        enabled: true,
+        enabled: true
       },
       {
         name: "qdrant",
@@ -198,7 +198,7 @@ export class AdvancedMemoryOptimizer {
         avgResponseTime: 25,
         ttl: 7200,
         priority: 4,
-        enabled: true,
+        enabled: true
       },
       {
         name: "postgres",
@@ -208,7 +208,7 @@ export class AdvancedMemoryOptimizer {
         avgResponseTime: 50,
         ttl: 86400,
         priority: 5,
-        enabled: true,
+        enabled: true
       },
       {
         name: "neo4j",
@@ -218,8 +218,8 @@ export class AdvancedMemoryOptimizer {
         avgResponseTime: 75,
         ttl: 43200,
         priority: 6,
-        enabled: true,
-      },
+        enabled: true
+      }
     ];
 
     layers.forEach((layer) => {
@@ -239,7 +239,7 @@ export class AdvancedMemoryOptimizer {
         max: 512 * 1024 * 1024, // 512MB
         items: new Map(),
         lastAccessed: Date.now(),
-        priority: 1,
+        priority: 1
       },
       {
         id: "vectors",
@@ -248,7 +248,7 @@ export class AdvancedMemoryOptimizer {
         max: 256 * 1024 * 1024, // 256MB
         items: new Map(),
         lastAccessed: Date.now(),
-        priority: 2,
+        priority: 2
       },
       {
         id: "cache",
@@ -257,7 +257,7 @@ export class AdvancedMemoryOptimizer {
         max: 1024 * 1024 * 1024, // 1GB
         items: new Map(),
         lastAccessed: Date.now(),
-        priority: 3,
+        priority: 3
       },
       {
         id: "som",
@@ -266,7 +266,7 @@ export class AdvancedMemoryOptimizer {
         max: 128 * 1024 * 1024, // 128MB
         items: new Map(),
         lastAccessed: Date.now(),
-        priority: 4,
+        priority: 4
       },
       {
         id: "clusters",
@@ -275,8 +275,8 @@ export class AdvancedMemoryOptimizer {
         max: 64 * 1024 * 1024, // 64MB
         items: new Map(),
         lastAccessed: Date.now(),
-        priority: 5,
-      },
+        priority: 5
+      }
     ];
 
     pools.forEach((pool) => {
@@ -410,7 +410,7 @@ export class AdvancedMemoryOptimizer {
     const startTime = Date.now();
 
     // Determine if we should use worker threads
-    const useWorkerThread = (data as { length?: any; forEach?: any; map?: any ,}).length > 1000 && this.enableWorkerThreads();
+    const useWorkerThread = (data as { length?: any; forEach?: any; map?: any }).length > 1000 && this.enableWorkerThreads();
 
     if (useWorkerThread) {
       return this.performKMeansWithWorker(data, k);
@@ -480,8 +480,8 @@ export class AdvancedMemoryOptimizer {
         dimensions: data[0]?.embedding?.length || 384,
         options: {
           maxIterations: 100,
-          convergenceThreshold: 0.001,
-        },
+          convergenceThreshold: 0.001
+        }
       });
     });
   }
@@ -586,7 +586,7 @@ export class AdvancedMemoryOptimizer {
         cohesion,
         separability: 0, // Calculate later
         memoryUsage,
-        processingTime: processingTime / k,
+        processingTime: processingTime / k
       });
 
       this.clusters.set(`cluster_${i}`, clusterMetrics[i]);
@@ -626,7 +626,7 @@ export class AdvancedMemoryOptimizer {
         learningRate: 0.1,
         neighborhoodRadius: 3.0,
         maxEpochs: 1000,
-        clusterCount: 8,
+        clusterCount: 8
       });
 
       console.log("🧠 Self-Organizing Map initialized");
@@ -653,8 +653,8 @@ export class AdvancedMemoryOptimizer {
         evidence_type: request.type || "general",
         legal_category: request.category,
         confidence: request.priority || 0.5,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     // Use semantic search to find optimal cluster
@@ -798,7 +798,7 @@ export class AdvancedMemoryOptimizer {
       const workerData = (data as { length?: any; forEach?: any; map?: any }).map((item, index) => ({
         id: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).id || `item_${index}`,
         embedding: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).embedding || [],
-        metadata: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).metadata || {},
+        metadata: (item as { layer?: any; embedding?: any; clusterId?: any; id?: any; metadata?: any }).metadata || {}
       });
 
       // Send clustering task to worker;
@@ -806,7 +806,7 @@ export class AdvancedMemoryOptimizer {
         action: "cluster",
         data: workerData,
         k,
-        dimensions: workerData[0]?.embedding?.length || 384,
+        dimensions: workerData[0]?.embedding?.length || 384
       });
 
       const processingTime = Date.now() - startTime;
@@ -820,7 +820,7 @@ export class AdvancedMemoryOptimizer {
             cohesion: cluster.cohesion,
             separability: cluster.separability || 0,
             memoryUsage: cluster.memoryUsage,
-            processingTime: processingTime / k,
+            processingTime: processingTime / k
           };
 
           this.clusters.set(`cluster_${index}`, metrics);
@@ -959,8 +959,8 @@ export class AdvancedMemoryOptimizer {
           batchSize: 1024,
           enableSIMD: true,
           memoryLimit: 256 * 1024 * 1024, // 256MB per worker
-          validateStructure: true,
-        },
+          validateStructure: true
+        }
       });
 
       return (result as { clusters?: any; processedDocuments?: any; recommendations?: any; allocatedPool?: any }).processedDocuments || [];
@@ -975,7 +975,7 @@ export class AdvancedMemoryOptimizer {
       const parser = new SIMDJSONParser({
         batchSize: 512,
         enableSIMD: false, // Disable SIMD in fallback
-        memoryLimit: 128 * 1024 * 1024,
+        memoryLimit: 128 * 1024 * 1024
       });
 
       return parser.parseDocumentsBatch(documents);
@@ -1003,8 +1003,8 @@ export class AdvancedMemoryOptimizer {
           memoryPools: this.serializeMemoryPools(),
           clusters: this.serializeClusters(),
           memoryPressure: this.memoryPressure,
-          lodLevel: this.currentLOD,
-        },
+          lodLevel: this.currentLOD
+        }
       });
 
       // Apply optimizations from worker result;
@@ -1065,7 +1065,7 @@ export class AdvancedMemoryOptimizer {
       max: pool.max,
       itemCount: pool.items.size,
       lastAccessed: pool.lastAccessed,
-      priority: pool.priority,
+      priority: pool.priority
     });
   }
 
@@ -1291,7 +1291,7 @@ export class AdvancedMemoryOptimizer {
     this.dockerOptimizer = new DockerResourceOptimizer({
       maxMemoryMB: this.currentLOD.maxMemoryMB,
       batchSize: 50,
-      parallelism: 2,
+      parallelism: 2
     });
   }
 
@@ -1397,7 +1397,7 @@ export class AdvancedMemoryOptimizer {
         accessCount: Array.from(this.memoryPools.values()).reduce(
           (total, pool) => total + pool.items.size,
           0
-        ),
+        )
       });
 
       // Keep history manageable;
@@ -1418,10 +1418,10 @@ export class AdvancedMemoryOptimizer {
         id,
         usage: `${pool.current} / ${pool.max}`,
         percentage: (pool.current / pool.max) * 100,
-        items: pool.items.size,
+        items: pool.items.size
       })),
       clusters: Array.from(this.clusters.values()),
-      cacheLayers: Array.from(this.cacheLayers.values()),
+      cacheLayers: Array.from(this.cacheLayers.values())
     };
   }
 
@@ -1488,7 +1488,7 @@ export class AdvancedMemoryOptimizer {
           type: doc.documentType,
           caseId: doc.caseNumber,
           category: doc.metadata?.category,
-          priority: this.calculateDocumentPriority(doc),
+          priority: this.calculateDocumentPriority(doc)
         });
 
         // Add memory allocation info to metadata;
@@ -1496,7 +1496,7 @@ export class AdvancedMemoryOptimizer {
           ...doc.metadata,
           memoryPool,
           processedAt: Date.now(),
-          simdOptimized: true,
+          simdOptimized: true
         };
 
         return doc;
@@ -1515,7 +1515,7 @@ export class AdvancedMemoryOptimizer {
       documentCount: processedDocuments.length,
       processingTime,
       memoryUsage: await this.getCurrentMemoryUsage(),
-      memoryPressure: this.memoryPressure,
+      memoryPressure: this.memoryPressure
     });
 
     return processedDocuments;

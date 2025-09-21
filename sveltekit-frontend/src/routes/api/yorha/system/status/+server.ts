@@ -18,12 +18,12 @@ export interface YoRHaSystemStatus {
     activeTasks: number;
     totalTasks: number;
     completedTasks: number;
-    failedTasks: number;,
+    failedTasks: number;
   };
   timestamp: string;
   systemLoad: number;
   gpuUtilization: number;
-  networkLatency: number;,
+  networkLatency: number;
 }
 
 function collectStatus(): YoRHaSystemStatus {
@@ -38,7 +38,7 @@ function collectStatus(): YoRHaSystemStatus {
       workerCount: 4,
       enableLegalBert: true,
       enableGoLlama: true,
-      maxConcurrentTasks: 20,
+      maxConcurrentTasks: 20
     });
     const systemStatus = multicoreService.getSystemStatus();
 
@@ -50,7 +50,7 @@ function collectStatus(): YoRHaSystemStatus {
       activeTasks: systemStatus.queue.activeTasks,
       totalTasks: systemStatus.metrics.totalTasks,
       completedTasks: systemStatus.metrics.completedTasks,
-      failedTasks: systemStatus.metrics.failedTasks,
+      failedTasks: systemStatus.metrics.failedTasks
     };
   } catch (error: any) {
     // Multicore service not available
@@ -62,26 +62,26 @@ function collectStatus(): YoRHaSystemStatus {
       connected: true,
       latency: Math.floor(Math.random() * 50) + 10,
       activeConnections: Math.floor(Math.random() * 20) + 5,
-      queryCount: Math.floor(Math.random() * 1000) + 500,
+      queryCount: Math.floor(Math.random() * 1000) + 500
     },
     backend: {
       healthy: true,
       uptime: Math.floor((Date.now() - startTime) / 1000),
       activeServices: multicoreStatus?.healthyWorkers || 5,
       cpuUsage: Number(cpuApprox.toFixed(2)),
-      memoryUsage: rssMB,
+      memoryUsage: rssMB
     },
     frontend: {
       renderFPS: Math.floor(Math.random() * 10) + 55,
       componentCount: 778,
       activeComponents: Math.floor(Math.random() * 50) + 150,
-      webGPUEnabled: true,
+      webGPUEnabled: true
     },
     ...(multicoreStatus ? { multicore: multicoreStatus } : Record<string, any>),
     timestamp: new Date().toISOString(),
     systemLoad: Math.floor(Math.random() * 30) + 45,
     gpuUtilization: Math.floor(Math.random() * 20) + 78,
-    networkLatency: Math.floor(Math.random() * 30) + 23,
+    networkLatency: Math.floor(Math.random() * 30) + 23
   };
 }
 

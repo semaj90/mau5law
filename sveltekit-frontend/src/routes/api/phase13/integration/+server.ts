@@ -52,10 +52,10 @@ async function getSystemHealth(): Promise<any> {
         ollama: !!ollamaOk,
         qdrant: !!qdrantOk,
         database: dbOk,
-        redis: redisOk,
+        redis: redisOk
       },
       timestamp: new Date().toISOString(),
-      phase: 'Phase 13 - Simplified Health Check',
+      phase: 'Phase 13 - Simplified Health Check'
     };
   } catch (error: any) {
     console.error('Health check error:', error);
@@ -64,10 +64,10 @@ async function getSystemHealth(): Promise<any> {
         ollama: false,
         qdrant: false,
         database: false,
-        redis: false,
+        redis: false
       },
       error: 'Health check failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 }
@@ -78,10 +78,10 @@ const mockIntegration = {
       ollama: true,
       qdrant: true,
       database: true,
-      redis: true,
+      redis: true
     },
     integration: 'active',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   }),
   initializeFullIntegration: async () => {
     return await getSystemHealth();
@@ -108,7 +108,7 @@ export const GET: RequestHandler = async ({ url }) => {
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            phase: 'Phase 13 Full Integration',
+            phase: 'Phase 13 Full Integration'
           }
         });
 
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: status,
           metadata: {
             processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
 
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: services,
           metadata: {
             processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
 
@@ -154,7 +154,7 @@ export const GET: RequestHandler = async ({ url }) => {
       message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            message: 'Phase 13 integration initialized',
+            message: 'Phase 13 integration initialized'
           }
         });
 
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!suggestion) {
           return json({
             success: false,
-            error: 'Suggestion is required for apply-suggestion action',
+            error: 'Suggestion is required for apply-suggestion action'
           }, { status: 400 });
         }
 
@@ -204,7 +204,7 @@ export const POST: RequestHandler = async ({ request }) => {
           data: applyResult,
           metadata: {
             processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
 
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!config) {
           return json({
             success: false,
-            error: 'Configuration is required for configure action',
+            error: 'Configuration is required for configure action'
           }, { status: 400 });
         }
 
@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            configuration: config,
+            configuration: config
           }
         });
 
@@ -244,7 +244,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           metadata: {
             processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
 
@@ -264,7 +264,7 @@ export const POST: RequestHandler = async ({ request }) => {
       message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -303,7 +303,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -327,7 +327,7 @@ export const DELETE: RequestHandler = async () => {
       metadata: {
         processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString(),
-        message: 'Integration reset to default mock configuration',
+        message: 'Integration reset to default mock configuration'
       }
     });
 
@@ -339,7 +339,7 @@ export const DELETE: RequestHandler = async () => {
       message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }

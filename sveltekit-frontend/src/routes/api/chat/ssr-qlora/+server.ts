@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
   if (!userId || !sessionId) {
     return json({
       success: false,
-      error: 'Missing userId or sessionId parameters',
+      error: 'Missing userId or sessionId parameters'
     }, { status: 400 });
   }
 
@@ -43,21 +43,21 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
           preferredStyle: ssrResult.ssrContext.userDictionary.preferredStyle,
           domainExpertise: ssrResult.ssrContext.userDictionary.domainExpertise,
           termCount: ssrResult.ssrContext.userDictionary.legalTerms.size,
-          interactionCount: ssrResult.ssrContext.userDictionary.interactionHistory.length,
+          interactionCount: ssrResult.ssrContext.userDictionary.interactionHistory.length
         },
         systemStatus: {
           nesMemoryReady: true,
           gpuCacheReady: true,
           qloraReady: orchestratorStats.completedQLoRAJobs > 0,
           wasmBridgeReady: true,
-          ollamaReady: true,
+          ollamaReady: true
         }
       },
       prerenderedHTML: ssrResult.prerenderedHTML,
       preloadedData: ssrResult.preloadedData,
       orchestratorStats,
       clientAddress: getClientAddress(),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   if (!sessionId || !message) {
     return json({
       success: false,
-      error: 'Missing sessionId or message',
+      error: 'Missing sessionId or message'
     }, { status: 400 });
   }
 
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -118,7 +118,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   if (!sessionId || !interactionId) {
     return json({
       success: false,
-      error: 'Missing required parameters',
+      error: 'Missing required parameters'
     }, { status: 400 });
   }
 
@@ -138,7 +138,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Feedback updated successfully',
       qloraRetrained: Math.abs(feedback) > 0.8,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
@@ -146,7 +146,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -159,7 +159,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
   if (!sessionId) {
     return json({
       success: false,
-      error: 'Missing sessionId parameter',
+      error: 'Missing sessionId parameter'
     }, { status: 400 });
   }
 
@@ -172,14 +172,14 @@ export const PATCH: RequestHandler = async ({ url }) => {
           averageResponseTime: 0,
           gpuCacheHitRate: 0,
           qloraJobsTriggered: 0,
-          userSatisfaction: 0,
+          userSatisfaction: 0
         };
 
         return json({
           success: true,
           sessionId,
           stats,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'export':
@@ -187,7 +187,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           message: 'Export functionality not yet implemented',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       default:;
@@ -203,7 +203,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -216,7 +216,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   if (!sessionId) {
     return json({
       success: false,
-      error: 'Missing sessionId parameter',
+      error: 'Missing sessionId parameter'
     }, { status: 400 });
   }
 
@@ -231,7 +231,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       sessionId,
       cleaned: cleanup,
       message: 'Session deleted successfully',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
@@ -239,7 +239,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

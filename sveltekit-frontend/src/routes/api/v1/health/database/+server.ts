@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            endpoint: '/api/v1/health/database',
+            endpoint: '/api/v1/health/database'
           }
         });
         
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: metrics,
           metadata: {
             processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
         
@@ -47,10 +47,10 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             schemaValid: isValid.valid,
-            missingTables: isValid.missingTables,
+            missingTables: isValid.missingTables
           },
           metadata: {
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           }
         });
         
@@ -60,10 +60,10 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             vectorOperationsWorking: vectorTest,
-            pgvectorEnabled: await dbHealthChecker.isPgVectorEnabled(),
+            pgvectorEnabled: await dbHealthChecker.isPgVectorEnabled()
           },
           metadata: {
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           }
         });
         
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url }) => {
       error: err instanceof Error ? err.message: 'Database health check failed',
       metadata: {
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           message: 'Health check cache cleared',
           metadata: {
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           }
         });
         
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
           data: health,
           metadata: {
             processingTime: Date.now() - startTime,
-            cached: false,
+            cached: false
           }
         });
         
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: false,
       error: err instanceof Error ? err.message: 'Database health check failed',
       metadata: {
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       }
     }, { status: 500 });
   }

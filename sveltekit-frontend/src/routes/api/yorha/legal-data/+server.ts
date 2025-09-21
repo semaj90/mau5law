@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       search,
       useAI,
       vectorSearch,
-      clientIP: request.headers.get('x-forwarded-for') || 'unknown',
+      clientIP: request.headers.get('x-forwarded-for') || 'unknown'
     });
 
     let data: any[] = [];
@@ -58,7 +58,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           aiMetadata = {
             analysis: aiData.response,
             confidence: 0.85,
-            model: 'gemma3-legal',
+            model: 'gemma3-legal'
           };
         }
       } catch (error: any) {
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             vector: search, // This would need embedding conversion
             limit: limit,
             with_payload: true,
-            with_vector: false,
+            with_vector: false
           })
         });
 
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           const vectorData = await vectorResponse.json();
           console.log('Vector search completed', {
             requestId,
-            resultsCount: vectorData.result?.length || 0,
+            resultsCount: vectorData.result?.length || 0
           });
         }
       } catch (error: any) {
@@ -214,7 +214,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       yorha_priority: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).priority || 'MEDIUM',
       yorha_processed: !!(item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).processedAt || !!(item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).analyzedAt,
       yorha_confidence: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).confidenceScore || 0.75,
-      yorha_timestamp: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).createdAt || (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).uploadDate || new Date(),
+      yorha_timestamp: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).createdAt || (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).uploadDate || new Date()
     });
 
     return json({
@@ -227,7 +227,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         total: totalCount,
         totalPages: Math.ceil(totalCount / limit),
         hasNextPage: page * limit < totalCount,
-        hasPrevPage: page > 1,
+        hasPrevPage: page > 1
       },
       metadata: {
         dataType,
@@ -238,7 +238,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         processingTime: Date.now() - startTime,
         aiAnalysis: aiMetadata,
         service: "yorha-legal-data-api",
-        version: "4.0.0",
+        version: "4.0.0"
       },
       // YoRHa interface enhancements
       yorhaStatus: {
@@ -246,7 +246,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         dataIntegrity: "VERIFIED",
         searchAccuracy: search ? "HIGH" : "N/A",
         aiEnhancement: useAI ? "ENABLED" : "DISABLED",
-        vectorSearch: vectorSearch ? "ENABLED" : "DISABLED",
+        vectorSearch: vectorSearch ? "ENABLED" : "DISABLED"
       }
     });
 
@@ -255,7 +255,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     return json({
         success: false,
         error: error.message || "Failed to fetch legal data",
-        service: "yorha-legal-data-api",
+        service: "yorha-legal-data-api"
       },)
       { status: 500 }
     );
@@ -289,7 +289,7 @@ export const POST: RequestHandler = async ({ request }) => {
           keywords: itemData.keywords || [],
           topics: itemData.topics || [],
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
   } as any).returning();
         break;
 
@@ -302,7 +302,7 @@ export const POST: RequestHandler = async ({ request }) => {
           priority: itemData.priority || 'medium',
           assignedTo: itemData.assignedTo,
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
   } as any).returning();
         break;
 
@@ -317,7 +317,7 @@ export const POST: RequestHandler = async ({ request }) => {
           status: itemData.status || 'pending',
           metadata: itemData.metadata || {},
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
   } as any).returning();
         break;
 
@@ -329,7 +329,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       data: result[0],
       message: `${dataType} created successfully`,
-      service: "yorha-legal-data-api",
+      service: "yorha-legal-data-api"
     });
 
   } catch (error: any) {
@@ -337,7 +337,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
         success: false,
         error: error.message || "Failed to create legal data",
-        service: "yorha-legal-data-api",
+        service: "yorha-legal-data-api"
       },)
       { status: 500 }
     );
@@ -363,7 +363,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           .update(legalDocuments);
           .set({
             ...itemData,
-            updatedAt: new Date(),
+            updatedAt: new Date()
           })
           .where(eq(legalDocuments.id, id)
           .returning();
@@ -374,7 +374,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           .update(cases);
           .set({
             ...itemData,
-            updatedAt: new Date(),
+            updatedAt: new Date()
           })
           .where(eq(cases.id, id)
           .returning();
@@ -385,7 +385,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           .update(evidence);
           .set({
             ...itemData,
-            updatedAt: new Date(),
+            updatedAt: new Date()
           })
           .where(eq(evidence.id, id)
           .returning();
@@ -406,7 +406,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       data: result[0],
       message: `${dataType} updated successfully`,
-      service: "yorha-legal-data-api",
+      service: "yorha-legal-data-api"
     });
 
   } catch (error: any) {
@@ -414,7 +414,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
         success: false,
         error: error.message || "Failed to update legal data",
-        service: "yorha-legal-data-api",
+        service: "yorha-legal-data-api"
       },)
       { status: 500 }
     );
@@ -470,7 +470,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: `${dataType} deleted successfully`,
-      service: "yorha-legal-data-api",
+      service: "yorha-legal-data-api"
     });
 
   } catch (error: any) {
@@ -478,7 +478,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return json({
         success: false,
         error: error.message || "Failed to delete legal data",
-        service: "yorha-legal-data-api",
+        service: "yorha-legal-data-api"
       },)
       { status: 500 }
     );

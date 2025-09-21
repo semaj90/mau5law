@@ -36,7 +36,7 @@ async function getDashboardData(locals: any) {
       gpuUtilization: 78.1,
       consciousnessLevel: 12,
       quantumCoherence: 50,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }
   };
 
@@ -50,7 +50,7 @@ async function getSystemHealth(): Promise<Response> {
       healthScore: 95.8,
       healthyServices: 7,
       totalServices: 8,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     },
     services: {
       databases: {
@@ -76,7 +76,7 @@ async function getSystemHealth(): Promise<Response> {
         heapUsed: 156 * 1024 * 1024,
         heapTotal: 256 * 1024 * 1024,
         external: 32 * 1024 * 1024,
-        rss: 384 * 1024 * 1024,
+        rss: 384 * 1024 * 1024
       }
     },
     architecture: {
@@ -99,28 +99,28 @@ async function getRecentActivities(locals: any): Promise<Response> {
       type: 'case_created',
       title: 'Corporate Espionage Investigation',
       timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-      priority: 'high',
+      priority: 'high'
     },
     {
       id: '002',
       type: 'evidence_uploaded',
       title: 'Financial Records - Anomaly Detected',
       timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-      priority: 'medium',
+      priority: 'medium'
     },
     {
       id: '003',
       type: 'ai_analysis',
       title: 'Pattern Recognition Complete',
       timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-      priority: 'low',
+      priority: 'low'
     },
     {
       id: '004',
       type: 'document_processed',
       title: 'Contract Analysis - 15 entities extracted',
       timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
-      priority: 'medium',
+      priority: 'medium'
     }
   ];
 
@@ -132,14 +132,14 @@ async function getBatchData(locals: any): Promise<Response> {
   const batchedData = await batchSSRRequests({
     dashboard: () => getDashboardData(locals).then(r => r.json()),
     health: () => getSystemHealth().then(r => r.json()),
-    activities: () => getRecentActivities(locals).then(r => r.json(),
+    activities: () => getRecentActivities(locals).then(r => r.json()
   });
 
   return createSSRResponse({
     ...batchedData,
     meta: {
       batchLoaded: true,
-      loadTime: new Date().toISOString(),
+      loadTime: new Date().toISOString()
     }
   });
 }
@@ -153,7 +153,7 @@ export const POST: RequestHandler = withSSRHandler(async ({ request, locals }) =
     received: data,
     processedAt: new Date().toISOString(),
     userId: locals.user?.id,
-    status: 'processed',
+    status: 'processed'
   };
 
   return createSSRResponse(processedData, { status: 201 });

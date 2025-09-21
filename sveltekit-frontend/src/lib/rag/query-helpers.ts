@@ -12,7 +12,7 @@ export interface RankedChunk {
 export interface IntentPoint {
   x: number;
   y: number;
-  intent: string;,
+  intent: string;
 }
 
 export interface RAGInputs {
@@ -101,7 +101,7 @@ export class SOMGrid {
         this.grid[i][j] = {
           x: j,
           y: i,
-          intent: "unknown",
+          intent: "unknown"
         };
       }
     }

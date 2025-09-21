@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results = await searchEvidenceText(query, {
           caseId,
           evidenceType,
-          limit,
+          limit
         });
         break;
 
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results = await searchEvidenceContent(query, {
           caseId,
           evidenceType,
-          limit,
+          limit
         });
         break;
 
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results = await searchEvidenceSemantic(query, {
           caseId,
           evidenceType,
-          limit,
+          limit
         });
         break;
 
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results = await searchEvidenceHybrid(query, {
           caseId,
           evidenceType,
-          limit,
+          limit
         });
         break;
     }
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
       searchMode,
       executionTime,
       query,
-      totalResults: results.length,
+      totalResults: results.length
     });
   } catch (error: any) {
     console.error("Evidence search error:", error);
@@ -110,7 +110,7 @@ async function searchEvidenceText(query: string, options: any): Promise<any> {
       summary: evidence.summary,
       uploadedAt: evidence.uploadedAt,
       similarity: sql<number>`1.0`,
-      searchType: sql<string>`'text'`,
+      searchType: sql<string>`'text'`
     })
     .from(evidence)
     .where(and(...whereConditions)
@@ -130,9 +130,9 @@ async function searchEvidenceContent(query: string, options: any): Promise<any> 
           ...(caseId ? [{ key: "case_id", match: { value: caseId } }] : []),
           ...(evidenceType
             ? [{ key: "evidence_type", match: { value: evidenceType } }]
-            : []),
-        ],
-      },
+            : [])
+        ]
+      }
     });
 
     // Get full evidence records for matches
@@ -152,7 +152,7 @@ async function searchEvidenceContent(query: string, options: any): Promise<any> 
         fileUrl: evidence.fileUrl,
         tags: evidence.tags,
         summary: evidence.summary,
-        uploadedAt: evidence.uploadedAt,
+        uploadedAt: evidence.uploadedAt
       })
       .from(evidence)
       .where(sql`${evidence.id} = ANY(${evidenceIds})`);
@@ -166,7 +166,7 @@ async function searchEvidenceContent(query: string, options: any): Promise<any> 
         ...record,
         similarity: qdrantMatch?.score || 0,
         searchType: "content" as const,
-        contentMatch: qdrantMatch?.payload.content_snippet || null,
+        contentMatch: qdrantMatch?.payload.content_snippet || null
       };
     });
   } catch (error: any) {
@@ -198,7 +198,7 @@ async function searchEvidenceSemantic(query: string, options: any): Promise<any>
       summary: evidence.summary,
       uploadedAt: evidence.uploadedAt,
       similarity: sql<number>`0.5`, // Placeholder similarity score
-      searchType: sql<string>`'semantic'`,
+      searchType: sql<string>`'semantic'`
     })
     .from(evidence)
     .where(and(...whereConditions)
@@ -216,8 +216,8 @@ async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
       searchEvidenceContent(query, { ...options, limit: Math.ceil(limit / 3) }),
       searchEvidenceSemantic(query, {
         ...options,
-        limit: Math.ceil(limit / 3),
-      }),
+        limit: Math.ceil(limit / 3)
+      })
     ]);
 
   const allResults: any[] = [];
@@ -231,7 +231,7 @@ async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
           seenIds.add((result as { id?: any; similarity?: any }).id);
           allResults.push({
             ...result,
-            similarity: (result as { id?: any; similarity?: any }).similarity * boost,
+            similarity: (result as { id?: any; similarity?: any }).similarity * boost
           });
         }
       });
@@ -251,6 +251,6 @@ async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
     .slice(0, limit);
     .map((result) => ({
       ...result,
-      searchType: "hybrid" as const,
+      searchType: "hybrid" as const
     });
 }

@@ -23,12 +23,12 @@ export interface UserDictionary {
     frequency: number;
     confidence: number;
     lastUsed: Date;
-    contextEmbedding: Float32Array;,
+    contextEmbedding: Float32Array;
   }>;
   preferredStyle: 'formal' | 'casual' | 'technical' | 'adaptive';
   domainExpertise: string[]; // ['contract-law', 'criminal-defense', etc.]
   qloraCheckpoint: string;   // Path to user's fine-tuned model
-  interactionHistory: ChatInteraction[];,
+  interactionHistory: ChatInteraction[];
 }
 
 export interface ChatInteraction {
@@ -40,7 +40,7 @@ export interface ChatInteraction {
   extractedEntities: string[];
   glyphGenerated: boolean;
   processingTime: number;
-  gpuCacheHit: boolean;,
+  gpuCacheHit: boolean;
 }
 
 export interface SSRChatContext {
@@ -53,7 +53,7 @@ export interface SSRChatContext {
   currentCase?: {
     caseId: string;
     documents: string[];
-    activeContext: Float32Array;,
+    activeContext: Float32Array;
   };
 }
 
@@ -105,8 +105,8 @@ export class SSRQLorAGPUChatAssistant {
           riskLevel: 'low' as const,
           compressed: true,
           metadata: {
-            vectorEmbedding: embeddedPattern,
-          },
+            vectorEmbedding: embeddedPattern
+          }
         },
         patternBuffer.buffer,)
         { preferredBank: 'CHR_ROM', compress: true }
@@ -138,7 +138,7 @@ export class SSRQLorAGPUChatAssistant {
       nesMemoryState: this.nesMemory.getMemoryStats(),
       gpuCacheState: this.gpuCache.getStats(),
       preloadedResponses: await this.generatePreloadedResponses(userDictionary),
-      currentCase: await this.getCurrentCaseContext(userId),
+      currentCase: await this.getCurrentCaseContext(userId)
     };
 
     // Cache context for real-time updates
@@ -152,7 +152,7 @@ export class SSRQLorAGPUChatAssistant {
       userTerms: Array.from(userDictionary.legalTerms.entries()).slice(0, 50), // Most frequent
       commonPatterns: Array.from(ssrContext.preloadedResponses.entries()),
       gpuCacheReady: true,
-      nesMemoryReady: true,
+      nesMemoryReady: true
     };
 
     return { ssrContext, prerenderedHTML, preloadedData };
@@ -180,7 +180,7 @@ export class SSRQLorAGPUChatAssistant {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
               type: 'instant',
               content: instantResponse,
-              source: 'nes_memory',
+              source: 'nes_memory'
             })}\n\n`);
           }
 
@@ -197,7 +197,7 @@ export class SSRQLorAGPUChatAssistant {
               type: 'cached',
               content: cacheHit[0].metadata.response,
               similarity: cacheHit[0].similarity,
-              source: 'gpu_cache',
+              source: 'gpu_cache'
             })}\n\n`);
           }
 
@@ -216,7 +216,7 @@ export class SSRQLorAGPUChatAssistant {
               content: chunk,
               index,
               total: chunks.length,
-              source: 'qlora',
+              source: 'qlora'
             })}\n\n`);
 
             // Small delay for streaming effect
@@ -229,7 +229,7 @@ export class SSRQLorAGPUChatAssistant {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
               type: 'glyph',
               content: glyphData,
-              source: 'neural_sprite',
+              source: 'neural_sprite'
             })}\n\n`);
           }
 
@@ -237,7 +237,7 @@ export class SSRQLorAGPUChatAssistant {
           await this.storeInteraction(ssrContext, userMessage, qloraResponse);
 
           controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
-            type: 'complete',
+            type: 'complete'
           })}\n\n`);
 
           controller.close();
@@ -277,7 +277,7 @@ export class SSRQLorAGPUChatAssistant {
       preferredStyle: 'adaptive',
       domainExpertise: [],
       qloraCheckpoint: `models/qlora_${userId}.safetensors`,
-      interactionHistory: [],
+      interactionHistory: []
     };
 
     this.userDictionaries.set(userId, newDictionary);
@@ -300,7 +300,7 @@ export class SSRQLorAGPUChatAssistant {
         {
           response: interaction.aiResponse,
           feedback: interaction.feedback,
-          timestamp: interaction.timestamp.toISOString(),
+          timestamp: interaction.timestamp.toISOString()
         }
       );
     }
@@ -377,8 +377,8 @@ export class SSRQLorAGPUChatAssistant {
         lastAccessed: Date.now(),
         compressed: false,
         metadata: {
-          vectorEmbedding: embedding,
-        },
+          vectorEmbedding: embedding
+        }
       },
       { extractionType: 'chat_response', userMessage: message },
       { quality: 8, usefulness: 8, accuracy: 8 } // Assume good feedback
@@ -409,7 +409,7 @@ export class SSRQLorAGPUChatAssistant {
           frequency: 1,
           confidence: 0.7,
           lastUsed: new Date(),
-          contextEmbedding: embedding,
+          contextEmbedding: embedding
         });
       }
     }
@@ -430,7 +430,7 @@ export class SSRQLorAGPUChatAssistant {
       animation: 'legal_pulse',
       metadata: {
         complexity: (response as { length?: any; json?: any; split?: any }).length / 100,
-        confidence: 0.8,
+        confidence: 0.8
       }
     };
 
@@ -545,7 +545,7 @@ export class SSRQLorAGPUChatAssistant {
           key,
           {
             ...value,
-            contextEmbedding: Array.from(value.contextEmbedding),
+            contextEmbedding: Array.from(value.contextEmbedding)
           }
         ])
       )
@@ -592,7 +592,7 @@ export class SSRQLorAGPUChatAssistant {
       extractedEntities: this.extractLegalTerms(userMessage),
       glyphGenerated: true,
       processingTime: Date.now(), // Simplified
-      gpuCacheHit: false // Track actual cache hits,
+      gpuCacheHit: false // Track actual cache hits
     };
 
     context.userDictionary.interactionHistory.push(interaction);

@@ -17,7 +17,7 @@ interface GPUMetricsState {
   currentFPS: number;
   averageFPS: number;
   activeEffects: string[];
-  renderingMode: 'webgl' | 'webgpu' | 'software' | null;,
+  renderingMode: 'webgl' | 'webgpu' | 'software' | null;
 }
 
 class GPUMetricsStore {
@@ -34,7 +34,7 @@ class GPUMetricsStore {
     currentFPS: 0,
     averageFPS: 0,
     activeEffects: [],
-    renderingMode: null,
+    renderingMode: null
   });
 
   // Derived values for performance metrics
@@ -55,12 +55,12 @@ class GPUMetricsStore {
   minFPS = $derived(() => {
     const samples = this.recentFPSSamples;
     return samples.length > 0 ? Math.min(...samples) : 0;
-  ,});
+  });
   
   maxFPS = $derived(() => {
     const samples = this.recentFPSSamples;
     return samples.length > 0 ? Math.max(...samples) : 0;
-  ,});
+  });
   
   // Performance status derived from FPS;
   performanceStatus = $derived(() => {
@@ -213,7 +213,7 @@ class GPUMetricsStore {
       minFps: fpsSamples.length > 0 ? Math.min(...fpsSamples) : 0,
       maxFps: fpsSamples.length > 0 ? Math.max(...fpsSamples) : 0,
       effectsSummary,
-      totalSamples: this.state.metrics.length,
+      totalSamples: this.state.metrics.length
     };
   }
 }
@@ -235,6 +235,6 @@ export function useGPUMetrics() {
     activeEffects: () => gpuMetricsStore.activeEffects,
     effectsSummary: gpuMetricsStore.effectsSummary,
     renderingMode: () => gpuMetricsStore.renderingMode,
-    totalSamplesSent: () => gpuMetricsStore.totalSamplesSent,
+    totalSamplesSent: () => gpuMetricsStore.totalSamplesSent
   };
 }

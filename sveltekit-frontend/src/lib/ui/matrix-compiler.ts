@@ -46,7 +46,7 @@ export interface MatrixUINode {
     x: number;
     y: number;
     width: number;
-    height: number;,
+    height: number;
   };
 }
 
@@ -61,7 +61,7 @@ export interface EnhancedWebGLBuffer {
     indexCount: number;
     nodeCount: number;
     lodLevel: "low" | "mid" | "high";
-    shaderComplexity: "basic" | "standard" | "advanced";,
+    shaderComplexity: "basic" | "standard" | "advanced";
   };
 }
 
@@ -69,7 +69,7 @@ export interface CSSOutput {
   classes: string[];
   variables: Record<string, string>;
   animations: string[];
-  unoCSS: string;,
+  unoCSS: string;
 }
 
 export interface EventMapping {
@@ -88,7 +88,7 @@ export interface CompiledNode {
   cssClasses: string[];
   webglBuffer?: WebGLBuffer;
   enhancedBuffer?: EnhancedWebGLBuffer;
-  lodLevel: "low" | "mid" | "high";,
+  lodLevel: "low" | "mid" | "high";
 }
 
 export class MatrixUICompiler {
@@ -99,7 +99,7 @@ export class MatrixUICompiler {
   private lodThresholds = {
     low: { maxVertices: 1000, maxNodes: 50 },
     mid: { maxVertices: 5000, maxNodes: 200 },
-    high: { maxVertices: 20000, maxNodes: 1000 },
+    high: { maxVertices: 20000, maxNodes: 1000 }
   };
 
   constructor(canvas?: HTMLCanvasElement) {
@@ -151,7 +151,7 @@ export class MatrixUICompiler {
       webgl: webglBuffer,
       css: cssOutput,
       events: eventMappings,
-      optimizations,
+      optimizations
     };
   }
 
@@ -221,7 +221,7 @@ export class MatrixUICompiler {
         indexCount: indices.length,
         nodeCount: nodes.length,
         lodLevel,
-        shaderComplexity: lodLevel === "high" ? "advanced" : "standard",
+        shaderComplexity: lodLevel === "high" ? "advanced" : "standard"
       }
     };
   }
@@ -247,7 +247,7 @@ export class MatrixUICompiler {
         classes.push('px-4', 'py-2', 'rounded', 'cursor-pointer');
         break;
       default:
-        classes.push('block');,
+        classes.push('block');
     }
     
     return classes;
@@ -328,7 +328,7 @@ export class MatrixUICompiler {
       matrix,
       cssClasses,
       webglBuffer,
-      lodLevel,
+      lodLevel
     };
   }
 
@@ -360,7 +360,7 @@ export class MatrixUICompiler {
         );
         break;
       default:
-        element = document.createElement("div");,
+        element = document.createElement("div");
     }
 
     element.id = node.id;
@@ -457,7 +457,7 @@ export class MatrixUICompiler {
       m30,
       m31,
       m32,
-      m33,
+      m33
     ] = matrix;
 
     // Extract translation
@@ -583,8 +583,8 @@ export class MatrixUICompiler {
         nodeId: node.id,
         nodeType: node.type,
         matrix: node.matrix,
-        metadata: node.metadata,
-      },
+        metadata: node.metadata
+      }
     });
 
     event.target?.dispatchEvent(matrixEvent);
@@ -629,7 +629,7 @@ export function createMatrixComponent(node: MatrixUINode) {
   return {
     destroy() {
       // Cleanup when component unmounts
-    },
+    }
   };
 }
 

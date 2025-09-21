@@ -21,21 +21,21 @@ export const POST: RequestHandler = async ({ request }) => {
         config: {
           host: config.host,
           port: config.port,
-          keyPrefix: config.keyPrefix,
+          keyPrefix: config.keyPrefix
         }
       });
     } else {
       return json({
         success: false,
         message: 'Redis connection failed',
-        error: 'Redis not available',
+        error: 'Redis not available'
       }, { status: 503 });
     }
     
   } catch (error: any) {
     return json({
       success: false,
-      error: error.message,
+      error: error.message
     }, { status: 500 });
   }
 };

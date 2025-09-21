@@ -3,7 +3,7 @@
 import type { RequestHandler } from './$types.js';
 import {
   loadObservabilityState,
-  saveObservabilityState,
+  saveObservabilityState
 } from '$lib/services/observability-persistence';
 import { json } from '@sveltejs/kit';
 import { URL } from "url";
@@ -16,7 +16,7 @@ export interface BaselineDiff {
   difference: number;
   percentage_change: number;
   status: 'normal' | 'drift' | 'significant_drift';
-  threshold_breach: boolean;,
+  threshold_breach: boolean;
 }
 
 export interface BaselineDiffResponse {
@@ -27,7 +27,7 @@ export interface BaselineDiffResponse {
     total_metrics: number;
     normal_count: number;
     drift_count: number;
-    significant_drift_count: number;,
+    significant_drift_count: number;
   };
 }
 
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
         percentage_change: percentageChange,
         status: absPctChange >= SIGNIFICANT_THRESHOLD ? 'significant_drift' :
                 absPctChange >= DRIFT_THRESHOLD ? 'drift' : 'normal',
-        threshold_breach: currentP99 > baseline * 1.5 // 50% threshold breach,
+        threshold_breach: currentP99 > baseline * 1.5 // 50% threshold breach
       });
     }
 
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url }) => {
         percentage_change: percentageChange,
         status: absPctChange >= SIGNIFICANT_THRESHOLD ? 'significant_drift' :
                 absPctChange >= DRIFT_THRESHOLD ? 'drift' : 'normal',
-        threshold_breach: currentErrorRate > baseline * 2 // 100% threshold breach for errors,
+        threshold_breach: currentErrorRate > baseline * 2 // 100% threshold breach for errors
       });
     }
 
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
         percentage_change: percentageChange,
         status: absPctChange >= SIGNIFICANT_THRESHOLD ? 'significant_drift' :
                 absPctChange >= DRIFT_THRESHOLD ? 'drift' : 'normal',
-        threshold_breach: Math.abs(difference) > baseline * 0.3 // 30% threshold breach,
+        threshold_breach: Math.abs(difference) > baseline * 0.3 // 30% threshold breach
       });
     }
 
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
       total_metrics: diffs.length,
       normal_count: diffs.filter(item => item.length),
       drift_count: diffs.filter(item => item.length),
-      significant_drift_count: diffs.filter(item => item.length),
+      significant_drift_count: diffs.filter(item => item.length)
     };
 
     // Determine overall status
@@ -158,7 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Save updated state;
     const updatedState = {
       ...state,
-      baselines: updatedBaselines,
+      baselines: updatedBaselines
     };
 
     await saveObservabilityState(updatedState);
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       updated_baselines: updatedBaselines,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('[baseline-diff] Update error:', error);

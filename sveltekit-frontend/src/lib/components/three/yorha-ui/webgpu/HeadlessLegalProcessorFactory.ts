@@ -49,7 +49,7 @@ export interface HeadlessProcessingResult {
     levels: number;
     totalMemoryUsed: number;
     generationTime: number;
-    rtxOptimized: boolean;,
+    rtxOptimized: boolean;
   };
   
   // LOD cache results
@@ -62,7 +62,7 @@ export interface HeadlessProcessingResult {
     confidence: number;
     entities: Array<any>;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    summary: string;,
+    summary: string;
   };
   
   // Performance metrics;
@@ -71,7 +71,7 @@ export interface HeadlessProcessingResult {
     processingTime: number;
     memoryUsage: number;
     compressionRatio: number;
-    cacheHitRate: number;,
+    cacheHitRate: number;
   };
 }
 
@@ -79,7 +79,7 @@ export interface OffscreenRenderTarget {
   texture: GPUTexture;
   width: number;
   height: number;
-  format: GPUTextureFormat;,
+  format: GPUTextureFormat;
 }
 
 /**
@@ -118,7 +118,7 @@ export class HeadlessLegalProcessorFactory {
 
       const adapter = await navigator.gpu.requestAdapter({
         powerPreference: 'high-performance',
-        forceFallbackAdapter: false,
+        forceFallbackAdapter: false
       });
 
       if (!adapter) {
@@ -138,7 +138,7 @@ export class HeadlessLegalProcessorFactory {
           maxComputeInvocationsPerWorkgroup: 256,
           maxStorageBufferBindingSize: 256 * 1024 * 1024, // 256MB storage buffers
           maxTexture2DSize: 8192, // Support large document textures
-          maxTextureArrayLayers: 256,
+          maxTextureArrayLayers: 256
         }
       });
 
@@ -189,7 +189,7 @@ export class HeadlessLegalProcessorFactory {
     const testTexture = this.device.createTexture({
       size: { width: 256, height: 256 },
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
+      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC
     });
 
     console.log('✅ Headless texture creation successful');
@@ -234,7 +234,7 @@ export class HeadlessLegalProcessorFactory {
       processingTime: 0,
       memoryUsage: 0,
       compressionRatio: 0,
-      cacheHitRate: 0,
+      cacheHitRate: 0
     };
 
     try {
@@ -269,7 +269,7 @@ export class HeadlessLegalProcessorFactory {
           levels: mipmapResult.mipmapLevels.length,
           totalMemoryUsed: mipmapResult.totalMemoryUsed,
           generationTime: mipmapResult.totalGenerationTime,
-          rtxOptimized: mipmapResult.optimization.rtxAcceleration,
+          rtxOptimized: mipmapResult.optimization.rtxAcceleration
         } : undefined,
         lodEntry: lodResult.lodEntry,
         svgVisualizations: lodResult.lodEntry.svg_summaries,
@@ -303,7 +303,7 @@ export class HeadlessLegalProcessorFactory {
       processing_mode: config.mode,
       user_preferences: {
         analysis_level: config.documentAnalysisLevel,
-        generate_svg: config.generateSVGSummaries,
+        generate_svg: config.generateSVGSummaries
       }
     };
 
@@ -345,7 +345,7 @@ export class HeadlessLegalProcessorFactory {
         enableOptimizations: true,
         rtxOptimized: true,
         enableStreaming: config.enableStreamingOptimization,
-        maxTextureSize: config.maxTextureSize,
+        maxTextureSize: config.maxTextureSize
       }
     );
 
@@ -373,7 +373,7 @@ export class HeadlessLegalProcessorFactory {
       texture,
       width,
       height,
-      format: 'rgba8unorm',
+      format: 'rgba8unorm'
     };
   }
 
@@ -397,7 +397,7 @@ export class HeadlessLegalProcessorFactory {
         view: renderTarget.texture.createView(),
         clearValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }, // White background
         loadOp: 'clear',
-        storeOp: 'store',
+        storeOp: 'store'
       }]
     });
 
@@ -425,7 +425,7 @@ export class HeadlessLegalProcessorFactory {
       // Call Ollama service for legal analysis;
       const response = await (ollamaService as any).generateCompletion(analysisPrompt, {
         model: 'llama3.1:8b', // Or whatever legal model is available
-        stream: false,
+        stream: false
       });
 
       // Parse response for structured legal analysis
@@ -523,7 +523,7 @@ Format your response as structured JSON.`;
       const batchPromises = batch.map(doc =>;
         this.processLegalDocument(doc.text, {
           ...config,
-          saveToFile: false // Disable individual file saving for batch,
+          saveToFile: false // Disable individual file saving for batch
         })
       );
 
@@ -544,7 +544,7 @@ Format your response as structured JSON.`;
       isInitialized: this.isInitialized,
       hasDevice: !!this.device,
       queueLength: this.processingQueue.length,
-      lodCacheStats: lodCacheEngine.getCacheStats(),
+      lodCacheStats: lodCacheEngine.getCacheStats()
     };
   }
 
@@ -582,5 +582,5 @@ export const DEFAULT_HEADLESS_CONFIG: HeadlessProcessingConfig = {
   generateSVGSummaries: true,
   enablePredictiveAnalytics: true,
   outputFormats: ['svg', 'json', 'lod'],
-  saveToFile: false,
+  saveToFile: false
 };

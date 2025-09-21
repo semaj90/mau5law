@@ -45,7 +45,7 @@ export interface AIAnalysisResult {
   evidenceType: string;
   relevanceScore: number;
   suggestedTags: string[];
-  riskFactors: string[];,
+  riskFactors: string[];
 }
 
 export interface EntityExtraction {
@@ -53,14 +53,14 @@ export interface EntityExtraction {
   value: string;
   confidence: number;
   startPos: number;
-  endPos: number;,
+  endPos: number;
 }
 
 export interface Citation {
   type: 'case' | 'statute' | 'regulation';
   citation: string;
   relevance: number;
-  jurisdiction: string;,
+  jurisdiction: string;
 }
 
 export interface EvidenceMetadata {
@@ -69,14 +69,14 @@ export interface EvidenceMetadata {
   hash: string;
   source: string;
   acquisition_date: string;
-  authenticity_verified: boolean;,
+  authenticity_verified: boolean;
 }
 
 export interface ChainOfCustodyEntry {
   timestamp: string;
   actor: string;
   action: string;
-  details: string;,
+  details: string;
 }
 
 export interface RiskAssessment {
@@ -84,7 +84,7 @@ export interface RiskAssessment {
   factors: string[];
   privilegedMaterialDetected: boolean;
   redactionRequired: boolean;
-  ethicalConcerns: string[];,
+  ethicalConcerns: string[];
 }
 
 export interface AuthSession {
@@ -92,20 +92,20 @@ export interface AuthSession {
   role: 'paralegal' | 'associate' | 'senior' | 'partner' | 'admin';
   permissions: string[];
   barNumber?: string;
-  firmId: string;,
+  firmId: string;
 }
 
 export interface DatabaseConnection {
   connected: boolean;
   lastSync: string;
-  pendingOperations: number;,
+  pendingOperations: number;
 }
 
 export interface OllamaConfig {
   endpoint: string;
   model: string;
   connected: boolean;
-  capabilities: string[];,
+  capabilities: string[];
 }
 
 export interface UserAnalytics {
@@ -117,25 +117,25 @@ export interface UserAnalytics {
     successRate: number;
     averageFileSize: number;
     preferredFormats: string[];
-    commonUploadTimes: string[];,
+    commonUploadTimes: string[];
   };
   interactionMetrics: {
     typingSpeed: number;
     clickPatterns: ClickPattern[];
     scrollBehavior: { depth: number; speed: number };
-    focusTime: number;,
+    focusTime: number;
   };
   contextualPreferences: {
     preferredAIPromptStyle: 'concise' | 'detailed' | 'technical';
     helpLevel: 'minimal' | 'moderate' | 'extensive';
     autoSuggestions: boolean;
-    proactiveInsights: boolean;,
+    proactiveInsights: boolean;
   };
   caseContext: {
     activeCases: string[];
     currentCaseId?: string;
     workflowStage: 'intake' | 'discovery' | 'preparation' | 'trial' | 'appeal';
-    expertise: 'paralegal' | 'associate' | 'senior' | 'partner';,
+    expertise: 'paralegal' | 'associate' | 'senior' | 'partner';
   };
 }
 
@@ -155,7 +155,7 @@ export interface ContextualPrompt {
   confidence: number;
   relevance: number;
   actionable: boolean;
-  legalSpecific: boolean;,
+  legalSpecific: boolean;
 }
 
 export interface UploadResult {
@@ -188,7 +188,7 @@ const FileSchema = z.object({
   name: z.string(),
   size: z.number().positive(),
   type: z.string(),
-  lastModified: z.number(),
+  lastModified: z.number()
 });
 
 const LegalContextSchema = z.object({
@@ -197,7 +197,7 @@ const LegalContextSchema = z.object({
   urgency: z.enum(['low', 'medium', 'high', 'critical']).optional(),
   jurisdiction: z.string().optional(),
   clientId: z.string().optional(),
-  matterNumber: z.string().optional(),
+  matterNumber: z.string().optional()
 });
 
 // Enhanced Production Services;
@@ -210,7 +210,7 @@ export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input:
         body: JSON.stringify({
           userAnalytics: input.userAnalytics,
           context: input.context,
-          legalContext: input.context.legalContext,
+          legalContext: input.context.legalContext
         })
       });
 
@@ -238,14 +238,14 @@ export const analyzeUserBehaviorService = fromPromise(async ({ input }: { input:
       return {
         updatedAnalytics: {
           ...input.userAnalytics,
-          behaviorPattern: input.userAnalytics.behaviorPattern || 'intermediate',
+          behaviorPattern: input.userAnalytics.behaviorPattern || 'intermediate'
         },
         insights: {
           patterns: legalPatterns[input.userAnalytics.behaviorPattern] || legalPatterns.intermediate,
           legalWorkflow: input.context.legalContext?.practiceArea || 'general_practice',
-          urgencyAwareness: input.context.legalContext?.urgency || 'medium',
+          urgencyAwareness: input.context.legalContext?.urgency || 'medium'
         },
-        behaviorScore: 0.75,
+        behaviorScore: 0.75
       };
     }
   }
@@ -261,7 +261,7 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
           context: input.context,
           timing: input.timing,
           model: input.context.ollamaConfig?.model || 'gemma3:270m',
-          legalContext: input.context.legalContext,
+          legalContext: input.context.legalContext
         })
       });
 
@@ -287,7 +287,7 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
             confidence: 0.95,
             relevance: 0.9,
             actionable: true,
-            legalSpecific: true,
+            legalSpecific: true
           });
         }
 
@@ -300,7 +300,7 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
             confidence: 0.8,
             relevance: 0.85,
             actionable: true,
-            legalSpecific: true,
+            legalSpecific: true
           });
         }
       }
@@ -314,7 +314,7 @@ export const generateContextualPromptsService = fromPromise(async ({ input }: { 
           confidence: 0.7,
           relevance: 0.6,
           actionable: true,
-          legalSpecific: true,
+          legalSpecific: true
         });
       }
 
@@ -336,7 +336,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
 
         const response = await fetch('/api/ai/ollama/analyze-legal-document', {
           method: 'POST',
-          body: formData,
+          body: formData
         });
 
         if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -391,7 +391,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
           suggestedTags: ['legal_document', 'evidence', input.context.legalContext?.practiceArea || 'general'],
           confidenceScore: 0.7,
           privileged: file.name.toLowerCase().includes('privileged'),
-          evidenceType: file.type.includes('pdf') ? 'document' : 'media',
+          evidenceType: file.type.includes('pdf') ? 'document' : 'media'
         },
         metadata: {
           fileId: `doc-${Date.now()}-${index}`,
@@ -403,7 +403,7 @@ export const performAIAnalysisService = fromPromise(async ({ input }: { input: {
             timestamp: new Date().toISOString(),
             actor: input.context.authSession?.userId || 'anonymous',
             action: 'uploaded',
-            details: 'Uploaded via fallback system',
+            details: 'Uploaded via fallback system'
           }]
         }
       });
@@ -426,7 +426,7 @@ export const saveToDatabaseService = fromPromise(async ({ input }: { input: { re
           metadata: {
             uploadSession: input.context.userAnalytics.sessionId,
             timestamp: new Date().toISOString(),
-            source: 'legal_ai_upload',
+            source: 'legal_ai_upload'
           }
         })
       });
@@ -444,7 +444,7 @@ export const saveToDatabaseService = fromPromise(async ({ input }: { input: { re
         JSON.stringify({
           results: input.results,
           context: input.context,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         })
       );
     }
@@ -480,7 +480,7 @@ export function generateUserInsights(context: UploadContext): any {
     uploadEfficiency: analytics.uploadHistory.successRate,
     legalExpertise: analytics.caseContext.expertise,
     workflowOptimization: engagementScore > 0.8 ? 'excellent' : 'room_for_improvement',
-    recommendations: [] as string[],
+    recommendations: [] as string[]
   };
 
   // Generate legal-specific recommendations;
@@ -521,7 +521,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
     analyzeUserBehavior: analyzeUserBehaviorService,
     generateContextualPrompts: generateContextualPromptsService,
     performAIAnalysis: performAIAnalysisService,
-    saveToDatabase: saveToDatabaseService,
+    saveToDatabase: saveToDatabaseService
   }
 }).createMachine({
   id: 'enhancedLegalUploadAnalytics',
@@ -550,7 +550,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
       dbStorage: { status: 'pending' }
     },
     aiAnalysisResults: [],
-    evidenceMetadata: [],
+    evidenceMetadata: []
   },
   states: {
     idle: {
@@ -560,7 +560,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
           actions: assign({
             files: ({ event }) => event.files,
             caseId: ({ event }) => event.caseId,
-            errors: [],
+            errors: []
           })
         },
         AUTH_SESSION_UPDATED: {
@@ -600,7 +600,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
               ...context.userAnalytics,
               interactionMetrics: {
                 ...context.userAnalytics.interactionMetrics,
-                typingSpeed: event.speed,
+                typingSpeed: event.speed
               }
             })
           })
@@ -618,7 +618,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
                     y: event.y,
                     timestamp: Date.now(),
                     element: event.element,
-                    legalContext: event.legalContext,
+                    legalContext: event.legalContext
                   }
                 ]
               }
@@ -675,7 +675,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
           })
         },
         REQUEST_AI_SUGGESTIONS: {
-          target: 'generatingAdditionalPrompts',
+          target: 'generatingAdditionalPrompts'
         }
       }
     },
@@ -688,7 +688,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
           target: 'waitingForUpload',
           actions: assign({
             contextualPrompts: ({ context, event }) => [...context.contextualPrompts, ...event.output]
-          ,})
+          })
         },
         onError: {
           target: 'waitingForUpload',
@@ -702,7 +702,7 @@ export const comprehensiveUploadAnalyticsMachine = setup({
     uploadPipeline: {
       initial: 'validatingFiles',
       on: {
-        CANCEL_UPLOAD: 'cancelled',
+        CANCEL_UPLOAD: 'cancelled'
       },
       states: {
         validatingFiles: {
@@ -879,26 +879,26 @@ export const comprehensiveUploadAnalyticsMachine = setup({
         onDone: {
           actions: assign({
             contextualPrompts: ({ context, event }) => [...context.contextualPrompts, ...event.output]
-          ,})
+          })
         }
       },
       on: {
         RESET: 'idle',
-        REQUEST_AI_SUGGESTIONS: 'generatingAdditionalPrompts',
+        REQUEST_AI_SUGGESTIONS: 'generatingAdditionalPrompts'
       }
     },
 
     cancelled: {
       on: {
         RESET: 'idle',
-        RETRY_UPLOAD: 'uploadPipeline',
+        RETRY_UPLOAD: 'uploadPipeline'
       }
     },
 
     error: {
       on: {
         RETRY_UPLOAD: 'uploadPipeline',
-        RESET: 'idle',
+        RESET: 'idle'
       }
     }
   }

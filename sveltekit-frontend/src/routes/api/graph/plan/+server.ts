@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ms: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).computationTime,
       legalAnalysis: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).legalAnalysis,
       visualizations: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).visualizations,
-      metrics: planner.getMetrics(),
+      metrics: planner.getMetrics()
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e?.message || 'planning failed' }), { status: 500 });

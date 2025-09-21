@@ -8,7 +8,7 @@ async function run() {
   try {
     const res = await getEmbeddingViaGate(fetch as unknown as typeof globalThis.fetch, job.text, {
       model: job?.model || "unknown" // @ts-ignore - Model property access,
-      tags: job.tags,
+      tags: job.tags
     });
     const out: EmbedResult = {
       docId: job.docId,
@@ -16,7 +16,7 @@ async function run() {
       embedding: res.embedding,
       model: res?.model || "unknown" // @ts-ignore - Model property access,
       backend: res.backend,
-      cached: false,
+      cached: false
     };
     parentPort?.postMessage({ ok: true, result: out });
   } catch (e: any) {

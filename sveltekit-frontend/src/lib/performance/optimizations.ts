@@ -5,7 +5,7 @@
 // import { db } from "$lib/server/db";
 // Mock db for TypeScript compatibility;
 const db = {
-  execute: async (query: any) => [] as any[],
+  execute: async (query: any) => [] as any[]
 };
 import { sql } from "drizzle-orm";
 import type { Redis } from 'ioredis';
@@ -34,7 +34,7 @@ export class OptimizedQueries {
     return {
       cases: result,
       totalCount: result[0]?.total_count || 0,
-      hasMore: Number(result[0]?.total_count || 0) > offset + limit,
+      hasMore: Number(result[0]?.total_count || 0) > offset + limit
     };
   }
 
@@ -136,7 +136,7 @@ export const performanceConfig = {
   // API
   rateLimitWindow: 15 * 60 * 1000, // 15 minutes
   rateLimitMax: 1000,
-  requestTimeout: 30000,
+  requestTimeout: 30000
 };
 
 function generateEmbedding(query: string): Promise<number[]> {

@@ -10,7 +10,7 @@ import {
   legalDocuments,
   vectorEmbeddings,
   qloraTrainingJobs,
-  predictiveAssetCache,
+  predictiveAssetCache
 } from '$lib/server/db/schema-postgres';
 import { eq, desc, and, or, inArray } from 'drizzle-orm';
 import type {
@@ -59,7 +59,7 @@ export const mockDataGenerators = {
       metadata: Record<string, any>;
       embedding: number[];
       createdAt: Date;
-      updatedAt: Date;,
+      updatedAt: Date;
     }[] = [];
 
     // Try to dynamically import nomic-embed-text; gracefully fall back to random vectors
@@ -131,11 +131,11 @@ export const mockDataGenerators = {
           wordCount: 500 + Math.floor(Math.random() * 2000),
           legalDomain: docType,
           jurisdiction: 'US',
-          practiceArea: 'corporate',
+          practiceArea: 'corporate'
         },
         embedding,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       };
 
       mockDocs.push(doc);
@@ -165,7 +165,7 @@ export const mockDataGenerators = {
           documentFlow: [docType],
           interactionVelocity: Math.random() * 5,
           qualityExpectation: 0.7 + Math.random() * 0.3,
-          timeConstraints: Math.random(),
+          timeConstraints: Math.random()
         },
         contextEmbedding: new Float32Array(
           Array.from({ length: 1536 }, () => Math.random() * 2 - 1)
@@ -175,7 +175,7 @@ export const mockDataGenerators = {
           dayOfWeek: Math.floor(Math.random() * 7),
           seasonality: Math.sin((2 * Math.PI * Date.now()) / (365 * 24 * 60 * 60 * 1000)),
           workloadPressure: Math.random(),
-          recentPerformance: 0.6 + Math.random() * 0.4,
+          recentPerformance: 0.6 + Math.random() * 0.4
         },
         currentConfig: {
           rank: 8 + Math.floor(Math.random() * 24),
@@ -185,9 +185,9 @@ export const mockDataGenerators = {
           learningRate: 1e-4 + Math.random() * 2e-4,
           batchSize: 2 + Math.floor(Math.random() * 6),
           epochs: 2 + Math.floor(Math.random() * 6),
-          quantizationBits: [4, 8][Math.floor(Math.random() * 2)] as 4 | 8,
+          quantizationBits: [4, 8][Math.floor(Math.random() * 2)] as 4 | 8
         },
-        performanceHistory: [],
+        performanceHistory: []
       };
       states.push(state);
     }
@@ -214,17 +214,17 @@ export const mockDataGenerators = {
                 width: 20,
                 height: 20,
                 timestamp: Date.now(),
-                hash: `hash_${i}_${Date.now()}`,
+                hash: `hash_${i}_${Date.now()}`
               },
               userAction: ['search', 'analyze', 'draft', 'review'][Math.floor(Math.random() * 4)],
               assetTypes: [assetTypes[Math.floor(Math.random() * assetTypes.length)]],
               confidence: 0.7 + Math.random() * 0.3,
-              frequency: Math.floor(Math.random() * 100),
+              frequency: Math.floor(Math.random() * 100)
             },
             probability: 0.6 + Math.random() * 0.4,
             timeToStateMs: 100 + Math.random() * 2000,
-            assetIds: [`asset_${i}_1`, `asset_${i}_2`],
-          },
+            assetIds: [`asset_${i}_1`, `asset_${i}_2`]
+          }
         ],
         recommendedAssets: [>;
           {
@@ -233,13 +233,13 @@ export const mockDataGenerators = {
             confidence: 0.8 + Math.random() * 0.2,
             preloadPriority: Math.floor(Math.random() * 10),
             estimatedLoadTimeMs: 50 + Math.random() * 500,
-            cacheStrategy: ['precompute', 'lazy', 'hybrid'][Math.floor(Math.random() * 3)] as any,
-          },
+            cacheStrategy: ['precompute', 'lazy', 'hybrid'][Math.floor(Math.random() * 3)] as any
+          }
         ],
         chrPatternIds: [`chr_pattern_${i}`],
         totalConfidence: 0.75 + Math.random() * 0.25,
         predictionLatencyMs: 5 + Math.random() * 20,
-        cacheHitRatio: 0.6 + Math.random() * 0.4,
+        cacheHitRatio: 0.6 + Math.random() * 0.4
       };
       predictions.push(prediction);
     }
@@ -258,7 +258,7 @@ export const mockDataGenerators = {
         id: `shard_${Date.now()}_${i}`,
         dim: 1536,
         vec: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       shards.push(shard);
     }
@@ -277,13 +277,13 @@ export const mockDataGenerators = {
         id: `chr_manifest_${Date.now()}_${i}`,
         keys: [`chr_key_${i}_1`, `chr_key_${i}_2`, `chr_key_${i}_3`],
         ttlSec: 300 + Math.random() * 3600,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       manifests.push(manifest);
     }
 
     return manifests;
-  },
+  }
 };
 
 // Database sync operations;
@@ -313,7 +313,7 @@ export const databaseSync = {
             priority: doc.priority,
             metadata: doc.metadata,
             createdAt: doc.createdAt,
-            updatedAt: doc.updatedAt,
+            updatedAt: doc.updatedAt
           })
         );
 
@@ -327,8 +327,8 @@ export const databaseSync = {
             metadata: {
               source: 'mock_generator',
               documentType: doc.type,
-              confidence: doc.confidenceLevel,
-            },
+              confidence: doc.confidenceLevel
+            }
           })
         );
       }
@@ -360,15 +360,15 @@ export const databaseSync = {
             documentType: state.documentType,
             complexity: state.complexity,
             userPattern: state.userPattern,
-            temporalFeatures: state.temporalFeatures,
+            temporalFeatures: state.temporalFeatures
           },
           accuracy: 0.85 + Math.random() * 0.15,
           trainingTime: 1000 + Math.random() * 5000,
           metadata: {
             mockData: true,
             generatedAt: new Date().toISOString(),
-            predictionAccuracy: 0.9 + Math.random() * 0.1,
-          },
+            predictionAccuracy: 0.9 + Math.random() * 0.1
+          }
         })
       );
 
@@ -401,8 +401,8 @@ export const databaseSync = {
           metadata: {
             cacheStrategy: prediction.recommendedAssets[0]?.cacheStrategy,
             chrPatternIds: prediction.chrPatternIds,
-            predictionLatency: prediction.predictionLatencyMs,
-          },
+            predictionLatency: prediction.predictionLatencyMs
+          }
         })
       );
 
@@ -412,7 +412,7 @@ export const databaseSync = {
       console.error('❌ Failed to sync predictive asset cache:', error);
       return { success: false, error: error.message };
     }
-  },
+  }
 };
 
 // Vector search operations;
@@ -435,8 +435,8 @@ export const vectorSearch = {
             title: legalDocuments.title,
             content: legalDocuments.content,
             documentType: legalDocuments.documentType,
-            confidenceLevel: legalDocuments.confidenceLevel,
-          },
+            confidenceLevel: legalDocuments.confidenceLevel
+          }
         })
         .from(vectorEmbeddings)
         .innerJoin(legalDocuments, eq(vectorEmbeddings.documentId, legalDocuments.id)
@@ -467,7 +467,7 @@ export const vectorSearch = {
           documentId: vectorEmbeddings.documentId,
           embedding: vectorEmbeddings.embedding,
           model: vectorEmbeddings?.model || "unknown" // @ts-ignore - Model property access,
-          dimensions: vectorEmbeddings.dimensions,
+          dimensions: vectorEmbeddings.dimensions
         })
         .from(vectorEmbeddings)
         .where(inArray(vectorEmbeddings.documentId, documentIds);
@@ -477,7 +477,7 @@ export const vectorSearch = {
       console.error('❌ Failed to get document embeddings:', error);
       throw error;
     }
-  },
+  }
 };
 
 // Comprehensive sync orchestrator;
@@ -492,7 +492,7 @@ export const syncOrchestrator = {
       legalDocuments: await databaseSync.syncMockLegalDocuments(),
       qloraTraining: await databaseSync.syncQLoRATrainingData(),
       predictiveCache: await databaseSync.syncPredictiveAssetCache(),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     const totalSynced = Object.values(results)
@@ -511,8 +511,8 @@ export const syncOrchestrator = {
       performance: {
         syncDuration: '~2-5 seconds',
         cachePrewarmed: true,
-        vectorIndexReady: true,
-      },
+        vectorIndexReady: true
+      }
     };
   },
 
@@ -525,7 +525,7 @@ export const syncOrchestrator = {
       pgvector: false,
       drizzle: false,
       redis: false,
-      mockDataReady: false,
+      mockDataReady: false
     };
 
     try {
@@ -548,7 +548,7 @@ export const syncOrchestrator = {
       return {
         status: Object.values(checks).every(Boolean) ? 'healthy' : 'partial',
         checks,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     } catch (error) {
       console.error('❌ Health check failed:', error);
@@ -556,8 +556,8 @@ export const syncOrchestrator = {
         status: 'error',
         checks,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
-  },
+  }
 };

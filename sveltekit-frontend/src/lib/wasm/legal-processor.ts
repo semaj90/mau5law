@@ -16,7 +16,7 @@ interface WasmModule {
   calculate_readability_score(text: string): number;
   detect_sensitive_information(text: string): string;
   compress_document_features(features: Uint8Array): Uint8Array;
-  memory: WebAssembly.Memory;,
+  memory: WebAssembly.Memory;
 }
 
 interface ProcessingResult {
@@ -28,7 +28,7 @@ interface ProcessingResult {
   fingerprint: string;
   similarity?: number;
   readabilityScore: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 interface LegalEntity {
@@ -37,7 +37,7 @@ interface LegalEntity {
   confidence: number;
   startIndex: number;
   endIndex: number;
-  context: string;,
+  context: string;
 }
 
 interface LegalCitation {
@@ -45,7 +45,7 @@ interface LegalCitation {
   citation: string;
   jurisdiction: string;
   year?: number;
-  relevance: number;,
+  relevance: number;
 }
 
 interface SensitiveInfo {
@@ -170,7 +170,7 @@ export class WasmLegalProcessor {
           sensitiveInfo: [],
           fingerprint: '',
           readabilityScore: 0,
-          processingTime: 0,
+          processingTime: 0
         });
       }
     });
@@ -187,7 +187,7 @@ export class WasmLegalProcessor {
         entities: [],
         citations: [],
         documentType: 'fragment',
-        readability: 0,
+        readability: 0
       };
     }
 
@@ -255,7 +255,7 @@ export class WasmLegalProcessor {
 
     return {
       ...result,
-      text: maskedText,
+      text: maskedText
     };
   }
 
@@ -279,7 +279,7 @@ export class WasmLegalProcessor {
           complexity: this.calculateComplexity(text),
           legalTermDensity: this.calculateLegalTermDensity(text),
           structure: this.analyzeStructure(text),
-          classification: this.classifyDocument(text),
+          classification: this.classifyDocument(text)
         };
         return JSON.stringify(analysis);
       },
@@ -353,7 +353,7 @@ export class WasmLegalProcessor {
             type: 'case',
             citation: match[0],
             jurisdiction: 'Federal',
-            relevance: 0.8,
+            relevance: 0.8
           });
         }
 
@@ -364,7 +364,7 @@ export class WasmLegalProcessor {
             type: 'statute',
             citation: match[0],
             jurisdiction: 'Federal',
-            relevance: 0.9,
+            relevance: 0.9
           });
         }
 
@@ -403,7 +403,7 @@ export class WasmLegalProcessor {
         }
 
         // Email pattern
-        const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
+        const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2}\b/g;
         while ((match = emailRegex.exec(text)) !== null) {
           sensitive.push({
             type: 'email',
@@ -443,7 +443,7 @@ export class WasmLegalProcessor {
     return {
       paragraphs: text.split(/\n\s*\n/).length,
       sections: (text.match(/^\d+\./gm) || []).length,
-      headers: (text.match(/^[A-Z\s]+$/gm) || []).length,
+      headers: (text.match(/^[A-Z\s]+$/gm) || []).length
     };
   }
 

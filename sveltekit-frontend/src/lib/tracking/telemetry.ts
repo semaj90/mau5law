@@ -26,7 +26,7 @@ export function initTypingDetector(getSession: () => string, getUser?: () => str
     const payload: TelemetryPayload = {
       session_id: getSession(),
       user_id: getUser?.(),
-      ...data,
+      ...data
     };
     realtimeComm.sendMessage('user_activity', { telemetry: payload }, 'low').catch(() => {});
   };
@@ -72,7 +72,7 @@ export function trackUserHint(hint: string, getSession: () => string) {
   
   const payload: TelemetryPayload = {
     session_id: getSession(),
-    hints: [hint],
+    hints: [hint]
   };
   
   realtimeComm.sendMessage('user_hint', { telemetry: payload }, 'normal').catch(() => {});

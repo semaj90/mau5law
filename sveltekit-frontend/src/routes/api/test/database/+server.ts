@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'database_connection',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
           firstName: users.firstName,
           lastName: users.lastName,
           role: users.role,
-          isActive: users.isActive,
+          isActive: users.isActive
         }).from(users).limit(5);
 
         results.push({
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'users_read',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
           title: cases.title,
           status: cases.status,
           caseNumber: cases.caseNumber,
-          createdAt: cases.createdAt,
+          createdAt: cases.createdAt
         }).from(cases).orderBy(desc(cases.createdAt)).limit(5);
 
         results.push({
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'cases_read',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url }) => {
           id: reports.id,
           title: reports.title,
           status: reports.status,
-          createdAt: reports.createdAt,
+          createdAt: reports.createdAt
         }).from(reports).orderBy(desc(reports.createdAt)).limit(5);
 
         results.push({
@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'reports_read',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
           title: evidence.title,
           type: evidence.type,
           status: evidence.status,
-          createdAt: evidence.createdAt,
+          createdAt: evidence.createdAt
         }).from(evidence).orderBy(desc(evidence.createdAt)).limit(5);
 
         results.push({
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'evidence_read',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url }) => {
           name: personsOfInterest.name,
           threatLevel: personsOfInterest.threatLevel,
           status: personsOfInterest.status,
-          createdAt: personsOfInterest.createdAt,
+          createdAt: personsOfInterest.createdAt
         }).from(personsOfInterest).orderBy(desc(personsOfInterest.createdAt)).limit(5);
 
         results.push({
@@ -160,7 +160,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'persons_of_interest_read',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url }) => {
           lastName: criminals.lastName,
           threatLevel: criminals.threatLevel,
           status: criminals.status,
-          createdAt: criminals.createdAt,
+          createdAt: criminals.createdAt
         }).from(criminals).orderBy(desc(criminals.createdAt)).limit(5);
 
         results.push({
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'criminals_read',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -204,7 +204,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'pgvector_extension',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -216,7 +216,7 @@ export const GET: RequestHandler = async ({ url }) => {
       summary: {
         total: results.length,
         passed: results.filter(item => item.length),
-        failed: results.filter(item => item.length),
+        failed: results.filter(item => item.length)
       }
     });
 
@@ -224,7 +224,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

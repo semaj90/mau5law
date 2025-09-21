@@ -73,7 +73,7 @@ Provide analysis in JSON format:;
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: 'gemma2:9b',
@@ -82,7 +82,7 @@ Provide analysis in JSON format:;
         stream: false,
         options: {
           temperature: 0.4,
-          top_p: 0.8,
+          top_p: 0.8
         }
       })
     });
@@ -106,11 +106,11 @@ Provide analysis in JSON format:;
         legalSpecificInsights: {
           documentPreparation: 'Standard preparation observed',
           caseManagement: 'Active case management detected',
-          timeManagement: 'Efficient workflow patterns',
+          timeManagement: 'Efficient workflow patterns'
         },
         recommendations: ['Continue current workflow'],
         urgencyAwareness: legalContext?.urgency === 'critical' ? 1.0 : 0.7,
-        nextBestActions: ['Process selected documents'],
+        nextBestActions: ['Process selected documents']
       };
     }
 
@@ -121,14 +121,14 @@ Provide analysis in JSON format:;
       contextualPreferences: {
         ...userAnalytics.contextualPreferences,
         preferredAIPromptStyle: analysis.behaviorPattern === 'expert' ? 'concise' : 'detailed',
-        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate',
+        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate'
       }
     };
 
     return json({
       analytics: updatedAnalytics,
       insights: analysis,
-      score: analysis.efficiencyScore,
+      score: analysis.efficiencyScore
     });
 
   } catch (error) {

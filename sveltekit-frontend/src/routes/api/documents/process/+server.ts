@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       enableMinIOStorage: formData.get('enableMinIOStorage') === 'true' || false,
       model: 'gemma3-legal:latest',
       chunkSize: parseInt(formData.get('chunkSize') as string) || 1000,
-      confidence: parseFloat(formData.get('confidence') as string) || 0.7,
+      confidence: parseFloat(formData.get('confidence') as string) || 0.7
     };
 
     // Extract metadata;
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
       description: formData.get('description') as string || '',
       tags: (formData.get('tags') as string || '').split(',').map(t => t.trim()).filter(Boolean),
       userId: formData.get('userId') as string || 'anonymous',
-      priority: formData.get('priority') as string || 'medium',
+      priority: formData.get('priority') as string || 'medium'
     };
 
     if (!metadata.caseId) {
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTime: Array.isArray(results) 
           ? results.reduce((sum, r) => sum + r.metadata.processingTime, 0)
           : results.metadata.processingTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -92,9 +92,9 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: err.message || 'Document processing failed',
-      details: err.stack,
+      details: err.stack
     }, { 
-      status: err.status || 500 ,
+      status: err.status || 500 
     });
   }
 };
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({ url }) => {
         resultCount: results.results.length,
         processingTime: results.processingTime,
         threshold,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -141,9 +141,9 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: err.message || 'Semantic search failed',
-      details: err.stack,
+      details: err.stack
     }, { 
-      status: err.status || 500 ,
+      status: err.status || 500 
     });
   }
 };
@@ -156,14 +156,14 @@ export const OPTIONS: RequestHandler = async () => {
     return json({
       success: true,
       health,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json({
       success: false,
-      error: err.message || 'Health check failed',
+      error: err.message || 'Health check failed'
     }, { 
-      status: 500 ,
+      status: 500 
     });
   }
 };

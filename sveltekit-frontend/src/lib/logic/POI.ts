@@ -23,7 +23,7 @@ export interface POIData {
   tags: string[];
   createdBy: string;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 export class POI {
   id: string;
@@ -62,7 +62,7 @@ export class POI {
   }
   // Method to update the profile from a form;
   updateProfile(newData: Partial<POIProfile>) {
-    this.profileData.update((p) => ({ ...p, ...newData ,});
+    this.profileData.update((p) => ({ ...p, ...newData });
     this.isDirty = true;
   }
   // Method to update position when dragged;
@@ -110,7 +110,7 @@ export class POI {
       tags: this.getValueFromStore(this.tags),
       createdBy: this.createdBy,
       createdAt: this.createdAt,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
   }
   // Helper to get current value from writable store;

@@ -51,7 +51,7 @@ export interface DocumentationResult {
   parameters: ParameterInfo[];
   returnType: string;
   examples: string[];
-  source: string;,
+  source: string;
 }
 
 export interface ParameterInfo {
@@ -66,7 +66,7 @@ export interface ExampleResult {
   name: string;
   code: string;
   description: string;
-  language: string;,
+  language: string;
 }
 
 export interface FallbackResult {
@@ -115,7 +115,7 @@ export interface ErrorResolutionStrategy {
   pattern: TypeScriptErrorPattern;
   resolution: 'barrel-store' | 'type-definition' | 'polyfill' | 'dependency' | 'fallback';
   implementation?: string;
-  confidence: number;,
+  confidence: number;
 }
 
 // Package-specific interfaces
@@ -124,28 +124,28 @@ export interface SvelteKitMissingItems {
   stores: string[];
   utilities: string[];
   components: string[];
-  actions: string[];,
+  actions: string[];
 }
 
 export interface DrizzleOrmMissingItems {
   columnTypes: string[];
   queryOperators: string[];
   schemaBuilders: string[];
-  connections: string[];,
+  connections: string[];
 }
 
 export interface DatabaseMissingItems {
   postgres: string[];
   redis: string[];
   neo4j: string[];
-  vector: string[];,
+  vector: string[];
 }
 
 export interface StateMachineMissingItems {
   xstate: string[];
   actors: string[];
   guards: string[];
-  actions: string[];,
+  actions: string[];
 }
 
 // Resolution result types;
@@ -158,7 +158,7 @@ export interface AutomatedResolutionResult {
   performance: {
     analysisTime: number;
     generationTime: number;
-    totalTime: number;,
+    totalTime: number;
   };
 }
 
@@ -169,7 +169,7 @@ export interface BarrelStoreFile {
   exports: string[];
   types: string[];
   functions: string[];
-  classes: string[];,
+  classes: string[];
 }
 
 // Web fetch integration types;
@@ -177,7 +177,7 @@ export interface WebFetchConfig {
   sources: WebFetchSource[];
   cacheEnabled: boolean;
   timeout: number;
-  retries: number;,
+  retries: number;
 }
 
 export interface WebFetchSource {
@@ -194,7 +194,7 @@ export interface Context7McpConfig {
   libraries: string[];
   topics: string[];
   maxTokens: number;
-  cacheEnabled: boolean;,
+  cacheEnabled: boolean;
 }
 
 export interface Context7McpResponse {
@@ -204,7 +204,7 @@ export interface Context7McpResponse {
     tokenCount: number;
     version?: string;
     topics: string[];
-    confidence: number;,
+    confidence: number;
   };
   snippets?: CodeSnippet[];
 }
@@ -214,7 +214,7 @@ export interface CodeSnippet {
   code: string;
   description: string;
   language: string;
-  tags: string[];,
+  tags: string[];
 }
 
 // Enhanced error analysis;
@@ -222,7 +222,7 @@ export interface EnhancedErrorAnalysis extends MissingImportAnalysis {
   errorClusters: ErrorCluster[];
   priorityFiles: string[];
   resolutionStrategies: Map<string, ErrorResolutionStrategy>;
-  dependencies: DependencyAnalysis;,
+  dependencies: DependencyAnalysis;
 }
 
 export interface ErrorCluster {
@@ -230,14 +230,14 @@ export interface ErrorCluster {
   count: number;
   files: string[];
   suggestedResolution: string;
-  priority: number;,
+  priority: number;
 }
 
 export interface DependencyAnalysis {
   missingPackages: string[];
   versionConflicts: string[];
   devDependencies: string[];
-  peerDependencies: string[];,
+  peerDependencies: string[];
 }
 
 // Export all types for barrel store;
@@ -249,5 +249,5 @@ export {
   TypeScriptErrorPattern,
   ErrorResolutionStrategy,
   AutomatedResolutionResult,
-  EnhancedErrorAnalysis,
+  EnhancedErrorAnalysis
 };

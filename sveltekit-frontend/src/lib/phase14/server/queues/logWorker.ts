@@ -7,7 +7,7 @@ import { logQueue } from './logQueue.js';
 export interface LogEntryData {
   timestamp: string;
   level: string;
-  message: string;,
+  message: string;
 }
 
 // Create a new BullMQ Worker instance
@@ -30,8 +30,8 @@ const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: embeddingModel,
-        prompt: message,
-      }),
+        prompt: message
+      })
     });
 
     if (!response.ok) {
@@ -62,8 +62,8 @@ const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
 }, {
   connection: {
     host: 'localhost',
-    port: 6379,
-  },
+    port: 6379
+  }
 });
 
 console.log('BullMQ Log Worker started.');

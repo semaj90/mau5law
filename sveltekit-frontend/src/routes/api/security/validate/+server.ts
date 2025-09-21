@@ -7,7 +7,7 @@ interface SecurityValidationRequest {
   firstName?: string;
   lastName?: string;
   organizationName?: string;
-  validationType: 'registration' | 'login' | 'password_reset';,
+  validationType: 'registration' | 'login' | 'password_reset';
 }
 
 interface SecurityValidationResponse {
@@ -16,7 +16,7 @@ interface SecurityValidationResponse {
   progress: {
     stage: string;
     percentage: number;
-    message: string;,
+    message: string;
   };
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   warnings: string[];
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       progress: {
         stage: 'initializing',
         percentage: 0,
-        message: 'Starting security validation process...',
+        message: 'Starting security validation process...'
       },
       riskLevel: 'low',
       warnings: [],
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     response.progress = {
       stage: 'ai_analysis',
       percentage: 25,
-      message: 'Running AI-powered security analysis...',
+      message: 'Running AI-powered security analysis...'
     };
 
     // Check against Enhanced RAG service for threat intelligence;
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           domain: email.split('@')[1],
           validationType
         }),
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
 
       if (ragResponse.ok) {
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     response.progress = {
       stage: 'completed',
       percentage: 100,
-      message: 'Security validation completed successfully',
+      message: 'Security validation completed successfully'
     };
 
     // Add context-specific recommendations;
@@ -139,11 +139,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
       progress: {
         stage: 'error',
         percentage: 0,
-        message: 'Security validation failed',
+        message: 'Security validation failed'
       },
       riskLevel: 'critical',
       warnings: ['Validation service temporarily unavailable'],
-      recommendations: ['Please try again later'],
+      recommendations: ['Please try again later']
     } as SecurityValidationResponse, { status: 500 });
   }
 };

@@ -13,7 +13,7 @@ export interface QuantizationOptions {
   targetLength: number; // Target sequence length for model input
   cudaThreads: number; // Number of CUDA threads to simulate
   cacheStrategy: 'aggressive' | 'moderate' | 'minimal';
-  outputFormat: 'fp32' | 'fp16' | 'int8' | 'int16';,
+  outputFormat: 'fp32' | 'fp16' | 'int8' | 'int16';
 }
 
 export interface QuantizationResult {
@@ -31,7 +31,7 @@ export interface QuantizationResult {
     minValue: number;
     maxValue: number;
     meanValue: number;
-    entropy: number;,
+    entropy: number;
   };
 }
 
@@ -45,7 +45,7 @@ export interface GemmaOutputQuantization {
   legalClassification: {
     documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidence: number;,
+    confidence: number;
   };
 }
 
@@ -84,7 +84,7 @@ export class Base64FP32Quantizer {
         gridSize: Math.ceil(maxThreads / this.CUDA_BLOCK_SIZE),
         blockSize: this.CUDA_BLOCK_SIZE,
         sharedMemory: new ArrayBuffer(48 * 1024), // 48KB shared memory per block
-        registers: new Map(),
+        registers: new Map()
       };
       
       this.cudaThreadPool.push(context);
@@ -127,7 +127,7 @@ export class Base64FP32Quantizer {
         return {
           ...cached,
           cacheHit: true,
-          processingTime: performance.now() - startTime,
+          processingTime: performance.now() - startTime
         };
       }
 
@@ -416,7 +416,7 @@ export class Base64FP32Quantizer {
       bits: config.quantizationBits,
       scaling: config.scalingMethod,
       length: config.targetLength,
-      format: config.outputFormat,
+      format: config.outputFormat
     };
     
     return btoa(JSON.stringify(keyData)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
@@ -622,7 +622,7 @@ export class Base64FP32Quantizer {
       maxCacheSize: this.MAX_CACHE_SIZE,
       blockSize: this.CUDA_BLOCK_SIZE,
       gemmaVocabSize: this.GEMMA_VOCAB_SIZE,
-      gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE,
+      gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE
     };
   }
 
@@ -660,6 +660,6 @@ export async function processGemmaResponse(
     quantizationBits: 8,
     scalingMethod: 'sigmoid',
     targetLength: 2048,
-    cacheStrategy: 'aggressive',
+    cacheStrategy: 'aggressive'
   });
 }

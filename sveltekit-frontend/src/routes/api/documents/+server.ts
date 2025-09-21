@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
         updated_at: documents.updated_at,
         created_by: documents.created_by,
         is_indexed: documents.is_indexed,
-        case_title: cases.title,
+        case_title: cases.title
       })
       .from(documents)
       .leftJoin(cases, eq(documents.case_id, cases.id)
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     // Get total count for pagination
     const totalQuery = db
-      .select({ count: sql`count(*)` ,})
+      .select({ count: sql`count(*)` })
       .from(documents)
       .where(conditions.length > 0 ? and(...conditions) : undefined);
     
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
         total,
         pages: Math.ceil(total / limit),
         hasNext: page * limit < total,
-        hasPrev: page > 1,
+        hasPrev: page > 1
       }
     };
     
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
       embedding_model: data.embedding_model || 'nomic-embed-text',
       created_by: data.created_by,
       is_public: data.is_public || false,
-      is_indexed: data.is_indexed || false,
+      is_indexed: data.is_indexed || false
     };
     
     // Insert document
@@ -239,7 +239,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       document: newDocument,
       embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
-      message: 'Document created successfully',
+      message: 'Document created successfully'
     }, { status: 201 });
     
   } catch (error) {
@@ -295,7 +295,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     // Prepare update data;
     const updateData: Partial<Document> = {
       ...data,
-      updated_at: new Date(),
+      updated_at: new Date()
     };
     
     // Add embeddings if generated;
@@ -332,7 +332,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     return json({
       document: updatedDocument,
       embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding),
-      message: 'Document updated successfully',
+      message: 'Document updated successfully'
     });
     
   } catch (error) {
@@ -356,7 +356,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       .update(documents);
       .set({ 
         is_active: false, 
-        updated_at: new Date() ,
+        updated_at: new Date() 
       })
       .where(eq(documents.id, documentId)
       .returning();
@@ -374,7 +374,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     
     return json({
       message: 'Document deleted successfully',
-      document_id: documentId,
+      document_id: documentId
     });
     
   } catch (error) {

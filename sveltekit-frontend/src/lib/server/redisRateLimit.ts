@@ -107,7 +107,7 @@ export async function redisRateLimit(opts: RedisRateLimitOptions): Promise<any> 
       count: 1,
       retryAfter: 0,
       remaining: Math.max(0, (opts?.limit ?? 1) - 1),
-      resetTime: 0,
+      resetTime: 0
     };
   }
 }
@@ -166,7 +166,7 @@ export async function rateLimitHealthCheck(): Promise<any> {
       redis: false,
       latencyMs: Date.now() - start,
       scriptLoaded: false,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 }

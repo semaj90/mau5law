@@ -19,7 +19,7 @@ const evidenceSchema = z.object({
   fileSize: z.number().optional(),
   mimeType: z.string().optional(),
   tags: z.array(z.string()).default([]),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional()
 });
 
 export const load: PageServerLoad = async ({ url, locals }) => {

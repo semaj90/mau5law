@@ -9,7 +9,7 @@ type Action = string; // e.g., 'open:doc:123', 'hover:doc:123', 'search:term:ind
 
 interface PredictionResult {
   action: Action;
-  p: number;,
+  p: number;
 }
 
 class MarkovPredictorWithRedis {
@@ -30,7 +30,7 @@ class MarkovPredictorWithRedis {
       retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
       lazyConnect: true,
-      password: redisPassword,
+      password: redisPassword
     });
 
     this.cacheEnabled = true;
@@ -157,7 +157,7 @@ class MarkovPredictorWithRedis {
 
       return {
         ...pred,
-        p: pred.p * boost,
+        p: pred.p * boost
       };
     });
 
@@ -217,7 +217,7 @@ class MarkovPredictorWithRedis {
     cacheEnabled: boolean;
     lastSync: number;
     pendingUpdates: number;
-    redisConnected: boolean;,
+    redisConnected: boolean;
   }> {
     let redisConnected = false;
     let totalRedisKeys = 0;

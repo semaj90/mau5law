@@ -39,7 +39,7 @@ export const GET: RequestHandler = async () => {
           status: (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).ok ? 'healthy' : 'unhealthy',
           response_code: (response as { ok?: any; status?: any; text?: any; statusText?: any; json?: any }).status,
           response_time: responseTime,
-          last_check: new Date().toISOString(),
+          last_check: new Date().toISOString()
         });
       } catch (error: any) {
         const responseTime = Date.now() - startTime;
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async () => {
           error_type: errorType,
           error: errorMessage,
           response_time: responseTime,
-          last_check: new Date().toISOString(),
+          last_check: new Date().toISOString()
         });
       }
     }
@@ -80,16 +80,16 @@ export const GET: RequestHandler = async () => {
         total_count: healthChecks.length,
         // Provide a derived integration flag (placeholder until real integration flag added)
         orchestrator_integration: (orchestratorStatus as any).context7Integration ?? false,
-        overall_status: healthChecks.every((h) => h.status === 'healthy') ? 'healthy' : 'degraded',
+        overall_status: healthChecks.every((h) => h.status === 'healthy') ? 'healthy' : 'degraded'
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!server || !tool) {
           return json({
               success: false,
-              error: 'Server and tool parameters required for custom tool calls',
+              error: 'Server and tool parameters required for custom tool calls'
             },)
             { status: 400 }
           );
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -167,7 +167,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
       signal: controller.signal,
       body: JSON.stringify({
         name: tool,
-        arguments: data,
+        arguments: data
       })
     });
 
@@ -188,7 +188,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
         input_data: data,
         result,
         timestamp: new Date(),
-        status: 'completed',
+        status: 'completed'
       },
       'mcp_tool_calls'
     );
@@ -198,7 +198,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
       server,
       tool,
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     // Log the error to database
@@ -209,7 +209,7 @@ async function callMCPTool(server: string, tool: string, data: any): Promise<any
         input_data: data,
         error: error.message,
         timestamp: new Date(),
-        status: 'failed',
+        status: 'failed'
       },
       'mcp_tool_calls'
     );
@@ -235,7 +235,7 @@ async function syncWithOrchestrator(data: any): Promise<any> {
       signal: controller.signal,
       body: JSON.stringify({
         name: 'generate_recommendations',
-        arguments: data,
+        arguments: data
       })
     });
 
@@ -254,7 +254,7 @@ async function syncWithOrchestrator(data: any): Promise<any> {
             error_pattern: rec.error,
             source: 'context7_mcp',
             metadata: data,
-            created_at: new Date(),
+            created_at: new Date()
           },
           'recommendations'
         );
@@ -262,7 +262,7 @@ async function syncWithOrchestrator(data: any): Promise<any> {
         // Trigger orchestrator event;
         databaseOrchestrator.emit('context7:recommendation_processed', {
           recommendation: rec,
-          source_data: data,
+          source_data: data
         });
       }
     }
@@ -274,14 +274,14 @@ async function syncWithOrchestrator(data: any): Promise<any> {
       success: true,
       message: 'Context7 sync completed',
       processed_recommendations: processedCount,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       category,
       fileExtension,
       dimensions: await getImageDimensions(buffer, file.type),
-      checksum: generateChecksum(buffer),
+      checksum: generateChecksum(buffer)
     };
 
     // Save to database as evidence;
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       processedAt: null,
       ocrText: null,
       contentText: null,
-      embedding: null,
+      embedding: null
     };
 
     await db.insert(evidence).values(evidenceData).execute();
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       caseId,
       needsOCR: needsOCR(file.type),
       needsEmbedding: true,
-      needsThumbnail: !thumbnailUrl,
+      needsThumbnail: !thumbnailUrl
     });
 
     const response: UploadResponse = {
@@ -217,7 +217,7 @@ function getJPEGDimensions(buffer: Buffer): { width: number; height: number } | 
         if (marker >= 0xC0 && marker <= 0xC3) { // SOF markers;
           return {
             height: buffer.readUInt16BE(i + 5),
-            width: buffer.readUInt16BE(i + 7),
+            width: buffer.readUInt16BE(i + 7)
           };
         }
         i += 2 + buffer.readUInt16BE(i + 2);
@@ -238,7 +238,7 @@ function getPNGDimensions(buffer: Buffer): { width: number; height: number } | n
 
     return {
       width: buffer.readUInt32BE(16),
-      height: buffer.readUInt32BE(20),
+      height: buffer.readUInt32BE(20)
     };
   } catch (error) {
     return null;
@@ -274,7 +274,7 @@ async function triggerBackgroundProcessing(fileId: string, options: {
   caseId?: string | null;
   needsOCR: boolean;
   needsEmbedding: boolean;
-  needsThumbnail: boolean;,
+  needsThumbnail: boolean;
 }) {
   try {
     // TODO: Integrate with Redis or NATS for background job processing
@@ -287,7 +287,7 @@ async function triggerBackgroundProcessing(fileId: string, options: {
     //   type: options.type,
     //   timestamp: Date.now().toString(),
     //   ...options
-    // ,});
+    // });
 
   } catch (error) {
     console.error('Failed to trigger background processing:', error);
@@ -321,7 +321,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           uploaded: true,
           ocrComplete: !!fileData[0].ocrText,
           embeddingComplete: !!fileData[0].embedding,
-          processed: !!fileData[0].processedAt,
+          processed: !!fileData[0].processedAt
         }
       });
     }
@@ -336,7 +336,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         fileSize: evidence.fileSize,
         uploadedAt: evidence.uploadedAt,
         processedAt: evidence.processedAt,
-        caseId: evidence.caseId,
+        caseId: evidence.caseId
       })
       .from(evidence)
       .orderBy(evidence.uploadedAt)
@@ -350,7 +350,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     return json({
       uploads: recentUploads,
-      total: recentUploads.length,
+      total: recentUploads.length
     });
 
   } catch (err) {

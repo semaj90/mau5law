@@ -23,25 +23,25 @@ export interface CaseSummaryResponse {
     recommendations: string[];
     riskAssessment: {
       level: "low" | "medium" | "high";
-      factors: string[];,
+      factors: string[];
     };
     timeline: Array<any>;
     evidence: {
       total: number;
       admissible: number;
       questionable: number;
-      inadmissible: number;,
+      inadmissible: number;
     };
     nextSteps: string[];
     confidence: number;
-    generatedAt: Date;,
+    generatedAt: Date;
   };
   analytics?: {
     evidenceCount: number;
     documentsReviewed: number;
     witnessesInterviewed: number;
     daysActive: number;
-    completionPercentage: number;,
+    completionPercentage: number;
   };
   error?: string;
 }
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     console.error("Case summary generation error:", error);
     return json({
         success: false,
-        error: error instanceof Error ? error.message: "Internal server error",
+        error: error instanceof Error ? error.message: "Internal server error"
       } as CaseSummaryResponse,)
       { status: 500 }
     );
@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     console.error("Case summary retrieval error:", error);
     return json({
         success: false,
-        error: error instanceof Error ? error.message: "Internal server error",
+        error: error instanceof Error ? error.message: "Internal server error"
       } as CaseSummaryResponse,)
       { status: 500 }
     );
@@ -187,7 +187,7 @@ async function gatherCaseData(
         id: '1',
         content: 'Evidence item 1',
         metadata: Record<string, any>,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
     ];
     data.evidenceAnalytics = {
@@ -204,7 +204,7 @@ async function gatherCaseData(
         date: new Date(),
         event: 'Case created',
         type: 'system',
-        importance: 'medium' as const,
+        importance: 'medium' as const
       }
     ];
   }
@@ -230,7 +230,7 @@ Generate a ${depth} analysis with a structured summary.
     const response = await ollamaService.generateResponse(analysisPrompt, {
       model: "gemma3-legal",
       max_tokens: 2000,
-      temperature: 0.3,
+      temperature: 0.3
     });
 
     if (response.response) {
@@ -256,12 +256,12 @@ function generateFallbackSummary(caseData: any) {
     overview: `Case ${caseData.caseId} contains evidence items and requires analysis for comprehensive review.`,
     keyFindings: [
       "Evidence collection in progress",
-      "Manual analysis required",
+      "Manual analysis required"
     ],
     recommendations: [
       "Conduct thorough evidence review",
       "Engage legal experts",
-      "Update case documentation",
+      "Update case documentation"
     ],
     riskAssessment: {
       level: "medium" as const,
@@ -272,15 +272,15 @@ function generateFallbackSummary(caseData: any) {
       total: caseData.evidenceAnalytics?.totalEvidence || 0,
       admissible: 0,
       questionable: 0,
-      inadmissible: 0,
+      inadmissible: 0
     },
     nextSteps: [
       "Complete evidence analysis",
       "Generate detailed summary",
-      "Review with legal team",
+      "Review with legal team"
     ],
     confidence: 0.5,
-    generatedAt: new Date(),
+    generatedAt: new Date()
   };
 }
 
@@ -300,10 +300,10 @@ async function calculateCaseAnalytics(caseId: string): Promise<any> {
 
 function determineImportance(content: string): "low" | "medium" | "high" {
   const highPriorityKeywords = [
-    "critical", "urgent", "evidence", "witness", "court", "trial",
+    "critical", "urgent", "evidence", "witness", "court", "trial"
   ];
   const mediumPriorityKeywords = [
-    "review", "analysis", "investigation", "statement",
+    "review", "analysis", "investigation", "statement"
   ];
 
   const lowerContent = content.toLowerCase();

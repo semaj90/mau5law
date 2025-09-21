@@ -15,7 +15,7 @@ export interface AuthUser {
   role: "admin" | "prosecutor" | "detective" | "user";
   avatarUrl?: string;
   isActive: boolean;
-  createdAt: Date;,
+  createdAt: Date;
 }
 
 export interface AuthState {
@@ -31,7 +31,7 @@ const createAuthStore = () => {
   const { subscribe, set, update } = writable<AuthState>({
     user: null,
     isAuthenticated: false,
-    isLoading: true,
+    isLoading: true
   });
 
   return {
@@ -43,7 +43,7 @@ const createAuthStore = () => {
 
       try {
         const response = await fetch("/api/auth/me", {
-          credentials: "include",
+          credentials: "include"
         });
 
         if ((response as { ok?: any; json?: any }).ok) {
@@ -53,13 +53,13 @@ const createAuthStore = () => {
             isAuthenticated: true,
             isLoading: false,
             sessionId: userData.sessionId,
-            lastActivity: new Date(),
+            lastActivity: new Date()
           });
         } else {
           set({
             user: null,
             isAuthenticated: false,
-            isLoading: false,
+            isLoading: false
           });
         }
       } catch (error: any) {
@@ -67,7 +67,7 @@ const createAuthStore = () => {
         set({
           user: null,
           isAuthenticated: false,
-          isLoading: false,
+          isLoading: false
         });
       }
     },
@@ -80,10 +80,10 @@ const createAuthStore = () => {
         const response = await fetch("/api/auth/login", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({ email, password }),
-          credentials: "include",
+          credentials: "include"
         });
 
         if ((response as { ok?: any; json?: any }).ok) {
@@ -93,7 +93,7 @@ const createAuthStore = () => {
             isAuthenticated: true,
             isLoading: false,
             sessionId: userData.sessionId,
-            lastActivity: new Date(),
+            lastActivity: new Date()
           });
 
           // Initialize AI assistant for user
@@ -105,7 +105,7 @@ const createAuthStore = () => {
           set({
             user: null,
             isAuthenticated: false,
-            isLoading: false,
+            isLoading: false
           });
           return { success: false, error: error.message };
         }
@@ -113,7 +113,7 @@ const createAuthStore = () => {
         set({
           user: null,
           isAuthenticated: false,
-          isLoading: false,
+          isLoading: false
         });
         return { success: false, error: "Network error" };
       }
@@ -133,10 +133,10 @@ const createAuthStore = () => {
         const response = await fetch("/api/auth/register", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify(userData),
-          credentials: "include",
+          credentials: "include"
         });
 
         if ((response as { ok?: any; json?: any }).ok) {
@@ -146,7 +146,7 @@ const createAuthStore = () => {
             isAuthenticated: true,
             isLoading: false,
             sessionId: (result as { user?: any; sessionId?: any }).sessionId,
-            lastActivity: new Date(),
+            lastActivity: new Date()
           });
 
           // Initialize AI assistant for new user
@@ -158,7 +158,7 @@ const createAuthStore = () => {
           set({
             user: null,
             isAuthenticated: false,
-            isLoading: false,
+            isLoading: false
           });
           return { success: false, error: error.message };
         }
@@ -166,7 +166,7 @@ const createAuthStore = () => {
         set({
           user: null,
           isAuthenticated: false,
-          isLoading: false,
+          isLoading: false
         });
         return { success: false, error: "Network error" };
       }
@@ -177,7 +177,7 @@ const createAuthStore = () => {
       try {
         await fetch("/api/auth/logout", {
           method: "POST",
-          credentials: "include",
+          credentials: "include"
         });
       } catch (error: any) {
         console.error("Logout error:", error);
@@ -186,7 +186,7 @@ const createAuthStore = () => {
       set({
         user: null,
         isAuthenticated: false,
-        isLoading: false,
+        isLoading: false
       });
 
       // Clear AI assistant state
@@ -206,10 +206,10 @@ const createAuthStore = () => {
         const response = await fetch("/api/auth/profile", {
           method: "PATCH",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify(updates),
-          credentials: "include",
+          credentials: "include"
         });
 
         if ((response as { ok?: any; json?: any }).ok) {
@@ -217,7 +217,7 @@ const createAuthStore = () => {
           update((state: any) => ({
             ...state,
             user: { ...state.user!, ...updatedUser },
-            lastActivity: new Date(),
+            lastActivity: new Date()
           });
 
           return { success: true };
@@ -234,9 +234,9 @@ const createAuthStore = () => {
     updateActivity() {
       update((state: any) => ({
         ...state,
-        lastActivity: new Date(),
+        lastActivity: new Date()
       });
-    },
+    }
   };
 };
 
@@ -257,7 +257,7 @@ export interface AIAssistantState {
     autoSuggest: boolean;
     contextAwareness: boolean;
     legalSpecialization: boolean;
-    confidenceThreshold: number;,
+    confidenceThreshold: number;
   };
   currentContext?: {
     caseId?: string;
@@ -273,9 +273,9 @@ const createAIAssistantStore = () => {
       autoSuggest: true,
       contextAwareness: true,
       legalSpecialization: true,
-      confidenceThreshold: 0.7,
+      confidenceThreshold: 0.7
     },
-    conversationHistory: [],
+    conversationHistory: []
   });
 
   return {
@@ -290,8 +290,8 @@ const createAIAssistantStore = () => {
         preferences: {
           ...state.preferences,
           legalSpecialization:
-            user.role === "prosecutor" || user.role === "detective",
-        },
+            user.role === "prosecutor" || user.role === "detective"
+        }
       });
 
       // Load user's AI preferences from server
@@ -302,14 +302,14 @@ const createAIAssistantStore = () => {
     async loadPreferences() {
       try {
         const response = await fetch("/api/ai/preferences", {
-          credentials: "include",
+          credentials: "include"
         });
 
         if ((response as { ok?: any; json?: any }).ok) {
           const preferences = await (response as { ok?: any; json?: any }).json();
           update((state: any) => ({
             ...state,
-            preferences: { ...state.preferences, ...preferences },
+            preferences: { ...state.preferences, ...preferences }
           });
         }
       } catch (error: any) {
@@ -323,16 +323,16 @@ const createAIAssistantStore = () => {
         const response = await fetch("/api/ai/preferences", {
           method: "PATCH",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify(updates),
-          credentials: "include",
+          credentials: "include"
         });
 
         if ((response as { ok?: any; json?: any }).ok) {
           update((state: any) => ({
             ...state,
-            preferences: { ...state.preferences, ...updates },
+            preferences: { ...state.preferences, ...updates }
           });
           return { success: true };
         } else {
@@ -347,7 +347,7 @@ const createAIAssistantStore = () => {
     setContext(context: AIAssistantState["currentContext"]) {
       update((state: any) => ({
         ...state,
-        currentContext: context,
+        currentContext: context
       });
     },
 
@@ -361,14 +361,14 @@ const createAIAssistantStore = () => {
       const newConversation = {
         ...conversation,
         id: crypto.randomUUID(),
-        timestamp: new Date(),
+        timestamp: new Date()
       };
 
       update((state: any) => ({
         ...state,
         conversationHistory: [
           newConversation,
-          ...state.conversationHistory.slice(0, 49),
+          ...state.conversationHistory.slice(0, 49)
         ], // Keep last 50
       });
     },
@@ -381,11 +381,11 @@ const createAIAssistantStore = () => {
           autoSuggest: true,
           contextAwareness: true,
           legalSpecialization: true,
-          confidenceThreshold: 0.7,
+          confidenceThreshold: 0.7
         },
-        conversationHistory: [],
+        conversationHistory: []
       });
-    },
+    }
   };
 };
 

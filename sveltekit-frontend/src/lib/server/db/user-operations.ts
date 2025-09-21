@@ -60,9 +60,9 @@ const queryClient = postgres(connectionString, {
           return x.slice(1, -1).split(',').map(Number);
         }
         return [];
-      },
-    },
-  },
+      }
+    }
+  }
 });
 
 const userDb = drizzle(queryClient);
@@ -94,7 +94,7 @@ export class UserAuthService {
         role: userData.role || 'user',
         jurisdiction: userData.jurisdiction,
         practiceAreas: userData.practiceAreas,
-        passwordHash: await bcrypt.hash(userData.password, 12),
+        passwordHash: await bcrypt.hash(userData.password, 12)
       });
 
       // Check if user already exists
@@ -117,7 +117,7 @@ export class UserAuthService {
         if (userData.profileData) {
           const profileData = insertProfileSchema.parse({
             userId: newUser.id,
-            ...userData.profileData,
+            ...userData.profileData
           });
           [profile] = await tx.insert(userProfiles).values(profileData).returning();
         }
@@ -131,9 +131,9 @@ export class UserAuthService {
           context: {
             registrationMethod: 'email',
             role: newUser.role,
-            jurisdiction: newUser.jurisdiction,
+            jurisdiction: newUser.jurisdiction
           },
-          success: true,
+          success: true
         });
 
         return { user: newUser, profile };
@@ -145,7 +145,7 @@ export class UserAuthService {
       return { 
         user: Record<string, any> as User, 
         success: false, 
-        error: error instanceof Error ? error.message: 'Registration failed' ,
+        error: error instanceof Error ? error.message: 'Registration failed' 
       };
     }
   }
@@ -186,7 +186,7 @@ export class UserAuthService {
           context: { reason: 'invalid_password' },
           success: false,
           ipAddress,
-          userAgent,
+          userAgent
         });
         
         return { success: false, error: 'Invalid credentials' };
@@ -202,7 +202,7 @@ export class UserAuthService {
         expiresAt,
         ipAddress,
         userAgent,
-        sessionContext: Record<string, any>,
+        sessionContext: Record<string, any>
       }).returning();
 
       // Update last login time
@@ -219,20 +219,20 @@ export class UserAuthService {
         context: { sessionId },
         success: true,
         ipAddress,
-        userAgent,
+        userAgent
       });
 
       return {
         user,
         profile: profile || undefined,
         session,
-        success: true,
+        success: true
       };
     } catch (error: any) {
       console.error('Authentication error:', error);
       return { 
         success: false, 
-        error: error instanceof Error ? error.message: 'Authentication failed' ,
+        error: error instanceof Error ? error.message: 'Authentication failed' 
       };
     }
   }
@@ -263,7 +263,7 @@ export class UserAuthService {
         user: data.users,
         profile: data.user_profiles || undefined,
         session: data.user_sessions,
-        valid: true,
+        valid: true
       };
     } catch (error: any) {
       console.error('Session validation error:', error);
@@ -339,7 +339,7 @@ export class UserProfileService {
         ...user,
         profile: profile || undefined,
         sessions,
-        recentActivity,
+        recentActivity
       };
     } catch (error: any) {
       console.error('Get full profile error:', error);
@@ -367,7 +367,7 @@ export class UserProfileService {
           practiceAreas: updates.practiceAreas,
           barNumber: updates.barNumber,
           firmName: updates.firmName,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
 
         // Filter out undefined values
@@ -395,7 +395,7 @@ export class UserProfileService {
           preferences: updates.preferences,
           avatarUrl: updates.avatarUrl,
           bio: updates.bio,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
 
         const profileUpdates = Object.fromEntries(
@@ -423,7 +423,7 @@ export class UserProfileService {
             // Create new profile
             [updatedProfile] = await tx
               .insert(userProfiles)
-              .values({ userId, ...validatedProfileUpdates ,})
+              .values({ userId, ...validatedProfileUpdates })
               .returning();
           }
         }
@@ -435,9 +435,9 @@ export class UserProfileService {
           resource: 'user_profile',
           resourceId: userId.toString(),
           context: {
-            updatedFields: [...Object.keys(userUpdates), ...Object.keys(profileUpdates)],
+            updatedFields: [...Object.keys(userUpdates), ...Object.keys(profileUpdates)]
           },
-          success: true,
+          success: true
         });
 
         return { user: updatedUser, profile: updatedProfile };
@@ -448,7 +448,7 @@ export class UserProfileService {
       console.error('Update profile error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Profile update failed',
+        error: error instanceof Error ? error.message: 'Profile update failed'
       };
     }
   }
@@ -465,7 +465,7 @@ export class UserProfileService {
           .set({ 
             isActive: false, 
             deletedAt: new Date(),
-            updatedAt: new Date(),
+            updatedAt: new Date()
           })
           .where(eq(users.id, userId));
         // Invalidate all sessions
@@ -481,7 +481,7 @@ export class UserProfileService {
           resource: 'user',
           resourceId: userId.toString(),
           context: { deletionType: 'soft_delete' },
-          success: true,
+          success: true
         });
       });
 
@@ -490,7 +490,7 @@ export class UserProfileService {
       console.error('Delete user error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'User deletion failed',
+        error: error instanceof Error ? error.message: 'User deletion failed'
       };
     }
   }
@@ -513,7 +513,7 @@ export class UserProfileService {
       const similarUsers = await db;
         .select({
           user: users,
-          similarity: sql<number>`1 - (${cosineDistance(users.profileEmbedding, currentUser[0].embedding)})`,
+          similarity: sql<number>`1 - (${cosineDistance(users.profileEmbedding, currentUser[0].embedding)})`
         })
         .from(users)
         .where(and(
@@ -545,7 +545,7 @@ export class UserActivityService {
     try {
       await userDb.insert(userActivityLog).values({
         ...activity,
-        timestamp: new Date(),
+        timestamp: new Date()
       });
     } catch (error: any) {
       console.error('Log activity error:', error);
@@ -584,7 +584,7 @@ export class UserActivityService {
       const stats = await db;
         .select({
           totalActions: count(),
-          successRate: sql<number>`AVG(CASE WHEN success THEN 1.0 ELSE 0.0 END)`,
+          successRate: sql<number>`AVG(CASE WHEN success THEN 1.0 ELSE 0.0 END)`
         })
         .from(userActivityLog)
         .where(and(
@@ -595,7 +595,7 @@ export class UserActivityService {
       const topActions = await db;
         .select({
           action: userActivityLog.action,
-          count: count(),
+          count: count()
         })
         .from(userActivityLog)
         .where(and(
@@ -608,7 +608,7 @@ export class UserActivityService {
 
       const uniqueActionsResult = await db;
         .select({
-          uniqueActions: sql<number>`COUNT(DISTINCT action)`,
+          uniqueActions: sql<number>`COUNT(DISTINCT action)`
         })
         .from(userActivityLog)
         .where(and(
@@ -620,7 +620,7 @@ export class UserActivityService {
         totalActions: stats[0]?.totalActions || 0,
         uniqueActions: uniqueActionsResult[0]?.uniqueActions || 0,
         successRate: stats[0]?.successRate || 0,
-        topActions,
+        topActions
       };
     } catch (error: any) {
       console.error('Get activity stats error:', error);
@@ -628,7 +628,7 @@ export class UserActivityService {
         totalActions: 0,
         uniqueActions: 0,
         successRate: 0,
-        topActions: [],
+        topActions: []
       };
     }
   }
@@ -642,5 +642,5 @@ export { userDb as db };
 export default {
   UserAuthService,
   UserProfileService,
-  UserActivityService,
+  UserActivityService
 };

@@ -17,7 +17,7 @@ export interface AgentShellContext {
   serviceHealth?: {
     enhancedRAG: boolean;
     uploadService: boolean;
-    kratosServer: boolean;,
+    kratosServer: boolean;
   };
 }
 
@@ -36,7 +36,7 @@ export const agentShellMachine = createMachine({
   context: { input: "", response: "" },
   types: Record<string, any> as {
     context: AgentShellContext;
-    events: AgentShellEvent;,
+    events: AgentShellEvent;
   },
   states: {
     idle: {
@@ -46,28 +46,28 @@ export const agentShellMachine = createMachine({
           actions: assign({
             input: ({ event }) => (event as any).input || "",
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         SEMANTIC_SEARCH: {
           target: "searching",
           actions: assign({
             searchQuery: ({ event }) => (event as any).query,
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         FILE_UPLOAD: {
           target: "uploading",
           actions: assign({
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         CHECK_HEALTH: {
-          target: "checkingHealth",
-        },
-      },
+          target: "checkingHealth"
+        }
+      }
     },
     processing: {
       invoke: {
@@ -75,24 +75,24 @@ export const agentShellMachine = createMachine({
         input: ({ context }) => ({
           input: context.input,
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
-            response: (_, e) => (e && "data" in e ? (e as any).data: ""),
-          }),
+            response: (_, e) => (e && "data" in e ? (e as any).data: "")
+          })
         },
-        onError: "idle",
+        onError: "idle"
       },
       on: {
         ACCEPT_PATCH: {
-          actions: "acceptPatchAction",
+          actions: "acceptPatchAction"
         },
         RATE_SUGGESTION: {
-          actions: "rateSuggestionAction",
-        },
-      },
+          actions: "rateSuggestionAction"
+        }
+      }
     },
     searching: {
       invoke: {
@@ -100,16 +100,16 @@ export const agentShellMachine = createMachine({
         input: ({ context }) => ({
           query: context.searchQuery,
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
-            searchResults: (_, e) => (e && "data" in e ? (e as any).data : null),
-          }),
+            searchResults: (_, e) => (e && "data" in e ? (e as any).data : null)
+          })
         },
-        onError: "idle",
-      },
+        onError: "idle"
+      }
     },
     uploading: {
       invoke: {
@@ -117,16 +117,16 @@ export const agentShellMachine = createMachine({
         input: ({ context, event }) => ({
           file: (event as any).file,
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
-            uploadResults: (_, e) => (e && "data" in e ? (e as any).data : null),
-          }),
+            uploadResults: (_, e) => (e && "data" in e ? (e as any).data : null)
+          })
         },
-        onError: "idle",
-      },
+        onError: "idle"
+      }
     },
     checkingHealth: {
       invoke: {
@@ -134,13 +134,13 @@ export const agentShellMachine = createMachine({
         onDone: {
           target: "idle",
           actions: assign({
-            serviceHealth: (_, e) => (e && "data" in e ? (e as any).data : null),
-          }),
+            serviceHealth: (_, e) => (e && "data" in e ? (e as any).data : null)
+          })
         },
-        onError: "idle",
-      },
-    },
-  },
+        onError: "idle"
+      }
+    }
+  }
 });
 
 // Service implementations for XState with Production Services;
@@ -157,7 +157,7 @@ export const agentShellServices = {
         const fallbackResponse = await goServiceClient.queryRAG({
           query: input,
           userId,
-          caseId,
+          caseId
         });
         return fallbackResponse.response;
       } catch (fallbackError) {
@@ -194,7 +194,7 @@ export const agentShellServices = {
         return await goServiceClient.uploadFile({
           file,
           userId,
-          caseId,
+          caseId
         });
       } catch (fallbackError) {
         console.error("All upload services failed:", fallbackError);
@@ -209,7 +209,7 @@ export const agentShellServices = {
       const productionHealth = await productionServiceClient.checkAllServicesHealth();
       return {
         production: productionHealth,
-        legacy: await goServiceClient.checkServiceHealth(),
+        legacy: await goServiceClient.checkServiceHealth()
       };
     } catch (error: any) {
       console.error("Production health check failed:", error);
@@ -221,7 +221,7 @@ export const agentShellServices = {
         throw error;
       }
     }
-  },
+  }
 };
 
 // Action implementations;
@@ -232,7 +232,7 @@ export const agentShellActions = {
         jobId: event.jobId,
         userId: event.userId,
         patchContent: event.patchContent,
-        targetFile: event.targetFile,
+        targetFile: event.targetFile
       });
       console.log("Patch accepted:", result);
     } catch (error: any) {
@@ -246,11 +246,11 @@ export const agentShellActions = {
         jobId: event.jobId,
         rating: event.rating,
         userId: event.userId,
-        feedback: event.feedback,
+        feedback: event.feedback
       });
       console.log("Rating submitted:", result);
     } catch (error: any) {
       console.error("Rating submission failed:", error);
     }
-  },
+  }
 };

@@ -18,7 +18,7 @@ export interface Tensor {
   data: Float32Array | any | WebGLTexture; // GPUBuffer | WebGLTexture for runtime flexibility
   shape: TensorShape;
   backend: BackendType;
-  id: string;,
+  id: string;
 }
 
 export type BackendType = 'tensorrt' | 'webgpu' | 'webgl2' | 'wasm-simd' | 'cpu-js';
@@ -102,7 +102,7 @@ class BackendDetector {
       // Check if CUDA service is available;
       const response = await fetch('/api/cuda/health', {
         method: 'GET',
-        signal: AbortSignal.timeout(1000),
+        signal: AbortSignal.timeout(1000)
       });
 
       if (response.ok) {
@@ -193,7 +193,7 @@ class WebGPUBackend extends BaseBackend {
     // Create compute shader for matrix multiplication
     const matMulShader = `;
       struct Matrix {
-        data: array<f32>,
+        data: array<f32>
       }
 
       @group(0) @binding(0) var<storage, read> a: Matrix;
@@ -224,7 +224,7 @@ class WebGPUBackend extends BaseBackend {
     `;
 
     const shaderModule = this.device.createShaderModule({
-      code: matMulShader,
+      code: matMulShader
     });
 
     // Create pipeline for matrix multiplication;
@@ -232,14 +232,14 @@ class WebGPUBackend extends BaseBackend {
       layout: 'auto',
       compute: {
         module: shaderModule,
-        entryPoint: 'main',
+        entryPoint: 'main'
       }
     });
 
     // Create batch matrix multiplication shader
     const batchMatMulShader = `;
       struct BatchMatrix {
-        data: array<f32>,
+        data: array<f32>
       }
 
       @group(0) @binding(0) var<storage, read> a: BatchMatrix;
@@ -276,14 +276,14 @@ class WebGPUBackend extends BaseBackend {
     `;
 
     const batchShaderModule = this.device.createShaderModule({
-      code: batchMatMulShader,
+      code: batchMatMulShader
     });
 
     this.batchMatMulPipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: batchShaderModule,
-        entryPoint: 'main',
+        entryPoint: 'main'
       }
     });
 
@@ -299,7 +299,7 @@ class WebGPUBackend extends BaseBackend {
     const buffer = this.device.createBuffer({
       size: size * 4, // Float32 is 4 bytes
       usage: 0x80 | 0x4 | 0x8, // STORAGE | COPY_DST | COPY_SRC
-      mappedAtCreation: !!data,
+      mappedAtCreation: !!data
     });
 
     if (data) {
@@ -311,7 +311,7 @@ class WebGPUBackend extends BaseBackend {
       data: buffer,
       shape,
       backend: 'webgpu',
-      id: this.generateId(),
+      id: this.generateId()
     };
 
     this.tensors.set(tensor.id, tensor);
@@ -349,7 +349,7 @@ class WebGPUBackend extends BaseBackend {
     const uniformBuffer = this.device.createBuffer({
       size: 16, // 3 u32 + padding
       usage: 0x40 | 0x4, // UNIFORM | COPY_DST
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
     new Uint32Array(uniformBuffer.getMappedRange()).set([M, K, N, 0]);
     uniformBuffer.unmap();
@@ -399,7 +399,7 @@ class WebGPUBackend extends BaseBackend {
     const uniformBuffer = this.device.createBuffer({
       size: 16,
       usage: 0x40 | 0x4, // UNIFORM | COPY_DST
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
     new Uint32Array(uniformBuffer.getMappedRange()).set([batch, M, K, N]);
     uniformBuffer.unmap();
@@ -448,7 +448,7 @@ class WebGPUBackend extends BaseBackend {
     // Create staging buffer for readback;
     const stagingBuffer = this.device.createBuffer({
       size: size * 4,
-      usage: 0x4 | 0x1 // COPY_DST | MAP_READ,
+      usage: 0x4 | 0x1 // COPY_DST | MAP_READ
     });
 
     // Copy from GPU buffer to staging buffer
@@ -502,7 +502,7 @@ class WebGL2Backend extends BaseBackend {
     this.canvas = document.createElement('canvas');
     this.gl = this.canvas.getContext('webgl2', {
       antialias: false,
-      preserveDrawingBuffer: true,
+      preserveDrawingBuffer: true
     });
 
     if (!this.gl) {
@@ -646,7 +646,7 @@ class WebGL2Backend extends BaseBackend {
       data: texture,
       shape,
       backend: 'webgl2',
-      id: this.generateId(),
+      id: this.generateId()
     };
 
     this.tensors.set(tensor.id, tensor);
@@ -728,7 +728,7 @@ class WebGL2Backend extends BaseBackend {
       data: resultTexture,
       shape: { rows: M, cols: N },
       backend: 'webgl2',
-      id: this.generateId(),
+      id: this.generateId()
     };
 
     this.tensors.set(result.id, result);
@@ -850,7 +850,7 @@ class WASMSIMDBackend extends BaseBackend {
       this.memory = new WebAssembly.Memory({
         initial: 256, // 16MB initial
         maximum: 4096, // 256MB maximum
-        shared: typeof SharedArrayBuffer !== 'undefined' // Enable threading if available,
+        shared: typeof SharedArrayBuffer !== 'undefined' // Enable threading if available
       });
 
       // Example WASM module with SIMD operations
@@ -945,7 +945,7 @@ class WASMSIMDBackend extends BaseBackend {
       data: ptr as any, // Store pointer as data
       shape,
       backend: 'wasm-simd',
-      id: this.generateId(),
+      id: this.generateId()
     };
 
     this.tensors.set(tensor.id, { ...tensor, ptr });
@@ -1091,7 +1091,7 @@ class TensorRTBackend extends BaseBackend {
         body: JSON.stringify({
           device_id: 0, // RTX 3060 Ti
           max_batch_size: 8,
-          workspace_size: 1024 * 1024 * 1024 // 1GB workspace,
+          workspace_size: 1024 * 1024 * 1024 // 1GB workspace
         })
       });
 
@@ -1125,7 +1125,7 @@ class TensorRTBackend extends BaseBackend {
             inputShape: engine.input_shape,
             outputShape: engine.output_shape,
             dataType: engine.data_type,
-            maxBatchSize: engine.max_batch_size,
+            maxBatchSize: engine.max_batch_size
           });
         }
       }
@@ -1153,7 +1153,7 @@ class TensorRTBackend extends BaseBackend {
           tensor_id: tensorId,
           shape: [shape.batch || 1, shape.rows, shape.cols],
           data: Array.from(data),
-          data_type: 'float32',
+          data_type: 'float32'
         })
       });
 
@@ -1167,7 +1167,7 @@ class TensorRTBackend extends BaseBackend {
       data: { tensorId, serverTensorId, uploaded: !!serverTensorId },
       shape,
       backend: 'tensorrt',
-      id: tensorId,
+      id: tensorId
     };
 
     this.tensors.set(tensor.id, tensor);
@@ -1223,7 +1223,7 @@ class TensorRTBackend extends BaseBackend {
           engine_name: engineName,
           inputs: {
             input_a: (a.data as any).serverTensorId,
-            input_b: (b.data as any).serverTensorId,
+            input_b: (b.data as any).serverTensorId
           },
           output_shape: [M, N]
         })
@@ -1240,11 +1240,11 @@ class TensorRTBackend extends BaseBackend {
         data: {
           tensorId: this.generateId(),
           serverTensorId: result.output_tensor_id,
-          uploaded: true,
+          uploaded: true
         },
         shape: { rows: M, cols: N },
         backend: 'tensorrt',
-        id: this.generateId(),
+        id: this.generateId()
       };
 
       this.tensors.set(resultTensor.id, resultTensor);
@@ -1280,7 +1280,7 @@ class TensorRTBackend extends BaseBackend {
           engine_name: engineName,
           inputs: {
             input_a: (a.data as any).serverTensorId,
-            input_b: (b.data as any).serverTensorId,
+            input_b: (b.data as any).serverTensorId
           },
           output_shape: [batch, M, N]
         })
@@ -1296,11 +1296,11 @@ class TensorRTBackend extends BaseBackend {
         data: {
           tensorId: this.generateId(),
           serverTensorId: result.output_tensor_id,
-          uploaded: true,
+          uploaded: true
         },
         shape: { rows: M, cols: N, batch },
         backend: 'tensorrt',
-        id: this.generateId(),
+        id: this.generateId()
       };
 
       this.tensors.set(resultTensor.id, resultTensor);
@@ -1355,7 +1355,7 @@ class TensorRTBackend extends BaseBackend {
     if (this.sessionId) {
       try {
         await fetch(`${this.cudaServiceUrl}/api/v1/tensorrt/session/${this.sessionId}`, {
-          method: 'DELETE',
+          method: 'DELETE'
         });
       } catch (error) {
         console.warn('Failed to close TensorRT session:', error);
@@ -1388,7 +1388,7 @@ class CPUJSBackend extends BaseBackend {
       data: tensorData,
       shape,
       backend: 'cpu-js',
-      id: this.generateId(),
+      id: this.generateId()
     };
 
     this.tensors.set(tensor.id, tensor);
@@ -1618,7 +1618,7 @@ export class UniversalGPURuntime {
   async benchmark(size: number = 512): Promise<{
     backend: BackendType;
     matmulTime: number;
-    throughput: number;,
+    throughput: number;
   }> {
     if (!this.backend || !this.backendType) {
       throw new Error('Runtime not initialized');

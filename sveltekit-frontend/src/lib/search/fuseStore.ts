@@ -14,7 +14,7 @@ const options = {
   threshold: 0.34,
   ignoreLocation: true,
   includeScore: true,
-  minMatchCharLength: 2,
+  minMatchCharLength: 2
 };
 
 items.subscribe(list => { fuse = new Fuse(list, options); });

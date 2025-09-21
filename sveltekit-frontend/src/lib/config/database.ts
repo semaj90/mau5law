@@ -19,7 +19,7 @@ export interface DatabaseConfig {
 export interface DatabaseUrls {
   connectionString: string;
   appUrl: string;
-  adminUrl: string;,
+  adminUrl: string;
 }
 
 /**
@@ -35,7 +35,7 @@ export function getDatabaseConfig(): DatabaseConfig {
     ssl: process.env.NODE_ENV === 'production',
     maxConnections: parseInt(process.env.DB_MAX_CONNECTIONS || '20'),
     idleTimeoutMs: parseInt(process.env.DB_IDLE_TIMEOUT || '30000'),
-    connectionTimeoutMs: parseInt(process.env.DB_CONNECTION_TIMEOUT || '10000'),
+    connectionTimeoutMs: parseInt(process.env.DB_CONNECTION_TIMEOUT || '10000')
   };
 }
 
@@ -49,7 +49,7 @@ export function getDatabaseUrls(): DatabaseUrls {
   return {
     connectionString: process.env.DATABASE_URL || baseUrl,
     appUrl: process.env.DATABASE_URL || baseUrl,
-    adminUrl: process.env.ADMIN_DATABASE_URL || baseUrl,
+    adminUrl: process.env.ADMIN_DATABASE_URL || baseUrl
   };
 }
 
@@ -65,7 +65,7 @@ export function getConnectionString(type: 'app' | 'admin' | 'migration' = 'app')
       return urls.adminUrl;
     case 'app':
     default:
-      return urls.appUrl;,
+      return urls.appUrl;
   }
 }
 
@@ -98,17 +98,17 @@ export function getPoolConfig(environment: 'development' | 'production' | 'test'
     development: {
       max: 5,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000,
+      connectionTimeoutMillis: 10000
     },
     production: {
       max: config.maxConnections || 20,
       idleTimeoutMillis: config.idleTimeoutMs || 60000,
-      connectionTimeoutMillis: config.connectionTimeoutMs || 5000,
+      connectionTimeoutMillis: config.connectionTimeoutMs || 5000
     },
     test: {
       max: 2,
       idleTimeoutMillis: 10000,
-      connectionTimeoutMillis: 5000,
+      connectionTimeoutMillis: 5000
     }
   };
 
@@ -129,7 +129,7 @@ export const DATABASE_CONSTANTS = {
   VECTOR_DIMENSIONS: {
     EMBEDDING_GEMMA: 768,
     NOMIC_EMBED: 768,
-    OPENAI_ADA: 1536,
+    OPENAI_ADA: 1536
   }
 } as const;
 
@@ -145,6 +145,6 @@ export function getBrowserSafeDatabaseInfo() {
     user: config.user,
     // Never expose password in browser
     ssl: config.ssl,
-    connected: true // This would be updated by a connection test,
+    connected: true // This would be updated by a connection test
   };
 }

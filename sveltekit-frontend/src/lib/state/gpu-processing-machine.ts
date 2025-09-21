@@ -15,7 +15,7 @@ export interface DocumentInput {
     priority: number;
     timeout: number;
     retries: number;
-    batchSize: number;,
+    batchSize: number;
   };
 }
 
@@ -30,14 +30,14 @@ export interface ProcessingResult {
   };
   error?: string;
   processingTime?: number;
-  timestamp: Date;,
+  timestamp: Date;
 }
 
 export interface ServiceHealth {
   gpu: 'healthy' | 'degraded' | 'offline';
   webgpu: 'healthy' | 'degraded' | 'offline';
   vectorDb: 'healthy' | 'degraded' | 'offline';
-  lastCheck: Date;,
+  lastCheck: Date;
 }
 
 export interface ProcessingMetrics {
@@ -46,7 +46,7 @@ export interface ProcessingMetrics {
   averageTime: number;
   concurrentJobs: number;
   queueLength: number;
-  gpuUtilization: number;,
+  gpuUtilization: number;
 }
 
 // Machine Context;
@@ -96,7 +96,7 @@ const addToQueue = ({ context, event }: { context: GPUProcessingContext; event: 
       documentId: event.documentId,
       content: event.content,
       title: event.title,
-      options: event.options,
+      options: event.options
     });
   } else if (event.type === 'BATCH_PROCESS') {
     context.processingQueue.push(...event.documents);
@@ -127,7 +127,7 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
             metadata: { processedAt: new Date().toISOString(), type: document.options?.processType }
           },
           processingTime: Math.random() * 5000 + 1000, // 1-6 seconds
-          timestamp: new Date(),
+          timestamp: new Date()
         };
         
         // Dispatch completion event (this would be handled by the actor)
@@ -140,7 +140,7 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
           documentId: document.documentId,
           status: 'failed',
           error,
-          timestamp: new Date(),
+          timestamp: new Date()
         };
         
         context.activeProcessing.delete(document.documentId);
@@ -177,7 +177,7 @@ const checkServiceHealth = ({ context }: { context: GPUProcessingContext }) => {
     gpu: gpuHealthy ? 'healthy' : 'degraded',
     webgpu: webgpuHealthy ? 'healthy' : 'degraded',
     vectorDb: vectorDbHealthy ? 'healthy' : 'degraded',
-    lastCheck: new Date(),
+    lastCheck: new Date()
   };
 };
 
@@ -226,7 +226,7 @@ export const gpuProcessingMachine = setup({
       gpu: 'healthy',
       webgpu: 'healthy',
       vectorDb: 'healthy',
-      lastCheck: new Date(),
+      lastCheck: new Date()
     },
     metrics: {
       totalProcessed: 0,
@@ -234,10 +234,10 @@ export const gpuProcessingMachine = setup({
       averageTime: 0,
       concurrentJobs: 0,
       queueLength: 0,
-      gpuUtilization: 0,
+      gpuUtilization: 0
     },
     maxConcurrent: 5,
-    retryCount: new Map(),
+    retryCount: new Map()
   },
   states: {
     idle: {
@@ -251,7 +251,7 @@ export const gpuProcessingMachine = setup({
           actions: ['addToQueue', 'startProcessing']
         },
         SERVICE_HEALTH_CHECK: {
-          actions: ['checkServiceHealth'],
+          actions: ['checkServiceHealth']
         }
       }
     },
@@ -267,21 +267,21 @@ export const gpuProcessingMachine = setup({
         DOCUMENT_COMPLETED: {
           actions: ['updateMetrics'],
           target: 'processing',
-          guard: 'hasQueuedDocuments',
+          guard: 'hasQueuedDocuments'
         },
         DOCUMENT_FAILED: {
-          actions: ['updateMetrics'],
+          actions: ['updateMetrics']
         },
         PAUSE_PROCESSING: {
           target: 'paused',
-          actions: ['pauseProcessing'],
+          actions: ['pauseProcessing']
         },
         CLEAR_QUEUE: {
           target: 'idle',
-          actions: ['clearQueue'],
+          actions: ['clearQueue']
         },
         SERVICE_HEALTH_CHECK: {
-          actions: ['checkServiceHealth'],
+          actions: ['checkServiceHealth']
         }
       },
       always: [;
@@ -295,14 +295,14 @@ export const gpuProcessingMachine = setup({
       on: {
         RESUME_PROCESSING: {
           target: 'processing',
-          actions: ['startProcessing'],
+          actions: ['startProcessing']
         },
         CLEAR_QUEUE: {
           target: 'idle',
-          actions: ['clearQueue'],
+          actions: ['clearQueue']
         },
         SERVICE_HEALTH_CHECK: {
-          actions: ['checkServiceHealth'],
+          actions: ['checkServiceHealth']
         }
       }
     }

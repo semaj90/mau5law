@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const filters = {
       status: url.searchParams.get("status"),
       priority: url.searchParams.get("priority"),
-      category: url.searchParams.get("category"),
+      category: url.searchParams.get("category")
     };
 
     if (!query || query.length < 2) {
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
         searchType: "none",
         executionTime: 0,
         total: 0,
-        message: "Query too short",
+        message: "Query too short"
       });
     }
 
@@ -47,14 +47,14 @@ export const GET: RequestHandler = async ({ url }) => {
       total: results.length,
       query,
       filters,
-      fromCache: false,
+      fromCache: false
     });
   } catch (error: any) {
     console.error("Case search error:", error);
     return json({
         results: [],
         error: "Search failed",
-        message: error instanceof Error ? error.message: "Unknown error",
+        message: error instanceof Error ? error.message: "Unknown error"
       },)>
       { status: 500 },
     );
@@ -73,7 +73,7 @@ async function searchCasesText(
         ilike(cases.title, `%${query}%`),
         ilike(cases.description, `%${query}%`),
         ilike(cases.caseNumber, `%${query}%`),
-      ),
+      )
     ];
 
     // Add filters;
@@ -97,7 +97,7 @@ async function searchCasesText(
     return results.map((case_) => ({
       ...case_,
       searchScore: 1.0,
-      matchType: "text",
+      matchType: "text"
     });
   } catch (error: any) {
     console.error("Text search failed:", error);

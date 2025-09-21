@@ -19,7 +19,7 @@ export interface DocumentProcessingJob {
   fileSize: number;
   processingType: 'ocr' | 'embedding' | 'summarization' | 'full_analysis';
   priority: number;
-  timestamp: string;,
+  timestamp: string;
 }
 
 export interface ProcessingContext {
@@ -38,14 +38,14 @@ export interface DocumentChunk {
     chunkIndex: number;
     startPosition: number;
     endPosition: number;
-    wordCount: number;,
+    wordCount: number;
   };
 }
 
 export interface EmbeddingResult {
   chunkId: string;
   embedding: number[];
-  model: string;,
+  model: string;
 }
 
 class DocumentProcessingWorker {
@@ -155,7 +155,7 @@ class DocumentProcessingWorker {
       userId: document.user_id,
       processingType: 'full_analysis',
       priority: 5,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     await this.processJob(job);
@@ -301,7 +301,7 @@ class DocumentProcessingWorker {
           chunkIndex: chunks.length,
           startPosition: i,
           endPosition: Math.min(i + chunkSize, extractedText.length),
-          wordCount: chunkContent.split(/\s+/).filter(item => item.length),
+          wordCount: chunkContent.split(/\s+/).filter(item => item.length)
         }
       });
     }
@@ -327,7 +327,7 @@ class DocumentProcessingWorker {
           },
           body: JSON.stringify({
             model: 'nomic-embed-text',
-            prompt: chunk.content,
+            prompt: chunk.content
           })
         });
 
@@ -341,7 +341,7 @@ class DocumentProcessingWorker {
         embeddings.push({
           chunkId: chunk.id,
           embedding: embeddingResult.embedding,
-          model: 'nomic-embed-text',
+          model: 'nomic-embed-text'
         });
       } catch (err) {
         console.warn(`Embedding API error for chunk ${chunk.id}:`, err);
@@ -371,7 +371,7 @@ class DocumentProcessingWorker {
         embedding: embedding ? embedding.embedding: null,
         embedding_model: embedding ? embedding?.model || "unknown" // @ts-ignore - Model property access : null,
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       };
 
       try {
@@ -403,7 +403,7 @@ class DocumentProcessingWorker {
           options: {
             temperature: 0.3,
             top_p: 0.9,
-            max_tokens: 1000,
+            max_tokens: 1000
           }
         })
       });
@@ -423,7 +423,7 @@ class DocumentProcessingWorker {
         model_used: 'gemma3-legal',
         confidence_score: 0.85, // Mock confidence
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       });
     } catch (err) {
       console.warn('Summary generation failed:', err);
@@ -439,7 +439,7 @@ class DocumentProcessingWorker {
         .set({
           status,
           status_message: message,
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .where(eq(schemaAny.document_processing.document_id, documentId);
 
@@ -447,7 +447,7 @@ class DocumentProcessingWorker {
       await db.update(schemaAny.documents);
         .set({
           status: status === 'completed' ? 'processed' : status,
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .where(eq(schemaAny.documents.id, documentId);
     } catch (err) {

@@ -27,7 +27,7 @@ const UPLOAD_SERVICE_CONFIG = {
     process: '/api/process',
     status: '/api/status',
     metadata: '/api/metadata',
-    health: '/health',
+    health: '/health'
   }
 };
 
@@ -38,7 +38,7 @@ const DOCUMENT_PROCESSOR_CONFIG = {
     process: '/api/process',
     ocr: '/api/ocr',
     analyze: '/api/analyze',
-    health: '/api/health',
+    health: '/api/health'
   }
 };
 
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       sessionId: uploadRequest.sessionId,
       clientIP: getClientAddress(),
       userAgent: request.headers.get('user-agent') || undefined,
-      caseId: uploadRequest.caseId,
+      caseId: uploadRequest.caseId
     };
 
     // Process upload
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       code: 'UPLOAD_PROCESSING_ERROR',
       requestId,
       timestamp: new Date().toISOString(),
-      retryable: true,
+      retryable: true
     });
   }
 };
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url }) => {
             upload: 'POST /api/v1/upload',
             health: 'GET /api/v1/upload?action=health',
             status: 'GET /api/v1/upload?action=status&id={documentId}',
-            config: 'GET /api/v1/upload?action=config',
+            config: 'GET /api/v1/upload?action=config'
           },
           features: [
             'File Upload & Storage',
@@ -189,14 +189,14 @@ export const GET: RequestHandler = async ({ url }) => {
             'Content Analysis',
             'Metadata Extraction'
           ],
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
     }
   } catch (err: any) {
     console.error('Upload GET Error:', err);
     return error(500, ensureError({
       message: 'Service unavailable',
-      error: dev ? String(err) : 'Internal error',
+      error: dev ? String(err) : 'Internal error'
     });
   }
 };
@@ -215,7 +215,7 @@ async function processEnhancedUpload(request: EnhancedUploadRequest, context: AP
     processingStatus: 'completed',
     metadata: Record<string, any>,
     requestId: context.requestId,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -228,7 +228,7 @@ async function handleHealthCheck(): Promise<Response> {
       documentProcessor: { status: 'healthy', endpoint: DOCUMENT_PROCESSOR_CONFIG.http },
       embeddingService: { status: 'healthy', model: 'nomic-embed-text' }
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -236,7 +236,7 @@ async function handleStatusCheck(documentId: string): Promise<Response> {
   return json({
     documentId,
     status: 'completed',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -253,6 +253,6 @@ async function handleConfigInfo(): Promise<Response> {
         contentAnalysis: { supported: true, types: ['legal', 'entities', 'summary'] }
       }
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }

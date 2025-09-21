@@ -12,7 +12,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'nomic-embed-text:latest',
-        prompt: text,
+        prompt: text
       })
     });
 
@@ -73,21 +73,21 @@ export const POST: RequestHandler = async ({ request }) => {
         chunk_text: chunk,
         embedding: JSON.stringify(embedding),
         chunk_sequence: i,
-        chunk_metadata: metadata ? JSON.stringify(metadata) : null,
+        chunk_metadata: metadata ? JSON.stringify(metadata) : null
       }).returning();
 
       // Store in unified vector table for cross-entity search;
       await db.insert(vectors).values({
         entity_type: 'chunk',
         entity_id: chunkRecord.id,
-        embedding: JSON.stringify(embedding),
+        embedding: JSON.stringify(embedding)
       });
 
       ingestedChunks.push({
         id: chunkRecord.id,
         text: chunk.substring(0, 100) + '...',
         sequence: i,
-        embeddingDimensions: embedding.length,
+        embeddingDimensions: embedding.length
       });
     }
 
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
         entityType,
         entityId,
         embeddingModel: 'nomic-embed-text:latest',
-        embeddingDimensions: 384,
+        embeddingDimensions: 384
       }
     });
 

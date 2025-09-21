@@ -28,5 +28,5 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
       if (error instanceof Response) throw error;
       return message(form, "Login failed. Please try again.", { status: 500 });
     }
-  },
+  }
 };

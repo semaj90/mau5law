@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           health,
           allSystemsOperational: Object.values(health).every(status => status),
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'analytics':
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           analytics,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       default:;
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
               useWebGPU: true,
               useWebAssembly: true,
               usePageRank: true,
-              generateGlyphs: true,
+              generateGlyphs: true
             }
           }
         }
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -105,7 +105,7 @@ export const PUT: RequestHandler = async ({ request }) => {
               type: 'feedback',
               vote: data.vote,
               documentId: data.documentId,
-              relevanceScore: data.relevanceScore,
+              relevanceScore: data.relevanceScore
             }]
           }
         };
@@ -118,7 +118,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         return json({
           success: false,
           error: 'Model retraining not yet implemented',
-          plannedFeature: true,
+          plannedFeature: true
         }, { status: 501 });
 
       default:;
@@ -134,7 +134,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -162,7 +162,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json({
         success: false,
         error: 'Cache clearing not yet implemented',
-        plannedFeature: true,
+        plannedFeature: true
       }, { status: 501 });
     }
 
@@ -180,7 +180,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

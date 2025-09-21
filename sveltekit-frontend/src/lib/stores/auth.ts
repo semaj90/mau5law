@@ -15,14 +15,14 @@ export interface AuthUser {
 export interface AuthState {
   isAuthenticated: boolean;
   user: AuthUser | null;
-  isLoading: boolean;,
+  isLoading: boolean;
 }
 
 const createAuthStore = () => {
   const { subscribe, set, update } = writable<AuthState>({
     isAuthenticated: false,
     user: null,
-    isLoading: true,
+    isLoading: true
   });
 
   return {
@@ -34,7 +34,7 @@ const createAuthStore = () => {
         const response = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ email, password })
         });
 
         if (response.ok) {
@@ -80,9 +80,9 @@ const createAuthStore = () => {
     updateUser: (userData: Partial<AuthUser>) => {
       update((state) => ({
         ...state,
-        user: state.user ? { ...state.user, ...userData } : null,
+        user: state.user ? { ...state.user, ...userData } : null
       });
-    },
+    }
   };
 };
 

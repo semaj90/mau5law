@@ -14,17 +14,17 @@ export interface PerformanceMetrics {
     cpuUsage: {
       user: number;
       system: number;
-      idle: number;,
+      idle: number;
     };
     memory: {
       total: number;
       free: number;
       used: number;
-      percentage: number;,
+      percentage: number;
     };
     disk: {
       usage: string;
-      available: string;,
+      available: string;
     };
   };
   application: {
@@ -33,15 +33,15 @@ export interface PerformanceMetrics {
       heapUsed: number;
       heapTotal: number;
       external: number;
-      rss: number;,
+      rss: number;
     };
     eventLoop: {
       delay: number;
-      utilization: number;,
+      utilization: number;
     };
     gc: {
       collections: number;
-      duration: number;,
+      duration: number;
     };
   };
   legal_ai_platform: {
@@ -51,7 +51,7 @@ export interface PerformanceMetrics {
       responseTime: {
         avg: number;
         p95: number;
-        p99: number;,
+        p99: number;
       };
     };
     gpu: {
@@ -59,21 +59,21 @@ export interface PerformanceMetrics {
       memory: {
         total: number;
         used: number;
-        free: number;,
+        free: number;
       };
       temperature: number;
-      performance: string;,
+      performance: string;
     };
     database: {
       connections: {
         active: number;
         idle: number;
-        max: number;,
+        max: number;
       };
       queryPerformance: {
         avg: number;
         p95: number;
-        slowQueries: number;,
+        slowQueries: number;
       };
     };
     caching: {
@@ -82,39 +82,39 @@ export interface PerformanceMetrics {
       operations: {
         gets: number;
         sets: number;
-        deletes: number;,
+        deletes: number;
       };
     };
     ai: {
       modelsLoaded: number;
       inferenceSpeed: number; // tokens per second
       queueDepth: number;
-      averageLatency: number;,
+      averageLatency: number;
     };
   };
   benchmarks: {
     vectorSearch: {
       latency: number;
       throughput: number;
-      accuracy: number;,
+      accuracy: number;
     };
     documentProcessing: {
       avgTime: number;
       throughput: number;
-      successRate: number;,
+      successRate: number;
     };
     aiAnalysis: {
       responseTime: number;
       tokensPerSecond: number;
-      accuracy: number;,
+      accuracy: number;
     };
   };
   alerts: {
     active: number;
     warnings: string[];
-    critical: string[];,
+    critical: string[];
   };
-  processingTime: number;,
+  processingTime: number;
 }
 
 // Event loop monitoring
@@ -167,18 +167,18 @@ export const GET: RequestHandler = async ({ url }) => {
         cpuUsage: {
           user: Math.round(cpuUsage.user / 1000),
           system: Math.round(cpuUsage.system / 1000),
-          idle: 100 - Math.round((cpuUsage.user + cpuUsage.system) / 10000),
+          idle: 100 - Math.round((cpuUsage.user + cpuUsage.system) / 10000)
         },
         memory: {
           total: Math.round(totalMemory / 1024 / 1024 / 1024),
           free: Math.round(freeMemory / 1024 / 1024 / 1024),
           used: Math.round(usedMemory / 1024 / 1024 / 1024),
-          percentage: Math.round(memoryPercentage),
+          percentage: Math.round(memoryPercentage)
         },
         disk: {
           usage: '45%',
-          available: '500GB',
-        },
+          available: '500GB'
+        }
       },
 
       application: {
@@ -187,22 +187,22 @@ export const GET: RequestHandler = async ({ url }) => {
           heapUsed: Math.round(processMemory.heapUsed / 1024 / 1024),
           heapTotal: Math.round(processMemory.heapTotal / 1024 / 1024),
           external: Math.round(processMemory.external / 1024 / 1024),
-          rss: Math.round(processMemory.rss / 1024 / 1024),
+          rss: Math.round(processMemory.rss / 1024 / 1024)
         },
         eventLoop: {
           delay: Math.round(eventLoopDelay),
-          utilization: Math.round(eventLoopUtilization),
+          utilization: Math.round(eventLoopUtilization)
         },
         gc: {
           collections: Math.floor(Math.random() * 100) + 50,
-          duration: Math.round(Math.random() * 10 + 2),
-        },
+          duration: Math.round(Math.random() * 10 + 2)
+        }
       },
 
       legal_ai_platform: platformMetrics,
       benchmarks,
       alerts,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
 
     // Log performance data;
@@ -211,7 +211,7 @@ export const GET: RequestHandler = async ({ url }) => {
       appMemory: `${metrics.application.memoryUsage.heapUsed}MB`,
       eventLoopDelay: `${metrics.application.eventLoop.delay}ms`,
       serviceHealth: `${metrics.legal_ai_platform.services.healthy}/${metrics.legal_ai_platform.services.total}`,
-      processingTime: metrics.processingTime,
+      processingTime: metrics.processingTime
     });
 
     return json(metrics, {
@@ -221,7 +221,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'X-Service-Health': `${metrics.legal_ai_platform.services.healthy}/${metrics.legal_ai_platform.services.total}`,
         'X-Processing-Time': `${metrics.processingTime}ms`,
         'Cache-Control': 'public, max-age=30', // 30-second cache
-      },
+      }
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message: 'Unknown error';
@@ -232,7 +232,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: new Date().toISOString(),
         error: 'Performance metrics collection failed',
         details: message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -249,30 +249,30 @@ async function gatherPlatformMetrics(): Promise<any> {
       responseTime: {
         avg: 45, // ms
         p95: 120,
-        p99: 250,
-      },
+        p99: 250
+      }
     },
     gpu: {
       utilization: 67, // %;
       memory: {
         total: 8192, // MB
         used: 2800,
-        free: 5392,
+        free: 5392
       },
       temperature: 72, // Celsius
-      performance: 'optimal',
+      performance: 'optimal'
     },
     database: {
       connections: {
         active: 8,
         idle: 12,
-        max: 100,
+        max: 100
       },
       queryPerformance: {
         avg: 15, // ms
         p95: 45,
-        slowQueries: 2,
-      },
+        slowQueries: 2
+      }
     },
     caching: {
       hitRate: 89.5, // %
@@ -280,15 +280,15 @@ async function gatherPlatformMetrics(): Promise<any> {
       operations: {
         gets: 1250,
         sets: 340,
-        deletes: 28,
-      },
+        deletes: 28
+      }
     },
     ai: {
       modelsLoaded: 3,
       inferenceSpeed: 156, // tokens per second
       queueDepth: 2,
       averageLatency: 2800, // ms
-    },
+    }
   };
 }
 
@@ -314,7 +314,7 @@ async function runPerformanceBenchmarks(): Promise<any> {
       responseTime: 3200, // ms
       tokensPerSecond: 156,
       accuracy: 91.8, // %
-    },
+    }
   };
 }
 
@@ -374,7 +374,7 @@ function generateSystemAlerts(
   return {
     active: warnings.length + critical.length,
     warnings,
-    critical,
+    critical
   };
 }
 
@@ -426,13 +426,13 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({
             success: true,
             message: 'Garbage collection triggered',
-            memoryAfter: process.memoryUsage(),
+            memoryAfter: process.memoryUsage()
           });
         } else {
           return json({
               success: false,
               error: 'Garbage collection not available',
-              suggestion: 'Start Node.js with --expose-gc flag',
+              suggestion: 'Start Node.js with --expose-gc flag'
             },)
             { status: 400 }
           );
@@ -446,7 +446,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'Performance benchmarks completed',
-          data: benchmarks,
+          data: benchmarks
         });
       }
 
@@ -455,7 +455,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'Application caches cleared',
-          clearedAt: new Date().toISOString(),
+          clearedAt: new Date().toISOString()
         });
       }
 
@@ -463,7 +463,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
             success: false,
             error: 'Invalid action',
-            availableActions: ['gc', 'benchmark', 'clear_cache'],
+            availableActions: ['gc', 'benchmark', 'clear_cache']
           },)
           { status: 400 }
         );
@@ -472,7 +472,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
         success: false,
         error: 'Performance action failed',
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );

@@ -33,7 +33,7 @@ interface StoreResponse {
     total: number;
     successful: number;
     failed: number;
-    storage_time: number;,
+    storage_time: number;
   };
 }
 
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!Array.isArray(results) || results.length === 0) {
       return json({ 
         success: false, 
-        error: 'Results array is required' ,
+        error: 'Results array is required' 
       }, { status: 400 });
     }
     
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
         total: results.length,
         successful: successful.length,
         failed: failed.length,
-        storage_time: storageTime,
+        storage_time: storageTime
       }
     } satisfies StoreResponse);
     
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Tensor storage failed',
-      message: error.message,
+      message: error.message
     }, { status: 500 });
   }
 };
@@ -131,7 +131,7 @@ async function storeTensorData(
       await cache.set(`tensor:${(result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id}`, {
         ...result,
         metadata,
-        stored_at: Date.now(),
+        stored_at: Date.now()
       }, 24 * 60 * 60 * 1000); // 24 hours
       storedIn.push('redis');
     } catch (e) {
@@ -171,7 +171,7 @@ async function storeInNeo4j(
     dimensions: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).dimensions,
     created_at: new Date().toISOString(),
     source: metadata.source || 'ocr',
-    relationships: [],
+    relationships: []
   };
   
   // TODO: Implement actual Neo4j storage
@@ -208,7 +208,7 @@ async function storeInPostgreSQL(
     search_index: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).search_index,
     metadata: {
       ...metadata,
-      stored_at: new Date().toISOString(),
+      stored_at: new Date().toISOString()
     }
   };
   
@@ -292,7 +292,7 @@ export const GET: RequestHandler = async () => {
     neo4j: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: false,
     postgresql: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : false,
     qdrant: healthChecks[2].status === 'fulfilled' ? healthChecks[2].value : false,
-    redis: healthChecks[3].status === 'fulfilled' ? healthChecks[3].value : false,
+    redis: healthChecks[3].status === 'fulfilled' ? healthChecks[3].value : false
   };
   
   const allHealthy = Object.values(results).every(Boolean);
@@ -300,9 +300,9 @@ export const GET: RequestHandler = async () => {
   return json({
     healthy: allHealthy,
     services: results,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   }, {
-    status: allHealthy ? 200 : 503,
+    status: allHealthy ? 200 : 503
   });
 };
 

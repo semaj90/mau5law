@@ -15,7 +15,7 @@ const UUIDSchema = z.string().uuid('Invalid case ID format');
 const DetectiveModeSchema = z.object({
   enabled: z.boolean(),
   reason: z.string().optional(),
-  aiAssisted: z.boolean().default(true),
+  aiAssisted: z.boolean().default(true)
 });
 
 /*
@@ -62,9 +62,9 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           toggledBy: locals.user.id,
           reason: reason || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
           aiAssisted,
-          previousState: currentCase.metadata?.detectiveMode || null,
-        },
-      },
+          previousState: currentCase.metadata?.detectiveMode || null
+        }
+      }
     };
 
     await casesService.update(caseId, updateData);
@@ -83,15 +83,15 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           enabled,
           toggledAt: new Date().toISOString(),
           reason: reason || (enabled ? 'Detective mode activated' : 'Detective mode deactivated'),
-          aiAssisted,
-        },
+          aiAssisted
+        }
       },
       meta: {
         userId: locals.user.id,
         caseId,
         timestamp: new Date().toISOString(),
-        action: enabled ? 'detective_mode_activated' : 'detective_mode_deactivated',
-      },
+        action: enabled ? 'detective_mode_activated' : 'detective_mode_deactivated'
+      }
     });
   } catch (err: any) {
     console.error('Error toggling detective mode:', err);
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid request data',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to toggle detective mode',
         code: 'DETECTIVE_MODE_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }

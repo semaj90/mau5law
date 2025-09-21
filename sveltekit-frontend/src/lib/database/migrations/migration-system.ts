@@ -23,7 +23,7 @@ export const migrations = pgTable('schema_migrations', {
   success: boolean('success').notNull().default(true),
   error_message: text('error_message'),
   rollback_sql: text('rollback_sql'),
-  metadata: json('metadata'),
+  metadata: json('metadata')
 });
 }
 
@@ -42,7 +42,7 @@ export interface MigrationResult {
   version: string;
   executionTime: number;
   error?: string;
-  applied: boolean;,
+  applied: boolean;
 }
 
 export class DatabaseMigrator {
@@ -172,7 +172,7 @@ export class DatabaseMigrator {
       version,
       name,
       up: upSQL.trim(),
-      down: downSQL.trim() || undefined,
+      down: downSQL.trim() || undefined
     };
   }
 
@@ -227,7 +227,7 @@ export class DatabaseMigrator {
           success: true,
           version: migration.version,
           executionTime: 0,
-          applied: false,
+          applied: false
         };
       }
 
@@ -275,7 +275,7 @@ export class DatabaseMigrator {
         success: true,
         version: migration.version,
         executionTime,
-        applied: true,
+        applied: true
       };
 
     } catch (error) {
@@ -305,7 +305,7 @@ export class DatabaseMigrator {
         version: migration.version,
         executionTime,
         error: errorMessage,
-        applied: false,
+        applied: false
       };
     }
   }
@@ -380,7 +380,7 @@ export class DatabaseMigrator {
           success: true,
           version: '',
           executionTime: 0,
-          applied: false,
+          applied: false
         };
       }
 
@@ -412,7 +412,7 @@ export class DatabaseMigrator {
         success: true,
         version: migration.version,
         executionTime,
-        applied: true,
+        applied: true
       };
 
     } catch (error) {
@@ -424,7 +424,7 @@ export class DatabaseMigrator {
         version: '',
         executionTime: 0,
         error: errorMessage,
-        applied: false,
+        applied: false
       };
     }
   }
@@ -436,7 +436,7 @@ export class DatabaseMigrator {
     appliedMigrations: number;
     pendingMigrations: number;
     lastMigration: string | null;
-    systemHealthy: boolean;,
+    systemHealthy: boolean;
   }> {
     try {
       const allMigrations = await this.loadMigrations();
@@ -462,7 +462,7 @@ export class DatabaseMigrator {
         appliedMigrations: appliedVersions.length,
         pendingMigrations: pendingCount,
         lastMigration,
-        systemHealthy: failedMigrations.length === 0,
+        systemHealthy: failedMigrations.length === 0
       };
 
     } catch (error) {
@@ -471,7 +471,7 @@ export class DatabaseMigrator {
         appliedMigrations: 0,
         pendingMigrations: 0,
         lastMigration: null,
-        systemHealthy: false,
+        systemHealthy: false
       };
     }
   }
@@ -518,7 +518,7 @@ export class DatabaseMigrator {
    */;
   async validateIntegrity(): Promise<{
     valid: boolean;
-    issues: string[];,
+    issues: string[];
   }> {
     const issues: string[] = [];
 

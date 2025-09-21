@@ -11,7 +11,7 @@ interface DocumentContent {
   content: Uint8Array;
   contentType: string;
   compressed: boolean;
-  checksum: number;,
+  checksum: number;
 }
 
 interface VectorEmbedding {
@@ -19,7 +19,7 @@ interface VectorEmbedding {
   embedding: Float32Array;
   model: string;
   dimension: number;
-  confidence: number;,
+  confidence: number;
 }
 
 interface LegalEntityExtraction {
@@ -69,7 +69,7 @@ export class FlatBufferLegalProcessor {
       content: processedContent,
       contentType: document.contentType,
       compressed: !!document.compress,
-      checksum: this.calculateChecksum(processedContent),
+      checksum: this.calculateChecksum(processedContent)
     });
 
     return fbDocument;
@@ -99,7 +99,7 @@ export class FlatBufferLegalProcessor {
       embedding: quantizedEmbeddings,
       model: embeddings?.model || "unknown" // @ts-ignore - Model property access,
       dimension: embeddings.vectors.length,
-      confidence: 0.95 // Would come from Go AI processing,
+      confidence: 0.95 // Would come from Go AI processing
     });
 
     return fbEmbeddings;
@@ -119,7 +119,7 @@ export class FlatBufferLegalProcessor {
           'X-Processing-Mode': 'simd', // Use SIMD optimizations
           'X-GPU-Acceleration': 'cuda' // Use CUDA if available
         },
-        body: content,
+        body: content
       });
 
       if (!(response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).ok) {
@@ -157,7 +157,7 @@ export class FlatBufferLegalProcessor {
           'X-Search-Engine': 'gpu-accelerated',
           'X-Vector-Quantization': 'int8' // Use quantized vectors for speed
         },
-        body: searchRequest,
+        body: searchRequest
       });
 
       if (!(response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).ok) {
@@ -353,7 +353,7 @@ export class FlatBufferLegalProcessor {
           type: 'ORGANIZATION',
           confidence: 0.95,
           startPos: 0,
-          endPos: 13,
+          endPos: 13
         }
       ]
     };
@@ -375,7 +375,7 @@ export class FlatBufferLegalProcessor {
     // Fallback local entity extraction;
     return {
       documentId,
-      entities: [],
+      entities: []
     };
   }
 }
@@ -413,7 +413,7 @@ export class FlatBufferPerformanceMonitor {
         avg: this.getAverageTime(operation),
         min: Math.min(...times),
         max: Math.max(...times),
-        count: times.length,
+        count: times.length
       };
     }
 

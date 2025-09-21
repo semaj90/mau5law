@@ -34,7 +34,7 @@ export interface VectorSearchState {
   // History
   searchHistory: Array<any>;
 
-  error: string | null;,
+  error: string | null;
 }
 
 const initialState: VectorSearchState = {
@@ -52,7 +52,7 @@ const initialState: VectorSearchState = {
   ragLatency: 0,
   vectorDbConnected: false,
   searchHistory: [],
-  error: null,
+  error: null
 };
 
 // Core store
@@ -90,7 +90,7 @@ export const vectorSearchActions = {
       ...state,
       query,
       isSearching: true,
-      error: null,
+      error: null
     });
 
     const startTime = Date.now();
@@ -105,7 +105,7 @@ export const vectorSearchActions = {
           userId,
           caseId,
           limit: initialState.searchLimit,
-          threshold: initialState.searchThreshold,
+          threshold: initialState.searchThreshold
         })
       });
 
@@ -138,7 +138,7 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false,
-        error: error instanceof Error ? error.message: 'Search failed',
+        error: error instanceof Error ? error.message: 'Search failed'
       });
     }
   },
@@ -153,7 +153,7 @@ export const vectorSearchActions = {
       ...state,
       isGeneratingResponse: true,
       ragResponse: null,
-      error: null,
+      error: null
     });
 
     const startTime = Date.now();
@@ -171,7 +171,7 @@ export const vectorSearchActions = {
           userId,
           caseId,
           useContext: true,
-          model: 'gemma3-legal',
+          model: 'gemma3-legal'
         })
       });
 
@@ -187,7 +187,7 @@ export const vectorSearchActions = {
         ragResponse: (data as { results?: any; response?: any; context?: any; status?: any }).response,
         ragContext: (data as { results?: any; response?: any; context?: any; status?: any }).context || state.results,
         ragLatency: latency,
-        isGeneratingResponse: false,
+        isGeneratingResponse: false
       });
 
     } catch (error: any) {
@@ -195,7 +195,7 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         isGeneratingResponse: false,
-        error: error instanceof Error ? error.message: 'RAG query failed',
+        error: error instanceof Error ? error.message: 'RAG query failed'
       });
     }
   },
@@ -207,7 +207,7 @@ export const vectorSearchActions = {
     vectorSearchStore.update(state => ({
       ...state,
       isSearching: true,
-      error: null,
+      error: null
     });
 
     try {
@@ -226,7 +226,7 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         results: (data as { results?: any; response?: any; context?: any; status?: any }).results || [],
-        isSearching: false,
+        isSearching: false
       });
 
     } catch (error: any) {
@@ -234,7 +234,7 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false,
-        error: error instanceof Error ? error.message: 'Similar cases search failed',
+        error: error instanceof Error ? error.message: 'Similar cases search failed'
       });
     }
   },
@@ -246,7 +246,7 @@ export const vectorSearchActions = {
     vectorSearchStore.update(state => ({
       ...state,
       ...config
-    ,});
+    });
   },
 
   /**
@@ -259,7 +259,7 @@ export const vectorSearchActions = {
       results: [],
       ragContext: [],
       ragResponse: null,
-      error: null,
+      error: null
     });
   },
 
@@ -278,7 +278,7 @@ export const vectorSearchActions = {
     } catch (error: any) {
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: false,
+        vectorDbConnected: false
       });
     }
   }

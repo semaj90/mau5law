@@ -19,13 +19,13 @@ const AnalysisRequestSchema = z.object({
     includeNLP: z.boolean().default(true),
     includeLegalReview: z.boolean().default(true),
     includeForensics: z.boolean().default(false),
-    confidence: z.number().min(0).max(1).default(0.7),
+    confidence: z.number().min(0).max(1).default(0.7)
   }).optional(),
   context: z.object({
     caseId: z.string().uuid().optional(),
     relatedEvidence: z.array(z.string().uuid()).optional(),
-    legalContext: z.string().optional(),
-  }).optional(),
+    legalContext: z.string().optional()
+  }).optional()
 });
 
 // Configuration for AI services
@@ -81,9 +81,9 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           timestamp: new Date().toISOString(),
           analyzedBy: locals.user.id,
           options,
-          version: '1.0',
-        },
-      },
+          version: '1.0'
+        }
+      }
     };
 
     // Update evidence with analysis results
@@ -99,15 +99,15 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         evidence: {
           id: evidence.id,
           title: evidence.title,
-          evidenceType: evidence.evidenceType,
-        },
+          evidenceType: evidence.evidenceType
+        }
       },
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString(),
         action: 'evidence_analyzed',
-        analysisType,
-      },
+        analysisType
+      }
     });
 
   } catch (err: any) {
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid analysis request',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to analyze evidence',
         code: 'ANALYSIS_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -157,7 +157,7 @@ async function performAIAnalysis(
     confidence: 0,
     findings: [],
     recommendations: [],
-    alerts: [],
+    alerts: []
   };
 
   try {
@@ -200,7 +200,7 @@ async function performAIAnalysis(
     return {
       ...analysisResults,
       error: 'Analysis failed',
-      details: error instanceof Error ? error.message: 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -218,7 +218,7 @@ async function analyzeContent(evidence: any, options: any): Promise<any> {
     keywords: ['legal', 'evidence', 'case'],
     sentiment: 'neutral',
     language: 'en',
-    quality: 'high',
+    quality: 'high'
   };
 }
 
@@ -233,7 +233,7 @@ async function analyzeLegal(evidence: any, context: any): Promise<any> {
     admissibility: 'likely admissible',
     precedents: ['Case v. State (2023)', 'Legal v. Matter (2022)'],
     legalIssues: ['Chain of custody', 'Authentication required'],
-    recommendations: ['Verify source', 'Obtain expert testimony'],
+    recommendations: ['Verify source', 'Obtain expert testimony']
   };
 }
 
@@ -247,11 +247,11 @@ async function analyzeMetadata(evidence: any): Promise<any> {
       size: evidence.metadata?.fileSize || 'unknown',
       type: evidence.evidenceType,
       created: evidence.createdAt,
-      modified: evidence.updatedAt,
+      modified: evidence.updatedAt
     },
     integrity: 'verified',
     authenticity: 'confirmed',
-    chainOfCustody: 'documented',
+    chainOfCustody: 'documented'
   };
 }
 
@@ -264,7 +264,7 @@ async function analyzeForensic(evidence: any): Promise<any> {
     digitalFingerprint: 'sha256:abc123...',
     tamperDetection: 'no signs of tampering',
     originalityScore: 0.95,
-    forensicMarkers: ['EXIF data intact', 'No digital alterations detected'],
+    forensicMarkers: ['EXIF data intact', 'No digital alterations detected']
   };
 }
 

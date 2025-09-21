@@ -31,12 +31,12 @@ interface BenchmarkResult {
   memoryUsage: {
     before: number;
     after: number;
-    peak: number;,
+    peak: number;
   };
   compressionRatio?: number;
   throughput: {
     opsPerSecond: number;
-    mbPerSecond: number;,
+    mbPerSecond: number;
   };
 }
 
@@ -56,23 +56,23 @@ export const GET: RequestHandler = async ({ url }) => {
         cacheHitRatio: stats.cacheHitRatio,
         avgResponseTime: stats.averageResponseTime,
         compressionEnabled: true,
-        simdSupport: true,
+        simdSupport: true
       },
       endpoints: {
         benchmark: 'POST /api/v1/webgpu/cache-demo - Run performance benchmarks',
         tensor: 'POST with operation: "tensor" - Test tensor compression',
         batch: 'POST with operation: "batch" - Batch processing demo',
-        stressTest: 'POST with operation: "stress-test" - Load testing',
+        stressTest: 'POST with operation: "stress-test" - Load testing'
       },
       systemMetrics: stats,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     return json();
       {
         success: false,
         error: 'Failed to get WebGPU cache system status',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         return json({
             success: false,
             error: 'Invalid operation',
-            validOperations: ['benchmark', 'tensor', 'batch', 'stats', 'stress-test'],
+            validOperations: ['benchmark', 'tensor', 'batch', 'stats', 'stress-test']
           },)
           { status: 400 }
         );
@@ -127,8 +127,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       metadata: {
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        processingTime: (result as { processingTime?: any }).processingTime || 0,
-      },
+        processingTime: (result as { processingTime?: any }).processingTime || 0
+      }
     });
   } catch (error) {
     console.error('WebGPU Cache Demo error:', error);
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       {
         success: false,
         error: 'WebGPU cache demo failed',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -200,8 +200,8 @@ async function runPerformanceBenchmark(data: any, options: any): Promise<any> {
       totalThroughput: totalOpsPerSec,
       recommendedConfiguration: avgSpeedup > 1.5 ? 'webgpu-enabled' : 'standard-cache',
       performanceGain: `${((avgSpeedup - 1) * 100).toFixed(1)}% improvement`,
-      processingTime: Date.now(),
-    },
+      processingTime: Date.now()
+    }
   };
 }
 
@@ -244,14 +244,14 @@ async function benchmarkTensorCompression(testTensors: Float32Array[]): Promise<
     memoryUsage: {
       before: startMemory,
       after: endMemory,
-      peak: peakMemory,
+      peak: peakMemory
     },
     compressionRatio: 4.2, // Estimated compression ratio;
     throughput: {
       opsPerSecond: testTensors.length / (webgpuTime / 1000),
       mbPerSecond:
-        (testTensors.length * testTensors[0].byteLength) / (webgpuTime / 1000) / (1024 * 1024),
-    },
+        (testTensors.length * testTensors[0].byteLength) / (webgpuTime / 1000) / (1024 * 1024)
+    }
   };
 }
 
@@ -270,7 +270,7 @@ async function benchmarkBatchOperations(testTensors: Float32Array[]): Promise<Be
       type: 'set' as const,
       key: `batch_webgpu_${i}_${j}`,
       value: tensor,
-      options: { ttl: 300, compress: true, parallel: true },
+      options: { ttl: 300, compress: true, parallel: true }
     });
 
     await optimizedCache.batch(operations);
@@ -293,12 +293,12 @@ async function benchmarkBatchOperations(testTensors: Float32Array[]): Promise<Be
     memoryUsage: {
       before: 0,
       after: 0,
-      peak: 0,
+      peak: 0
     },
     throughput: {
       opsPerSecond: testTensors.length / (webgpuTime / 1000),
       mbPerSecond: (testTensors.length * 4096) / (webgpuTime / 1000) / (1024 * 1024), // Estimated
-    },
+    }
   };
 }
 
@@ -332,12 +332,12 @@ async function benchmarkCacheThroughput(testTensors: Float32Array[]): Promise<Be
     memoryUsage: {
       before: 0,
       after: 0,
-      peak: 0,
+      peak: 0
     },
     throughput: {
       opsPerSecond: concurrentOps / (webgpuTime / 1000),
-      mbPerSecond: (concurrentOps * 4096) / (webgpuTime / 1000) / (1024 * 1024),
-    },
+      mbPerSecond: (concurrentOps * 4096) / (webgpuTime / 1000) / (1024 * 1024)
+    }
   };
 }
 
@@ -357,7 +357,7 @@ async function demonstrateTensorOperations(data: any, options: any) {
     'Legal contract analysis requires careful consideration of terms and conditions.',
     'Evidence processing in legal cases demands accuracy and attention to detail.',
     'Case management systems enhance lawyer productivity and client satisfaction.',
-    'AI-powered legal research accelerates document review and case preparation.',
+    'AI-powered legal research accelerates document review and case preparation.'
   ];
 
   console.log(`🎯 Processing ${textSamples.length} text samples for embeddings`);
@@ -382,14 +382,14 @@ async function demonstrateTensorOperations(data: any, options: any) {
         embeddings.reduce(
           (sum, emb) => sum + Math.sqrt(Array.from(emb).reduce((s, v) => s + v * v, 0)),
           0
-        ) / embeddings.length,
+        ) / embeddings.length
     },
     similarities: similarities.slice(0, 5), // First 5 similarity pairs;
     performance: {
       processingTime,
       throughput: textSamples.length / (processingTime / 1000),
-      webgpuOptimized: true,
-    },
+      webgpuOptimized: true
+    }
   };
 }
 
@@ -453,7 +453,7 @@ async function demonstrateBatchProcessing(data: any, options: any) {
 
   const testData = Array.from({ length: batchSize }, (_, i) => ({
     id: `batch_item_${i}`,
-    data: new Float32Array(Array.from({ length: 768 }, () => Math.random())),
+    data: new Float32Array(Array.from({ length: 768 }, () => Math.random()))
   });
 
   const results = [];
@@ -467,7 +467,7 @@ async function demonstrateBatchProcessing(data: any, options: any) {
       type: 'set' as const,
       key: `${(item as { id?: any; data?: any }).id}_${i}`,
       value: (item as { id?: any; data?: any }).data,
-      options: { ttl: 300, compress: true, parallel: true, priority: 'high' as const },
+      options: { ttl: 300, compress: true, parallel: true, priority: 'high' as const }
     });
 
     await optimizedCache.batch(setOps);
@@ -476,7 +476,7 @@ async function demonstrateBatchProcessing(data: any, options: any) {
     const getOps = testData.map((item) => ({
       type: 'get' as const,
       key: `${(item as { id?: any; data?: any }).id}_${i}`,
-      options: { decompress: true, parallel: true },
+      options: { decompress: true, parallel: true }
     });
 
     const retrieved = await optimizedCache.batch(getOps);
@@ -488,7 +488,7 @@ async function demonstrateBatchProcessing(data: any, options: any) {
       itemsProcessed: batchSize * 2, // set + get
       processingTime: iterationTime,
       throughput: (batchSize * 2) / (iterationTime / 1000),
-      allRetrieved: retrieved.every((item) => item instanceof Float32Array),
+      allRetrieved: retrieved.every((item) => item instanceof Float32Array)
     });
   }
 
@@ -498,7 +498,7 @@ async function demonstrateBatchProcessing(data: any, options: any) {
     batchConfiguration: {
       batchSize,
       iterations,
-      totalOperations: batchSize * iterations * 2,
+      totalOperations: batchSize * iterations * 2
     },
     results,
     summary: {
@@ -506,8 +506,8 @@ async function demonstrateBatchProcessing(data: any, options: any) {
       avgIterationTime: results.reduce((sum, r) => sum + r.processingTime, 0) / results.length,
       avgThroughput: results.reduce((sum, r) => sum + r.throughput, 0) / results.length,
       successRate: (results.filter((r) => r.allRetrieved).length / results.length) * 100,
-      opsPerSecond: (batchSize * iterations * 2) / (totalTime / 1000),
-    },
+      opsPerSecond: (batchSize * iterations * 2) / (totalTime / 1000)
+    }
   };
 }
 
@@ -525,9 +525,9 @@ async function getDetailedStatistics() {
       nodeVersion: process.version,
       memoryUsage: process.memoryUsage(),
       cpuUsage: process.cpuUsage(),
-      uptime: process.uptime(),
+      uptime: process.uptime()
     },
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
 }
 
@@ -584,12 +584,12 @@ async function runStressTest(data: any, options: any) {
       errors,
       successRate: (completedOps / (completedOps + errors)) * 100,
       opsPerSecond: completedOps / (actualDuration / 1000),
-      avgResponseTime: actualDuration / completedOps,
+      avgResponseTime: actualDuration / completedOps
     },
     recommendations: {
       systemStability: errors < completedOps * 0.01 ? 'excellent' : 'needs-optimization',
       throughputRating: completedOps / (actualDuration / 1000) > 100 ? 'high' : 'moderate',
-      suggestedMaxConcurrency: Math.floor(concurrency * 0.8) // 80% of tested concurrency,
+      suggestedMaxConcurrency: Math.floor(concurrency * 0.8) // 80% of tested concurrency
     }
   };
 }
@@ -605,13 +605,13 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'WebGPU cache demo data cleared',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to clear demo data',
-      details: error instanceof Error ? error.message: String(error),
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };

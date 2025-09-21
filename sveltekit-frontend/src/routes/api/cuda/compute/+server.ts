@@ -11,9 +11,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		const response = await fetch(`${CUDA_SERVER_URL}/cuda/compute`, {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(body),
+			body: JSON.stringify(body)
 		});
 
 		if (!response.ok) {
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({ 
 					error: 'CUDA server error', 
 					details: errorText,
-					status: response.status ,
+					status: response.status 
 				}, )
 				{ status: response.status }
 			);
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json();
 			{ 
 				error: 'Failed to connect to CUDA server',
-				details: error instanceof Error ? error.message: String(error),
+				details: error instanceof Error ? error.message: String(error)
 			}, 
 			{ status: 500 }
 		);
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async () => {
 			{ 
 				status: 'disconnected',
 				error: 'CUDA server unreachable',
-				details: error instanceof Error ? error.message: String(error),
+				details: error instanceof Error ? error.message: String(error)
 			}, 
 			{ status: 503 }
 		);

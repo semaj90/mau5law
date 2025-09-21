@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ locals }) => {
         updated_at: true, // database field
         is_active: true, // database field
         email_verified: true, // database field
-      },
+      }
     });
 
     if (!user) {
@@ -44,8 +44,8 @@ export const GET: RequestHandler = async ({ locals }) => {
       success: true,
       user: {
         ...frontendUser,
-        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.png',
-      },
+        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.png'
+      }
     });
   } catch (error: any) {
     console.error('Profile fetch error:', error);
@@ -101,9 +101,9 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       success: true,
       user: {
         ...frontendUser,
-        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg',
+        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg'
       },
-      message: 'Profile updated successfully',
+      message: 'Profile updated successfully'
     });
   } catch (error: any) {
     console.error('Profile update error:', error);

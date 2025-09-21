@@ -35,7 +35,7 @@ export const legalDocuments: LegalDocument[] = [;
     category: "criminal",
     code: "PEN 211",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=211.&lawCode=PEN",
-    sections: ["211"],
+    sections: ["211"]
   },
   {
     id: "ca-civ-1549",
@@ -68,7 +68,7 @@ export const legalDocuments: LegalDocument[] = [;
     category: "evidence",
     code: "EVID 352",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=352.&lawCode=EVID",
-    sections: ["352"],
+    sections: ["352"]
   },
   {
     id: "ca-evid-1101",
@@ -101,7 +101,7 @@ export const legalDocuments: LegalDocument[] = [;
     category: "constitutional",
     code: "4TH AMEND",
     url: "https://constitution.congress.gov/constitution/amendment-4/",
-    sections: ["Amendment IV"],
+    sections: ["Amendment IV"]
   },
   {
     id: "fed-18usc-1030",

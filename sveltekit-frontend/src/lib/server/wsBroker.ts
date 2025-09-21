@@ -104,7 +104,7 @@ export function registerWsConnection(sessionId: string, ws: WebSocket): void {
     ws.send(JSON.stringify({
         type: 'connection-established',
         sessionId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       })
     );
   } catch (error: any) {
@@ -123,7 +123,7 @@ function sendWsMessageToSessionLocal(sessionId: string, msg: ProgressMsg): void 
   const messageStr = JSON.stringify({
     ...msg,
     timestamp: new Date().toISOString(),
-    sessionId,
+    sessionId
   });
 
   // Send to all connections for this session;
@@ -155,7 +155,7 @@ export function sendWsMessageToSession(sessionId: string, msg: ProgressMsg): voi
     const r = redis as any;
     if (typeof r.publish === 'function') {
       try {
-        r.publish('evidence:progress', JSON.stringify({ sessionId, ...msg ,});
+        r.publish('evidence:progress', JSON.stringify({ sessionId, ...msg });
       } catch (error: any) {
         console.error('❌ Error publishing to Redis:', error);
       }
@@ -251,7 +251,7 @@ export function wsHealthCheck(): { local: number; redis: boolean } {
 
   return {
     local: localConnections,
-    redis: redis?.status === 'ready',
+    redis: redis?.status === 'ready'
   };
 }
 

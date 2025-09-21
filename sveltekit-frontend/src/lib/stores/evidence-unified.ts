@@ -39,7 +39,7 @@ export interface Evidence {
   classification?: {
     category: string;
     relevance: number;
-    confidence: number;,
+    confidence: number;
   };
   timeline?: {
     createdAt: string;
@@ -57,7 +57,7 @@ export interface EvidenceStoreState {
   evidence: Evidence[];
   isLoading: boolean;
   error: string | null;
-  isConnected: boolean;,
+  isConnected: boolean;
 }
 
 class UnifiedEvidenceStore {
@@ -65,7 +65,7 @@ class UnifiedEvidenceStore {
     evidence: [],
     isLoading: false,
     error: null,
-    isConnected: false,
+    isConnected: false
   });
 
   private websocket: WebSocket | null = null;
@@ -113,7 +113,7 @@ class UnifiedEvidenceStore {
         this.store.update((s) => ({ ...s, isConnected: true });
         this.websocket?.send(JSON.stringify({
             type: "subscribe",
-            channels: ["evidence_update"],
+            channels: ["evidence_update"]
           }),
         );
       };
@@ -156,7 +156,7 @@ class UnifiedEvidenceStore {
         case "EVIDENCE_CREATED":;
           this.store.update((s) => ({
             ...s,
-            evidence: [...s.evidence, data],
+            evidence: [...s.evidence, data]
           });
           break;
         case "EVIDENCE_UPDATED":;
@@ -164,13 +164,13 @@ class UnifiedEvidenceStore {
             ...s,
             evidence: s.evidence.map((e: any) =>
               e.id === (data as { id?: any; lastUpdated?: any; evidence?: any }).id ? { ...e, ...data } : e,
-            ),
+            )
           });
           break;
         case "EVIDENCE_DELETED":;
           this.store.update((s) => ({
             ...s,
-            evidence: s.evidence.filter((e: any) => e.id !== (data as { id?: any; lastUpdated?: any; evidence?: any }).id),
+            evidence: s.evidence.filter((e: any) => e.id !== (data as { id?: any; lastUpdated?: any; evidence?: any }).id)
           });
           break;
       }
@@ -196,14 +196,14 @@ class UnifiedEvidenceStore {
       this.store.update((s) => ({
         ...s,
         evidence: evidenceList,
-        isLoading: false,
+        isLoading: false
       });
       this.saveToLocalStorage();
     } catch (error: any) {
       this.store.update((s) => ({
         ...s,
         isLoading: false,
-        error: error.message,
+        error: error.message
       });
       console.error("Failed to fetch evidence:", error);
     }
@@ -223,7 +223,7 @@ class UnifiedEvidenceStore {
       const response = await fetch("/api/evidence", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newEvidenceData, caseId: currentCaseId }),
+        body: JSON.stringify({ ...newEvidenceData, caseId: currentCaseId })
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -234,14 +234,14 @@ class UnifiedEvidenceStore {
       this.store.update((s) => ({
         ...s,
         evidence: [...s.evidence, createdEvidence],
-        isLoading: false,
+        isLoading: false
       });
       this.saveToLocalStorage();
     } catch (error: any) {
       this.store.update((s) => ({
         ...s,
         isLoading: false,
-        error: error.message,
+        error: error.message
       });
       throw error;
     }
@@ -255,7 +255,7 @@ class UnifiedEvidenceStore {
         ...s,
         evidence: s.evidence.map((e: any) =>
           e.id === evidenceId ? { ...e, ...updates } : e,
-        ),
+        )
       };
     });
 
@@ -263,7 +263,7 @@ class UnifiedEvidenceStore {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates),
+        body: JSON.stringify(updates)
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -277,7 +277,7 @@ class UnifiedEvidenceStore {
           evidence: s.evidence.map((e: any) =>
             e.id === evidenceId ? originalEvidence! : e,
           ),
-          error: error.message,
+          error: error.message
         });
       }
       throw error;
@@ -290,13 +290,13 @@ class UnifiedEvidenceStore {
       originalEvidence = s.evidence.find((e: any) => e.id === evidenceId);
       return {
         ...s,
-        evidence: s.evidence.filter((e: any) => e.id !== evidenceId),
+        evidence: s.evidence.filter((e: any) => e.id !== evidenceId)
       };
     });
 
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: "DELETE",
+        method: "DELETE"
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -308,7 +308,7 @@ class UnifiedEvidenceStore {
         this.store.update((s) => ({
           ...s,
           evidence: [...s.evidence, originalEvidence!],
-          error: error.message,
+          error: error.message
         });
       }
       throw error;
@@ -323,7 +323,7 @@ class UnifiedEvidenceStore {
         "evidenceStore",
         JSON.stringify({
           ...data,
-          lastUpdated: new Date().toISOString(),
+          lastUpdated: new Date().toISOString()
         }),
       );
     } catch (error: any) {
@@ -346,7 +346,7 @@ class UnifiedEvidenceStore {
             evidence: (data as { id?: any; lastUpdated?: any; evidence?: any }).evidence || [],
             isLoading: false,
             error: null,
-            isConnected: false,
+            isConnected: false
           });
         }
       }

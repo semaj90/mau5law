@@ -23,7 +23,7 @@ export interface ShaderResourcePool {
   textures: Map<string, TrackedTexture>;
   bindGroups: Map<string, TrackedBindGroup>;
   memoryUsage: MemoryUsageTracker;
-  maxMemoryBudget: number;,
+  maxMemoryBudget: number;
 }
 
 export interface CompiledShader {
@@ -38,7 +38,7 @@ export interface CompiledShader {
   webglProgram?: WebGLProgram;
   isCompiled: boolean;
   compilationTime: number;
-  lastUsed: number;,
+  lastUsed: number;
 }
 
 export interface TrackedTexture {
@@ -50,7 +50,7 @@ export interface TrackedTexture {
   size: number; // bytes
   webgpuTexture?: GPUTexture;
   webglTexture?: WebGLTexture;
-  lastAccessed: number;,
+  lastAccessed: number;
 }
 
 export interface TrackedBindGroup {
@@ -59,7 +59,7 @@ export interface TrackedBindGroup {
   resources: string[]; // IDs of buffers/textures
   webgpuBindGroup?: GPUBindGroup;
   webglBindings?: Map<number, any>;
-  usageCount: number;,
+  usageCount: number;
 }
 
 export interface ShaderExecutionContext {
@@ -106,9 +106,9 @@ export class ShaderResourceManager {
           allocatedBytes: 0,
           peakBytes: 0,
           allocations: 0,
-          deallocations: 0,
+          deallocations: 0
         },
-        maxMemoryBudget: this.config.memoryBudget.l1GpuBudget,
+        maxMemoryBudget: this.config.memoryBudget.l1GpuBudget
       };
 
       this.pools.set(backend, pool);
@@ -118,19 +118,19 @@ export class ShaderResourceManager {
         type: 'context_switch',
         gpuUtilization: 0,
         memoryUsed: 0,
-        temperature: 50,
+        temperature: 50
       });
 
       console.log(`[ShaderResourceManager] Initialized for ${backend}`, {
         memoryBudget: `${(pool.maxMemoryBudget / 1024 / 1024).toFixed(1)}MB`,
-        nintendoBanks: this.config.memoryBudget,
+        nintendoBanks: this.config.memoryBudget
       });
 
     } catch (error) {
       trackError({
         type: 'critical',
         message: `Shader resource manager initialization failed: ${error}`,
-        component: 'ShaderResourceManager',
+        component: 'ShaderResourceManager'
       });
       throw error;
     }
@@ -172,7 +172,7 @@ export class ShaderResourceManager {
         type: 'render_time',
         duration: compilationTime,
         operation: 'shader_compilation',
-        success: true,
+        success: true
       });
 
       console.log(`[ShaderResourceManager] Compiled shader '${bundle.name}' for ${backend} in ${compilationTime.toFixed(2)}ms`);
@@ -186,14 +186,14 @@ export class ShaderResourceManager {
         type: 'error',
         message: `Shader compilation failed: ${error}`,
         component: 'ShaderResourceManager',
-        stack: error instanceof Error ? error.stack: undefined,
+        stack: error instanceof Error ? error.stack: undefined
       });
 
       telemetryBus.emitPerformanceEvent({
         type: 'render_time',
         duration: compilationTime,
         operation: 'shader_compilation',
-        success: false,
+        success: false
       });
 
       throw error;
@@ -235,7 +235,7 @@ export class ShaderResourceManager {
         resource = device.createBuffer({
           size,
           usage: gpuUsage,
-          mappedAtCreation: !!data,
+          mappedAtCreation: !!data
         });
 
         if (data) {
@@ -273,7 +273,7 @@ export class ShaderResourceManager {
         size: pool.maxMemoryBudget,
         used: pool.memoryUsage.allocatedBytes,
         available: pool.maxMemoryBudget - pool.memoryUsage.allocatedBytes,
-        type: 'L1_GPU',
+        type: 'L1_GPU'
       });
 
       return trackedBuffer;
@@ -282,7 +282,7 @@ export class ShaderResourceManager {
       trackError({
         type: 'error',
         message: `Buffer creation failed: ${error}`,
-        component: 'ShaderResourceManager',
+        component: 'ShaderResourceManager'
       });
       throw error;
     }
@@ -324,7 +324,7 @@ export class ShaderResourceManager {
         resource = device.createTexture({
           size: { width, height },
           format: format as GPUTextureFormat,
-          usage: this.mapTextureUsageToWebGPU(usage),
+          usage: this.mapTextureUsageToWebGPU(usage)
         });
       } else if (backend === 'webgl2' || backend === 'webgl1') {
         const gl = this.deviceContext as WebGL2RenderingContext;
@@ -345,7 +345,7 @@ export class ShaderResourceManager {
         size,
         webgpuTexture: backend === 'webgpu' ? resource : undefined,
         webglTexture: backend !== 'webgpu' ? resource : undefined,
-        lastAccessed: Date.now(),
+        lastAccessed: Date.now()
       };
 
       pool.textures.set(id, trackedTexture);
@@ -358,7 +358,7 @@ export class ShaderResourceManager {
       trackError({
         type: 'error',
         message: `Texture creation failed: ${error}`,
-        component: 'ShaderResourceManager',
+        component: 'ShaderResourceManager'
       });
       throw error;
     }
@@ -394,7 +394,7 @@ export class ShaderResourceManager {
       uniforms: params.uniforms,
       inputBuffers: params.inputBuffers || [],
       outputBuffers: params.outputBuffers || [],
-      startTime: performance.now(),
+      startTime: performance.now()
     };
 
     this.activeContext = context;
@@ -417,7 +417,7 @@ export class ShaderResourceManager {
         type: 'render_time',
         duration: executionTime,
         operation: `shader_execution_${shader.name}`,
-        success: true,
+        success: true
       });
 
       telemetryBus.emitVectorEncodingMetrics(
@@ -436,14 +436,14 @@ export class ShaderResourceManager {
       trackError({
         type: 'error',
         message: `Shader execution failed: ${error}`,
-        component: 'ShaderResourceManager',
+        component: 'ShaderResourceManager'
       });
 
       telemetryBus.emitPerformanceEvent({
         type: 'render_time',
         duration: executionTime,
         operation: `shader_execution_${shader.name}`,
-        success: false,
+        success: false
       });
 
       throw error;
@@ -458,7 +458,7 @@ export class ShaderResourceManager {
   getResourceStats(backend?: GPUBackend): {
     pools: Array<any>;
     totalMemoryUsed: number;
-    totalMemoryBudget: number;,
+    totalMemoryBudget: number;
   } {
     const pools = backend 
       ? [this.pools.get(backend)].filter(Boolean) as ShaderResourcePool[]
@@ -471,7 +471,7 @@ export class ShaderResourceManager {
       bufferCount: pool.buffers.size,
       textureCount: pool.textures.size,
       bindGroupCount: pool.bindGroups.size,
-      utilizationPercent: (pool.memoryUsage.allocatedBytes / pool.maxMemoryBudget) * 100,
+      utilizationPercent: (pool.memoryUsage.allocatedBytes / pool.maxMemoryBudget) * 100
     });
 
     const totalMemoryUsed = poolStats.reduce((sum, stats) => sum + stats.memoryUsage.allocatedBytes, 0);
@@ -576,15 +576,15 @@ export class ShaderResourceManager {
     
     const shaderModule = device.createShaderModule({
       code: bundle.compute!,
-      label: bundle.name,
+      label: bundle.name
     });
 
     const pipeline = device.createComputePipeline({
       compute: {
         module: shaderModule,
-        entryPoint: bundle.entryPoint || 'main',
+        entryPoint: bundle.entryPoint || 'main'
       },
-      label: bundle.name,
+      label: bundle.name
     });
 
     return {
@@ -597,7 +597,7 @@ export class ShaderResourceManager {
       webgpuPipeline: pipeline,
       isCompiled: true,
       compilationTime: 0, // Will be set by caller
-      lastUsed: Date.now(),
+      lastUsed: Date.now()
     };
   }
 
@@ -626,7 +626,7 @@ export class ShaderResourceManager {
       webglProgram: program,
       isCompiled: true,
       compilationTime: 0,
-      lastUsed: Date.now(),
+      lastUsed: Date.now()
     };
   }
 
@@ -717,7 +717,7 @@ export class ShaderResourceManager {
       case 'rgba32float': return 16;
       case 'r32float': return 4;
       case 'rg32float': return 8;
-      default: return 4;,
+      default: return 4;
     }
   }
 

@@ -50,14 +50,14 @@ export interface YoRHaMetrics {
   renderTime: number;
   lastUpdate: string;
   performanceScore: number;
-  memoryUsage: number;,
+  memoryUsage: number;
 }
 
 export interface YoRHaEvent {
   type: string;
   timestamp: string;
   data: any;
-  componentId: string;,
+  componentId: string;
 }
 
 export interface YoRHaSystemStatus {
@@ -65,20 +65,20 @@ export interface YoRHaSystemStatus {
     connected: boolean;
     latency: number;
     activeConnections: number;
-    queryCount: number;,
+    queryCount: number;
   };
   backend: {
     healthy: boolean;
     uptime: number;
     activeServices: number;
     cpuUsage: number;
-    memoryUsage: number;,
+    memoryUsage: number;
   };
   frontend: {
     renderFPS: number;
     componentCount: number;
     activeComponents: number;
-    webGPUEnabled: boolean;,
+    webGPUEnabled: boolean;
   };
 }
 
@@ -162,7 +162,7 @@ export class YoRHaAPIClient {
             const data = {
               value: Math.random(),
               updatedAt: new Date().toISOString(),
-              name: ds.name,
+              name: ds.name
             };
             this.pushData(ds.name, data);
           }, ds.intervalMs ?? 2000);
@@ -208,7 +208,7 @@ export class YoRHaAPIClient {
   async updateComponentConfig(componentId: string, config: any): Promise<void> {
     await this.apiCall(`/components/${componentId}`, {
       method: 'PUT',
-      body: JSON.stringify(config),
+      body: JSON.stringify(config)
     });
 
     // Clear cache
@@ -295,12 +295,12 @@ export class YoRHaAPIClient {
   async logEvent(event: Omit<YoRHaEvent, 'timestamp'>): Promise<void> {
     const fullEvent = {
       ...event,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     await this.apiCall('/events', {
       method: 'POST',
-      body: JSON.stringify(fullEvent),
+      body: JSON.stringify(fullEvent)
     });
   }
 
@@ -450,7 +450,7 @@ export class YoRHaAPIClient {
 
         const response = await fetch(url, {
           ...defaultOptions,
-          signal: controller.signal,
+          signal: controller.signal
         });
 
         clearTimeout(timeoutId);

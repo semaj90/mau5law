@@ -25,7 +25,7 @@ const MEMORY_CONSTRAINTS = {
   CHR_ROM: 8192, // 8KB for texture patterns
   PRG_ROM: 32768, // 32KB for program data
   SPRITE_LIMIT: 64, // Max sprites on screen
-  PALETTE_COLORS: 52 // NES-like color palette,
+  PALETTE_COLORS: 52 // NES-like color palette
 } as const;
 }
 
@@ -42,7 +42,7 @@ export interface NESTexture {
   legalContext?: {
     documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     confidenceLevel: number;
-    riskIndicator: boolean;,
+    riskIndicator: boolean;
   };
 }
 
@@ -81,21 +81,21 @@ export class WebGPUTextureStreamer {
       name: 'RAM',
       size: MEMORY_CONSTRAINTS.RAM,
       used: 0,
-      textures: new Map(),
+      textures: new Map()
     });
 
     this.memoryRegions.set('CHR_ROM', {
       name: 'CHR_ROM', 
       size: MEMORY_CONSTRAINTS.CHR_ROM,
       used: 0,
-      textures: new Map(),
+      textures: new Map()
     });
 
     this.memoryRegions.set('PRG_ROM', {
       name: 'PRG_ROM',
       size: MEMORY_CONSTRAINTS.PRG_ROM,
       used: 0,
-      textures: new Map(),
+      textures: new Map()
     });
   }
 
@@ -128,7 +128,7 @@ export class WebGPUTextureStreamer {
 
     try {
       this.adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       
       if (!this.adapter) return false;
@@ -144,7 +144,7 @@ export class WebGPUTextureStreamer {
           this.context.configure({
             device: this.device,
             format: 'bgra8unorm',
-            alphaMode: 'premultiplied',
+            alphaMode: 'premultiplied'
           });
         }
       }
@@ -168,7 +168,7 @@ export class WebGPUTextureStreamer {
         alpha: true,
         antialias: false, // Disable for pixel-perfect NES style
         depth: true,
-        premultipliedAlpha: true,
+        premultipliedAlpha: true
       });
 
       if (!this.gl) return false;
@@ -202,7 +202,7 @@ export class WebGPUTextureStreamer {
             compressedData: compressed.data,
             compressionRatio: compressed.ratio,
             originalSize: textureData.byteLength,
-            compressedSize: compressed.data.byteLength,
+            compressedSize: compressed.data.byteLength
           });
         } catch (error: any) {
           self.postMessage({ success: false, error: error.message });
@@ -242,7 +242,7 @@ export class WebGPUTextureStreamer {
         const compressed = new Uint8Array(output);
         return {
           data: compressed.buffer,
-          ratio: input.length / compressed.length,
+          ratio: input.length / compressed.length
         };
       }
     `;
@@ -394,7 +394,7 @@ export class WebGPUTextureStreamer {
     const texture = this.device.createTexture({
       size: { width: nesTexture.width, height: nesTexture.height },
       format: nesTexture.format,
-      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
 
     // Upload texture data with proper buffer handling
@@ -527,7 +527,7 @@ export class WebGPUTextureStreamer {
       regions: Record<string, any> as Record<string, { used: number; size: number; utilization: number; textureCount: number }>,
       textures: 0,
       isWebGPU: !!this.device,
-      isWebGL2: !!this.gl,
+      isWebGL2: !!this.gl
     };
 
     let totalUsed = 0;
@@ -538,7 +538,7 @@ export class WebGPUTextureStreamer {
         used: region.used,
         size: region.size,
         utilization: region.used / region.size,
-        textureCount: region.textures.size,
+        textureCount: region.textures.size
       };
       
       totalUsed += region.used;

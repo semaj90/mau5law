@@ -16,7 +16,7 @@ export interface ErrorContext {
   confidence: number;
   suggestions: string[];
   relatedFiles: string[];
-  fixable: boolean;,
+  fixable: boolean;
 }
 
 export interface ErrorAnalysisResult {
@@ -27,7 +27,7 @@ export interface ErrorAnalysisResult {
   suggestionCount: number;
   autoFixStrategy: string;
   estimatedTime: number;
-  dependencies: string[];,
+  dependencies: string[];
 }
 
 class ErrorAnalysisWorkerEngine {
@@ -85,7 +85,7 @@ class ErrorAnalysisWorkerEngine {
       suggestionCount: this.generateSuggestionCount(error),
       autoFixStrategy: this.getFixStrategy(codeNumber),
       estimatedTime: this.estimateFixTime(error),
-      dependencies: this.extractDependencies(error),
+      dependencies: this.extractDependencies(error)
     };
   }
 
@@ -229,14 +229,14 @@ self.addEventListener('message', (event: MessageEvent) => {
           type: 'analysis_complete',
           results,
           id,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
         break;
         
       case 'ping':;
         self.postMessage({
           type: 'pong',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
         break;
         
@@ -255,7 +255,7 @@ self.addEventListener('message', (event: MessageEvent) => {
 // Signal that worker is ready;
 self.postMessage({
   type: 'worker_ready',
-  timestamp: Date.now(),
+  timestamp: Date.now()
 });
 
 export {};

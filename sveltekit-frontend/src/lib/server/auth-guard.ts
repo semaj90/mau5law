@@ -31,7 +31,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
           email: devUserEmail || 'dev-user@legal-ai.local',
           firstName: 'Dev',
           lastName: 'User',
-          role: 'admin',
+          role: 'admin'
         };
       }
       
@@ -42,7 +42,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         email: 'developer@legal-ai.local',
         firstName: 'Development',
         lastName: 'User',
-        role: 'admin',
+        role: 'admin'
       };
     }
 
@@ -57,7 +57,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         email: session.user.email,
         firstName: session.user.firstName,
         lastName: session.user.lastName,
-        role: session.user.role,
+        role: session.user.role
       };
     }
 
@@ -75,7 +75,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
             email: decoded.email,
             firstName: decoded.firstName,
             lastName: decoded.lastName,
-            role: decoded.role,
+            role: decoded.role
           };
         } catch (jwtError) {
           console.warn('JWT verification failed:', jwtError);
@@ -91,7 +91,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         return {
           id: 'system',
           email: 'system@legal-ai.local',
-          role: 'system',
+          role: 'system'
         };
       }
     }

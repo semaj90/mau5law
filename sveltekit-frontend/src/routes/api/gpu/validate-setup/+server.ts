@@ -76,7 +76,7 @@ type HealthPayload = {
 type AISummarizeChecks = {
   gpu: boolean;
   ollama: boolean;
-  model: boolean;,
+  model: boolean;
 };
 
 type Details = {
@@ -84,7 +84,7 @@ type Details = {
     ok: boolean;
     models_count: number;
     required_model: string;
-    model_present: boolean;,
+    model_present: boolean;
   };
   go_service: {
     ok: boolean;
@@ -94,7 +94,7 @@ type Details = {
     raw?: GPUStatus;
     health?: HealthPayload;
   };
-  ai_summarize_checks: AISummarizeChecks;,
+  ai_summarize_checks: AISummarizeChecks;
 };
 
 type CachePayload = {
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async () => {
 
     // Try gpu-status once; if it fails, wait briefly and retry once
     const gpuAttempt = await Promise.allSettled([
-      fetchWithTimeout<GPUStatus>("/api/gpu-status"),
+      fetchWithTimeout<GPUStatus>("/api/gpu-status")
     ]);
     
     let gpuStatus = gpuAttempt[0];
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
 
     const [ollamaHealthy, health] = await Promise.allSettled([
       ollamaService.isHealthy(),
-      fetchWithTimeout<HealthPayload>("/api/health"),
+      fetchWithTimeout<HealthPayload>("/api/health")
     ]);
 
     const ollama_ok = ollamaHealthy.status === "fulfilled" && Boolean(ollamaHealthy.value);
@@ -168,12 +168,12 @@ export const GET: RequestHandler = async () => {
         source: gpuStatus.status === "fulfilled" ? "go" : "shim",
         version: "v1",
         raw: gpuStatus.status === "fulfilled" ? gpuStatus.value: undefined,
-        health: health.status === "fulfilled" ? health.value : undefined,
+        health: health.status === "fulfilled" ? health.value : undefined
       },
       ai_summarize_checks: {
         gpu: gpu_ok,
         ollama: ollama_ok,
-        model: model_present,
+        model: model_present
       }
     };
 
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async () => {
     return json({
       ok: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 };

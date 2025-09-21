@@ -7,7 +7,7 @@ export interface ThinkingAnalysis {
   metadata: {
     model_used: string;
     processing_time: number;
-    thinking_enabled: boolean;,
+    thinking_enabled: boolean;
   };
 }
 
@@ -45,7 +45,7 @@ export class ThinkingProcessor {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         text,
@@ -53,8 +53,8 @@ export class ThinkingProcessor {
         userId: enhancedOptions.userId,
         userRole: enhancedOptions.userRole,
         enableRecommendations: enhancedOptions.enableRecommendations || false,
-        ...options,
-      }),
+        ...options
+      })
     });
 
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -79,8 +79,8 @@ export class ThinkingProcessor {
           grpo_enhanced: true,
           recommendations_count: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.recommendations?.length || 0,
           temporal_score: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.temporal_score,
-          structured_reasoning: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning,
-        },
+          structured_reasoning: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning
+        }
       };
     }
 
@@ -90,7 +90,7 @@ export class ThinkingProcessor {
       analysis: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.analysis || (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis,
       confidence: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata.confidence,
       reasoning_steps: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.reasoning_steps || [],
-      metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata,
+      metadata: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata
     };
   }
 
@@ -101,7 +101,7 @@ export class ThinkingProcessor {
     evidenceId: string,
     options: Omit<AnalysisOptions, 'evidenceId'> = {}
   ): Promise<ThinkingAnalysis> {
-    return this.analyzeDocument('', { evidenceId, ...options ,});
+    return this.analyzeDocument('', { evidenceId, ...options });
   }
 
   /**
@@ -111,7 +111,7 @@ export class ThinkingProcessor {
     caseId: string,
     options: Omit<AnalysisOptions, 'caseId'> = {}
   ): Promise<ThinkingAnalysis> {
-    return this.analyzeDocument('', { caseId, ...options ,});
+    return this.analyzeDocument('', { caseId, ...options });
   }
 
   /**
@@ -127,8 +127,8 @@ export class ThinkingProcessor {
         metadata: {
           model_used: 'quick',
           processing_time: 0,
-          thinking_enabled: false,
-        },
+          thinking_enabled: false
+        }
       };
     }
 
@@ -145,8 +145,8 @@ export class ThinkingProcessor {
       metadata: {
         model_used: 'thinking',
         processing_time: 0,
-        thinking_enabled: true,
-      },
+        thinking_enabled: true
+      }
     };
   }
 
@@ -307,11 +307,11 @@ export const LegalAnalysisUtils = {
       'authentication',
       'objection',
       'sustained',
-      'overruled',
+      'overruled'
     ];
 
     return legalTerms.filter((term) => text.includes(term);
-  },
+  }
 };
 
 /**
@@ -327,17 +327,17 @@ export interface DocumentAnalysisResult {
   confidence: number;
   risk_assessment?: {
     level: 'low' | 'medium' | 'high';
-    factors: string[];,
+    factors: string[];
   };
   compliance_status?: {
     compliant: boolean;
     violations: string[];
-    recommendations: string[];,
+    recommendations: string[];
   };
   chain_of_custody?: {
     complete: boolean;
     gaps: string[];
-    verification_status: string;,
+    verification_status: string;
   };
 }
 
@@ -351,7 +351,7 @@ export const QuickAnalysis = {
   async classifyEvidence(evidenceId: string, useThinking = false): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'classification',
-      useThinkingStyle: useThinking,
+      useThinkingStyle: useThinking
     });
   },
 
@@ -371,7 +371,7 @@ export const QuickAnalysis = {
   async assessCaseStrength(caseId: string, useThinking = true): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeCase(caseId, {
       analysisType: 'reasoning',
-      useThinkingStyle: useThinking,
+      useThinkingStyle: useThinking
     });
   },
 
@@ -382,7 +382,7 @@ export const QuickAnalysis = {
     return ThinkingProcessor.analyzeDocument(text, {
       documentType: 'legal_document',
       analysisType: 'compliance',
-      useThinkingStyle: useThinking,
+      useThinkingStyle: useThinking
     });
-  },
+  }
 };

@@ -13,7 +13,7 @@ interface GpuDevice {
   powerUsage: number; // in watts
   computeUnits: number;
   clockSpeed: number; // in MHz
-  lastUpdate: number;,
+  lastUpdate: number;
 }
 
 interface GpuTask {
@@ -72,7 +72,7 @@ class PhysicsAwareGpuOrchestrator {
         powerUsage: 200,
         computeUnits: 4864, // CUDA cores for RTX 3060 Ti
         clockSpeed: 1665, // Base clock in MHz for RTX 3060 Ti
-        lastUpdate: Date.now(),
+        lastUpdate: Date.now()
       }
     ];
 
@@ -132,12 +132,12 @@ class PhysicsAwareGpuOrchestrator {
   scheduleTask(taskRequest: Omit<GpuTask, 'id' | 'status' | 'deviceId'>): { 
     taskId: string; 
     deviceId?: number; 
-    estimatedStartTime: number;,
+    estimatedStartTime: number;
   } | { error: string } {
     const task: GpuTask = {
       ...taskRequest,
       id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      status: 'queued',
+      status: 'queued'
     };
 
     // Immediate scheduling attempt
@@ -149,7 +149,7 @@ class PhysicsAwareGpuOrchestrator {
       return {
         taskId: task.id,
         deviceId: optimalDevice.id,
-        estimatedStartTime: Date.now(),
+        estimatedStartTime: Date.now()
       };
     } else {
       // Queue for later execution
@@ -158,7 +158,7 @@ class PhysicsAwareGpuOrchestrator {
       
       return {
         taskId: task.id,
-        estimatedStartTime: Date.now() + estimatedWaitTime,
+        estimatedStartTime: Date.now() + estimatedWaitTime
       };
     }
   }
@@ -283,7 +283,7 @@ class PhysicsAwareGpuOrchestrator {
     completedTasks: number;
     totalUtilization: number;
     averageTemperature: number;
-    totalPowerUsage: number;,
+    totalPowerUsage: number;
   } {
     const averageTemperature = this.availableDevices.reduce((sum, device) => 
       sum + device.temperature, 0) / this.availableDevices.length;
@@ -298,7 +298,7 @@ class PhysicsAwareGpuOrchestrator {
       completedTasks: this.completedTasks.length,
       totalUtilization: this.totalGpuUtilization,
       averageTemperature: Math.round(averageTemperature * 10) / 10,
-      totalPowerUsage: Math.round(totalPowerUsage),
+      totalPowerUsage: Math.round(totalPowerUsage)
     };
   }
 

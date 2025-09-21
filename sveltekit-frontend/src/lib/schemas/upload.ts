@@ -34,7 +34,7 @@ export const fileUploadSchema = z.object({
     ),
   tags: z.array(z.string()).optional(),
   isPrivate: z.boolean().default(false),
-  aiAnalysis: z.boolean().default(true) // Whether to run AI analysis on upload,
+  aiAnalysis: z.boolean().default(true) // Whether to run AI analysis on upload
 });
 
 // Document processing options schema;
@@ -46,7 +46,7 @@ export const documentProcessingSchema = z.object({
   analyzeSentiment: z.boolean().default(false),
   classifyDocument: z.boolean().default(false),
   chunkSize: z.number().min(100).max(2000).default(1000),
-  chunkOverlap: z.number().min(0).max(500).default(200),
+  chunkOverlap: z.number().min(0).max(500).default(200)
 });
 
 // Batch upload schema;
@@ -58,7 +58,7 @@ export const batchUploadSchema = z.object({
       type: z.enum(['document', 'image', 'video', 'audio', 'physical', 'digital']).optional()
     })
   ).min(1, 'At least one file is required').max(10, 'Maximum 10 files at once'),
-  processingOptions: documentProcessingSchema.optional(),
+  processingOptions: documentProcessingSchema.optional()
 });
 
 // Search upload schema for finding existing uploads;
@@ -70,7 +70,7 @@ export const searchUploadSchema = z.object({
   dateTo: z.date().optional(),
   tags: z.array(z.string()).optional(),
   limit: z.number().min(1).max(100).default(20),
-  offset: z.number().min(0).default(0),
+  offset: z.number().min(0).default(0)
 });
 
 // Helper function to validate file upload;

@@ -42,18 +42,18 @@ export const GET: RequestHandler = async () => {
       redis: {
         healthy: isHealthy,
         connected: stats.connected,
-        status: stats.status,
+        status: stats.status
       },
       test: {
         setResult,
         getValue,
         deleteResult,
-        valueMatches: getValue === testValue,
+        valueMatches: getValue === testValue
       },
       timing: {
-        totalTime: `${(end - start).toFixed(2)}ms`,
+        totalTime: `${(end - start).toFixed(2)}ms`
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async () => {
         success: false,
         error: error.message,
         stack: error.stack,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

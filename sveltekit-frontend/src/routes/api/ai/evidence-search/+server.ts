@@ -83,7 +83,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         createdAt: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).created_at,
         similarity: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).similarity
       })),
-      count: results.length,
+      count: results.length
     };
 
     // Cache results for 5 minutes
@@ -96,7 +96,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     console.error('Evidence search error:', error);
     return json({ 
         error: 'Evidence search failed',
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
     );

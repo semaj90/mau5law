@@ -192,6 +192,6 @@ export function getBundleStats() {
     loadedComponents: componentLoader['loadedComponents'].size,
     loadingComponents: componentLoader['loadingPromises'].size,
     componentsInMemory: Array.from(componentLoader['loadedComponents'].keys()),
-    currentlyLoading: Array.from(componentLoader['loadingPromises'].keys(),
+    currentlyLoading: Array.from(componentLoader['loadingPromises'].keys()
   };
 }

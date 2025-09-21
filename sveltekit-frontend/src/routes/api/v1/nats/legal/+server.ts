@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'Legal AI event processing failed',
-			details: error instanceof Error ? error.message: 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };
@@ -67,38 +67,38 @@ export const GET: RequestHandler = async () => {
 				actions: ['created', 'updated', 'closed'],
 				subject_pattern: 'legal.case.*',
 				required_fields: ['case_id', 'case_number', 'title', 'status'],
-				schema: getCaseEventSchema(),
+				schema: getCaseEventSchema()
 			},
 			document: {
 				actions: ['uploaded', 'processed', 'analyzed', 'indexed'],
 				subject_pattern: 'legal.document.*',
 				required_fields: ['document_id', 'filename', 'file_type', 'processing_status'],
-				schema: getDocumentEventSchema(),
+				schema: getDocumentEventSchema()
 			},
 			ai_analysis: {
 				actions: ['started', 'completed', 'failed'],
 				subject_pattern: 'legal.ai.analysis.*',
 				required_fields: ['analysis_id', 'analysis_type', 'model_used'],
-				schema: getAIAnalysisEventSchema(),
+				schema: getAIAnalysisEventSchema()
 			},
 			chat: {
 				actions: ['message', 'response', 'streaming'],
 				subject_pattern: 'legal.chat.*',
 				required_fields: ['message_id', 'session_id', 'user_id', 'content'],
-				schema: getChatEventSchema(),
+				schema: getChatEventSchema()
 			},
 			search: {
 				actions: ['query', 'results'],
 				subject_pattern: 'legal.search.*',
 				required_fields: ['query_id', 'user_id', 'query_text', 'search_type'],
-				schema: getSearchEventSchema(),
+				schema: getSearchEventSchema()
 			},
 			system: {
 				actions: ['health', 'metrics'],
 				subject_pattern: 'system.*',
 				required_fields: ['component', 'status'],
-				schema: getSystemEventSchema(),
-			},
+				schema: getSystemEventSchema()
+			}
 		},
 		examples: {
 			case_created: {
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async () => {
 					status: 'open',
 					priority: 'high',
 					assigned_to: ['lawyer1@firm.com'],
-					created_by: 'paralegal@firm.com',
+					created_by: 'paralegal@firm.com'
 				}
 			},
 			document_uploaded: {
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async () => {
 					filename: 'contract.pdf',
 					file_type: 'application/pdf',
 					file_size: 2048576,
-					processing_status: 'uploaded',
+					processing_status: 'uploaded'
 				}
 			},
 			ai_analysis_completed: {
@@ -139,12 +139,12 @@ export const GET: RequestHandler = async () => {
 					processing_time_ms: 1500,
 					results: {
 						summary: 'Contract analysis complete...',
-						key_terms: ['liability', 'indemnification', 'termination'],
+						key_terms: ['liability', 'indemnification', 'termination']
 					}
 				}
 			}
 		},
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 };
 
@@ -168,7 +168,7 @@ async function handleCaseEvent(nats: EnhancedNATSMessagingService, body: any): P
 		case_id: data.case_id,
 		case_number: data.case_number,
 		subject: `legal.case.${action}`,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -190,7 +190,7 @@ async function handleDocumentEvent(nats: EnhancedNATSMessagingService, body: any
 		document_id: data.document_id,
 		filename: data.filename,
 		subject: `legal.document.${action}`,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -212,7 +212,7 @@ async function handleAIAnalysisEvent(nats: EnhancedNATSMessagingService, body: a
 		analysis_id: data.analysis_id,
 		analysis_type: data.analysis_type,
 		subject: `legal.ai.analysis.${action}`,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -235,7 +235,7 @@ async function handleChatEvent(nats: EnhancedNATSMessagingService, body: any): P
 		message_id: data.message_id,
 		session_id: data.session_id,
 		subject: `legal.chat.${action}`,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -261,7 +261,7 @@ async function handleSearchEvent(nats: EnhancedNATSMessagingService, body: any):
 		action,
 		query_id: data.query_id,
 		subject: `legal.search.${action}`,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -286,7 +286,7 @@ async function handleSystemEvent(nats: EnhancedNATSMessagingService, body: any):
 		action,
 		component: data.component,
 		subject: `system.${action}`,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -391,9 +391,9 @@ function getCaseEventSchema() {
 			priority: { type: 'string', enum: ['low', 'normal', 'high', 'urgent'] },
 			assigned_to: { type: 'array', items: { type: 'string' } },
 			created_by: { type: 'string' },
-			metadata: { type: 'object' },
+			metadata: { type: 'object' }
 		},
-		required: ['case_id', 'case_number', 'title', 'status'],
+		required: ['case_id', 'case_number', 'title', 'status']
 	};
 }
 
@@ -408,9 +408,9 @@ function getDocumentEventSchema() {
 			file_size: { type: 'number' },
 			processing_status: { type: 'string', enum: ['uploaded', 'processing', 'processed', 'indexed', 'failed'] },
 			checksum: { type: 'string' },
-			metadata: { type: 'object' },
+			metadata: { type: 'object' }
 		},
-		required: ['document_id', 'filename', 'file_type', 'processing_status'],
+		required: ['document_id', 'filename', 'file_type', 'processing_status']
 	};
 }
 
@@ -423,9 +423,9 @@ function getAIAnalysisEventSchema() {
 			model_used: { type: 'string' },
 			confidence_score: { type: 'number', minimum: 0, maximum: 1 },
 			processing_time_ms: { type: 'number' },
-			results: { type: 'object' },
+			results: { type: 'object' }
 		},
-		required: ['analysis_id', 'analysis_type', 'model_used'],
+		required: ['analysis_id', 'analysis_type', 'model_used']
 	};
 }
 
@@ -438,9 +438,9 @@ function getChatEventSchema() {
 			user_id: { type: 'string' },
 			message_type: { type: 'string', enum: ['user', 'assistant', 'system'] },
 			content: { type: 'string' },
-			is_streaming: { type: 'boolean' },
+			is_streaming: { type: 'boolean' }
 		},
-		required: ['message_id', 'session_id', 'user_id', 'content'],
+		required: ['message_id', 'session_id', 'user_id', 'content']
 	};
 }
 
@@ -453,9 +453,9 @@ function getSearchEventSchema() {
 			query_text: { type: 'string' },
 			search_type: { type: 'string', enum: ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'] },
 			filters: { type: 'object' },
-			results: { type: 'array' },
+			results: { type: 'array' }
 		},
-		required: ['query_id', 'user_id', 'query_text', 'search_type'],
+		required: ['query_id', 'user_id', 'query_text', 'search_type']
 	};
 }
 
@@ -466,8 +466,8 @@ function getSystemEventSchema() {
 			component: { type: 'string' },
 			status: { type: 'string', enum: ['healthy', 'degraded', 'critical'] },
 			metrics: { type: 'object' },
-			uptime_seconds: { type: 'number' },
+			uptime_seconds: { type: 'number' }
 		},
-		required: ['component', 'status'],
+		required: ['component', 'status']
 	};
 }

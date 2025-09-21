@@ -18,7 +18,7 @@ export interface ChatMessage {
 export interface Conversation {
   id: string;
   title: string;
-  createdAt: Date;,
+  createdAt: Date;
 }
 
 export interface ChatSettings {
@@ -42,7 +42,7 @@ export interface ChatContext {
   contextInjection: {
     enabled: boolean;
     documents: string[];
-    vectorResults: any[];,
+    vectorResults: any[];
   };
 }
 
@@ -71,7 +71,7 @@ const initialContext: ChatContext = {
   currentConversation: null,
   error: null,
   stream: null,
-  modelStatus: "unknown",
+  modelStatus: "unknown"
   }); const settings = {
     model: "gemma3-legal",
     temperature: 0.1,
@@ -79,13 +79,13 @@ const initialContext: ChatContext = {
     streaming: true,
     contextWindow: 8192,
     proactiveMode: true,
-    emotionalMode: false,
+    emotionalMode: false
   },
   contextInjection: {
     enabled: false,
     documents: [],
-    vectorResults: [],
-  },
+    vectorResults: []
+  }
 };
 
 // Services;
@@ -100,10 +100,10 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
       settings: context.settings,
       contextInjection: context.contextInjection.enabled;
         ? {
-            documents: context.contextInjection.documents,
+            documents: context.contextInjection.documents
           }
-        : undefined,
-    }),
+        : undefined
+    })
   });
 
   if (!response.ok) {
@@ -127,11 +127,11 @@ const checkModelService = fromPromise(async () => {
 export const chatMachine = setup({
   types: {
     context: Record<string, any> as ChatContext,
-    events: Record<string, any> as ChatEvent,
+    events: Record<string, any> as ChatEvent
   },
   actors: {
     sendMessageService,
-    checkModelService,
+    checkModelService
   }
 }).createMachine({
   id: "chat",
@@ -153,11 +153,11 @@ export const chatMachine = setup({
                   title,
                   messages: [],
                   created: new Date(),
-                  updated: new Date(),
+                  updated: new Date()
                 };
               },
-              messages: () => [],
-            }),
+              messages: () => []
+            })
           },
           LOAD_CONVERSATION: {
             actions: assign({
@@ -175,8 +175,8 @@ export const chatMachine = setup({
                   (c) => c.id === event.conversationId
                 );
                 return conversation?.messages || [];
-              },
-            }),
+              }
+            })
           },
           DELETE_CONVERSATION: {
             actions: assign({
@@ -193,16 +193,16 @@ export const chatMachine = setup({
                 return context.currentConversation?.id === event.conversationId
                   ? null
                   : context.currentConversation;
-              },
-            }),
+              }
+            })
           },
           UPDATE_SETTINGS: {
             actions: assign({
               settings: ({ context, event }) => {
                 if (event.type !== "UPDATE_SETTINGS") return context.settings;
                 return { ...context.settings, ...event.settings };
-              },
-            }),
+              }
+            })
           },
           INJECT_CONTEXT: {
             actions: assign({
@@ -211,10 +211,10 @@ export const chatMachine = setup({
                 return {
                   ...context.contextInjection,
                   enabled: true,
-                  documents: event.documents,
+                  documents: event.documents
                 };
-              },
-            }),
+              }
+            })
           },
           CLEAR_CONTEXT: {
             actions: assign({
@@ -222,9 +222,9 @@ export const chatMachine = setup({
                 ...context.contextInjection,
                 enabled: false,
                 documents: [],
-                vectorResults: [],
-              }),
-            }),
+                vectorResults: []
+              })
+            })
           },
           CHECK_MODEL_STATUS: "checkingModel",
           RESET_CHAT: {
@@ -232,10 +232,10 @@ export const chatMachine = setup({
               currentConversation: () => null,
               messages: () => [],
               error: () => null,
-              stream: () => null,
-            }),
-          },
-        },
+              stream: () => null
+            })
+          }
+        }
       },
 
       sendingMessage: {
@@ -248,7 +248,7 @@ export const chatMachine = setup({
               content: (event as any).message,
               role: "user",
               timestamp: new Date(),
-              conversationId: context.currentConversation?.id,
+              conversationId: context.currentConversation?.id
             };
 
             return [...context.messages, message];
@@ -264,16 +264,16 @@ export const chatMachine = setup({
                   ((event as any).message.length > 50 ? "..." : ""),
                 messages: [],
                 created: new Date(),
-                updated: new Date(),
+                updated: new Date()
               };
               return conversation;
             }
 
             return {
               ...context.currentConversation,
-              updated: new Date(),
+              updated: new Date()
             };
-          },
+          }
         }),
         invoke: {
           src: "sendMessageService",
@@ -288,24 +288,24 @@ export const chatMachine = setup({
                   role: "assistant",
                   timestamp: new Date(),
                   conversationId: context.currentConversation?.id,
-                  metadata: event.output.metadata,
+                  metadata: event.output.metadata
                 };
 
                 return [...context.messages, response];
-              },
-            }),
+              }
+            })
           },
           onError: {
             target: "error",
             actions: assign({
               error: ({ event }) =>
-                new Error((event as any).error?.message || "Unknown error"),
-            }),
-          },
+                new Error((event as any).error?.message || "Unknown error")
+            })
+          }
         },
         on: {
-          START_STREAMING: "streaming",
-        },
+          START_STREAMING: "streaming"
+        }
       },
 
       streaming: {
@@ -322,7 +322,7 @@ export const chatMachine = setup({
                 if (lastMessage && lastMessage.role === "assistant") {
                   return [
                     ...context.messages.slice(0, -1),
-                    { ...lastMessage, content: lastMessage.content + event.chunk },
+                    { ...lastMessage, content: lastMessage.content + event.chunk }
                   ];
                 }
 
@@ -332,28 +332,28 @@ export const chatMachine = setup({
                   content: event.chunk,
                   role: "assistant",
                   timestamp: new Date(),
-                  conversationId: context.currentConversation?.id,
+                  conversationId: context.currentConversation?.id
                 };
 
                 return [...context.messages, newMessage];
-              },
-            }),
+              }
+            })
           },
           STREAM_COMPLETE: {
             target: "idle",
             actions: assign({
-              stream: () => null,
-            }),
+              stream: () => null
+            })
           },
           STREAM_ERROR: {
             target: "error",
             actions: assign({
               error: ({ event }) =>
                 event.type === "STREAM_ERROR" ? event.error: null,
-              stream: () => null,
-            }),
-          },
-        },
+              stream: () => null
+            })
+          }
+        }
       },
 
       checkingModel: {
@@ -362,18 +362,18 @@ export const chatMachine = setup({
           onDone: {
             target: "idle",
             actions: assign({
-              modelStatus: () => "ready",
-            }),
+              modelStatus: () => "ready"
+            })
           },
           onError: {
             target: "idle",
             actions: assign({
               modelStatus: () => "error",
               error: ({ event }) =>
-                new Error((event as any).error?.message || "Model check failed"),
-            }),
-          },
-        },
+                new Error((event as any).error?.message || "Model check failed")
+            })
+          }
+        }
       },
 
       error: {
@@ -381,11 +381,11 @@ export const chatMachine = setup({
           CLEAR_ERROR: {
             target: "idle",
             actions: assign({
-              error: () => null,
-            }),
+              error: () => null
+            })
           },
-          SEND_MESSAGE: "sendingMessage",
-        },
-      },
-    },
+          SEND_MESSAGE: "sendingMessage"
+        }
+      }
+    }
 });

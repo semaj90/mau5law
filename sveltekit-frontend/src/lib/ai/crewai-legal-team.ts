@@ -12,7 +12,7 @@ export interface CrewMember {
   tools: string[];
   maxExecutionTime: number;
   memoryEnabled: boolean;
-  verboseMode: boolean;,
+  verboseMode: boolean;
 }
 
 export interface Task {
@@ -33,7 +33,7 @@ export interface CrewConfig {
   process: "sequential" | "hierarchical" | "consensus";
   verbose: boolean;
   memorySystem: boolean;
-  maxIterations: number;,
+  maxIterations: number;
 }
 
 export interface WorkflowResult {
@@ -44,7 +44,7 @@ export interface WorkflowResult {
   finalDeliverable: string;
   totalTime: number;
   insights: string[];
-  recommendations: string[];,
+  recommendations: string[];
 }
 
 class CrewAILegalTeam {
@@ -78,7 +78,7 @@ class CrewAILegalTeam {
           tools: ["evidence_analyzer", "database_search", "timeline_builder"],
           maxExecutionTime: 300000, // 5 minutes
           memoryEnabled: true,
-          verboseMode: true,
+          verboseMode: true
         },
         {
           id: "evidence_analyst",
@@ -90,11 +90,11 @@ class CrewAILegalTeam {
           tools: [
             "forensics_tools",
             "metadata_analyzer",
-            "authenticity_checker",
+            "authenticity_checker"
           ],
           maxExecutionTime: 240000, // 4 minutes
           memoryEnabled: true,
-          verboseMode: false,
+          verboseMode: false
         },
         {
           id: "legal_researcher",
@@ -106,8 +106,8 @@ class CrewAILegalTeam {
           tools: ["legal_database", "citation_checker", "precedent_analyzer"],
           maxExecutionTime: 180000, // 3 minutes
           memoryEnabled: true,
-          verboseMode: false,
-        },
+          verboseMode: false
+        }
       ],
       tasks: [;
         {
@@ -120,7 +120,7 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "critical",
           estimatedDuration: 120000,
-          context: Record<string, any>,
+          context: Record<string, any>
         },
         {
           id: "evidence_analysis",
@@ -132,7 +132,7 @@ class CrewAILegalTeam {
           dependencies: ["initial_case_review"],
           priority: "high",
           estimatedDuration: 180000,
-          context: Record<string, any>,
+          context: Record<string, any>
         },);
         {
           id: "legal_research",
@@ -144,9 +144,9 @@ class CrewAILegalTeam {
           dependencies: ["initial_case_review"],
           priority: "high",
           estimatedDuration: 150000,
-          context: Record<string, any>,
-        },
-      ],
+          context: Record<string, any>
+        }
+      ]
     });
 
     // Trial Preparation Crew;
@@ -167,7 +167,7 @@ class CrewAILegalTeam {
           tools: ["strategy_planner", "jury_analyzer", "presentation_builder"],
           maxExecutionTime: 360000, // 6 minutes
           memoryEnabled: true,
-          verboseMode: true,
+          verboseMode: true
         },
         {
           id: "witness_coordinator",
@@ -179,7 +179,7 @@ class CrewAILegalTeam {
           tools: ["witness_prep", "scheduling_system", "testimony_analyzer"],
           maxExecutionTime: 180000, // 3 minutes
           memoryEnabled: true,
-          verboseMode: false,
+          verboseMode: false
         },
         {
           id: "exhibit_specialist",
@@ -191,8 +191,8 @@ class CrewAILegalTeam {
           tools: ["exhibit_organizer", "tech_setup", "presentation_tools"],
           maxExecutionTime: 120000, // 2 minutes
           memoryEnabled: false,
-          verboseMode: false,
-        },
+          verboseMode: false
+        }
       ],
       tasks: [;
         {
@@ -205,7 +205,7 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "critical",
           estimatedDuration: 240000,
-          context: Record<string, any>,
+          context: Record<string, any>
         },
         {
           id: "witness_preparation",
@@ -216,7 +216,7 @@ class CrewAILegalTeam {
           dependencies: ["trial_strategy"],
           priority: "high",
           estimatedDuration: 120000,
-          context: Record<string, any>,
+          context: Record<string, any>
         },);
         {
           id: "exhibit_organization",
@@ -228,9 +228,9 @@ class CrewAILegalTeam {
           dependencies: ["trial_strategy"],
           priority: "medium",
           estimatedDuration: 90000,
-          context: Record<string, any>,
-        },
-      ],
+          context: Record<string, any>
+        }
+      ]
     });
 
     // Appeal Analysis Crew;
@@ -251,11 +251,11 @@ class CrewAILegalTeam {
           tools: [
             "appeal_analyzer",
             "constitutional_checker",
-            "precedent_mapper",
+            "precedent_mapper"
           ],
           maxExecutionTime: 300000, // 5 minutes
           memoryEnabled: true,
-          verboseMode: true,
+          verboseMode: true
         },
         {
           id: "procedural_reviewer",
@@ -267,12 +267,12 @@ class CrewAILegalTeam {
           tools: [
             "procedure_checker",
             "deadline_tracker",
-            "compliance_auditor",
+            "compliance_auditor"
           ],
           maxExecutionTime: 180000, // 3 minutes
           memoryEnabled: true,
-          verboseMode: false,
-        },
+          verboseMode: false
+        }
       ],
       tasks: [;
         {
@@ -285,7 +285,7 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "high",
           estimatedDuration: 180000,
-          context: Record<string, any>,
+          context: Record<string, any>
         },);
         {
           id: "procedural_compliance_review",
@@ -297,9 +297,9 @@ class CrewAILegalTeam {
           dependencies: [],
           priority: "high",
           estimatedDuration: 120000,
-          context: Record<string, any>,
-        },
-      ],
+          context: Record<string, any>
+        }
+      ]
     });
   }
 
@@ -326,7 +326,7 @@ class CrewAILegalTeam {
         ...result,
         crewId: workflowId,
         workflowName: crewName,
-        totalTime: Date.now() - startTime,
+        totalTime: Date.now() - startTime
       });
       this.activeWorkflows.set(workflowId, workflowPromise);
 
@@ -373,8 +373,8 @@ class CrewAILegalTeam {
 
       // Extract insights and recommendations;
       for (const result of results) {
-        insights.push(...this.extractInsights((result as { output?: any ,}).output);
-        recommendations.push(...this.extractRecommendations((result as { output?: any ,}).output);
+        insights.push(...this.extractInsights((result as { output?: any }).output);
+        recommendations.push(...this.extractRecommendations((result as { output?: any }).output);
       }
 
       return {
@@ -391,7 +391,7 @@ class CrewAILegalTeam {
         results,
         finalDeliverable: `Workflow failed: ${error}`,
         insights,
-        recommendations,
+        recommendations
       };
     }
   }
@@ -419,9 +419,9 @@ class CrewAILegalTeam {
         ...context,
         previousResults: results.map((r) => ({
           taskId: r.taskId,
-          output: r.output,
+          output: r.output
         })),
-        task: task,
+        task: task
       };
 
       const output = await this.executeAgentTask(agent, task, taskContext);
@@ -436,7 +436,7 @@ class CrewAILegalTeam {
           output,
           executionTime,
           task.estimatedDuration,
-        ),
+        )
       });
     }
   }
@@ -460,7 +460,7 @@ class CrewAILegalTeam {
       assignedAgent: manager.id,
       dependencies: [],
       priority: "critical",
-      estimatedDuration: 60000,
+      estimatedDuration: 60000
     };
 
     const workPlan = await this.executeAgentTask(
@@ -490,7 +490,7 @@ class CrewAILegalTeam {
           output,
           Date.now() - startTime,
           task.estimatedDuration,
-        ),
+        )
       };
     });
 
@@ -507,12 +507,12 @@ class CrewAILegalTeam {
       assignedAgent: manager.id,
       dependencies: subordinateTasks.map((t) => t.id),
       priority: "critical",
-      estimatedDuration: 90000,
+      estimatedDuration: 90000
     };
 
     const finalReview = await this.executeAgentTask(manager, reviewTask, {
       ...context,
-      subordinateResults: subordinateResults,
+      subordinateResults: subordinateResults
     });
 
     results.push({
@@ -520,7 +520,7 @@ class CrewAILegalTeam {
       agentId: manager.id,
       output: finalReview,
       executionTime: Date.now() - Date.now(),
-      confidence: 0.9,
+      confidence: 0.9
     });
   }
 
@@ -565,7 +565,7 @@ class CrewAILegalTeam {
         executionTime: 0,
         confidence:
           agentOutputs.reduce((sum, out) => sum + out.confidence, 0) /
-          agentOutputs.length,
+          agentOutputs.length
       });
     }
   }
@@ -590,9 +590,9 @@ class CrewAILegalTeam {
             num_predict: 2048,
             num_ctx: 8192,
             gpu_layers: -1, // Use GPU acceleration
-            repeat_penalty: 1.1,
-          },
-        }),
+            repeat_penalty: 1.1
+          }
+        })
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -674,9 +674,9 @@ Final synthesis:`;
             temperature: 0.2,
             num_predict: 3072,
             num_ctx: 16384,
-            gpu_layers: -1,
-          },
-        }),
+            gpu_layers: -1
+          }
+        })
       });
 
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
@@ -756,9 +756,9 @@ Consensus output:`;
           options: {
             temperature: 0.25,
             num_predict: 2048,
-            gpu_layers: -1,
-          },
-        }),
+            gpu_layers: -1
+          }
+        })
       });
 
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
@@ -801,7 +801,7 @@ Consensus output:`;
     const insightPatterns = [
       /(?:insight|finding|discovery):\s*(.+?)(?:\n|$)/gi,
       /(?:importantly|notably|significantly),?\s*(.+?)(?:\n|$)/gi,
-      /(?:revealed|shows|indicates)\s+(?:that\s+)?(.+?)(?:\n|$)/gi,
+      /(?:revealed|shows|indicates)\s+(?:that\s+)?(.+?)(?:\n|$)/gi
     ];
 
     const insights: string[] = [];
@@ -821,7 +821,7 @@ Consensus output:`;
     const recommendationPatterns = [
       /(?:recommend|suggest|should|propose):\s*(.+?)(?:\n|$)/gi,
       /(?:recommendation|suggestion):\s*(.+?)(?:\n|$)/gi,
-      /(?:next step|action item):\s*(.+?)(?:\n|$)/gi,
+      /(?:next step|action item):\s*(.+?)(?:\n|$)/gi
     ];
 
     const recommendations: string[] = [];
@@ -861,5 +861,5 @@ Consensus output:`;
 }
 
 export {
-  CrewAILegalTeam,
+  CrewAILegalTeam
 };

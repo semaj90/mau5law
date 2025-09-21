@@ -24,7 +24,7 @@ const QUIC_VECTOR_CONFIG = {
   fallbackUrl: 'http://localhost:8446',
   timeout: 30000, // Vector operations can take longer
   cacheTTL: 300, // 5 minutes cache TTL
-  maxCacheSize: 1000,
+  maxCacheSize: 1000
 };
 
 /*
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     // Check vector proxy health;
     const healthResponse = await fetch(`${QUIC_VECTOR_CONFIG.baseUrl}/health`, {
-      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
+      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
     });
 
     let proxyStatus = 'healthy';
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } else {
       // Try fallback HTTP/2;
       const fallbackResponse = await fetch(`${QUIC_VECTOR_CONFIG.fallbackUrl}/health`, {
-        signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
+        signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
       });
 
       if (fallbackResponse.ok) {
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
         proxyStatus === 'healthy' ? 'HTTP/3' : proxyStatus === 'fallback' ? 'HTTP/2' : 'N/A',
       ports: {
         quic: QUIC_VECTOR_CONFIG.primaryPort,
-        fallback: QUIC_VECTOR_CONFIG.fallbackPort,
+        fallback: QUIC_VECTOR_CONFIG.fallbackPort
       },
       backends: {
         qdrant: 'http://localhost:6333',
@@ -74,15 +74,15 @@ export const GET: RequestHandler = async ({ url }) => {
         'Intelligent Caching',
         'Vector Similarity Search',
         'Cache Management',
-        'Health Monitoring',
+        'Health Monitoring'
       ],
       cache: responseData.cache || {
         enabled: true,
         ttl: QUIC_VECTOR_CONFIG.cacheTTL,
-        maxSize: QUIC_VECTOR_CONFIG.maxCacheSize,
+        maxSize: QUIC_VECTOR_CONFIG.maxCacheSize
       },
       metrics: responseData.metrics || null,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('QUIC Vector Proxy health check failed:', err);
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'quic-vector-proxy',
       status: 'error',
       error: err instanceof Error ? err.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 };
@@ -123,8 +123,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         useCache,
         backend,
         requestId: randomUUID(),
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     let response: Response;
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           // map VectorSearchQuery.limit -> service option maxResults
           maxResults: searchQuery.limit || 10,
           // collection is optional and not part of VectorSearchQuery; use if present
-          collection: (searchQuery as any).collection || 'legal_documents',
+          collection: (searchQuery as any).collection || 'legal_documents'
         }
       );
 
@@ -164,8 +164,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 : 0,
             executionTimeMs: 0,
             cacheHit: false,
-            backend: 'local-service',
-          },
+            backend: 'local-service'
+          }
         });
       }
 
@@ -176,10 +176,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           'Content-Type': 'application/json',
           'X-Vector-Backend': backend,
           'X-Use-Cache': String(useCache),
-          'X-QUIC-Request': 'true',
+          'X-QUIC-Request': 'true'
         },
         body: JSON.stringify(requestPayload),
-        signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
+        signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
       });
       protocol = useHttp3 ? 'HTTP/3' : 'HTTP/2';
     } catch (quicError) {
@@ -188,7 +188,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
       const direct = await vectorSearchService.search(searchQuery.query || 'vector search', {
         maxResults: searchQuery.limit || 10,
-        collection: (searchQuery as any).collection || 'legal_documents',
+        collection: (searchQuery as any).collection || 'legal_documents'
       });
 
       return json({
@@ -202,8 +202,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
           totalResults: Array.isArray(direct as any)
             ? (direct as any).length: ((direct as any).totalCount ?? (direct as any).results?.length ?? 0),
           executionTimeMs: 0,
-          cacheHit: false,
-        },
+          cacheHit: false
+        }
       });
     }
 
@@ -224,8 +224,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         totalResults: responseData.results?.length || 0,
         executionTimeMs: responseData.executionTime || 0,
         cacheHit: responseData.cacheHit || false,
-        backend: responseData.backend || 'unknown',
-      },
+        backend: responseData.backend || 'unknown'
+      }
     });
   } catch (err: any) {
     console.error('QUIC Vector search error:', err);
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       500,
       ensureError({
         message: 'Vector search failed',
-        error: err instanceof Error ? err.message: 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error'
       })
     );
   }
@@ -257,9 +257,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const response = await fetch(`${targetUrl}?${query}`, {
       method: 'DELETE',
       headers: {
-        'X-QUIC-Request': 'true',
+        'X-QUIC-Request': 'true'
       },
-      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
+      signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout)
     });
 
     if (!response.ok) {
@@ -272,7 +272,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       message: cacheKey ? `Cache key '${cacheKey}' cleared` : 'All cache cleared',
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Vector cache clear error:', err);
@@ -280,7 +280,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Cache clear failed',
-        error: err instanceof Error ? err.message: 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error'
       })
     );
   }
@@ -306,20 +306,20 @@ export const PUT: RequestHandler = async ({ request }) => {
     const updatedConfig = {
       ...QUIC_VECTOR_CONFIG,
       ...config,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     };
 
     return json({
       success: true,
       message: 'Vector proxy configuration updated',
-      config: updatedConfig,
+      config: updatedConfig
     });
 
   } catch (err: any) {
     console.error('Vector proxy configuration update failed:', err);
     error(500, ensureError({
       message: 'Configuration update failed',
-      error: err instanceof Error ? err.message: 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error'
     });
   }
 };

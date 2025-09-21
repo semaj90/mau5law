@@ -1,7 +1,7 @@
 import { getSustainedP99Info } from "$lib/services/alert-center";
 import {
   loadObservabilityState,
-  saveObservabilityState,
+  saveObservabilityState
 } from '$lib/services/observability-persistence';
 import { getBudgetCounters } from '$lib/services/pipeline-metrics';
 import fs from 'fs';
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async () => {
       sustained: getSustainedP99Info(),
       persisted: legacyPersisted,
       // Additional metadata
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch(error: any){
     console.error('[observability-state] GET error:', error);
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
       daily_budgets: { ...currentState.daily_budgets, ...updates.daily_budgets },
       metadata: {
         ...currentState.metadata,
-        last_updated: new Date().toISOString(),
+        last_updated: new Date().toISOString()
       }
     };
 
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       state: newState,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('[observability-state] POST error:', error);

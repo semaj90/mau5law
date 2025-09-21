@@ -31,7 +31,7 @@ const querySchema = z.object({
     temperature: z.number().min(0).max(2).optional(),
     maxTokens: z.number().min(1).max(4000).optional(),
     includeContext: z.boolean().optional(),
-    saveQuery: z.boolean().optional(),
+    saveQuery: z.boolean().optional()
   }).optional()
 });
 
@@ -70,7 +70,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     if (error instanceof z.ZodError) {
       return json({ 
           error: 'Validation failed', 
-          details: error.errors ,
+          details: error.errors 
         }, )
         { status: 400 }
       );
@@ -78,7 +78,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
 
     return json({ 
         error: 'AI query processing failed',
-        message: error instanceof Error ? error.message: 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
     );
@@ -110,7 +110,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     return json({
       success: true,
       data: {
-        suggestions: similarQueries,
+        suggestions: similarQueries
       }
     });
 

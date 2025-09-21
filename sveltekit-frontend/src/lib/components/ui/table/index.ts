@@ -21,5 +21,5 @@ export {
 	Cell as TableCell,
 	Head as TableHead,
 	Header as TableHeader,
-	Row as TableRow,
+	Row as TableRow
 };

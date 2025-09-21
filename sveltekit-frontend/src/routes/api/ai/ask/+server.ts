@@ -48,7 +48,7 @@ try {
 } catch (error: any) {
   console.warn("AI service not available:", error);
   aiService = { 
-    generateResponse: async () => "AI service not available" ,
+    generateResponse: async () => "AI service not available" 
   };
 }
 
@@ -72,7 +72,7 @@ try {
 } catch (error: any) {
   console.warn("Tauri LLM not available:", error);
   tauriLLM = { 
-    isAvailable: () => false ,
+    isAvailable: () => false 
   };
 }
 
@@ -85,7 +85,7 @@ export interface AIResponse {
   fromCache: boolean;
   provider: "local" | "cloud" | "hybrid";
   model: string;
-  confidence: number;,
+  confidence: number;
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
@@ -104,7 +104,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     if (!query || query.trim().length === 0) {
       return json({
           success: false,
-          error: "Query is required",
+          error: "Query is required"
         },)
         { status: 400 }
       );
@@ -120,7 +120,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           data: {
             ...cached,
             fromCache: true,
-            executionTime: Date.now() - startTime,
+            executionTime: Date.now() - startTime
           }
         });
       }
@@ -135,7 +135,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           threshold: searchThreshold,
           useCache: true,
           fallbackToQdrant: true,
-          searchType: "hybrid",
+          searchType: "hybrid"
         });
       } else {
         // Fallback: create mock results for testing Gemma3;
@@ -146,7 +146,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
               title: "Mock Legal Document",
               content: `Mock legal document content related to: ${query}. This is a placeholder result for testing Gemma3 integration.`,
               score: 0.85,
-              type: "document",
+              type: "document"
             }
           ]
         };
@@ -164,7 +164,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           sources: [],
           query,
           executionTime: Date.now() - startTime,
-          fromCache: false,
+          fromCache: false
         }
       });
     }
@@ -203,7 +203,7 @@ Instructions:
         const response = await ollamaService.generate(query, {
           system: systemPrompt,
           temperature: 0.7,
-          maxTokens: 512,
+          maxTokens: 512
         });
 
         aiAnswer = response;
@@ -231,7 +231,7 @@ Instructions:
         aiAnswer = await tauriLLM.runInference(query, {
           temperature: 0.7,
           maxTokens: 512,
-          systemPrompt: systemPrompt,
+          systemPrompt: systemPrompt
         });
 
         provider = "local";
@@ -247,7 +247,7 @@ Instructions:
               legalContext: true,
               context: relevantSources.map((s: any) => s.content),
               temperature: 0.7,
-              maxTokens: 512,
+              maxTokens: 512
             });
             provider = "cloud";
             model = "cloud-llm";
@@ -282,7 +282,7 @@ Instructions:
         title: source.title,
         content: source.content.substring(0, 200) + "...", // Truncate for UI
         score: source.score,
-        type: source.type,
+        type: source.type
       })),
       query,
       executionTime: Date.now() - startTime,
@@ -299,7 +299,7 @@ Instructions:
 
     return json({
       success: true,
-      data: response,
+      data: response
     });
 
   } catch (error: any) {
@@ -307,7 +307,7 @@ Instructions:
     return json({
         success: false,
         error: "Failed to process AI request",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 }
     );
@@ -329,7 +329,7 @@ function generateFallbackResponse(query: string, sources: any[]): string {
     response += `- Title: ${source.title}\n`;
     response += `- Relevance Score: ${(source.score * 100).toFixed(1)}%\n`;
     response += `- Content Preview: ${source.content.substring(0, 200)}...\n\n`;
-  ,});
+  });
 
   response += `## Key Findings\n`;
   response += `Based on the available documents, please review the source materials for detailed information related to your query.\n\n`;
@@ -356,7 +356,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       limit,
       threshold: 0.5,
       useCache: true,
-      searchType: "similarity",
+      searchType: "similarity"
     });
 
     const suggestions = searchResults.results.map((result: any) => ({
@@ -365,7 +365,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       type: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).type,
       score: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).score,
       preview: (result as { id?: any; title?: any; type?: any; score?: any; content?: any }).content.substring(0, 100) + "..."
-    ,});
+    });
 
     return json({ suggestions });
 

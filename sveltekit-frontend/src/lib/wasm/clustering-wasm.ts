@@ -72,7 +72,7 @@ export class WebAssemblyClusteringService {
         return {
           clusters,
           centroids,
-          iterations: config.maxIterations || 100,
+          iterations: config.maxIterations || 100
         };
       } catch (error: any) {
         console.warn('WASM K-Means failed, falling back to JavaScript:', error);
@@ -174,7 +174,7 @@ export class WebAssemblyClusteringService {
     return {
       clusters,
       centroids,
-      iterations: config.maxIterations || 100,
+      iterations: config.maxIterations || 100
     };
   }
 
@@ -193,7 +193,7 @@ export class WebAssemblyClusteringService {
   getPerformanceMetrics(): {
     wasmSupported: boolean;
     wasmLoaded: boolean;
-    recommendedForDataSize: (dataSize: number) => boolean;,
+    recommendedForDataSize: (dataSize: number) => boolean;
   } {
     return {
       wasmSupported: this.isWasmSupported,

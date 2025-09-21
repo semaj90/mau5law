@@ -27,7 +27,7 @@ interface ScoreFactor {
   weight: number;
   impact: number; // 0-1 scaled
   description: string;
-  confidence: number;,
+  confidence: number;
 }
 
 interface CaseScore {
@@ -41,7 +41,7 @@ interface CaseScore {
   lastUpdated: string;
   factors: ScoreFactor[];
   recommendations: string[];
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';,
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 
 function derivePriority(score: number): 'critical' | 'high' | 'medium' | 'low' {
@@ -70,36 +70,36 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
       weight: 0.3,
       impact: Math.random(),
       description: 'Strength and reliability of evidence collection',
-      confidence: 70 + Math.round(Math.random() * 25),
+      confidence: 70 + Math.round(Math.random() * 25)
     },
     {
       category: 'Witness Credibility',
       weight: 0.25,
       impact: Math.random(),
       description: 'Reliability and consistency of witness testimony',
-      confidence: 65 + Math.round(Math.random() * 30),
+      confidence: 65 + Math.round(Math.random() * 30)
     },
     {
       category: 'Legal Precedent',
       weight: 0.2,
       impact: Math.random(),
       description: 'Supporting case law and legal precedents',
-      confidence: 60 + Math.round(Math.random() * 35),
+      confidence: 60 + Math.round(Math.random() * 35)
     },
     {
       category: 'Defendant History',
       weight: 0.15,
       impact: Math.random(),
       description: 'Prior criminal history and background factors',
-      confidence: 60 + Math.round(Math.random() * 30),
+      confidence: 60 + Math.round(Math.random() * 30)
     },
     {
       category: 'Case Complexity',
       weight: 0.1,
       impact: Math.random(),
       description: 'Overall complexity and jurisdictional factors',
-      confidence: 65 + Math.round(Math.random() * 25),
-    },
+      confidence: 65 + Math.round(Math.random() * 25)
+    }
   ];
   
   const recommendations = [
@@ -122,7 +122,7 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
     lastUpdated: now.toISOString(),
     factors,
     recommendations,
-    riskLevel: deriveRisk(score),
+    riskLevel: deriveRisk(score)
   };
 }
 
@@ -133,7 +133,7 @@ const originalGETHandler: RequestHandler = async () => {
     sampleCase(2, 'People v. Martinez - Assault & Battery', 65),
     sampleCase(3, 'Commonwealth v. Johnson - Drug Trafficking', 94),
     sampleCase(4, 'State v. Kim - Domestic Violence', 78),
-    sampleCase(5, 'People v. Thompson - Cybercrime Investigation', 71),
+    sampleCase(5, 'People v. Thompson - Cybercrime Investigation', 71)
   ];
   
   // Add summary statistics matching frontend expectations
@@ -143,7 +143,7 @@ const originalGETHandler: RequestHandler = async () => {
     critical: cases.filter(item => item.length),
     high: cases.filter(item => item.length),
     medium: cases.filter(item => item.length),
-    low: cases.filter(item => item.length),
+    low: cases.filter(item => item.length)
   };
   
   return json({ 
@@ -153,12 +153,12 @@ const originalGETHandler: RequestHandler = async () => {
       average_risk_score: avgRiskScore,
       priority_breakdown: priorityBreakdown,
       last_analysis: new Date().toISOString(),
-      analysis_confidence: 0.89,
+      analysis_confidence: 0.89
     },
     metadata: {
       response_time_ms: Math.floor(Math.random() * 50) + 25,
       ai_model: 'legal-scoring-v2.1',
-      cache_status: 'hit',
+      cache_status: 'hit'
     }
   });
 };
@@ -185,11 +185,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         admissibility: Math.round(score * 0.25),
         relevance: Math.round(score * 0.25),
         quality: Math.round(score * 0.25),
-        strategic: Math.round(score * 0.25),
+        strategic: Math.round(score * 0.25)
       },
       reasoning: await generateScoreReasoning(score, evidenceType),
       confidence: score > 70 ? 0.85 : score > 50 ? 0.75 : 0.65,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     });
   } catch (error: any) {
     return json()

@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default:;
         return json({
             success: false,
-            error: `Unknown operation: ${operation}`,
+            error: `Unknown operation: ${operation}`
           },)
           { status: 400 }
         );
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
       result,
       processingTimeMs: processingTime,
       timestamp: new Date().toISOString(),
-      note: 'This is a server-side simulation. Actual WebGPU testing occurs in browser.',
+      note: 'This is a server-side simulation. Actual WebGPU testing occurs in browser.'
     });
   } catch (error: any) {
     console.error('❌ WebGPU test error:', error);
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
         success: false,
         error: error instanceof Error ? error.message: 'Test failed',
-        operation: body?.operation || 'unknown',
+        operation: body?.operation || 'unknown'
       },)
       { status: 500 }
     );
@@ -93,7 +93,7 @@ async function simulateTextGeneration(input: string, fallback: boolean): Promise
     device: deviceType,
     processingTimeMs: processingTime,
     model: 'gemma3-legal-latest',
-    confidence: 0.85 + Math.random() * 0.1,
+    confidence: 0.85 + Math.random() * 0.1
   };
 }
 
@@ -115,7 +115,7 @@ async function simulateEmbeddingGeneration(input: string): Promise<any> {
     dimensions: 384,
     device: deviceType,
     processingTimeMs: processingTime,
-    model: 'gemma3-legal-embeddings',
+    model: 'gemma3-legal-embeddings'
   };
 }
 
@@ -130,13 +130,13 @@ async function simulateCapabilityTest(): Promise<any> {
       vendor: 'Simulated GPU Vendor',
       architecture: 'rdna2',
       device: 'Radeon RX Series',
-      description: 'Simulated GPU for testing',
+      description: 'Simulated GPU for testing'
     },
     limits: {
       maxBufferSize: 1024 * 1024 * 1024, // 1GB
       maxComputeInvocationsPerWorkgroup: 256,
-      maxComputeWorkgroupSizeX: 256,
-    },
+      maxComputeWorkgroupSizeX: 256
+    }
   };
 
   // Determine device type based on capabilities;
@@ -153,7 +153,7 @@ async function simulateCapabilityTest(): Promise<any> {
   return {
     capabilities,
     recommendedConfiguration: getRecommendedConfig(capabilities),
-    performanceEstimate: estimatePerformance(capabilities.deviceType),
+    performanceEstimate: estimatePerformance(capabilities.deviceType)
   };
 }
 
@@ -165,7 +165,7 @@ function generateLegalResponse(input: string): string {
 
     `In response to "${input.substring(0, 50)}...", legal counsel would typically advise: examining all relevant documentation, identifying potential claims or defenses, and developing a comprehensive litigation strategy if necessary.`,
 
-    `The legal implications of "${input.substring(0, 50)}..." require careful consideration of: statutory requirements, case law precedents, regulatory compliance obligations, and potential remedial actions.`,
+    `The legal implications of "${input.substring(0, 50)}..." require careful consideration of: statutory requirements, case law precedents, regulatory compliance obligations, and potential remedial actions.`
   ];
 
   const template = legalTemplates[Math.floor(Math.random() * legalTemplates.length)];
@@ -175,7 +175,7 @@ function generateLegalResponse(input: string): string {
     ' Furthermore, due diligence procedures should be implemented to ensure compliance with all applicable regulations.',
     ' Additionally, consultation with subject matter experts may be warranted to address complex technical aspects.',
     ' It is also advisable to review any existing insurance coverage that might apply to potential exposures.',
-    ' Moreover, consideration should be given to alternative dispute resolution mechanisms where appropriate.',
+    ' Moreover, consideration should be given to alternative dispute resolution mechanisms where appropriate.'
   ];
 
   const elaboration = elaborations[Math.floor(Math.random() * elaborations.length)];
@@ -189,7 +189,7 @@ function getRecommendedConfig(capabilities: any) {
     batchSize: 1,
     maxTokens: 1000,
     useQuantization: false,
-    enableParallelProcessing: false,
+    enableParallelProcessing: false
   };
 
   switch (capabilities.deviceType) {
@@ -222,58 +222,58 @@ function estimatePerformance(deviceType: string) {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;,
+      powerEfficiency: string;
     }
   > & {
     webgpu: {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;,
+      powerEfficiency: string;
     };
     webgl: {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;,
+      powerEfficiency: string;
     };
     wasm: {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;,
+      powerEfficiency: string;
     };
     none: {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;,
+      powerEfficiency: string;
     };
   } = {
     webgpu: {
       tokensPerSecond: 150,
       embeddingTimeMs: 50,
       memoryUsageMB: 4096,
-      powerEfficiency: 'high',
+      powerEfficiency: 'high'
     },
     webgl: {
       tokensPerSecond: 80,
       embeddingTimeMs: 120,
       memoryUsageMB: 2048,
-      powerEfficiency: 'medium',
+      powerEfficiency: 'medium'
     },
     wasm: {
       tokensPerSecond: 25,
       embeddingTimeMs: 300,
       memoryUsageMB: 1024,
-      powerEfficiency: 'low',
+      powerEfficiency: 'low'
     },
     none: {
       tokensPerSecond: 0,
       embeddingTimeMs: 0,
       memoryUsageMB: 0,
-      powerEfficiency: 'none',
-    },
+      powerEfficiency: 'none'
+    }
   };
 
   return estimates[deviceType] || estimates.none;
@@ -287,13 +287,13 @@ export const GET: RequestHandler = async () => {
       service: 'WebGPU Test Endpoint',
       availableOperations: ['generate_text', 'generate_embedding', 'capability_test'],
       note: 'This endpoint provides server-side simulation of WebGPU operations. Actual WebGPU testing must be performed in browser context.',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Service unavailable',
+      error: error instanceof Error ? error.message: 'Service unavailable'
     }, { status: 500 });
   }
 };

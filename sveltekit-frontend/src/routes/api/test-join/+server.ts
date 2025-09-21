@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ request }) => {
         userId: users.id,
         userEmail: users.email,
         sessionId: sessions.id,
-        sessionUserId: sessions.user_id,
+        sessionUserId: sessions.user_id
       })
       .from(sessions)
       .innerJoin(users, eq(sessions.user_id, users.id)
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ request }) => {
         session_ip_address: sessions.ip_address,
         session_user_agent: sessions.user_agent,
         session_context: sessions.session_context,
-        session_created_at: sessions.created_at,
+        session_created_at: sessions.created_at
       })
       .from(sessions)
       .innerJoin(users, eq(sessions.user_id, users.id)
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ request }) => {
       tests: {
         sessionsFound: directSessions.length,
         joinResults: joinResults.length,
-        luciaQuerySQL: luciaQuery.toSQL(),
+        luciaQuerySQL: luciaQuery.toSQL()
       }
     });
     
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      stack: error.stack,
+      stack: error.stack
     }, { status: 500 });
   }
 };

@@ -48,7 +48,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type'
     };
 
     const stream = new ReadableStream({
@@ -59,7 +59,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({
           type: 'connection',
           message: 'Streaming AI suggestions started',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         })}\\n\\n`);
 
         let suggestionCount = 0;
@@ -92,12 +92,12 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                         reasoning: suggestion.reasoning,
                         metadata: {
                           ...suggestion.metadata,
-                          streamOrder: suggestionCount,
+                          streamOrder: suggestionCount
                         }
                       },
                       progress: {
                         current: suggestionCount,
-                        total: maxTotal,
+                        total: maxTotal
                       }
                     })}\\n\\n`);
                   }
@@ -106,7 +106,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                     type: 'error',
                     source: 'ollama',
                     message: 'Ollama streaming failed',
-                    error: error instanceof Error ? error.message: 'Unknown error',
+                    error: error instanceof Error ? error.message: 'Unknown error'
                   })}\\n\\n`);
                 }
               })()
@@ -121,7 +121,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                     content,
                     reportType,
                     maxSuggestions: Math.max(1, Math.floor(maxTotal / 2)),
-                    confidenceThreshold: 0.6,
+                    confidenceThreshold: 0.6
                   })) {
                     if (suggestionCount >= maxTotal) break;
                     
@@ -137,12 +137,12 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                         reasoning: suggestion.reasoning,
                         metadata: {
                           ...suggestion.metadata,
-                          streamOrder: suggestionCount,
+                          streamOrder: suggestionCount
                         }
                       },
                       progress: {
                         current: suggestionCount,
-                        total: maxTotal,
+                        total: maxTotal
                       }
                     })}\\n\\n`);
                   }
@@ -151,7 +151,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                     type: 'error',
                     source: 'enhanced-rag',
                     message: 'Enhanced RAG streaming failed',
-                    error: error instanceof Error ? error.message: 'Unknown error',
+                    error: error instanceof Error ? error.message: 'Unknown error'
                   })}\\n\\n`);
                 }
               })()
@@ -166,7 +166,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
             type: 'complete',
             message: 'All AI suggestion streams completed',
             totalSuggestions: suggestionCount,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\\n\\n`);
 
         } catch (error: any) {
@@ -175,7 +175,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
             type: 'error',
             message: 'Streaming failed',
             error: error instanceof Error ? error.message: 'Unknown error',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\\n\\n`);
         } finally {
           // Close the stream
@@ -190,7 +190,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
     console.error('Streaming endpoint error:', error);
     return new Response(JSON.stringify({ 
         error: 'Failed to start streaming', 
-        details: error instanceof Error ? error.message: 'Unknown error' ,
+        details: error instanceof Error ? error.message: 'Unknown error' 
       }), 
       { 
         status: 500, 
@@ -220,7 +220,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       reportType,
       useOllamaStreaming: url.searchParams.get('ollama') !== 'false',
       useRAGStreaming: url.searchParams.get('rag') !== 'false',
-      maxSuggestions: parseInt(url.searchParams.get('max') || '5'),
+      maxSuggestions: parseInt(url.searchParams.get('max') || '5')
     })
   });
 

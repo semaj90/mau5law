@@ -82,7 +82,7 @@ function float16ToFloat32(h: number): number {
 export interface QuantizationParams {
   scale: number; // maxAbs / 127
   zeroPoint?: number; // for asymmetric quantization
-  method: 'symmetric' | 'asymmetric';,
+  method: 'symmetric' | 'asymmetric';
 }
 
 export function toInt8(
@@ -147,7 +147,7 @@ export interface QuantizedData {
   originalType: QuantizationMode;
   params?: QuantizationParams;
   byteLength: number;
-  compressionRatio: number;,
+  compressionRatio: number;
 }
 
 export function quantize(
@@ -163,7 +163,7 @@ export function quantize(
         data: f32,
         originalType: 'fp32',
         byteLength: f32.byteLength,
-        compressionRatio: 1.0,
+        compressionRatio: 1.0
       };
       
     case 'fp16':
@@ -172,7 +172,7 @@ export function quantize(
         data: fp16,
         originalType: 'fp16',
         byteLength: fp16.byteLength,
-        compressionRatio: originalByteLength / fp16.byteLength,
+        compressionRatio: originalByteLength / fp16.byteLength
       };
       
     case 'int8_symmetric':
@@ -182,7 +182,7 @@ export function quantize(
         originalType: 'int8_symmetric',
         params: paramsSym,
         byteLength: int8Sym.byteLength,
-        compressionRatio: originalByteLength / int8Sym.byteLength,
+        compressionRatio: originalByteLength / int8Sym.byteLength
       };
       
     case 'int8_asymmetric':
@@ -192,7 +192,7 @@ export function quantize(
         originalType: 'int8_asymmetric',
         params: paramsAsym,
         byteLength: int8Asym.byteLength,
-        compressionRatio: originalByteLength / int8Asym.byteLength,
+        compressionRatio: originalByteLength / int8Asym.byteLength
       };
       
     default:
@@ -292,7 +292,7 @@ export interface QuantizationStats {
   compressedSize: number;
   compressionRatio: number;
   quantizationTime: number;
-  mode: QuantizationMode;,
+  mode: QuantizationMode;
 }
 
 export function quantizeWithStats(

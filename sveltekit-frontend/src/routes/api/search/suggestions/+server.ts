@@ -41,7 +41,7 @@ class SuggestionsService {
         legalContext: {
           jurisdiction: 'federal',
           practiceAreas: 'all',
-          includeRecentChanges: true,
+          includeRecentChanges: true
         }
       })
     }, [8095, 8096]).then(r => r.json();
@@ -64,7 +64,7 @@ class SuggestionsService {
         limit,
         completionType: 'legal_smart',
         includeDefinitions: true,
-        includePracticeAreas: true,
+        includePracticeAreas: true
       })
     }, [8095, 8096]).then(r => r.json();
   }
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ url }) => {
           enhancedRAG: true,
           semanticExpansions: true,
           trendingAnalysis: includeTrending,
-          smartCompletions: userQuery.length >= 2,
+          smartCompletions: userQuery.length >= 2
         }
       },
       // Legal AI platform specific enhancements;
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
         jurisdiction: 'federal',
         practiceAreas: extractPracticeAreas(userQuery || category),
         recommendedFilters: generateRecommendedFilters(suggestions, category),
-        relatedConcepts: extractRelatedConcepts(suggestions),
+        relatedConcepts: extractRelatedConcepts(suggestions)
       }
     });
     
@@ -181,7 +181,7 @@ export const GET: RequestHandler = async ({ url }) => {
         query: url.searchParams.get('q') || '',
         timestamp: new Date().toISOString(),
         fallbackMode: true,
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       }
     });
   }
@@ -206,7 +206,7 @@ async function processEnhancedSuggestions(
         definition: includeDefinitions ? s.definition: undefined,
         practiceArea: s.practiceArea,
         confidence: s.confidence || 0.7,
-        source: 'contextual',
+        source: 'contextual'
       })),
       ...completions.map((c: any) => ({
         text: c.completion || c.text,
@@ -217,7 +217,7 @@ async function processEnhancedSuggestions(
         definition: includeDefinitions ? c.definition : undefined,
         practiceArea: c.practiceArea,
         confidence: c.confidence || 0.6,
-        source: 'completion',
+        source: 'completion'
       })
     ];
 
@@ -233,7 +233,7 @@ async function processEnhancedSuggestions(
         enhancedScore: calculateEnhancedRelevanceScore(query, suggestion.text, suggestion.score),
         relatedTerms: extractRelatedTerms(suggestion.text, category),
         jurisdiction: determineJurisdiction(suggestion.text),
-        urgencyLevel: determineUrgencyLevel(suggestion.text),
+        urgencyLevel: determineUrgencyLevel(suggestion.text)
       });
 
   } catch (error: any) {
@@ -252,7 +252,7 @@ async function processTrendingSuggestions(trendingData: any[], category: string)
       description: `Trending search in ${category} law`,
       searchCount: trending.searchCount || 0,
       trendingPeriod: trending.period || '7d',
-      growthRate: trending.growthRate || 0,
+      growthRate: trending.growthRate || 0
     });
   } catch (error: any) {
     console.warn('Error processing trending suggestions:', error);
@@ -478,6 +478,6 @@ async function getFallbackSuggestions(query: string, category: string, limit: nu
     trending: false,
     description: `Fallback suggestion for ${category}`,
     source: 'fallback',
-    confidence: 0.5,
+    confidence: 0.5
   });
 }

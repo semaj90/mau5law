@@ -20,14 +20,14 @@ interface OllamaInstance {
   memory: {
     used: string;
     total: string;
-    percentage: number;,
+    percentage: number;
   };
   performance: {
     requestsPerMinute: number;
     averageLatency: number;
-    tokensPerSecond: number;,
+    tokensPerSecond: number;
   };
-  lastCheck: string;,
+  lastCheck: string;
 }
 
 interface ClusterStatus {
@@ -37,18 +37,18 @@ interface ClusterStatus {
   healthyInstances: number;
   loadBalancing: {
     strategy: 'round-robin' | 'least-loaded' | 'response-time' | 'cpu-based';
-    currentSelection: string;,
+    currentSelection: string;
   };
   models: {
     available: string[];
     loading: string[];
-    failed: string[];,
+    failed: string[];
   };
   aggregateMetrics: {
     totalRequests: number;
     averageLatency: number;
     totalTokensPerSecond: number;
-    clusterLoad: number;,
+    clusterLoad: number;
   };
 }
 
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             newDistribution: (result as { rebalanced?: any; distribution?: any; improvement?: any; success?: any; data?: any; instances?: any; previous?: any; current?: any; models?: any; failedOver?: any; newPrimary?: any; redistributed?: any }).distribution,
             estimatedImprovementPercent: (result as { rebalanced?: any; distribution?: any; improvement?: any; success?: any; data?: any; instances?: any; previous?: any; current?: any; models?: any; failedOver?: any; newPrimary?: any; redistributed?: any }).improvement
           },
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!modelOp?.model || !modelOp.operation) {
           return json({
             success: false,
-            error: 'Model and operation are required',
+            error: 'Model and operation are required'
           }, { status: 400 });
         }
 
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           model: modelOp?.model || "unknown" // @ts-ignore - Model property access,
           result: (result as { rebalanced?: any; distribution?: any; improvement?: any; success?: any; data?: any; instances?: any; previous?: any; current?: any; models?: any; failedOver?: any; newPrimary?: any; redistributed?: any }).data,
           affectedInstances: (result as { rebalanced?: any; distribution?: any; improvement?: any; success?: any; data?: any; instances?: any; previous?: any; current?: any; models?: any; failedOver?: any; newPrimary?: any; redistributed?: any }).instances,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             newInstances: (result as { rebalanced?: any; distribution?: any; improvement?: any; success?: any; data?: any; instances?: any; previous?: any; current?: any; models?: any; failedOver?: any; newPrimary?: any; redistributed?: any }).current,
             modelsDistribution: (result as { rebalanced?: any; distribution?: any; improvement?: any; success?: any; data?: any; instances?: any; previous?: any; current?: any; models?: any; failedOver?: any; newPrimary?: any; redistributed?: any }).models
           },
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             newPrimary: (result as { rebalanced?: any; distribution?: any; improvement?: any; success?: any; data?: any; instances?: any; previous?: any; current?: any; models?: any; failedOver?: any; newPrimary?: any; redistributed?: any }).newPrimary,
             redistributed: (result as { rebalanced?: any; distribution?: any; improvement?: any; success?: any; data?: any; instances?: any; previous?: any; current?: any; models?: any; failedOver?: any; newPrimary?: any; redistributed?: any }).redistributed
           },
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           action: 'health-check',
           health,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, { status: 500 });
   }
 };
@@ -214,7 +214,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         instance,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }
 
@@ -248,16 +248,16 @@ export const GET: RequestHandler = async ({ url }) => {
         model_operation: '/api/ollama/cluster?action=model-operation (POST)',
         scale: '/api/ollama/cluster?action=scale (POST)',
         failover: '/api/ollama/cluster?action=failover (POST)',
-        health_check: '/api/ollama/cluster?action=health-check (POST)',
+        health_check: '/api/ollama/cluster?action=health-check (POST)'
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, { status: 500 });
   }
 };
@@ -295,7 +295,7 @@ export async function getClusterStatus(detailed: boolean = false): Promise<Clust
       load: 100,
       memory: { used: '0GB', total: '0GB', percentage: 0 },
       performance: { requestsPerMinute: 0, averageLatency: 0, tokensPerSecond: 0 },
-      lastCheck: new Date().toISOString(),
+      lastCheck: new Date().toISOString()
     } as OllamaInstance;
   });
 
@@ -353,7 +353,7 @@ export async function getClusterStatus(detailed: boolean = false): Promise<Clust
     models: {
       available: Array.from(allModels),
       loading: Array.from(loadingModels),
-      failed: Array.from(failedModels),
+      failed: Array.from(failedModels)
     },
     aggregateMetrics: {
       totalRequests,
@@ -411,7 +411,7 @@ async function getInstanceStatus(instanceId: string, config?: any): Promise<Olla
             load: 100,
             memory: { used: '0GB', total: '0GB', percentage: 0 },
             performance: { requestsPerMinute: 0, averageLatency: 0, tokensPerSecond: 0 },
-            lastCheck: new Date().toISOString(),
+            lastCheck: new Date().toISOString()
           };
         }
         // small backoff
@@ -443,14 +443,14 @@ function normalizeInstanceResponse(payload: any, config: any): OllamaInstance {
       memory: {
         used: typeof memUsed === 'number' ? `${memUsed}GB` : String(memUsed),
         total: typeof memTotal === 'number' ? `${memTotal}GB` : String(memTotal),
-        percentage: typeof memPct === 'number' ? memPct : Number(memPct) || 0,
+        percentage: typeof memPct === 'number' ? memPct : Number(memPct) || 0
       },
       performance: {
       requestsPerMinute: Math.round(payload.requestsPerMinute ?? payload.rpm ?? 0),
       averageLatency: Math.round(payload.averageLatency ?? payload.latencyMs ?? 0),
-      tokensPerSecond: Math.round(payload.tokensPerSecond ?? payload.tps ?? 0),
+      tokensPerSecond: Math.round(payload.tokensPerSecond ?? payload.tps ?? 0)
     },
-    lastCheck: new Date().toISOString(),
+    lastCheck: new Date().toISOString()
   };
 }
 
@@ -485,7 +485,7 @@ async function rebalanceCluster(strategy: string): Promise<any> {
     rebalanced: true,
     distribution,
     improvement: Math.round(Math.random() * 15 + 5),
-    strategy: useStrategy,
+    strategy: useStrategy
   };
 }
 
@@ -521,7 +521,7 @@ async function executeModelOperation(operation: ModelOperation): Promise<any> {
   return {
     success: true,
     data: baseResult,
-    instances: affectedInstances,
+    instances: affectedInstances
   };
 }
 
@@ -569,7 +569,7 @@ async function triggerFailover(instanceId: string, reason: string): Promise<any>
       newPrimary,
     redistributed: remaining.length > 0,
     reason: reason ?? 'manual',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 

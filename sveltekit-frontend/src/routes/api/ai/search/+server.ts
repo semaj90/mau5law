@@ -27,7 +27,7 @@ const searchSchema = z.object({
   query: z.string().min(1).max(1000),
   limit: z.number().min(1).max(50).optional(),
   threshold: z.number().min(0).max(1).optional(),
-  documentType: z.string().optional(),
+  documentType: z.string().optional()
 });
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
@@ -70,7 +70,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         searchParams: {
           limit,
           threshold,
-          embeddingModel: 'nomic-embed-text',
+          embeddingModel: 'nomic-embed-text'
         }
       }
     });
@@ -81,7 +81,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     if (error instanceof z.ZodError) {
       return json({ 
           error: 'Validation failed', 
-          details: error.errors ,
+          details: error.errors 
         }, )
         { status: 400 }
       );
@@ -89,7 +89,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
 
     return json({ 
         error: 'Vector search failed',
-        message: error instanceof Error ? error.message: 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
     );
@@ -125,7 +125,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       data: {
         query,
         results,
-        totalResults: results.length,
+        totalResults: results.length
       }
     });
 

@@ -16,7 +16,7 @@ export interface SOMConfig {
   epochs: number;
   enableGPU: boolean;
   decayRate: number;
-  inputDimension: number;,
+  inputDimension: number;
 }
 
 export interface SOMNode {
@@ -27,7 +27,7 @@ export interface SOMNode {
     conceptType: 'case' | 'statute' | 'regulation' | 'precedent' | 'mixed';
     importance: number;
     jurisdiction: string;
-    practiceArea: string[];,
+    practiceArea: string[];
   };
 }
 
@@ -37,7 +37,7 @@ export interface SOMDecomposition {
   legalConcepts: LegalConceptMapping[];
   decompositionQuality: number;
   processingTime: number;
-  convergenceHistory: number[];,
+  convergenceHistory: number[];
 }
 
 export interface SOMCluster {
@@ -54,7 +54,7 @@ export interface LegalConceptMapping {
   somPosition: { x: number; y: number };
   legalTerms: string[];
   citationNetwork: string[];
-  importance: number;,
+  importance: number;
 }
 
 export interface SOMTrainingMetrics {
@@ -63,7 +63,7 @@ export interface SOMTrainingMetrics {
   topographicError: number;
   neighborhoodSize: number;
   learningRate: number;
-  convergenceRate: number;,
+  convergenceRate: number;
 }
 
 export class SOMNeuralNetwork {
@@ -84,7 +84,7 @@ export class SOMNeuralNetwork {
       epochs: config.epochs || 100,
       enableGPU: config.enableGPU !== undefined ? config.enableGPU: true,
       decayRate: config.decayRate || 0.99,
-      inputDimension: config.inputDimension || 384,
+      inputDimension: config.inputDimension || 384
     };
 
     this.somGrid = [];
@@ -156,7 +156,7 @@ export class SOMNeuralNetwork {
             conceptType: 'mixed',
             importance: 0,
             jurisdiction: 'unknown',
-            practiceArea: [],
+            practiceArea: []
           }
         };
       }
@@ -262,7 +262,7 @@ export class SOMNeuralNetwork {
     const result: SOMDecomposition = {
       ...decomposition,
       processingTime,
-      convergenceHistory: this.trainingHistory.map(h => h.quantizationError),
+      convergenceHistory: this.trainingHistory.map(h => h.quantizationError)
     };
 
     // Cache the result;
@@ -547,7 +547,7 @@ export class SOMNeuralNetwork {
         x: minX,
         y: minY,
         width: maxX - minX + 1,
-        height: maxY - minY + 1,
+        height: maxY - minY + 1
       }
     };
   }
@@ -605,7 +605,7 @@ export class SOMNeuralNetwork {
             somPosition: { x, y },
             legalTerms: this.inferLegalTerms(node),
             citationNetwork: this.inferCitationNetwork(node),
-            importance: node.legalContext.importance,
+            importance: node.legalContext.importance
           });
         }
       }
@@ -673,7 +673,7 @@ export class SOMNeuralNetwork {
     return {
       ...decomposition,
       processingTime: 0, // Already computed
-      convergenceHistory: this.trainingHistory.map(h => h.quantizationError),
+      convergenceHistory: this.trainingHistory.map(h => h.quantizationError)
     };
   }
 
@@ -691,7 +691,7 @@ export class SOMNeuralNetwork {
   }
 
   getSOMGrid(): SOMNode[][] {
-    return this.somGrid.map(row => row.map(node => ({...node,}));
+    return this.somGrid.map(row => row.map(node => ({...node}));
   }
 
   cleanup(): void {

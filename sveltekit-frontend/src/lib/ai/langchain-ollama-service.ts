@@ -28,7 +28,7 @@ export interface LangChainConfig {
   chunkOverlap: number;
   maxRetrieverResults: number;
   useCuda: boolean;
-  vectorDimensions: number;,
+  vectorDimensions: number;
 }
 
 export interface ProcessingResult {
@@ -39,7 +39,7 @@ export interface ProcessingResult {
   metadata: {
     totalTokens: number;
     avgChunkSize: number;
-    model: string;,
+    model: string;
   };
 }
 
@@ -47,7 +47,7 @@ export interface QueryResult {
   answer: string;
   sources: Array<any>;
   confidence: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 // Default configuration optimized for legal AI;
@@ -61,7 +61,7 @@ const DEFAULT_CONFIG: LangChainConfig = {
   chunkOverlap: 200,
   maxRetrieverResults: 10,
   useCuda: true,
-  vectorDimensions: 384,
+  vectorDimensions: 384
 };
 
 // ============================================================================
@@ -105,7 +105,7 @@ export class LangChainOllamaService {
     this.textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: this.config.chunkSize,
       chunkOverlap: this.config.chunkOverlap,
-      separators: ["\n\n", "\n", ".", "!", "?", ",", " ", ""],
+      separators: ["\n\n", "\n", ".", "!", "?", ",", " ", ""]
     });
   }
 
@@ -163,7 +163,7 @@ export class LangChainOllamaService {
         metadata: {
           totalTokens: content.length / 4, // Rough estimate
           avgChunkSize: Math.round(avgChunkSize),
-          model: this.config.embeddingModel,
+          model: this.config.embeddingModel
         }
       };
 
@@ -203,7 +203,7 @@ export class LangChainOllamaService {
         k: maxResults,
         searchType: "similarity",
         // Note: searchKwargs may not be available in current version
-        filter: (doc) => true // Simple filter function,
+        filter: (doc) => true // Simple filter function
       });
 
       // Get relevant documents
@@ -228,7 +228,7 @@ export class LangChainOllamaService {
         sources: filteredDocs.map(doc => ({
           content: doc.pageContent,
           metadata: doc.metadata,
-          score: doc.metadata.score || 0.8,
+          score: doc.metadata.score || 0.8
         })),
         confidence,
         processingTime
@@ -289,7 +289,7 @@ Instructions:
 - Use legal terminology appropriately
 - Structure your response clearly with bullet points or numbered lists when appropriate
 
-Answer:`;,
+Answer:`;
   }
 
   private calculateConfidence(documents: LangChainDocument[], question: string): number {
@@ -324,7 +324,7 @@ Answer:`;,
       isInitialized: this.isInitialized,
       vectorStoreSize: this.vectorStore?.memoryVectors?.length || 0,
       model: this.config?.model || 'gemma3:2b',
-      embeddingModel: this.config.embeddingModel,
+      embeddingModel: this.config.embeddingModel
     };
   }
 

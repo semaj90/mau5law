@@ -40,7 +40,7 @@ interface EnhancedRAGRetrievalOptions {
 interface VectorSearchMatch {
   entry: LODCacheEntry;
   relevance_score: number;
-  vector_similarity: number;,
+  vector_similarity: number;
 }
 
 interface EnhancedRAGResultItem {
@@ -49,13 +49,13 @@ interface EnhancedRAGResultItem {
   lod_match: LODLevel;
   contextual_prompt: string;
   svg_visualization: string;
-  vector_similarity: number;,
+  vector_similarity: number;
 }
 
 interface EnhancedRAGResponse {
   results: EnhancedRAGResultItem[];
   enhanced_context: string;
-  predictive_next_queries: string[];,
+  predictive_next_queries: string[];
 }
 
 interface ProcessLLMOutputResult {
@@ -67,7 +67,7 @@ interface ProcessLLMOutputResult {
     svg_summaries: LODCacheEntry['svg_summaries'];
     vector_clusters: number[];
     topology_features: number[];
-    contextual_anchors: string[];,
+    contextual_anchors: string[];
   };
 }
 
@@ -77,7 +77,7 @@ interface LODCacheStats {
   total_original_size: number;
   average_compression_ratio: number;
   cache_hit_rate: number;
-  config: LODProcessingConfig;,
+  config: LODProcessingConfig;
 }
 
 // Define types that were missing from the export
@@ -98,7 +98,7 @@ interface LODCacheEntry {
     tile: Uint8Array;       // 7 bytes - word/phrase level (existing SIMD)
     block: Uint8Array;      // 35 bytes - paragraph level (5 tiles)
     section: Uint8Array;    // 175 bytes - section level (25 tiles)
-    document: Uint8Array;   // 875 bytes - full document level (125 tiles),
+    document: Uint8Array;   // 875 bytes - full document level (125 tiles)
   };
 
   // SVG summarizations for each LOD level;
@@ -107,7 +107,7 @@ interface LODCacheEntry {
     tile: string;           // Mini-icon SVG (16x16)
     block: string;          // Small diagram SVG (64x64)
     section: string;        // Medium visualization SVG (256x256)
-    document: string;       // Full document map SVG (512x512),
+    document: string;       // Full document map SVG (512x512)
   };
 
   // Vector metadata for enhanced RAG;
@@ -116,7 +116,7 @@ interface LODCacheEntry {
     topology_features: Float32Array; // Structural relationship vectors
     semantic_clusters: number[];    // Cluster IDs for related content
     retrieval_scores: number[];     // Predictive relevance scores
-    context_anchors: string[];      // Key terms for contextual prompting,
+    context_anchors: string[];      // Key terms for contextual prompting
   };
 
   // Caching metadata;
@@ -131,7 +131,7 @@ interface LODCacheEntry {
       original_size: number;
       compressed_size: number;
       compression_ratio: number;
-      semantic_preservation: number;,
+      semantic_preservation: number;
     };
   };
 }
@@ -143,7 +143,7 @@ interface LODProcessingConfig {
   topology_awareness_level: 'basic' | 'advanced' | 'neural';
   predictive_analytics_enabled: boolean;
   max_cache_entries: number;
-  retention_policy: 'lru' | 'frequency' | 'predictive';,
+  retention_policy: 'lru' | 'frequency' | 'predictive';
 }
 
 class LODCacheEngine {
@@ -167,7 +167,7 @@ class LODCacheEngine {
     topology_awareness_level: 'advanced',
     predictive_analytics_enabled: true,
     max_cache_entries: 10000,
-    retention_policy: 'predictive',
+    retention_policy: 'predictive'
   };
 
   constructor(customConfig?: Partial<LODProcessingConfig>) {
@@ -207,7 +207,7 @@ class LODCacheEngine {
         preferredBackend: GPU_CONFIG.preferWebGPU ? 'webgpu' : 'webgl2',
         requireCompute: true, // LOD processing benefits from compute shaders
         memoryLimit: GPU_CONFIG.memoryLimit,
-        debug: CLIENT_ENV.GPU_DEBUG,
+        debug: CLIENT_ENV.GPU_DEBUG
       });
 
       if (!success) {
@@ -325,7 +325,7 @@ class LODCacheEngine {
       meta: {
         length: text.length,
         backend: this.activeBackend,
-        cacheSize: this.cache.size,
+        cacheSize: this.cache.size
       }
     });
 
@@ -387,7 +387,7 @@ class LODCacheEngine {
         backend: this.activeBackend,
         cacheEntryId: cacheEntry.id,
         embeddings: vectorMetadata.embeddings.length,
-        dimensions: this.config.vector_dimensions,
+        dimensions: this.config.vector_dimensions
       }
     });
 
@@ -426,7 +426,7 @@ class LODCacheEngine {
           lod_match: this.determineBestLODForQuery(match.entry, query),
           contextual_prompt: contextualPrompt,
           svg_visualization: svgVisualization,
-          vector_similarity: match.vector_similarity,
+          vector_similarity: match.vector_similarity
         };
       })
     );
@@ -441,7 +441,7 @@ class LODCacheEngine {
     return {
       results: enhancedResults,
       enhanced_context: enhancedContext,
-      predictive_next_queries: predictiveQueries,
+      predictive_next_queries: predictiveQueries
     };
   }
 
@@ -452,7 +452,7 @@ class LODCacheEngine {
     // Leverage existing SIMD engine for tile-level compression;
     const simdResult = await simdTextTilingEngine.processText(text, {
       type: 'general',
-      context: 'cache-engine',
+      context: 'cache-engine'
     });
 
     // Extract hierarchical text segments
@@ -463,7 +463,7 @@ class LODCacheEngine {
       tile: simdResult.compressedTiles[0]?.compressedData || new Uint8Array(7),
       block: await this.compressTileGroup(simdResult.compressedTiles.slice(0, 5)),
       section: await this.compressTileGroup(simdResult.compressedTiles.slice(0, 25)),
-      document: await this.compressFullDocument(simdResult),
+      document: await this.compressFullDocument(simdResult)
     };
   }
 
@@ -501,7 +501,7 @@ class LODCacheEngine {
       topology_features: topologyFeatures,
       semantic_clusters: semanticClusters,
       retrieval_scores: retrievalScores,
-      context_anchors: contextAnchors,
+      context_anchors: contextAnchors
     };
   }
 
@@ -513,7 +513,7 @@ class LODCacheEngine {
       tile: words.slice(0, 3).join(' '),
       block: words.slice(0, 15).join(' '),
       section: words.slice(0, 75).join(' '),
-      document: text,
+      document: text
     };
   }
 
@@ -660,7 +660,7 @@ class LODCacheEngine {
       original_size: originalSize,
       compressed_size: compressedSize,
       compression_ratio: originalSize / compressedSize,
-      semantic_preservation: 0.9 // Would calculate actual semantic preservation,
+      semantic_preservation: 0.9 // Would calculate actual semantic preservation
     };
   }
 
@@ -700,7 +700,7 @@ class LODCacheEngine {
         svg_summaries: entry.svg_summaries,
         vector_clusters: entry.vector_metadata.semantic_clusters,
         topology_features: Array.from(entry.vector_metadata.topology_features),
-        contextual_anchors: entry.vector_metadata.context_anchors,
+        contextual_anchors: entry.vector_metadata.context_anchors
       }
     };
   }
@@ -724,7 +724,7 @@ class LODCacheEngine {
         payload: {
           entry,
           context,
-          config: this.config,
+          config: this.config
         }
       });
     }
@@ -737,7 +737,7 @@ class LODCacheEngine {
       .map(entry => ({
         entry,
         relevance_score: 0.8,
-        vector_similarity: 0.75,
+        vector_similarity: 0.75
       })
       .slice(0, 20);
   }
@@ -790,7 +790,7 @@ class LODCacheEngine {
         total_original_size: 0,
         average_compression_ratio: 0,
         cache_hit_rate: 0,
-        config: this.config,
+        config: this.config
       };
     }
     return {
@@ -799,7 +799,7 @@ class LODCacheEngine {
       total_original_size: entries.reduce((sum, e) => sum + e.cache_metadata.compression_stats.original_size, 0),
       average_compression_ratio: entries.reduce((sum, e) => sum + e.cache_metadata.compression_stats.compression_ratio, 0) / entries.length,
       cache_hit_rate: entries.reduce((sum, e) => sum + e.cache_metadata.access_count, 0) / entries.length,
-      config: this.config,
+      config: this.config
     };
   }
 
@@ -1191,7 +1191,7 @@ class TopologyAwareAnalyzer {
     features[1] = text.split('\n').length;   // Paragraph count
     features[2] = text.match(/[A-Z]/g)?.length || 0; // Capital letters
     features[3] = text.match(/[0-9]/g)?.length || 0; // Numbers
-    features[4] = text.match(/[(),]/g)?.length || 0; // Punctuation density
+    features[4] = text.match(/[()]/g)?.length || 0; // Punctuation density
 
     // Fill remaining features with derived metrics;
     for (let i = 5; i < 64; i++) {

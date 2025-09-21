@@ -80,7 +80,7 @@ export interface RAGQuery {
   semantic?: {
     useEmbeddings: boolean;
     expandConcepts: boolean;
-    includeRelated: boolean;,
+    includeRelated: boolean;
   };
 }
 
@@ -191,7 +191,7 @@ export interface AIAssistantContext {
   // Security and Audit
   securityContext: any;
   auditLog: any[];
-  accessControl: any;,
+  accessControl: any;
 }
 
 // Strongly typed events for the AI Assistant machine
@@ -237,7 +237,7 @@ export interface Context7Analysis {
   documentation: string;
   confidence: number;
   libraries: string[];
-  apiEndpoints: string[];,
+  apiEndpoints: string[];
 }
 
 export interface ImageAnalysis {
@@ -249,7 +249,7 @@ export interface ImageAnalysis {
   analysis?: {
     entities: string[];
     classification: string;
-    relevanceScore: number;,
+    relevanceScore: number;
   };
 }
 
@@ -264,7 +264,7 @@ export interface ProcessingJob {
   retryCount: number;
   maxRetries: number;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface ServiceHealthStatus {
@@ -324,7 +324,7 @@ export interface PerformanceMetrics {
   // Time-based metrics
   metricsWindow: number;
   lastUpdated: Date;
-  sampleCount: number;,
+  sampleCount: number;
 }
 
 export interface CacheStatus {
@@ -357,7 +357,7 @@ export interface CacheStatus {
   requestsPerSecond: number;
   hitsPerSecond: number;
   missesPerSecond: number;
-  evictionsPerSecond: number;,
+  evictionsPerSecond: number;
 }
 
 export interface ExtendedError {
@@ -378,9 +378,9 @@ export interface AIAssistantAnalysisResult {
   riskAssessment: {
     level: 'low' | 'medium' | 'high' | 'critical';
     factors: string[];
-    score: number;,
+    score: number;
   };
-  recommendations: string[];,
+  recommendations: string[];
 }
 
 export interface EvidenceItem {
@@ -389,7 +389,7 @@ export interface EvidenceItem {
   hash: string;
   timestamp: Date;
   custodyChain: Array<any>;
-  verified: boolean;,
+  verified: boolean;
 }
 
 export interface CaseContext {
@@ -418,28 +418,28 @@ export interface DatabaseMetrics {
   queryLatency: number;
   connectionPool: { active: number; idle: number; waiting: number };
   indexEfficiency: number;
-  cacheHitRatio: number;,
+  cacheHitRatio: number;
 }
 
 export interface VectorIndexStatus {
   documentsIndexed: number;
   indexSize: number;
   lastUpdate: Date;
-  rebuildProgress: number;,
+  rebuildProgress: number;
 }
 
 export interface Context7CacheEntry {
   content: string;
   timestamp: Date;
   hitCount: number;
-  ttl: number;,
+  ttl: number;
 }
 
 export interface LayerCacheStats {
   hits: number;
   misses: number;
   size: number;
-  maxSize: number;,
+  maxSize: number;
 }
 
 export interface IWebWorkerPool {
@@ -451,21 +451,21 @@ export interface LoadBalancerState {
   algorithm: 'round_robin' | 'least_connections' | 'weighted' | 'adaptive';
   healthyServices: Map<string, ServiceHealthInfo>;
   failedServices: Set<string>;
-  lastUpdate: Date;,
+  lastUpdate: Date;
 }
 
 export interface CircuitBreakerState {
   state: 'closed' | 'open' | 'half_open';
   failureCount: number;
   lastFailure: Date;
-  nextAttempt: Date;,
+  nextAttempt: Date;
 }
 
 export interface LiveSession {
   sessionId: string;
   participants: string[];
   documentId: string;
-  lastActivity: Date;,
+  lastActivity: Date;
 }
 
 export interface ResourceMetrics {
@@ -473,7 +473,7 @@ export interface ResourceMetrics {
   cpuThrottle: boolean;
   diskSpaceWarning: boolean;
   networkCongestion: boolean;
-  thermalState: 'nominal' | 'fair' | 'serious' | 'critical';,
+  thermalState: 'nominal' | 'fair' | 'serious' | 'critical';
 }
 
 export interface BenchmarkSuite {
@@ -481,14 +481,14 @@ export interface BenchmarkSuite {
   vectorSearchBenchmark: { averageLatency: number; throughput: number };
   aiInferenceBenchmark: { averageLatency: number; throughput: number };
   databaseBenchmark: { averageLatency: number; throughput: number };
-  overallScore: number;,
+  overallScore: number;
 }
 
 export interface LegalGraphState {
   nodeCount: number;
   edgeCount: number;
   lastUpdate: Date;
-  graphDensity: number;,
+  graphDensity: number;
 }
 
 export interface PrecedentAnalysisResult {
@@ -496,7 +496,7 @@ export interface PrecedentAnalysisResult {
   similarity: number;
   relevance: number;
   citation: string;
-  summary: string;,
+  summary: string;
 }
 
 export interface MultiModalResult {
@@ -504,42 +504,42 @@ export interface MultiModalResult {
   type: 'text_image' | 'text_audio' | 'image_audio' | 'multimodal';
   confidence: number;
   results: any;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export interface InferenceStreamState {
   active: boolean;
   streamId: string | null;
   tokensPerSecond: number;
-  currentModel: string | null;,
+  currentModel: string | null;
 }
 
 export interface MemoryPoolState {
   allocated: number;
   available: number;
   fragments: number;
-  largestBlock: number;,
+  largestBlock: number;
 }
 
 export interface BufferManagerState {
   vectorBuffers: number;
   textBuffers: number;
   imageBuffers: number;
-  totalAllocated: number;,
+  totalAllocated: number;
 }
 
 export interface GCMetrics {
   collections: number;
   totalMemoryFreed: number;
   lastGC: number;
-  averageGCTime: number;,
+  averageGCTime: number;
 }
 
 export interface SecurityContext {
   userId: string | null;
   permissions: string[];
   securityLevel: 'minimal' | 'standard' | 'enhanced' | 'maximum';
-  encryptionEnabled: boolean;,
+  encryptionEnabled: boolean;
 }
 
 export interface AuditEntry {
@@ -547,7 +547,7 @@ export interface AuditEntry {
   action: string;
   userId?: string;
   details: any;
-  result: 'success' | 'failure' | 'warning';,
+  result: 'success' | 'failure' | 'warning';
 }
 
 export interface AccessControlState {
@@ -560,33 +560,33 @@ export interface RateLimit {
   requests: number;
   windowMs: number;
   remaining: number;
-  resetTime: Date;,
+  resetTime: Date;
 }
 
 export interface AttachmentData {
   id: string;
   type: 'file' | 'image' | 'link' | 'code';
   content: any;
-  metadata: any;,
+  metadata: any;
 }
 
 export interface ReactionData {
   type: string;
   userId: string;
-  timestamp: Date;,
+  timestamp: Date;
 }
 
 export interface ThreadingData {
   parentId?: string;
   replies: string[];
-  depth: number;,
+  depth: number;
 }
 
 export interface ServiceHealthInfo {
   lastCheck: Date;
   responseTime: number;
   status: 'healthy' | 'degraded' | 'unhealthy';
-  errorCount: number;,
+  errorCount: number;
 }
 
 // GPU Processing Utilities;
@@ -613,7 +613,7 @@ class GPUProcessor {
       }
 
       this.adapter = await (navigator as any).gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
 
       if (!this.adapter) {
@@ -794,7 +794,7 @@ class MultiLayerCache {
           key,
           value,
           expires: Date.now() + ttl,
-          created: Date.now(),
+          created: Date.now()
         };
 
         const putRequest = store.put(data);
@@ -850,7 +850,7 @@ class MultiLayerCache {
     return {
       l1Size: this.l1Cache.size,
       l1MaxSize: 1000,
-      l2Available: 'indexedDB' in window,
+      l2Available: 'indexedDB' in window
     };
   }
 }
@@ -1001,7 +1001,7 @@ class WebWorkerPool {
               // Document processing logic;
               self.postMessage({ type: 'processed', result: {
                 wordCount: (data as { content?: any; chunk?: any; done?: any; error?: any }).content.split(' ').length,
-                processed: true,
+                processed: true
               }});
               break;
 
@@ -1058,13 +1058,13 @@ export const aiAssistantMachine = createMachine({
       queryLatency: 0,
       connectionPool: { active: 0, idle: 0, waiting: 0 },
       indexEfficiency: 0.95,
-      cacheHitRatio: 0.85,
+      cacheHitRatio: 0.85
     },
     vectorIndexStatus: {
       documentsIndexed: 0,
       indexSize: 0,
       lastUpdate: new Date(),
-      rebuildProgress: 0,
+      rebuildProgress: 0
     },
 
     // Context7 Integration with enhanced caching
@@ -1092,7 +1092,7 @@ export const aiAssistantMachine = createMachine({
       algorithm: 'round_robin',
       healthyServices: new Map(),
       failedServices: new Set(),
-      lastUpdate: new Date(),
+      lastUpdate: new Date()
     },
     circuitBreakers: new Map(),
 
@@ -1134,7 +1134,7 @@ export const aiAssistantMachine = createMachine({
       satisfactionRating: 0,
       metricsWindow: 300000, // 5 minutes
       lastUpdated: new Date(),
-      sampleCount: 0,
+      sampleCount: 0
     },
     cache: {
       enabled: true,
@@ -1158,7 +1158,7 @@ export const aiAssistantMachine = createMachine({
       requestsPerSecond: 0,
       hitsPerSecond: 0,
       missesPerSecond: 0,
-      evictionsPerSecond: 0,
+      evictionsPerSecond: 0
     },
     error: null,
     resourceMonitoring: {
@@ -1166,14 +1166,14 @@ export const aiAssistantMachine = createMachine({
       cpuThrottle: false,
       diskSpaceWarning: false,
       networkCongestion: false,
-      thermalState: 'nominal',
+      thermalState: 'nominal'
     },
     benchmarkResults: {
       lastRun: new Date(),
       vectorSearchBenchmark: { averageLatency: 0, throughput: 0 },
       aiInferenceBenchmark: { averageLatency: 0, throughput: 0 },
       databaseBenchmark: { averageLatency: 0, throughput: 0 },
-      overallScore: 0,
+      overallScore: 0
     },
 
     // Advanced Legal Domain Features
@@ -1182,7 +1182,7 @@ export const aiAssistantMachine = createMachine({
       nodeCount: 0,
       edgeCount: 0,
       lastUpdate: new Date(),
-      graphDensity: 0,
+      graphDensity: 0
     },
     precedentAnalysis: [],
 
@@ -1194,7 +1194,7 @@ export const aiAssistantMachine = createMachine({
       active: false,
       streamId: null,
       tokensPerSecond: 0,
-      currentModel: null,
+      currentModel: null
     },
 
     // Memory Management;
@@ -1202,19 +1202,19 @@ export const aiAssistantMachine = createMachine({
       allocated: 0,
       available: 0,
       fragments: 0,
-      largestBlock: 0,
+      largestBlock: 0
     },
     bufferManager: {
       vectorBuffers: 0,
       textBuffers: 0,
       imageBuffers: 0,
-      totalAllocated: 0,
+      totalAllocated: 0
     },
     garbageCollectionMetrics: {
       collections: 0,
       totalMemoryFreed: 0,
       lastGC: 0,
-      averageGCTime: 0,
+      averageGCTime: 0
     },
 
     // Security and Audit;
@@ -1222,18 +1222,18 @@ export const aiAssistantMachine = createMachine({
       userId: null,
       permissions: [],
       securityLevel: 'standard',
-      encryptionEnabled: true,
+      encryptionEnabled: true
     },
     auditLog: [],
     accessControl: {
       allowedOperations: new Set(),
       deniedOperations: new Set(),
-      rateLimits: new Map(),
+      rateLimits: new Map()
     }
   } as AIAssistantContext,
   types: Record<string, any> as {
     context: AIAssistantContext;
-    events: AIAssistantEvent;,
+    events: AIAssistantEvent;
   },
   states: {
     initializing: {
@@ -1285,7 +1285,7 @@ export const aiAssistantMachine = createMachine({
             queryLatency: 0,
             connectionPool: { active: 0, idle: 0, waiting: 0 },
             indexEfficiency: 0,
-            cacheHitRatio: 0,
+            cacheHitRatio: 0
           };
 
           try {
@@ -1309,7 +1309,7 @@ export const aiAssistantMachine = createMachine({
           let context7Available = false;
           try {
             const context7Response = await fetch('http://localhost:40000/health', {
-              signal: AbortSignal.timeout(5000),
+              signal: AbortSignal.timeout(5000)
             });
             context7Available = context7Response.ok;
             if (context7Available) {
@@ -1325,12 +1325,12 @@ export const aiAssistantMachine = createMachine({
             documentsIndexed: 0,
             indexSize: 0,
             lastUpdate: new Date(),
-            rebuildProgress: 0,
+            rebuildProgress: 0
           };
 
           try {
             const qdrantResponse = await fetch('http://localhost:6333/health', {
-              signal: AbortSignal.timeout(5000),
+              signal: AbortSignal.timeout(5000)
             });
             vectorSearchEnabled = qdrantResponse.ok;
 
@@ -1371,7 +1371,7 @@ export const aiAssistantMachine = createMachine({
                   maxTokens: model.details?.parameter_size === '7B' ? 8192 : 4096,
                   cost: 0.1,
                   capabilities: model.details?.families || ['text'],
-                  gpuRequired: model.size > 4000000000 // > 4GB,
+                  gpuRequired: model.size > 4000000000 // > 4GB
                 });
               }
               console.log(`🤖 AI Models available: ${availableModels.length} models loaded`);
@@ -1386,7 +1386,7 @@ export const aiAssistantMachine = createMachine({
             cpuThrottle: false,
             diskSpaceWarning: false,
             networkCongestion: false,
-            thermalState: 'nominal',
+            thermalState: 'nominal'
           };
 
           // Setup circuit breakers for critical services
@@ -1396,7 +1396,7 @@ export const aiAssistantMachine = createMachine({
               state: 'closed',
               failureCount: 0,
               lastFailure: new Date(0),
-              nextAttempt: new Date(0),
+              nextAttempt: new Date(0)
             });
           });
 
@@ -1423,7 +1423,7 @@ export const aiAssistantMachine = createMachine({
             availableModels,
             resourceMetrics,
             circuitBreakers,
-            initialization_time: initializationTime,
+            initialization_time: initializationTime
           };
         }),
         onDone: {
@@ -1436,12 +1436,12 @@ export const aiAssistantMachine = createMachine({
                   postgres: (event as any).output.databaseConnected,
                   qdrant: (event as any).output.vectorSearchEnabled,
                   neo4j: health.services?.['neo4j'] || false,
-                  redis: health.services?.['redis'] || false,
+                  redis: health.services?.['redis'] || false
                 },
                 ai: {
                   ollama: health.services?.['enhanced-rag'] || false,
                   enhanced_rag: health.services?.['enhanced-rag'] || false,
-                  context7: (event as any).output.context7Available,
+                  context7: (event as any).output.context7Available
                 },
                 microservices: {
                   available: Object.values(health.services || {}).filter(item => item.length),
@@ -1452,11 +1452,11 @@ export const aiAssistantMachine = createMachine({
                 },
                 messaging: {
                   nats: (event as any).output.natsConnected,
-                  websockets: false,
+                  websockets: false
                 },
                 storage: {
                   minio: health.services?.['minio'] || false,
-                  filesystem: true,
+                  filesystem: true
                 }
               };
             },
@@ -1475,7 +1475,7 @@ export const aiAssistantMachine = createMachine({
             performance: ({ context, event }) => ({
               ...context.performance,
               lastResponseTime: (event as any).output.initialization_time,
-              averageResponseTime: (event as any).output.initialization_time,
+              averageResponseTime: (event as any).output.initialization_time
             })
           })
         },
@@ -1488,7 +1488,7 @@ export const aiAssistantMachine = createMachine({
               type: 'processing',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -1518,7 +1518,7 @@ export const aiAssistantMachine = createMachine({
           return {
             docsAvailable: !!(docs.implementation || docs.analysis),
             migrationSqlPresent: !!docs.migration,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           };
         })
       },
@@ -1541,29 +1541,29 @@ export const aiAssistantMachine = createMachine({
         UPLOAD_DOCUMENT: {
           target: "processingDocument",
           actions: assign({
-            isProcessing: () => true,
+            isProcessing: () => true
           })
         },
         UPLOAD_IMAGE: {
           target: "processingImage",
           actions: assign({
-            isProcessing: () => true,
+            isProcessing: () => true
           })
         },
         ANALYZE_DOCUMENT: {
-          target: "analyzingDocument",
+          target: "analyzingDocument"
         },
         PERFORM_OCR: {
-          target: "performingOCR",
+          target: "performingOCR"
         },
         SEARCH_SEMANTIC: {
-          target: "searchingSemantic",
+          target: "searchingSemantic"
         },
         SEARCH_VECTOR: {
-          target: "searchingVector",
+          target: "searchingVector"
         },
         SEARCH_LEGAL: {
-          target: "searchingLegal",
+          target: "searchingLegal"
         },
         SET_MODEL: {
           actions: assign({
@@ -1592,7 +1592,7 @@ export const aiAssistantMachine = createMachine({
             performance: ({ context }) => ({
               ...context.performance,
               totalQueries: 0,
-              totalTokens: 0,
+              totalTokens: 0
             })
           })
         },
@@ -1626,7 +1626,7 @@ export const aiAssistantMachine = createMachine({
             cache: ({ context }) => ({
               ...context.cache,
               size: 0,
-              hitRate: 0,
+              hitRate: 0
             })
           })
         },
@@ -1640,7 +1640,7 @@ export const aiAssistantMachine = createMachine({
               vectorSearchLatency: 0,
               databaseLatency: 0,
               lastResponseTime: 0,
-              errorRate: 0,
+              errorRate: 0
             })
           })
         }
@@ -1662,7 +1662,7 @@ export const aiAssistantMachine = createMachine({
                 id: `user_${Date.now()}`,
                 type: 'user',
                 content: query,
-                timestamp: new Date(),
+                timestamp: new Date()
               };
 
               let enhancedQuery = query;
@@ -1712,7 +1712,7 @@ export const aiAssistantMachine = createMachine({
                     confidence: 0.85,
                     libraries: ['svelte', 'bits-ui', 'xstate'].filter(item => item.includes)(lib)
                     ),
-                    apiEndpoints: [],
+                    apiEndpoints: []
                   };
 
                   if (context7Analysis.documentation) {
@@ -1760,7 +1760,7 @@ export const aiAssistantMachine = createMachine({
                   type: 'processing',
                   recoverable: true,
                   retryCount: 0,
-                  timestamp: new Date(),
+                  timestamp: new Date()
                 })
               })
             }
@@ -1818,7 +1818,7 @@ export const aiAssistantMachine = createMachine({
             }),
             input: ({ context }) => ({
               query: context.currentQuery,
-              preferredProtocol: context.preferredProtocol,
+              preferredProtocol: context.preferredProtocol
             }),
             onDone: {
               target: "generatingResponse",
@@ -1835,7 +1835,7 @@ export const aiAssistantMachine = createMachine({
                   type: 'processing',
                   recoverable: true,
                   retryCount: 0,
-                  timestamp: new Date(),
+                  timestamp: new Date()
                 })
               })
             }
@@ -1858,7 +1858,7 @@ export const aiAssistantMachine = createMachine({
                   maxTokens,
                   conversationHistory: conversationHistory.slice(-10),
                   caseContext: caseContext || undefined,
-                  protocol_hint: protocol,
+                  protocol_hint: protocol
                 };
 
                 let response;
@@ -1870,7 +1870,7 @@ export const aiAssistantMachine = createMachine({
                     response = await fetch(`${url}/api/rag/query`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(requestPayload),
+                      body: JSON.stringify(requestPayload)
                     });
                     break;
 
@@ -1879,7 +1879,7 @@ export const aiAssistantMachine = createMachine({
                     response = await fetch(`${url}/api/rag/query`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(requestPayload),
+                      body: JSON.stringify(requestPayload)
                     });
                     break;
 
@@ -1888,7 +1888,7 @@ export const aiAssistantMachine = createMachine({
                     response = await fetch(`${url}/api/rag/query`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(requestPayload),
+                      body: JSON.stringify(requestPayload)
                     });
                 }
 
@@ -1914,7 +1914,7 @@ export const aiAssistantMachine = createMachine({
                     protocol,
                     serviceEndpoint: service,
                     semanticScore: responseData.semanticScore || 0,
-                    legalRelevance: responseData.legalRelevance || 0,
+                    legalRelevance: responseData.legalRelevance || 0
                   }
                 };
 
@@ -1930,7 +1930,7 @@ export const aiAssistantMachine = createMachine({
                   metadata: {
                     protocol,
                     service,
-                    caseId: caseContext?.caseId,
+                    caseId: caseContext?.caseId
                   }
                 };
 
@@ -1941,7 +1941,7 @@ export const aiAssistantMachine = createMachine({
                   tokenCount: responseData.tokenCount || 0,
                   aiInteraction,
                   semanticAnalysis: responseData.semanticAnalysis,
-                  legalAnalysis: responseData.legalAnalysis,
+                  legalAnalysis: responseData.legalAnalysis
                 };
               } catch (error: any) {
                 console.error('AI response generation failed:', error);
@@ -1958,7 +1958,7 @@ export const aiAssistantMachine = createMachine({
               caseContext: context.caseContext,
               sessionId: context.sessionId,
               ...(event as any).output
-            ,}),
+            }),
             onDone: {
               target: "#enhancedAiAssistant.idle",
               actions: [;
@@ -1980,7 +1980,7 @@ export const aiAssistantMachine = createMachine({
                     cacheHitRate: context.performance.cacheHitRate,
                     vectorSearchLatency: context.performance.vectorSearchLatency,
                     databaseLatency: context.performance.databaseLatency,
-                    errorRate: context.performance.errorRate,
+                    errorRate: context.performance.errorRate
                   }),
                   isProcessing: () => false,
                   currentQuery: () => "",
@@ -2004,9 +2004,9 @@ export const aiAssistantMachine = createMachine({
                   type: 'ai',
                   recoverable: true,
                   retryCount: 0,
-                  timestamp: new Date(),
+                  timestamp: new Date()
                 }),
-                isProcessing: () => false,
+                isProcessing: () => false
               })
             }
           }
@@ -2017,7 +2017,7 @@ export const aiAssistantMachine = createMachine({
           target: "idle",
           actions: assign({
             isProcessing: () => false,
-            currentQuery: () => "",
+            currentQuery: () => ""
           })
         }
       }
@@ -2036,7 +2036,7 @@ export const aiAssistantMachine = createMachine({
 
           const uploadResponse = await fetch('http://localhost:8093/upload', {
             method: 'POST',
-            body: formData,
+            body: formData
           });
 
           if (!uploadResponse.ok) {
@@ -2058,12 +2058,12 @@ export const aiAssistantMachine = createMachine({
             filename: file.name,
             fileSize: file.size,
             extractedText: uploadResult.extractedText,
-            analysisId: uploadResult.analysisId,
+            analysisId: uploadResult.analysisId
           };
         }),
         input: ({ event }) => ({
           file: (event as any).file,
-          caseId: (event as any).caseId,
+          caseId: (event as any).caseId
         }),
         onDone: {
           target: "idle",
@@ -2077,10 +2077,10 @@ export const aiAssistantMachine = createMachine({
                   filename: (event as any).output.filename,
                   fileSize: (event as any).output.fileSize,
                   extractedText: (event as any).output.extractedText,
-                  isIndexed: false,
+                  isIndexed: false
                 } as DocumentType
               ],
-              isProcessing: () => false,
+              isProcessing: () => false
             }),
             "publishToNATS"
           ]
@@ -2094,9 +2094,9 @@ export const aiAssistantMachine = createMachine({
               type: 'processing',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             }),
-            isProcessing: () => false,
+            isProcessing: () => false
           })
         }
       }
@@ -2115,7 +2115,7 @@ export const aiAssistantMachine = createMachine({
 
           const uploadResponse = await fetch('http://localhost:8093/upload/image', {
             method: 'POST',
-            body: formData,
+            body: formData
           });
 
           if (!uploadResponse.ok) {
@@ -2131,7 +2131,7 @@ export const aiAssistantMachine = createMachine({
           if (uploadResult.imageId) {
             try {
               const ocrResponse = await fetch(`http://localhost:8095/ocr/${uploadResult.imageId}`, {
-                method: 'POST',
+                method: 'POST'
               });
 
               if (ocrResponse.ok) {
@@ -2151,12 +2151,12 @@ export const aiAssistantMachine = createMachine({
             type,
             extractedText,
             ocrConfidence,
-            url: uploadResult.url,
+            url: uploadResult.url
           };
         }),
         input: ({ event }) => ({
           file: (event as any).file,
-          type: (event as any).type,
+          type: (event as any).type
         }),
         onDone: {
           target: "idle",
@@ -2169,10 +2169,10 @@ export const aiAssistantMachine = createMachine({
                   url: (event as any).output.url,
                   type: (event as any).output.type,
                   extractedText: (event as any).output.extractedText,
-                  ocrConfidence: (event as any).output.ocrConfidence,
+                  ocrConfidence: (event as any).output.ocrConfidence
                 }
               ],
-              isProcessing: () => false,
+              isProcessing: () => false
             }),
             "publishToNATS"
           ]
@@ -2186,9 +2186,9 @@ export const aiAssistantMachine = createMachine({
               type: 'processing',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             }),
-            isProcessing: () => false,
+            isProcessing: () => false
           })
         }
       }
@@ -2224,7 +2224,7 @@ export const aiAssistantMachine = createMachine({
                 body: JSON.stringify({
                   documentId,
                   content,
-                  analysisType: 'legal',
+                  analysisType: 'legal'
                 })
               });
 
@@ -2246,7 +2246,7 @@ export const aiAssistantMachine = createMachine({
 
               analysisResult = {
                 semantic: semantic.status === 'fulfilled' ? semantic.value: null,
-                legal: legal.status === 'fulfilled' ? legal.value : null,
+                legal: legal.status === 'fulfilled' ? legal.value : null
               };
               break;
           }
@@ -2255,12 +2255,12 @@ export const aiAssistantMachine = createMachine({
             documentId,
             analysisType,
             result: analysisResult,
-            timestamp: new Date(),
+            timestamp: new Date()
           };
         }),
         input: ({ event }) => ({
           documentId: (event as any).documentId,
-          analysisType: (event as any).analysisType,
+          analysisType: (event as any).analysisType
         }),
         onDone: {
           target: "idle",
@@ -2286,7 +2286,7 @@ export const aiAssistantMachine = createMachine({
               type: 'ai',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -2305,7 +2305,7 @@ export const aiAssistantMachine = createMachine({
             semantic: {
               useEmbeddings: true,
               expandConcepts: true,
-              includeRelated: true,
+              includeRelated: true
             }
           };
 
@@ -2314,7 +2314,7 @@ export const aiAssistantMachine = createMachine({
         }),
         input: ({ event }) => ({
           query: (event as any).query,
-          filters: (event as any).filters,
+          filters: (event as any).filters
         }),
         onDone: {
           target: "idle",
@@ -2335,7 +2335,7 @@ export const aiAssistantMachine = createMachine({
               type: 'ai',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -2353,13 +2353,13 @@ export const aiAssistantMachine = createMachine({
             vector: embedding,
             limit: 20,
             with_payload: true,
-            score_threshold: filters?.confidenceThreshold || 0.7,
+            score_threshold: filters?.confidenceThreshold || 0.7
           };
 
           const response = await fetch('http://localhost:6333/collections/legal_documents/points/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(searchPayload),
+            body: JSON.stringify(searchPayload)
           });
 
           if (!(response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).ok) {
@@ -2371,7 +2371,7 @@ export const aiAssistantMachine = createMachine({
         }),
         input: ({ event }) => ({
           embedding: (event as any).embedding,
-          filters: (event as any).filters,
+          filters: (event as any).filters
         }),
         onDone: {
           target: "idle",
@@ -2394,7 +2394,7 @@ export const aiAssistantMachine = createMachine({
               type: 'database',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -2413,13 +2413,13 @@ export const aiAssistantMachine = createMachine({
             jurisdiction: jurisdiction || 'federal',
             category: category || 'general',
             includePrecedents: true,
-            includeStatutes: true,
+            includeStatutes: true
           };
 
           const response = await fetch('http://localhost:8202/api/search/legal', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(searchPayload),
+            body: JSON.stringify(searchPayload)
           });
 
           if (!(response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).ok) {
@@ -2432,7 +2432,7 @@ export const aiAssistantMachine = createMachine({
         input: ({ event }) => ({
           query: (event as any).query,
           jurisdiction: (event as any).jurisdiction,
-          category: (event as any).category,
+          category: (event as any).category
         }),
         onDone: {
           target: "idle",
@@ -2456,7 +2456,7 @@ export const aiAssistantMachine = createMachine({
               type: 'ai',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -2492,12 +2492,12 @@ export const aiAssistantMachine = createMachine({
             ...documents.map((d: any) => ({
               event: `Document uploaded: ${d.title}`,
               timestamp: new Date(d.createdAt),
-              significance: 3,
+              significance: 3
             })),
             ...evidence.map((e: any) => ({
               event: `Evidence added: ${e.title}`,
               timestamp: new Date(e.createdAt),
-              significance: 4,
+              significance: 4
             })
           ].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime();
 
@@ -2512,7 +2512,7 @@ export const aiAssistantMachine = createMachine({
           };
         }),
         input: ({ context }) => ({
-          caseId: context.currentCaseId,
+          caseId: context.currentCaseId
         }),
         onDone: {
           target: "idle",
@@ -2531,7 +2531,7 @@ export const aiAssistantMachine = createMachine({
               type: 'database',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -2564,12 +2564,12 @@ export const aiAssistantMachine = createMachine({
               postgres: databaseHealth[0].status === 'fulfilled' ? databaseHealth[0].value: false,
               qdrant: databaseHealth[1].status === 'fulfilled' ? databaseHealth[1].value : false,
               neo4j: databaseHealth[2].status === 'fulfilled' ? databaseHealth[2].value : false,
-              redis: databaseHealth[3].status === 'fulfilled' ? databaseHealth[3].value : false,
+              redis: databaseHealth[3].status === 'fulfilled' ? databaseHealth[3].value : false
             },
             ai: {
               ollama: aiHealth[0].status === 'fulfilled' ? aiHealth[0].value : false,
               enhanced_rag: aiHealth[1].status === 'fulfilled' ? aiHealth[1].value : false,
-              context7: aiHealth[2].status === 'fulfilled' ? aiHealth[2].value : false,
+              context7: aiHealth[2].status === 'fulfilled' ? aiHealth[2].value : false
             },
             microservices: {
               available: Object.values(healthStatus.services).filter(item => item.length),
@@ -2580,11 +2580,11 @@ export const aiAssistantMachine = createMachine({
             },
             messaging: {
               nats: natsMessaging.isConnected(),
-              websockets: false // TODO: implement WebSocket health check,
+              websockets: false // TODO: implement WebSocket health check
             },
             storage: {
               minio: false, // TODO: implement MinIO health check
-              filesystem: true,
+              filesystem: true
             }
           };
         }),
@@ -2649,7 +2649,7 @@ export const aiAssistantMachine = createMachine({
           }
         }),
         input: ({ event }) => ({
-          topic: (event as any).topic,
+          topic: (event as any).topic
         }),
         onDone: {
           target: "idle",
@@ -2666,7 +2666,7 @@ export const aiAssistantMachine = createMachine({
               type: 'ai',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -2692,7 +2692,7 @@ export const aiAssistantMachine = createMachine({
                 ...context.serviceHealth,
                 messaging: {
                   ...context.serviceHealth.messaging,
-                  nats: true,
+                  nats: true
                 }
               })
             }),
@@ -2709,7 +2709,7 @@ export const aiAssistantMachine = createMachine({
               type: 'network',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -2732,7 +2732,7 @@ export const aiAssistantMachine = createMachine({
               ...context.serviceHealth,
               messaging: {
                 ...context.serviceHealth.messaging,
-                nats: false,
+                nats: false
               }
             })
           })
@@ -2746,7 +2746,7 @@ export const aiAssistantMachine = createMachine({
               type: 'network',
               recoverable: false,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -2769,7 +2769,7 @@ export const aiAssistantMachine = createMachine({
               model,
               temperature,
               stream: true,
-              session_id: input.sessionId,
+              session_id: input.sessionId
             });
           };
 
@@ -2804,7 +2804,7 @@ export const aiAssistantMachine = createMachine({
           query: context.currentQuery,
           model: context?.model || "unknown" // @ts-ignore - Model property access,
           temperature: context.temperature,
-          sessionId: context.sessionId,
+          sessionId: context.sessionId
         })
       },
       on: {
@@ -2825,7 +2825,7 @@ export const aiAssistantMachine = createMachine({
                   id: `user_${Date.now() - 1000}`,
                   type: 'user' as const,
                   content: context.currentQuery,
-                  timestamp: new Date(Date.now() - 1000),
+                  timestamp: new Date(Date.now() - 1000)
                 },
                 {
                   id: `assistant_${Date.now()}`,
@@ -2839,13 +2839,13 @@ export const aiAssistantMachine = createMachine({
                     tokenCount: context.streamBuffer.length / 4, // rough estimate
                     context7Used: false,
                     protocol: 'websocket',
-                    serviceEndpoint: 'enhanced-rag',
+                    serviceEndpoint: 'enhanced-rag'
                   }
                 }
               ],
               streamBuffer: () => "",
               activeStreaming: () => false,
-              isProcessing: () => false,
+              isProcessing: () => false
             }),
             "publishToNATS"
           ]
@@ -2855,7 +2855,7 @@ export const aiAssistantMachine = createMachine({
           actions: assign({
             activeStreaming: () => false,
             isProcessing: () => false,
-            streamBuffer: () => "",
+            streamBuffer: () => ""
           })
         }
       }
@@ -2873,7 +2873,7 @@ export const aiAssistantMachine = createMachine({
             vectorSearchBenchmark: { averageLatency: 0, throughput: 0 },
             aiInferenceBenchmark: { averageLatency: 0, throughput: 0 },
             databaseBenchmark: { averageLatency: 0, throughput: 0 },
-            overallScore: 0,
+            overallScore: 0
           };
 
           // Vector Search Benchmark
@@ -2887,7 +2887,7 @@ export const aiAssistantMachine = createMachine({
                 body: JSON.stringify({
                   vector: Array.from(testQuery),
                   limit: 10,
-                  with_payload: true,
+                  with_payload: true
                 })
               });
             }
@@ -2906,7 +2906,7 @@ export const aiAssistantMachine = createMachine({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   query: 'Test benchmark query',
-                  maxTokens: 100,
+                  maxTokens: 100
                 })
               });
             }
@@ -2945,7 +2945,7 @@ export const aiAssistantMachine = createMachine({
           return benchmarkResults;
         }),
         input: ({ event }) => ({
-          suiteId: (event as any).suiteId,
+          suiteId: (event as any).suiteId
         }),
         onDone: {
           target: "idle",
@@ -2962,7 +2962,7 @@ export const aiAssistantMachine = createMachine({
               type: 'processing',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -3000,7 +3000,7 @@ export const aiAssistantMachine = createMachine({
             optimizationTime,
             memoryFreed: 50000000, // Estimate 50MB freed
             cacheOptimized: true,
-            gpuOptimized: gpuProcessor.isAvailable(),
+            gpuOptimized: gpuProcessor.isAvailable()
           };
         }),
         onDone: {
@@ -3016,7 +3016,7 @@ export const aiAssistantMachine = createMachine({
                 ...context.garbageCollectionMetrics,
                 collections: context.garbageCollectionMetrics.collections + 1,
                 totalMemoryFreed: context.garbageCollectionMetrics.totalMemoryFreed + (event as any).output.memoryFreed,
-                lastGC: Date.now(),
+                lastGC: Date.now()
               })
             })
           ]
@@ -3030,7 +3030,7 @@ export const aiAssistantMachine = createMachine({
               type: 'processing',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -3089,14 +3089,14 @@ export const aiAssistantMachine = createMachine({
         input: ({ event }) => ({
           documentIds: (event as any).documentIds,
           analysisType: (event as any).analysisType,
-          batchConfig: (event as any).batchConfig,
+          batchConfig: (event as any).batchConfig
         }),
         onDone: {
           target: "idle",
           actions: assign({
             performance: ({ context, event }) => ({
               ...context.performance,
-              totalQueries: context.performance.totalQueries + (event as any).output.totalDocuments,
+              totalQueries: context.performance.totalQueries + (event as any).output.totalDocuments
             })
           })
         },
@@ -3109,7 +3109,7 @@ export const aiAssistantMachine = createMachine({
               type: 'processing',
               recoverable: true,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -3151,11 +3151,11 @@ export const aiAssistantMachine = createMachine({
           return {
             aggressive,
             memoryFreed,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           };
         }),
         input: ({ event }) => ({
-          aggressive: (event as any).aggressive || false,
+          aggressive: (event as any).aggressive || false
         }),
         onDone: {
           target: "idle",
@@ -3164,11 +3164,11 @@ export const aiAssistantMachine = createMachine({
               ...context.garbageCollectionMetrics,
               collections: context.garbageCollectionMetrics.collections + 1,
               totalMemoryFreed: context.garbageCollectionMetrics.totalMemoryFreed + (event as any).output.memoryFreed,
-              lastGC: (event as any).output.timestamp,
+              lastGC: (event as any).output.timestamp
             }),
             resourceMonitoring: ({ context }) => ({
               ...context.resourceMonitoring,
-              memoryPressure: 'low' // Assume cleanup helps,
+              memoryPressure: 'low' // Assume cleanup helps
             })
           })
         },
@@ -3181,7 +3181,7 @@ export const aiAssistantMachine = createMachine({
               type: 'processing',
               recoverable: false,
               retryCount: 0,
-              timestamp: new Date(),
+              timestamp: new Date()
             })
           })
         }
@@ -3195,7 +3195,7 @@ export const aiAssistantMachine = createMachine({
           target: "idle",
           actions: assign({
             error: () => null,
-            isProcessing: () => false,
+            isProcessing: () => false
           })
         }
       },
@@ -3205,7 +3205,7 @@ export const aiAssistantMachine = createMachine({
           actions: assign({
             error: ({ context }) => context.error ? {
               ...context.error,
-              retryCount: context.error.retryCount + 1,
+              retryCount: context.error.retryCount + 1
             } : null
           })
         },
@@ -3213,7 +3213,7 @@ export const aiAssistantMachine = createMachine({
           target: "idle",
           actions: assign({
             error: () => null,
-            isProcessing: () => false,
+            isProcessing: () => false
           })
         },
         CLEAR_CONVERSATION: {
@@ -3222,7 +3222,7 @@ export const aiAssistantMachine = createMachine({
             error: () => null,
             conversationHistory: () => [],
             isProcessing: () => false,
-            streamBuffer: () => "",
+            streamBuffer: () => ""
           })
         }
       }
@@ -3233,7 +3233,7 @@ export const aiAssistantMachine = createMachine({
 // Enhanced action implementations;
 export const aiAssistantActions = {
   clearError: assign({
-    error: () => null,
+    error: () => null
   }),
 
   logError: ({ context }: { context: AIAssistantContext }) => {
@@ -3245,7 +3245,7 @@ export const aiAssistantActions = {
         timestamp: context.error.timestamp,
         context: context.error.context,
         recoverable: context.error.recoverable,
-        retryCount: context.error.retryCount,
+        retryCount: context.error.retryCount
       });
 
       // Send error to monitoring service;
@@ -3253,7 +3253,7 @@ export const aiAssistantActions = {
         natsMessaging.publishSystemHealth({
           type: 'error',
           error: context.error,
-          sessionId: context.sessionId,
+          sessionId: context.sessionId
         }).catch(err => console.warn('Failed to publish error to NATS:', err);
       }
     }
@@ -3291,7 +3291,7 @@ export const aiAssistantActions = {
           sessionId: context.sessionId,
           response: context.response,
           caseId: context.currentCaseId,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }
       ).catch(err => console.warn('Failed to publish to NATS:', err);
     }
@@ -3310,7 +3310,7 @@ function getLocalServiceUrl(serviceName: string, protocol: 'http' | 'grpc' | 'qu
     http: 'http',
     grpc: 'grpc',
     quic: 'quic',
-    websocket: 'ws',
+    websocket: 'ws'
   };
 
   return `${protocolMap[protocol]}://localhost:${service.port}`;

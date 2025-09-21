@@ -16,7 +16,7 @@ export interface ObservabilityConfig {
   metricsEndpoint: string;
   batchSize: number;
   flushInterval: number;
-  debugMode: boolean;,
+  debugMode: boolean;
 }
 
 export interface RouteMetrics {
@@ -44,7 +44,7 @@ class ObservabilityClient {
     metricsEndpoint: '/api/v1/metrics/client',
     batchSize: 10,
     flushInterval: 30000, // 30 seconds
-    debugMode: false,
+    debugMode: false
   };
 
   private metricsBuffer: RouteMetrics[] = [];
@@ -141,7 +141,7 @@ class ObservabilityClient {
    */;
   trackAPICall(endpoint: string, method: string = 'GET'): {
     start: () => void;
-    end: (response?: Response) => void;,
+    end: (response?: Response) => void;
   } {
     let startTime: number;
     let requestId: string;
@@ -171,7 +171,7 @@ class ObservabilityClient {
             clientDuration: `${Math.round(duration * 100) / 100}ms`,
             serverTiming,
             requestId: (serverRequestId || requestId).slice(0, 8),
-            status: response?.status,
+            status: response?.status
           });
         }
       }
@@ -202,12 +202,12 @@ class ObservabilityClient {
       memory: (performance as any).memory ? {
         usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
         totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-        jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
+        jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit
       } : undefined,
       connection: (navigator as any).connection ? {
         effectiveType: (navigator as any).connection.effectiveType,
         downlink: (navigator as any).connection.downlink,
-        rtt: (navigator as any).connection.rtt,
+        rtt: (navigator as any).connection.rtt
       } : undefined
     };
 
@@ -227,13 +227,13 @@ class ObservabilityClient {
       const response = await fetch(this.config.metricsEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           metrics: metricsToSend,
           timestamp: Date.now(),
           userAgent: navigator.userAgent,
-          url: window.location.href,
+          url: window.location.href
         })
       });
 
@@ -269,7 +269,7 @@ class ObservabilityClient {
       lcp: timingMetrics.getMetrics().largestContentfulPaint,
       fid: timingMetrics.getMetrics().firstInputDelay,
       cls: timingMetrics.getMetrics().cumulativeLayoutShift,
-      fcp: timingMetrics.getMetrics().firstContentfulPaint,
+      fcp: timingMetrics.getMetrics().firstContentfulPaint
     } : undefined;
 
     const routeMetrics: RouteMetrics = {
@@ -279,7 +279,7 @@ class ObservabilityClient {
       renderTime,
       serverTiming: Record<string, any>, // Will be populated by Server-Timing headers during SSR
       webVitals,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     // Add to buffer
@@ -328,7 +328,7 @@ if (browser) {
     debugMode,
     enableMetrics: true,
     enablePerformanceTracking: true,
-    enableWebVitals: true,
+    enableWebVitals: true
   });
 }
 

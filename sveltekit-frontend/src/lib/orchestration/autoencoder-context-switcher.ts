@@ -23,7 +23,7 @@ interface ContextVector {
     complexity: number;
     urgency: number;
     memoryPressure: number;
-    gpuUtilization: number;,
+    gpuUtilization: number;
   };
 }
 
@@ -35,7 +35,7 @@ interface SwitchingDecision {
   expectedBenefit: number;
   shouldSwitch: boolean;
   gcRequired: boolean; // Garbage collection needed
-  contextCompressionRatio: number;,
+  contextCompressionRatio: number;
 }
 
 // GPU Memory State;
@@ -46,7 +46,7 @@ interface GPUMemoryState {
   modelMemoryUsage: Map<string, number>;
   fragmentationLevel: number;
   gcThreshold: number;
-  lastGCTime: number;,
+  lastGCTime: number;
 }
 
 // QUIC Connection State;
@@ -56,7 +56,7 @@ interface QUICConnectionState {
   bandwidth: number;
   packetLoss: number;
   isActive: boolean;
-  lastActivity: number;,
+  lastActivity: number;
 }
 
 // Dynamic Model Usage Pattern;
@@ -68,7 +68,7 @@ interface ModelUsagePattern {
   successRate: number;
   userPreference: number;
   contextSimilarity: number[];
-  lastAccessed: number;,
+  lastAccessed: number;
 }
 
 export class AutoencoderContextSwitcher {
@@ -137,14 +137,14 @@ export class AutoencoderContextSwitcher {
     // 6. Record switching decision for learning;
     this.switchingHistory.push({
       ...switchingDecision,
-      switchingCost: this.switchingLatency,
+      switchingCost: this.switchingLatency
     });
     
     return {
       modelId: targetModelId,
       switchingLatency: this.switchingLatency,
       compressionRatio: switchingDecision.contextCompressionRatio,
-      memoryState: await this.gpuMemoryManager.getMemoryState(),
+      memoryState: await this.gpuMemoryManager.getMemoryState()
     };
   }
 
@@ -175,7 +175,7 @@ export class AutoencoderContextSwitcher {
         complexity: this.calculateComplexity(query),
         urgency: context.urgency || 0.5,
         memoryPressure: 1.0 - (memoryState.freeVRAM / memoryState.totalVRAM),
-        gpuUtilization: context.gpuUtilization || 0.5,
+        gpuUtilization: context.gpuUtilization || 0.5
       }
     };
     
@@ -228,7 +228,7 @@ export class AutoencoderContextSwitcher {
       expectedBenefit: improvement,
       shouldSwitch,
       gcRequired,
-      contextCompressionRatio: this.contextAutoencoder.getLastCompressionRatio(),
+      contextCompressionRatio: this.contextAutoencoder.getLastCompressionRatio()
     };
   }
 
@@ -283,7 +283,7 @@ export class AutoencoderContextSwitcher {
       modelId: decision.targetModelId,
       priority: 'high',
       compressionEnabled: true,
-      streamingEnabled: true,
+      streamingEnabled: true
     };
     
     const loadResponse = await this.quicServer.sendLoadCommand(loadCommand);
@@ -316,7 +316,7 @@ export class AutoencoderContextSwitcher {
       successRate: 1.0,
       userPreference: 0.5,
       contextSimilarity: new Array(this.contextDimensions).fill(0),
-      lastAccessed: 0,
+      lastAccessed: 0
     };
     
     // Update usage statistics
@@ -381,7 +381,7 @@ export class AutoencoderContextSwitcher {
     trainingData: {
       domain: string;
       examples: Array<any>;
-      patterns: Float32Array;,
+      patterns: Float32Array;
     }
   ): Promise<void> {
     // This would interface with the QLoRA training system
@@ -390,7 +390,7 @@ export class AutoencoderContextSwitcher {
       rank: this.calculateOptimalRank(trainingData.examples.length),
       alpha: this.calculateOptimalAlpha(trainingData.patterns),
       targetModules: this.selectTargetModules(trainingData.domain),
-      trainingData: trainingData.examples,
+      trainingData: trainingData.examples
     };
     
     // Simulate QLoRA training (in production, would use actual training)
@@ -420,7 +420,7 @@ export class AutoencoderContextSwitcher {
       compression: 'lz4', // Fast compression for quick loading;
       metadata: {
         usagePattern: this.modelUsagePatterns.get(modelName),
-        contextEmbedding: this.calculateDomainEmbedding(domain),
+        contextEmbedding: this.calculateDomainEmbedding(domain)
       }
     };
     
@@ -589,7 +589,7 @@ export class AutoencoderContextSwitcher {
     return {
       coherence: 0.85,
       uniqueness: 0.72,
-      domain: 'specialized_contract_analysis',
+      domain: 'specialized_contract_analysis'
     };
   }
 
@@ -597,7 +597,7 @@ export class AutoencoderContextSwitcher {
     return {
       domain: clusters.domain,
       examples: [], // Would extract from usage history
-      patterns: new Float32Array(256),
+      patterns: new Float32Array(256)
     };
   }
 
@@ -690,7 +690,7 @@ class GPUMemoryManager {
       ]),
       fragmentationLevel: 0.15,
       gcThreshold: this.gcThresholdMB,
-      lastGCTime: Date.now() - 300000,
+      lastGCTime: Date.now() - 300000
     };
   }
   

@@ -33,7 +33,7 @@ export interface ComprehensiveTestReport {
   duration: number;
   results: IntegrationTestResult[];
   systemHealth: Record<string, any>;
-  recommendations: string[];,
+  recommendations: string[];
 }
 
 /*
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       requestId,
       startTime,
       clientIP: getClientAddress(),
-      userAgent: request.headers.get('user-agent') || undefined,
+      userAgent: request.headers.get('user-agent') || undefined
     };
 
     console.log(`🧪 Starting integration test suite: ${testSuite}`);
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         requestId,
         timestamp: new Date().toISOString(),
         platform: 'Windows Native',
-        deployment: 'No Docker',
+        deployment: 'No Docker'
       }
     } satisfies APIResponse);
 
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       error: dev ? String(err) : 'Internal server error',
       code: 'TEST_EXECUTION_ERROR',
       requestId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 };
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
             runTests: 'POST /api/v1/test',
             health: 'GET /api/v1/test?action=health',
             suites: 'GET /api/v1/test?action=suites',
-            history: 'GET /api/v1/test?action=history',
+            history: 'GET /api/v1/test?action=history'
           },
           testSuites: [
             'full - Complete system integration test',
@@ -120,14 +120,14 @@ export const GET: RequestHandler = async ({ url }) => {
             'Database Connection Testing',
             'Windows Native Process Validation'
           ],
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
     }
   } catch (err: any) {
     console.error('Test API Error:', err);
     return error(500, ensureError({
       message: 'Test service unavailable',
-      error: dev ? String(err) : 'Internal error',
+      error: dev ? String(err) : 'Internal error'
     });
   }
 };
@@ -227,7 +227,7 @@ function getTestsForSuite(testSuite: string): string[] {
       ];
     case 'full':
     default:
-      return allTests;,
+      return allTests;
   }
 }
 
@@ -294,7 +294,7 @@ async function runSingleTest(
           testName,
           status: 'skipped',
           duration: Date.now() - testStartTime,
-          error: 'Test not implemented',
+          error: 'Test not implemented'
         };
     }
 
@@ -310,7 +310,7 @@ async function runSingleTest(
       testName,
       status: 'failed',
       duration: Date.now() - testStartTime,
-      error: String(error),
+      error: String(error)
     };
   }
 }
@@ -326,7 +326,7 @@ async function testSystemHealth(): Promise<any> {
     details: {
       healthyServices,
       totalServices,
-      healthScore: Math.round((healthyServices / totalServices) * 100),
+      healthScore: Math.round((healthyServices / totalServices) * 100)
     }
   };
 }
@@ -341,13 +341,13 @@ async function testAPIOrchestrator(): Promise<any> {
       details: {
         totalServices: services.length,
         activeServices: services.filter(item => item.length),
-        metricsAvailable: Object.keys(metrics).length > 0,
+        metricsAvailable: Object.keys(metrics).length > 0
       }
     };
   } catch (error: any) {
     return {
       success: false,
-      error: String(error),
+      error: String(error)
     };
   }
 }
@@ -365,13 +365,13 @@ async function testCoreServices(): Promise<any> {
         service,
         healthy: health.ok,
         status: health.status,
-        config: !!config,
+        config: !!config
       });
     } catch (error: any) {
       results.push({
         service,
         healthy: false,
-        error: String(error),
+        error: String(error)
       });
     }
   }
@@ -383,7 +383,7 @@ async function testCoreServices(): Promise<any> {
     details: {
       coreServices: results,
       healthyCount,
-      totalCount: coreServices.length,
+      totalCount: coreServices.length
     }
   };
 }
@@ -404,7 +404,7 @@ async function testRAGAPI(): Promise<any> {
   } catch (error: any) {
     return {
       success: false,
-      error: String(error),
+      error: String(error)
     };
   }
 }
@@ -425,7 +425,7 @@ async function testUploadAPI(): Promise<any> {
   } catch (error: any) {
     return {
       success: false,
-      error: String(error),
+      error: String(error)
     };
   }
 }
@@ -440,13 +440,13 @@ async function testDatabaseConnections(): Promise<any> {
       results.push({
         database: db,
         configured: !!config,
-        status: config?.status || 'unknown',
+        status: config?.status || 'unknown'
       });
     } catch (error: any) {
       results.push({
         database: db,
         configured: false,
-        error: String(error),
+        error: String(error)
       });
     }
   }
@@ -454,7 +454,7 @@ async function testDatabaseConnections(): Promise<any> {
   return {
     success: results.every(r => r.configured),
     details: {
-      databases: results,
+      databases: results
     }
   };
 }
@@ -469,13 +469,13 @@ async function testEmbeddingService(): Promise<any> {
       details: {
         healthy: isHealthy,
         availableModels: models,
-        modelCount: models.length,
+        modelCount: models.length
       }
     };
   } catch (error: any) {
     return {
       success: false,
-      error: String(error),
+      error: String(error)
     };
   }
 }
@@ -576,7 +576,7 @@ async function handleTestSystemHealth(): Promise<Response> {
     service: 'Integration Test System',
     status: 'operational',
     systemHealth: health,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -588,13 +588,13 @@ async function handleTestSuites(): Promise<Response> {
       { name: 'api', description: 'API endpoints and routing', testCount: 5 },)
       { name: 'services', description: 'Go microservices health', testCount: 4 }
     ],
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
 async function handleTestHistory(): Promise<Response> {
   return json({
     message: 'Test history not implemented yet',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }

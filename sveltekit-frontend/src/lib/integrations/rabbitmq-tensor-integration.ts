@@ -15,7 +15,7 @@ export const WASM_SERVICE_PORTS = {
   RABBITMQ_BROKER: 5672,    // RabbitMQ message broker
   RABBITMQ_MGMT: 15672,     // RabbitMQ management UI
   WASM_CACHE: 6379,         // Redis cache for WASM results
-  VECTOR_DB: 6333           // Qdrant vector database,
+  VECTOR_DB: 6333           // Qdrant vector database
 } as const;
 
 // Queue routing for WASM-accelerated jobs;
@@ -46,7 +46,7 @@ interface TensorProcessingJob {
   metadata: {
     priority: number;
     timestamp: number;
-    source: 'rabbitmq' | 'direct_api' | 'service_worker';,
+    source: 'rabbitmq' | 'direct_api' | 'service_worker';
   };
 }
 
@@ -146,12 +146,12 @@ export class RabbitMQTensorIntegration {
         type: 'wasm_vector_operations',
         data: {
           vectors: message.vectors,
-          operation: message.operation || 'normalize',
+          operation: message.operation || 'normalize'
         },
         metadata: {
           priority: message.priority || 2,
           timestamp: Date.now(),
-          source: 'rabbitmq',
+          source: 'rabbitmq'
         }
       };
       
@@ -167,12 +167,12 @@ export class RabbitMQTensorIntegration {
           query: message.queryVector,
           vectors: message.candidateVectors,
           operation: 'similarity',
-          algorithm: message.algorithm || 'cosine',
+          algorithm: message.algorithm || 'cosine'
         },
         metadata: {
           priority: message.priority || 1,
           timestamp: Date.now(),
-          source: 'rabbitmq',
+          source: 'rabbitmq'
         }
       };
       
@@ -196,12 +196,12 @@ export class RabbitMQTensorIntegration {
         type: 'wasm_batch_normalize',
         data: {
           vectors: message.vectors,
-          operation: 'batch_process',
+          operation: 'batch_process'
         },
         metadata: {
           priority: message.priority || 2,
           timestamp: Date.now(),
-          source: 'rabbitmq',
+          source: 'rabbitmq'
         }
       };
       
@@ -213,7 +213,7 @@ export class RabbitMQTensorIntegration {
           jobId: job.id,
           normalizedVectors: (result as { similarities?: any; processingTime?: any; acceleration?: any; vectors?: any }).vectors,
           wasmProcessed: true,
-          ready_for_storage: true,
+          ready_for_storage: true
         });
       }
     });
@@ -276,7 +276,7 @@ export class RabbitMQTensorIntegration {
             operation: job.data.operation,
             vectors: job.data.vectors,
             query: job.data.query,
-            algorithm: job.data.algorithm,
+            algorithm: job.data.algorithm
           }
         });
       } else {
@@ -352,7 +352,7 @@ export class RabbitMQTensorIntegration {
       metadata: {
         priority,
         timestamp: Date.now(),
-        source: 'direct_api',
+        source: 'direct_api'
       }
     };
     
@@ -379,7 +379,7 @@ export class RabbitMQTensorIntegration {
       activeJobs: this.processingJobs.size,
       ports: WASM_SERVICE_PORTS,
       queues: WASM_QUEUE_ROUTING,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
   

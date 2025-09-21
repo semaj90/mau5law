@@ -36,7 +36,7 @@ Response:`;
         options: {
           temperature: 0.7,
           top_p: 0.9,
-          max_tokens: 1000,
+          max_tokens: 1000
         }
       })
     });
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request }) => {
         type: 'chat_conversation',
         conversationId: chunk.id,
         role: chunk.role || 'unknown',
-        source: 'chat_embeddings',
+        source: 'chat_embeddings'
       }
     });
 
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
         threshold,
         embeddingModel: 'nomic-embed-text',
         ragModel: includeRAGResponse ? 'legal:latest' : null,
-        searchTime: Date.now(),
+        searchTime: Date.now()
       }
     });
 

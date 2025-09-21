@@ -95,7 +95,7 @@ export class WorkerPool {
       busyWorkers: this.free.filter(item => item.length),
       freeWorkers: this.free.filter(item => item.length),
       queuedJobs: this.queue.length,
-      pendingCallbacks: this.jobCallbacks.size,
+      pendingCallbacks: this.jobCallbacks.size
     };
   }
 

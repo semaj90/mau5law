@@ -20,7 +20,7 @@ export const DocumentUploadSchema = z.object({
     generateSummary: z.boolean().default(true),
     extractEntities: z.boolean().default(true),
     riskAssessment: z.boolean().default(true),
-    generateRecommendations: z.boolean().default(false),
+    generateRecommendations: z.boolean().default(false)
   }).default({})
 });
 
@@ -34,7 +34,7 @@ export const CaseCreationSchema = z.object({
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   tags: z.array(z.string()).default([]),
   estimatedDuration: z.number().min(1).max(365).optional(), // days
-  budget: z.number().min(0).optional(),
+  budget: z.number().min(0).optional()
 });
 
 export const SearchQuerySchema = z.object({
@@ -44,14 +44,14 @@ export const SearchQuerySchema = z.object({
     jurisdictions: z.array(z.string()).default([]),
     dateRange: z.object({
       from: z.date().optional(),
-      to: z.date().optional(),
+      to: z.date().optional()
     }).optional(),
     tags: z.array(z.string()).default([]),
     similarityThreshold: z.number().min(0).max(1).default(0.7),
-    maxResults: z.number().min(1).max(100).default(20),
+    maxResults: z.number().min(1).max(100).default(20)
   }).default({}),
   useAI: z.boolean().default(true),
-  cacheResults: z.boolean().default(true),
+  cacheResults: z.boolean().default(true)
 });
 
 export const AIAnalysisSchema = z.object({
@@ -62,7 +62,7 @@ export const AIAnalysisSchema = z.object({
     temperature: z.number().min(0).max(2).default(0.7),
     maxTokens: z.number().min(100).max(8000).default(2000),
     includeConfidence: z.boolean().default(true),
-    generateCitations: z.boolean().default(true),
+    generateCitations: z.boolean().default(true)
   }).default({})
 });
 
@@ -80,7 +80,7 @@ export interface DocumentUploadContext {
   aiResults: any | null;
   error: string | null;
   retryCount: number;
-  maxRetries: number;,
+  maxRetries: number;
 }
 
 export interface CaseCreationContext {
@@ -90,7 +90,7 @@ export interface CaseCreationContext {
   relatedDocuments: any[];
   error: string | null;
   isAutoSaving: boolean;
-  lastSaved: Date | null;,
+  lastSaved: Date | null;
 }
 
 export interface SearchContext {
@@ -103,14 +103,14 @@ export interface SearchContext {
   pagination: {
     page: number;
     pageSize: number;
-    total: number;,
+    total: number;
   };
   analytics: {
     searchTime: number;
     resultCount: number;
-    cacheHit: boolean;,
+    cacheHit: boolean;
   } | null;
-  error: string | null;,
+  error: string | null;
 }
 
 export interface AIAnalysisContext {
@@ -123,7 +123,7 @@ export interface AIAnalysisContext {
   model: string;
   error: string | null;
   isStreaming: boolean;
-  streamedContent: string;,
+  streamedContent: string;
 }
 
 // ============================================================================
@@ -144,7 +144,7 @@ export const documentUploadMachine = createMachine();
       aiResults: null,
       error: null,
       retryCount: 0,
-      maxRetries: 3,
+      maxRetries: 3
     } as DocumentUploadContext,
     states: {
       idle: {
@@ -152,10 +152,10 @@ export const documentUploadMachine = createMachine();
           VALIDATE_FORM: {
             target: 'validating',
             actions: assign({
-              formData: ({ event }) => event.data,
-            }),
-          },
-        },
+              formData: ({ event }) => event.data
+            })
+          }
+        }
       },
       validating: {
         invoke: {
@@ -165,27 +165,27 @@ export const documentUploadMachine = createMachine();
           onDone: {
             target: 'valid',
             actions: assign({
-              validationErrors: () => ({}),
-            }),
+              validationErrors: () => ({})
+            })
           },
           onError: {
             target: 'invalid',
             actions: assign({
-              validationErrors: ({ event }) => (event as any)?.error ?? {},
-            }),
-          },
-        },
+              validationErrors: ({ event }) => (event as any)?.error ?? {}
+            })
+          }
+        }
       },
       invalid: {
         on: {
           VALIDATE_FORM: {
             target: 'validating',
             actions: assign({
-              formData: ({ event }) => event.data,
-            }),
+              formData: ({ event }) => event.data
+            })
           },
-          RESET: 'idle',
-        },
+          RESET: 'idle'
+        }
       },
       valid: {
         on: {
@@ -193,10 +193,10 @@ export const documentUploadMachine = createMachine();
           VALIDATE_FORM: {
             target: 'validating',
             actions: assign({
-              formData: ({ event }) => event.data,
-            }),
-          },
-        },
+              formData: ({ event }) => event.data
+            })
+          }
+        }
       },
       uploading: {
         invoke: {
@@ -207,23 +207,23 @@ export const documentUploadMachine = createMachine();
             target: 'uploaded',
             actions: assign({
               uploadedFile: ({ event }) => (event.output as any) ?? null,
-              uploadProgress: () => 100,
-            }),
+              uploadProgress: () => 100
+            })
           },
           onError: {
             target: 'uploadError',
             actions: assign({
-              error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error),
-            }),
-          },
+              error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error)
+            })
+          }
         },
         on: {
           UPLOAD_PROGRESS: {
             actions: assign({
-              uploadProgress: ({ event }) => event.progress,
-            }),
-          },
-        },
+              uploadProgress: ({ event }) => event.progress
+            })
+          }
+        }
       },
       uploaded: {
         always: [;
@@ -232,10 +232,10 @@ export const documentUploadMachine = createMachine();
             guard: ({ context }) =>
               context.formData?.aiProcessing.generateSummary ||
               context.formData?.aiProcessing.extractEntities ||
-              context.formData?.aiProcessing.riskAssessment,
+              context.formData?.aiProcessing.riskAssessment
           },
-          { target: 'completed' },
-        ],
+          { target: 'completed' }
+        ]
       },
       processing: {
         invoke: {
@@ -243,29 +243,29 @@ export const documentUploadMachine = createMachine();
           src: 'processDocument',
           input: ({ context }) => ({
             documentId: context.uploadedFile?.id,
-            options: context.formData?.aiProcessing,
+            options: context.formData?.aiProcessing
           }),
           onDone: {
             target: 'completed',
             actions: assign({
               aiResults: ({ event }) => (event.output as any) ?? null,
-              processingProgress: () => 100,
-            }),
+              processingProgress: () => 100
+            })
           },
           onError: {
             target: 'processingError',
             actions: assign({
-              error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error),
-            }),
-          },
+              error: ({ event }) => (event as any)?.error?.message ?? String((event as any)?.error)
+            })
+          }
         },
         on: {
           PROCESSING_PROGRESS: {
             actions: assign({
-              processingProgress: ({ event }) => event.progress,
-            }),
-          },
-        },
+              processingProgress: ({ event }) => event.progress
+            })
+          }
+        }
       },
       uploadError: {
         on: {
@@ -275,13 +275,13 @@ export const documentUploadMachine = createMachine();
               guard: ({ context }) => context.retryCount < context.maxRetries,
               actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
-                error: () => null,
-              }),
+                error: () => null
+              })
             },
-            { target: 'failed' },
+            { target: 'failed' }
           ],
-          RESET: 'idle',
-        },
+          RESET: 'idle'
+        }
       },
       processingError: {
         on: {
@@ -291,27 +291,27 @@ export const documentUploadMachine = createMachine();
               guard: ({ context }) => context.retryCount < context.maxRetries,
               actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
-                error: () => null,
-              }),
+                error: () => null
+              })
             },
-            { target: 'failed' },
+            { target: 'failed' }
           ],
           SKIP_PROCESSING: 'completed',
-          RESET: 'idle',
-        },
+          RESET: 'idle'
+        }
       },
       completed: {
         on: {
           RESET: 'idle',
-          NEW_UPLOAD: 'idle',
-        },
+          NEW_UPLOAD: 'idle'
+        }
       },
       failed: {
         on: {
-          RESET: 'idle',
-        },
-      },
-    },
+          RESET: 'idle'
+        }
+      }
+    }
   },
   {
     actors: {
@@ -341,7 +341,7 @@ export const documentUploadMachine = createMachine();
 
         const response = await fetch('/api/documents/upload', {
           method: 'POST',
-          body: formData,
+          body: formData
         });
 
         if (!response.ok) {
@@ -354,7 +354,7 @@ export const documentUploadMachine = createMachine();
         const response = await fetch('/api/ai/process-document', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input),
+          body: JSON.stringify(input)
         });
 
         if (!response.ok) {
@@ -362,8 +362,8 @@ export const documentUploadMachine = createMachine();
         }
 
         return await response.json();
-      }),
-    },
+      })
+    }
   }
 );
 
@@ -382,14 +382,14 @@ export const caseCreationMachine = createMachine();
       relatedDocuments: [],
       error: null,
       isAutoSaving: false,
-      lastSaved: null,
+      lastSaved: null
     } as CaseCreationContext,
     states: {
       idle: {
         on: {
           START_CREATION: 'creating',
-          LOAD_DRAFT: 'loadingDraft',
-        },
+          LOAD_DRAFT: 'loadingDraft'
+        }
       },
       loadingDraft: {
         invoke: {
@@ -398,36 +398,36 @@ export const caseCreationMachine = createMachine();
           onDone: {
             target: 'editing',
             actions: assign({
-              formData: ({ event }) => event.output,
-            }),
+              formData: ({ event }) => event.output
+            })
           },
-          onError: 'creating',
-        },
+          onError: 'creating'
+        }
       },
       creating: {
         on: {
           UPDATE_FORM: {
             target: 'editing',
             actions: assign({
-              formData: ({ event }) => event.data,
-            }),
-          },
-        },
+              formData: ({ event }) => event.data
+            })
+          }
+        }
       },
       editing: {
         on: {
           UPDATE_FORM: {
             actions: assign({
-              formData: ({ event }) => event.data,
-            }),
+              formData: ({ event }) => event.data
+            })
           },
           AUTO_SAVE: 'autoSaving',
           VALIDATE: 'validating',
-          SUBMIT: 'validating',
+          SUBMIT: 'validating'
         },
         after: {
           5000: 'autoSaving', // Auto-save every 5 seconds
-        },
+        }
       },
       autoSaving: {
         invoke: {
@@ -438,19 +438,19 @@ export const caseCreationMachine = createMachine();
             target: 'editing',
             actions: assign({
               lastSaved: () => new Date(),
-              isAutoSaving: () => false,
-            }),
+              isAutoSaving: () => false
+            })
           },
           onError: {
             target: 'editing',
             actions: assign({
-              isAutoSaving: () => false,
-            }),
-          },
+              isAutoSaving: () => false
+            })
+          }
         },
         entry: assign({
-          isAutoSaving: () => true,
-        }),
+          isAutoSaving: () => true
+        })
       },
       validating: {
         invoke: {
@@ -474,10 +474,10 @@ export const caseCreationMachine = createMachine();
                   );
                 }
                 return {};
-              },
-            }),
-          },
-        },
+              }
+            })
+          }
+        }
       },
       submitting: {
         invoke: {
@@ -487,8 +487,8 @@ export const caseCreationMachine = createMachine();
           onDone: {
             target: 'completed',
             actions: assign({
-              createdCase: ({ event }) => event.output,
-            }),
+              createdCase: ({ event }) => event.output
+            })
           },
           onError: {
             target: 'editing',
@@ -499,18 +499,18 @@ export const caseCreationMachine = createMachine();
                   return String(error.message);
                 }
                 return 'An unknown error occurred';
-              },
-            }),
-          },
-        },
+              }
+            })
+          }
+        }
       },
       completed: {
         on: {
           NEW_CASE: 'idle',
-          EDIT_CASE: 'editing',
-        },
-      },
-    },
+          EDIT_CASE: 'editing'
+        }
+      }
+    }
   },
   {
     actors: {
@@ -539,7 +539,7 @@ export const caseCreationMachine = createMachine();
         const response = await fetch('/api/cases', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input),
+          body: JSON.stringify(input)
         });
 
         if (!response.ok) {
@@ -547,8 +547,8 @@ export const caseCreationMachine = createMachine();
         }
 
         return await response.json();
-      }),
-    },
+      })
+    }
   }
 );
 
@@ -570,17 +570,17 @@ export const searchMachine = createMachine();
       pagination: {
         page: 1,
         pageSize: 20,
-        total: 0,
+        total: 0
       },
       analytics: null,
-      error: null,
+      error: null
     } as SearchContext,
     states: {
       idle: {
         on: {
           SEARCH: 'validating',
-          LOAD_HISTORY: 'loadingHistory',
-        },
+          LOAD_HISTORY: 'loadingHistory'
+        }
       },
       loadingHistory: {
         invoke: {
@@ -589,11 +589,11 @@ export const searchMachine = createMachine();
           onDone: {
             target: 'idle',
             actions: assign({
-              searchHistory: ({ event }) => event.output,
-            }),
+              searchHistory: ({ event }) => event.output
+            })
           },
-          onError: 'idle',
-        },
+          onError: 'idle'
+        }
       },
       validating: {
         invoke: {
@@ -617,10 +617,10 @@ export const searchMachine = createMachine();
                   );
                 }
                 return {};
-              },
-            }),
-          },
-        },
+              }
+            })
+          }
+        }
       },
       searching: {
         invoke: {
@@ -636,9 +636,9 @@ export const searchMachine = createMachine();
               searchHistory: ({ context, event }) =>
                 [
                   event.output.query,
-                  ...context.searchHistory.filter((q: any) => q !== event.output.query),
-                ].slice(0, 10),
-            }),
+                  ...context.searchHistory.filter((q: any) => q !== event.output.query)
+                ].slice(0, 10)
+            })
           },
           onError: {
             target: 'error',
@@ -649,30 +649,30 @@ export const searchMachine = createMachine();
                   return (error as Error).message;
                 }
                 return String(error);
-              },
-            }),
-          },
+              }
+            })
+          }
         },
         entry: assign({
           isSearching: () => true,
-          results: () => [],
+          results: () => []
         }),
         exit: assign({
-          isSearching: () => false,
-        }),
+          isSearching: () => false
+        })
       },
       results: {
         on: {
           SEARCH: {
             target: 'validating',
             actions: assign({
-              query: ({ event }) => event.data,
-            }),
+              query: ({ event }) => event.data
+            })
           },
           REFINE_SEARCH: 'validating',
           CLEAR_RESULTS: 'idle',
-          LOAD_MORE: 'loadingMore',
-        },
+          LOAD_MORE: 'loadingMore'
+        }
       },
       loadingMore: {
         invoke: {
@@ -680,25 +680,25 @@ export const searchMachine = createMachine();
           src: 'loadMoreResults',
           input: ({ context }) => ({
             query: context.query,
-            page: context.pagination.page + 1,
+            page: context.pagination.page + 1
           }),
           onDone: {
             target: 'results',
             actions: assign({
               results: ({ context, event }) => [...context.results, ...event.output.results],
-              pagination: ({ event }) => event.output.pagination,
-            }),
+              pagination: ({ event }) => event.output.pagination
+            })
           },
-          onError: 'results',
-        },
+          onError: 'results'
+        }
       },
       error: {
         on: {
           RETRY: 'searching',
-          NEW_SEARCH: 'idle',
-        },
-      },
-    },
+          NEW_SEARCH: 'idle'
+        }
+      }
+    }
   },
   {
     actors: {
@@ -722,7 +722,7 @@ export const searchMachine = createMachine();
         const response = await fetch('/api/search/vector', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input),
+          body: JSON.stringify(input)
         });
 
         if (!response.ok) {
@@ -746,8 +746,8 @@ export const searchMachine = createMachine();
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             ...query,
-            pagination: { page },
-          }),
+            pagination: { page }
+          })
         });
 
         if (!response.ok) {
@@ -755,8 +755,8 @@ export const searchMachine = createMachine();
         }
 
         return await response.json();
-      }),
-    },
+      })
+    }
   }
 );
 
@@ -778,13 +778,13 @@ export const aiAnalysisMachine = createMachine();
       model: 'gemma3-legal:latest',
       error: null,
       isStreaming: false,
-      streamedContent: '',
+      streamedContent: ''
     } as AIAnalysisContext,
     states: {
       idle: {
         on: {
-          START_ANALYSIS: 'validating',
-        },
+          START_ANALYSIS: 'validating'
+        }
       },
       validating: {
         invoke: {
@@ -808,10 +808,10 @@ export const aiAnalysisMachine = createMachine();
                   );
                 }
                 return {};
-              },
-            }),
-          },
-        },
+              }
+            })
+          }
+        }
       },
       analyzing: {
         invoke: {
@@ -824,8 +824,8 @@ export const aiAnalysisMachine = createMachine();
               analysisResults: ({ event }) => event.output.results,
               confidence: ({ event }) => event.output.confidence,
               processingTime: ({ event }) => event.output.processingTime,
-              tokensUsed: ({ event }) => event.output.tokensUsed,
-            }),
+              tokensUsed: ({ event }) => event.output.tokensUsed
+            })
           },
           onError: {
             target: 'error',
@@ -836,32 +836,32 @@ export const aiAnalysisMachine = createMachine();
                   return String(error.message);
                 }
                 return 'Analysis failed with an unknown error';
-              },
-            }),
-          },
+              }
+            })
+          }
         },
         on: {
           STREAM_CONTENT: {
             actions: assign({
               streamedContent: ({ context, event }) => context.streamedContent + event.content,
-              isStreaming: () => true,
-            }),
-          },
-        },
+              isStreaming: () => true
+            })
+          }
+        }
       },
       completed: {
         on: {
           NEW_ANALYSIS: 'idle',
-          RETRY_ANALYSIS: 'analyzing',
-        },
+          RETRY_ANALYSIS: 'analyzing'
+        }
       },
       error: {
         on: {
           RETRY: 'analyzing',
-          NEW_ANALYSIS: 'idle',
-        },
-      },
-    },
+          NEW_ANALYSIS: 'idle'
+        }
+      }
+    }
   },
   {
     actors: {
@@ -882,7 +882,7 @@ export const aiAnalysisMachine = createMachine();
         const response = await fetch('/api/ai/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input),
+          body: JSON.stringify(input)
         });
 
         if (!response.ok) {
@@ -893,10 +893,10 @@ export const aiAnalysisMachine = createMachine();
 
         return {
           ...data,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         };
-      }),
-    },
+      })
+    }
   }
 );
 

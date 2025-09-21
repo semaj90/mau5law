@@ -28,7 +28,7 @@ interface WebGPUChatRequest {
     rtxOptimized: boolean;
     tensorCores: boolean;
     flashAttention: boolean;
-    parallelInference: boolean;,
+    parallelInference: boolean;
   };
 }
 
@@ -45,7 +45,7 @@ interface WebGPUChatResponse {
   rtxMetrics?: {
     tensorCoreUtilization: number;
     memoryBandwidth: number;
-    thermalStatus: string;,
+    thermalStatus: string;
   };
   error?: string;
 }
@@ -135,7 +135,7 @@ async function processWebGPUChat(
       maxTokens: Math.min(request.maxTokens || 512, 512), // Limit tokens for speed
       systemPrompt: 'Provide concise legal responses.',
       conversationId: `webgpu_fallback_${Date.now()}`,
-      context: [],
+      context: []
     });
 
     let response = '';
@@ -150,7 +150,7 @@ async function processWebGPUChat(
       response,
       processingTime: performance.now() - startTime,
       gpuAccelerated: false,
-      tensorCompression: { enabled: false },
+      tensorCompression: { enabled: false }
     };
   }
 
@@ -167,7 +167,7 @@ async function processWebGPUChat(
       const compressed = await webgpuRedisOptimizer.setOptimized(`tokens_${Date.now()}`, tokens, {
         compress: true,
         priority: 'high',
-        parallel: true,
+        parallel: true
       });
       compressionRatio = 4.2; // RTX 3060 Ti achieves ~4.2x compression
     }
@@ -203,7 +203,7 @@ async function processWebGPUChat(
         maxTokens: Math.min(request.maxTokens || 512, 512),
         systemPrompt: 'Provide a concise legal (response as { length?: any }).',
         conversationId: `webgpu_hybrid_${Date.now()}`,
-        context: [],
+        context: []
       });
 
       response = '';
@@ -227,13 +227,13 @@ async function processWebGPUChat(
       tensorCompression: {
         enabled: request.enableTensorCompression || false,
         compressionRatio,
-        memoryUsage: tokens.byteLength,
+        memoryUsage: tokens.byteLength
       },
       rtxMetrics: {
         tensorCoreUtilization: (gpuStats.gpuMetrics.tensorCoreLoad / 112) * 100, // RTX 3060 Ti has 112 tensor cores
         memoryBandwidth: 448, // GB/s
-        thermalStatus: gpuStats.gpuMetrics.thermalStatus,
-      },
+        thermalStatus: gpuStats.gpuMetrics.thermalStatus
+      }
     };
   } catch (error: any) {
     console.error('WebGPU chat processing failed:', error);
@@ -246,7 +246,7 @@ async function processWebGPUChat(
       maxTokens: 256,
       systemPrompt: 'Provide a brief (response as { length?: any }).',
       conversationId: `webgpu_error_${Date.now()}`,
-      context: [],
+      context: []
     });
 
     let response = '';
@@ -262,7 +262,7 @@ async function processWebGPUChat(
       processingTime: performance.now() - startTime,
       gpuAccelerated: false,
       tensorCompression: { enabled: false },
-      error: `WebGPU failed: ${error.message}`,
+      error: `WebGPU failed: ${error.message}`
     };
   }
 }
@@ -285,16 +285,16 @@ export const GET: RequestHandler = async ({ url, request }) => {
           tensorCompression: true,
           flashAttention: true,
           parallelInference: true,
-          memoryOptimization: true,
+          memoryOptimization: true
         },
         performance: {
           expectedResponseTime: '2-5 seconds',
           tensorCoreCount: 112,
           memoryBandwidth: '448 GB/s',
-          maxConcurrentRequests: MAX_GPU_REQUESTS,
+          maxConcurrentRequests: MAX_GPU_REQUESTS
         },
         currentMetrics: optimizerStats,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -304,7 +304,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
     return json({
         success: false,
-        error: 'Invalid action. Use ?action=health or ?action=capabilities',
+        error: 'Invalid action. Use ?action=health or ?action=capabilities'
       },)
       { status: 400 }
     );
@@ -312,7 +312,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     return json({
         success: false,
         error: 'WebGPU health check failed',
-        details: error.message,
+        details: error.message
       },)
       { status: 500 }
     );
@@ -330,7 +330,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!body.message || typeof body.message !== 'string') {
       return json({
           success: false,
-          error: 'Message is required and must be a string',
+          error: 'Message is required and must be a string'
         },)
         { status: 400 }
       );
@@ -340,7 +340,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json();
         {
           success: false,
-          error: 'Message too long (max 4000 characters for WebGPU optimization)',
+          error: 'Message too long (max 4000 characters for WebGPU optimization)'
         },
         { status: 400 }
       );
@@ -362,7 +362,7 @@ export const POST: RequestHandler = async ({ request }) => {
         details: error.message,
         processingTime: performance.now() - startTime,
         gpuAccelerated: false,
-        tensorCompression: { enabled: false },
+        tensorCompression: { enabled: false }
       },
       { status: 500 }
     );

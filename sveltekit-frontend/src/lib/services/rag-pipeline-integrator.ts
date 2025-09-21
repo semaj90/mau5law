@@ -34,7 +34,7 @@ export interface RAGPipelineConfig {
   maxSummaryLength: number;
   rerankThreshold: number;
   cacheResults: boolean;
-  enableStreaming: boolean;,
+  enableStreaming: boolean;
 }
 
 export interface RAGPipelineResult {
@@ -48,9 +48,9 @@ export interface RAGPipelineResult {
     sentencesExtracted: number;
     summaryGenerated: boolean;
     rerankingApplied: boolean;
-    cacheHit: boolean;,
+    cacheHit: boolean;
   };
-  confidence: number;,
+  confidence: number;
 }
 
 export class RAGPipelineIntegrator {
@@ -67,7 +67,7 @@ export class RAGPipelineIntegrator {
       rerankThreshold: 0.5,
       cacheResults: true,
       enableStreaming: true,
-      ...config,
+      ...config
     };
   }
 
@@ -109,7 +109,7 @@ export class RAGPipelineIntegrator {
         content: doc.content,
         summary: doc.summary,
         excerpt: doc.excerpt,
-        metadata: doc.metadata,
+        metadata: doc.metadata
       });
 
       // Step 3: Cross-encoder reranking for improved relevance
@@ -154,9 +154,9 @@ export class RAGPipelineIntegrator {
           sentencesExtracted,
           summaryGenerated,
           rerankingApplied,
-          cacheHit: false,
+          cacheHit: false
         },
-        confidence: this.calculateOverallConfidence(rerankedResults, summaryGenerated),
+        confidence: this.calculateOverallConfidence(rerankedResults, summaryGenerated)
       };
 
       // Cache result;
@@ -183,7 +183,7 @@ export class RAGPipelineIntegrator {
               content: doc.content,
               summary: doc.summary,
               excerpt: doc.excerpt,
-              metadata: doc.metadata,
+              metadata: doc.metadata
             }) as SearchResult
         ),
         summary: `Analysis of "${query}" resulted in ${documents.length} relevant documents.`,
@@ -193,9 +193,9 @@ export class RAGPipelineIntegrator {
           sentencesExtracted: 0,
           summaryGenerated: false,
           rerankingApplied: false,
-          cacheHit: false,
+          cacheHit: false
         },
-        confidence: 0.3,
+        confidence: 0.3
       };
     }
   }
@@ -212,7 +212,7 @@ export class RAGPipelineIntegrator {
         start(controller) {
           controller.enqueue(JSON.stringify({ type: 'complete', data: result });
           controller.close();
-        },
+        }
       });
     }
 
@@ -234,15 +234,15 @@ export class RAGPipelineIntegrator {
               sentencesExtracted: 0,
               summaryGenerated: false,
               rerankingApplied: false,
-              cacheHit: false,
-            },
+              cacheHit: false
+            }
           };
 
           // Send initial state;
           controller.enqueue(JSON.stringify({
               type: 'progress',
               data: progress,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             }) + '\n'
           );
 
@@ -253,7 +253,7 @@ export class RAGPipelineIntegrator {
             controller.enqueue(JSON.stringify({
                 type: 'progress',
                 data: progress,
-                timestamp: Date.now(),
+                timestamp: Date.now()
               }) + '\n'
             );
 
@@ -267,7 +267,7 @@ export class RAGPipelineIntegrator {
           controller.enqueue(JSON.stringify({
               type: 'progress',
               data: progress,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             }) + '\n'
           );
 
@@ -280,7 +280,7 @@ export class RAGPipelineIntegrator {
             content: doc.content,
             summary: doc.summary,
             excerpt: doc.excerpt,
-            metadata: doc.metadata,
+            metadata: doc.metadata
           });
 
           // Step 3: Cross-encoder reranking;
@@ -290,7 +290,7 @@ export class RAGPipelineIntegrator {
             controller.enqueue(JSON.stringify({
                 type: 'progress',
                 data: progress,
-                timestamp: Date.now(),
+                timestamp: Date.now()
               }) + '\n'
             );
 
@@ -307,7 +307,7 @@ export class RAGPipelineIntegrator {
             controller.enqueue(JSON.stringify({
                 type: 'progress',
                 data: progress,
-                timestamp: Date.now(),
+                timestamp: Date.now()
               }) + '\n'
             );
 
@@ -332,7 +332,7 @@ export class RAGPipelineIntegrator {
           controller.enqueue(JSON.stringify({
               type: 'complete',
               data: progress,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             }) + '\n'
           );
 
@@ -340,7 +340,7 @@ export class RAGPipelineIntegrator {
         } catch (error: any) {
           controller.error(error);
         }
-      },
+      }
     });
   }
 
@@ -354,8 +354,8 @@ export class RAGPipelineIntegrator {
         metadata: {
           ...doc.metadata,
           sentenceSplittingApplied: true,
-          originalLength: doc.content.length,
-        },
+          originalLength: doc.content.length
+        }
       });
     } catch (error: any) {
       console.warn('[RAGPipeline] Sentence splitting failed, using original documents:', error);
@@ -371,7 +371,7 @@ export class RAGPipelineIntegrator {
       const { rerankSearchResults } = await import('./cross-encoder-reranker');
       return await rerankSearchResults(query, searchResults, {
         maxResults: this.config.maxDocuments,
-        timeout: 5000,
+        timeout: 5000
       });
     } catch (error: any) {
       console.warn('[RAGPipeline] Cross-encoder reranking failed, using original ranking:', error);
@@ -389,7 +389,7 @@ export class RAGPipelineIntegrator {
       const config = {
         maxSummaryLength: request?.maxLength || this.config.maxSummaryLength,
         maxSentences: 5,
-        lambda: 0.7,
+        lambda: 0.7
       };
       const result = await generateMMRSummary(documents, query, config);
       return { summary: (result as { score?: any; summary?: any; rerankedResults?: any; confidence?: any; metadata?: any }).summary };
@@ -464,7 +464,7 @@ export class RAGPipelineIntegrator {
   getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.resultCache.size,
-      keys: Array.from(this.resultCache.keys()).slice(0, 10),
+      keys: Array.from(this.resultCache.keys()).slice(0, 10)
     };
   }
 }
@@ -499,7 +499,7 @@ export async function testRAGPipelineIntegration(): Promise<boolean> {
           'A valid contract requires offer, acceptance, and consideration. The parties must have legal capacity.',
         type: 'legal',
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       {
         id: 'doc2',
@@ -508,13 +508,13 @@ export async function testRAGPipelineIntegration(): Promise<boolean> {
           'Employment contracts may be terminated with proper notice. Wrongful termination claims require proof.',
         type: 'legal',
         createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+        updatedAt: new Date()
+      }
     ];
 
     const result = await processLegalQuery('contract formation requirements', mockDocuments, {
       maxDocuments: 5,
-      maxSummaryLength: 200,
+      maxSummaryLength: 200
     });
 
     const isValid =

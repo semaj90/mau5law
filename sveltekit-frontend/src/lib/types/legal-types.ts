@@ -54,7 +54,7 @@ export interface AIAnalysis {
   processingTime: number;
   model: string;
   version: string;
-  analyzedAt: Date;,
+  analyzedAt: Date;
 }
 
 // Extended Legal Document Interface;
@@ -126,7 +126,7 @@ export interface DocumentSearchResult {
   relevanceScore: number;
   documentType: string;
   caseId?: string;
-  lastModified: Date;,
+  lastModified: Date;
 }
 
 export interface EvidenceSearchResult {
@@ -155,7 +155,7 @@ export interface VectorSearchResult {
   score: number;
   content: string;
   metadata: Record<string, any>;
-  type: "document" | "evidence" | "case";,
+  type: "document" | "evidence" | "case";
 }
 
 // Export commonly used types from legal.ts;

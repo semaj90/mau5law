@@ -32,7 +32,7 @@ export interface LogBatch {
   clientInfo: {
     userAgent: string;
     url: string;
-    timestamp: string;,
+    timestamp: string;
   };
 }
 
@@ -45,7 +45,7 @@ function processLogEntry(entry: LogEntry): LogEntry {
   return {
     ...entry,
     timestamp: entry.timestamp || new Date().toISOString(),
-    requestId: entry.requestId || crypto.randomUUID?.() || Date.now().toString(),
+    requestId: entry.requestId || crypto.randomUUID?.() || Date.now().toString()
   };
 }
 
@@ -91,7 +91,7 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.LOGGING_API_KEY}`
         },
-        body: JSON.stringify(entry),
+        body: JSON.stringify(entry)
       });
     }
   } catch (err: any) {
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       return json({
         success: true,
         message: 'Log entry recorded',
-        entryId: entry.requestId,
+        entryId: entry.requestId
       });
     }
 
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
           ...log,
           userAgent: batch.clientInfo?.userAgent || userAgent,
           url: batch.clientInfo?.url || url.pathname,
-          clientAddress,
+          clientAddress
         })
       );
 
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         success: true,
         message: 'Log batch recorded',
         entriesProcessed: processedEntries.length,
-        entryIds: processedEntries.map(e => e.requestId),
+        entryIds: processedEntries.map(e => e.requestId)
       });
     }
 
@@ -228,6 +228,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
   return json({
     success: true,
     message: `Cleared ${originalCount} log entries`,
-    clearedCount: originalCount,
+    clearedCount: originalCount
   });
 };

@@ -24,7 +24,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   longs: String,
   enums: String,
   defaults: true,
-  oneofs: true,
+  oneofs: true
 });
 
 const gemmaEmbeddingsProto = grpc.loadPackageDefinition(packageDefinition).gemma_embeddings as any;
@@ -39,7 +39,7 @@ interface EmbeddingRequest {
   metadata: any;
   batch_id?: string;
   priority: number;
-  options: EmbeddingOptions;,
+  options: EmbeddingOptions;
 }
 
 interface EmbeddingOptions {
@@ -47,7 +47,7 @@ interface EmbeddingOptions {
   context_length: number;
   normalize: boolean;
   quantize: boolean;
-  cache_result: boolean;,
+  cache_result: boolean;
 }
 
 interface EmbeddingResponse {
@@ -58,7 +58,7 @@ interface EmbeddingResponse {
   processing_time: number;
   confidence_score: number;
   metadata: any;
-  status: EmbeddingStatus;,
+  status: EmbeddingStatus;
 }
 
 interface EmbeddingStatus {
@@ -70,14 +70,14 @@ interface EmbeddingStatus {
 interface BatchEmbeddingRequest {
   batch_id: string;
   requests: EmbeddingRequest[];
-  batch_options: BatchOptions;,
+  batch_options: BatchOptions;
 }
 
 interface BatchOptions {
   max_concurrent: number;
   timeout_ms: number;
   enable_streaming: boolean;
-  postgresql_optimization: boolean;,
+  postgresql_optimization: boolean;
 }
 
 interface BatchEmbeddingResponse {
@@ -93,14 +93,14 @@ interface BatchStatistics {
   failed_embeddings: number;
   avg_processing_time: number;
   total_batch_time: number;
-  throughput_per_second: number;,
+  throughput_per_second: number;
 }
 
 interface PostgreSQLBatchResult {
   inserted_rows: number;
   updated_rows: number;
   jsonb_compression_ratio: number;
-  index_update_time: number;,
+  index_update_time: number;
 }
 
 // =============================================================================
@@ -121,7 +121,7 @@ export class GRPCGemmaEmbeddingClient {
     failedRequests: 0,
     avgLatency: 0,
     throughput: 0,
-    connectionRetries: 0,
+    connectionRetries: 0
   };
 
   constructor(config: {
@@ -136,7 +136,7 @@ export class GRPCGemmaEmbeddingClient {
     this.redis = new IORedis(config.redisConfig);
     this.circuitBreaker = new CircuitBreaker({
       failureThreshold: 5,
-      recoveryTimeout: 30000,
+      recoveryTimeout: 30000
     });
 
     console.log(`🚀 gRPC Gemma Embedding Client initialized:`);
@@ -286,7 +286,7 @@ export class GRPCGemmaEmbeddingClient {
           batch_id: batchRequest.batch_id,
           responses,
           batch_statistics: batchStats,
-          postgresql_results: undefined // Would be filled by PostgreSQL optimization,
+          postgresql_results: undefined // Would be filled by PostgreSQL optimization
         });
       });
 
@@ -473,7 +473,7 @@ export class GRPCGemmaEmbeddingClient {
         inserted_rows: insertedRows,
         updated_rows: updatedRows,
         jsonb_compression_ratio: originalSize / compressedSize,
-        index_update_time: insertTime,
+        index_update_time: insertTime
       };
 
     } catch (error) {
@@ -511,7 +511,7 @@ export class GRPCGemmaEmbeddingClient {
       failed_embeddings: failed,
       avg_processing_time: avgProcessingTime,
       total_batch_time: batchTime,
-      throughput_per_second: throughput,
+      throughput_per_second: throughput
     };
   }
 
@@ -542,7 +542,7 @@ export class GRPCGemmaEmbeddingClient {
       ...this.metrics,
       successRate: this.metrics.successfulRequests / this.metrics.totalRequests,
       connectionPoolSize: this.connectionPool.length,
-      circuitBreakerState: this.circuitBreaker.getState(),
+      circuitBreakerState: this.circuitBreaker.getState()
     };
   }
 
@@ -552,7 +552,7 @@ export class GRPCGemmaEmbeddingClient {
   async healthCheck(): Promise<boolean> {
     try {
       const healthRequest = {
-        service: 'GemmaEmbeddingService',
+        service: 'GemmaEmbeddingService'
       };
 
       return new Promise((resolve) => {
@@ -599,7 +599,7 @@ class CircuitBreaker {
   private lastFailureTime = 0;
   private config: {
     failureThreshold: number;
-    recoveryTimeout: number;,
+    recoveryTimeout: number;
   };
 
   constructor(config: { failureThreshold: number; recoveryTimeout: number }) {

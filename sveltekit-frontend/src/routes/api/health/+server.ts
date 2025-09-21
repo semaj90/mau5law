@@ -49,7 +49,7 @@ async function httpCheck(url: string): Promise<HttpCheck> {
     return {
       url,
       ok: false,
-      error: e instanceof Error ? e.message: String(e),
+      error: e instanceof Error ? e.message: String(e)
     };
   }
 }
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async () => {
     cudaStatusHealth,
 
     // System services
-    minioHealth,
+    minioHealth
   ] = await Promise.all([
     // Database layer
     tcpCheck("127.0.0.1", 5432), // PostgreSQL
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async () => {
       postgres: { host: "127.0.0.1", port: 5432, status: pgOpen ? "healthy" : "failed" },
       redis: { host: "127.0.0.1", port: 6379, status: redisOpen ? "healthy" : "failed" },
       neo4j: { host: "127.0.0.1", port: 7474, status: neo4jHealth.ok ? "healthy" : "failed" },
-      qdrant: { host: "127.0.0.1", port: 6333, status: qdrantHealth.ok ? "healthy" : "failed" },
+      qdrant: { host: "127.0.0.1", port: 6333, status: qdrantHealth.ok ? "healthy" : "failed" }
     },
 
     // AI/ML Services;
@@ -129,7 +129,7 @@ export const GET: RequestHandler = async () => {
       ollama: { host: "127.0.0.1", port: 11434, status: ollamaVersion.ok ? "healthy" : "failed" },
       enhancedRAG: { host: "127.0.0.1", port: 8094, status: enhancedRAGHealth.ok ? "healthy" : "failed" },
       vectorService: { host: "127.0.0.1", port: 8095, status: vectorServiceHealth.ok ? "healthy" : "failed" },
-      uploadService: { host: "127.0.0.1", port: 8093, status: uploadServiceHealth.ok ? "healthy" : "failed" },
+      uploadService: { host: "127.0.0.1", port: 8093, status: uploadServiceHealth.ok ? "healthy" : "failed" }
     },
 
     // GPU Acceleration;
@@ -142,13 +142,13 @@ export const GET: RequestHandler = async () => {
     // Cluster Management;
     orchestration: {
       clusterManager: { host: "127.0.0.1", port: 8090, status: clusterHealth.ok ? "healthy" : "failed" },
-      summarizer: { host: "127.0.0.1", port: 8091, status: summarizerHealth.ok ? "healthy" : "failed" },
+      summarizer: { host: "127.0.0.1", port: 8091, status: summarizerHealth.ok ? "healthy" : "failed" }
     },
 
     // Storage;
     storage: {
-      minio: { host: "127.0.0.1", port: 9000, status: minioHealth.ok ? "healthy" : "failed" },
-    },
+      minio: { host: "127.0.0.1", port: 9000, status: minioHealth.ok ? "healthy" : "failed" }
+    }
   };
 
   // Multi-layer caching status;
@@ -156,7 +156,7 @@ export const GET: RequestHandler = async () => {
     l1_memory: { type: "memory", status: "healthy" },
     l2_redis: { type: "redis", host: "127.0.0.1", port: 6379, status: redisOpen ? "healthy" : "failed" },
     l3_postgres: { type: "postgres", host: "127.0.0.1", port: 5432, status: pgOpen ? "healthy" : "failed" },
-    l4_qdrant: { type: "qdrant", url: "http://localhost:6333", status: qdrantHealth.ok ? "healthy" : "failed" },
+    l4_qdrant: { type: "qdrant", url: "http://localhost:6333", status: qdrantHealth.ok ? "healthy" : "failed" }
   };
 
   // Performance metrics;
@@ -166,12 +166,12 @@ export const GET: RequestHandler = async () => {
       heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024),
       heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024),
       external: Math.round(memoryUsage.external / 1024 / 1024),
-      rss: Math.round(memoryUsage.rss / 1024 / 1024),
+      rss: Math.round(memoryUsage.rss / 1024 / 1024)
     },
     cpuUsage: {
       user: Math.round(cpuUsage.user / 1000),
-      system: Math.round(cpuUsage.system / 1000),
-    },
+      system: Math.round(cpuUsage.system / 1000)
+    }
   };
 
   // Architecture summary based on documentation;
@@ -188,7 +188,7 @@ export const GET: RequestHandler = async () => {
       "Multi-Protocol Service Architecture",
       "Enterprise Vector Service v2.0",
       "FlashAttention2 RTX 3060 Ti Integration"
-    ],
+    ]
   };
 
   // Overall system health calculation
@@ -208,7 +208,7 @@ export const GET: RequestHandler = async () => {
       healthScore,
       healthyServices,
       totalServices,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     },
     services,
     caching: cachingLayers,
@@ -220,7 +220,7 @@ export const GET: RequestHandler = async () => {
     postgres: services.databases.postgres,
     redis: services.databases.redis,
     ollama: services.aiServices.ollama,
-    qdrant: services.databases.qdrant,
+    qdrant: services.databases.qdrant
   } as const;
 
   return json(status, {

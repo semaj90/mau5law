@@ -57,7 +57,7 @@ const originalPOSTHandler: RequestHandler = async (event) => {
         userId: requestData.userId || 'anonymous',
         sessionId: requestData.sessionId || `session_${Date.now()}`,
         previousContext: conversationHistory,
-        legalDomain: detectLegalDomain(lastMessage.content),
+        legalDomain: detectLegalDomain(lastMessage.content)
       },
       options: {
         model: model === 'gemma3-legal:latest' ? 'gemma3-legal' : model,
@@ -71,8 +71,8 @@ const originalPOSTHandler: RequestHandler = async (event) => {
       metadata: {
         source: 'chat_api',
         userAgent: request.headers.get('user-agent') || 'unknown',
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     // Route through orchestrator bridge for optimal processing;
@@ -97,7 +97,7 @@ const originalPOSTHandler: RequestHandler = async (event) => {
             content: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).response
           },
           finish_reason: "stop",
-          index: 0,
+          index: 0
         }],
         usage: {
           total_tokens: Math.ceil((lastMessage.content + (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).response).length / 4), // Rough estimate
@@ -112,9 +112,9 @@ const originalPOSTHandler: RequestHandler = async (event) => {
           used: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).orchestratorUsed,
           confidence: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).confidence,
           executionMetrics: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).executionMetrics,
-          gpuAccelerated: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).executionMetrics.gpuAccelerated,
+          gpuAccelerated: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).executionMetrics.gpuAccelerated
         },
-        response_time_ms: totalTime,
+        response_time_ms: totalTime
       });
 
     } catch (orchestratorError) {
@@ -129,7 +129,7 @@ const originalPOSTHandler: RequestHandler = async (event) => {
     return json({ 
       error: "Failed to generate response",
       detail: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -154,7 +154,7 @@ async function fallbackToDirectOllama(
           num_predict: 1024,
           top_k: 40,
           top_p: 0.9,
-          repeat_penalty: 1.1,
+          repeat_penalty: 1.1
         }
       })
     });
@@ -173,7 +173,7 @@ async function fallbackToDirectOllama(
           role: "assistant",
           content: (data as { response?: any; eval_count?: any; prompt_eval_count?: any }).response || "No response generated"
         },
-        finish_reason: "stop",
+        finish_reason: "stop"
       }],
       usage: {
         total_tokens: (data as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count || 0,
@@ -188,10 +188,10 @@ async function fallbackToDirectOllama(
           totalLatency: totalTime,
           processingTime: totalTime,
           routingTime: 0,
-          gpuAccelerated: false,
+          gpuAccelerated: false
         }
       },
-      response_time_ms: totalTime,
+      response_time_ms: totalTime
     });
   } catch (error) {
     throw new Error(`Fallback to direct Ollama failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
@@ -207,7 +207,7 @@ function detectLegalDomain(content: string): string | undefined {
     'corporate': ['corporation', 'shareholder', 'board', 'merger', 'securities'],
     'property': ['property', 'real estate', 'title', 'deed', 'mortgage'],
     'family': ['divorce', 'custody', 'marriage', 'adoption', 'alimony'],
-    'employment': ['employment', 'workplace', 'discrimination', 'wage', 'termination'],
+    'employment': ['employment', 'workplace', 'discrimination', 'wage', 'termination']
   };
 
   const lowerContent = content.toLowerCase();

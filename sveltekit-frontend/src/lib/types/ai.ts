@@ -16,7 +16,7 @@ export interface VectorSearchResult {
   source?: {
     type: string;
     name: string;
-    url: string;,
+    url: string;
   };
   highlights?: string[];
   confidence?: number;
@@ -49,7 +49,7 @@ export interface MCPToolRequest {
 export interface EnhancedRAGEngine {
   query: (prompt: string, options?: Record<string, unknown>) => Promise<AIResponse>;
   search: (query: string) => Promise<VectorSearchResult[]>;
-  analyze: (content: string) => Promise<SemanticEntity[]>;,
+  analyze: (content: string) => Promise<SemanticEntity[]>;
 }
 
 // Chat related types for AI Assistant;
@@ -71,7 +71,7 @@ export interface SystemStatus {
   ollama: boolean;
   enhancedRAG: boolean;
   postgres: boolean;
-  neo4j: boolean;,
+  neo4j: boolean;
 }
 
 export interface ChatRequest {
@@ -96,7 +96,7 @@ export interface ChatResponse {
     tokens: number;
     promptTokens: number;
     responseTokens: number;
-    tokensPerSecond: number;,
+    tokensPerSecond: number;
   };
   suggestions?: string[];
   relatedCases?: string[];

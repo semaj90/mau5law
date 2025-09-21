@@ -52,7 +52,7 @@ export const documentMachine = createMachine({
   context: {
     processingProgress: 0,
     errors: [],
-    processingSteps: [],
+    processingSteps: []
   },
   states: {
     idle: {
@@ -64,7 +64,7 @@ export const documentMachine = createMachine({
             documentId: ({ event }) => event.document.id,
             processingProgress: 0,
             errors: [],
-            processingSteps: ['Document uploaded'],
+            processingSteps: ['Document uploaded']
           })
         }
       }
@@ -72,7 +72,7 @@ export const documentMachine = createMachine({
     uploaded: {
       entry: assign({
         processingSteps: ({ context }) => [...context.processingSteps, 'Document ready for processing'],
-        processingProgress: 10,
+        processingProgress: 10
       }),
       on: {
         START_PROCESSING: {
@@ -83,13 +83,13 @@ export const documentMachine = createMachine({
           })
         },
         CANCEL: 'idle',
-        RESET: 'idle',
+        RESET: 'idle'
       }
     },
     processing: {
       initial: 'extractingText',
       entry: assign({
-        processingProgress: 20,
+        processingProgress: 20
       }),
       states: {
         extractingText: {
@@ -229,12 +229,12 @@ export const documentMachine = createMachine({
       },
       on: {
         CANCEL: 'cancelled',
-        ERROR: 'error',
+        ERROR: 'error'
       }
     },
     completed: {
       entry: assign({
-        currentStep: 'completed',
+        currentStep: 'completed'
       }),
       on: {
         RESET: {
@@ -252,7 +252,7 @@ export const documentMachine = createMachine({
             entities: undefined,
             riskScore: undefined,
             confidence: undefined,
-            processedAt: undefined,
+            processedAt: undefined
           })
         },
         START_PROCESSING: {
@@ -261,14 +261,14 @@ export const documentMachine = createMachine({
             processingProgress: 20,
             errors: [],
             processingSteps: ({ context }) => [...context.processingSteps, 'Reprocessing started'],
-            currentStep: 'starting_processing',
+            currentStep: 'starting_processing'
           })
         }
       }
     },
     error: {
       entry: assign({
-        currentStep: 'error',
+        currentStep: 'error'
       }),
       on: {
         RETRY: {
@@ -277,7 +277,7 @@ export const documentMachine = createMachine({
             errors: [],
             processingProgress: 20,
             processingSteps: ({ context }) => [...context.processingSteps, 'Retrying processing'],
-            currentStep: 'starting_processing',
+            currentStep: 'starting_processing'
           })
         },
         RESET: {
@@ -295,7 +295,7 @@ export const documentMachine = createMachine({
             entities: undefined,
             riskScore: undefined,
             confidence: undefined,
-            processedAt: undefined,
+            processedAt: undefined
           })
         }
       }
@@ -321,7 +321,7 @@ export const documentMachine = createMachine({
             entities: undefined,
             riskScore: undefined,
             confidence: undefined,
-            processedAt: undefined,
+            processedAt: undefined
           })
         },
         START_PROCESSING: {
@@ -330,7 +330,7 @@ export const documentMachine = createMachine({
             processingProgress: 20,
             errors: [],
             processingSteps: ({ context }) => [...context.processingSteps, 'Processing restarted'],
-            currentStep: 'starting_processing',
+            currentStep: 'starting_processing'
           })
         }
       }

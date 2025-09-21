@@ -23,7 +23,7 @@ export interface HybridPredictionResult {
     content: string;
     similarity: number;
     legalDomain: string;
-    embeddingVector: number[];,
+    embeddingVector: number[];
   }>;
 
   // Behavioral Prediction (HMM-SOM);
@@ -33,13 +33,13 @@ export interface HybridPredictionResult {
       action: string;
       probability: number;
       timeEstimate: number;
-      confidence: number;,
+      confidence: number;
     }>;
     recommendedAssets: Array<{
       type: string;
       priority: number;
       cacheKey: string;
-      preloadStrategy: 'immediate' | 'background' | 'ondemand';,
+      preloadStrategy: 'immediate' | 'background' | 'ondemand';
     }>;
   };
 
@@ -49,7 +49,7 @@ export interface HybridPredictionResult {
     confidenceScore: number;          // Combined confidence (0-100)
     cognitiveReasoning: string[];     // Human-readable reasoning
     predictiveAccuracy: number;       // Historical accuracy for this pattern
-    adaptiveStrategy: 'aggressive' | 'conservative' | 'balanced';,
+    adaptiveStrategy: 'aggressive' | 'conservative' | 'balanced';
   };
 
   // Performance Metrics;
@@ -58,7 +58,7 @@ export interface HybridPredictionResult {
     behavioralPredictionTime: number; // HMM-SOM prediction time
     fusionProcessingTime: number;     // Fusion algorithm time
     totalResponseTime: number;        // End-to-end time
-    cacheHitRate: number;            // Percentage of cache hits,
+    cacheHitRate: number;            // Percentage of cache hits
   };
 
   // Visual Cache Patterns (CHR-ROM style);
@@ -66,7 +66,7 @@ export interface HybridPredictionResult {
     cacheKey: string;
     svgPattern: string;
     qualityTier: '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
-    renderPriority: number;,
+    renderPriority: number;
   }>;
 }
 
@@ -78,7 +78,7 @@ export interface LegalContext {
   documentContext?: {
     type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence';
     domain: string;
-    complexity: number;,
+    complexity: number;
   };
   workflowStage: 'intake' | 'analysis' | 'research' | 'drafting' | 'review';
   systemMetrics: {
@@ -175,7 +175,7 @@ export class HybridGemmaBitmapEngine {
       semanticSimilarity: semanticResults.matches,
       behavioralPrediction: {
         nextStates: behavioralResults.nextStates,
-        recommendedAssets: behavioralResults.recommendedAssets,
+        recommendedAssets: behavioralResults.recommendedAssets
       },
       fusedInsights,
       performance: {
@@ -183,7 +183,7 @@ export class HybridGemmaBitmapEngine {
         behavioralPredictionTime: behavioralResults.predictionTime,
         fusionProcessingTime: fusionTime,
         totalResponseTime: totalTime,
-        cacheHitRate: await this.calculateCacheHitRate(),
+        cacheHitRate: await this.calculateCacheHitRate()
       },
       chrRomPatterns
     };
@@ -210,7 +210,7 @@ export class HybridGemmaBitmapEngine {
     if (cached) {
       return {
         matches: JSON.parse(cached),
-        queryTime: Date.now() - startTime,
+        queryTime: Date.now() - startTime
       };
     }
 
@@ -245,7 +245,7 @@ export class HybridGemmaBitmapEngine {
         content: row.content_text,
         similarity: row.similarity,
         legalDomain: row.legal_domain,
-        embeddingVector: row.gemma_embedding,
+        embeddingVector: row.gemma_embedding
       });
 
       // Cache for 5 minutes
@@ -253,7 +253,7 @@ export class HybridGemmaBitmapEngine {
 
       return {
         matches,
-        queryTime: Date.now() - startTime,
+        queryTime: Date.now() - startTime
       };
     } finally {
       client.release();
@@ -275,7 +275,7 @@ export class HybridGemmaBitmapEngine {
       action: state.state.userAction,
       probability: state.probability,
       timeEstimate: state.timeEstimate,
-      confidence: state.state.confidence,
+      confidence: state.state.confidence
     });
 
     const recommendedAssets = prediction.recommendedAssets.map((asset: any) => ({
@@ -288,7 +288,7 @@ export class HybridGemmaBitmapEngine {
     return {
       nextStates,
       recommendedAssets,
-      predictionTime: Date.now() - startTime,
+      predictionTime: Date.now() - startTime
     };
   }
 
@@ -445,7 +445,7 @@ export class HybridGemmaBitmapEngine {
       analysis: 0.7,
       research: 0.8,
       drafting: 0.5,
-      review: 0.6,
+      review: 0.6
     };
     return stageWeights[context.workflowStage] || 0.5;
   }
@@ -457,7 +457,7 @@ export class HybridGemmaBitmapEngine {
       analysis: 0.3,
       research: 0.2,
       drafting: 0.5,
-      review: 0.4,
+      review: 0.4
     };
     return stageWeights[context.workflowStage] || 0.5;
   }
@@ -560,7 +560,7 @@ export class HybridGemmaBitmapEngine {
     semanticTime: number;
     behavioralTime: number;
     fusionTime: number;
-    totalTime: number;,
+    totalTime: number;
   }): void {
     this.performanceMetrics.totalPredictions++;
 
@@ -592,7 +592,7 @@ export class HybridGemmaBitmapEngine {
         behavioralPrediction: 'Bitmap HMM-SOM with 90%+ confidence',
         fusionIntelligence: 'Cognitive reasoning combining both approaches',
         adaptiveQuality: 'CHR-ROM patterns with dynamic quality scaling',
-        predictiveCache: 'Asset preloading before user requests',
+        predictiveCache: 'Asset preloading before user requests'
       },
       performance: this.performanceMetrics,
       revolutionaryAdvantages: [
@@ -618,7 +618,7 @@ export class HybridGemmaBitmapEngine {
       nextStates: prediction.behavioralPrediction.nextStates,
       recommendedAssets: prediction.behavioralPrediction.recommendedAssets,
       confidence: prediction.fusedInsights.confidenceScore,
-      reasoning: prediction.fusedInsights.cognitiveReasoning,
+      reasoning: prediction.fusedInsights.cognitiveReasoning
     });
 
     // Update overall accuracy

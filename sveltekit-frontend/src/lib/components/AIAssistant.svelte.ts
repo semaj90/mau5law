@@ -14,8 +14,8 @@ export class AIAssistant {
         body: JSON.stringify({
           model: "gemma3-legal:latest",
           prompt,
-          stream: false,
-        }),
+          stream: false
+        })
       });
       const data = await response.json();
       this.response.set(data.response);

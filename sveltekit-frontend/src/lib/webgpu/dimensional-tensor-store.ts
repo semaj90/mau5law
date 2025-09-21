@@ -21,7 +21,7 @@ export interface TensorDimensions {
   documents: number;    // Axis 1: Document count
   chunks: number;       // Axis 2: Chunks per document
   representations: number; // Axis 3: AI analysis types
-  maxLOD: number;      // Maximum LOD levels,
+  maxLOD: number;      // Maximum LOD levels
 }
 
 export interface TensorSlice {
@@ -29,7 +29,7 @@ export interface TensorSlice {
   index: number;
   lodLevel: number;
   data: Float32Array;
-  metadata: TensorSliceMetadata;,
+  metadata: TensorSliceMetadata;
 }
 
 export interface TensorSliceMetadata {
@@ -38,7 +38,7 @@ export interface TensorSliceMetadata {
   size: number;
   compressed: boolean;
   accessCount: number;
-  lastAccessed: number;,
+  lastAccessed: number;
 }
 
 export interface LODLevel {
@@ -46,7 +46,7 @@ export interface LODLevel {
   scale: number;        // 1.0 = full res, 0.5 = half res, etc.
   targetSize: number;   // Target texture size
   compressionRatio: number;
-  useGPUCompression: boolean;,
+  useGPUCompression: boolean;
 }
 
 export interface TensorMemoryLayout {
@@ -54,7 +54,7 @@ export interface TensorMemoryLayout {
   stride: [number, number, number]; // Strides for each axis
   alignment: number;
   totalSize: number;
-  fragmentCount: number;,
+  fragmentCount: number;
 }
 
 export interface StreamingConfig {
@@ -63,7 +63,7 @@ export interface StreamingConfig {
   lodBias: number;       // LOD bias for quality vs performance
   streamingDistance: number; // Distance threshold for streaming
   preloadRadius: number; // Preload data within radius
-  evictionStrategy: 'lru' | 'importance' | 'distance' | 'hybrid';,
+  evictionStrategy: 'lru' | 'importance' | 'distance' | 'hybrid';
 }
 
 // ============================================================================
@@ -138,7 +138,7 @@ export class DimensionalTensorStore {
       stride: [strideX, strideY, strideZ],
       alignment,
       totalSize,
-      fragmentCount: Math.ceil(totalElements / 1024) // 1024 elements per fragment,
+      fragmentCount: Math.ceil(totalElements / 1024) // 1024 elements per fragment
     };
 
     console.log('[Tensor Store] Memory layout initialized:', this.memoryLayout);
@@ -160,7 +160,7 @@ export class DimensionalTensorStore {
         scale,
         targetSize,
         compressionRatio,
-        useGPUCompression: level > 1 // Use GPU compression for higher LOD levels,
+        useGPUCompression: level > 1 // Use GPU compression for higher LOD levels
       });
     }
     
@@ -208,7 +208,7 @@ export class DimensionalTensorStore {
   private calculateTextureSize(axis: 1 | 2 | 3, scale: number): {
     width: number;
     height: number;
-    depth: number;,
+    depth: number;
   } {
     const { documents, chunks, representations } = this.dimensions;
     
@@ -217,21 +217,21 @@ export class DimensionalTensorStore {
         return {
           width: Math.ceil(Math.sqrt(documents) * scale),
           height: Math.ceil(Math.sqrt(documents) * scale),
-          depth: 1,
+          depth: 1
         };
       
       case 2: // Chunks axis;
         return {
           width: Math.ceil(chunks * scale),
           height: Math.ceil(documents * scale),
-          depth: 1,
+          depth: 1
         };
       
       case 3: // Representations axis;
         return {
           width: Math.ceil(representations * scale),
           height: Math.ceil(documents * scale),
-          depth: Math.ceil(chunks * scale),
+          depth: Math.ceil(chunks * scale)
         };
       
       default:
@@ -313,17 +313,17 @@ export class DimensionalTensorStore {
     
     this.device.queue.writeTexture({
         texture,
-        origin: position,
+        origin: position
       },
       data,
       {
         bytesPerRow: width * bytesPerPixel,
-        rowsPerImage: height,
+        rowsPerImage: height
       },);
       {
         width: Math.min(width - position[0], Math.ceil(Math.sqrt(data.length / 4))),
         height: Math.min(height - position[1], Math.ceil(Math.sqrt(data.length / 4))),
-        depthOrArrayLayers: 1,
+        depthOrArrayLayers: 1
       }
     );
   }
@@ -337,7 +337,7 @@ export class DimensionalTensorStore {
         key,
         texture,
         lastAccessed: this.accessHistory.get(key) || 0,
-        memorySize: this.estimateTextureMemory(texture),
+        memorySize: this.estimateTextureMemory(texture)
       });
       .sort((a, b) => {
         switch (this.streamingConfig.evictionStrategy) {
@@ -446,7 +446,7 @@ export class DimensionalTensorStore {
       entries: [);
         {
           binding: 0,
-          resource: texture.createView(),
+          resource: texture.createView()
         }
       ]
     });
@@ -463,7 +463,7 @@ export class DimensionalTensorStore {
     textureCount: number;
     cacheHitRatio: number;
     averageLOD: number;
-    streamingQueueSize: number;,
+    streamingQueueSize: number;
   } {
     const totalAccesses = Array.from(this.accessHistory.values()).length;
     const cacheHits = this.cpuCache.size;
@@ -477,7 +477,7 @@ export class DimensionalTensorStore {
       textureCount: this.tensorTextures.size,
       cacheHitRatio: totalAccesses > 0 ? cacheHits / totalAccesses : 0,
       averageLOD: this.tensorTextures.size > 0 ? lodSum / this.tensorTextures.size: 0,
-      streamingQueueSize: this.streamingQueue.size,
+      streamingQueueSize: this.streamingQueue.size
     };
   }
 
@@ -593,14 +593,14 @@ class CompressionPipeline {
     `;
 
     const shaderModule = this.device.createShaderModule({
-      code: compressShaderCode,
+      code: compressShaderCode
     });
 
     this.compressShader = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: shaderModule,
-        entryPoint: 'compress',
+        entryPoint: 'compress'
       }
     });
   }
@@ -618,17 +618,17 @@ class CompressionPipeline {
     // Create buffers;
     const inputBuffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const outputBuffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
     // Upload data
@@ -649,7 +649,7 @@ class CompressionPipeline {
     // Read back result (this is expensive - in practice you'd keep on GPU);
     const readBuffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
     const copyEncoder = this.device.createCommandEncoder();

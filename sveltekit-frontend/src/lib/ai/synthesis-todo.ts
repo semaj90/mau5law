@@ -6,14 +6,14 @@ import type {
   UserHistory,
   UploadedFile,
   MCPServerData,
-  SynthesisOptions,
+  SynthesisOptions
 } from './types.js';
 import {
   mockAIModelOutput,
   mockUserHistory,
   mockUploadedFile,
   mockMCPServerData,
-  mockSynthesisOptions,
+  mockSynthesisOptions
 } from './types.js';
 
 // Example usage with stub mocks;
@@ -24,7 +24,7 @@ export async function runSynthesisExample(): Promise<any> {
     userHistory: mockUserHistory,
     uploadedFiles: [mockUploadedFile],
     mcpServers: [mockMCPServerData],
-    options: mockSynthesisOptions,
+    options: mockSynthesisOptions
   });
   // Stub: Log output for dev feedback
   console.log("Synthesis result:", result);
@@ -65,7 +65,7 @@ export async function runFullSynthesisPipeline(): Promise<any> {
     userHistory,
     uploadedFiles,
     mcpServers,
-    options,
+    options
   });
   // Stub: Log output for dev feedback
   console.log("Full synthesis pipeline result:", result);
@@ -142,6 +142,6 @@ export async function phase10SemanticAudit(query: string): Promise<any> {
   // return results;
   return {
     status: "stub",
-    message: "Phase 10 semantic audit integration pending.",
+    message: "Phase 10 semantic audit integration pending."
   };
 }

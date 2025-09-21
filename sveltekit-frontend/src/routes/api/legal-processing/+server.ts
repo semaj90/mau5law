@@ -27,13 +27,13 @@ interface ProcessDocumentResponse {
   contractTerms: any[];
   processingTime: number;
   cacheHit: boolean;
-  sessionId: string;,
+  sessionId: string;
 }
 
 interface DocumentSessionResponse {
   id: string;
   documents: Array<any>;
-  totalProcessed: number;,
+  totalProcessed: number;
 }
 
 /**
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
           id: legalDocuments.id,
           summary: legalDocuments.summary,
           keyTerms: legalDocuments.keyTerms,
-          createdAt: legalDocuments.createdAt,
+          createdAt: legalDocuments.createdAt
         })
         .from(legalDocuments)
         .where(eq(legalDocuments.sessionId, sessionId)
@@ -63,9 +63,9 @@ export const GET: RequestHandler = async ({ url }) => {
         id: sessionId,
         documents: documents.map(doc => ({
           ...doc,
-          createdAt: doc.createdAt?.toISOString() || new Date().toISOString(),
+          createdAt: doc.createdAt?.toISOString() || new Date().toISOString()
         })),
-        totalProcessed: documents.length,
+        totalProcessed: documents.length
       };
 
       return json(response);
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
         .select({
           sessionId: legalDocuments.sessionId,
           count: legalDocuments.id, // Will be aggregated
-          lastProcessed: legalDocuments.createdAt,
+          lastProcessed: legalDocuments.createdAt
         })
         .from(legalDocuments)
         .orderBy(desc(legalDocuments.createdAt)
@@ -167,10 +167,10 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime,
           model: 'gemma3-legal',
           cacheHit: false,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .returning();
 
@@ -183,13 +183,13 @@ export const POST: RequestHandler = async ({ request }) => {
         isActive: true,
         messageCount: 1,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       });
       .onConflictDoUpdate({
         target: ragSessions.id,
         set: {
           messageCount: ragSessions.messageCount + 1,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         }
       });
 
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request }) => {
       contractTerms,
       processingTime,
       cacheHit: false,
-      sessionId: finalSessionId,
+      sessionId: finalSessionId
     };
 
     return json(response);
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Document processing failed:', error);
     return json({ 
         error: 'Document processing failed',
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -234,7 +234,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
       .update(legalDocuments);
       .set({
         ...updates,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(legalDocuments.id, documentId)
       .returning();

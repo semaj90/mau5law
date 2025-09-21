@@ -22,7 +22,7 @@ const GPU_TILING_CONFIG = {
     precision: 'fp16' as const,
     batchSize: 128,
     tilesPerBatch: 16,
-    maxConcurrentTiles: 64,
+    maxConcurrentTiles: 64
   },
 
   // Memory Tiling (NES Architecture);
@@ -38,7 +38,7 @@ const GPU_TILING_CONFIG = {
     workgroupSize: { x: 16, y: 16, z: 1 },
     maxComputeUnits: 28, // RTX 3060 Ti has 28 SMs
     threadsPerSM: 1536,
-    totalThreads: 28 * 1536,
+    totalThreads: 28 * 1536
   },
 
   // SIMD Processing;
@@ -46,8 +46,8 @@ const GPU_TILING_CONFIG = {
     vectorWidth: 8, // AVX2 256-bit / 32-bit float = 8 floats
     parallelChunks: 16,
     batchProcessing: true,
-    useGPUAcceleration: true,
-  },
+    useGPUAcceleration: true
+  }
 };
 }
 
@@ -64,9 +64,9 @@ export interface TiledEvidenceChunk {
     processed: boolean;
     embedding?: Float32Array;
     simdProcessTime: number;
-    gpuProcessTime: number;,
+    gpuProcessTime: number;
   };
-  memoryRegion: keyof typeof GPU_TILING_CONFIG.memoryTiles;,
+  memoryRegion: keyof typeof GPU_TILING_CONFIG.memoryTiles;
 }
 
 export interface SIMDProcessingResult {
@@ -76,10 +76,10 @@ export interface SIMDProcessingResult {
     totalSIMDTime: number;
     totalGPUTime: number;
     throughputMBps: number;
-    parallelEfficiency: number;,
+    parallelEfficiency: number;
   };
   memoryUsage: Record<string, number>;
-  tensorCompressionRatio: number;,
+  tensorCompressionRatio: number;
 }
 
 export class SIMDGPUTilingEngine {
@@ -94,7 +94,7 @@ export class SIMDGPUTilingEngine {
     totalSIMDTime: 0,
     totalGPUTime: 0,
     averageThroughput: 0,
-    memoryEfficiency: 0,
+    memoryEfficiency: 0
   };
 
   constructor() {
@@ -124,7 +124,7 @@ export class SIMDGPUTilingEngine {
     }
 
     const adapter = await navigator.gpu.requestAdapter({
-      powerPreference: 'high-performance',
+      powerPreference: 'high-performance'
     });
 
     if (!adapter) {
@@ -137,7 +137,7 @@ export class SIMDGPUTilingEngine {
         maxComputeWorkgroupSizeX: GPU_TILING_CONFIG.compute.workgroupSize.x,
         maxComputeWorkgroupSizeY: GPU_TILING_CONFIG.compute.workgroupSize.y,
         maxStorageBufferBindingSize: 1024 * 1024 * 128, // 128MB max buffer
-      },
+      }
     });
 
     // Create compute pipeline for GPU tiling
@@ -168,7 +168,7 @@ export class SIMDGPUTilingEngine {
         image_width: u32,
         image_height: u32,
         simd_vector_width: u32,
-        tensor_compression: f32,
+        tensor_compression: f32
       }
 
       @compute @workgroup_size(${GPU_TILING_CONFIG.compute.workgroupSize.x}, ${GPU_TILING_CONFIG.compute.workgroupSize.y});
@@ -227,16 +227,16 @@ export class SIMDGPUTilingEngine {
 
     const shaderModule = this.device.createShaderModule({
       code: shaderCode,
-      label: 'SIMD-Evidence-Tiling-Compute',
+      label: 'SIMD-Evidence-Tiling-Compute'
     });
 
     this.computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: shaderModule,
-        entryPoint: 'main',
+        entryPoint: 'main'
       },
-      label: 'Evidence-Tiling-Pipeline',
+      label: 'Evidence-Tiling-Pipeline'
     });
 
     console.log('🔧 GPU compute pipeline created for evidence tiling');
@@ -263,7 +263,7 @@ export class SIMDGPUTilingEngine {
       evidenceType = 'mixed',
       enableCompression = true,
       priority = 'medium',
-      generateEmbeddings = true,
+      generateEmbeddings = true
     } = options;
 
     const startTime = performance.now();
@@ -277,7 +277,7 @@ export class SIMDGPUTilingEngine {
       height,
       evidenceType,
       timestamp: Date.now(),
-      processing: { enableCompression, priority, generateEmbeddings },
+      processing: { enableCompression, priority, generateEmbeddings }
     };
 
     const simdResult = await simdRedisClient.parseJSON(metadata);
@@ -332,10 +332,10 @@ export class SIMDGPUTilingEngine {
         totalSIMDTime: simdTime,
         totalGPUTime: gpuTime,
         throughputMBps,
-        parallelEfficiency,
+        parallelEfficiency
       },
       memoryUsage: this.getMemoryUsage(),
-      tensorCompressionRatio: enableCompression ? 0.3 : 1.0,
+      tensorCompressionRatio: enableCompression ? 0.3 : 1.0
     };
   }
 
@@ -362,25 +362,25 @@ export class SIMDGPUTilingEngine {
     const inputBuffer = this.device.createBuffer({
       size: imageData.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      label: 'Evidence-Input-Buffer',
+      label: 'Evidence-Input-Buffer'
     });
 
     const outputBuffer = this.device.createBuffer({
       size: totalTiles * tileSize * tileSize * 4, // Float32 output
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-      label: 'Evidence-Output-Buffer',
+      label: 'Evidence-Output-Buffer'
     });
 
     const metadataBuffer = this.device.createBuffer({
       size: totalTiles * 4 * 4, // 4 floats per tile metadata
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-      label: 'Tile-Metadata-Buffer',
+      label: 'Tile-Metadata-Buffer'
     });
 
     const configBuffer = this.device.createBuffer({
       size: 24, // 6 u32 values * 4 bytes
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      label: 'Config-Buffer',
+      label: 'Config-Buffer'
     });
 
     // Upload data
@@ -406,17 +406,17 @@ export class SIMDGPUTilingEngine {
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: outputBuffer } },
         { binding: 2, resource: { buffer: metadataBuffer } },
-        { binding: 3, resource: { buffer: configBuffer } },
-      ],
+        { binding: 3, resource: { buffer: configBuffer } }
+      ]
     });
 
     // Dispatch compute shader;
     const commandEncoder = this.device.createCommandEncoder({
-      label: 'Evidence-Tiling-Commands',
+      label: 'Evidence-Tiling-Commands'
     });
 
     const computePass = commandEncoder.beginComputePass({
-      label: 'Evidence-Tiling-Pass',
+      label: 'Evidence-Tiling-Pass'
     });
 
     computePass.setPipeline(this.computePipeline);
@@ -428,13 +428,13 @@ export class SIMDGPUTilingEngine {
     const outputStagingBuffer = this.device.createBuffer({
       size: outputBuffer.size,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      label: 'Output-Staging',
+      label: 'Output-Staging'
     });
 
     const metadataStagingBuffer = this.device.createBuffer({
       size: metadataBuffer.size,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      label: 'Metadata-Staging',
+      label: 'Metadata-Staging'
     });
 
     commandEncoder.copyBufferToBuffer(outputBuffer, 0, outputStagingBuffer, 0, outputBuffer.size);
@@ -484,9 +484,9 @@ export class SIMDGPUTilingEngine {
           confidence,
           processed: true,
           simdProcessTime: simdTime,
-          gpuProcessTime: performance.now() - gpuStart,
+          gpuProcessTime: performance.now() - gpuStart
         },
-        memoryRegion,
+        memoryRegion
       });
     }
 
@@ -566,9 +566,9 @@ export class SIMDGPUTilingEngine {
             confidence,
             processed: true,
             simdProcessTime: simdTime,
-            gpuProcessTime: 0,
+            gpuProcessTime: 0
           },
-          memoryRegion,
+          memoryRegion
         });
       }
     }
@@ -643,8 +643,8 @@ export class SIMDGPUTilingEngine {
             legalContext: {
               documentType: 'evidence',
               confidenceLevel: tile.metadata.confidence,
-              riskIndicator: tile.metadata.confidence > 0.8,
-            },
+              riskIndicator: tile.metadata.confidence > 0.8
+            }
           }
         );
       }
@@ -668,13 +668,13 @@ export class SIMDGPUTilingEngine {
             position: { x: tile.tileX, y: tile.tileY },
             confidence: tile.metadata.confidence,
             memoryRegion: tile.memoryRegion,
-            dataSize: tile.data.byteLength,
-          })),
+            dataSize: tile.data.byteLength
+          }))
         },
         {
           useGPUAcceleration: true,
           batchSize: tiles.length,
-          priority: 'high',
+          priority: 'high'
         }
       );
     } catch (error) {
@@ -741,7 +741,7 @@ export class SIMDGPUTilingEngine {
       throughputMBps: this.metrics.averageThroughput.toFixed(2),
       memoryEfficiency: (this.metrics.memoryEfficiency * 100).toFixed(1) + '%',
       cacheUtilization: this.tileCache.size,
-      memoryUsage: this.getMemoryUsage(),
+      memoryUsage: this.getMemoryUsage()
     };
   }
 
@@ -781,7 +781,7 @@ export function estimateProcessingTime(
 ): {
   estimatedSIMDTime: number;
   estimatedGPUTime: number;
-  estimatedTotalTime: number;,
+  estimatedTotalTime: number;
 } {
   const pixelCount = imageWidth * imageHeight;
   const complexity = pixelCount / (1920 * 1080); // Relative to 1080p

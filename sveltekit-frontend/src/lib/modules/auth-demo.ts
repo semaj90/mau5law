@@ -15,14 +15,14 @@ export class AuthDemo {
       email: 'attorney@lawfirm.com',
       name: 'Sarah Attorney',
       role: 'attorney',
-      isAuthenticated: true,
+      isAuthenticated: true
     },
     {
       id: 'user-2',
       email: 'paralegal@lawfirm.com',
       name: 'Mike Paralegal',
       role: 'paralegal',
-      isAuthenticated: true,
+      isAuthenticated: true
     }
   ];
 
@@ -84,7 +84,7 @@ export class AuthDemo {
       email: userData.email,
       name: userData.name,
       role: userData.role,
-      isAuthenticated: true,
+      isAuthenticated: true
     };
 
     this.demoUsers.push(newUser);
@@ -139,6 +139,6 @@ export const useAuthDemo = () => {
     createUser: authDemo.createUser.bind(authDemo),
     getCurrentUser: authDemo.getCurrentUser.bind(authDemo),
     isAuthenticated: authDemo.isAuthenticated.bind(authDemo),
-    getDemoUsers: authDemo.getDemoUsers.bind(authDemo),
+    getDemoUsers: authDemo.getDemoUsers.bind(authDemo)
   };
 };

@@ -24,7 +24,7 @@ interface RedisConfig {
 interface RedisConnectionPool {
   primary: Redis;
   subscriber: Redis;
-  publisher: Redis;,
+  publisher: Redis;
 }
 
 class RedisService {
@@ -46,7 +46,7 @@ class RedisService {
     lazyConnect: true,
     keepAlive: 30000,
     family: 4,
-    keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:',
+    keyPrefix: process.env.REDIS_KEY_PREFIX || 'legal-ai:'
   };
 
   /**
@@ -67,21 +67,21 @@ class RedisService {
         primary: new Redis({
           ...this.config,
           lazyConnect: false,
-          connectionName: 'legal-ai-primary',
+          connectionName: 'legal-ai-primary'
         }),
 
         // Separate connection for pub/sub operations;
         subscriber: new Redis({
           ...this.config,
           lazyConnect: false,
-          connectionName: 'legal-ai-subscriber',
+          connectionName: 'legal-ai-subscriber'
         }),
 
         publisher: new Redis({
           ...this.config,
           lazyConnect: false,
-          connectionName: 'legal-ai-publisher',
-        }),
+          connectionName: 'legal-ai-publisher'
+        })
       };
 
       // Set up event handlers
@@ -140,7 +140,7 @@ class RedisService {
     redis.on('reconnecting', (delay) => {
       console.log(`🔄 [RedisService] ${name} reconnecting in ${delay}ms...`);
       this.reconnectAttempts++;
-    ,});
+    });
   }
 
   /**
@@ -178,7 +178,7 @@ class RedisService {
         'JSON.SET',
         'test:json',
         '$',
-        '{"legal-ai": "ready"}',
+        '{"legal-ai": "ready"}'
       ]);
       await (this.pool.primary as any).sendCommand(['JSON.GET', 'test:json']);
       await this.pool.primary.del('test:json');
@@ -244,8 +244,8 @@ class RedisService {
       reconnectAttempts: this.reconnectAttempts,
       config: {
         ...this.config,
-        password: this.config.password ? '[REDACTED]' : undefined,
-      },
+        password: this.config.password ? '[REDACTED]' : undefined
+      }
     };
   }
 
@@ -470,7 +470,7 @@ class RedisService {
       embedding,
       metadata,
       cached_at: new Date().toISOString(),
-      dimension: embedding.length,
+      dimension: embedding.length
     };
     return await this.set(key, data);
   }
@@ -487,7 +487,7 @@ class RedisService {
       query,
       results,
       cached_at: new Date().toISOString(),
-      result_count: results.length,
+      result_count: results.length
     };
     return await this.set(key, data, ttl);
   }
@@ -505,7 +505,7 @@ class RedisService {
       operation,
       input_size: input.byteLength,
       result: Buffer.from(result).toString('base64'),
-      cached_at: new Date().toISOString(),
+      cached_at: new Date().toISOString()
     };
     return await this.set(key, data);
   }
@@ -527,7 +527,7 @@ class RedisService {
       quantized_size: quantized.byteLength,
       compression_ratio: vectors.byteLength / quantized.byteLength,
       quantized: Buffer.from(quantized).toString('base64'),
-      cached_at: new Date().toISOString(),
+      cached_at: new Date().toISOString()
     };
     return await this.set(key, data);
   }
@@ -598,7 +598,7 @@ class RedisService {
       await Promise.all([
         this.pool.primary.quit(),
         this.pool.subscriber.quit(),
-        this.pool.publisher.quit(),
+        this.pool.publisher.quit()
       ]);
 
       this.pool = null;

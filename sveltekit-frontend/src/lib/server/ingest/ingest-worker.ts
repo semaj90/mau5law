@@ -169,7 +169,7 @@ parentPort.on("message", async (job: Job) => {
           embedding = pooled;
           processingMetadata.videoEmbedding = {
             frameCount: embeddings.length,
-            poolingMethod: 'mean',
+            poolingMethod: 'mean'
           };
         }
       }
@@ -222,8 +222,8 @@ parentPort.on("message", async (job: Job) => {
           modality,
           processingMetadata,
           ...job.metadata
-        ,}),
-        createdAt: new Date(),
+        }),
+        createdAt: new Date()
       };
 
       const [result] = await db.insert(userDocuments).values(documentData).returning();
@@ -234,7 +234,7 @@ parentPort.on("message", async (job: Job) => {
         documentId: (result as { id?: any }).id,
         modality,
         textLength: textContent.length,
-        embeddingDimensions: embedding.length,
+        embeddingDimensions: embedding.length
       });
     } else {
       throw new Error("Failed to generate embedding for content");
@@ -244,7 +244,7 @@ parentPort.on("message", async (job: Job) => {
     parentPort!.postMessage({
       jobId: job.id,
       error: String(err),
-      filename: job.filename || 'unknown',
+      filename: job.filename || 'unknown'
     });
   }
 });

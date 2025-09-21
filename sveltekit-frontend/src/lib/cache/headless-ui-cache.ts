@@ -20,7 +20,7 @@ export interface CacheEntry<T = any> {
     hits: number;
     lastAccess: number;
     source: 'server' | 'client' | 'hybrid';
-    computeCost: number; // Relative cost to regenerate,
+    computeCost: number; // Relative cost to regenerate
   };
 }
 
@@ -37,7 +37,7 @@ export interface CacheStrategy {
 
   // Sync with server
   syncWithRedis: boolean; // Sync with server-side Redis
-  conflictResolution: 'client' | 'server' | 'merge';,
+  conflictResolution: 'client' | 'server' | 'merge';
 }
 
 export interface CacheConfig {
@@ -47,7 +47,7 @@ export interface CacheConfig {
   defaultTTL: number; // Default TTL in milliseconds
   embeddingDimensions: number; // For semantic caching
   syncInterval: number; // Sync with server interval (ms)
-  strategy: CacheStrategy;,
+  strategy: CacheStrategy;
 }
 
 export class HeadlessUICache {
@@ -75,9 +75,9 @@ export class HeadlessUICache {
         semantic: true,
         cost: true,
         syncWithRedis: true,
-        conflictResolution: 'server',
+        conflictResolution: 'server'
       },
-      ...config,
+      ...config
     };
 
     this.initialize();
@@ -208,8 +208,8 @@ export class HeadlessUICache {
         hits: 0,
         lastAccess: Date.now(),
         source,
-        computeCost: this.estimateComputeCost(data),
-      },
+        computeCost: this.estimateComputeCost(data)
+      }
     };
 
     // Generate semantic embedding if text provided;
@@ -346,7 +346,7 @@ export class HeadlessUICache {
       // Get server cache manifest;
       const response = await fetch('/api/cache/manifest', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       });
 
       if (!response.ok) return;
@@ -374,7 +374,7 @@ export class HeadlessUICache {
     try {
       const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       });
 
       if (!response.ok) return null;
@@ -402,8 +402,8 @@ export class HeadlessUICache {
           data: entry.data,
           ttl: entry.ttl,
           version: entry.version,
-          source: 'client',
-        }),
+          source: 'client'
+        })
       });
     } catch (error) {
       console.error('[HeadlessCache] Server sync failed:', error);
@@ -551,7 +551,7 @@ export class HeadlessUICache {
       memoryEntries: this.memoryCache.size,
       memorySize: this.calculateMemorySize(),
       maxMemorySize: this.config.maxMemorySize,
-      lastSync: this.syncTimer ? 'active' : 'inactive',
+      lastSync: this.syncTimer ? 'active' : 'inactive'
     };
   }
 

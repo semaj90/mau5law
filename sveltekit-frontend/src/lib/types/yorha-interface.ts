@@ -12,7 +12,7 @@ export interface SystemMetrics {
 	active_processes: number;
 	security_level: SecurityLevel;
 	quantum_state: QuantumState;
-	neural_activity: number;,
+	neural_activity: number;
 }
 
 export type SecurityLevel = 'MINIMUM' | 'STANDARD' | 'HIGH' | 'MAXIMUM' | 'CLASSIFIED';
@@ -54,7 +54,7 @@ export interface ModuleConfiguration {
 	resource_allocation: ResourceAllocation;
 	monitoring_enabled: boolean;
 	logging_level: LogLevel;
-	backup_enabled: boolean;,
+	backup_enabled: boolean;
 }
 
 export interface ResourceAllocation {
@@ -62,7 +62,7 @@ export interface ResourceAllocation {
 	memory_mb: number;
 	gpu_memory_mb?: number;
 	disk_space_mb: number;
-	network_bandwidth_mbps: number;,
+	network_bandwidth_mbps: number;
 }
 
 export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'CRITICAL';
@@ -100,7 +100,7 @@ export interface CommandDefinition {
 	examples: string[];
 	required_clearance: SecurityLevel;
 	module: string;
-	parameters: CommandParameter[];,
+	parameters: CommandParameter[];
 }
 
 export interface CommandParameter {
@@ -152,7 +152,7 @@ export type AnimationType =
 export interface Vector3D {
 	x: number;
 	y: number;
-	z: number;,
+	z: number;
 }
 
 export interface HolographicScene {
@@ -161,21 +161,21 @@ export interface HolographicScene {
 	objects: HolographicData[];
 	lighting: LightingConfig;
 	camera: CameraConfig;
-	effects: VisualEffect[];,
+	effects: VisualEffect[];
 }
 
 export interface LightingConfig {
 	ambient_color: string;
 	ambient_intensity: number;
 	directional_lights: DirectionalLight[];
-	point_lights: PointLight[];,
+	point_lights: PointLight[];
 }
 
 export interface DirectionalLight {
 	direction: Vector3D;
 	color: string;
 	intensity: number;
-	cast_shadows: boolean;,
+	cast_shadows: boolean;
 }
 
 export interface PointLight {
@@ -183,7 +183,7 @@ export interface PointLight {
 	color: string;
 	intensity: number;
 	range: number;
-	decay: number;,
+	decay: number;
 }
 
 export interface CameraConfig {
@@ -192,7 +192,7 @@ export interface CameraConfig {
 	field_of_view: number;
 	near_plane: number;
 	far_plane: number;
-	auto_rotate: boolean;,
+	auto_rotate: boolean;
 }
 
 // Visual Effects Types;
@@ -224,7 +224,7 @@ export interface ParticleSystem {
 	size: number;
 	color: string;
 	opacity: number;
-	physics_enabled: boolean;,
+	physics_enabled: boolean;
 }
 
 // Data Visualization Types;
@@ -257,7 +257,7 @@ export interface VisualizationConfig {
 	color_scheme: string[];
 	animation_speed: number;
 	show_labels: boolean;
-	show_connections: boolean;,
+	show_connections: boolean;
 }
 
 // Neural Network Types;
@@ -271,7 +271,7 @@ export interface NeuralNetworkState {
 	learning_rate: number;
 	error_rate: number;
 	training_status: TrainingStatus;
-	model_accuracy: number;,
+	model_accuracy: number;
 }
 
 export type TrainingStatus =
@@ -291,7 +291,7 @@ export interface NeuralNode {
 	activation: number;
 	bias: number;
 	connections: NeuralConnection[];
-	node_type: 'input' | 'hidden' | 'output';,
+	node_type: 'input' | 'hidden' | 'output';
 }
 
 export interface NeuralConnection {
@@ -299,7 +299,7 @@ export interface NeuralConnection {
 	to_node: string;
 	weight: number;
 	active: boolean;
-	signal_strength: number;,
+	signal_strength: number;
 }
 
 // Legal AI Specific Types;
@@ -314,7 +314,7 @@ export interface LegalAISession {
 	status: SessionStatus;
 	query_count: number;
 	processing_time_total: number;
-	context: LegalContext;,
+	context: LegalContext;
 }
 
 export type SessionStatus = 'ACTIVE' | 'IDLE' | 'PAUSED' | 'TERMINATED' | 'ERROR';
@@ -327,7 +327,7 @@ export interface LegalContext {
 	priority_level: number;
 	security_classification: SecurityLevel;
 	related_cases: string[];
-	key_entities: string[];,
+	key_entities: string[];
 }
 
 export interface LegalQuery {
@@ -361,7 +361,7 @@ export interface LegalResponse {
 	recommendations: string[];
 	risk_factors: RiskFactor[];
 	processing_time_ms: number;
-	model_used: string;,
+	model_used: string;
 }
 
 export interface LegalSource {
@@ -380,7 +380,7 @@ export interface RiskFactor {
 	severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 	probability: number; // 0-1
 	impact_score: number; // 0-10
-	mitigation_strategies: string[];,
+	mitigation_strategies: string[];
 }
 
 // System Monitoring Types;
@@ -419,7 +419,7 @@ export interface PerformanceReport {
 	error_rate: number;
 	resource_utilization: ResourceUtilization;
 	module_performance: ModulePerformance[];
-	alerts_count: number;,
+	alerts_count: number;
 }
 
 export interface ResourceUtilization {
@@ -436,7 +436,7 @@ export interface ModulePerformance {
 	avg_processing_time_ms: number;
 	error_count: number;
 	success_rate: number;
-	resource_usage: ResourceUtilization;,
+	resource_usage: ResourceUtilization;
 }
 
 // User Interface Types;
@@ -447,7 +447,7 @@ export interface UITheme {
 	colors: ColorPalette;
 	fonts: FontConfig;
 	effects: EffectSettings;
-	layout: LayoutConfig;,
+	layout: LayoutConfig;
 }
 
 export interface ColorPalette {
@@ -461,7 +461,7 @@ export interface ColorPalette {
 	success: string;
 	warning: string;
 	error: string;
-	hologram: string;,
+	hologram: string;
 }
 
 export interface FontConfig {
@@ -469,7 +469,7 @@ export interface FontConfig {
 	secondary_family: string;
 	mono_family: string;
 	base_size: string;
-	heading_scale: number;,
+	heading_scale: number;
 }
 
 export interface EffectSettings {
@@ -478,7 +478,7 @@ export interface EffectSettings {
 	glitch_frequency: number;
 	hologram_flicker: boolean;
 	particle_density: number;
-	animation_speed: number;,
+	animation_speed: number;
 }
 
 export interface LayoutConfig {
@@ -486,7 +486,7 @@ export interface LayoutConfig {
 	header_height: string;
 	panel_spacing: string;
 	border_radius: string;
-	grid_columns: number;,
+	grid_columns: number;
 }
 
 // API Integration Types;
@@ -499,7 +499,7 @@ export interface APIEndpoint {
 	authentication_required: boolean;
 	rate_limit?: number;
 	timeout_ms: number;
-	retry_attempts: number;,
+	retry_attempts: number;
 }
 
 export interface APIResponse<T = any> {
@@ -508,7 +508,7 @@ export interface APIResponse<T = any> {
 	error?: string;
 	timestamp: string;
 	request_id: string;
-	processing_time_ms: number;,
+	processing_time_ms: number;
 }
 
 // WebGL and Rendering Types;
@@ -522,7 +522,7 @@ export interface WebGLConfig {
 	depth_test: boolean;
 	stencil_test: boolean;
 	preserve_drawing_buffer: boolean;
-	power_preference: 'default' | 'high-performance' | 'low-power';,
+	power_preference: 'default' | 'high-performance' | 'low-power';
 }
 
 export interface ShaderProgram {
@@ -540,7 +540,7 @@ export interface RenderObject {
 	position: Vector3D;
 	rotation: Vector3D;
 	scale: Vector3D;
-	visible: boolean;,
+	visible: boolean;
 }
 
 export interface Geometry {
@@ -605,7 +605,7 @@ export interface SystemCapabilities {
 	max_texture_size: number;
 	max_render_buffer_size: number;
 	extensions: string[];
-	performance_tier: 'low' | 'medium' | 'high' | 'maximum';,
+	performance_tier: 'low' | 'medium' | 'high' | 'maximum';
 }
 
 // Export collections for easy importing

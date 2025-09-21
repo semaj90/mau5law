@@ -66,7 +66,7 @@ ${shapeObjects > 0 ? `- Identified ${shapeObjects} visual element(s) that could 
     console.error('Evidence canvas analysis error:', error);
     return json({ 
         error: 'Internal server error during analysis',
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -79,6 +79,6 @@ export const GET: RequestHandler = async () => {
     endpoints: {
       'POST /api/evidence-canvas/analyze': 'Analyze canvas content and objects'
     },
-    version: '1.0.0',
+    version: '1.0.0'
   });
 };

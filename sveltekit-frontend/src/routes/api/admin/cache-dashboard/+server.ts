@@ -16,25 +16,25 @@ interface CacheMetrics {
     status: string;
     memory: any;
     keyspace: any;
-    info: any;,
+    info: any;
   };
   vectorCache: {
     memory: any;
-    config: any;,
+    config: any;
   };
   summaryCache: {
-    memory: any;,
+    memory: any;
   };
   performance: {
     hitRates: any;
     avgResponseTimes: any;
-    topQueries: any[];,
+    topQueries: any[];
   };
   storage: {
     totalKeys: number;
     keysByPrefix: any;
     memoryUsage: string;
-    estimatedCost: string;,
+    estimatedCost: string;
   };
 }
 
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -143,28 +143,28 @@ async function getDashboardMetrics(timeRange: string): Promise<any> {
       totalKeys: allKeys.length,
       memoryUsage: redisInfo?.memory?.used_memory_human || 'N/A',
       uptime: redisInfo?.server?.uptime_in_seconds || 0,
-      connectedClients: redisInfo?.clients?.connected_clients || 0,
+      connectedClients: redisInfo?.clients?.connected_clients || 0
     },
     cache: {
       redis: {
         connected: redisStats.connected,
         status: redisStats.status,
         memory: redisInfo?.memory,
-        keyspace: redisInfo?.keyspace,
+        keyspace: redisInfo?.keyspace
       },
       vector: vectorStats,
-      summary: summaryStats,
+      summary: summaryStats
     },
     performance: {
       hitRates,
       responseTime: responseTimeMetrics,
-      keyDistribution: keysByPrefix,
+      keyDistribution: keysByPrefix
     },
     storage: {
       totalKeys: allKeys.length,
       keysByPrefix,
       memoryUsage: redisInfo?.memory?.used_memory_human || 'Unknown',
-      estimatedCostSavings: calculateCostSavings(hitRates),
+      estimatedCostSavings: calculateCostSavings(hitRates)
     }
   };
 }
@@ -192,12 +192,12 @@ async function getCacheKeys(pattern: string, limit: number): Promise<any> {
           type,
           ttl: ttl === -1 ? 'No expiration' : `${ttl}s`,
           memory: memory || 'Unknown',
-          prefix: key.split(':')[0] || 'no-prefix',
+          prefix: key.split(':')[0] || 'no-prefix'
         };
       } catch (error) {
         return {
           key,
-          error: 'Failed to get metadata',
+          error: 'Failed to get metadata'
         };
       }
     })
@@ -209,7 +209,7 @@ async function getCacheKeys(pattern: string, limit: number): Promise<any> {
     totalMatches: keys.length,
     returned: keyDetails.length,
     keys: keyDetails,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -248,11 +248,11 @@ async function getMemoryAnalysis(): Promise<any> {
       usedMemory: redisInfo?.memory?.used_memory_human,
       usedMemoryPeak: redisInfo?.memory?.used_memory_peak_human,
       memoryFragmentationRatio: redisInfo?.memory?.mem_fragmentation_ratio,
-      maxMemory: redisInfo?.memory?.maxmemory_human || 'No limit',
+      maxMemory: redisInfo?.memory?.maxmemory_human || 'No limit'
     },
     distribution: memoryByPrefix,
     recommendations: generateMemoryRecommendations(redisInfo?.memory),
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -270,16 +270,16 @@ async function getPerformanceMetrics(timeRange: string): Promise<any> {
       instantaneousOpsPerSec: redisInfo?.stats?.instantaneous_ops_per_sec || 0,
       keyspaceHits: redisInfo?.stats?.keyspace_hits || 0,
       keyspaceMisses: redisInfo?.stats?.keyspace_misses || 0,
-      hitRatio: calculateRedisHitRatio(redisInfo?.stats),
+      hitRatio: calculateRedisHitRatio(redisInfo?.stats)
     },
     network: {
       totalNetInput: redisInfo?.stats?.total_net_input_bytes || 0,
       totalNetOutput: redisInfo?.stats?.total_net_output_bytes || 0,
       instantaneousInputKbps: redisInfo?.stats?.instantaneous_input_kbps || 0,
-      instantaneousOutputKbps: redisInfo?.stats?.instantaneous_output_kbps || 0,
+      instantaneousOutputKbps: redisInfo?.stats?.instantaneous_output_kbps || 0
     },
     recommendations: generatePerformanceRecommendations(redisInfo),
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -294,7 +294,7 @@ async function getSystemHealth(): Promise<any> {
   const healthScore = calculateHealthScore({
     redis: isRedisHealthy,
     vectorCache: vectorStats.config.redisEnabled,
-    memory: true // Simplified for now,
+    memory: true // Simplified for now
   });
 
   return {
@@ -305,18 +305,18 @@ async function getSystemHealth(): Promise<any> {
       redis: {
         status: isRedisHealthy ? 'healthy' : 'unhealthy',
         connected: redisStats.connected,
-        reconnectAttempts: redisStats.reconnectAttempts,
+        reconnectAttempts: redisStats.reconnectAttempts
       },
       vectorCache: {
         status: vectorStats.config.redisEnabled ? 'healthy' : 'degraded',
-        memoryEntries: vectorStats.memory.vectorEntries + vectorStats.memory.embeddingEntries,
+        memoryEntries: vectorStats.memory.vectorEntries + vectorStats.memory.embeddingEntries
       },
       summaryCache: {
         status: 'healthy',
-        memoryStats: getSummaryMemoryStats(),
+        memoryStats: getSummaryMemoryStats()
       }
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -341,7 +341,7 @@ async function calculateHitRates(keys: string[]): Promise<any> {
     overall: 0.75, // 75% hit rate estimate
     vector: 0.80,
     summary: 0.85,
-    legal: 0.70,
+    legal: 0.70
   };
 }
 
@@ -422,7 +422,7 @@ async function clearCacheByPattern(pattern: string): Promise<any> {
     pattern,
     keysFound: keys.length,
     keysCleared: cleared,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 
@@ -431,7 +431,7 @@ async function warmPopularCache(queries: string[]): Promise<any> {
   return {
     success: true,
     message: 'Cache warming not yet implemented',
-    queries: queries.length,
+    queries: queries.length
   };
 }
 
@@ -454,6 +454,6 @@ async function optimizeMemoryUsage(): Promise<any> {
   return {
     success: true,
     message: 'Memory optimization not yet implemented',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }

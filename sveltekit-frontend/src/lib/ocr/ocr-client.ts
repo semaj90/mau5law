@@ -7,7 +7,7 @@ export type ImageSource = HTMLImageElement | HTMLCanvasElement | Blob | File | I
 export interface OCRResult {
   text: string;
   confidence?: number;
-  engine: 'tesseract' | 'server' | 'none';,
+  engine: 'tesseract' | 'server' | 'none';
 }
 
 async function toImageData(src: ImageSource): Promise<ImageData> {

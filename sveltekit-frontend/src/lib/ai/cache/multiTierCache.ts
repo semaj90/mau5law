@@ -92,7 +92,7 @@ export default class MultiTierCache<T = unknown> {
   async set(key: string, value: T, ttlMs?: number): Promise<void> {
 	const entry: CacheEntry<T> = {
 	  value,
-	  expiresAt: typeof ttlMs === 'number' ? this.now() + ttlMs : undefined,
+	  expiresAt: typeof ttlMs === 'number' ? this.now() + ttlMs : undefined
 	};
 	// set in memory (LRU)
 	if (this.memory.has(key)) this.memory.delete(key);

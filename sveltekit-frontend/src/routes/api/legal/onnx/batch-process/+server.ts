@@ -14,7 +14,7 @@ interface BatchResult {
   success: boolean;
   result?: any;
   error?: string;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
               result = { 
                 embeddings, 
                 dimensions: embeddings.length,
-                modelUsed: 'legal-bert-onnx',
+                modelUsed: 'legal-bert-onnx'
               };
               break;
             default:
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
             taskId: task.id,
             success: false,
             error: error.message,
-            processingTime: Date.now() - taskStartTime,
+            processingTime: Date.now() - taskStartTime
           };
         }
       });
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
             taskId: chunk[index].id,
             success: false,
             error: settledResult.reason?.message || 'Unknown error',
-            processingTime: 0,
+            processingTime: 0
           });
         }
       });
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalTime,
         averageProcessingTime,
         throughput: tasks.length / (totalTime / 1000), // tasks per second
-        concurrency: maxConcurrency,
+        concurrency: maxConcurrency
       }
     });
     
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ 
         success: false, 
         error: 'Batch processing failed', 
-        details: error.message ,
+        details: error.message 
       },)
       { status: 500 }
     );

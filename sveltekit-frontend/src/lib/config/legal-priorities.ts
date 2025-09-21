@@ -13,7 +13,7 @@ export interface LegalDocument {
   activeReview: boolean;
   lastAccessed: Date;
   fileSize: number;
-  isEvidenceCritical: boolean;,
+  isEvidenceCritical: boolean;
 }
 
 export type DocumentType = 
@@ -117,7 +117,7 @@ export const NES_MEMORY_MAP = {
     description: 'Active case documents and evidence',
     minPriority: 200,       // Only top 20% priority docs
     maxItems: 50,           // Limit number of documents
-    evictionPolicy: 'LRU'   // Least Recently Used,
+    evictionPolicy: 'LRU'   // Least Recently Used
   },
   
   // L2 Cache - Fast pattern cache (2MB);
@@ -127,7 +127,7 @@ export const NES_MEMORY_MAP = {
     description: 'UI patterns and frequently accessed docs',
     minPriority: 150,       // Top 40% priority docs
     maxItems: 200,          // More documents allowed
-    evictionPolicy: 'LFU'   // Least Frequently Used,
+    evictionPolicy: 'LFU'   // Least Frequently Used
   },
   
   // L3 Cache - Standard access (4MB);
@@ -137,7 +137,7 @@ export const NES_MEMORY_MAP = {
     description: 'General documents and case law',
     minPriority: 100,       // Top 60% priority docs
     maxItems: 1000,         // Large document set
-    evictionPolicy: 'FIFO'  // First In First Out,
+    evictionPolicy: 'FIFO'  // First In First Out
   },
   
   // Cold storage - Slow but unlimited;
@@ -147,7 +147,7 @@ export const NES_MEMORY_MAP = {
     description: 'Archived documents and references',
     minPriority: 0,         // All remaining docs
     maxItems: Infinity,     // No limit
-    evictionPolicy: 'none'  // Never evict,
+    evictionPolicy: 'none'  // Never evict
   }
 } as const;
 
@@ -243,6 +243,6 @@ export function analyzePriority(document: LegalDocument) {
     evidenceCriticalBoost: document.isEvidenceCritical,
     finalPriority: priority,
     memoryBank,
-    bankConfig: getMemoryBankConfig(memoryBank),
+    bankConfig: getMemoryBankConfig(memoryBank)
   };
 }

@@ -18,7 +18,7 @@ export interface JobState {
   error?: string;
   metadata?: Record<string, any>;
   createdAt: number;
-  updatedAt: number;,
+  updatedAt: number;
 }
 
 export class GlobalLokiStore {
@@ -105,7 +105,7 @@ export class GlobalLokiStore {
         }
       } else {
         // Insert new job
-        this.coll.insert({ ...update ,});
+        this.coll.insert({ ...update });
       }
     } catch (e) {
       console.warn('Failed to apply remote job update:', e);
@@ -135,7 +135,7 @@ export class GlobalLokiStore {
         Object.assign(existing, job);
         this.coll.update(existing);
       } else {
-        this.coll.insert({ ...job ,});
+        this.coll.insert({ ...job });
       }
     } catch (e) {
       console.warn('Failed to insert job locally:', e);
@@ -158,7 +158,7 @@ export class GlobalLokiStore {
     const updated: JobState = {
       ...existing,
       ...patch,
-      updatedAt: Date.now(),
+      updatedAt: Date.now()
     };
 
     // Update local collection;
@@ -179,7 +179,7 @@ export class GlobalLokiStore {
   async startProcessing(jobId: string): Promise<void> {
     return this.updateJob(jobId, {
       state: 'processing',
-      progress: 0,
+      progress: 0
     });
   }
 
@@ -217,7 +217,7 @@ export class GlobalLokiStore {
   async skipJob(jobId: string, reason: string): Promise<void> {
     return this.updateJob(jobId, {
       state: 'skipped',
-      error: reason,
+      error: reason
     });
   }
 

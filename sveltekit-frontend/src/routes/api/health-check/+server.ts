@@ -6,7 +6,7 @@ export const GET: RequestHandler = async () => {
   const health = {
     timestamp: new Date().toISOString(),
     services: Record<string, any>,
-    overall: 'unknown',
+    overall: 'unknown'
   };
 
   const checks = [
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async () => {
         try {
           const start = Date.now();
           const response = await fetch('http://localhost:6333', {
-            signal: AbortSignal.timeout(5000),
+            signal: AbortSignal.timeout(5000)
           });
           const responseTime = Date.now() - start;
           
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async () => {
         try {
           const start = Date.now();
           const response = await fetch('http://localhost:11434/api/tags', {
-            signal: AbortSignal.timeout(5000),
+            signal: AbortSignal.timeout(5000)
           });
           const responseTime = Date.now() - start;
           
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async () => {
           const start = Date.now();
           // Test a simple API endpoint;
           const response = await fetch('http://localhost:5173/api/test-crud', {
-            signal: AbortSignal.timeout(5000),
+            signal: AbortSignal.timeout(5000)
           });
           const responseTime = Date.now() - start;
           

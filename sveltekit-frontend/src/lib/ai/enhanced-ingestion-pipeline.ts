@@ -14,14 +14,14 @@ const neo4j = null as any;
 // Fallback error handler for when the module is not available;
 const errorHandler = {
   system: (message: string, data?: unknown) => console.error(`[SYSTEM] ${message}`, data),
-  analysis: (message: string, data?: unknown) => console.error(`[ANALYSIS] ${message}`, data),
+  analysis: (message: string, data?: unknown) => console.error(`[ANALYSIS] ${message}`, data)
 };
 import type { Document as LangChainDocumentType } from "@langchain/core/documents";
 import { resolveLibraryId, getLibraryDocs } from '$lib/mcp-context72-get-library-docs';
 // import { copilotOrchestrator } from "$lib/utils/mcp-helpers";
 // Mock copilot orchestrator function;
 const copilotOrchestrator = async (prompt: string, options: any): Promise<any> => ({
-  selfPrompt: "Mock copilot analysis completed",
+  selfPrompt: "Mock copilot analysis completed"
 });
 import type { DocumentEmbedding } from './som-rag-system.js';
 import { SelfOrganizingMapRAG } from './som-rag-system.js';
@@ -81,7 +81,7 @@ export interface TimelineSegment {
   event_type: string;
   description: string;
   confidence: number;
-  legal_significance: string;,
+  legal_significance: string;
 }
 
 export interface DetectedObject {
@@ -91,9 +91,9 @@ export interface DetectedObject {
     x: number;
     y: number;
     width: number;
-    height: number;,
+    height: number;
   };
-  legal_relevance: "high" | "medium" | "low";,
+  legal_relevance: "high" | "medium" | "low";
 }
 
 // Embedding for a document or evidence item
@@ -107,7 +107,7 @@ export interface CopilotArchitectureContext {
   architecture_summary: string;
   legal_context: string;
   copilot_patterns: string;
-  enhancement_priority: boolean;,
+  enhancement_priority: boolean;
 }
 
 export interface IngestionDocument {
@@ -135,7 +135,7 @@ export interface ProcessingResult {
     entities: string[];
     keywords: string[];
     confidence: number;
-    language: string;,
+    language: string;
   };
   vector_store_id?: string;
 }
@@ -165,7 +165,7 @@ export class EnhancedIngestionPipeline {
     failed: 0,
     avg_processing_time: 0,
     cluster_distribution: Record<string, any>,
-    evidence_type_distribution: Record<string, any>,
+    evidence_type_distribution: Record<string, any>
   };
   private copilotContext: CopilotArchitectureContext | null = null;
   private multimodalProcessors: Map<string, any> = new Map();
@@ -185,10 +185,10 @@ export class EnhancedIngestionPipeline {
   ) {
     // Initialize connections;
     this.qdrantClient = new QdrantClient({
-      url: config.qdrantUrl || "http://localhost:6333",
+      url: config.qdrantUrl || "http://localhost:6333"
     });
     this.pgPool = new Pool({
-      connectionString: config.pgConnectionString || import.meta.env.DATABASE_URL,
+      connectionString: config.pgConnectionString || import.meta.env.DATABASE_URL
     });
     this.neo4jDriver = neo4j.driver(
       config.neo4jUrl || "bolt://localhost:7687",
@@ -203,7 +203,7 @@ export class EnhancedIngestionPipeline {
       learningRate: 0.1,
       neighborhoodRadius: 2,
       maxEpochs: 100,
-      clusterCount: 8,
+      clusterCount: 8
     });
     
     this.qdrantService = new QdrantService();
@@ -227,7 +227,7 @@ export class EnhancedIngestionPipeline {
     } catch (error: any) {
       console.error("❌ Failed to initialize ingestion pipeline:", error);
       errorHandler.system("Pipeline initialization failed", {
-        error: error.message,
+        error: error.message
       });
       throw error;
     }
@@ -244,8 +244,8 @@ export class EnhancedIngestionPipeline {
         await this.qdrantClient.createCollection(collectionName, {
           vectors: {
             size: 384, // Default embedding size
-            distance: "Cosine",
-          },
+            distance: "Cosine"
+          }
         });
         console.log(`✅ Created collection: ${collectionName}`);
       }
@@ -274,7 +274,7 @@ export class EnhancedIngestionPipeline {
         legal_context: "Legal AI workflow with evidence processing",
         copilot_patterns:
           "SvelteKit + Drizzle ORM + Qdrant + multimodal analysis",
-        enhancement_priority: true,
+        enhancement_priority: true
       };
 
       console.log("✅ Copilot integration initialized");
@@ -292,22 +292,22 @@ export class EnhancedIngestionPipeline {
     // Mock processors for different evidence types;
     this.multimodalProcessors.set("image", {
       process: this.processImageEvidence.bind(this),
-      supportedFormats: ["jpg", "jpeg", "png", "tiff", "bmp"],
+      supportedFormats: ["jpg", "jpeg", "png", "tiff", "bmp"]
     });
 
     this.multimodalProcessors.set("video", {
       process: this.processVideoEvidence.bind(this),
-      supportedFormats: ["mp4", "avi", "mov", "mkv", "webm"],
+      supportedFormats: ["mp4", "avi", "mov", "mkv", "webm"]
     });
 
     this.multimodalProcessors.set("audio", {
       process: this.processAudioEvidence.bind(this),
-      supportedFormats: ["mp3", "wav", "flac", "m4a", "ogg"],
+      supportedFormats: ["mp3", "wav", "flac", "m4a", "ogg"]
     });
 
     this.multimodalProcessors.set("document", {
       process: this.processDocumentEvidence.bind(this),
-      supportedFormats: ["pdf", "docx", "txt", "rtf"],
+      supportedFormats: ["pdf", "docx", "txt", "rtf"]
     });
   }
 
@@ -328,8 +328,8 @@ export class EnhancedIngestionPipeline {
         evidence_type: "image",
         legal_category: this.determineLegalCategory(evidence),
         confidence: evidence.metadata.confidence_scores?.ocr || 0.8,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
     await this.storeInQdrant(docEmbedding);
     return docEmbedding;
@@ -352,8 +352,8 @@ export class EnhancedIngestionPipeline {
         evidence_type: "video",
         legal_category: this.determineLegalCategory(evidence),
         confidence: evidence.metadata.confidence_scores?.scene_analysis || 0.8,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
     await this.storeInQdrant(docEmbedding);
     return docEmbedding;
@@ -376,8 +376,8 @@ export class EnhancedIngestionPipeline {
         evidence_type: "audio",
         legal_category: this.determineLegalCategory(evidence),
         confidence: 0.8,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
     await this.storeInQdrant(docEmbedding);
     return docEmbedding;
@@ -400,8 +400,8 @@ export class EnhancedIngestionPipeline {
         evidence_type: "document",
         legal_category: this.determineLegalCategory(evidence),
         confidence: 0.9,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
     await this.storeInQdrant(docEmbedding);
     return docEmbedding;
@@ -439,8 +439,8 @@ export class EnhancedIngestionPipeline {
           evidence_type: document.metadata.evidence_type,
           legal_category: document.metadata.legal_category,
           confidence: extractedData.confidence,
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       };
       await this.storeInQdrant(docEmbedding);
       const vectorStoreId = document.id;
@@ -465,7 +465,7 @@ export class EnhancedIngestionPipeline {
         cluster_id: clusterId,
         processing_time: processingTime,
         extraction_metadata: extractedData,
-        vector_store_id: vectorStoreId,
+        vector_store_id: vectorStoreId
       };
 
       console.log(
@@ -475,7 +475,7 @@ export class EnhancedIngestionPipeline {
     } catch (error: any) {
       console.error(`❌ Failed to process document ${document.id}:`, error);
       errorHandler.analysis(`Document processing failed: ${document.id}`, {
-        error: error.message,
+        error: error.message
       });
       this.updateStats(
         document.metadata.evidence_type,
@@ -600,7 +600,7 @@ export class EnhancedIngestionPipeline {
         if (filters.evidence_type) {
           must.push({
             key: "evidence_type",
-            match: { value: filters.evidence_type },
+            match: { value: filters.evidence_type }
           });
         }
 
@@ -611,7 +611,7 @@ export class EnhancedIngestionPipeline {
         if (filters.confidence_threshold) {
           must.push({
             key: "confidence",
-            range: { gte: filters.confidence_threshold },
+            range: { gte: filters.confidence_threshold }
           });
         }
 
@@ -625,14 +625,14 @@ export class EnhancedIngestionPipeline {
         vector: queryEmbedding,
         limit,
         filter: Object.keys(qdrantFilter).length > 0 ? qdrantFilter : undefined,
-        with_payload: true,
+        with_payload: true
       });
 
       const documents = searchResults.map((result: any) => ({
         id: (result as { id?: any; payload?: any; score?: any }).id,
         content: (result as { id?: any; payload?: any; score?: any }).payload?.content || "",
         score: (result as { id?: any; payload?: any; score?: any }).score,
-        metadata: (result as { id?: any; payload?: any; score?: any }).payload?.metadata || {},
+        metadata: (result as { id?: any; payload?: any; score?: any }).payload?.metadata || {}
       });
 
       const clustersSearched: number[] = Array.from(
@@ -644,19 +644,19 @@ export class EnhancedIngestionPipeline {
       return {
         documents,
         clusters_searched: clustersSearched,
-        processing_time: processingTime,
+        processing_time: processingTime
       };
     } catch (error: any) {
       console.error("❌ Enhanced search failed:", error);
       errorHandler.analysis("Enhanced search failed", {
         query,
-        error: error.message,
+        error: error.message
       });
 
       return {
         documents: [],
         clusters_searched: [],
-        processing_time: Date.now() - startTime,
+        processing_time: Date.now() - startTime
       };
     }
   }
@@ -672,7 +672,7 @@ export class EnhancedIngestionPipeline {
     return {
       ...this.stats,
       queue_size: this.processingQueue.length,
-      is_processing: this.isProcessing,
+      is_processing: this.isProcessing
     };
   }
 
@@ -726,7 +726,7 @@ export class EnhancedIngestionPipeline {
       "damages",
       "settlement",
       "appeal",
-      "ruling",
+      "ruling"
     ];
 
     // Calculate term frequencies and apply legal term weighting;
@@ -772,7 +772,7 @@ export class EnhancedIngestionPipeline {
       "forensic",
       "case",
       "defendant",
-      "plaintiff",
+      "plaintiff"
     ];
 
     const foundKeywords = words.filter((word) => legalKeywords.includes(word);
@@ -782,7 +782,7 @@ export class EnhancedIngestionPipeline {
       entities,
       keywords: foundKeywords,
       confidence: Math.min(foundKeywords.length / 10, 1.0),
-      language: "en",
+      language: "en"
     };
   }
 
@@ -800,12 +800,12 @@ export class EnhancedIngestionPipeline {
     const clusterId = Math.floor(Math.random() * 8);
     const booleanPattern = [
       [Math.random() > 0.5, Math.random() > 0.5],
-      [Math.random() > 0.5, Math.random() > 0.5],
+      [Math.random() > 0.5, Math.random() > 0.5]
     ];
 
     return {
       cluster: clusterId,
-      boolean_pattern: booleanPattern,
+      boolean_pattern: booleanPattern
     };
   }
 
@@ -820,10 +820,10 @@ export class EnhancedIngestionPipeline {
             vector: document.embedding,
             payload: {
               content: document.content,
-              metadata: document.metadata,
-            },
-          },
-        ],
+              metadata: document.metadata
+            }
+          }
+        ]
       });
     } catch (error: any) {
       console.error("Failed to store document in Qdrant:", error);
@@ -920,8 +920,8 @@ export class EnhancedIngestionPipeline {
           filename: evidence.metadata.filename,
           file_size: evidence.metadata.size,
           mime_type: evidence.metadata.mime_type,
-          confidence_score: evidence.metadata.confidence_scores?.legal_relevance || 0.8,
-        },
+          confidence_score: evidence.metadata.confidence_scores?.legal_relevance || 0.8
+        }
       };
 
       // 4. Process through standard ingestion pipeline
@@ -939,7 +939,7 @@ export class EnhancedIngestionPipeline {
         processing_result: pipelineResult,
         anchor_points: anchorPoints,
         timeline_segments: timelineSegments,
-        copilot_analysis: copilotAnalysis,
+        copilot_analysis: copilotAnalysis
       };
     } catch (error: any) {
       console.error(
@@ -987,8 +987,8 @@ export class EnhancedIngestionPipeline {
         context: {
           evidence_type: evidence.type,
           case_id: evidence.metadata.case_id,
-          copilot_context: this.copilotContext,
-        },
+          copilot_context: this.copilotContext
+        }
       });
 
       return (
@@ -1011,7 +1011,7 @@ export class EnhancedIngestionPipeline {
     const parts = [
       `Evidence Type: ${evidence.type}`,
       `Filename: ${evidence.metadata.filename}`,
-      `Case ID: ${evidence.metadata.case_id}`,
+      `Case ID: ${evidence.metadata.case_id}`
     ];
 
     if (processingResult.extracted_content?.text) {
@@ -1076,7 +1076,7 @@ export class EnhancedIngestionPipeline {
       case "forensic":
         return "forensic";
       default:
-        return "digital";,
+        return "digital";
     }
   }
 
@@ -1104,7 +1104,7 @@ export class EnhancedIngestionPipeline {
     // Use enhanced search from parent class;
     const searchResults = await this.enhancedSearch(query, {
       evidence_type: filters?.evidence_types?.[0],
-      confidence_threshold: filters?.confidence_threshold,
+      confidence_threshold: filters?.confidence_threshold
     });
 
     // Add anchor point context
@@ -1135,7 +1135,7 @@ export class EnhancedIngestionPipeline {
           useSemanticSearch: true,
           useMemory: true,
           synthesizeOutputs: true,
-          context: { query, evidence_count: searchResults.documents.length },
+          context: { query, evidence_count: searchResults.documents.length }
         });
 
         copilotInsights = insights.selfPrompt || "";
@@ -1147,7 +1147,7 @@ export class EnhancedIngestionPipeline {
     return {
       results: searchResults.documents,
       anchor_context: anchorContext,
-      copilot_insights: copilotInsights,
+      copilot_insights: copilotInsights
     };
   }
 }

@@ -62,7 +62,7 @@ const createUserStore = () => {
     },
     // Update a specific property of the user;
     updateUser: (props: any) => {
-      update((user) => ({ ...user, ...props ,});
+      update((user) => ({ ...user, ...props });
     },
     // Select a case for the user;
     selectCase: (caseId: string | null) => {
@@ -70,7 +70,7 @@ const createUserStore = () => {
         user.caseId = caseId;
         return user;
       });
-    },
+    }
   };
 };
 

@@ -82,7 +82,7 @@ const createFallbackAnalysis = (
   relationships: [],
   timestamp: new Date(),
   processingTime: 0,
-  gpuAccelerated: Boolean(options.useGPUAcceleration),
+  gpuAccelerated: Boolean(options.useGPUAcceleration)
 });
 const ollamaService = {
   async generateCompletion(_: any) {
@@ -125,7 +125,7 @@ class EvidenceAIService {
       tags: Array.isArray(evidenceData.tags) ? (evidenceData.tags as string[]) : [],
       fileType: evidenceData.fileType,
       location: evidenceData.location,
-      collectedBy: evidenceData.collectedBy,
+      collectedBy: evidenceData.collectedBy
     };
 
     try {
@@ -142,7 +142,7 @@ class EvidenceAIService {
                 title: context.title,
                 description: context.description,
                 evidenceType: context.evidenceType,
-                tags: context.tags,
+                tags: context.tags
               },
               options: {
                 useGPU: true,
@@ -150,7 +150,7 @@ class EvidenceAIService {
                 extractEntities: true,
                 generateSummary: true,
                 findRelationships: true,
-                calculateConfidence: true,
+                calculateConfidence: true
               }
             })
           });
@@ -184,7 +184,7 @@ class EvidenceAIService {
               entities: [],
               keywords: context.tags,
               relationships: [],
-              classification: 'evidence_analysis',
+              classification: 'evidence_analysis'
             };
           }
         } catch (err: any) {
@@ -195,7 +195,7 @@ class EvidenceAIService {
             entities: [],
             keywords: context.tags,
             relationships: [],
-            classification: 'fallback_analysis',
+            classification: 'fallback_analysis'
           };
         }
       }
@@ -214,7 +214,7 @@ class EvidenceAIService {
         relationships: analysisResult?.relationships ?? [],
         timestamp: new Date(),
         processingTime,
-        gpuAccelerated: Boolean(options.useGPUAcceleration),
+        gpuAccelerated: Boolean(options.useGPUAcceleration)
       };
     } catch (error: any) {
       console.error('Evidence AI analysis failed:', error);
@@ -230,7 +230,7 @@ class EvidenceAIService {
         relationships: [],
         timestamp: new Date(),
         processingTime: Date.now() - startTime,
-        gpuAccelerated: false,
+        gpuAccelerated: false
       };
     }
   }
@@ -279,7 +279,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!caseId) {
       return json({
         success: false,
-        error: 'caseId parameter is required',
+        error: 'caseId parameter is required'
       }, { status: 400 });
     }
 
@@ -302,7 +302,7 @@ export const GET: RequestHandler = async ({ url }) => {
         limit,
         offset,
         total: evidenceResults.length,
-        hasMore: evidenceResults.length === limit,
+        hasMore: evidenceResults.length === limit
       },
       filters: { caseId, evidenceType, analyzed, search }
     });
@@ -311,7 +311,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Evidence fetch error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -351,9 +351,9 @@ export const POST: RequestHandler = async ({ request }) => {
             type: 'evidence_analysis',
             evidenceId: newEvidence.id,
             caseId: caseId,
-            evidenceType: evidenceType,
+            evidenceType: evidenceType
           },
-          priority: caseDetails.priority === 'urgent' ? 3 : 1,
+          priority: caseDetails.priority === 'urgent' ? 3 : 1
         });
 
         // Generate AI analysis using enhanced service;
@@ -362,7 +362,7 @@ export const POST: RequestHandler = async ({ request }) => {
           priority: caseDetails.priority === 'urgent' ? 'high' : 'normal',
           notify: false,
           saveIntermediateResults: true,
-          overrideExisting: false,
+          overrideExisting: false
         };
 
         aiAnalysisResult = await evidenceAI.analyzeEvidence(newEvidence as any, analysisOptions);
@@ -387,7 +387,7 @@ export const POST: RequestHandler = async ({ request }) => {
           embeddingJobId,
           analysisTriggered: true,
           detectiveMode: true,
-          aiAnalysis: aiAnalysisResult,
+          aiAnalysis: aiAnalysisResult
         }
       }, { status: 201 });
     }
@@ -397,7 +397,7 @@ export const POST: RequestHandler = async ({ request }) => {
       evidence: newEvidence,
       analysis: {
         analysisTriggered: false,
-        detectiveMode: false,
+        detectiveMode: false
       }
     }, { status: 201 });
   } catch (error: any) {
@@ -417,7 +417,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     if (!evidenceId) {
       return json({ 
         success: false,
-        error: 'Evidence ID is required' ,
+        error: 'Evidence ID is required' 
       }, { status: 400 });
     }
 
@@ -440,9 +440,9 @@ export const PATCH: RequestHandler = async ({ request }) => {
                   type: 'evidence_analysis',
                   evidenceId: evidenceId,
                   caseId: evidenceDetails.caseId,
-                  evidenceType: evidenceDetails.evidenceType,
+                  evidenceType: evidenceDetails.evidenceType
                 },
-                priority: 2,
+                priority: 2
               });
             }
           }
@@ -450,14 +450,14 @@ export const PATCH: RequestHandler = async ({ request }) => {
           return json({ 
             success: true,
             analysis: analysisResult, 
-            status: 'completed' ,
+            status: 'completed' 
           });
 
         } catch (err: any) {
           console.error('Analysis action failed:', err);
           return json({ 
             success: false,
-            error: 'Analysis failed' ,
+            error: 'Analysis failed' 
           }, { status: 500 });
         }
       }
@@ -468,7 +468,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
           if (!updateData) {
             return json({
               success: false,
-              error: 'Update data is required',
+              error: 'Update data is required'
             }, { status: 400 });
           }
 
@@ -476,14 +476,14 @@ export const PATCH: RequestHandler = async ({ request }) => {
 
           return json({
             success: true,
-            evidence: updatedEvidence,
+            evidence: updatedEvidence
           });
 
         } catch (err: any) {
           console.error('Update action failed:', err);
           return json({
             success: false,
-            error: 'Update failed',
+            error: 'Update failed'
           }, { status: 500 });
         }
       }
@@ -498,7 +498,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     console.error('Evidence processing error:', error);
     return json({ 
       success: false,
-      error: 'Processing failed' ,
+      error: 'Processing failed' 
     }, { status: 500 });
   }
 };
@@ -511,7 +511,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!id) {
       return json({
         success: false,
-        error: 'Evidence ID is required',
+        error: 'Evidence ID is required'
       }, { status: 400 });
     }
 
@@ -526,7 +526,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('Evidence update error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -538,7 +538,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     if (!id) {
       return json({
         success: false,
-        error: 'Evidence ID is required',
+        error: 'Evidence ID is required'
       }, { status: 400 });
     }
 
@@ -546,14 +546,14 @@ export const DELETE: RequestHandler = async ({ request }) => {
 
     return json({
       success: true,
-      message: 'Evidence deleted successfully',
+      message: 'Evidence deleted successfully'
     });
 
   } catch (error: any) {
     console.error('Evidence deletion error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

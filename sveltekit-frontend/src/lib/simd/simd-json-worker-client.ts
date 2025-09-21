@@ -99,7 +99,7 @@ export class SIMDJSONWorkerClient {
         pending.resolve({
           data: message.data,
           metadata: message.metadata,
-          success: true,
+          success: true
         });
         break;
         
@@ -135,7 +135,7 @@ export class SIMDJSONWorkerClient {
       this.pendingRequests.set(id, {
         resolve,
         reject,
-        timeout: timeoutId,
+        timeout: timeoutId
       });
       
       // Send message to worker;
@@ -249,7 +249,7 @@ export class SIMDJSONWorkerClient {
         totalTime: 0,
         avgTime: 0,
         errors: 0,
-        simdReady: false,
+        simdReady: false
       };
     }
     

@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       userContext,
       neo4jContext,
-      limit = 8,
+      limit = 8
     } = await request.json();
     // Run enhanced search with Neo4j context
     const reranked = await enhancedSearchWithNeo4j(
@@ -40,10 +40,10 @@ export const POST: RequestHandler = async ({ request }) => {
       answer,
       references: highScoreRecommendations.map((r) => ({
         id: r.id,
-        score: r.finalScore,
+        score: r.finalScore
       })),
       confidence: highScoreRecommendations[0]?.finalScore || 0,
-      highScoreRecommendations,
+      highScoreRecommendations
     });
   } catch (error: any) {
     return json(

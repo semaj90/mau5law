@@ -21,18 +21,18 @@ export async function testOrchestratorIntegration(): Promise<any> {
       content: 'Hello! Can you explain what a contract is in simple terms?',
       context: {
         userId: 'test-user',
-        sessionId: 'test-session',
+        sessionId: 'test-session'
       },
       options: {
         model: 'auto',
         priority: 'normal',
         temperature: 0.3,
-        maxTokens: 200,
+        maxTokens: 200
       },
       metadata: {
         source: 'api' as const,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     const chatResult = await llmOrchestratorBridge.processRequest(chatRequest);
@@ -42,7 +42,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       orchestrator: chatResult.orchestratorUsed,
       model: chatResult.modelUsed,
       latency: chatResult.executionMetrics.totalLatency,
-      response: chatResult.response.substring(0, 100) + '...',
+      response: chatResult.response.substring(0, 100) + '...'
     });
 
     if (chatResult.success) {
@@ -56,7 +56,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     results.push({
       test: 'Basic Chat',
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
 
@@ -72,18 +72,18 @@ export async function testOrchestratorIntegration(): Promise<any> {
       context: {
         userId: 'test-user',
         sessionId: 'test-session',
-        legalDomain: 'contract',
+        legalDomain: 'contract'
       },
       options: {
         model: 'auto',
         priority: 'normal',
         temperature: 0.2,
-        maxTokens: 300,
+        maxTokens: 300
       },
       metadata: {
         source: 'api' as const,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     const legalResult = await llmOrchestratorBridge.processRequest(legalRequest);
@@ -94,7 +94,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       model: legalResult.modelUsed,
       latency: legalResult.executionMetrics.totalLatency,
       confidence: legalResult.confidence,
-      response: legalResult.response.substring(0, 100) + '...',
+      response: legalResult.response.substring(0, 100) + '...'
     });
 
     if (legalResult.success) {
@@ -110,7 +110,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     results.push({
       test: 'Legal Analysis',
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
 
@@ -125,16 +125,16 @@ export async function testOrchestratorIntegration(): Promise<any> {
       content: 'Contract law governs the formation and enforcement of agreements between parties.',
       context: {
         userId: 'test-user',
-        sessionId: 'test-session',
+        sessionId: 'test-session'
       },
       options: {
         model: 'auto',
-        priority: 'normal',
+        priority: 'normal'
       },
       metadata: {
         source: 'api' as const,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     const embeddingResult = await llmOrchestratorBridge.processRequest(embeddingRequest);
@@ -147,7 +147,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       response:
         typeof embeddingResult.response === 'string'
           ? `Generated ${embeddingResult.response.length} chars`
-          : 'Embedding generated',
+          : 'Embedding generated'
     });
 
     if (embeddingResult.success) {
@@ -163,7 +163,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     results.push({
       test: 'Embedding Generation',
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
 
@@ -178,19 +178,19 @@ export async function testOrchestratorIntegration(): Promise<any> {
       content: 'Quick question: Is verbal agreement legally binding?',
       context: {
         userId: 'test-user',
-        sessionId: 'test-session',
+        sessionId: 'test-session'
       },
       options: {
         model: 'auto',
         priority: 'realtime',
         maxLatency: 500,
         temperature: 0.4,
-        maxTokens: 150,
+        maxTokens: 150
       },
       metadata: {
         source: 'api' as const,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     const realtimeResult = await llmOrchestratorBridge.processRequest(realtimeRequest);
@@ -201,7 +201,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       model: realtimeResult.modelUsed,
       latency: realtimeResult.executionMetrics.totalLatency,
       metLatencyTarget: realtimeResult.executionMetrics.totalLatency < 500,
-      response: realtimeResult.response.substring(0, 100) + '...',
+      response: realtimeResult.response.substring(0, 100) + '...'
     });
 
     if (realtimeResult.success) {
@@ -219,7 +219,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     results.push({
       test: 'Realtime Chat',
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
 
@@ -239,7 +239,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       successRate: metrics.successfulRequests / Math.max(metrics.totalRequests, 1),
       averageLatency: metrics.averageLatency,
       serverOrchestrator: status.serverOrchestrator.status || 'unknown',
-      clientOrchestrator: status.clientOrchestrator.modelsLoaded || 0,
+      clientOrchestrator: status.clientOrchestrator.modelsLoaded || 0
     });
 
     successCount++;
@@ -255,7 +255,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
     results.push({
       test: 'Bridge Status',
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
 
@@ -273,7 +273,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
   return {
     success: successCount === totalTests,
     results,
-    summary,
+    summary
   };
 }
 
@@ -286,13 +286,13 @@ export async function quickHealthCheck(): Promise<any> {
     return {
       healthy,
       status,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (error) {
     return {
       healthy: false,
       status: { error: error instanceof Error ? error.message: 'Unknown error' },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 }
@@ -308,7 +308,7 @@ export async function testSpecificOrchestrator(
     content,
     context: {
       userId: 'test-user',
-      sessionId: 'test-session',
+      sessionId: 'test-session'
     },
     options: {
       model:
@@ -319,12 +319,12 @@ export async function testSpecificOrchestrator(
             : 'auto',
       priority: 'normal',
       temperature: 0.3,
-      maxTokens: 200,
+      maxTokens: 200
     },
     metadata: {
       source: 'api' as const,
-      timestamp: Date.now(),
-    },
+      timestamp: Date.now()
+    }
   };
 
   try {
@@ -338,13 +338,13 @@ export async function testSpecificOrchestrator(
         (orchestratorType === 'mcp' && (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).orchestratorUsed === 'hybrid'),
       response: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).response,
       metrics: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).executionMetrics,
-      error: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).error,
+      error: (result as { success?: any; orchestratorUsed?: any; response?: any; executionMetrics?: any; error?: any }).error
     };
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      expectedOrchestrator: orchestratorType,
+      expectedOrchestrator: orchestratorType
     };
   }
 }

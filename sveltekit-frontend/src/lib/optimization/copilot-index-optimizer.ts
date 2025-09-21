@@ -17,7 +17,7 @@ export interface Context7Pattern {
   priority: 'high' | 'medium' | 'low';
   category: 'svelte5' | 'sveltekit' | 'typescript' | 'drizzle' | 'ui' | 'ai';
   boostFactor: number;
-  keywords: string[];,
+  keywords: string[];
 }
 
 // Enhanced index optimization configuration;
@@ -28,7 +28,7 @@ export interface OptimizationConfig {
   enablePerformanceOptimization: boolean;
   minRelevanceThreshold: number;
   maxCacheSize: number;
-  compressionRatio: number;,
+  compressionRatio: number;
 }
 
 // Pre-defined Context7 patterns for enhanced Copilot suggestions
@@ -93,7 +93,7 @@ export class CopilotIndexOptimizer {
     searchTime: 0,
     cacheHits: 0,
     totalOptimizations: 0,
-    patternMatches: 0,
+    patternMatches: 0
   };
 
   constructor(config: Partial<OptimizationConfig> = {}) {
@@ -105,7 +105,7 @@ export class CopilotIndexOptimizer {
       minRelevanceThreshold: 0.6,
       maxCacheSize: 1000,
       compressionRatio: 0.7,
-      ...config,
+      ...config
     };
   }
 
@@ -140,9 +140,9 @@ export class CopilotIndexOptimizer {
           totalTokens: optimizedEntries.reduce((sum, entry) => sum + entry.metadata.tokens, 0),
           avgEmbeddingTime: this.performanceMetrics.optimizationTime / optimizedEntries.length,
           indexSizeMB: this.calculateIndexSize(optimizedEntries),
-          lastUpdated: Date.now(),
+          lastUpdated: Date.now()
         },
-        clusters: semanticClusters,
+        clusters: semanticClusters
       };
 
       // Integrate with Enhanced RAG store
@@ -190,7 +190,7 @@ export class CopilotIndexOptimizer {
       // Step 1: Perform base semantic search;
       const baseResults = (await simdIndexProcessor.semanticSearch(query, this.optimizedIndex, {
         limit: limit * 2,
-        preferEnhanced: true,
+        preferEnhanced: true
       })) as RAGSearchResult[];
 
       // Step 2: Apply Context7 pattern boosting
@@ -273,9 +273,9 @@ export class CopilotIndexOptimizer {
           relevanceScore: 0.8,
           timestamp: Date.now(),
           fileSize: section.content.length,
-          tokens: Math.ceil(section.content.length / 4),
+          tokens: Math.ceil(section.content.length / 4)
         },
-        semanticChunks: await this.generateSemanticChunks(section.content),
+        semanticChunks: await this.generateSemanticChunks(section.content)
       });
     }
 
@@ -288,9 +288,9 @@ export class CopilotIndexOptimizer {
         totalTokens: entries.reduce((sum, entry) => sum + entry.metadata.tokens, 0),
         avgEmbeddingTime: 0,
         indexSizeMB: 0,
-        lastUpdated: Date.now(),
+        lastUpdated: Date.now()
       },
-      clusters: [],
+      clusters: []
     };
   }
 
@@ -327,7 +327,7 @@ export class CopilotIndexOptimizer {
         title: headerText,
         content: sectionContent,
         priority: this.determineSectionPriority(headerText, sectionContent),
-        language: 'markdown',
+        language: 'markdown'
       });
     }
 
@@ -342,7 +342,7 @@ export class CopilotIndexOptimizer {
         title: `Code: ${language}`,
         content: code,
         priority: this.determineCodePriority(language, code),
-        language,
+        language
       });
     }
 
@@ -458,8 +458,8 @@ export class CopilotIndexOptimizer {
           lastModified: new Date(),
           fileSize: entry.metadata.fileSize,
           language: entry.language || 'unknown',
-          tags: [],
-        },
+          tags: []
+        }
       });
     }
 
@@ -576,7 +576,7 @@ export class CopilotIndexOptimizer {
       previousLines,
       nextLines,
       cursorPosition: cursor,
-      fullContext: code,
+      fullContext: code
     };
   }
 
@@ -591,7 +591,7 @@ export class CopilotIndexOptimizer {
         case 'typescript':
           return pattern.category === 'typescript' || pattern.category === 'sveltekit';
         default:
-          return true;,
+          return true;
       }
     });
 
@@ -599,7 +599,7 @@ export class CopilotIndexOptimizer {
       const contextText = [
         context.currentLine,
         ...context.previousLines,
-        ...context.nextLines,
+        ...context.nextLines
       ].join(' ');
 
       return this.findMatchingPatterns(contextText).includes(pattern);
@@ -648,7 +648,7 @@ export class CopilotIndexOptimizer {
         priority: 0.9,
         category: 'svelte5',
         confidence: 0.85,
-        context7Pattern: pattern.id,
+        context7Pattern: pattern.id
       });
     }
 
@@ -658,7 +658,7 @@ export class CopilotIndexOptimizer {
         priority: 0.8,
         category: 'svelte5',
         confidence: 0.8,
-        context7Pattern: pattern.id,
+        context7Pattern: pattern.id
       });
     }
 
@@ -674,7 +674,7 @@ export class CopilotIndexOptimizer {
         priority: 0.85,
         category: 'sveltekit',
         confidence: 0.9,
-        context7Pattern: pattern.id,
+        context7Pattern: pattern.id
       });
     }
 
@@ -781,9 +781,9 @@ export class CopilotIndexOptimizer {
           lastModified: new Date(entry.metadata.timestamp),
           fileSize: entry.metadata.fileSize,
           language: entry.language,
-          tags: [entry.metadata.priority, entry.metadata.source],
+          tags: [entry.metadata.priority, entry.metadata.source]
         },
-        version: '1.0',
+        version: '1.0'
       };
 
       await enhancedRAGStore.addDocument(ragDocument);
@@ -798,7 +798,7 @@ export class CopilotIndexOptimizer {
       ...this.performanceMetrics,
       cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalOptimizations, 1),
       avgOptimizationTime: this.performanceMetrics.optimizationTime / Math.max(this.performanceMetrics.totalOptimizations, 1),
-      avgSearchTime: this.performanceMetrics.searchTime / Math.max(this.performanceMetrics.totalOptimizations, 1),
+      avgSearchTime: this.performanceMetrics.searchTime / Math.max(this.performanceMetrics.totalOptimizations, 1)
     };
   }
 
@@ -813,7 +813,7 @@ export class CopilotIndexOptimizer {
       searchTime: 0,
       cacheHits: 0,
       totalOptimizations: 0,
-      patternMatches: 0,
+      patternMatches: 0
     };
   }
 }
@@ -826,6 +826,6 @@ export const copilotIndexOptimizer = new CopilotIndexOptimizer({
   enablePerformanceOptimization: true,
   minRelevanceThreshold: 0.7,
   maxCacheSize: 500,
-  compressionRatio: 0.8,
+  compressionRatio: 0.8
 });
 

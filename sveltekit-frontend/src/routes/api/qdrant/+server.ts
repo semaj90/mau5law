@@ -74,7 +74,7 @@ function getOptimizedQdrantConfig(vectorSize: number) {
   const config: any = {
     vectors: {
       size: vectorSize,
-      distance: "Cosine",
+      distance: "Cosine"
     },
     optimizers_config: {
       deleted_threshold: 0.2,
@@ -83,11 +83,11 @@ function getOptimizedQdrantConfig(vectorSize: number) {
       max_segment_size: process.platform === 'win32' ? 200000 : null, // Limit segment size on Windows
       memmap_threshold: process.platform === 'win32' ? 50000 : 20000, // Higher threshold on Windows
       indexing_threshold: process.platform === 'win32' ? 30000 : 20000, // Adjusted for Windows I/O
-      flush_interval_sec: 10,
+      flush_interval_sec: 10
     },
     wal_config: {
       wal_capacity_mb: process.platform === 'win32' ? 64 : 32, // More WAL capacity on Windows
-      wal_segments_ahead: 1,
+      wal_segments_ahead: 1
     }
   };
 
@@ -121,13 +121,13 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_sync:${clientIP}:${locals.user?.id || 'anonymous'}`,
       ...rateLimitConfig
-    ,});
+    });
 
     if (!rateLimitResult.allowed) {
       return json({
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },);
         { 
           status: 429,
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     if (!locals.user || locals.user.role !== "admin") {
       return json({
           success: false,
-          error: "Admin privileges required for sync operations",
+          error: "Admin privileges required for sync operations"
         },)
         { status: 403 }
       );
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             collection,
             message: "PostgreSQL sync implementation needed",
             batchSize,
-            windowsOptimized: process.platform === 'win32',
+            windowsOptimized: process.platform === 'win32'
           };
           break;
         }
@@ -214,10 +214,10 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             limit,
             rateLimit: {
               remaining: rateLimitResult.remaining,
-              resetTime: rateLimitResult.resetTime,
+              resetTime: rateLimitResult.resetTime
             }
           }
-        },
+        }
       });
 
     } catch (syncError) {
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       return json({
           success: false,
           error: error.message,
-          details: error.details,
+          details: error.details
         },)
         { status: error.statusCode }
       );
@@ -247,7 +247,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         success: false,
         error: "Failed to sync with Qdrant",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -263,14 +263,14 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_get:${clientIP}`,
       limit: 200, // More generous for read operations
-      windowSec: 60,
+      windowSec: 60
     });
 
     if (!rateLimitResult.allowed) {
       return json({
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },)
         { status: 429 }
       );
@@ -314,7 +314,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           limit,
           offset,
           with_payload: true,
-          with_vector: false,
+          with_vector: false
         };
 
         const searchResults = await qdrant.search(searchParams);
@@ -334,7 +334,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
               resultsCount: searchResults.length,
               rateLimit: {
                 remaining: rateLimitResult.remaining,
-                resetTime: rateLimitResult.resetTime,
+                resetTime: rateLimitResult.resetTime
               }
             }
           }
@@ -364,7 +364,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           windowsOptimizations: process.platform === 'win32',
           rateLimit: {
             remaining: rateLimitResult.remaining,
-            resetTime: rateLimitResult.resetTime,
+            resetTime: rateLimitResult.resetTime
           }
         };
 
@@ -376,7 +376,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             currentCollection: {
               name: collection,
               ...collectionInfo,
-              windowsOptimized: process.platform === 'win32',
+              windowsOptimized: process.platform === 'win32'
             },
             system: systemInfo,
             endpoints: {
@@ -384,16 +384,16 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
               "PUT /api/qdrant": "Create or recreate collection",
               "DELETE /api/qdrant": "Delete collection", 
               "GET /api/qdrant": "Get status and collection info",
-              "GET /api/qdrant?action=search&query=[...]": "Vector similarity search",
+              "GET /api/qdrant?action=search&query=[...]": "Vector similarity search"
             },
             capabilities: {
               vectorSearch: true,
               bulkSync: true,
               windowsOptimized: process.platform === 'win32',
               rateLimiting: true,
-              adminControls: locals.user?.role === 'admin',
+              adminControls: locals.user?.role === 'admin'
             }
-          },
+          }
         });
       }
     }
@@ -405,7 +405,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       return json({
           success: false,
           error: error.message,
-          details: error.details,
+          details: error.details
         },)
         { status: error.statusCode }
       );
@@ -416,7 +416,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         success: false,
         error: "Failed to get Qdrant status",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -432,14 +432,14 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_collection:${clientIP}:${locals.user?.id || 'anonymous'}`,
       limit: 10, // Stricter for collection operations
-      windowSec: 60,
+      windowSec: 60
     });
 
     if (!rateLimitResult.allowed) {
       return json({
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },)
         { status: 429 }
       );
@@ -449,7 +449,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     if (!locals.user || locals.user.role !== "admin") {
       return json({
           success: false,
-          error: "Admin privileges required for collection management",
+          error: "Admin privileges required for collection management"
         },)
         { status: 403 }
       );
@@ -469,7 +469,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     if (!name || name.trim().length === 0) {
       return json({
           success: false,
-          error: "Collection name is required",
+          error: "Collection name is required"
         },)
         { status: 400 }
       );
@@ -504,15 +504,15 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
             platform: process.platform,
             memoryMappingThreshold: collectionConfig.optimizers_config.memmap_threshold,
             segmentConfiguration: collectionConfig.optimizers_config.default_segment_number,
-            flushInterval: collectionConfig.optimizers_config.flush_interval_sec,
+            flushInterval: collectionConfig.optimizers_config.flush_interval_sec
           }
         },
         result,
         rateLimit: {
           remaining: rateLimitResult.remaining,
-          resetTime: rateLimitResult.resetTime,
+          resetTime: rateLimitResult.resetTime
         }
-      },
+      }
     });
 
   } catch (error: any) {
@@ -522,7 +522,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
       return json({
           success: false,
           error: error.message,
-          details: error.details,
+          details: error.details
         },)
         { status: error.statusCode }
       );
@@ -533,7 +533,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
         success: false,
         error: "Failed to create collection",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -549,14 +549,14 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_delete:${clientIP}:${locals.user?.id || 'anonymous'}`,
       limit: 5, // Very strict for deletions
-      windowSec: 300 // 5-minute window,
+      windowSec: 300 // 5-minute window
     });
 
     if (!rateLimitResult.allowed) {
       return json({
           success: false,
           error: 'Rate limit exceeded for deletion operations',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },)
         { status: 429 }
       );
@@ -566,7 +566,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     if (!locals.user || locals.user.role !== "admin") {
       return json({
           success: false,
-          error: "Admin privileges required for collection deletion",
+          error: "Admin privileges required for collection deletion"
         },)
         { status: 403 }
       );
@@ -579,7 +579,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     if (!collection || collection.trim().length === 0) {
       return json({
           success: false,
-          error: "Collection name is required",
+          error: "Collection name is required"
         },)
         { status: 400 }
       );
@@ -591,7 +591,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json({
           success: false,
           error: `Cannot delete protected collection '${collection}'. Use forceDelete=true with confirmationToken to override.`,
-          hint: 'Protected collections require explicit confirmation',
+          hint: 'Protected collections require explicit confirmation'
         },)
         { status: 400 }
       );
@@ -602,7 +602,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json({
           success: false,
           error: "Confirmation token required for force deletion",
-          hint: 'Add confirmationToken with collection name to confirm',
+          hint: 'Add confirmationToken with collection name to confirm'
         },)
         { status: 400 }
       );
@@ -611,7 +611,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     if (forceDelete && confirmationToken !== collection) {
       return json({
           success: false,
-          error: "Invalid confirmation token",
+          error: "Invalid confirmation token"
         },)
         { status: 400 }
       );
@@ -623,7 +623,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     } catch {
       return json({
           success: false,
-          error: `Collection '${collection}' does not exist`,
+          error: `Collection '${collection}' does not exist`
         },)
         { status: 404 }
       );
@@ -640,10 +640,10 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
         result,
         rateLimit: {
           remaining: rateLimitResult.remaining,
-          resetTime: rateLimitResult.resetTime,
+          resetTime: rateLimitResult.resetTime
         },
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
 
   } catch (error: any) {
@@ -653,7 +653,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       return json({
           success: false,
           error: error.message,
-          details: error.details,
+          details: error.details
         },)
         { status: error.statusCode }
       );
@@ -664,7 +664,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
         success: false,
         error: "Failed to delete collection",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

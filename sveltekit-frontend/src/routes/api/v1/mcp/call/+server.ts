@@ -25,7 +25,7 @@ const MCP_TOOLS = {
   // Future MCP tools can be added here:
   // 'documents.processDocument': documentsMCP.processDocument,
   // 'evidence.analyzeEvidence': evidenceMCP.analyzeEvidence,
-  // 'vector.semanticSearch': vectorMCP.semanticSearch,
+  // 'vector.semanticSearch': vectorMCP.semanticSearch
 } as const;
 
 type MCPToolName = keyof typeof MCP_TOOLS;
@@ -49,7 +49,7 @@ export interface MCPCallResponse {
     requestId?: string;
     executionTime?: number;
     tool: string;
-    timestamp: number;,
+    timestamp: number;
   };
 }
 
@@ -67,8 +67,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         metadata: {
           tool: 'unknown',
           timestamp: Date.now(),
-          executionTime: Date.now() - startTime,
-        },
+          executionTime: Date.now() - startTime
+        }
       },
       { status: 400 }
     );
@@ -86,8 +86,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
           requestId: metadata.requestId,
           tool: tool || 'unknown',
           timestamp: Date.now(),
-          executionTime: Date.now() - startTime,
-        },
+          executionTime: Date.now() - startTime
+        }
       },
       { status: 400 }
     );
@@ -100,14 +100,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     clientAddress: getClientAddress(),
     userAgent: request.headers.get('user-agent'),
     timestamp: Date.now(),
-    tool,
+    tool
   };
 
   console.log('🔧 MCP Tool Call:', {
     tool,
     args: Object.keys(args),
     requestId: requestMetadata.requestId,
-    userId: requestMetadata.userId,
+    userId: requestMetadata.userId
   });
 
   try {
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     console.log('✅ MCP Tool Success:', {
       tool,
       requestId: requestMetadata.requestId,
-      executionTime: `${executionTime}ms`,
+      executionTime: `${executionTime}ms`
     });
 
     return json({
@@ -132,8 +132,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         requestId: requestMetadata.requestId,
         executionTime,
         tool,
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     });
   } catch (error: any) {
     const executionTime = Date.now() - startTime;
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       tool,
       requestId: requestMetadata.requestId,
       error: errorMessage,
-      executionTime: `${executionTime}ms`,
+      executionTime: `${executionTime}ms`
     });
 
     return json();
@@ -154,8 +154,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
           requestId: requestMetadata.requestId,
           executionTime,
           tool,
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       },
       { status: 500 }
     );
@@ -173,10 +173,10 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: Date.now(),
       tools: {
         available: Object.keys(MCP_TOOLS),
-        count: Object.keys(MCP_TOOLS).length,
+        count: Object.keys(MCP_TOOLS).length
       },
       database: healthResult,
-      endpoint: url.pathname,
+      endpoint: url.pathname
     };
 
     return json(response);
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 'error',
         timestamp: Date.now(),
         error: error instanceof Error ? error.message: 'Health check failed',
-        endpoint: url.pathname,
+        endpoint: url.pathname
       },
       { status: 500 }
     );

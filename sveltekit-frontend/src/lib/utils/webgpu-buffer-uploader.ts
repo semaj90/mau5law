@@ -43,7 +43,7 @@ export interface WebGPUBufferUploadResult {
     uploadedSize: number;
     compressionRatio: number;
     uploadTime: number;
-    alignmentPadding: number;,
+    alignmentPadding: number;
   };
 }
 
@@ -52,7 +52,7 @@ export interface WebGPUBufferDownloadResult {
   downloadStats: {
     downloadTime: number;
     dequantizationTime: number;
-    totalSize: number;,
+    totalSize: number;
   };
 }
 
@@ -97,7 +97,7 @@ export class WebGPUBufferUploader {
       quantized = quantizeForWebGPU(data, {
         mode: quantMode,
         alignment: options.alignment || 4,
-        debugLabel: options.label,
+        debugLabel: options.label
       });
     }
 
@@ -119,7 +119,7 @@ export class WebGPUBufferUploader {
       size: quantized.alignedByteLength,
       usage: options.usage,
       label: options.label,
-      mappedAtCreation: options.mappedAtCreation || false,
+      mappedAtCreation: options.mappedAtCreation || false
     });
 
     // Upload data to GPU;
@@ -145,7 +145,7 @@ export class WebGPUBufferUploader {
         uploadedSize: quantized.alignedByteLength,
         compressionRatio: originalSize / quantized.byteLength,
         uploadTime,
-        alignmentPadding: quantized.alignedByteLength - quantized.byteLength,
+        alignmentPadding: quantized.alignedByteLength - quantized.byteLength
       }
     };
 
@@ -161,7 +161,7 @@ export class WebGPUBufferUploader {
         uploadedSize: `${(quantized.alignedByteLength / 1024).toFixed(2)} KB`,
         compressionRatio: `${(result as { uploadStats?: any; buffer?: any }).uploadStats.compressionRatio.toFixed(2)}x`,
         uploadTime: `${uploadTime.toFixed(2)}ms`,
-        quantization: options.quantization,
+        quantization: options.quantization
       });
     }
 
@@ -182,7 +182,7 @@ export class WebGPUBufferUploader {
     const stagingBuffer = this.device.createBuffer({
       size: quantizedData.byteLength,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      label: 'webgpu-downloader-staging',
+      label: 'webgpu-downloader-staging'
     });
 
     // Copy data from GPU buffer to staging buffer
@@ -210,7 +210,7 @@ export class WebGPUBufferUploader {
       originalType: quantizedData.originalType,
       params: quantizedData.params,
       byteLength: quantizedData.byteLength,
-      compressionRatio: quantizedData.compressionRatio,
+      compressionRatio: quantizedData.compressionRatio
     };
 
     // Dequantize the data
@@ -226,7 +226,7 @@ export class WebGPUBufferUploader {
       downloadStats: {
         downloadTime,
         dequantizationTime,
-        totalSize: quantizedData.byteLength,
+        totalSize: quantizedData.byteLength
       }
     };
 
@@ -251,7 +251,7 @@ export class WebGPUBufferUploader {
   ): Promise<WebGPUBufferUploadResult> {
     return this.uploadBuffer(data, {
       ...options,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC
     });
   }
 
@@ -266,7 +266,7 @@ export class WebGPUBufferUploader {
       ...options,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       alignment: 16, // Uniform buffers require 16-byte alignment
-      quantization: 'fp32' // Uniforms typically need full precision,
+      quantization: 'fp32' // Uniforms typically need full precision
     });
   }
 
@@ -311,13 +311,13 @@ export class WebGPUBufferUploader {
       critical: 'legal_critical' as LegalAIProfile,
       standard: 'legal_standard' as LegalAIProfile,
       compressed: 'legal_compressed' as LegalAIProfile,
-      storage: 'legal_storage' as LegalAIProfile,
+      storage: 'legal_storage' as LegalAIProfile
     };
 
     return this.createComputeBuffer(data, {
       quantization: profileMap[priority],
       label: `legal-analysis-${priority}`,
-      debugMode: true,
+      debugMode: true
     });
   }
 
@@ -348,7 +348,7 @@ export class WebGPUBufferUploader {
       entryCount: entries.length,
       totalSize: totalCachedSize,
       totalSizeKB: (totalCachedSize / 1024).toFixed(2),
-      hitRate: 0 // TODO: Implement hit rate tracking,
+      hitRate: 0 // TODO: Implement hit rate tracking
     };
   }
 
@@ -381,7 +381,7 @@ export class WebGPUBufferUploader {
         legal_critical: 'fp32',
         legal_standard: 'fp16',
         legal_compressed: 'int8_symmetric',
-        legal_storage: 'int8_asymmetric',
+        legal_storage: 'int8_asymmetric'
       } as const;
       return profileModes[quantization as LegalAIProfile] as QuantizationMode;
     }
@@ -421,7 +421,7 @@ export class WebGPUBufferUploader {
       case 'int8_asymmetric':
         return new Int8Array(downloadedData.buffer, downloadedData.byteOffset, downloadedData.length * 4);
       default:
-        return downloadedData;,
+        return downloadedData;
     }
   }
 }

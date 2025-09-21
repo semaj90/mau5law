@@ -11,7 +11,7 @@ export interface CacheHitMetrics {
   L2_Memory: number;
   L3_Redis: number;
   L4_Database: number;
-  overall: number;,
+  overall: number;
 }
 
 export interface LatencyMetrics {
@@ -19,7 +19,7 @@ export interface LatencyMetrics {
   similarity_search: number;
   result_retrieval: number;
   total_query_time: number;
-  cache_lookup_time: number;,
+  cache_lookup_time: number;
 }
 
 export interface ResourceMetrics {
@@ -28,7 +28,7 @@ export interface ResourceMetrics {
   redis_memory_usage: number;  // MB used in Redis
   postgres_cache_size: number; // MB used in PostgreSQL cache
   cpu_usage: number;           // Percentage
-  gpu_utilization: number;     // Percentage,
+  gpu_utilization: number;     // Percentage
 }
 
 export interface LegalProcessingMetrics {
@@ -39,7 +39,7 @@ export interface LegalProcessingMetrics {
   average_relevance_score: number;
   gemma3_inference_time: number;
   webgpu_processing_time: number;
-  legal_confidence_score: number;,
+  legal_confidence_score: number;
 }
 
 export interface ThroughputMetrics {
@@ -48,7 +48,7 @@ export interface ThroughputMetrics {
   documents_per_minute: number;
   concurrent_sessions: number;
   peak_throughput: number;
-  average_batch_size: number;,
+  average_batch_size: number;
 }
 
 export interface PerformanceSnapshot {
@@ -58,14 +58,14 @@ export interface PerformanceSnapshot {
   resources: ResourceMetrics;
   legal_processing: LegalProcessingMetrics;
   throughput: ThroughputMetrics;
-  system_health: 'optimal' | 'degraded' | 'critical';,
+  system_health: 'optimal' | 'degraded' | 'critical';
 }
 
 export interface AlertThreshold {
   metric: string;
   threshold: number;
   severity: 'info' | 'warning' | 'critical';
-  message: string;,
+  message: string;
 }
 
 // Performance monitoring store
@@ -80,37 +80,37 @@ export const ALERT_THRESHOLDS: AlertThreshold[] = [;
     metric: 'cache_hits.overall',
     threshold: 0.7,
     severity: 'warning',
-    message: 'Overall cache hit rate below 70%',
+    message: 'Overall cache hit rate below 70%'
   },
   {
     metric: 'latency.total_query_time',
     threshold: 1000,
     severity: 'warning',
-    message: 'Query latency exceeds 1 second',
+    message: 'Query latency exceeds 1 second'
   },
   {
     metric: 'resources.gpu_vram_usage',
     threshold: 6800,
     severity: 'critical',
-    message: 'GPU VRAM usage critical (>6.8GB on RTX 3060 Ti)',
+    message: 'GPU VRAM usage critical (>6.8GB on RTX 3060 Ti)'
   },
   {
     metric: 'resources.gpu_utilization',
     threshold: 95,
     severity: 'warning',
-    message: 'GPU utilization extremely high (>95%)',
+    message: 'GPU utilization extremely high (>95%)'
   },
   {
     metric: 'legal_processing.legal_confidence_score',
     threshold: 0.8,
     severity: 'info',
-    message: 'Legal analysis confidence below 80%',
+    message: 'Legal analysis confidence below 80%'
   },
   {
     metric: 'throughput.queries_per_second',
     threshold: 10,
     severity: 'info',
-    message: 'Throughput below target (10 QPS)',
+    message: 'Throughput below target (10 QPS)'
   }
 ];
 
@@ -189,7 +189,7 @@ export class LegalPerformanceMonitor {
       redis_memory_usage: await this.getRedisMemoryUsage(),
       postgres_cache_size: await this.getPostgresCacheSize(),
       cpu_usage: await this.getCPUUsage(),
-      gpu_utilization: await this.getGPUUtilization(),
+      gpu_utilization: await this.getGPUUtilization()
     };
   }
 
@@ -239,7 +239,7 @@ export class LegalPerformanceMonitor {
         similarity_search: 20 + Math.random() * 100,    // ms
         result_retrieval: 10 + Math.random() * 50,      // ms
         total_query_time: 100 + Math.random() * 400,    // ms
-        cache_lookup_time: 5 + Math.random() * 20       // ms,
+        cache_lookup_time: 5 + Math.random() * 20       // ms
       },
       resources: await this.getResourceMetrics(),
       legal_processing: {
@@ -250,7 +250,7 @@ export class LegalPerformanceMonitor {
         average_relevance_score: 0.75 + Math.random() * 0.2,
         gemma3_inference_time: 200 + Math.random() * 300,
         webgpu_processing_time: 50 + Math.random() * 100,
-        legal_confidence_score: 0.8 + Math.random() * 0.15,
+        legal_confidence_score: 0.8 + Math.random() * 0.15
       },
       throughput: {
         queries_per_second: timeElapsed > 0 ? this.queryCount / timeElapsed : 0,
@@ -258,9 +258,9 @@ export class LegalPerformanceMonitor {
         documents_per_minute: timeElapsed > 0 ? (this.queryCount * 60) / timeElapsed : 0,
         concurrent_sessions: 1 + Math.floor(Math.random() * 10),
         peak_throughput: Math.max(15, this.queryCount / Math.max(timeElapsed, 1)),
-        average_batch_size: 4 + Math.random() * 4,
+        average_batch_size: 4 + Math.random() * 4
       },
-      system_health: this.determineSystemHealth(),
+      system_health: this.determineSystemHealth()
     };
 
     this.metrics.push(snapshot);
@@ -365,7 +365,7 @@ export class LegalPerformanceMonitor {
     return {
       hits: totalHits,
       misses: totalMisses,
-      efficiency: total > 0 ? totalHits / total : 0,
+      efficiency: total > 0 ? totalHits / total : 0
     };
   }
 
@@ -422,7 +422,7 @@ export function formatMetric(value: number, type: 'percentage' | 'milliseconds' 
     case 'count':
       return value.toFixed(0);
     default:
-      return value.toString();,
+      return value.toString();
   }
 }
 

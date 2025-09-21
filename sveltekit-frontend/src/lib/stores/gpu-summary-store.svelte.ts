@@ -16,7 +16,7 @@ export interface WebASMInferenceMetrics {
   wasmMemoryPages: number;
   simdInstructions: boolean;
   threadCount: number;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface VectorSearchMetrics {
@@ -28,7 +28,7 @@ export interface VectorSearchMetrics {
   indexType: 'ivf' | 'hnsw' | 'flat';
   similarityFunction: 'cosine' | 'euclidean' | 'dot_product';
   cacheHitRate: number;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface MinIOCacheMetrics {
@@ -39,7 +39,7 @@ export interface MinIOCacheMetrics {
   duration: number;
   cacheHit: boolean;
   compressionRatio?: number;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface GPUBridgeMetrics {
@@ -48,7 +48,7 @@ export interface GPUBridgeMetrics {
   memoryBandwidth: number;
   utilization: number;
   powerEfficiency: number;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface GPUSummary {
@@ -93,7 +93,7 @@ export interface GPUSummary {
   bottlenecks: string[];
   recommendations: string[];
 
-  lastUpdated: number;,
+  lastUpdated: number;
 }
 
 export interface GPUStoreState {
@@ -104,7 +104,7 @@ export interface GPUStoreState {
   minioMetrics: MinIOCacheMetrics[];
   isCollecting: boolean;
   sessionId: string;
-  startTime: number;,
+  startTime: number;
 }
 
 // Create the unified GPU summary store using Svelte 5 runes;
@@ -117,7 +117,7 @@ function createGPUSummaryStore() {
     minioMetrics: [],
     isCollecting: false,
     sessionId: '',
-    startTime: Date.now(),
+    startTime: Date.now()
   });
 
   // WebGL/WebGPU context detection
@@ -308,7 +308,7 @@ function createGPUSummaryStore() {
       bottlenecks,
       recommendations,
 
-      lastUpdated: now,
+      lastUpdated: now
     };
   }
 
@@ -487,7 +487,7 @@ function createGPUSummaryStore() {
       antiAliasing: avgFps >= 55 ? 'msaa' : avgFps >= 40 ? 'fxaa' : 'none',
       fogEffect: avgFps >= 45,
       shadowCasting: avgFps >= 50,
-      depthOfField: avgFps >= 55,
+      depthOfField: avgFps >= 55
     };
 
     return {
@@ -524,7 +524,7 @@ function createGPUSummaryStore() {
       totalInferences: state.webAsmMetrics.length,
       totalSearches: state.vectorSearchMetrics.length,
       totalMinIOOps: state.minioMetrics.length,
-      exportTime: Date.now(),
+      exportTime: Date.now()
     };
   }
 
@@ -558,7 +558,7 @@ function createGPUSummaryStore() {
         wasmMemoryPages: 0,
         simdInstructions: true,
         threadCount: 0,
-        timestamp: metric.timestamp,
+        timestamp: metric.timestamp
       });
       updateSummary();
     },
@@ -604,7 +604,7 @@ export function trackWebASMInference(
     wasmMemoryPages: wasmPages,
     simdInstructions: simdSupported,
     threadCount,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 }
 
@@ -630,7 +630,7 @@ export function trackVectorSearch(
     indexType,
     similarityFunction,
     cacheHitRate,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 }
 
@@ -654,7 +654,7 @@ export function trackMinIOOperation(
     duration,
     cacheHit,
     compressionRatio,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 }
 
@@ -674,6 +674,6 @@ export function trackGPUBridgeOperation(
     memoryBandwidth,
     utilization,
     powerEfficiency,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 }

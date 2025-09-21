@@ -13,7 +13,7 @@ import {
   jsonb,
   uuid,
   integer,
-  boolean,
+  boolean
 } from 'drizzle-orm/pg-core';
 import type { PoolConfig } from 'pg';
 import { eq, sql } from 'drizzle-orm';
@@ -45,7 +45,7 @@ export const legalDocuments = pgTable('legal_documents', {
   documentType: text('document_type'),
   caseId: text('case_id'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 
 export const autoSolveResults = pgTable('autosolve_results', {
@@ -56,7 +56,7 @@ export const autoSolveResults = pgTable('autosolve_results', {
   processingTime: integer('processing_time'),
   serviceUsed: text('service_used'),
   success: boolean('success'),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 
 export const synthesisCache = pgTable('synthesis_cache', {
@@ -66,7 +66,7 @@ export const synthesisCache = pgTable('synthesis_cache', {
   metadata: jsonb('metadata'),
   hitCount: integer('hit_count').default(0),
   lastAccessed: timestamp('last_accessed').defaultNow(),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 
 // ===== DYNAMIC PORT CONFIGURATION =====
@@ -91,7 +91,7 @@ const services = {
   neo4j: {
     uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
     user: process.env.NEO4J_USER || 'neo4j',
-    password: process.env.NEO4J_PASSWORD || 'password',
+    password: process.env.NEO4J_PASSWORD || 'password'
   },
 
   // Go Microservices with dynamic ports;
@@ -100,7 +100,7 @@ const services = {
     gpuOrchestrator: `http://localhost:${getServicePortWithFallback('gpu-orchestrator', 8095)}`,
     vectorConsumer: `http://localhost:${getServicePortWithFallback('vector-consumer', 8095)}`,
     binaryVectorEngine: `http://localhost:${getServicePortWithFallback('binary-vector-engine', 8091)}`,
-    quicServer: `quic://localhost:${getServicePortWithFallback('quic-gateway', 8443)}`,
+    quicServer: `quic://localhost:${getServicePortWithFallback('quic-gateway', 8443)}`
   },
 
   // Ollama Configuration with dynamic port;
@@ -108,8 +108,8 @@ const services = {
     baseUrl: `http://localhost:${getServicePortWithFallback('ollama', 11434)}`,
     models: {
       legal: 'gemma3-legal:latest',
-      embedding: 'nomic-embed-text:latest',
-    },
+      embedding: 'nomic-embed-text:latest'
+    }
   },
 
   // MCP Services
@@ -125,7 +125,7 @@ const services = {
     ),
     database: process.env.POSTGRES_DB || 'legal_ai_db',
     user: process.env.POSTGRES_USER || 'legal_admin',
-    password: process.env.POSTGRES_PASSWORD || '123456',
+    password: process.env.POSTGRES_PASSWORD || '123456'
   },
 
   // Redis Configuration with dynamic port;
@@ -133,8 +133,8 @@ const services = {
     host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || getServicePortWithFallback('redis', 6379).toString()),
     db: 0,
-    keyPrefix: 'legal-ai:',
-  },
+    keyPrefix: 'legal-ai:'
+  }
 };
 
 // ===== DATABASE CONNECTION =====
@@ -143,11 +143,11 @@ const pgConnection = postgres({
   ...services.postgres,
   max: 20,
   idle_timeout: 20,
-  connect_timeout: 60,
+  connect_timeout: 60
 });
 
 export const db = drizzle(pgConnection, {
-  schema: { legalDocuments, autoSolveResults, synthesisCache },
+  schema: { legalDocuments, autoSolveResults, synthesisCache }
 });
 
 // ===== REDIS CONNECTION =====
@@ -159,7 +159,7 @@ try {
   redis = new RedisCtor({
     ...services.redis,
     maxRetriesPerRequest: 3,
-    retryStrategy: (times: number) => Math.min(times * 50, 2000),
+    retryStrategy: (times: number) => Math.min(times * 50, 2000)
   });
 } catch {
   console.warn('Redis connection failed, continuing without Redis cache');
@@ -261,7 +261,7 @@ ${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)
 ${content.substring(0, 500)}...
 
 `;
-    ,});
+    });
   }
 
   // Add Context7 documentation if available;
@@ -329,25 +329,25 @@ const orchestrationMachine = createMachine({
     performance: {
       startTime: null,
       endTime: null,
-      stageTimings: Record<string, any>,
-    },
+      stageTimings: Record<string, any>
+    }
   },
   states: {
     idle: {
       on: {
         START: {
           target: 'initializing',
-          actions: 'recordStartTime',
-        },
-      },
+          actions: 'recordStartTime'
+        }
+      }
     },
 
     initializing: {
       invoke: {
         src: 'initializeServices',
         onDone: 'processing',
-        onError: 'error',
-      },
+        onError: 'error'
+      }
     },
 
     processing: {
@@ -360,13 +360,13 @@ const orchestrationMachine = createMachine({
               {
                 target: 'complete',
                 guard: 'cacheHit',
-                actions: 'useCachedResult',
+                actions: 'useCachedResult'
               },);
               {
-                target: 'analyzingQuery',
-              },
-            ],
-          },
+                target: 'analyzingQuery'
+              }
+            ]
+          }
         },
 
         analyzingQuery: {
@@ -374,17 +374,17 @@ const orchestrationMachine = createMachine({
             src: 'analyzeWithLegalBERT',
             onDone: {
               target: 'generatingEmbeddings',
-              actions: 'storeLegalBertAnalysis',
+              actions: 'storeLegalBertAnalysis'
             },
-            onError: 'fallbackAnalysis',
-          },
+            onError: 'fallbackAnalysis'
+          }
         },
 
         fallbackAnalysis: {
           invoke: {
             src: 'basicAnalysis',
-            onDone: 'generatingEmbeddings',
-          },
+            onDone: 'generatingEmbeddings'
+          }
         },
 
         generatingEmbeddings: {
@@ -392,9 +392,9 @@ const orchestrationMachine = createMachine({
             src: 'generateNomicEmbeddings',
             onDone: {
               target: 'searchingKnowledgeBase',
-              actions: 'storeEmbeddings',
-            },
-          },
+              actions: 'storeEmbeddings'
+            }
+          }
         },
 
         searchingKnowledgeBase: {
@@ -404,50 +404,50 @@ const orchestrationMachine = createMachine({
               invoke: {
                 src: 'searchNeo4j',
                 onDone: {
-                  actions: 'storeNeo4jResults',
-                },
-              },
+                  actions: 'storeNeo4jResults'
+                }
+              }
             },
             pgVectorSearch: {
               invoke: {
                 src: 'searchPGVector',
                 onDone: {
-                  actions: 'storePGVectorResults',
-                },
-              },
+                  actions: 'storePGVectorResults'
+                }
+              }
             },
             enhancedRAGPipeline: {
               invoke: {
                 src: 'runEnhancedRAGPipeline',
                 onDone: {
-                  actions: 'storeRAGResults',
-                },
-              },
+                  actions: 'storeRAGResults'
+                }
+              }
             },
             goLlamaPipeline: {
               invoke: {
                 src: 'runGoLlamaPipeline',
                 onDone: {
-                  actions: 'storeGoLlamaResponse',
-                },
-              },
-            },
+                  actions: 'storeGoLlamaResponse'
+                }
+              }
+            }
           },
-          onDone: 'rankingResults',
+          onDone: 'rankingResults'
         },
 
         rankingResults: {
           invoke: {
             src: 'rankWithCrossEncoder',
-            onDone: 'context7Enhancement',
-          },
+            onDone: 'context7Enhancement'
+          }
         },
 
         context7Enhancement: {
           invoke: {
             src: 'enhanceWithContext7',
-            onDone: 'generatingResponse',
-          },
+            onDone: 'generatingResponse'
+          }
         },
 
         generatingResponse: {
@@ -455,9 +455,9 @@ const orchestrationMachine = createMachine({
             src: 'generateWithGemma3Legal',
             onDone: {
               target: 'synthesizing',
-              actions: 'storeOllamaResponse',
-            },
-          },
+              actions: 'storeOllamaResponse'
+            }
+          }
         },
 
         synthesizing: {
@@ -465,32 +465,32 @@ const orchestrationMachine = createMachine({
             src: 'performFinalSynthesis',
             onDone: {
               target: 'cachingResult',
-              actions: 'storeFinalSynthesis',
-            },
-          },
+              actions: 'storeFinalSynthesis'
+            }
+          }
         },
 
         cachingResult: {
           invoke: {
             src: 'cacheResult',
-            onDone: 'complete',
-          },
+            onDone: 'complete'
+          }
         },
 
         complete: {
           type: 'final',
-          entry: 'recordEndTime',
-        },
-      },
+          entry: 'recordEndTime'
+        }
+      }
     },
 
     error: {
       entry: 'logError',
       on: {
-        RETRY: 'processing',
-      },
-    },
-  },
+        RETRY: 'processing'
+      }
+    }
+  }
 });
 
 // ===== MAIN ORCHESTRATOR CLASS =====
@@ -524,7 +524,7 @@ export class EnhancedAISynthesisOrchestrator {
         // numCtx: 8192, // Removed - not valid in current API
         // numGpu: 999, // Removed - not valid in current API
         // numThread: 16, // Removed - not valid in current API
-        format: 'json',
+        format: 'json'
       });
 
       // Initialize nomic-embed-text embeddings;
@@ -567,7 +567,7 @@ export class EnhancedAISynthesisOrchestrator {
           password: services.neo4j.password,
           indexName: 'legal_documents',
           textNodeProperty: 'text',
-          embeddingNodeProperty: 'embedding',
+          embeddingNodeProperty: 'embedding'
         });
       } catch {
         this.neo4jStore = null;
@@ -586,7 +586,7 @@ export class EnhancedAISynthesisOrchestrator {
         database: services.postgres.database,
         user: services.postgres.user,
         password: services.postgres.password,
-        max: 20,
+        max: 20
       };
 
       // Initialize PGVector store with fallback;
@@ -598,7 +598,7 @@ export class EnhancedAISynthesisOrchestrator {
             idColumnName: 'id',
             vectorColumnName: 'embedding',
             contentColumnName: 'content',
-            metadataColumnName: 'metadata',
+            metadataColumnName: 'metadata'
           },
           distanceStrategy: 'cosine', // Use cosine similarity
         });
@@ -657,7 +657,7 @@ export class EnhancedAISynthesisOrchestrator {
               .update(synthesisCache);
               .set({
                 hitCount: sql`${synthesisCache.hitCount} + 1`,
-                lastAccessed: new Date(),
+                lastAccessed: new Date()
               })
               .where(eq(synthesisCache.id, dbCache[0].id);
 
@@ -678,7 +678,7 @@ export class EnhancedAISynthesisOrchestrator {
           return {
             entities: [],
             concepts: [],
-            complexity: { legalComplexity: 0.5 },
+            complexity: { legalComplexity: 0.5 }
           };
         }),
 
@@ -705,7 +705,7 @@ export class EnhancedAISynthesisOrchestrator {
           logger.info(`[PGVector] Found ${results.length} documents`);
           return results.map((doc, index) => ({
             ...doc,
-            score: 1.0 - index * 0.1,
+            score: 1.0 - index * 0.1
           });
         }),
 
@@ -719,8 +719,8 @@ export class EnhancedAISynthesisOrchestrator {
                 limit: 10,
                 useGPU: true,
                 useSIMD: true,
-                embedding: input.embeddings || null,
-              }),
+                embedding: input.embeddings || null
+              })
             });
 
             if (!(response as { ok?: any; json?: any }).ok) throw new Error('Enhanced RAG failed');
@@ -745,8 +745,8 @@ export class EnhancedAISynthesisOrchestrator {
                 context: input.legalBertAnalysis,
                 temperature: 0.3,
                 max_tokens: 2000,
-                stream: false,
-              }),
+                stream: false
+              })
             });
 
             if ((response as { ok?: any; json?: any }).ok) {
@@ -768,7 +768,7 @@ export class EnhancedAISynthesisOrchestrator {
           const allResults = [
             ...(context.neo4jResults || []),
             ...(context.pgVectorResults || []),
-            ...(context.ragResults?.documents || []),
+            ...(context.ragResults?.documents || [])
           ];
 
           // Use LegalBERT for cross-encoder ranking
@@ -782,7 +782,7 @@ export class EnhancedAISynthesisOrchestrator {
             rankedResults.push({
               ...result,
               crossEncoderScore: similarity.similarity,
-              legalRelevance: (similarity as any).legalRelevance || similarity.confidence || 0.5,
+              legalRelevance: (similarity as any).legalRelevance || similarity.confidence || 0.5
             });
           }
 
@@ -806,8 +806,8 @@ export class EnhancedAISynthesisOrchestrator {
                 query: input.query,
                 context: input.legalBertAnalysis,
                 includeLibraries: ['langchain', 'drizzle-orm', 'xstate', 'neo4j'],
-                maxTokens: 5000,
-              }),
+                maxTokens: 5000
+              })
             });
 
             if ((response as { ok?: any; json?: any }).ok) {
@@ -837,8 +837,8 @@ export class EnhancedAISynthesisOrchestrator {
                   useGPU: true,
                   workers: 32,
                   temperature: 0.3,
-                  max_tokens: 4000,
-                }),
+                  max_tokens: 4000
+                })
               }
             );
 
@@ -858,8 +858,8 @@ export class EnhancedAISynthesisOrchestrator {
             body: JSON.stringify({
               model: services.ollama.models.legal,
               prompt,
-              stream: false,
-            }),
+              stream: false
+            })
           });
 
           if (ollamaResponse.ok) {
@@ -877,7 +877,7 @@ export class EnhancedAISynthesisOrchestrator {
             query: input.query,
             context: {
               legalBertAnalysis: input.legalBertAnalysis,
-              userId: input.userId || 'default',
+              userId: input.userId || 'default'
             },
             options: {
               enableMMR: true,
@@ -886,8 +886,8 @@ export class EnhancedAISynthesisOrchestrator {
               enableRAG: true,
               maxSources: 10,
               similarityThreshold: 0.7,
-              diversityLambda: 0.3,
-            },
+              diversityLambda: 0.3
+            }
           });
 
           // Track in monitoring service;
@@ -914,13 +914,13 @@ export class EnhancedAISynthesisOrchestrator {
             metadata: {
               processingTime: Date.now() - (input.performance?.startTime || Date.now()),
               servicesUsed: ['neo4j', 'pgvector', 'enhanced-rag', 'ollama'],
-              confidence: (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).metadata?.confidence,
-            },
+              confidence: (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).metadata?.confidence
+            }
           });
 
           logger.info('[Cache] Result cached successfully');
           return true;
-        }),
+        })
       },
 
       actions: {
@@ -1008,12 +1008,12 @@ export class EnhancedAISynthesisOrchestrator {
 
         logError: ({ context, event }) => {
           logger.error('[Orchestrator] Error:', event.error || event.data);
-        },
+        }
       },
 
       guards: {
-        cacheHit: ({ context, event }) => event.output?.hit === true || event.data?.hit === true,
-      },
+        cacheHit: ({ context, event }) => event.output?.hit === true || event.data?.hit === true
+      }
     });
 
     // XState v5 uses createActor instead of interpret
@@ -1103,8 +1103,8 @@ TEMPLATE """{{ if .System }}<|system|>
           body: JSON.stringify({
             name: 'gemma3-legal:latest',
             modelfile,
-            stream: false,
-          }),
+            stream: false
+          })
         });
 
         logger.info('[Models] gemma3-legal:latest created successfully');
@@ -1133,8 +1133,8 @@ TEMPLATE """{{ if .System }}<|system|>
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: 'nomic-embed-text',
-            stream: false,
-          }),
+            stream: false
+          })
         });
 
         logger.info('[Models] nomic-embed-text pulled successfully');
@@ -1152,16 +1152,16 @@ TEMPLATE """{{ if .System }}<|system|>
         test: async () => {
           await (redis as any).set('health-check', 'ok', 'EX', 1);
           return true;
-        },
+        }
       },
       { name: 'Neo4j', test: () => this.neo4jStore !== null },
       { name: 'Enhanced RAG', test: () => fetch(`${services.goMicroservice.enhancedRAG}/health`) },
       {
         name: 'GPU Orchestrator',
-        test: () => fetch(`${services.goMicroservice.gpuOrchestrator}/health`),
+        test: () => fetch(`${services.goMicroservice.gpuOrchestrator}/health`)
       },
       { name: 'Ollama', test: () => fetch(`${services.ollama.baseUrl}/api/tags`) },
-      { name: 'Context7', test: () => fetch(`${services.context7}/health`) },
+      { name: 'Context7', test: () => fetch(`${services.context7}/health`) }
     ];
 
     for (const service of serviceTests) {
@@ -1249,13 +1249,13 @@ TEMPLATE """{{ if .System }}<|system|>
       const service = createActor(this.machine, {
         input: {
           query,
-          ...(options || {,}),
+          ...(options || {}),
           performance: {
             startTime: Date.now(),
             endTime: null,
-            stageTimings: Record<string, any>,
-          },
-        },
+            stageTimings: Record<string, any>
+          }
+        }
       });
 
       service.subscribe({
@@ -1274,7 +1274,7 @@ TEMPLATE """{{ if .System }}<|system|>
                   : null,
                 processingTime: Date.now() - startTime,
                 serviceUsed: 'enhanced-orchestrator',
-                success: true,
+                success: true
               })
               .execute();
 
@@ -1283,7 +1283,7 @@ TEMPLATE """{{ if .System }}<|system|>
             reject(new Error('Processing failed');
           }
         },
-        error: reject,
+        error: reject
       });
 
       service.start();
@@ -1304,9 +1304,9 @@ TEMPLATE """{{ if .System }}<|system|>
       const service = createActor(self.machine, {
         input: {
           query,
-          ...(options || {,}),
-          streaming: true,
-        },
+          ...(options || {}),
+          streaming: true
+        }
       });
 
       service.subscribe({
@@ -1314,13 +1314,13 @@ TEMPLATE """{{ if .System }}<|system|>
           events.push({
             type: 'progress',
             stage: snapshot.value,
-            progress: self.calculateProgress(snapshot.value),
+            progress: self.calculateProgress(snapshot.value)
           });
 
           if (snapshot.status === 'done' || snapshot.status === 'error') {
             isComplete = true;
           }
-        },
+        }
       });
 
       service.start();
@@ -1350,7 +1350,7 @@ TEMPLATE """{{ if .System }}<|system|>
       'processing.generatingResponse': 80,
       'processing.synthesizing': 90,
       'processing.cachingResult': 95,
-      'processing.complete': 100,
+      'processing.complete': 100
     };
 
     const stateString = typeof state === 'object' ? JSON.stringify(state) : state;
@@ -1370,8 +1370,8 @@ TEMPLATE """{{ if .System }}<|system|>
         ollama: await this.checkOllama(),
         enhancedRAG: await this.checkService(services.goMicroservice.enhancedRAG),
         gpuOrchestrator: await this.checkService(services.goMicroservice.gpuOrchestrator),
-        context7: await this.checkService(services.context7),
-      },
+        context7: await this.checkService(services.context7)
+      }
     };
   }
 

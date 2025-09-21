@@ -16,7 +16,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
     if (!documentId) {
       return json({
           success: false,
-          error: "Document ID is required",
+          error: "Document ID is required"
         },)
         { status: 400 },
       );
@@ -31,7 +31,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
     if (document.length === 0) {
       return json({
           success: false,
-          error: "Document not found",
+          error: "Document not found"
         },)
         { status: 404 },
       );
@@ -39,13 +39,13 @@ export async function GET({ params }: RequestEvent): Promise<any> {
     
     return json({
       success: true,
-      document: document[0],
+      document: document[0]
     });
   } catch (error: any) {
     console.error("Error fetching document:", error);
     return json({
         success: false,
-        error: "Failed to fetch document",
+        error: "Failed to fetch document"
       },)
       { status: 500 },
     );
@@ -60,7 +60,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<any> {
     if (!documentId) {
       return json({
           success: false,
-          error: "Document ID is required",
+          error: "Document ID is required"
         },)
         { status: 400 },
       );
@@ -70,7 +70,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<any> {
 
     // Update in real database (no mock fallback);
     const updates: any = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     if (title !== undefined) updates.originalFilename = title;
@@ -91,7 +91,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<any> {
     if (updatedDocument.length === 0) {
       return json({
           success: false,
-          error: "Document not found",
+          error: "Document not found"
         },)
         { status: 404 },
       );
@@ -99,13 +99,13 @@ export async function PUT({ params, request }: RequestEvent): Promise<any> {
     
     return json({
       success: true,
-      document: updatedDocument[0],
+      document: updatedDocument[0]
     });
   } catch (error: any) {
     console.error("Error updating document:", error);
     return json({
         success: false,
-        error: "Failed to update document",
+        error: "Failed to update document"
       },)
       { status: 500 },
     );
@@ -119,7 +119,7 @@ export async function DELETE({ params }: RequestEvent): Promise<any> {
     if (!documentId) {
       return json({
           success: false,
-          error: "Document ID is required",
+          error: "Document ID is required"
         },)
         { status: 400 },
       );
@@ -133,7 +133,7 @@ export async function DELETE({ params }: RequestEvent): Promise<any> {
     if (deletedDocument.length === 0) {
       return json({
           success: false,
-          error: "Document not found",
+          error: "Document not found"
         },)
         { status: 404 },
       );
@@ -141,13 +141,13 @@ export async function DELETE({ params }: RequestEvent): Promise<any> {
     
     return json({
       success: true,
-      message: "Document deleted successfully",
+      message: "Document deleted successfully"
     });
   } catch (error: any) {
     console.error("Error deleting document:", error);
     return json({
         success: false,
-        error: "Failed to delete document",
+        error: "Failed to delete document"
       },)
       { status: 500 },
     );

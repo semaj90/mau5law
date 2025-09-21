@@ -19,7 +19,7 @@ export interface LegalDocument {
   updated_at: Date;
   case_id?: string;
   client_id?: string;
-  status: 'active' | 'archived' | 'draft';,
+  status: 'active' | 'archived' | 'draft';
 }
 
 export interface LegalCase {
@@ -33,7 +33,7 @@ export interface LegalCase {
   created_at: Date;
   updated_at: Date;
   metadata: Record<string, any>;
-  priority: 'low' | 'medium' | 'high' | 'urgent';,
+  priority: 'low' | 'medium' | 'high' | 'urgent';
 }
 
 export interface EvidenceItem {
@@ -47,7 +47,7 @@ export interface EvidenceItem {
   relevance_score: number;
   admissibility_status: 'unknown' | 'admissible' | 'inadmissible' | 'pending';
   created_at: Date;
-  updated_at: Date;,
+  updated_at: Date;
 }
 
 export interface ConversationRecord {
@@ -59,7 +59,7 @@ export interface ConversationRecord {
   created_at: Date;
   updated_at: Date;
   message_count: number;
-  last_activity: Date;,
+  last_activity: Date;
 }
 
 export interface MessageRecord {
@@ -71,7 +71,7 @@ export interface MessageRecord {
   token_count?: number;
   processing_time?: number;
   metadata: Record<string, any>;
-  created_at: Date;,
+  created_at: Date;
 }
 
 // Database connection and operations;
@@ -107,7 +107,7 @@ export class LegalDatabaseBridge {
       updated_at: now,
       case_id: document.case_id,
       client_id: document.client_id,
-      status: document.status || 'draft',
+      status: document.status || 'draft'
     };
 
     try {
@@ -178,14 +178,14 @@ export class LegalDatabaseBridge {
             document_type: query.documentType,
             jurisdiction: query.jurisdiction,
             case_id: query.caseId,
-            client_id: query.clientId,
+            client_id: query.clientId
           }
         },);
         {
           limit: options.limit || 50,
           offset: options.offset || 0,
           useGPU: options.useVector,
-          cacheResults: true,
+          cacheResults: true
         }
       );
 
@@ -237,7 +237,7 @@ export class LegalDatabaseBridge {
       created_at: now,
       updated_at: now,
       metadata: caseData.metadata || {},
-      priority: caseData.priority || 'medium',
+      priority: caseData.priority || 'medium'
     };
 
     try {
@@ -304,7 +304,7 @@ export class LegalDatabaseBridge {
       relevance_score: evidenceData.relevance_score || 0.5,
       admissibility_status: evidenceData.admissibility_status || 'unknown',
       created_at: now,
-      updated_at: now,
+      updated_at: now
     };
 
     try {
@@ -361,7 +361,7 @@ export class LegalDatabaseBridge {
       created_at: now,
       updated_at: now,
       message_count: 0,
-      last_activity: now,
+      last_activity: now
     };
 
     try {
@@ -401,7 +401,7 @@ export class LegalDatabaseBridge {
       token_count: messageData.token_count,
       processing_time: messageData.processing_time,
       metadata: messageData.metadata || {},
-      created_at: now,
+      created_at: now
     };
 
     try {
@@ -467,7 +467,7 @@ export class LegalDatabaseBridge {
       updated_at: new Date(row.updated_at),
       case_id: row.case_id,
       client_id: row.client_id,
-      status: row.status,
+      status: row.status
     };
   }
 
@@ -483,7 +483,7 @@ export class LegalDatabaseBridge {
       created_at: new Date(row.created_at),
       updated_at: new Date(row.updated_at),
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-      priority: row.priority,
+      priority: row.priority
     };
   }
 
@@ -499,7 +499,7 @@ export class LegalDatabaseBridge {
       relevance_score: row.relevance_score,
       admissibility_status: row.admissibility_status,
       created_at: new Date(row.created_at),
-      updated_at: new Date(row.updated_at),
+      updated_at: new Date(row.updated_at)
     };
   }
 
@@ -513,7 +513,7 @@ export class LegalDatabaseBridge {
       token_count: row.token_count,
       processing_time: row.processing_time,
       metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-      created_at: new Date(row.created_at),
+      created_at: new Date(row.created_at)
     };
   }
 
@@ -526,7 +526,7 @@ export class LegalDatabaseBridge {
     // Mock response structure;
     return {
       rows: [],
-      rowCount: 0,
+      rowCount: 0
     };
   }
 
@@ -548,7 +548,7 @@ export class LegalDatabaseBridge {
         legal_cases: await this.executeQuery('SELECT COUNT(*) FROM legal_cases'),
         evidence_items: await this.executeQuery('SELECT COUNT(*) FROM evidence_items'),
         conversations: await this.executeQuery('SELECT COUNT(*) FROM conversations'),
-        messages: await this.executeQuery('SELECT COUNT(*) FROM messages'),
+        messages: await this.executeQuery('SELECT COUNT(*) FROM messages')
       };
 
       return Object.entries(stats).reduce((acc, [table, result]) => {
@@ -575,7 +575,7 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
+        source: 'api'
       }
     };
   } catch (error) {
@@ -585,9 +585,9 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
+        source: 'api'
       },
-      error: error instanceof Error ? error.message: 'Document creation failed',
+      error: error instanceof Error ? error.message: 'Document creation failed'
     };
   }
 }
@@ -601,7 +601,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
+        source: 'api'
       }
     };
   } catch (error) {
@@ -611,9 +611,9 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
+        source: 'api'
       },
-      error: error instanceof Error ? error.message: 'Case creation failed',
+      error: error instanceof Error ? error.message: 'Case creation failed'
     };
   }
 }
@@ -630,7 +630,7 @@ export async function apiSearchDocuments(
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
+        source: 'api'
       }
     };
   } catch (error) {
@@ -640,9 +640,9 @@ export async function apiSearchDocuments(
       meta: {
         timestamp: new Date().toISOString(),
         cached: false,
-        source: 'api',
+        source: 'api'
       },
-      error: error instanceof Error ? error.message: 'Document search failed',
+      error: error instanceof Error ? error.message: 'Document search failed'
     };
   }
 }

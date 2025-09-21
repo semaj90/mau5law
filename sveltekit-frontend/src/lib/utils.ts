@@ -90,35 +90,35 @@ export function getConfidenceLevel(confidence: number) {
       label: 'Very High',
       color: 'text-legal-success',
       bgColor: 'bg-legal-success/10',
-      borderColor: 'border-legal-success',
+      borderColor: 'border-legal-success'
     };
   } else if (confidence >= 0.8) {
     return {
       label: 'High',
       color: 'text-legal-info',
       bgColor: 'bg-legal-info/10',
-      borderColor: 'border-legal-info',
+      borderColor: 'border-legal-info'
     };
   } else if (confidence >= 0.7) {
     return {
       label: 'Good',
       color: 'text-legal-warning',
       bgColor: 'bg-legal-warning/10',
-      borderColor: 'border-legal-warning',
+      borderColor: 'border-legal-warning'
     };
   } else if (confidence >= 0.6) {
     return {
       label: 'Fair',
       color: 'text-harvard-crimson',
       bgColor: 'bg-harvard-crimson/10',
-      borderColor: 'border-harvard-crimson',
+      borderColor: 'border-harvard-crimson'
     };
   } else {
     return {
       label: 'Low',
       color: 'text-legal-error',
       bgColor: 'bg-legal-error/10',
-      borderColor: 'border-legal-error',
+      borderColor: 'border-legal-error'
     };
   }
 }
@@ -131,25 +131,25 @@ export function getCaseStatusStyling(status: string) {
       label: 'Active',
       color: 'text-legal-success',
       bgColor: 'bg-legal-success/10',
-      borderColor: 'border-legal-success',
+      borderColor: 'border-legal-success'
     },
     'pending': {
       label: 'Pending',
       color: 'text-legal-warning',
       bgColor: 'bg-legal-warning/10', 
-      borderColor: 'border-legal-warning',
+      borderColor: 'border-legal-warning'
     },
     'closed': {
       label: 'Closed',
       color: 'text-muted-foreground',
       bgColor: 'bg-muted/10',
-      borderColor: 'border-muted',
+      borderColor: 'border-muted'
     },
     'archived': {
       label: 'Archived',
       color: 'text-legal-document',
       bgColor: 'bg-legal-document/10',
-      borderColor: 'border-legal-document',
+      borderColor: 'border-legal-document'
     }
   };
   
@@ -164,31 +164,31 @@ export function getEvidenceTypeStyling(type: string) {
       label: 'Document',
       color: 'text-legal-document',
       bgColor: 'bg-legal-document/10',
-      borderColor: 'border-legal-document',
+      borderColor: 'border-legal-document'
     },
     'image': {
       label: 'Image',
       color: 'text-legal-info',
       bgColor: 'bg-legal-info/10',
-      borderColor: 'border-legal-info',
+      borderColor: 'border-legal-info'
     },
     'video': {
       label: 'Video',
       color: 'text-harvard-crimson',
       bgColor: 'bg-harvard-crimson/10',
-      borderColor: 'border-harvard-crimson',
+      borderColor: 'border-harvard-crimson'
     },
     'audio': {
       label: 'Audio',
       color: 'text-harvard-gold',
       bgColor: 'bg-harvard-gold/10',
-      borderColor: 'border-harvard-gold',
+      borderColor: 'border-harvard-gold'
     },
     'physical': {
       label: 'Physical',
       color: 'text-legal-evidence',
       bgColor: 'bg-legal-evidence/10',
-      borderColor: 'border-legal-evidence',
+      borderColor: 'border-legal-evidence'
     }
   };
   
@@ -297,14 +297,14 @@ export const theme = {
       gray: '#2A2A2A',
       lightGray: '#3A3A3A',
       offWhite: '#F5F5F5',
-      white: '#FFFFFF',
+      white: '#FFFFFF'
     },
     harvard: {
       crimson: '#A51C30',
       darkCrimson: '#8B1521',
       lightCrimson: '#C42847',
       gold: '#C9A96E',
-      darkGold: '#B8965A',
+      darkGold: '#B8965A'
     },
     legal: {
       success: '#2D5F3F',
@@ -313,7 +313,7 @@ export const theme = {
       info: '#2A4A5A',
       evidence: '#3A4A5A',
       case: '#A51C30',
-      document: '#6A7A8A',
+      document: '#6A7A8A'
     }
   },
   

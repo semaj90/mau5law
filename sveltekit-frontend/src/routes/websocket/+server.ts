@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ request }) => {
         query: 'analyze legal contract',
         topologyType: 'legal',
         accuracyTarget: 90,
-        streamBinary: true,
+        streamBinary: true
       }
     }
   }), {

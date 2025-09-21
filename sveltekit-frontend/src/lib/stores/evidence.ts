@@ -101,7 +101,7 @@ export interface EvidenceNote {
   author: string;
   timestamp: string;
   type: 'observation' | 'analysis' | 'legal_note' | 'technical_note';
-  confidential: boolean;,
+  confidential: boolean;
 }
 
 export interface EvidenceFilter {
@@ -125,7 +125,7 @@ export interface EvidenceStats {
   unprocessed_count: number;
   encrypted_count: number;
   total_file_size: number;
-  average_relevance_score: number;,
+  average_relevance_score: number;
 }
 
 // Store State Interface;
@@ -139,7 +139,7 @@ export interface EvidenceStoreState {
   processing_queue: string[]; // Evidence IDs being processed
   stats: EvidenceStats | null;
   chain_of_custody_log: ChainOfCustodyEntry[];
-  security_alerts: SecurityAlert[];,
+  security_alerts: SecurityAlert[];
 }
 
 export interface SecurityAlert {
@@ -149,7 +149,7 @@ export interface SecurityAlert {
   message: string;
   timestamp: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  resolved: boolean;,
+  resolved: boolean;
 }
 
 // Evidence Store Implementation;
@@ -164,7 +164,7 @@ const createEvidenceStore = () => {
     processing_queue: [],
     stats: null,
     chain_of_custody_log: [],
-    security_alerts: [],
+    security_alerts: []
   });
 
   const fetchEvidence = async (caseId: string | null): Promise<any> => {
@@ -179,7 +179,7 @@ const createEvidenceStore = () => {
         processing_queue: [],
         stats: null,
         chain_of_custody_log: [],
-        security_alerts: [],
+        security_alerts: []
       });
       return;
     }
@@ -212,7 +212,7 @@ const createEvidenceStore = () => {
         filtered_evidence: evidenceList,
         stats,
         isLoading: false,
-        error: null,
+        error: null
       });
 
       // Log access for audit trail
@@ -225,7 +225,7 @@ const createEvidenceStore = () => {
         evidence: [],
         filtered_evidence: [],
         isLoading: false,
-        error: error.message,
+        error: error.message
       });
     }
   };
@@ -272,7 +272,7 @@ const createEvidenceStore = () => {
           x: Math.random() * 500, // Default canvas position
           y: Math.random() * 500,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         };
 
         const response = await fetch("/api/evidence", {
@@ -281,7 +281,7 @@ const createEvidenceStore = () => {
             "Content-Type": "application/json",
             "X-Legal-Request": "true"
           },
-          body: JSON.stringify(evidencePayload),
+          body: JSON.stringify(evidencePayload)
         });
 
         if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
@@ -295,7 +295,7 @@ const createEvidenceStore = () => {
           ...state,
           evidence: [...state.evidence, createdEvidence],
           filtered_evidence: applyFilter([...state.evidence, createdEvidence], state.current_filter),
-          isLoading: false,
+          isLoading: false
         });
 
         // Log evidence addition
@@ -307,7 +307,7 @@ const createEvidenceStore = () => {
         update((state) => ({
           ...state,
           isLoading: false,
-          error: error.message,
+          error: error.message
         });
         console.error("Error adding evidence:", error);
         throw error;
@@ -335,7 +335,7 @@ const createEvidenceStore = () => {
             const updated = {
               ...item,
               ...updates,
-              updated_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
             };
 
             // Add chain of custody entry if provided;
@@ -372,7 +372,7 @@ const createEvidenceStore = () => {
             "Content-Type": "application/json",
             "X-Legal-Request": "true"
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(payload)
         });
 
         if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
@@ -398,7 +398,7 @@ const createEvidenceStore = () => {
               state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? original : item),
               state.current_filter
             ),
-            error: error.message,
+            error: error.message
           });
         }
         throw error;
@@ -427,7 +427,7 @@ const createEvidenceStore = () => {
             "Content-Type": "application/json",
             "X-Legal-Request": "true"
           },
-          body: JSON.stringify({ reason }),
+          body: JSON.stringify({ reason })
         });
 
         if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
@@ -446,7 +446,7 @@ const createEvidenceStore = () => {
           ...state,
           evidence: originalList,
           filtered_evidence: applyFilter(originalList, state.current_filter),
-          error: error.message,
+          error: error.message
         });
         throw error;
       }
@@ -466,7 +466,7 @@ const createEvidenceStore = () => {
             "Content-Type": "application/json",
             "X-Legal-Request": "true"
           },
-          body: JSON.stringify({ type: processingType }),
+          body: JSON.stringify({ type: processingType })
         });
 
         if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
@@ -485,7 +485,7 @@ const createEvidenceStore = () => {
             state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? processedEvidence : item),
             state.current_filter
           ),
-          processing_queue: state.processing_queue.filter(id => id !== evidenceId),
+          processing_queue: state.processing_queue.filter(id => id !== evidenceId)
         });
 
         // Log evidence processing
@@ -497,7 +497,7 @@ const createEvidenceStore = () => {
         update((state) => ({
           ...state,
           processing_queue: state.processing_queue.filter(id => id !== evidenceId),
-          error: error.message,
+          error: error.message
         });
         throw error;
       }
@@ -510,7 +510,7 @@ const createEvidenceStore = () => {
         return {
           ...state,
           current_filter: filter,
-          filtered_evidence: filtered,
+          filtered_evidence: filtered
         };
       });
     },
@@ -541,7 +541,7 @@ const createEvidenceStore = () => {
           ].join(' ');
 
           return (case_sensitive ? searchIn : searchIn.toLowerCase()).includes(searchTerm);
-        ,});
+        });
 
         return {
           ...state,
@@ -563,7 +563,7 @@ const createEvidenceStore = () => {
 
         return {
           ...state,
-          selected_evidence: selected,
+          selected_evidence: selected
         };
       });
     },
@@ -577,7 +577,7 @@ const createEvidenceStore = () => {
             "Content-Type": "application/json",
             "X-Legal-Request": "true"
           },
-          body: JSON.stringify(entry),
+          body: JSON.stringify(entry)
         });
 
         if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
@@ -615,7 +615,7 @@ const createEvidenceStore = () => {
             "Content-Type": "application/json",
             "X-Legal-Request": "true"
           },
-          body: JSON.stringify({ evidenceIds, reportType }),
+          body: JSON.stringify({ evidenceIds, reportType })
         });
 
         if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
@@ -658,7 +658,7 @@ const createEvidenceStore = () => {
                 message: validation.message || 'Evidence integrity check failed',
                 timestamp: new Date().toISOString(),
                 severity: 'high',
-                resolved: false,
+                resolved: false
               }
             ]
           });
@@ -681,7 +681,7 @@ const createEvidenceStore = () => {
       update((state) => ({
         ...state,
         current_filter: null,
-        filtered_evidence: state.evidence,
+        filtered_evidence: state.evidence
       });
     },
 
@@ -712,7 +712,7 @@ const createEvidenceStore = () => {
             "Content-Type": "application/json",
             "X-Legal-Request": "true"
           },
-          body: JSON.stringify({ evidenceIds, format }),
+          body: JSON.stringify({ evidenceIds, format })
         });
 
         if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
@@ -862,7 +862,7 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
     unprocessed_count: 0,
     encrypted_count: 0,
     total_file_size: 0,
-    average_relevance_score: 0,
+    average_relevance_score: 0
   };
 
   let totalRelevanceScore = 0;

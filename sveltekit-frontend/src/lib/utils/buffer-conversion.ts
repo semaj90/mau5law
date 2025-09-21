@@ -159,7 +159,7 @@ export class WebGPUBufferUtils {
   static prepareForUpload(data: BufferLike): {
     buffer: ArrayBuffer;
     byteLength: number;
-    elementCount: number;,
+    elementCount: number;
   } {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
@@ -207,7 +207,7 @@ export const BufferDebugUtils = {
     byteLength: number;
     elementCount?: number;
     alignment: number;
-    isAligned: boolean;,
+    isAligned: boolean;
   } {
     const type = data.constructor.name;
     let byteLength: number;
@@ -232,7 +232,7 @@ export const BufferDebugUtils = {
       byteLength,
       elementCount,
       alignment,
-      isAligned: alignment === 0,
+      isAligned: alignment === 0
     };
   },
   
@@ -280,7 +280,7 @@ export class WebGPUBufferUtils_Advanced {
     buffer: ArrayBuffer;
     byteLength: number;
     elementCount: number;
-    recommendedQuantization: 'fp32' | 'fp16' | 'int8_symmetric';,
+    recommendedQuantization: 'fp32' | 'fp16' | 'int8_symmetric';
   } {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;

@@ -15,10 +15,10 @@ export interface LLMModel {
   performance: {
     tokensPerSecond: number;
     memoryUsage: string;
-    responseTime: number;,
+    responseTime: number;
   };
   capabilities: string[];
-  endpoint: string;,
+  endpoint: string;
 }
 
 export interface AITask {
@@ -79,7 +79,7 @@ export interface WorkerMessage {
     | "STATUS_UPDATE"
     | "WORKER_READY";
   taskId: string;
-  payload: any;,
+  payload: any;
 }
 
 export interface WorkerStatus {
@@ -89,7 +89,7 @@ export interface WorkerStatus {
   maxConcurrent: number;
   uptime: number;
   totalProcessed: number;
-  errors: number;,
+  errors: number;
 }
 
 export interface AIProviderConfig {
@@ -109,7 +109,7 @@ export interface AgentWorkflow {
   description: string;
   agents: AgentDefinition[];
   steps: WorkflowStep[];
-  timeout: number;,
+  timeout: number;
 }
 
 export interface AgentDefinition {
@@ -120,7 +120,7 @@ export interface AgentDefinition {
   model: string;
   tools: string[];
   maxTokens: number;
-  temperature: number;,
+  temperature: number;
 }
 
 export interface WorkflowStep {
@@ -172,7 +172,7 @@ export interface AgentWorkflowTask extends AITask {
   workflowId: string;
   inputs: Record<string, any>;
   agents: string[];
-  coordination: "sequential" | "parallel" | "hierarchical";,
+  coordination: "sequential" | "parallel" | "hierarchical";
 }
 
 export interface MultiLLMOrchestrationConfig {
@@ -182,7 +182,7 @@ export interface MultiLLMOrchestrationConfig {
   };
   consensusThreshold: number;
   maxIterations: number;
-  votingStrategy: "majority" | "weighted" | "expert";,
+  votingStrategy: "majority" | "weighted" | "expert";
 }
 
 export interface ProcessingMetrics {
@@ -207,7 +207,7 @@ export interface WorkerPool {
   currentLoad: number[];
   totalTasks: number;
   completedTasks: number;
-  failedTasks: number;,
+  failedTasks: number;
 }
 
 export interface AIServiceWorkerManager {
@@ -259,7 +259,7 @@ export interface TaskResult {
   status: TaskStatus;
   response?: AIResponse;
   error?: Error;
-  metrics: ProcessingMetrics;,
+  metrics: ProcessingMetrics;
 }
 
 export interface WorkerConfiguration {
@@ -268,5 +268,5 @@ export interface WorkerConfiguration {
   retryAttempts: number;
   enableMetrics: boolean;
   enableLogging: boolean;
-  providers: AIProviderConfig[];,
+  providers: AIProviderConfig[];
 }

@@ -13,7 +13,7 @@ export interface Neo4jPathContext {
   legal_precedents: string[];
   entity_relationships: EntityRelationship[];
   confidence_scores: ConfidenceScores;
-  audit_trail: AuditEntry[];,
+  audit_trail: AuditEntry[];
 }
 
 export interface EntityRelationship {
@@ -22,7 +22,7 @@ export interface EntityRelationship {
   relationship_type: "references" | "contradicts" | "supports" | "contains";
   confidence: number;
   legal_weight: number;
-  source_document: string;,
+  source_document: string;
 }
 
 export interface ConfidenceScores {
@@ -30,7 +30,7 @@ export interface ConfidenceScores {
   factual_accuracy: number;
   chain_of_custody: number;
   precedent_strength: number;
-  overall_confidence: number;,
+  overall_confidence: number;
 }
 
 export interface AuditEntry {
@@ -40,7 +40,7 @@ export interface AuditEntry {
   query_hash: string;
   score_before?: number;
   score_after?: number;
-  reasoning: string;,
+  reasoning: string;
 }
 
 export interface EnhancedRerankerConfig {
@@ -49,7 +49,7 @@ export interface EnhancedRerankerConfig {
   accuracy_threshold: number;
   max_path_depth: number;
   legal_weight_multiplier: number;
-  audit_enabled: boolean;,
+  audit_enabled: boolean;
 }
 
 export interface RerankingResult {
@@ -60,7 +60,7 @@ export interface RerankingResult {
   boolean_pattern_match: boolean[][];
   confidence_metrics: ConfidenceScores;
   path_context: Neo4jPathContext;
-  explanation: string;,
+  explanation: string;
 }
 
 export class EnhancedNeo4jReranker {
@@ -68,7 +68,7 @@ export class EnhancedNeo4jReranker {
     url: process.env.QDRANT_URL || "http://localhost:6333",
     collectionName: "legal_documents",
     vectorSize: 768,
-    apiKey: process.env.QDRANT_API_KEY,
+    apiKey: process.env.QDRANT_API_KEY
   });
   private somRAG = createSOMRAGSystem();
   private config: EnhancedRerankerConfig;
@@ -83,7 +83,7 @@ export class EnhancedNeo4jReranker {
       max_path_depth: 5,
       legal_weight_multiplier: 1.5,
       audit_enabled: true,
-      ...config,
+      ...config
     };
   }
 
@@ -110,7 +110,7 @@ export class EnhancedNeo4jReranker {
       user_id: string;
       case_id?: string;
       role: "prosecutor" | "detective" | "admin";
-      search_intent: "evidence" | "precedent" | "analysis";,
+      search_intent: "evidence" | "precedent" | "analysis";
     },
   ): Promise<RerankingResult[]> {
     if (!this.isInitialized) {
@@ -131,7 +131,7 @@ export class EnhancedNeo4jReranker {
         action: "rerank",
         user_id: userContext.user_id,
         query_hash: queryHash,
-        reasoning: `Enhanced reranking initiated for ${documents.length} documents`,
+        reasoning: `Enhanced reranking initiated for ${documents.length} documents`
       });
     }
 
@@ -191,7 +191,7 @@ export class EnhancedNeo4jReranker {
           boolean_pattern_match: booleanPattern,
           confidence_metrics: confidenceMetrics,
           path_context: pathContext,
-          explanation,
+          explanation
         });
       } catch (error: any) {
         console.error(`Failed to rerank document ${document.id}:`, error);
@@ -204,11 +204,11 @@ export class EnhancedNeo4jReranker {
           neo4j_boost: 0,
           boolean_pattern_match: [
             [false, false],
-            [false, false],
+            [false, false]
           ],
           confidence_metrics: this.getDefaultConfidenceScores(),
           path_context: this.getDefaultPathContext(document),
-          explanation: `Error during reranking: ${error}`,
+          explanation: `Error during reranking: ${error}`
         });
       }
     }
@@ -231,7 +231,7 @@ export class EnhancedNeo4jReranker {
         action: "rerank",
         user_id: userContext.user_id,
         query_hash: queryHash,
-        reasoning: `Reranking completed with ${filteredResults.length} high-accuracy results`,
+        reasoning: `Reranking completed with ${filteredResults.length} high-accuracy results`
       });
     }
 
@@ -253,13 +253,13 @@ export class EnhancedNeo4jReranker {
       "evidence_collection",
       "chain_of_custody",
       "forensic_analysis",
-      "legal_filing",
+      "legal_filing"
     ];
 
     const mockLegalPrecedents = [
       "State v. Johnson (2019)",
       "Digital Evidence Standards Act",
-      "Federal Rules of Evidence 902(14)",
+      "Federal Rules of Evidence 902(14)"
     ];
 
     const mockEntityRelationships: EntityRelationship[] = [;
@@ -269,7 +269,7 @@ export class EnhancedNeo4jReranker {
         relationship_type: "contains",
         confidence: 0.92,
         legal_weight: 0.85,
-        source_document: document.id,
+        source_document: document.id
       },
       {
         source_entity: "witness_testimony",
@@ -277,8 +277,8 @@ export class EnhancedNeo4jReranker {
         relationship_type: "supports",
         confidence: 0.88,
         legal_weight: 0.75,
-        source_document: document.id,
-      },
+        source_document: document.id
+      }
     ];
 
     return {
@@ -290,7 +290,7 @@ export class EnhancedNeo4jReranker {
       confidence_scores: this.getDefaultConfidenceScores(),
       audit_trail: this.auditLog.filter(
         (entry) => entry.query_hash === this.hashQuery("", userContext),
-      ),
+      )
     };
   }
 
@@ -310,14 +310,14 @@ export class EnhancedNeo4jReranker {
       "testimony",
       "forensic",
       "chain",
-      "custody",
+      "custody"
     ];
     const technicalKeywords = [
       "digital",
       "metadata",
       "hash",
       "timestamp",
-      "verification",
+      "verification"
     ];
 
     const legalMatch = queryTokens.some((token) =>
@@ -337,8 +337,8 @@ export class EnhancedNeo4jReranker {
       [legalMatch && contentLegalMatch, legalMatch && contentTechnicalMatch],
       [
         technicalMatch && contentLegalMatch,
-        technicalMatch && contentTechnicalMatch,
-      ],
+        technicalMatch && contentTechnicalMatch
+      ]
     ];
   }
 
@@ -377,7 +377,7 @@ export class EnhancedNeo4jReranker {
       factual_accuracy: factualAccuracy,
       chain_of_custody: chainOfCustody,
       precedent_strength: precedentStrength,
-      overall_confidence: overallConfidence,
+      overall_confidence: overallConfidence
     };
   }
 
@@ -484,7 +484,7 @@ export class EnhancedNeo4jReranker {
       "forensic",
       "case",
       "legal",
-      "court",
+      "court"
     ];
     const docWords = document.content.toLowerCase().split(/\s+/);
     const legalMatches = docWords.filter((word) => legalTerms.includes(word);
@@ -510,7 +510,7 @@ export class EnhancedNeo4jReranker {
       "custody",
       "evidence",
       "collection",
-      "handling",
+      "handling"
     ];
     const chainScore = pathContext.evidence_chain.filter((step) =>
       custodyKeywords.some((keyword) => step.includes(keyword)),
@@ -526,7 +526,7 @@ export class EnhancedNeo4jReranker {
     const multipliers = {
       prosecutor: { evidence: 1.3, precedent: 1.2, analysis: 1.1 },
       detective: { evidence: 1.4, precedent: 1.0, analysis: 1.2 },
-      admin: { evidence: 1.1, precedent: 1.1, analysis: 1.1 },
+      admin: { evidence: 1.1, precedent: 1.1, analysis: 1.1 }
     };
     return (
       multipliers[role as keyof typeof multipliers]?.[
@@ -541,7 +541,7 @@ export class EnhancedNeo4jReranker {
       factual_accuracy: 0.8,
       chain_of_custody: 0.7,
       precedent_strength: 0.65,
-      overall_confidence: 0.72,
+      overall_confidence: 0.72
     };
   }
 
@@ -553,7 +553,7 @@ export class EnhancedNeo4jReranker {
       legal_precedents: [],
       entity_relationships: [],
       confidence_scores: this.getDefaultConfidenceScores(),
-      audit_trail: [],
+      audit_trail: []
     };
   }
 
@@ -588,7 +588,7 @@ export class EnhancedNeo4jReranker {
     average_accuracy: number;
     neo4j_enabled: boolean;
     boolean_patterns_enabled: boolean;
-    accuracy_threshold: number;,
+    accuracy_threshold: number;
   } {
     const totalQueries = this.auditLog.filter(
       (entry) => entry.action === "rerank",
@@ -599,7 +599,7 @@ export class EnhancedNeo4jReranker {
       average_accuracy: this.config.accuracy_threshold,
       neo4j_enabled: this.config.enable_neo4j_paths,
       boolean_patterns_enabled: this.config.enable_boolean_patterns,
-      accuracy_threshold: this.config.accuracy_threshold,
+      accuracy_threshold: this.config.accuracy_threshold
     };
   }
 }

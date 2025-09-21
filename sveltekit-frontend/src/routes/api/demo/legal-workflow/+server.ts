@@ -32,13 +32,13 @@ export const POST: RequestHandler = async ({ request }) => {
         return await chatWithCase(data);
 
       default:
-        throw new Error('Unknown action');,
+        throw new Error('Unknown action');
     }
   } catch (err) {
     console.error('Workflow demo error:', err);
     return json({
       success: false,
-      error: err instanceof Error ? err.message: String(err),
+      error: err instanceof Error ? err.message: String(err)
     }, { status: 500 });
   }
 };
@@ -63,10 +63,10 @@ async function createLegalCase(data: any) {
     metadata: JSON.stringify({
       createdBy: data.userId,
       workflow: 'demo',
-      jurisdiction: data.jurisdiction || 'Local Court',
+      jurisdiction: data.jurisdiction || 'Local Court'
     }),
     createdAt: new Date(),
-    updatedAt: new Date(),
+    updatedAt: new Date()
   }).returning();
 
   // Create initial timeline entry;
@@ -77,9 +77,9 @@ async function createLegalCase(data: any) {
     performedBy: data.userId,
     metadata: JSON.stringify({
       action: 'create_case',
-      caseId: newCase.id,
+      caseId: newCase.id
     }),
-    createdAt: new Date(),
+    createdAt: new Date()
   });
 
   console.log('✅ Case created:', newCase.caseNumber);
@@ -90,7 +90,7 @@ async function createLegalCase(data: any) {
     action: 'case_created',
     case: newCase,
     message: `Legal case "${data.title}" created successfully!`,
-    nextStep: 'Upload evidence files using the drag-drop canvas',
+    nextStep: 'Upload evidence files using the drag-drop canvas'
   });
 }
 
@@ -119,7 +119,7 @@ async function uploadEvidenceToCase(data: any) {
         evidenceType: detectEvidenceType(file.type),
         canvasPosition: position,
         uploadedAt: new Date().toISOString(),
-        priority: 'evidence',
+        priority: 'evidence'
       }
     };
 
@@ -136,16 +136,16 @@ async function uploadEvidenceToCase(data: any) {
         action: 'upload_evidence',
         filename: file.name,
         jobId,
-        canvasPosition: position,
+        canvasPosition: position
       }),
-      createdAt: new Date(),
+      createdAt: new Date()
     });
 
     results.push({
       filename: file.name,
       jobId,
       status: 'processing',
-      canvasPosition: position,
+      canvasPosition: position
     });
   }
 
@@ -157,7 +157,7 @@ async function uploadEvidenceToCase(data: any) {
     action: 'evidence_uploaded',
     results,
     message: `${files.length} evidence files uploaded and processing started!`,
-    nextStep: 'Position evidence on canvas and wait for AI analysis',
+    nextStep: 'Position evidence on canvas and wait for AI analysis'
   });
 }
 
@@ -173,7 +173,7 @@ async function updateCanvasPositions(data: any) {
       await db.update(userDocuments);
         .set({
           metadata: sql`jsonb_set(metadata, '{canvasPosition}', ${JSON.stringify(position)}::jsonb)`,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(userDocuments.source, `evidence:${evidenceId}`);
 
@@ -186,9 +186,9 @@ async function updateCanvasPositions(data: any) {
         metadata: JSON.stringify({
           action: 'update_position',
           evidenceId,
-          newPosition: position,
+          newPosition: position
         }),
-        createdAt: new Date(),
+        createdAt: new Date()
       });
     } catch (error) {
       console.warn(`Failed to update position for evidence ${evidenceId}:`, error);
@@ -203,7 +203,7 @@ async function updateCanvasPositions(data: any) {
     action: 'positions_updated',
     updated: Object.keys(evidencePositions).length,
     message: 'Evidence positions updated on canvas!',
-    nextStep: 'Generate timeline from evidence and activities',
+    nextStep: 'Generate timeline from evidence and activities'
   });
 }
 
@@ -239,7 +239,7 @@ async function generateTimeline(data: any) {
       description: activity.description,
       performer: activity.performedBy,
       metadata,
-      category: getTimelineCategory(activity.activityType),
+      category: getTimelineCategory(activity.activityType)
     };
   });
 
@@ -258,9 +258,9 @@ async function generateTimeline(data: any) {
       metadata: {
         documentId: doc.id,
         processingResults: metadata.processingResults,
-        embeddings: doc.embedding ? 'generated' : 'none',
+        embeddings: doc.embedding ? 'generated' : 'none'
       },
-      category: 'evidence',
+      category: 'evidence'
     });
   });
 
@@ -275,7 +275,7 @@ async function generateTimeline(data: any) {
     action: 'timeline_generated',
     timeline,
     message: `Timeline reconstructed with ${timeline.length} events!`,
-    nextStep: 'Chat with case using RAG to get insights',
+    nextStep: 'Chat with case using RAG to get insights'
   });
 }
 
@@ -303,7 +303,7 @@ async function chatWithCase(data: any) {
       id: userDocuments.id,
       content: userDocuments.content,
       embedding: userDocuments.embedding,
-      metadata: userDocuments.metadata,
+      metadata: userDocuments.metadata
     })
     .from(userDocuments)
     .where(like(userDocuments.source, `evidence:%`)
@@ -325,7 +325,7 @@ async function chatWithCase(data: any) {
       return {
         content: doc.content?.substring(0, 500) + '...', // Truncate for demo
         metadata,
-        relevance: Math.random() * 0.4 + 0.6 // Demo relevance score,
+        relevance: Math.random() * 0.4 + 0.6 // Demo relevance score
       };
     });
   }
@@ -336,7 +336,7 @@ async function chatWithCase(data: any) {
       title: caseData.title,
       description: caseData.description,
       caseNumber: caseData.caseNumber,
-      status: caseData.status,
+      status: caseData.status
     },
     evidence: similarDocuments,
     query
@@ -355,9 +355,9 @@ async function chatWithCase(data: any) {
       action: 'rag_chat',
       query,
       responseLength: aiResponse.length,
-      documentsUsed: similarDocuments.length,
+      documentsUsed: similarDocuments.length
     }),
-    createdAt: new Date(),
+    createdAt: new Date()
   });
 
   console.log('✅ RAG chat completed');
@@ -370,9 +370,9 @@ async function chatWithCase(data: any) {
     context: {
       documentsAnalyzed: similarDocuments.length,
       caseContext: true,
-      embeddingSearch: queryEmbedding.success,
+      embeddingSearch: queryEmbedding.success
     },
-    message: 'AI analysis complete using case evidence and context!',
+    message: 'AI analysis complete using case evidence and context!'
   });
 }
 
@@ -389,7 +389,7 @@ function getTimelineCategory(activityType: string): string {
     case_created: 'case_management',
     evidence_uploaded: 'evidence',
     evidence_repositioned: 'evidence',
-    ai_consultation: 'analysis',
+    ai_consultation: 'analysis'
   };
   return categories[activityType] || 'general';
 }
@@ -455,7 +455,7 @@ export const GET: RequestHandler = async ({ url }) => {
               userId: 'attorney_123',
               priority: 'high',
               category: 'criminal',
-              jurisdiction: 'Superior Court',
+              jurisdiction: 'Superior Court'
             }
           }
         },

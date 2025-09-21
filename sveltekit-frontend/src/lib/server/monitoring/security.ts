@@ -19,7 +19,7 @@ function logError(message: string, data?: any): void {
 export interface RateLimitEntry {
   count: number;
   resetTime: number;
-  blocked: boolean;,
+  blocked: boolean;
 }
 
 export interface SecurityConfig {
@@ -31,7 +31,7 @@ export interface SecurityConfig {
   };
   jwt: {
     accessTokenExpiry: string;
-    refreshTokenExpiry: string;,
+    refreshTokenExpiry: string;
   };
 }
 
@@ -44,8 +44,8 @@ const config: SecurityConfig = {
   },
   jwt: {
     accessTokenExpiry: "15m",
-    refreshTokenExpiry: "7d",
-  },
+    refreshTokenExpiry: "7d"
+  }
 };
 
 class SecurityManager {
@@ -67,7 +67,7 @@ class SecurityManager {
       this.rateLimitStore.set(key, {
         count: 1,
         resetTime: now + limit.windowMs,
-        blocked: false,
+        blocked: false
       });
       return true;
     }
@@ -143,7 +143,7 @@ class SecurityManager {
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
-      headers,
+      headers
     });
   }
 

@@ -51,7 +51,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         console.error('[AUTH] Database connection not available:', {
           dbExists: !!db,
           selectExists: !!(db && typeof db.select === 'function'),
-          dbType: typeof db,
+          dbType: typeof db
         });
         return [null, null];
       }
@@ -62,7 +62,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
           // User fields
           user: users,
           // Session fields
-          session: sessions,
+          session: sessions
         })
         .from(sessions)
         .innerJoin(users, eq(sessions.user_id, users.id)
@@ -84,8 +84,8 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
           ip_address: session.ip_address,
           user_agent: session.user_agent,
           session_context: session.session_context,
-          created_at: session.created_at,
-        },
+          created_at: session.created_at
+        }
       };
 
       const databaseUser: DatabaseUser = {
@@ -97,8 +97,8 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
           role: 'user',
           isActive: true,
           avatarUrl: null,
-          name: null,
-        },
+          name: null
+        }
       };
 
       return [databaseSession, databaseUser];
@@ -119,8 +119,8 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         ip_address: session.ip_address,
         user_agent: session.user_agent,
         session_context: session.session_context,
-        created_at: session.created_at,
-      },
+        created_at: session.created_at
+      }
     });
   }
 
@@ -132,7 +132,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
       ip_address: null,
       user_agent: null,
       session_context: Record<string, any>,
-      created_at: new Date(),
+      created_at: new Date()
     });
   }
 

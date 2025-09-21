@@ -51,7 +51,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       efConstruction = 64, // HNSW construction parameter
       vectorIndexAlgorithm = 'both',
       indexType = 'traditional',
-      behavioralConfig = {},
+      behavioralConfig = {}
     } = body;
 
     const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -86,7 +86,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             lists: computedLists,
             totalRows: total,
             useCase: 'Large datasets, memory efficient, good recall',
-            performance: 'Better for >100K vectors, lower memory usage',
+            performance: 'Better for >100K vectors, lower memory usage'
           });
         }
 
@@ -106,7 +106,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             efConstruction,
             totalRows: total,
             useCase: 'Low latency queries, higher recall, real-time search',
-            performance: 'Better for <1M vectors, faster queries, higher memory usage',
+            performance: 'Better for <1M vectors, faster queries, higher memory usage'
           });
         }
       }
@@ -122,11 +122,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             'idx_behavioral_states_som_position',
             'idx_behavioral_states_bitmap_hash',
             'idx_state_transitions_probability',
-            'idx_semantic_contexts_gemma_embedding_cosine',
+            'idx_semantic_contexts_gemma_embedding_cosine'
           ],
           config: behavioralConfig,
           useCase: 'Predictive intelligence, behavioral pattern recognition',
-          performance: '90%+ prediction confidence, 32-byte state compression',
+          performance: '90%+ prediction confidence, 32-byte state compression'
         });
       }
 
@@ -143,9 +143,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
               : 'Single algorithm optimization',
           bitmapCompressionEnabled: indexType !== 'traditional',
           predictiveIndexingEnabled: indexType !== 'traditional',
-          hybridIntelligenceEnabled: indexType === 'hybrid',
+          hybridIntelligenceEnabled: indexType === 'hybrid'
         },
-        recommendations: generateIndexRecommendations(vectorIndexAlgorithm, total),
+        recommendations: generateIndexRecommendations(vectorIndexAlgorithm, total)
       });
     } finally {
       client.release();
@@ -196,7 +196,7 @@ async function createBehavioralIndexes(client: any, config: any) {
 
     // Predictive cache performance index
     `CREATE INDEX IF NOT EXISTS idx_predictive_cache_performance
-     ON predictive_cache(asset_type, quality_tier, priority DESC)`,
+     ON predictive_cache(asset_type, quality_tier, priority DESC)`
   ];
 
   for (const indexSql of indexes) {
@@ -250,7 +250,7 @@ function generateIndexRecommendations(algorithm: string, totalRows: number): any
     optimal: '',
     reasoning: '',
     performance: {},
-    useCases: {},
+    useCases: {}
   };
 
   if (algorithm === 'both') {
@@ -260,7 +260,7 @@ function generateIndexRecommendations(algorithm: string, totalRows: number): any
       batchQueries: 'Use IVF_FLAT for bulk similarity searches',
       realTimeQueries: 'Use HNSW for low-latency user-facing searches',
       memoryOptimization: 'IVF_FLAT uses less memory for large datasets',
-      querySpeed: 'HNSW provides faster single-query response times',
+      querySpeed: 'HNSW provides faster single-query response times'
     };
   } else if (algorithm === 'ivf_flat') {
     recommendations.optimal =
@@ -278,20 +278,20 @@ function generateIndexRecommendations(algorithm: string, totalRows: number): any
       'Large document corpora (>100K embeddings)',
       'Batch similarity processing',
       'Memory-constrained environments',
-      'Background indexing jobs',
+      'Background indexing jobs'
     ],
     hnsw: [
       'Real-time search applications',
       'Interactive user queries',
       'High-recall requirements',
-      'Low-latency response needs',
+      'Low-latency response needs'
     ],
     both: [
       'Production legal AI systems',
       'Hybrid batch + real-time workloads',
       'Maximum performance optimization',
-      'Query pattern diversity',
-    ],
+      'Query pattern diversity'
+    ]
   };
 
   return recommendations;
@@ -311,8 +311,8 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         capabilities: {
           traditional: 'pgvector IVF-FLAT indexes for semantic similarity',
           behavioral: 'Bitmap HMM-SOM indexes for predictive intelligence',
-          hybrid: 'Combined semantic + behavioral intelligence',
-        },
+          hybrid: 'Combined semantic + behavioral intelligence'
+        }
       };
 
       if (indexType === 'all' || indexType === 'traditional') {
@@ -337,14 +337,14 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           ivf_flat: {
             count: ivfFlatIndexes.rows.length,
             indexes: ivfFlatIndexes.rows,
-            useCase: 'Large datasets, memory efficient, batch processing',
+            useCase: 'Large datasets, memory efficient, batch processing'
           },
           hnsw: {
             count: hnswIndexes.rows.length,
             indexes: hnswIndexes.rows,
-            useCase: 'Real-time queries, low latency, high recall',
+            useCase: 'Real-time queries, low latency, high recall'
           },
-          total: ivfFlatIndexes.rows.length + hnswIndexes.rows.length,
+          total: ivfFlatIndexes.rows.length + hnswIndexes.rows.length
         };
       }
 
@@ -375,15 +375,15 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
               'idx_behavioral_states_gemma_embedding_ivfflat',
               'idx_behavioral_states_gemma_embedding_hnsw',
               'idx_semantic_contexts_gemma_embedding_ivfflat',
-              'idx_semantic_contexts_gemma_embedding_hnsw',
+              'idx_semantic_contexts_gemma_embedding_hnsw'
             ],
             behavioral_specific: [
               'idx_behavioral_states_som_position',
               'idx_behavioral_states_bitmap_hash',
               'idx_state_transitions_probability',
-              'idx_predictive_cache_performance',
-            ],
-          },
+              'idx_predictive_cache_performance'
+            ]
+          }
         };
       }
 
@@ -403,7 +403,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 
         indexInfo.performance = {
           cacheStats: cacheStats.rows,
-          predictionAccuracy: 'See prediction_metrics table for detailed accuracy tracking',
+          predictionAccuracy: 'See prediction_metrics table for detailed accuracy tracking'
         };
       }
 
@@ -425,14 +425,14 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           dual_algorithm:
             'POST { vectorIndexAlgorithm: "both" } for maximum performance (recommended)',
           behavioral: 'POST { indexType: "behavioral" } for HMM-SOM predictive indexes',
-          hybrid: 'POST { indexType: "hybrid" } for combined semantic + behavioral intelligence',
+          hybrid: 'POST { indexType: "hybrid" } for combined semantic + behavioral intelligence'
         },
         GET: {
           all: 'GET ?type=all for complete index overview (IVF_FLAT + HNSW + Behavioral)',
           traditional: 'GET ?type=traditional for pgvector indexes (both algorithms)',
           behavioral: 'GET ?type=behavioral for HMM-SOM state information',
-          performance: 'GET ?type=performance for cache and prediction metrics',
-        },
+          performance: 'GET ?type=performance for cache and prediction metrics'
+        }
       },
       algorithms: {
         ivf_flat: {
@@ -440,25 +440,25 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           advantages: [
             'Memory efficient',
             'Scales to millions of vectors',
-            'Good for batch processing',
+            'Good for batch processing'
           ],
-          optimal_for: '>100K vectors, memory-constrained environments, background jobs',
+          optimal_for: '>100K vectors, memory-constrained environments, background jobs'
         },
         hnsw: {
           description: 'Hierarchical Navigable Small World - optimized for speed',
           advantages: ['Ultra-fast queries', 'High recall', 'Perfect for real-time'],
-          optimal_for: '<1M vectors, user-facing queries, low-latency requirements',
+          optimal_for: '<1M vectors, user-facing queries, low-latency requirements'
         },
         dual_strategy: {
           description: 'Best of both worlds - use both algorithms simultaneously',
           advantages: [
             'IVF_FLAT for batch + HNSW for real-time',
             'Query optimizer chooses best',
-            'Maximum flexibility',
+            'Maximum flexibility'
           ],
           optimal_for:
-            'Production legal AI systems, hybrid workloads, performance-critical applications',
-        },
+            'Production legal AI systems, hybrid workloads, performance-critical applications'
+        }
       },
       architecture: {
         revolutionaryAdvantage:
@@ -467,8 +467,8 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           'Predictive intelligence vs reactive search - anticipates user needs before queries',
         gemmaIntegration:
           'Semantic understanding (Gemma) + Behavioral prediction (HMM-SOM) = Cognitive AI',
-        dualIndexBenefits: 'IVF_FLAT + HNSW provides optimal performance across all query patterns',
-      },
+        dualIndexBenefits: 'IVF_FLAT + HNSW provides optimal performance across all query patterns'
+      }
     });
   }
 };

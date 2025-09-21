@@ -23,7 +23,7 @@ export function getPostgreSQLDatabase() {
   console.log("🐘 Connecting to PostgreSQL database:", databaseUrl);
 
   _pool = new Pool({
-    connectionString: databaseUrl,
+    connectionString: databaseUrl
   });
 
   _db = drizzle(_pool, { schema });

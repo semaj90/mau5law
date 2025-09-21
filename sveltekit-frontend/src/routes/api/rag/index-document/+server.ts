@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     if (!user) {
       return json({
         success: false,
-        error: 'Authentication required',
+        error: 'Authentication required'
       }, { status: 401 });
     }
 
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
           success: false,
           documentId: docData.id || 'unknown',
           error: error.message,
-          chunksCreated: 0,
+          chunksCreated: 0
         });
         failureCount++;
       }
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       successCount,
       failureCount,
       totalChunksCreated: totalChunks,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
 
     console.log(`📚 Document indexing completed:`, summary);
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       success: failureCount === 0,
       mode,
       summary,
-      results: mode === 'single' ? results[0] : results,
+      results: mode === 'single' ? results[0] : results
     });
 
   } catch (error: any) {
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return json({
       success: false,
       error: 'Failed to process document indexing request',
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     }, { status: 500 });
   }
 };
@@ -179,7 +179,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       lexisId: docData.lexisId,
       caseId: docData.caseId,
       evidenceId: docData.evidenceId,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     await db
@@ -226,7 +226,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
       isActive: true,
       isDirty: false,
       createdBy: userId,
-      embedding: null // Will be generated during chunking,
+      embedding: null // Will be generated during chunking
     };
 
     const insertedDocs = await db
@@ -248,7 +248,7 @@ async function processDocument(docData: any, userId: string): Promise<any> {
   return {
     success: true,
     documentId,
-    chunksCreated: indexResult.chunksCreated,
+    chunksCreated: indexResult.chunksCreated
   };
 }
 
@@ -263,7 +263,7 @@ export const GET: RequestHandler = async ({ url }) => {
         .select({
           count: sql`COUNT(*)`,
           totalSize: sql`SUM(LENGTH(content))`,
-          avgRelevance: sql`AVG(CASE WHEN metadata->>'relevanceScore' IS NOT NULL THEN (metadata->>'relevanceScore')::float ELSE NULL END)`,
+          avgRelevance: sql`AVG(CASE WHEN metadata->>'relevanceScore' IS NOT NULL THEN (metadata->>'relevanceScore')::float ELSE NULL END)`
         })
         .from(schema.documentChunks)
         .where(sql`document_id = ${documentId}`);
@@ -277,7 +277,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (document.length === 0) {
         return json({
           success: false,
-          error: 'Document not found',
+          error: 'Document not found'
         }, { status: 404 });
       }
 
@@ -287,14 +287,14 @@ export const GET: RequestHandler = async ({ url }) => {
           id: document[0].id,
           title: document[0].title,
           documentType: document[0].documentType,
-          jurisdiction: document[0].jurisdiction,
+          jurisdiction: document[0].jurisdiction
         },
         indexingStatus: {
           isIndexed: Number(chunks[0].count) > 0,
           chunkCount: Number(chunks[0].count) || 0,
           totalContentSize: Number(chunks[0].totalSize) || 0,
           averageRelevance: Number(chunks[0].avgRelevance) || 0,
-          lastIndexed: document[0].updatedAt,
+          lastIndexed: document[0].updatedAt
         }
       });
     } else {
@@ -303,14 +303,14 @@ export const GET: RequestHandler = async ({ url }) => {
 
       return json({
         success: true,
-        systemStats: stats,
+        systemStats: stats
       });
     }
 
   } catch (error: any) {
     return json({
       success: false,
-      error: error.message,
+      error: error.message
     }, { status: 500 });
   }
 };
@@ -322,7 +322,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
     if (!user) {
       return json({
         success: false,
-        error: 'Authentication required',
+        error: 'Authentication required'
       }, { status: 401 });
     }
 
@@ -331,7 +331,7 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
     if (!documentId) {
       return json({
         success: false,
-        error: 'Document ID is required',
+        error: 'Document ID is required'
       }, { status: 400 });
     }
 
@@ -351,13 +351,13 @@ export const DELETE: RequestHandler = async ({ request, cookies }) => {
       success: true,
       documentId,
       chunksRemoved: deletedChunks.length,
-      message: 'Document removed from search index',
+      message: 'Document removed from search index'
     });
 
   } catch (error: any) {
     return json({
       success: false,
-      error: error.message,
+      error: error.message
     }, { status: 500 });
   }
 };

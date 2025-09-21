@@ -9,15 +9,15 @@ export const GET: RequestHandler = async () => {
     return new Response(JSON.stringify({
       timestamp: new Date().toISOString(),
       ...health;
-    ,}), {
+    }), {
       headers: { 'Content-Type': 'application/json' },
-      status: health.status === 'healthy' ? 200 : 503,
+      status: health.status === 'healthy' ? 200 : 503
     });
   } catch (error) {
     return new Response(JSON.stringify({
       status: 'unhealthy',
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return new Response(JSON.stringify({
         success: initialized,
         action: 'initialize',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }), {
         headers: { 'Content-Type': 'application/json' }
       });
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return new Response(JSON.stringify({
       error: 'Invalid action',
-      availableActions: ['initialize'],
+      availableActions: ['initialize']
     }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
   } catch (error) {
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

@@ -17,14 +17,14 @@ export interface Suggestion {
   score: number;
   description: string;
   icon: string;
-  tags: string[];,
+  tags: string[];
 }
 
 export interface SuggestResponse {
   suggestions: Suggestion[];
   correctedQuery: string;
   explanation: string;
-  processingTimeMs: number;,
+  processingTimeMs: number;
 }
 
 // Mock data for development - replace with database queries
@@ -32,19 +32,19 @@ const mockPeople = [
   { id: '1', name: 'Sarah Johnson', email: 'sarah@law.com', role: 'attorney', specialization: 'corporate' },
   { id: '2', name: 'Michael Chen', email: 'mchen@legal.com', role: 'paralegal', specialization: 'litigation' },
   { id: '3', name: 'Emily Rodriguez', email: 'emily.r@law.com', role: 'investigator', specialization: 'evidence' },
-  { id: '4', name: 'David Thompson', email: 'dthompson@legal.com', role: 'attorney', specialization: 'criminal' },
+  { id: '4', name: 'David Thompson', email: 'dthompson@legal.com', role: 'attorney', specialization: 'criminal' }
 ];
 
 const mockCases = [
   { id: 'case-1', title: 'Corporate Merger Review', description: 'M&A due diligence case', status: 'active' },
   { id: 'case-2', title: 'Employment Discrimination', description: 'Workplace harassment investigation', status: 'pending' },
-  { id: 'case-3', title: 'Contract Dispute Resolution', description: 'Breach of service agreement', status: 'closed' },
+  { id: 'case-3', title: 'Contract Dispute Resolution', description: 'Breach of service agreement', status: 'closed' }
 ];
 
 const mockDocuments = [
   { id: 'doc-1', title: 'Service Agreement Template', type: 'contract', category: 'templates' },
   { id: 'doc-2', title: 'Evidence Collection Protocol', type: 'procedure', category: 'evidence' },
-  { id: 'doc-3', title: 'Legal Research Memo', type: 'memo', category: 'research' },
+  { id: 'doc-3', title: 'Legal Research Memo', type: 'memo', category: 'research' }
 ];
 
 export const GET: RequestHandler = async ({ url, fetch }) => {
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
           suggestions: serviceData.suggestions || [],
           correctedQuery: serviceData.corrected_query || query,
           explanation: serviceData.explanation || 'Suggestions from recommendations service',
-          processingTimeMs: Date.now() - startTime,
+          processingTimeMs: Date.now() - startTime
         });
       }
     } catch (e: any) {
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       suggestions: limitedSuggestions,
       correctedQuery,
       explanation: `Found ${limitedSuggestions.length} suggestions for "${query}"`,
-      processingTimeMs: Date.now() - startTime,
+      processingTimeMs: Date.now() - startTime
     };
 
     return json(response);
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     locals: Record<string, any>,
     platform: undefined,
     isDataRequest: false,
-    isSubRequest: false,
+    isSubRequest: false
   } as any);
 };
 
@@ -151,7 +151,7 @@ async function searchDatabase(query: string, contextType: string, limit: number)
           id: users.id,
           displayName: users.displayName,
           email: users.email,
-          role: users.role,
+          role: users.role
         })
         .from(users)
         .where(
@@ -188,7 +188,7 @@ async function searchDatabase(query: string, contextType: string, limit: number)
           title: cases.title,
           description: cases.description,
           status: cases.status,
-          caseType: cases.caseType,
+          caseType: cases.caseType
         })
         .from(cases)
         .where(
@@ -227,7 +227,7 @@ async function searchDatabase(query: string, contextType: string, limit: number)
           title: evidence.title,
           description: evidence.description,
           evidenceType: evidence.evidenceType,
-          fileName: evidence.fileName,
+          fileName: evidence.fileName
         })
         .from(evidence)
         .where(
@@ -276,7 +276,7 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
       const peopleFuse = new Fuse(mockPeople, {
         keys: ['name', 'email', 'specialization'],
         threshold: 0.4,
-        includeScore: true,
+        includeScore: true
       });
       
       const peopleResults = peopleFuse.search(query).slice(0, Math.ceil(limit / 3);
@@ -298,7 +298,7 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
       const casesFuse = new Fuse(mockCases, {
         keys: ['title', 'description'],
         threshold: 0.5,
-        includeScore: true,
+        includeScore: true
       });
       
       const caseResults = casesFuse.search(query).slice(0, Math.ceil(limit / 3);
@@ -320,7 +320,7 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
       const docsFuse = new Fuse(mockDocuments, {
         keys: ['title', 'type', 'category'],
         threshold: 0.4,
-        includeScore: true,
+        includeScore: true
       });
       
       const docResults = docsFuse.search(query).slice(0, Math.ceil(limit / 3);

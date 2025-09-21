@@ -18,7 +18,7 @@ export interface ModelVariant {
   capabilities: string[];
   contextWindow: number;
   isLoaded: boolean;
-  warmupTime: number;,
+  warmupTime: number;
 }
 
 export interface UserIntent {
@@ -31,7 +31,7 @@ export interface UserIntent {
     documentType?: string;
     userExpertise: 'novice' | 'intermediate' | 'expert';
     timeOfDay: string;
-    sessionLength: number;,
+    sessionLength: number;
   };
 }
 
@@ -45,7 +45,7 @@ export interface ModelPerformanceMetrics {
   memoryEfficiency: number;
   lastUsed: Date;
   usageCount: number;
-  errorRate: number;,
+  errorRate: number;
 }
 
 export interface SelfPromptingSuggestion {
@@ -55,7 +55,7 @@ export interface SelfPromptingSuggestion {
   category: 'clarification' | 'expansion' | 'correction' | 'alternative' | 'follow-up';
   modelRecommendation: string;
   estimatedLatency: number;
-  contextRelevance: number;,
+  contextRelevance: number;
 }
 
 // CUDA Cache Memory Optimizer with SOM Neural Network;
@@ -183,7 +183,7 @@ export class CudaCacheSOMOptimizer {
   optimizeCudaMemoryLayout(activeModels: string[]): {
     layout: Map<string, { offset: number; size: number }>;
     totalMemoryUsed: number;
-    fragmentationRatio: number;,
+    fragmentationRatio: number;
   } {
     const layout = new Map<string, { offset: number; size: number }>();
     let currentOffset = 0;
@@ -263,7 +263,7 @@ export class SelfPromptingIntelligence {
         previousQueries: this.userContextHistory.slice(-5).map(h => h.category),
         userExpertise: this.inferExpertiseLevel(context),
         timeOfDay: new Date().getHours().toString(),
-        sessionLength: context.sessionLength || 0,
+        sessionLength: context.sessionLength || 0
       }
     };
 
@@ -345,7 +345,7 @@ export class SelfPromptingIntelligence {
         category: 'clarification',
         modelRecommendation: 'gemma-270m', // Fast model for clarifications
         estimatedLatency: 200,
-        contextRelevance: 0.9,
+        contextRelevance: 0.9
       });
     }
 
@@ -370,7 +370,7 @@ export class SelfPromptingIntelligence {
       case 'code-generation':
         return 'write code, debug an error, or explain a programming concept';
       default:
-        return 'be more specific about what you\'re looking for';,
+        return 'be more specific about what you\'re looking for';
     }
   }
 
@@ -385,7 +385,7 @@ export class SelfPromptingIntelligence {
         category: 'expansion',
         modelRecommendation: 'gemma3-legal-main',
         estimatedLatency: 300,
-        contextRelevance: 0.8,
+        contextRelevance: 0.8
       });
     }
 
@@ -404,7 +404,7 @@ export class SelfPromptingIntelligence {
         category: 'alternative',
         modelRecommendation: 'gemma3-legal-main',
         estimatedLatency: 350,
-        contextRelevance: 0.7,
+        contextRelevance: 0.7
       });
     }
 
@@ -425,7 +425,7 @@ export class SelfPromptingIntelligence {
         category: 'follow-up',
         modelRecommendation: 'gemma3-legal-main',
         estimatedLatency: 400,
-        contextRelevance: 0.85,
+        contextRelevance: 0.85
       });
     }
 
@@ -465,7 +465,7 @@ export class IntelligentModelOrchestrator {
   public readonly performance = writable<ModelPerformanceMetrics[]>([]);
   public readonly memoryOptimization = writable<{
     totalMemoryUsed: number;
-    fragmentationRatio: number;,
+    fragmentationRatio: number;
   } | null>(null);
 
   constructor() {
@@ -486,7 +486,7 @@ export class IntelligentModelOrchestrator {
         capabilities: ['chat', 'simple-qa', 'clarification'],
         contextWindow: 2048,
         isLoaded: true,
-        warmupTime: 50,
+        warmupTime: 50
       },
       {
         id: 'gemma3-legal-main',
@@ -497,7 +497,7 @@ export class IntelligentModelOrchestrator {
         capabilities: ['legal-research', 'document-analysis', 'legal-reasoning', 'case-law-analysis'],
         contextWindow: 4096,
         isLoaded: true,
-        warmupTime: 100,
+        warmupTime: 100
       },
       {
         id: 'langextract-processor',
@@ -508,7 +508,7 @@ export class IntelligentModelOrchestrator {
         capabilities: ['text-extraction', 'document-parsing', 'entity-extraction'],
         contextWindow: 2048,
         isLoaded: true,
-        warmupTime: 50,
+        warmupTime: 50
       },
       {
         id: 'legal-bert-fast',
@@ -519,7 +519,7 @@ export class IntelligentModelOrchestrator {
         capabilities: ['legal-entity-extraction', 'case-classification', 'legal-search'],
         contextWindow: 512,
         isLoaded: true,
-        warmupTime: 30,
+        warmupTime: 30
       },
       {
         id: 'fastapi-endpoint',
@@ -530,7 +530,7 @@ export class IntelligentModelOrchestrator {
         capabilities: ['api-processing', 'data-transformation', 'batch-processing'],
         contextWindow: 1024,
         isLoaded: true,
-        warmupTime: 25,
+        warmupTime: 25
       }
     ];
 
@@ -546,7 +546,7 @@ export class IntelligentModelOrchestrator {
         memoryEfficiency: 1 - (model.memoryFootprint / 16384),
         lastUsed: new Date(),
         usageCount: 0,
-        errorRate: 0.05,
+        errorRate: 0.05
       });
     });
 
@@ -606,7 +606,7 @@ export class IntelligentModelOrchestrator {
       estimatedLatency: this.estimateLatency(optimalModel, intent),
       suggestions,
       shouldPreload,
-      cacheOptimization: memoryOptimization,
+      cacheOptimization: memoryOptimization
     };
   }
 
@@ -832,7 +832,7 @@ export class IntelligentModelOrchestrator {
     summary: any;
     models: ModelPerformanceMetrics[];
     memoryUsage: any;
-    recommendations: string[];,
+    recommendations: string[];
   } {
     const models = Array.from(this.performanceMetrics.values();
     const totalUsage = models.reduce((sum, m) => sum + m.usageCount, 0);
@@ -843,11 +843,11 @@ export class IntelligentModelOrchestrator {
         totalQueries: totalUsage,
         averageLatency: models.reduce((sum, m) => sum + m.averageLatency, 0) / models.length,
         overallSatisfaction: avgSatisfaction,
-        activeModels: this.getActiveModelIds().length,
+        activeModels: this.getActiveModelIds().length
       },
       models,
       memoryUsage: this.cudaOptimizer.optimizeCudaMemoryLayout(this.getActiveModelIds()),
-      recommendations: this.generateOptimizationRecommendations(models),
+      recommendations: this.generateOptimizationRecommendations(models)
     };
   }
 

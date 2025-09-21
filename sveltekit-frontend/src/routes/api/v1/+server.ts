@@ -22,17 +22,17 @@ const PRODUCTION_ENDPOINTS = {
     websocket: 'ws://localhost:8094/ws',
     tier: 'ULTRA_FAST',
     health: '/health',
-    status: 'active',
+    status: 'active'
   },
   uploadService: {
     http: 'http://localhost:8093',
     health: '/health',
-    status: 'active',
+    status: 'active'
   },
   documentProcessor: {
     http: 'http://localhost:8081',
     health: '/api/health',
-    status: 'active',
+    status: 'active'
   },
 
   // AI Enhancement Services (Tier 2);
@@ -40,13 +40,13 @@ const PRODUCTION_ENDPOINTS = {
     http: 'http://localhost:8095',
     tier: 'ULTRA_FAST',
     health: '/health',
-    status: 'experimental',
+    status: 'experimental'
   },
   dimensionalCache: {
     http: 'http://localhost:8097',
     tier: 'HIGH_PERF',
     health: '/health',
-    status: 'experimental',
+    status: 'experimental'
   },
 
   // Multi-Core Ollama Cluster;
@@ -55,7 +55,7 @@ const PRODUCTION_ENDPOINTS = {
     secondary: 'http://localhost:11435',
     embeddings: 'http://localhost:11436',
     health: '/api/tags',
-    status: 'active',
+    status: 'active'
   },
 
   // Database Services;
@@ -63,17 +63,17 @@ const PRODUCTION_ENDPOINTS = {
     host: 'localhost',
     port: 5432,
     database: 'legal_ai_db',
-    status: 'active',
+    status: 'active'
   },
   redis: {
     host: 'localhost',
     port: 6379,
-    status: 'active',
+    status: 'active'
   },
   qdrant: {
     http: 'http://localhost:6333',
     health: '/health',
-    status: 'active',
+    status: 'active'
   },
 
   // Messaging & State Management;
@@ -82,31 +82,31 @@ const PRODUCTION_ENDPOINTS = {
     websocket: 'ws://localhost:4226',
     monitor: 'http://localhost:8225',
     health: '/healthz',
-    status: 'active',
+    status: 'active'
   },
   xstateManager: {
     http: 'http://localhost:8212',
     health: '/health',
-    status: 'active',
+    status: 'active'
   },
 
   // Infrastructure Services;
   clusterManager: {
     http: 'http://localhost:8213',
     health: '/health',
-    status: 'active',
+    status: 'active'
   },
   loadBalancer: {
     http: 'http://localhost:8224',
     health: '/health',
-    status: 'active',
+    status: 'active'
   },
 
   // Development & Monitoring;
   sveltekit: {
     http: 'http://localhost:5173',
     dev: 'http://localhost:5174',
-    status: 'active',
+    status: 'active'
   }
 } as const;
 
@@ -198,18 +198,18 @@ export const GET: RequestHandler = async ({ url }) => {
             upload: '/api/v1/upload',
             ai: '/api/v1/ai',
             search: '/api/v1/search',
-            document: '/api/v1/document',
+            document: '/api/v1/document'
           },
           protocols: ['HTTP', 'gRPC', 'QUIC', 'WebSocket'],
           deployment: 'Windows Native (No Docker)',
-          status: 'production',
+          status: 'production'
         };
         return json({
           success: true,
           data,
           metadata: {
             timestamp: new Date().toISOString(),
-            processingTimeMs: Date.now() - started,
+            processingTimeMs: Date.now() - started
           }
         } satisfies APIResponse<typeof data>);
       }
@@ -221,11 +221,11 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       error: {
         code: 'INTERNAL_ERROR',
-        message: dev ? e.message: 'Service temporarily unavailable',
+        message: dev ? e.message: 'Service temporarily unavailable'
       },
       metadata: {
         timestamp: new Date().toISOString(),
-        processingTimeMs: Date.now() - started,
+        processingTimeMs: Date.now() - started
       }
     } satisfies APIResponse<any>, { status: 500 });
   }
@@ -257,13 +257,13 @@ async function handleHealthCheck(): Promise<Response> {
             status: response.ok ? 'healthy' : 'unhealthy',
             responseTime: (performance.now?.() ?? Date.now()) - reqStarted,
             endpoint: healthEndpoint,
-            lastCheck: new Date().toISOString(),
+            lastCheck: new Date().toISOString()
           };
         } catch (error: any) {
           healthChecks[serviceName] = {
             status: 'error',
             error: String(error),
-            lastCheck: new Date().toISOString(),
+            lastCheck: new Date().toISOString()
           };
         }
       })()
@@ -283,17 +283,17 @@ async function handleHealthCheck(): Promise<Response> {
     summary: {
       total: totalServices,
       healthy: healthyServices,
-      unhealthy: totalServices - healthyServices,
+      unhealthy: totalServices - healthyServices
     },
     timestamp: new Date().toISOString(),
-    deployment: 'Windows Native',
+    deployment: 'Windows Native'
   };
   return json({
     success: true,
     data,
     metadata: {
       timestamp: new Date().toISOString(),
-      processingTimeMs: Date.now() - started,
+      processingTimeMs: Date.now() - started
     }
   } satisfies APIResponse<typeof data>);
 }
@@ -307,7 +307,7 @@ async function handleServiceDiscovery(): Promise<Response> {
     name,
     config,
     protocols: getServiceProtocols(config),
-    tier: 'tier' in config ? config.tier: 'STANDARD',
+    tier: 'tier' in config ? config.tier: 'STANDARD'
   });
   const data = {
     services,
@@ -318,7 +318,7 @@ async function handleServiceDiscovery(): Promise<Response> {
       HTTP: services.filter(s => s.protocols.includes('HTTP')).length,
       gRPC: services.filter(s => s.protocols.includes('gRPC')).length,
       QUIC: services.filter(s => s.protocols.includes('QUIC')).length,
-      WebSocket: services.filter(s => s.protocols.includes('WebSocket')).length,
+      WebSocket: services.filter(s => s.protocols.includes('WebSocket')).length
     }
   };
   return json({
@@ -339,21 +339,21 @@ async function handleMetrics(): Promise<Response> {
     performance: {
       averageResponseTime: '< 50ms',
       uptime: '99.9%',
-      throughput: '1000 req/min',
+      throughput: '1000 req/min'
     },
     resources: {
       cpu: '45%',
       memory: '6.2GB / 16GB',
       gpu: '87% (RTX 3060 Ti)',
-      storage: '125GB / 500GB',
+      storage: '125GB / 500GB'
     },
     protocols: {
       QUIC: '< 5ms avg',
       gRPC: '< 15ms avg',
       HTTP: '< 50ms avg',
-      WebSocket: '< 1ms latency',
+      WebSocket: '< 1ms latency'
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
   return json({
     success: true,
@@ -374,7 +374,7 @@ async function handleClusterStatus(): Promise<Response> {
       nodes: 1,
       services: Object.keys(PRODUCTION_ENDPOINTS).length,
       platform: 'Windows Native',
-      docker: false,
+      docker: false
     },
     processes: {
       sveltekit: { status: 'running', pid: process.pid },
@@ -382,7 +382,7 @@ async function handleClusterStatus(): Promise<Response> {
       ollama: { status: 'running', instances: 3 },
       databases: { status: 'connected', count: 3 }
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
   return json({
     success: true,

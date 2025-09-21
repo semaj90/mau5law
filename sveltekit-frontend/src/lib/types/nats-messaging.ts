@@ -158,7 +158,7 @@ export interface Subscription {
 	pending_msgs: number;
 	pending_bytes: number;
 	delivered: number;
-	dropped: number;,
+	dropped: number;
 }
 
 // Message Processing Types;
@@ -168,7 +168,7 @@ export interface MessageBatch {
 	messages: LegalAIMessage[];
 	batch_id: string;
 	created_at: string;
-	total_size_bytes: number;,
+	total_size_bytes: number;
 }
 
 export interface ProcessingResult {
@@ -200,7 +200,7 @@ export interface MessageMetrics {
 	active_streams: number;
 	connection_uptime: number;
 	last_message_time: string | null;
-	error_count: number;,
+	error_count: number;
 }
 
 export interface PerformanceMetrics {
@@ -208,19 +208,19 @@ export interface PerformanceMetrics {
 		messages_per_second: number;
 		bytes_per_second: number;
 		peak_messages_per_second: number;
-		peak_bytes_per_second: number;,
+		peak_bytes_per_second: number;
 	};
 	latency: {
 		avg_publish_latency_ms: number;
 		avg_delivery_latency_ms: number;
 		p95_publish_latency_ms: number;
-		p95_delivery_latency_ms: number;,
+		p95_delivery_latency_ms: number;
 	};
 	reliability: {
 		success_rate: number;
 		retry_rate: number;
 		duplicate_rate: number;
-		loss_rate: number;,
+		loss_rate: number;
 	};
 }
 
@@ -230,7 +230,7 @@ export interface SystemHealth {
 	message_processing_health: 'normal' | 'backlogged' | 'failing';
 	stream_health: Record<string, 'healthy' | 'degraded' | 'critical'>;
 	consumer_health: Record<string, 'active' | 'stalled' | 'failed'>;
-	last_check: string;,
+	last_check: string;
 }
 
 // Stream Processing Types;
@@ -254,7 +254,7 @@ export interface StreamState {
 	num_subjects: number;
 	num_deleted: number;
 	lost?: LostStreamData;
-	consumers: number;,
+	consumers: number;
 }
 
 export interface ClusterInfo {
@@ -287,12 +287,12 @@ export interface SourceInfo {
 
 export interface ExternalStream {
 	api: string;
-	deliver: string;,
+	deliver: string;
 }
 
 export interface LostStreamData {
 	msgs?: number[];
-	bytes: number;,
+	bytes: number;
 }
 
 export interface ConsumerInfo {
@@ -321,7 +321,7 @@ export interface DeliveryInfo {
 export interface NATSEvent {
 	type: NATSEventType;
 	timestamp: string;
-	data: any;,
+	data: any;
 }
 
 export type NATSEventType = 
@@ -408,7 +408,7 @@ export interface SearchFilters {
 	document_types?: string[];
 	date_range?: {
 		from: string;
-		to: string;,
+		to: string;
 	};
 	priority?: string[];
 	status?: string[];
@@ -439,7 +439,7 @@ export interface SystemAlert {
 	message: string;
 	component: string;
 	timestamp: string;
-	resolved: boolean;,
+	resolved: boolean;
 }
 
 // Queue and Work Distribution Types;
@@ -454,7 +454,7 @@ export interface WorkQueue {
 	pending_messages: number;
 	processing_messages: number;
 	completed_messages: number;
-	failed_messages: number;,
+	failed_messages: number;
 }
 
 export interface WorkItem {
@@ -495,11 +495,11 @@ export interface ExpectedStream {
 }
 
 export interface ExpectedLastSeq {
-	stream_seq: number;,
+	stream_seq: number;
 }
 
 export interface ExpectedLastMsgId {
-	msg_id: string;,
+	msg_id: string;
 }
 
 export interface MessageAck {
@@ -535,7 +535,7 @@ export interface MessageFlow {
 	bytes_transferred: number;
 	avg_latency_ms: number;
 	error_rate: number;
-	last_activity: string;,
+	last_activity: string;
 }
 
 export interface SubjectMetrics {
@@ -547,7 +547,7 @@ export interface SubjectMetrics {
 	active_publishers: number;
 	active_consumers: number;
 	last_published: string | null;
-	last_consumed: string | null;,
+	last_consumed: string | null;
 }
 
 export interface ConnectionMetrics {
@@ -558,7 +558,7 @@ export interface ConnectionMetrics {
 	msgs_in: number;
 	msgs_out: number;
 	slow_consumers: number;
-	subscriptions: number;,
+	subscriptions: number;
 }
 
 // Export utility types

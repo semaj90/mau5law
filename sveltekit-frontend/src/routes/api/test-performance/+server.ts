@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
           avgTimePerOp: overallTime / iterations,
           opsPerSecond: (iterations * 1000) / overallTime,
           results,
-          layerStats: cacheManager.getLayerStats(),
+          layerStats: cacheManager.getLayerStats()
         }
       });
     }
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
           opsPerSecond: (totals.success * 1000) / stressTime,
           successRate: (totals.success / (totals.success + totals.errors)) * 100,
           results: totals,
-          layerStats: cacheManager.getLayerStats(),
+          layerStats: cacheManager.getLayerStats()
         }
       });
     }

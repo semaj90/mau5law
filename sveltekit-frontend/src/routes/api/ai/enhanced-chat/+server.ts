@@ -87,9 +87,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       metadata: {
         model: settings?.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal:latest',
         tokensUsed: Math.ceil(aiResponse.length / 4),
-        enabledFeatures: ['basic-generation'],
+        enabledFeatures: ['basic-generation']
       },
-      recommendations: ['Verify legal advice with qualified counsel'],
+      recommendations: ['Verify legal advice with qualified counsel']
     };
 
     return json(response);
@@ -99,7 +99,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       { 
         error: 'Internal server error', 
         message: error instanceof Error ? error.message: 'Unknown error',
-        processingTime: Date.now() - startTime ,
+        processingTime: Date.now() - startTime 
       },
       { status: 500 }
     );
@@ -118,7 +118,7 @@ async function generateAIResponse(query: string, context: any): Promise<string> 
         options: {
           temperature: 0.3,
           top_p: 0.9,
-          num_ctx: 4096,
+          num_ctx: 4096
         }
       })
     });

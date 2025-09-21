@@ -33,7 +33,7 @@ export class LegalCanvasManager {
     avgFrameTime: 0,
     fps: 0,
     lastFrameTime: 0,
-    droppedFrames: 0,
+    droppedFrames: 0
   };
 
   constructor(canvasElement: HTMLCanvasElement, config: CanvasConfig) {
@@ -55,7 +55,7 @@ export class LegalCanvasManager {
       skipTargetFind: false,
       perPixelTargetFind: true,
       enableRetinaScaling: true,
-      imageSmoothingEnabled: true,
+      imageSmoothingEnabled: true
     });
 
     // Configure canvas for high performance
@@ -247,7 +247,7 @@ export class LegalCanvasManager {
       ...this.renderMetrics,
       activeIndicators: this.progressIndicators.size,
       canvasObjects: this.canvas?.getObjects().length || 0,
-      memoryUsage: this.getCanvasMemoryUsage(),
+      memoryUsage: this.getCanvasMemoryUsage()
     };
   }
 
@@ -321,7 +321,7 @@ class ProgressIndicator {
       stroke: '#555555',
       strokeWidth: 1,
       rx: 4,
-      ry: 4,
+      ry: 4
     });
 
     // Progress bar;
@@ -332,7 +332,7 @@ class ProgressIndicator {
       height: config.height - 4,
       fill: config.color || '#00ff88',
       rx: 2,
-      ry: 2,
+      ry: 2
     });
 
     // Progress text;
@@ -344,13 +344,13 @@ class ProgressIndicator {
       fill: '#ffffff',
       textAlign: 'center',
       originX: 'center',
-      originY: 'center',
+      originY: 'center'
     });
 
     // Group elements;
     this.progressGroup = new fabric.Group([background, this.progressBar, this.progressText], {
       selectable: false,
-      evented: false,
+      evented: false
     });
 
     this.canvas.add(this.progressGroup);
@@ -427,7 +427,7 @@ class VectorVisualization {
         strokeWidth: 1,
         originX: 'center',
         originY: 'center',
-        selectable: false,
+        selectable: false
       });
 
       this.canvas.add(point);
@@ -436,7 +436,7 @@ class VectorVisualization {
         originalX: x,
         originalY: y,
         similarity: vector.similarity,
-        phase: Math.random() * Math.PI * 2,
+        phase: Math.random() * Math.PI * 2
       });
 
       // Create connections to similar vectors;
@@ -465,7 +465,7 @@ class VectorVisualization {
       strokeWidth: 1,
       opacity: 0.3,
       selectable: false,
-      evented: false,
+      evented: false
     });
 
     this.canvas.add(line);
@@ -523,7 +523,7 @@ export class LokiCacheManager {
           console.log('📦 Loki.js IndexedDB cache initialized');
         },
         autosave: true,
-        autosaveInterval: 4000 // Save every 4 seconds,
+        autosaveInterval: 4000 // Save every 4 seconds
       });
 
     } catch (error) {
@@ -541,7 +541,7 @@ export class LokiCacheManager {
     // Vector embeddings cache;
     const vectorsCollection = this.db.addCollection('vectors', {
       indices: ['document_id', 'similarity', 'timestamp'],
-      unique: ['document_id'],
+      unique: ['document_id']
     });
 
     // Progress states cache;
@@ -585,10 +585,10 @@ export class LokiCacheManager {
         results: results.map(result => ({
           document_id: result.document_id,
           similarity: result.similarity,
-          metadata: result.metadata,
+          metadata: result.metadata
         })),
         timestamp: Date.now(),
-        ttl: Date.now() + 3600000 // 1 hour TTL,
+        ttl: Date.now() + 3600000 // 1 hour TTL
       };
 
       // Upsert cache entry
@@ -654,7 +654,7 @@ export class LokiCacheManager {
         user_id: userId,
         canvas_data: canvasData,
         timestamp: Date.now(),
-        version: Date.now() // Simple versioning,
+        version: Date.now() // Simple versioning
       };
 
       collection.insert(stateEntry);
@@ -757,7 +757,7 @@ export class LokiCacheManager {
     const stats: CacheStats = {
       totalEntries: 0,
       collectionStats: {},
-      isInitialized: true,
+      isInitialized: true
     };
 
     this.collections.forEach((collection, name) => {
@@ -765,7 +765,7 @@ export class LokiCacheManager {
       stats.totalEntries += count;
       stats.collectionStats[name] = {
         count,
-        size: this.estimateCollectionSize(collection),
+        size: this.estimateCollectionSize(collection)
       };
     });
 
@@ -869,7 +869,7 @@ export class RabbitMQRealtimeMessenger {
     // Create temporary queue;
     const queue = await this.channel.assertQueue(queueName, {
       exclusive: true,
-      autoDelete: true,
+      autoDelete: true
     });
 
     // Bind to progress exchange
@@ -906,7 +906,7 @@ export class RabbitMQRealtimeMessenger {
     const message = {
       ...progressData,
       timestamp: Date.now(),
-      id: progressId,
+      id: progressId
     };
 
     await this.channel.publish(
@@ -931,7 +931,7 @@ export class RabbitMQRealtimeMessenger {
     // Create queue for canvas updates;
     const queue = await this.channel.assertQueue(queueName, {
       exclusive: true,
-      autoDelete: true,
+      autoDelete: true
     });
 
     // Bind to canvas collaboration exchange
@@ -969,7 +969,7 @@ export class RabbitMQRealtimeMessenger {
     const message = {
       ...updateData,
       canvasId,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     await this.channel.publish(
@@ -992,7 +992,7 @@ export class RabbitMQRealtimeMessenger {
 
     // Create durable queue for vector updates;
     const queue = await this.channel.assertQueue(queueName, {
-      durable: true,
+      durable: true
     });
 
     // Bind to vector processing exchange
@@ -1041,7 +1041,7 @@ export class RabbitMQRealtimeMessenger {
     return {
       isConnected: this.isConnected,
       activeSubscriptions: this.subscriptions.size,
-      messageHandlers: this.messageHandlers.size,
+      messageHandlers: this.messageHandlers.size
     };
   }
 
@@ -1081,7 +1081,7 @@ export const realTimeUIMachine = createMachine({
     collaborativeMode: false,
     renderMetrics: {
       fps: 0,
-      droppedFrames: 0,
+      droppedFrames: 0
     }
   },
   states: {
@@ -1089,7 +1089,7 @@ export const realTimeUIMachine = createMachine({
       entry: 'initializeComponents',
       on: {
         COMPONENTS_READY: 'idle',
-        INITIALIZATION_FAILED: 'error',
+        INITIALIZATION_FAILED: 'error'
       }
     },
 
@@ -1097,15 +1097,15 @@ export const realTimeUIMachine = createMachine({
       on: {
         START_PROGRESS: {
           target: 'trackingProgress',
-          actions: 'createProgressIndicator',
+          actions: 'createProgressIndicator'
         },
         LOAD_VECTORS: {
           target: 'renderingVectors',
-          actions: 'loadVectorVisualization',
+          actions: 'loadVectorVisualization'
         },
         ENABLE_COLLABORATION: {
           target: 'collaborative',
-          actions: 'enableCollaborativeMode',
+          actions: 'enableCollaborativeMode'
         }
       }
     },
@@ -1114,15 +1114,15 @@ export const realTimeUIMachine = createMachine({
       entry: 'startProgressTracking',
       on: {
         PROGRESS_UPDATE: {
-          actions: 'updateProgress',
+          actions: 'updateProgress'
         },
         PROGRESS_COMPLETE: {
           target: 'idle',
-          actions: 'completeProgress',
+          actions: 'completeProgress'
         },
         PROGRESS_ERROR: {
           target: 'error',
-          actions: 'handleProgressError',
+          actions: 'handleProgressError'
         }
       }
     },
@@ -1131,10 +1131,10 @@ export const realTimeUIMachine = createMachine({
       entry: 'startVectorRendering',
       on: {
         VECTOR_SIMILARITY_UPDATE: {
-          actions: 'updateVectorVisualization',
+          actions: 'updateVectorVisualization'
         },
         VECTOR_RENDERING_COMPLETE: 'idle',
-        VECTOR_ERROR: 'error',
+        VECTOR_ERROR: 'error'
       }
     },
 
@@ -1142,17 +1142,17 @@ export const realTimeUIMachine = createMachine({
       entry: 'setupCollaboration',
       on: {
         CANVAS_UPDATE: {
-          actions: 'broadcastCanvasUpdate',
+          actions: 'broadcastCanvasUpdate'
         },
         REMOTE_CANVAS_UPDATE: {
-          actions: 'applyRemoteCanvasUpdate',
+          actions: 'applyRemoteCanvasUpdate'
         },
         USER_CURSOR_MOVE: {
-          actions: 'broadcastCursorPosition',
+          actions: 'broadcastCursorPosition'
         },
         DISABLE_COLLABORATION: {
           target: 'idle',
-          actions: 'disableCollaborativeMode',
+          actions: 'disableCollaborativeMode'
         }
       }
     },
@@ -1163,7 +1163,7 @@ export const realTimeUIMachine = createMachine({
         RETRY: 'initializing',
         RESET: {
           target: 'idle',
-          actions: 'resetState',
+          actions: 'resetState'
         }
       }
     }
@@ -1231,7 +1231,7 @@ export const realTimeUIMachine = createMachine({
         ...context,
         activeProgress: new Map(),
         vectorVisualization: null,
-        collaborativeMode: false,
+        collaborativeMode: false
       };
     })
   }
@@ -1266,7 +1266,7 @@ interface VectorData {
   id: string;
   embedding: number[];
   similarity: number;
-  metadata: any;,
+  metadata: any;
 }
 
 interface VectorPoint {
@@ -1274,7 +1274,7 @@ interface VectorPoint {
   originalX: number;
   originalY: number;
   similarity: number;
-  phase: number;,
+  phase: number;
 }
 
 interface RenderMetrics {
@@ -1285,19 +1285,19 @@ interface RenderMetrics {
   droppedFrames: number;
   activeIndicators: number;
   canvasObjects: number;
-  memoryUsage: number;,
+  memoryUsage: number;
 }
 
 interface SimilarityResult {
   document_id: string;
   similarity: number;
-  metadata: any;,
+  metadata: any;
 }
 
 interface CacheStats {
   totalEntries: number;
   collectionStats: Record<string, { count: number; size: number }>;
-  isInitialized: boolean;,
+  isInitialized: boolean;
 }
 
 interface ProgressUpdate {
@@ -1310,13 +1310,13 @@ interface CanvasUpdate {
   action: 'add' | 'modify' | 'delete';
   objectId: string;
   objectData: any;
-  userId: string;,
+  userId: string;
 }
 
 interface MessengerStatus {
   isConnected: boolean;
   activeSubscriptions: number;
-  messageHandlers: number;,
+  messageHandlers: number;
 }
 
 type MessageHandler = (message: any) => void;

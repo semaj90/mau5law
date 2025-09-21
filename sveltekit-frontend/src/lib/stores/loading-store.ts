@@ -14,13 +14,13 @@ export interface LoadingOperation {
 
 interface LoadingState {
   operations: Map<string, LoadingOperation>;
-  isAnyLoading: boolean;,
+  isAnyLoading: boolean;
 }
 
 function createLoadingStore() {
   const { subscribe, set, update } = writable<LoadingState>({
     operations: new Map(),
-    isAnyLoading: false,
+    isAnyLoading: false
   });
 
   return {
@@ -112,7 +112,7 @@ function createLoadingStore() {
     clearAll: () => {
       set({
         operations: new Map(),
-        isAnyLoading: false,
+        isAnyLoading: false
       });
 
       // Clean up global tracking;

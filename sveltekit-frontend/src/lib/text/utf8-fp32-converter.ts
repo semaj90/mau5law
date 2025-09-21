@@ -11,7 +11,7 @@ export interface TextConversionOptions {
   paddingValue: number; // Value to use for padding
   maxLength?: number; // Maximum sequence length
   preserveSpecialChars: boolean; // Keep special characters vs normalize them
-  encoding: 'utf8' | 'utf16' | 'ascii' | 'latin1';,
+  encoding: 'utf8' | 'utf16' | 'ascii' | 'latin1';
 }
 
 export interface ConversionResult {
@@ -25,7 +25,7 @@ export interface ConversionResult {
     maxValue: number;
     meanValue: number;
     uniqueChars: number;
-    byteLength: number;,
+    byteLength: number;
   };
 }
 
@@ -193,7 +193,7 @@ export class UTF8ToFP32Converter {
         }
         return latin1Array;
       default:
-        return this.textEncoder.encode(text);,
+        return this.textEncoder.encode(text);
     }
   }
 
@@ -253,7 +253,7 @@ export class UTF8ToFP32Converter {
         
         if (currentRange > 0) {
           const targetRange = maxRange - minRange;
-          for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any ,}).length; i++) {
+          for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
             result[i] = minRange + ((result[i] - currentMin) / currentRange) * targetRange;
           }
         }
@@ -328,7 +328,7 @@ export class UTF8ToFP32Converter {
       maxValue: Math.max(...values),
       meanValue: values.reduce((sum, val) => sum + val, 0) / values.length,
       uniqueChars,
-      byteLength: bytes.length,
+      byteLength: bytes.length
     };
   }
 
@@ -471,7 +471,7 @@ export class UTF8ToFP32Converter {
     return JSON.stringify({
       options,
       specialCharMap: this.specialCharMap,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, null, 2);
   }
 
@@ -518,7 +518,7 @@ export function normalizeTextForGPU(text: string, maxLength: number = 512): Floa
     outputRange: [-1.0, 1.0],
     maxLength,
     paddingValue: 0.0,
-    preserveSpecialChars: true,
+    preserveSpecialChars: true
   });
   
   return (result as { length?: any; reduce?: any; fp32Array?: any }).fp32Array;

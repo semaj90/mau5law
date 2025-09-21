@@ -25,7 +25,7 @@ export interface OptimizedJSON {
   compression_ratio: number;
   parse_time_ms: number;
   stringify_time_ms: number;
-  wasm_acceleration: boolean;,
+  wasm_acceleration: boolean;
 }
 
 // === WASM Binary for JSON Processing (Base64 encoded) ===
@@ -160,7 +160,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
         ...stats,
         compressed_size: compressed.length,
         compression_ratio,
-        stringify_time_ms: stats.stringify_time_ms + compressionTime,
+        stringify_time_ms: stats.stringify_time_ms + compressionTime
       }
     };
   }
@@ -184,7 +184,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
         ...stats,
         compressed_size: compressed.length,
         compression_ratio: decompressed.length / compressed.length,
-        parse_time_ms: stats.parse_time_ms + decompressionTime,
+        parse_time_ms: stats.parse_time_ms + decompressionTime
       }
     };
   }
@@ -612,7 +612,7 @@ export async function optimizeJSONForTransport(data: any): Promise<any> {
       return {
         optimized: compressed,
         stats: compressStats,
-        useCompression: true,
+        useCompression: true
       };
     }
   }
@@ -620,7 +620,7 @@ export async function optimizeJSONForTransport(data: any): Promise<any> {
   return {
     optimized: json,
     stats: stringifyStats,
-    useCompression: false,
+    useCompression: false
   };
 }
 

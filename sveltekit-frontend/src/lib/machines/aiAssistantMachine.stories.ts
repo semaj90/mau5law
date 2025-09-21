@@ -71,12 +71,12 @@ export const Default: Story = {
       databasePerformance: {
         queryLatency: 45,
         connectionPool: 8,
-        cacheHitRatio: 0.85,
+        cacheHitRatio: 0.85
       },
       vectorIndexStatus: {
         totalVectors: 15432,
         indexHealth: 'excellent',
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       },
       context7Available: true,
       context7Cache: new Map(),
@@ -96,16 +96,16 @@ export const Default: Story = {
       activeProtocol: 'http',
       serviceLoadBalancer: {
         strategy: 'round_robin',
-        currentIndex: 0,
+        currentIndex: 0
       },
       circuitBreakers: new Map(),
       natsConnected: true,
       activeStreaming: false,
       streamBuffer: '',
-      collaborationUsers: [],
+      collaborationUsers: []
     },
     enableStreamingMode: false,
-    preferredProtocol: 'http',
+    preferredProtocol: 'http'
   }
 };
 
@@ -122,7 +122,7 @@ export const Processing: Story = {
           id: '1',
           type: 'user',
           content: 'Analyze the contractual obligations in this employment agreement',
-          timestamp: new Date(Date.now() - 5000),
+          timestamp: new Date(Date.now() - 5000)
         }
       ],
       processingQueue: [;
@@ -130,19 +130,19 @@ export const Processing: Story = {
           id: 'job-1',
           type: 'legal_analysis',
           status: 'processing',
-          progress: 0.65,
+          progress: 0.65
         }
       ],
       activeStreaming: false,
-      streamBuffer: 'Analyzing legal document structure...',
+      streamBuffer: 'Analyzing legal document structure...'
     },
     enableStreamingMode: false,
-    preferredProtocol: 'http',
+    preferredProtocol: 'http'
   },
   parameters: {
     docs: {
       description: {
-        story: 'AI Assistant in processing state - actively analyzing legal documents',
+        story: 'AI Assistant in processing state - actively analyzing legal documents'
       }
     }
   }
@@ -161,7 +161,7 @@ export const StreamingMode: Story = {
           id: '1',
           type: 'user',
           content: 'What are the key provisions in this merger agreement?',
-          timestamp: new Date(Date.now() - 10000),
+          timestamp: new Date(Date.now() - 10000)
         }
       ],
       activeStreaming: true,
@@ -173,17 +173,17 @@ export const StreamingMode: Story = {
           id: 'user-1',
           name: 'Sarah Chen',
           role: 'Senior Attorney',
-          status: 'active',
+          status: 'active'
         }
       ]
     },
     enableStreamingMode: true,
-    preferredProtocol: 'websocket',
+    preferredProtocol: 'websocket'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Streaming mode with real-time AI response generation and WebSocket communication',
+        story: 'Streaming mode with real-time AI response generation and WebSocket communication'
       }
     }
   }
@@ -202,7 +202,7 @@ export const MultiDocumentAnalysis: Story = {
           id: '1',
           type: 'user',
           content: 'Compare these three contracts for common risk factors',
-          timestamp: new Date(Date.now() - 15000),
+          timestamp: new Date(Date.now() - 15000)
         }
       ],
       currentDocuments: [;
@@ -240,23 +240,23 @@ export const MultiDocumentAnalysis: Story = {
           type: 'multi_document_analysis',
           status: 'processing',
           progress: 0.45,
-          documentsCount: 3,
+          documentsCount: 3
         }
       ],
       vectorSearchEnabled: true,
       vectorIndexStatus: {
         totalVectors: 23890,
         indexHealth: 'excellent',
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       }
     },
     enableStreamingMode: false,
-    preferredProtocol: 'grpc',
+    preferredProtocol: 'grpc'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Multi-document analysis with vector search and comparative risk assessment',
+        story: 'Multi-document analysis with vector search and comparative risk assessment'
       }
     }
   }
@@ -288,7 +288,7 @@ export const HighPerformanceMode: Story = {
       },
       serviceLoadBalancer: {
         strategy: 'least_latency',
-        currentIndex: 0,
+        currentIndex: 0
       },
       gpuProcessingEnabled: true,
       processingQueue: [;
@@ -297,22 +297,22 @@ export const HighPerformanceMode: Story = {
           type: 'semantic_analysis',
           status: 'processing',
           progress: 0.23,
-          estimatedTimeRemaining: 180,
+          estimatedTimeRemaining: 180
         }
       ],
       databasePerformance: {
         queryLatency: 12,
         connectionPool: 16,
-        cacheHitRatio: 0.94,
+        cacheHitRatio: 0.94
       }
     },
     enableStreamingMode: true,
-    preferredProtocol: 'quic',
+    preferredProtocol: 'quic'
   },
   parameters: {
     docs: {
       description: {
-        story: 'High-performance mode using QUIC protocol with GPU acceleration and load balancing',
+        story: 'High-performance mode using QUIC protocol with GPU acceleration and load balancing'
       }
     }
   }
@@ -331,19 +331,19 @@ export const ErrorRecovery: Story = {
           id: '1',
           type: 'user',
           content: 'Analyze this corrupted document',
-          timestamp: new Date(Date.now() - 30000),
+          timestamp: new Date(Date.now() - 30000)
         },
         {
           id: '2',
           type: 'system',
           content: 'Document processing failed: Unable to extract text from corrupted PDF',
-          timestamp: new Date(Date.now() - 25000),
+          timestamp: new Date(Date.now() - 25000)
         },
         {
           id: '3',
           type: 'system',
           content: 'Attempting alternative extraction method...',
-          timestamp: new Date(Date.now() - 20000),
+          timestamp: new Date(Date.now() - 20000)
         }
       ],
       serviceHealth: {
@@ -364,17 +364,17 @@ export const ErrorRecovery: Story = {
           type: 'document_recovery',
           status: 'waiting',
           progress: 0,
-          retryCount: 2,
+          retryCount: 2
         }
       ]
     },
     enableStreamingMode: false,
-    preferredProtocol: 'http',
+    preferredProtocol: 'http'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Error recovery state with circuit breaker patterns and service degradation handling',
+        story: 'Error recovery state with circuit breaker patterns and service degradation handling'
       }
     }
   }
@@ -393,19 +393,19 @@ export const CollaborativeMode: Story = {
           id: '1',
           type: 'user',
           content: 'Draft a motion for summary judgment based on these case files',
-          timestamp: new Date(Date.now() - 120000),
+          timestamp: new Date(Date.now() - 120000)
         },
         {
           id: '2',
           type: 'user',
           content: 'Make sure to include the Johnson v. Smith precedent',
-          timestamp: new Date(Date.now() - 90000),
+          timestamp: new Date(Date.now() - 90000)
         },
         {
           id: '3',
           type: 'assistant',
           content: 'I have incorporated the Johnson v. Smith precedent into the analysis...',
-          timestamp: new Date(Date.now() - 60000),
+          timestamp: new Date(Date.now() - 60000)
         }
       ],
       natsConnected: true,
@@ -416,33 +416,33 @@ export const CollaborativeMode: Story = {
           name: 'Michael Torres',
           role: 'Lead Attorney',
           status: 'active',
-          lastSeen: new Date().toISOString(),
+          lastSeen: new Date().toISOString()
         },
         {
           id: 'user-2',
           name: 'Elena Rodriguez',
           role: 'Senior Associate',
           status: 'active',
-          lastSeen: new Date(Date.now() - 30000).toISOString(),
+          lastSeen: new Date(Date.now() - 30000).toISOString()
         },
         {
           id: 'user-3',
           name: 'David Kim',
           role: 'Paralegal',
           status: 'idle',
-          lastSeen: new Date(Date.now() - 300000).toISOString(),
+          lastSeen: new Date(Date.now() - 300000).toISOString()
         }
       ],
       preferredProtocol: 'websocket',
-      activeProtocol: 'websocket',
+      activeProtocol: 'websocket'
     },
     enableStreamingMode: true,
-    preferredProtocol: 'websocket',
+    preferredProtocol: 'websocket'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Collaborative mode with multiple users working together on legal document analysis',
+        story: 'Collaborative mode with multiple users working together on legal document analysis'
       }
     }
   }
@@ -461,7 +461,7 @@ export const Context7Integration: Story = {
           id: '1',
           type: 'user',
           content: 'Help me implement a new Svelte 5 component for case management',
-          timestamp: new Date(Date.now() - 45000),
+          timestamp: new Date(Date.now() - 45000)
         }
       ],
       context7Available: true,
@@ -486,17 +486,17 @@ export const Context7Integration: Story = {
           type: 'code_generation',
           status: 'processing',
           progress: 0.75,
-          framework: 'SvelteKit',
+          framework: 'SvelteKit'
         }
       ]
     },
     enableStreamingMode: true,
-    preferredProtocol: 'http',
+    preferredProtocol: 'http'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Context7 integration for intelligent code generation and framework-specific assistance',
+        story: 'Context7 integration for intelligent code generation and framework-specific assistance'
       }
     }
   }

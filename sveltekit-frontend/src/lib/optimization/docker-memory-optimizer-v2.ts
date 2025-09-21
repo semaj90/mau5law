@@ -10,19 +10,19 @@ export interface DockerMemoryConfig {
 export interface ContainerMetrics {
     name: string;
     memoryMB: number;
-    cpu: number;,
+    cpu: number;
 }
 
 export interface ThroughputMetrics {
     requestsPerSec: number;
-    latencyMs: number;,
+    latencyMs: number;
 }
 
 export interface MemoryOptimizationResult {
     beforeMB: number;
     afterMB: number;
     freedMB: number;
-    actions: string[];,
+    actions: string[];
 }
 
 export class DockerMemoryOptimizer {
@@ -47,7 +47,7 @@ export class DockerMemoryOptimizer {
         return {
             memory: { usage: this.containers.reduce((s, c) => s + c.memoryMB, 0) * 1024 * 1024 },
             cpu: { usage: this.containers.reduce((s, c) => s + c.cpu, 0) },
-            containers: this.containers.length,
+            containers: this.containers.length
         };
     }
 

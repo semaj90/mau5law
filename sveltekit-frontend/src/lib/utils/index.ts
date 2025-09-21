@@ -26,7 +26,7 @@ export async function fetchWithTimeout(
   try {
     const response = await fetch(resource, {
       ...fetchOptions,
-      signal: controller.signal,
+      signal: controller.signal
     });
     clearTimeout(id);
     return response;
@@ -57,7 +57,7 @@ export function formatDate(date: Date | string): string {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit',
+    minute: '2-digit'
   });
 }
 

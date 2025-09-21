@@ -46,7 +46,7 @@ export const cacheLayerMethods = {
     keys: () => [],
     priority: 1,
     capacity: 1000,
-    ttl: 3600,
+    ttl: 3600
   },
   redis: {
     get: async (key: string) => null,
@@ -56,13 +56,13 @@ export const cacheLayerMethods = {
     expire: async (key: string, seconds: number) => true,
     priority: 2,
     capacity: 10000,
-    ttl: 7200,
+    ttl: 7200
   },
   postgres: {
     query: async (sql: string, params?: any[]) => ({ rows: [], rowCount: 0 }),
     execute: async (sql: string, params?: any[]) => true,
     transaction: async (callback: (tx: any) => Promise<any>) => callback({}),
-    close: async () => true,
+    close: async () => true
   },
   vector: {
     search: async (query: number[], k: number) => [],
@@ -77,32 +77,32 @@ export const cacheLayerMethods = {
     delete: async (path: string) => true,
     exists: async (path: string) => false,
     list: async (path: string) => [],
-    stat: async (path: string) => null,
+    stat: async (path: string) => null
   },
   cdn: {
     get: async (url: string) => null,
     put: async (url: string, content: any) => true,
     delete: async (url: string) => true,
-    purge: async (pattern: string) => true,
+    purge: async (pattern: string) => true
   },
   browser: {
     localStorage: {
       get: (key: string) => globalThis.localStorage?.getItem(key) || null,
       set: (key: string, value: string) => globalThis.localStorage?.setItem(key, value),
       delete: (key: string) => globalThis.localStorage?.removeItem(key),
-      clear: () => globalThis.localStorage?.clear(),
+      clear: () => globalThis.localStorage?.clear()
     },
     sessionStorage: {
       get: (key: string) => globalThis.sessionStorage?.getItem(key) || null,
       set: (key: string, value: string) => globalThis.sessionStorage?.setItem(key, value),
       delete: (key: string) => globalThis.sessionStorage?.removeItem(key),
-      clear: () => globalThis.sessionStorage?.clear(),
+      clear: () => globalThis.sessionStorage?.clear()
     },
     indexedDB: {
       open: async (name: string) => null,
       get: async (key: string) => null,
       set: async (key: string, value: any) => true,
-      delete: async (key: string) => true,
+      delete: async (key: string) => true
     }
   }
 };
@@ -139,7 +139,7 @@ export const databaseEntityProperties = {
     updated_at: new Date().toISOString(),
     user_id: null,
     status: 'pending',
-    type: 'document',
+    type: 'document'
   },
 
   // Chat/message properties;
@@ -149,7 +149,7 @@ export const databaseEntityProperties = {
     timestamp: new Date().toISOString(),
     sources: [],
     id: null,
-    user_id: null,
+    user_id: null
   },
 
   // Cache entry properties;
@@ -159,7 +159,7 @@ export const databaseEntityProperties = {
     createdAt: Date.now(),
     expiresAt: Date.now() + 3600000, // 1 hour
     size: 0,
-    version: 1,
+    version: 1
   }
 };
 
@@ -212,14 +212,14 @@ export const webGPUExtendedMethods = {
   createGPUError: (type: string, message: string) => ({
     type,
     message,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   }),
 
   // GPU uncaptured error event;
   createGPUUncapturedErrorEvent: (error: any) => ({
     type: 'uncapturederror',
     error,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   })
 };
 
@@ -308,7 +308,7 @@ export const configurationProperties = {
     compressionThreshold: 1000,
     metricsInterval: 30000,
     analyticsInterval: 60000,
-    defaultTTL: 3600000  // alias for defaultTtl to handle both naming conventions,
+    defaultTTL: 3600000  // alias for defaultTtl to handle both naming conventions
   },
 
   // Cache strategy properties;
@@ -316,7 +316,7 @@ export const configurationProperties = {
     readStrategy: 'cache-first',
     writeStrategy: 'write-through',
     evictionStrategy: 'lru',
-    replicationStrategy: 'none',
+    replicationStrategy: 'none'
   },
 
   // Cache policy properties;
@@ -324,7 +324,7 @@ export const configurationProperties = {
     evictionStrategy: 'lru',
     maxSize: 1000,
     ttl: 3600000,
-    compressionEnabled: false,
+    compressionEnabled: false
   },
 
   // Cache metrics with missing properties;
@@ -340,7 +340,7 @@ export const configurationProperties = {
     hitsByLayer: Record<string, any>,
     writesByLayer: Record<string, any>,
     hitRate: 0,
-    averageOperationTime: 0,
+    averageOperationTime: 0
   },
 
   // Cache analytics with missing properties;
@@ -361,7 +361,7 @@ export const configurationProperties = {
     lastAccessed: Date.now(),
     accessCount: 0,
     size: 0,
-    compressed: false,
+    compressed: false
   },
 
   // Cache stats with missing properties;
@@ -369,7 +369,7 @@ export const configurationProperties = {
     totalEntries: 0,
     memoryUsage: 0,
     hitRate: 0,
-    size: 0,
+    size: 0
   }
 };
 
@@ -424,7 +424,7 @@ export const barrelStore = {
   webgpu: webGPUExtendedMethods,
   loki: lokiCollectionMethods,
   config: configurationProperties,
-  utils: utilityFunctions,
+  utils: utilityFunctions
 };
 
 // Export everything for easy access
@@ -438,7 +438,7 @@ export interface BarrelStore {
   webgpu: typeof webGPUExtendedMethods;
   loki: typeof lokiCollectionMethods;
   config: typeof configurationProperties;
-  utils: typeof utilityFunctions;,
+  utils: typeof utilityFunctions;
 }
 
 // Global augmentation for missing types;

@@ -31,7 +31,7 @@ interface EnhancedSearchResult {
   relevance_level?: 'high' | 'medium' | 'low';
   doc?: any;
   metadata?: any;
-  source: 'langchain' | 'pgvector' | 'hybrid';,
+  source: 'langchain' | 'pgvector' | 'hybrid';
 }
 
 interface EnhancedSearchResponse {
@@ -47,7 +47,7 @@ interface EnhancedSearchResponse {
   semantic_scores?: {
     highest_relevance: number;
     lowest_relevance: number;
-    average_relevance: number;,
+    average_relevance: number;
   };
 }
 
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       threshold,
       useGemmaEmbeddings = false,
       includePgVector = false,
-      filters,
+      filters
     } = body;
 
     if (!query) {
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
                     : 'low'
                 : 'medium',
               doc: docs[0],
-              source: 'langchain',
+              source: 'langchain'
             });
           }
         } else {
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
                   ? 'medium'
                   : 'low'
               : 'medium',
-            source: 'langchain',
+            source: 'langchain'
           });
         }
       }
@@ -134,14 +134,14 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         const semanticResponse = await fetch('/api/rag/semantic-search', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             query,
             limit: limit || k,
             threshold: threshold || 1.0,
-            filters,
-          }),
+            filters
+          })
         });
 
         if (semanticResponse.ok) {
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
                 relevance_level: resultData.relevance_level,
                 doc: result,
                 metadata: resultData.metadata,
-                source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : 'hybrid',
+                source: includePgVector && !useGemmaEmbeddings ? 'pgvector' : 'hybrid'
               });
             }
           }
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             results.push({
               chunk: r.pageContent,
               score: r.score,
-              source: 'langchain',
+              source: 'langchain'
             });
           }
         }
@@ -193,13 +193,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       semanticScores = {
         highest_relevance: Math.min(...distances),
         lowest_relevance: Math.max(...distances),
-        average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length,
+        average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length
       };
     } else if (scores.length > 0) {
       semanticScores = {
         highest_relevance: Math.min(...scores),
         lowest_relevance: Math.max(...scores),
-        average_relevance: scores.reduce((a, b) => a + b, 0) / scores.length,
+        average_relevance: scores.reduce((a, b) => a + b, 0) / scores.length
       };
     }
 
@@ -212,9 +212,9 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         .length,
       total_results: results.length,
       processing_time: Date.now() - startTime,
-      ...(embeddingTime && { embedding_time: embeddingTime ,}),
-      ...(searchTime && { search_time: searchTime ,}),
-      ...(semanticScores && { semantic_scores: semanticScores ,}),
+      ...(embeddingTime && { embedding_time: embeddingTime }),
+      ...(searchTime && { search_time: searchTime }),
+      ...(semanticScores && { semantic_scores: semanticScores })
     };
 
     return json(response);
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       {
         success: false,
         error: e.message,
-        processing_time: Date.now() - startTime,
+        processing_time: Date.now() - startTime
       },
       { status: 500 }
     );

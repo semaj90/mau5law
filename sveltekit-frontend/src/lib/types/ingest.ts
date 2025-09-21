@@ -12,7 +12,7 @@ export interface DocumentIngestRequest {
 }
 
 export interface BatchIngestRequest {
-  documents: DocumentIngestRequest[];,
+  documents: DocumentIngestRequest[];
 }
 
 export interface IngestResult {
@@ -50,7 +50,7 @@ export interface LegalSection {
   title: string;
   content: string;
   type: string;
-  context: string;,
+  context: string;
 }
 
 export interface SimilarDocument {

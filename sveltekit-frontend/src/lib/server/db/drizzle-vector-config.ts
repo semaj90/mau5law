@@ -13,7 +13,7 @@ import {
   timestamp,
   jsonb,
   boolean,
-  index,
+  index
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm/relations';
@@ -32,7 +32,7 @@ const vector = customType({
     // Parse vector string format "[1,2,3]" to number array
     const vectorString = String(value);
     return vectorString.slice(1, -1).split(',').map(Number);
-  },
+  }
 });
 
 // Database connection
@@ -43,7 +43,7 @@ const connectionString =
 const sql_client = postgres(connectionString, {
   max: 20,
   idle_timeout: 30,
-  connect_timeout: 60,
+  connect_timeout: 60
 });
 
 export const db = drizzle(sql_client);
@@ -57,7 +57,7 @@ export const users = pgTable('users', {
   isActive: boolean('is_active').default(true),
   lastLoginAt: timestamp('last_login_at'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 
 export const cases = pgTable(
@@ -79,7 +79,7 @@ export const cases = pgTable(
     tags: jsonb('tags'),
 
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table: any) => ({
     // Vector similarity indexes
@@ -91,7 +91,7 @@ export const cases = pgTable(
     // Regular indexes
     userIdIdx: index('cases_user_id_idx').on(table.userId),
     statusIdx: index('cases_status_idx').on(table.status),
-    createdAtIdx: index('cases_created_at_idx').on(table.createdAt),
+    createdAtIdx: index('cases_created_at_idx').on(table.createdAt)
   })
 );
 
@@ -118,7 +118,7 @@ export const documents = pgTable(
     ocrConfidence: integer('ocr_confidence'),
 
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table: any) => ({
     contentEmbeddingIdx: index('documents_content_embedding_idx')
@@ -128,7 +128,7 @@ export const documents = pgTable(
       .on(table.titleEmbedding)
       .using('ivfflat'),
     caseIdIdx: index('documents_case_id_idx').on(table.caseId),
-    processingStatusIdx: index('documents_processing_status_idx').on(table.processingStatus),
+    processingStatusIdx: index('documents_processing_status_idx').on(table.processingStatus)
   })
 );
 
@@ -154,7 +154,7 @@ export const evidence = pgTable(
     metadata: jsonb('metadata'),
 
     createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
   },
   (table: any) => ({
     titleEmbeddingIdx: index('evidence_title_embedding_idx')
@@ -165,7 +165,7 @@ export const evidence = pgTable(
       .using('ivfflat'),
     caseIdIdx: index('evidence_case_id_idx').on(table.caseId),
     documentIdIdx: index('evidence_document_id_idx').on(table.documentId),
-    evidenceTypeIdx: index('evidence_type_idx').on(table.evidenceType),
+    evidenceTypeIdx: index('evidence_type_idx').on(table.evidenceType)
   })
 );
 
@@ -181,56 +181,56 @@ export const vectorSearchLogs = pgTable(
     searchType: varchar('search_type', { length: 50 }), // 'cases', 'documents', 'evidence', 'mixed'
     similarityThreshold: integer('similarity_threshold'), // Store as integer (0-100)
     metadata: jsonb('metadata'),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').defaultNow()
   },
   (table: any) => ({
     queryEmbeddingIdx: index('vector_search_logs_query_embedding_idx')
       .on(table.queryEmbedding)
       .using('ivfflat'),
     userIdIdx: index('vector_search_logs_user_id_idx').on(table.userId),
-    createdAtIdx: index('vector_search_logs_created_at_idx').on(table.createdAt),
+    createdAtIdx: index('vector_search_logs_created_at_idx').on(table.createdAt)
   })
 );
 
 // Relations;
 export const usersRelations = relations(users, ({ many }) => ({
   cases: many(cases),
-  vectorSearchLogs: many(vectorSearchLogs),
+  vectorSearchLogs: many(vectorSearchLogs)
 });
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   user: one(users, {
     fields: [cases.userId],
-    references: [users.id],
+    references: [users.id]
   }),
   documents: many(documents),
-  evidence: many(evidence),
+  evidence: many(evidence)
 });
 
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case: one(cases, {
     fields: [documents.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
-  evidence: many(evidence),
+  evidence: many(evidence)
 });
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   document: one(documents, {
     fields: [evidence.documentId],
-    references: [documents.id],
-  }),
+    references: [documents.id]
+  })
 });
 
 export const vectorSearchLogsRelations = relations(vectorSearchLogs, ({ one }) => ({
   user: one(users, {
     fields: [vectorSearchLogs.userId],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 });
 
 // Vector search utility functions;
@@ -350,7 +350,7 @@ export class VectorSearchService {
     const [caseResults, documentResults, evidenceResults] = await Promise.all([
       this.searchCases(queryEmbedding, threshold, Math.floor(limit / 3)),
       this.searchDocuments(queryEmbedding, undefined, threshold, Math.floor(limit / 3)),
-      this.searchEvidence(queryEmbedding, undefined, undefined, threshold, Math.floor(limit / 3)),
+      this.searchEvidence(queryEmbedding, undefined, undefined, threshold, Math.floor(limit / 3))
     ]);
 
     return {
@@ -360,7 +360,7 @@ export class VectorSearchService {
       total:
         (caseResults as unknown as any[]).length +
         (documentResults as unknown as any[]).length +
-        (evidenceResults as unknown as any[]).length,
+        (evidenceResults as unknown as any[]).length
     };
   }
 
@@ -386,8 +386,8 @@ export class VectorSearchService {
       similarityThreshold: Math.round(similarityThreshold * 100),
       metadata: {
         timestamp: new Date().toISOString(),
-        version: '1.0.0',
-      },
+        version: '1.0.0'
+      }
     });
   }
 }
@@ -412,14 +412,14 @@ export async function healthCheck(): Promise<any> {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       connection: 'active',
-      result: result[0],
+      result: result[0]
     };
   } catch (error: any) {
     return {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
       connection: 'failed',
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }

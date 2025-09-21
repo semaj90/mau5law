@@ -15,7 +15,7 @@ export interface EvidenceItem {
 	scale: number;
 	textureId?: string;
 	metadata: Record<string, any>;
-	connections: string[];,
+	connections: string[];
 }
 
 export interface CanvasState {
@@ -24,7 +24,7 @@ export interface CanvasState {
 	selectedItems: string[];
 	mode: 'view' | 'edit' | 'present';
 	showConnections: boolean;
-	filter: 'all' | 'photos' | 'documents' | 'physical' | 'digital';,
+	filter: 'all' | 'photos' | 'documents' | 'physical' | 'digital';
 }
 
 /**
@@ -43,7 +43,7 @@ export function useEvidenceCanvas() {
 		selectedItems: [],
 		mode: 'view',
 		showConnections: true,
-		filter: 'all',
+		filter: 'all'
 	});
 
 	// Interaction state
@@ -70,7 +70,7 @@ export function useEvidenceCanvas() {
 			position: item.position || { x: canvasSize.width / 2, y: canvasSize.height / 2 },
 			rotation: item.rotation || 0,
 			scale: item.scale || 1.0,
-			connections: item.connections || [],
+			connections: item.connections || []
 		};
 
 		evidenceItems.set(id, evidenceItem);
@@ -91,7 +91,7 @@ export function useEvidenceCanvas() {
 		for (const [id, item] of evidenceItems) {
 			if (item.connections.includes(itemId)) {
 				item.connections = item.connections.filter(connId => connId !== itemId);
-				evidenceItems.set(id, { ...item ,});
+				evidenceItems.set(id, { ...item });
 			}
 		}
 
@@ -147,12 +147,12 @@ export function useEvidenceCanvas() {
 		// Add bidirectional connection;
 		if (!fromItem.connections.includes(toId)) {
 			fromItem.connections.push(toId);
-			evidenceItems.set(fromId, { ...fromItem ,});
+			evidenceItems.set(fromId, { ...fromItem });
 		}
 
 		if (!toItem.connections.includes(fromId)) {
 			toItem.connections.push(fromId);
-			evidenceItems.set(toId, { ...toItem ,});
+			evidenceItems.set(toId, { ...toItem });
 		}
 
 		saveToHistory();
@@ -171,8 +171,8 @@ export function useEvidenceCanvas() {
 		fromItem.connections = fromItem.connections.filter(id => id !== toId);
 		toItem.connections = toItem.connections.filter(id => id !== fromId);
 
-		evidenceItems.set(fromId, { ...fromItem ,});
-		evidenceItems.set(toId, { ...toItem ,});
+		evidenceItems.set(fromId, { ...fromItem });
+		evidenceItems.set(toId, { ...toItem });
 
 		saveToHistory();
 	}
@@ -284,7 +284,7 @@ export function useEvidenceCanvas() {
 					updateEvidenceItem(itemId, {
 						position: {
 							x: item.position.x + deltaX / canvasState.zoom,
-							y: item.position.y + deltaY / canvasState.zoom,
+							y: item.position.y + deltaY / canvasState.zoom
 						}
 					});
 				}
@@ -363,7 +363,7 @@ export function useEvidenceCanvas() {
 			evidenceItems: Array.from(evidenceItems.entries()),
 			canvasState,
 			canvasSize,
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		};
 	}
 
@@ -413,9 +413,9 @@ export function useEvidenceCanvas() {
 		getEvidenceItems: () => new Map(evidenceItems),
 		getSelectedItems: () => new Set(selectedItems),
 		getHoveredItem: () => hoveredItem,
-		getCanvasState: () => ({ ...canvasState ,}),
-		getCanvasSize: () => ({ ...canvasSize ,}),
-		getViewport: () => ({ ...viewport ,}),
+		getCanvasState: () => ({ ...canvasState }),
+		getCanvasSize: () => ({ ...canvasSize }),
+		getViewport: () => ({ ...viewport }),
 
 		// Derived state
 		visibleItems: () => visibleItems,

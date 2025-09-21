@@ -27,7 +27,7 @@ const sampleCitations = [;
     type: "case",
     tags: ["criminal procedure", "constitutional law", "miranda rights"],
     createdAt: new Date("2024-01-15"),
-    updatedAt: new Date("2024-01-15"),
+    updatedAt: new Date("2024-01-15")
   },
   {
     id: "2",
@@ -38,7 +38,7 @@ const sampleCitations = [;
     type: "statute",
     tags: ["evidence", "character evidence", "federal rules"],
     createdAt: new Date("2024-01-16"),
-    updatedAt: new Date("2024-01-16"),
+    updatedAt: new Date("2024-01-16")
   },
   {
     id: "3",
@@ -51,8 +51,8 @@ const sampleCitations = [;
     type: "case",
     tags: ["expert testimony", "scientific evidence", "daubert standard"],
     createdAt: new Date("2024-01-17"),
-    updatedAt: new Date("2024-01-17"),
-  },
+    updatedAt: new Date("2024-01-17")
+  }
 ];
 
 // UUID validation regex
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!caseId) {
       return json({
         success: false,
-        error: 'caseId parameter is required',
+        error: 'caseId parameter is required'
       }, { status: 400 });
     }
 
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ url }) => {
         limit,
         offset,
         total: totalCount,
-        totalPages: Math.ceil(totalCount / limit),
+        totalPages: Math.ceil(totalCount / limit)
       },
       filters: { caseId, citationType, search, verified }
     });
@@ -142,7 +142,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      citations: [],
+      citations: []
     }, { status: 500 });
   }
 };
@@ -164,7 +164,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!caseDetails) {
       return json({
         success: false,
-        error: 'Case not found',
+        error: 'Case not found'
       }, { status: 404 });
     }
 
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
         verified: citationData.verified || false,
         metadata: citationData.metadata || {},
         tags: citationData.tags || [],
-        createdBy: citationData.createdBy || null,
+        createdBy: citationData.createdBy || null
       })
       .returning();
 
@@ -206,23 +206,23 @@ export const POST: RequestHandler = async ({ request }) => {
         eventData: {
           citationType,
           relevanceScore: newCitation.relevanceScore,
-          purpose: newCitation.citationPurpose,
+          purpose: newCitation.citationPurpose
         },
         importance: 'medium',
-        eventDate: new Date(),
+        eventDate: new Date()
       });
     }
 
     return json({
       success: true,
-      citation: newCitation,
+      citation: newCitation
     }, { status: 201 });
 
   } catch (error: any) {
     console.error('Citation creation error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -233,7 +233,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!id) {
       return json({
         success: false,
-        error: 'Citation ID is required',
+        error: 'Citation ID is required'
       }, { status: 400 });
     }
 
@@ -247,7 +247,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!existingCitation.length) {
       return json({
         success: false,
-        error: 'Citation not found',
+        error: 'Citation not found'
       }, { status: 404 });
     }
 
@@ -256,21 +256,21 @@ export const PUT: RequestHandler = async ({ request }) => {
       .update(citations);
       .set({
         ...updateData,
-        dateModified: new Date(),
+        dateModified: new Date()
       })
       .where(eq(citations.id, id)
       .returning();
 
     return json({
       success: true,
-      citation: updatedCitation,
+      citation: updatedCitation
     });
 
   } catch (error: any) {
     console.error('Citation update error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -282,7 +282,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     if (!id) {
       return json({
         success: false,
-        error: 'Citation ID is required',
+        error: 'Citation ID is required'
       }, { status: 400 });
     }
 
@@ -296,7 +296,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     if (!existingCitation.length) {
       return json({
         success: false,
-        error: 'Citation not found',
+        error: 'Citation not found'
       }, { status: 404 });
     }
 
@@ -305,14 +305,14 @@ export const DELETE: RequestHandler = async ({ request }) => {
 
     return json({
       success: true,
-      message: 'Citation deleted successfully',
+      message: 'Citation deleted successfully'
     });
 
   } catch (error: any) {
     console.error('Citation deletion error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

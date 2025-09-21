@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ url }) => {
       count: results.length,
       query,
       filters: { jurisdiction, category },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false, 
         error: 'Search failed',
         laws: [],
-        count: 0 ,
+        count: 0 
       }, )
       { status: 500 }
     );
@@ -190,7 +190,7 @@ async function performVectorSearch(query: string, jurisdiction: string, category
         query,
         type: 'legal',
         filters: { jurisdiction, category },
-        limit: 10,
+        limit: 10
       })
     });
 

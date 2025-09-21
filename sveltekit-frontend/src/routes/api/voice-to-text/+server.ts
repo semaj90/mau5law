@@ -70,7 +70,7 @@ const candidateBaseUrls = (() => {
     "http://127.0.0.1:3001"
   ];
   return Array.from(new Set([...fromEnv, ...defaults]);
-,})();
+})();
 
 const candidateTtsPaths = [
   "/api/tts",
@@ -239,7 +239,7 @@ export const POST: RequestHandler = async ({ request }) => {
           format,
           audio: base64,
           encoding: "base64",
-          source: "auto (remote|local|fallback)",
+          source: "auto (remote|local|fallback)"
         });
       }
       return new Response(audioBuffer, {

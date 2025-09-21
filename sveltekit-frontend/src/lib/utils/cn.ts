@@ -41,6 +41,6 @@ export function priorityClass(priority: 'low' | 'medium' | 'high' | 'critical'):
     case 'low':
       return 'text-green-400 bg-green-500/20 border-green-500/40 ring-green-500/20';
     default:
-      return 'text-gray-400 bg-gray-500/20 border-gray-500/40 ring-gray-500/20';,
+      return 'text-gray-400 bg-gray-500/20 border-gray-500/40 ring-gray-500/20';
   }
 }

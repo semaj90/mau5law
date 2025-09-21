@@ -45,7 +45,7 @@ export interface LegalEntity {
   value: string;
   confidence: number;
   start_pos: number;
-  end_pos: number;,
+  end_pos: number;
 }
 
 export interface RiskAssessment {
@@ -53,7 +53,7 @@ export interface RiskAssessment {
   risk_score: number;
   risk_factors: string[];
   recommendations: string[];
-  confidence: number;,
+  confidence: number;
 }
 
 /**
@@ -71,8 +71,8 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
       assess_risk: jobData.options?.assessRisk ?? true,
       generate_embedding: jobData.options?.generateEmbedding ?? true,
       store_in_database: jobData.options?.storeInDatabase ?? true,
-      use_gemma3_legal: jobData.options?.useGemma3Legal ?? true,
-    },
+      use_gemma3_legal: jobData.options?.useGemma3Legal ?? true
+    }
   };
 
   console.log(`🔄 Sending document ${jobData.documentId} to Go server for processing...`);
@@ -80,11 +80,11 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
   const response = await fetch(`${GO_SERVER_URL}/process-document`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(requestPayload),
     // 5 minute timeout for complex processing
-    signal: AbortSignal.timeout(300000),
+    signal: AbortSignal.timeout(300000)
   });
 
   if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
@@ -104,7 +104,7 @@ async function updateEvidenceWithResults(
 ): Promise<void> {
   try {
     const updateData: Partial<typeof evidence.$inferInsert> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Add AI-generated summary;
@@ -128,7 +128,7 @@ async function updateEvidenceWithResults(
       processing_time: results.processing_time,
       processed_at: new Date().toISOString(),
       go_server_metadata: results.metadata,
-      success: results.success,
+      success: results.success
     });
 
     await db.update(evidence).set(updateData).where(eq(evidence.id, documentId);
@@ -183,8 +183,8 @@ export function createLegalAIWorker(): Worker {
             riskAssessed: !!results.risk_assessment,
             embeddingGenerated: !!results.embedding,
             overallRisk: results.risk_assessment?.overall_risk,
-            riskScore: results.risk_assessment?.risk_score,
-          },
+            riskScore: results.risk_assessment?.risk_score
+          }
         };
 
         await job.updateProgress(100);
@@ -202,9 +202,9 @@ export function createLegalAIWorker(): Worker {
                 error: error instanceof Error ? error.message: 'Unknown error',
                 processing_time: `${processingTime}ms`,
                 processed_at: new Date().toISOString(),
-                success: false,
+                success: false
               },
-              updatedAt: new Date(),
+              updatedAt: new Date()
             })
             .where(eq(evidence.id, (data as { documentId?: any }).documentId);
         } catch (dbError) {
@@ -221,8 +221,8 @@ export function createLegalAIWorker(): Worker {
         // Parse Redis URL if provided;
         ...(REDIS_URL.startsWith('redis://') && {
           host: new URL(REDIS_URL).hostname,
-          port: parseInt(new URL(REDIS_URL).port) || 6379,
-        }),
+          port: parseInt(new URL(REDIS_URL).port) || 6379
+        })
       },
       concurrency: 2, // Process 2 documents simultaneously
       removeOnComplete: { count: 50 }, // Keep last 50 completed jobs
@@ -274,9 +274,9 @@ export async function addLegalAIJob(
       port: 4005,
       ...(REDIS_URL.startsWith('redis://') && {
         host: new URL(REDIS_URL).hostname,
-        port: parseInt(new URL(REDIS_URL).port) || 4005,
-      }),
-    },
+        port: parseInt(new URL(REDIS_URL).port) || 4005
+      })
+    }
   });
 
   const job = await queue.add('process-document', jobData, {
@@ -288,7 +288,7 @@ export async function addLegalAIJob(
       delay: 5000, // Start with 5 seconds
     },
     removeOnComplete: 50,
-    removeOnFail: 25,
+    removeOnFail: 25
   });
 
   console.log(`📋 Legal AI job queued: ${job.id} for document: ${jobData.documentId}`);
@@ -307,9 +307,9 @@ export async function getLegalAIJobStatus(jobId: string): Promise<any> {
       port: 4005,
       ...(REDIS_URL.startsWith('redis://') && {
         host: new URL(REDIS_URL).hostname,
-        port: parseInt(new URL(REDIS_URL).port) || 4005,
-      }),
-    },
+        port: parseInt(new URL(REDIS_URL).port) || 4005
+      })
+    }
   });
 
   const job = await queue.getJob(jobId);
@@ -325,7 +325,7 @@ export async function getLegalAIJobStatus(jobId: string): Promise<any> {
     status: state,
     progress: typeof progress === 'number' ? progress : 0,
     result: job.returnvalue,
-    error: job.failedReason,
+    error: job.failedReason
   };
 }
 

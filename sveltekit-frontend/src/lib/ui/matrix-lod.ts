@@ -8,17 +8,17 @@ export interface LODCache {
     low: {
       vertices: Float32Array;
       cssClasses: string[];
-      priority: number;,
+      priority: number;
     };
     mid: {
       vertices: Float32Array;
       cssClasses: string[];
-      priority: number;,
+      priority: number;
     };
     high: {
       vertices: Float32Array;
       cssClasses: string[];
-      priority: number;,
+      priority: number;
     };
   };
 }
@@ -28,7 +28,7 @@ export interface ViewportFocus {
   centerY: number;
   radius: number;
   aiSuggestions: string[];
-  confidenceScore: number;,
+  confidenceScore: number;
 }
 
 export interface GPULoadMetrics {
@@ -36,7 +36,7 @@ export interface GPULoadMetrics {
   gpuUtilization: number;
   memoryUsage: number;
   renderTime: number;
-  activeBuffers: number;,
+  activeBuffers: number;
 }
 
 export class MatrixLODSystem {
@@ -175,7 +175,7 @@ export class MatrixLODSystem {
         allowWebGL1: true,
         requireCompute: false,
         lodSystemIntegration: true,
-        nesMemoryOptimization: true,
+        nesMemoryOptimization: true
       });
       
       console.log(`🚀 Matrix LOD System using ${this.hybridGPU.getActiveContextType()} acceleration`);
@@ -257,18 +257,18 @@ export class MatrixLODSystem {
       low: {
         vertices: lowVertices,
         cssClasses: this.generateLowLODClasses(metadata),
-        priority: priority * 0.3,
+        priority: priority * 0.3
       },
       mid: {
         vertices: midVertices,
         cssClasses: this.generateMidLODClasses(metadata),
-        priority: priority * 0.7,
+        priority: priority * 0.7
       },
       high: {
         vertices: highVertices,
         cssClasses: this.generateHighLODClasses(metadata),
-        priority: priority,
-      },
+        priority: priority
+      }
     };
   }
 
@@ -342,7 +342,7 @@ export class MatrixLODSystem {
       "lod-high",
       "yorha-enhanced",
       "opacity-100",
-      "transform-scale-100",
+      "transform-scale-100"
     ];
 
     // Add AI-specific enhancements;
@@ -558,7 +558,7 @@ export class MatrixLODSystem {
       gpuUtilization: 0,
       memoryUsage: 0,
       renderTime: 0,
-      activeBuffers: 0,
+      activeBuffers: 0
     };
   }
 

@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!body.errors || !Array.isArray(body.errors)) {
 			return json({ 
 				success: false, 
-				error: 'Invalid batch request: errors array required' ,
+				error: 'Invalid batch request: errors array required' 
 			}, { status: 400 });
 		}
 
@@ -34,9 +34,9 @@ export const POST: RequestHandler = async ({ request }) => {
 				processing_stats: {
 					total_time: 0,
 					processed_count: 0,
-					successful_count: 0,
+					successful_count: 0
 				},
-				message: 'No errors to process',
+				message: 'No errors to process'
 			});
 		}
 
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			use_cache: body.use_cache ?? true,
 			max_concurrency: body.max_concurrency ?? Math.min(errorCount, 8),
 			target_latency: body.target_latency ?? (errorCount >= 20 ? 5 : 10), // ms per error
-			quality_threshold: body.quality_threshold ?? 0.8,
+			quality_threshold: body.quality_threshold ?? 0.8
 		};
 
 		// Choose optimal endpoint based on batch characteristics
@@ -66,9 +66,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		const response = await fetch(apiUrl, {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(optimizedRequest),
+			body: JSON.stringify(optimizedRequest)
 		});
 
 		if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			overhead_ms: processingTime - ((result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processing_stats?.total_time || 0),
 			throughput_errors_per_second: (errorCount / processingTime) * 1000,
 			success_rate: ((result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count / (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processed_count) * 100,
-			performance_grade: calculatePerformanceGrade(processingTime, errorCount, (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count),
+			performance_grade: calculatePerformanceGrade(processingTime, errorCount, (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count)
 		};
 
 		console.log(`✅ Batch Processor: Completed in ${processingTime}ms, ${(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count}/${(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processed_count} successful (${stats.success_rate.toFixed(1)}%)`);
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				caching_enabled: optimizedRequest.use_cache,
 				concurrency_level: optimizedRequest.max_concurrency,
 				endpoint_used: endpoint,
-				auto_optimization: true,
+				auto_optimization: true
 			},
 			metadata: {
 				...result.optimization_meta,
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				processed_at: new Date().toISOString(),
 				api_version: '2.0.0',
 				performance_tier: getPerformanceTier(errorCount),
-				sveltekit_batch_processor: true,
+				sveltekit_batch_processor: true
 			}
 		};
 
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			error: 'Batch processing failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString(),
-			batch_processing: true,
+			batch_processing: true
 		}, { status: 500 });
 	}
 };

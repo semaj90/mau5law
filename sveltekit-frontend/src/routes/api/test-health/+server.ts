@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       services: {
         frontend: true,
-        api: true,
+        api: true
       }
     });
   } catch (error) {
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

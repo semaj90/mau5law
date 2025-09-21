@@ -54,6 +54,6 @@ export interface MultimodalEmbedding {
     extractedText?: string;
     frameCount?: number;
     audioLength?: number;
-    processingTime: number;,
+    processingTime: number;
   };
 }

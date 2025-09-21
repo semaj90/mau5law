@@ -37,7 +37,7 @@ export interface RouteContext {
   session?: Session;
   startTime: number;
   requestId: string;
-  encoding: EncodingFormat;,
+  encoding: EncodingFormat;
 }
 
 export type Middleware = (event: RequestEvent, context: RouteContext, next: () => Promise<Response>) => Promise<Response>;
@@ -60,7 +60,7 @@ export interface User {
   id: string;
   email: string;
   role: string;
-  permissions: string[];,
+  permissions: string[];
 }
 
 export interface Session {
@@ -83,7 +83,7 @@ export interface ResponseMetadata {
   timestamp: string;
   processingTime: number;
   encoding: EncodingFormat;
-  version: string;,
+  version: string;
 }
 
 // ===== UNIFIED API ROUTER CLASS =====
@@ -144,7 +144,7 @@ export class UnifiedAPIRouter {
         query: event.url.searchParams,
         startTime,
         requestId,
-        encoding: this.detectEncoding(event),
+        encoding: this.detectEncoding(event)
       };
 
       // Find matching route
@@ -336,7 +336,7 @@ export class UnifiedAPIRouter {
         body: buffer,
         status: response.status,
         headers: Object.fromEntries(response.headers.entries()),
-        expiresAt: Date.now() + (config.ttl * 1000),
+        expiresAt: Date.now() + (config.ttl * 1000)
       });
     });
   }
@@ -350,7 +350,7 @@ export class UnifiedAPIRouter {
         timestamp: new Date().toISOString(),
         processingTime: context.startTime ? Date.now() - context.startTime: 0,
         encoding: context.encoding || 'json',
-        version: '2.0.0',
+        version: '2.0.0'
       }
     };
 
@@ -425,7 +425,7 @@ export class UnifiedAPIRouter {
           status: 'healthy',
           timestamp: new Date().toISOString(),
           services: await this.services.getHealthStatus(),
-          version: '2.0.0',
+          version: '2.0.0'
         };
 
         return json({ success: true, data: health });
@@ -454,7 +454,7 @@ export class UnifiedAPIRouter {
             method: config.method,
             auth: config.auth || false,
             rateLimit: !!config.rateLimit,
-            cache: !!config.cache,
+            cache: !!config.cache
           });
 
           return json({ success: true, data: routes });
@@ -469,14 +469,14 @@ export class UnifiedAPIRouter {
 
 export interface RateLimitTracker {
   requests: number[];
-  windowMs: number;,
+  windowMs: number;
 }
 
 export interface CachedResponse {
   body: ArrayBuffer;
   status: number;
   headers: Record<string, string>;
-  expiresAt: number;,
+  expiresAt: number;
 }
 
 class ServiceRegistry {
@@ -488,7 +488,7 @@ class ServiceRegistry {
     for (const [name, info] of this.services.entries()) {
       try {
         const response = await fetch(`${info.url}/health`, { 
-          signal: AbortSignal.timeout(5000) ,
+          signal: AbortSignal.timeout(5000) 
         });
         health[name] = response.ok ? 'healthy' : 'unhealthy';
       } catch {
@@ -529,7 +529,7 @@ export const unifiedAPIRouter = new UnifiedAPIRouter({
   enableCaching: true,
   enableRateLimit: true,
   enableLogging: dev,
-  defaultEncoding: 'json',
+  defaultEncoding: 'json'
 });
 
 // ===== UTILITY FUNCTIONS =====

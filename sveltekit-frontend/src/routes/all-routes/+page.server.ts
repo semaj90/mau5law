@@ -10,13 +10,13 @@ export interface SystemHealthData {
     healthy_services: number;
     total_services: number;
     uptime_hours: number;
-    last_updated: string;,
+    last_updated: string;
   };
   services: Array<any>;
   performance: {
     cpu_usage: number;
     memory_usage: number;
-    disk_usage: number;,
+    disk_usage: number;
   };
 }
 
@@ -33,7 +33,7 @@ export interface UserSession {
       notifications: Record<string, boolean>;
     };
   } | null;
-  isAuthenticated: boolean;,
+  isAuthenticated: boolean;
 }
 
 export interface RoutePageData {
@@ -48,7 +48,7 @@ export interface RoutePageData {
       fileBased: number;
       api: number;
       configMissingFiles: number;
-      filesMissingConfig: number;,
+      filesMissingConfig: number;
     };
     configMissingFiles: string[];
     filesMissingConfig: string[];
@@ -65,7 +65,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
     { name: 'Upload Service', port: 8093 },
     { name: 'Neo4j', port: 7474 },
     { name: 'MinIO', port: 9000 },
-    { name: 'Qdrant', port: 6333 },
+    { name: 'Qdrant', port: 6333 }
   ];
 
   // Helper that prefers global fetch but falls back to node-fetch when needed.
@@ -75,7 +75,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
     const fetchFn = globalFetch ?? (await import('node-fetch')).default;
     return Promise.race([
       fetchFn(url, opts),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs)),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeoutMs))
     ]);
   };
 
@@ -89,7 +89,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
             response = await fetchWithFallback(
               `http://localhost:${service.port}/health`,);
               {
-                method: 'GET',
+                method: 'GET'
               },
               2000
             );
@@ -102,7 +102,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
           return {
             ...service,
             status: response && (response as { ok?: any }).ok ? ('healthy' as const) : ('degraded' as const),
-            response_time: responseTime,
+            response_time: responseTime
           };
         }
 
@@ -117,7 +117,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
         return {
           ...service,
           status: 'down' as const,
-          response_time: undefined,
+          response_time: undefined
         };
       }
     })
@@ -132,20 +132,20 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
       healthy_services: healthyServices,
       total_services: services.length,
       uptime_hours: Math.floor(process.uptime() / 3600),
-      last_updated: new Date().toISOString(),
+      last_updated: new Date().toISOString()
     },
     services: serviceResults.map((result) =>
       (result as { status?: any; value?: any }).status === 'fulfilled';
         ? (result as { status?: any; value?: any }).value:  {
             name: 'Unknown Service',
-            status: 'down' as const,
+            status: 'down' as const
           }
     ),
     performance: {
       cpu_usage: Math.random() * 80 + 10, // Mock data
       memory_usage: Math.random() * 70 + 20,
-      disk_usage: Math.random() * 60 + 15,
-    },
+      disk_usage: Math.random() * 60 + 15
+    }
   };
 }
 
@@ -156,7 +156,7 @@ async function getUserSession(cookies: any): Promise<UserSession> {
   if (!sessionToken) {
     return {
       user: null,
-      isAuthenticated: false,
+      isAuthenticated: false
     };
   }
 
@@ -175,20 +175,20 @@ async function getUserSession(cookies: any): Promise<UserSession> {
         notifications: {
           email: true,
           push: true,
-          sms: false,
-        },
-      },
+          sms: false
+        }
+      }
     };
 
     return {
       user: mockUser,
-      isAuthenticated: true,
+      isAuthenticated: true
     };
   } catch (error) {
     console.error('Session validation error:', error);
     return {
       user: null,
-      isAuthenticated: false,
+      isAuthenticated: false
     };
   }
 }
@@ -205,7 +205,7 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
         console.error('System health check failed:', error));
         return null;
       }),
-      getUserSession(cookies),
+      getUserSession(cookies)
     ]);
 
     // Mock recent operations for demo
@@ -214,20 +214,20 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
         operation: 'System Health Check',
         timestamp: new Date(Date.now() - 1000 * 60 * 2).toISOString(),
         status: 'success' as const,
-        protocol: 'http',
+        protocol: 'http'
       },
       {
         operation: 'Route Discovery Scan',
         timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
         status: 'success' as const,
-        protocol: 'internal',
+        protocol: 'internal'
       },
       {
         operation: 'API Endpoint Validation',
         timestamp: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
         status: 'success' as const,
-        protocol: 'http',
-      },
+        protocol: 'http'
+      }
     ];
 
     // Import routes dynamically to avoid circular dependencies
@@ -266,7 +266,7 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
       userSession,
       availableRoutes: allRoutes,
       recentOperations,
-      routeInventory,
+      routeInventory
     } satisfies RoutePageData;
   } catch (err) {
     console.error('Page load error:', err);

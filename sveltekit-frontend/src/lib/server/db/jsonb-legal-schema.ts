@@ -48,7 +48,7 @@ const LegalMetadataSchema = z.object({
     type: z.enum(['case_law', 'statute', 'regulation', 'treaty', 'secondary_source']),
     citation: z.string(),
     relevance: z.number().min(0).max(1).optional(), // Semantic relevance score
-    pinpoint: z.string().optional() // Specific page/paragraph reference,
+    pinpoint: z.string().optional() // Specific page/paragraph reference
   })).optional(),
   
   // Semantic Analysis Metadata;
@@ -59,7 +59,7 @@ const LegalMetadataSchema = z.object({
     argumentStructure: z.array(z.object({
       type: z.enum(['premise', 'conclusion', 'evidence', 'counterargument']),
       text: z.string(),
-      confidence: z.number().min(0).max(1),
+      confidence: z.number().min(0).max(1)
     })).optional()
   }).optional(),
   
@@ -69,7 +69,7 @@ const LegalMetadataSchema = z.object({
     processingTimestamp: z.string().datetime().optional(),
     confidence: z.number().min(0).max(1).optional(),
     reviewStatus: z.enum(['pending', 'reviewed', 'approved', 'rejected']).default('pending'),
-    humanVerified: z.boolean().default(false),
+    humanVerified: z.boolean().default(false)
   }).optional(),
   
   // Custom Fields for Extensibility
@@ -104,24 +104,24 @@ const EvidenceMetadataSchema = z.object({
     verified: z.boolean().default(false),
     method: z.string().optional(),
     verifier: z.string().optional(),
-    verificationDate: z.string().datetime().optional(),
+    verificationDate: z.string().datetime().optional()
   }).optional(),
   chainOfCustody: z.array(z.object({
     timestamp: z.string().datetime(),
     custodian: z.string(),
     action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']),
     location: z.string().optional(),
-    condition: z.string().optional(),
+    condition: z.string().optional()
   })).optional(),
   relevance: z.object({
     score: z.number().min(0).max(1),
     reasoning: z.string().optional(),
-    relatedEvidence: z.array(z.string()).optional() // UUIDs of related evidence,
+    relatedEvidence: z.array(z.string()).optional() // UUIDs of related evidence
   }).optional(),
   admissibility: z.object({
     status: z.enum(['admissible', 'inadmissible', 'conditional', 'pending']),
     basis: z.string().optional(),
-    objections: z.array(z.string()).optional(),
+    objections: z.array(z.string()).optional()
   }).optional()
 });
 
@@ -173,7 +173,7 @@ export const casesJsonb = pgTable('cases_jsonb', {
   totalEvidence: integer('total_evidence').default(0),
   
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
 export const evidenceJsonb = pgTable('evidence_jsonb', {
@@ -199,7 +199,7 @@ export const evidenceJsonb = pgTable('evidence_jsonb', {
   relevanceScore: real('relevance_score').generatedAlwaysAs(sql`((metadata->'relevance'->>'score')::real)`),
   
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
 // Semantic relationships between documents;
@@ -214,7 +214,7 @@ export const documentRelationshipsJsonb = pgTable('document_relationships_jsonb'
   relationshipType: text('relationship_type').generatedAlwaysAs(sql`(relationship_metadata->>'type')`),
   strength: real('strength').generatedAlwaysAs(sql`((relationship_metadata->>'strength')::real)`),
   
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
 // ============================================================================

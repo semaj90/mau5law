@@ -16,7 +16,7 @@ import { generateIdFromEntropySize } from 'lucia';
 const sampleEmbeddings = {
   financial: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.1),
   legal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.2),
-  criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3),
+  criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3)
 };
 
 async function seed() {
@@ -29,7 +29,7 @@ async function seed() {
       memoryCost: 19456,
       timeCost: 2,
       outputLen: 32,
-      parallelism: 1,
+      parallelism: 1
     });
 
     const seedUsers = [;
@@ -40,7 +40,7 @@ async function seed() {
         firstName: 'John',
         lastName: 'Prosecutor',
         role: 'prosecutor',
-        hashedPassword: passwordHash,
+        hashedPassword: passwordHash
       },
       {
         id: generateIdFromEntropySize(10),
@@ -49,7 +49,7 @@ async function seed() {
         firstName: 'Jane', 
         lastName: 'Detective',
         role: 'detective',
-        hashedPassword: passwordHash,
+        hashedPassword: passwordHash
       },
       {
         id: generateIdFromEntropySize(10),
@@ -58,7 +58,7 @@ async function seed() {
         firstName: 'Admin',
         lastName: 'User', 
         role: 'admin',
-        hashedPassword: passwordHash,
+        hashedPassword: passwordHash
       }
     ];
 
@@ -79,7 +79,7 @@ async function seed() {
         dangerScore: 75,
         createdBy: insertedUsers[0].id,
         aiSummary: 'High-priority financial fraud case with strong evidence of money laundering. Key suspects identified through transaction pattern analysis. Recommend coordinating with international law enforcement.',
-        aiTags: ['money_laundering', 'cryptocurrency', 'international', 'high_value'],
+        aiTags: ['money_laundering', 'cryptocurrency', 'international', 'high_value']
       },
       {
         id: generateIdFromEntropySize(10),
@@ -92,7 +92,7 @@ async function seed() {
         dangerScore: 60,
         createdBy: insertedUsers[1].id,
         aiSummary: 'Large-scale data breach affecting consumers across multiple states. Evidence suggests sophisticated APT group involvement. Identity theft reports continuing to increase.',
-        aiTags: ['data_breach', 'identity_theft', 'apt_group', 'consumer_harm'],
+        aiTags: ['data_breach', 'identity_theft', 'apt_group', 'consumer_harm']
       },
       {
         id: generateIdFromEntropySize(10),
@@ -105,7 +105,7 @@ async function seed() {
         dangerScore: 45,
         createdBy: insertedUsers[0].id,
         aiSummary: 'Clear evidence of systematic embezzlement through fraudulent invoicing and payment redirection. Total loss estimated at $1.8M. Strong documentary evidence available.',
-        aiTags: ['embezzlement', 'white_collar', 'corporate_fraud', 'systematic'],
+        aiTags: ['embezzlement', 'white_collar', 'corporate_fraud', 'systematic']
       }
     ];
 
@@ -126,10 +126,10 @@ async function seed() {
         aiAnalysis: {
           confidence: 0.92,
           patterns: ['structuring', 'round_amounts', 'threshold_avoidance'],
-          recommendations: ['Focus on accounts 4457 and 8821', 'Check international wire transfer compliance'],
+          recommendations: ['Focus on accounts 4457 and 8821', 'Check international wire transfer compliance']
         },
         aiTags: ['money_laundering', 'suspicious_patterns', 'high_confidence'],
-        aiSummary: 'Strong evidence of money laundering through structured transactions. 15 suspicious transactions identified totaling $2.3M.',
+        aiSummary: 'Strong evidence of money laundering through structured transactions. 15 suspicious transactions identified totaling $2.3M.'
       },
       {
         id: generateIdFromEntropySize(10),
@@ -142,10 +142,10 @@ async function seed() {
         aiAnalysis: {
           confidence: 0.89,
           entities: ['John Smith', 'Cayman Islands Bank', 'Shell Corp LLC'],
-          keywords: ['layering', 'clean funds', 'placement'],
+          keywords: ['layering', 'clean funds', 'placement']
         },
         aiTags: ['communications', 'conspiracy_evidence', 'high_value'],
-        aiSummary: 'Email communications provide direct evidence of criminal conspiracy and money laundering scheme planning.',
+        aiSummary: 'Email communications provide direct evidence of criminal conspiracy and money laundering scheme planning.'
       },
       {
         id: generateIdFromEntropySize(10),
@@ -158,10 +158,10 @@ async function seed() {
         aiAnalysis: {
           confidence: 0.94,
           techniques: ['sql_injection', 'privilege_escalation', 'data_exfiltration'],
-          timeline: '2024-01-15 to 2024-03-20',
+          timeline: '2024-01-15 to 2024-03-20'
         },
         aiTags: ['cyberattack', 'technical_evidence', 'timeline_established'],
-        aiSummary: 'Server logs provide clear technical evidence of unauthorized access and systematic data exfiltration over 2-month period.',
+        aiSummary: 'Server logs provide clear technical evidence of unauthorized access and systematic data exfiltration over 2-month period.'
       },
       {
         id: generateIdFromEntropySize(10),
@@ -174,10 +174,10 @@ async function seed() {
         aiAnalysis: {
           confidence: 0.87,
           discrepancies: ['revenue_inflation', 'expense_understatement', 'asset_overvaluation'],
-          amount: '$1.8M total variance',
+          amount: '$1.8M total variance'
         },
         aiTags: ['document_fraud', 'financial_manipulation', 'systematic_falsification'],
-        aiSummary: 'Financial statements show systematic manipulation to hide embezzlement. Clear pattern of revenue inflation and expense manipulation.',
+        aiSummary: 'Financial statements show systematic manipulation to hide embezzlement. Clear pattern of revenue inflation and expense manipulation.'
       }
     ];
 

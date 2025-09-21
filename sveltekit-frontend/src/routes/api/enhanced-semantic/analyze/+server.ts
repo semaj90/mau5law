@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		if (!text) {
 			return json({
 				success: false,
-				error: 'Missing text parameter for semantic analysis',
+				error: 'Missing text parameter for semantic analysis'
 			}, { status: 400 });
 		}
 
@@ -38,11 +38,11 @@ export const GET: RequestHandler = async ({ url }) => {
 					embedding_dimensions: data.data.embedding?.length || 384,
 					som_grid_size: '20x20',
 					processing_time: Date.now(),
-					webgpu_accelerated: true,
+					webgpu_accelerated: true
 				}
 			},
 			timestamp: new Date().toISOString(),
-			source: 'Enhanced Semantic Architecture',
+			source: 'Enhanced Semantic Architecture'
 		});
 		
 	} catch (error: any) {
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			},
 			timestamp: new Date().toISOString(),
 			source: 'Fallback Analyzer',
-			note: 'Using fallback semantic analysis. Start Enhanced Semantic Architecture service for full SOM clustering.',
+			note: 'Using fallback semantic analysis. Start Enhanced Semantic Architecture service for full SOM clustering.'
 		});
 	}
 };
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!text) {
 			return json({
 				success: false,
-				error: 'Missing text for analysis',
+				error: 'Missing text for analysis'
 			}, { status: 400 });
 		}
 
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
 };

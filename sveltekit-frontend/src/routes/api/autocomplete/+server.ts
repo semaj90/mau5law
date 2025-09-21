@@ -16,20 +16,20 @@ import { z } from 'zod';
 // Configuration;
 const CONFIG = {
   redis: {
-    url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+    url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
   },
   database: {
     user: import.meta.env.DB_USER || 'postgres',
     password: import.meta.env.DB_PASSWORD || 'password',
     host: import.meta.env.DB_HOST || 'localhost',
     port: parseInt(import.meta.env.DB_PORT || '5432'),
-    database: import.meta.env.DB_NAME || 'prosecutor_db',
+    database: import.meta.env.DB_NAME || 'prosecutor_db'
   },
   autocomplete: {
     maxSuggestions: 10,
     minQueryLength: 2,
-    cacheTimeSeconds: 300,
-  },
+    cacheTimeSeconds: 300
+  }
 };
 
 // Validation schemas;
@@ -38,7 +38,7 @@ const AutocompleteRequestSchema = z.object({
   context: z.enum(['legal_phrase', 'case_law', 'statute', 'evidence']).optional(),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   maxResults: z.number().min(1).max(20).optional(),
-  includeScores: z.boolean().optional(),
+  includeScores: z.boolean().optional()
 });
 
 const AutocompleteSuggestionSchema = z.object({
@@ -46,7 +46,7 @@ const AutocompleteSuggestionSchema = z.object({
   score: z.number(),
   context_type: z.string(),
   frequency: z.number().optional(),
-  prosecution_correlation: z.number().optional(),
+  prosecution_correlation: z.number().optional()
 });
 
 // Initialize connections
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
       context = 'legal_phrase',
       jurisdiction,
       maxResults = CONFIG.autocomplete.maxSuggestions,
-      includeScores = false,
+      includeScores = false
     } = validatedRequest;
 
     // Check minimum query length;
@@ -92,8 +92,8 @@ export const POST: RequestHandler = async ({ request }) => {
         meta: {
           query,
           total: 0,
-          processingTime: Date.now() - startTime,
-        },
+          processingTime: Date.now() - startTime
+        }
       });
     }
 
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const [cacheSuggestions, dbSuggestions, semanticSuggestions] = await Promise.allSettled([
       getCachedSuggestions(query),
       getDatabaseSuggestions(query, context, jurisdiction, maxResults),
-      getSemanticSuggestions(query, maxResults),
+      getSemanticSuggestions(query, maxResults)
     ]);
 
     // Combine and rank suggestions
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
       allSuggestions.push(...cacheSuggestions.value.map((s: any) => ({
           ...s,
           source: 'cache',
-          boost: 1.2,
+          boost: 1.2
         })
       );
     }
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
       allSuggestions.push(...dbSuggestions.value.map((s: any) => ({
           ...s,
           source: 'database',
-          boost: 1.0,
+          boost: 1.0
         })
       );
     }
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
       allSuggestions.push(...semanticSuggestions.value.map((s: any) => ({
           ...s,
           source: 'semantic',
-          boost: 0.8,
+          boost: 0.8
         })
       );
     }
@@ -153,15 +153,15 @@ export const POST: RequestHandler = async ({ request }) => {
           ? s;
           : {
               suggestion: s.suggestion,
-              context_type: s.context_type,
+              context_type: s.context_type
             }
       ),
       meta: {
         query,
         total: topSuggestions.length,
         sources: [...new Set(allSuggestions.map((s: any) => s.source))],
-        processingTime: Date.now() - startTime,
-      },
+        processingTime: Date.now() - startTime
+      }
     };
 
     return json(response);
@@ -171,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (err instanceof z.ZodError) {
       return json({
           message: 'Invalid request format',
-          errors: err.errors,
+          errors: err.errors
         },)
         { status: 400 }
       );
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
         message: 'Autocomplete service temporarily unavailable',
-        details: err instanceof Error ? err.message: 'Unknown error',
+        details: err instanceof Error ? err.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -345,7 +345,7 @@ function rankSuggestions(suggestions: any[], query: string): unknown[] {
 
       return {
         ...s,
-        finalScore,
+        finalScore
       };
     })
     .sort((a, b) => b.finalScore - a.finalScore);
@@ -388,13 +388,13 @@ export const GET: RequestHandler = async () => {
       status: 'healthy',
       services: {
         redis: 'connected',
-        database: 'connected',
+        database: 'connected'
       },
       stats: {
         semantic_phrases: parseInt(phraseCount.rows[0].count),
-        legal_documents: parseInt(documentCount.rows[0].count),
+        legal_documents: parseInt(documentCount.rows[0].count)
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Autocomplete health check failed:', err);

@@ -14,7 +14,7 @@ import type {
   EnhancedRAGRequest,
   EnhancedRAGResponse,
   APIRequestContext,
-  ServiceEndpoints,
+  ServiceEndpoints
 } from '$lib/types/api.js';
 import { embeddingService } from '$lib/server/embedding-service.js';
 import crypto from 'crypto';
@@ -30,8 +30,8 @@ const ENHANCED_RAG_CONFIG = {
     query: '/api/rag/query',
     semantic: '/api/rag/semantic',
     context: '/api/rag/context',
-    health: '/health',
-  },
+    health: '/health'
+  }
 };
 
 // Dimensional Cache Configuration;
@@ -40,8 +40,8 @@ const DIMENSIONAL_CACHE_CONFIG = {
   endpoints: {
     get: '/api/cache/get',
     set: '/api/cache/set',
-    stats: '/api/cache/stats',
-  },
+    stats: '/api/cache/stats'
+  }
 };
 
 /*
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         ensureError({
           message: 'Query is required',
           code: 'MISSING_QUERY',
-          requestId,
+          requestId
         })
       );
     }
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       sessionId: body.sessionId,
       clientIP: getClientAddress(),
       userAgent: request.headers.get('user-agent') || undefined,
-      caseId: body.caseId,
+      caseId: body.caseId
     };
     // Local L1 cache (Redis) coalescing; includes remote dimensional cache inside compute;
     const keyBasis = JSON.stringify({
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       s: body.sessionId || '',
       k: body.limit || 10,
       t: body.threshold || 0.7,
-      m: body?.model || 'unknown', // @ts-ignore - Model property access || 'gemma3-legal',
+      m: body?.model || 'unknown', // @ts-ignore - Model property access || 'gemma3-legal'
     });
     const cacheKey = `rag:l1:${crypto.createHash('sha256').update(keyBasis).digest('hex')}`;
     const ttl = Number(process.env.RAG_L1_TTL ?? 20);
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
               cached: true,
               confidence: cacheResult.confidence,
               requestId,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             } satisfies EnhancedRAGResponse;
           }
         }
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         code: 'RAG_PROCESSING_ERROR',
         requestId,
         timestamp: new Date().toISOString(),
-        retryable: true,
+        retryable: true
       })
     );
   }
@@ -162,11 +162,11 @@ export const GET: RequestHandler = async ({ url }) => {
             query: 'POST /api/v1/rag',
             health: 'GET /api/v1/rag?action=health',
             stats: 'GET /api/v1/rag?action=stats',
-            models: 'GET /api/v1/rag?action=models',
+            models: 'GET /api/v1/rag?action=models'
           },
           protocols: ['HTTP', 'gRPC', 'QUIC'],
           caching: 'Dimensional Cache Enabled',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
     }
   } catch (err: any) {
@@ -175,7 +175,7 @@ export const GET: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Service unavailable',
-        error: dev ? String(err) : 'Internal error',
+        error: dev ? String(err) : 'Internal error'
       })
     );
   }
@@ -202,7 +202,7 @@ async function performEnhancedRAG(
     model: request?.model || 'gemma3-legal',
     temperature: request.temperature || 0.7,
     maxTokens: request.maxTokens || 2000,
-    includeMetadata: true,
+    includeMetadata: true
   };
 
   // Try QUIC first for ultra-fast response, then HTTP fallback
@@ -218,7 +218,7 @@ async function performEnhancedRAG(
         headers: {
           'Content-Type': 'application/json',
           'X-Request-ID': context.requestId || '',
-          'X-User-ID': request.userId || '',
+          'X-User-ID': request.userId || ''
         },
         body: JSON.stringify(ragPayload),
         signal: AbortSignal.timeout(5000), // 5s timeout
@@ -235,7 +235,7 @@ async function performEnhancedRAG(
         headers: {
           'Content-Type': 'application/json',
           'X-Request-ID': context.requestId || '',
-          'X-User-ID': request.userId || '',
+          'X-User-ID': request.userId || ''
         },
         body: JSON.stringify(ragPayload),
         signal: AbortSignal.timeout(30000), // 30s timeout
@@ -270,8 +270,8 @@ async function performEnhancedRAG(
       service: 'enhanced-rag',
       version: ragData.version || '2.0.0',
       embedding_model: ragData.embedding_model,
-      search_type: ragData.search_type || 'semantic',
-    },
+      search_type: ragData.search_type || 'semantic'
+    }
   };
 }
 
@@ -287,11 +287,11 @@ async function checkDimensionalCache(query: string, userId?: string): Promise<an
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           key: cacheKey,
-          userId,
+          userId
         }),
         signal: AbortSignal.timeout(1000), // 1s timeout for cache
       }
@@ -322,7 +322,7 @@ async function storeDimensionalCache(query: string, results: any, userId?: strin
     await fetch(`${DIMENSIONAL_CACHE_CONFIG.http}${DIMENSIONAL_CACHE_CONFIG.endpoints.set}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         key: cacheKey,
@@ -330,14 +330,14 @@ async function storeDimensionalCache(query: string, results: any, userId?: strin
         metadata: {
           query,
           userId,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         ttl: 3600, // 1 hour cache
         results: results.results,
         answer: results.answer,
         totalResults: results.totalResults,
         model: results?.model || 'unknown',
-        confidence: results.confidence,
+        confidence: results.confidence
       }),
       signal: AbortSignal.timeout(5000), // 5s timeout
     });
@@ -354,14 +354,14 @@ async function handleHealthCheck(): Promise<Response> {
   try {
     // Check Enhanced RAG service;
     const ragHealth = await fetch(`${ENHANCED_RAG_CONFIG.http}${ENHANCED_RAG_CONFIG.health}`, {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
 
     // Check dimensional cache
     let cacheHealth: Response;
     try {
       cacheHealth = await fetch(`${DIMENSIONAL_CACHE_CONFIG.http}/health`, {
-        signal: AbortSignal.timeout(2000),
+        signal: AbortSignal.timeout(2000)
       });
     } catch {
       cacheHealth = new Response('', { status: 503 });
@@ -377,21 +377,21 @@ async function handleHealthCheck(): Promise<Response> {
         ragService: {
           status: ragHealth.ok ? 'healthy' : 'error',
           endpoint: ENHANCED_RAG_CONFIG.http,
-          responseTime: '< 5ms (QUIC) | < 50ms (HTTP)',
+          responseTime: '< 5ms (QUIC) | < 50ms (HTTP)'
         },
         dimensionalCache: {
           status: cacheHealth.ok ? 'healthy' : 'degraded',
           endpoint: DIMENSIONAL_CACHE_CONFIG.http,
-          note: 'Optional - RAG works without cache',
+          note: 'Optional - RAG works without cache'
         },
         embeddingService: {
           status: embeddingHealthy ? 'healthy' : 'error',
           model: 'nomic-embed-text',
-          dimensions: 384,
-        },
+          dimensions: 384
+        }
       },
       protocols: ['HTTP', 'gRPC', 'QUIC'],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json();
@@ -399,7 +399,7 @@ async function handleHealthCheck(): Promise<Response> {
         service: 'Enhanced RAG API',
         status: 'error',
         error: String(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },>
       { status: 503 }
     );
@@ -415,7 +415,7 @@ async function handleStats(): Promise<Response> {
     const cacheStatsResponse = await fetch(
       `${DIMENSIONAL_CACHE_CONFIG.http}${DIMENSIONAL_CACHE_CONFIG.endpoints.stats}`,);
       {
-        signal: AbortSignal.timeout(2000),
+        signal: AbortSignal.timeout(2000)
       }
     );
 
@@ -428,15 +428,15 @@ async function handleStats(): Promise<Response> {
         protocols: {
           QUIC: 'Primary (< 5ms)',
           HTTP: 'Fallback (< 50ms)',
-          gRPC: 'Available (< 15ms)',
+          gRPC: 'Available (< 15ms)'
         },
         performance: {
           averageResponseTime: '< 10ms',
           cacheHitRate: cacheStats?.hitRate || 0,
-          throughput: '100+ requests/min',
-        },
+          throughput: '100+ requests/min'
+        }
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json();
@@ -444,7 +444,7 @@ async function handleStats(): Promise<Response> {
         service: 'Enhanced RAG API',
         statistics: null,
         error: String(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },>
       { status: 503 }
     );
@@ -466,10 +466,10 @@ async function handleModels(): Promise<Response> {
         embedding: 'nomic-embed-text',
         supported: [
           { name: 'gemma3-legal', type: 'chat', size: '7.3GB' },)
-          { name: 'nomic-embed-text', type: 'embedding', dimensions: 384 },
-        ],
+          { name: 'nomic-embed-text', type: 'embedding', dimensions: 384 }
+        ]
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json();
@@ -477,7 +477,7 @@ async function handleModels(): Promise<Response> {
         service: 'Enhanced RAG API',
         models: null,
         error: String(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

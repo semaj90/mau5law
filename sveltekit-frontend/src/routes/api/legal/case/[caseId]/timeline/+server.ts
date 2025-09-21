@@ -26,19 +26,19 @@ interface TimelineEvent {
     witnesses?: string[];
     recordingDevice?: string;
     chain_of_custody?: string[];
-    tags: string[];,
+    tags: string[];
   };
   correlations: {
     before: string[]; // Event IDs that occurred before and may be related
     after: string[]; // Event IDs that occurred after and may be related
     concurrent: string[]; // Events that occurred at the same time
-    causal: string[]; // Events that this event may have caused,
+    causal: string[]; // Events that this event may have caused
   };
   legalImplications: {
     relevantLaws: string[];
     potentialCharges?: string[];
     evidentialValue: number; // 0-100
-    admissibilityIssues: string[];,
+    admissibilityIssues: string[];
   };
   analysisNotes?: string;
   updates: Array<any>
@@ -48,7 +48,7 @@ interface TimelineAnalysis {
   timeRange: {
     start: string;
     end: string;
-    duration: string;,
+    duration: string;
   };
   eventsByType: Record<string, number>;
   eventsBySignificance: Record<string, number>;
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       includeAnalysis,
       groupBy: groupBy as TimelineRequest['groupBy'],
       sortBy: sortBy as TimelineRequest['sortBy'],
-      sortOrder: sortOrder as TimelineRequest['sortOrder'],
+      sortOrder: sortOrder as TimelineRequest['sortOrder']
     };
 
     // Get timeline events
@@ -120,10 +120,10 @@ export const GET: RequestHandler = async ({ params, url }) => {
         totalEvents: timelineData.events.length,
         dateRange: {
           start: timelineData.events.length > 0 ? timelineData.events[0].timestamp: null,
-          end: timelineData.events.length > 0 ? timelineData.events[timelineData.events.length - 1].timestamp : null,
+          end: timelineData.events.length > 0 ? timelineData.events[timelineData.events.length - 1].timestamp : null
         },
         filters: request,
-        generatedAt: new Date().toISOString(),
+        generatedAt: new Date().toISOString()
       }
     });
 
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       success: true,
       event: newEvent,
       correlations: updatedCorrelations,
-      message: 'Timeline event created successfully',
+      message: 'Timeline event created successfully'
     });
 
   } catch (error) {
@@ -200,7 +200,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       success: true,
       updatedEvents,
       analysis,
-      message: 'Timeline updated successfully',
+      message: 'Timeline updated successfully'
     });
 
   } catch (error) {
@@ -270,7 +270,7 @@ async function generateTimelineAnalysis(events: TimelineEvent[]): Promise<Timeli
       eventsBySignificance: Record<string, any>,
       correlationClusters: [],
       gaps: [],
-      inconsistencies: [],
+      inconsistencies: []
     };
   }
 
@@ -342,26 +342,26 @@ async function createTimelineEvent(caseId: string, eventData: any): Promise<Time
     confidence: eventData.confidence || 0.8,
     metadata: {
       ...eventData.metadata,
-      tags: eventData.metadata?.tags || [],
+      tags: eventData.metadata?.tags || []
     },
     correlations: {
       before: [],
       after: [],
       concurrent: [],
-      causal: [],
+      causal: []
     },
     legalImplications: {
       relevantLaws: eventData.legalImplications?.relevantLaws || [],
       potentialCharges: eventData.legalImplications?.potentialCharges,
       evidentialValue: eventData.legalImplications?.evidentialValue || 50,
-      admissibilityIssues: eventData.legalImplications?.admissibilityIssues || [],
+      admissibilityIssues: eventData.legalImplications?.admissibilityIssues || []
     },
     analysisNotes: eventData.analysisNotes,
     updates: [{
       timestamp: new Date().toISOString(),
       updatedBy: 'System',
       changes: 'Event created',
-      reason: 'Initial creation',
+      reason: 'Initial creation'
     }]
   };
 
@@ -373,7 +373,7 @@ async function updateEventCorrelations(newEvent: TimelineEvent): Promise<any> {
   return {
     correlationsFound: Math.floor(Math.random() * 5) + 1,
     strongCorrelations: Math.floor(Math.random() * 2),
-    weakCorrelations: Math.floor(Math.random() * 3) + 1,
+    weakCorrelations: Math.floor(Math.random() * 3) + 1
   };
 }
 
@@ -388,7 +388,7 @@ async function updateTimelineEvents(caseId: string, updates: any): Promise<Timel
       timestamp: new Date().toISOString(),
       updatedBy: 'User',
       changes: 'Batch update applied',
-      reason: 'Timeline reconstruction',
+      reason: 'Timeline reconstruction'
     }]
   });
 }
@@ -429,7 +429,7 @@ function generateMockTimelineEvents(caseId: string): TimelineEvent[] {
         witnesses: generateRandomWitnesses(),
         recordingDevice: Math.random() > 0.5 ? ['Body Camera', 'Security Camera', 'Phone', 'Dashboard Cam'][Math.floor(Math.random() * 4)] : undefined,
         chain_of_custody: ['Collected', 'Logged', 'Analyzed', 'Stored'],
-        tags: generateRandomTags(),
+        tags: generateRandomTags()
       },
       correlations: {
         before: i > 0 ? [`EVENT-${String(Math.max(1, i)).padStart(3, '0')}`] : [],
@@ -448,7 +448,7 @@ function generateMockTimelineEvents(caseId: string): TimelineEvent[] {
         timestamp: eventDate.toISOString(),
         updatedBy: 'System',
         changes: 'Initial event creation',
-        reason: 'Timeline construction',
+        reason: 'Timeline construction'
       }]
     };
   });
@@ -476,19 +476,19 @@ function generateCorrelationClusters(events: TimelineEvent[]): TimelineAnalysis[
       id: 'CLUSTER-001',
       events: events.slice(0, 3).map(e => e.id),
       theme: 'Initial Investigation Phase',
-      significance: 'HIGH',
+      significance: 'HIGH'
     },
     {
       id: 'CLUSTER-002',
       events: events.slice(5, 8).map(e => e.id),
       theme: 'Evidence Collection Period',
-      significance: 'CRITICAL',
+      significance: 'CRITICAL'
     },
     {
       id: 'CLUSTER-003',
       events: events.slice(10, 13).map(e => e.id),
       theme: 'Legal Proceedings',
-      significance: 'MEDIUM',
+      significance: 'MEDIUM'
     }
   ];
 }
@@ -527,12 +527,12 @@ function findTimelineInconsistencies(events: TimelineEvent[]): TimelineAnalysis[
     {
       events: [events[2]?.id, events[5]?.id].filter(Boolean),
       issue: 'Conflicting witness statements about timing',
-      severity: 'MEDIUM',
+      severity: 'MEDIUM'
     },
     {
       events: [events[8]?.id, events[12]?.id].filter(Boolean),
       issue: 'Evidence collection dates do not align with incident reports',
-      severity: 'HIGH',
+      severity: 'HIGH'
     }
   ];
 }

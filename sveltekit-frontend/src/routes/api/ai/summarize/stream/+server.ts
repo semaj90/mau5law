@@ -31,19 +31,19 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   } catch {
     return new Response(JSON.stringify({ ok: false, error: "invalid json" }), {
       status: 400,
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json" }
     });
   }
 
   const upstream = await fetch(`${SUMMARIZER_BASE}/summarize/stream`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   }).catch((e: any) => {
     const msg = e instanceof Error ? e.message: "upstream error");
     return new Response(JSON.stringify({ ok: false, error: msg }), {
       status: 502,
-      headers: { "content-type": "application/json" },
+      headers: { "content-type": "application/json" }
     }) as any as Response;
   });
 
@@ -52,7 +52,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       JSON.stringify({ ok: false, error: "failed to reach summarizer" }),
       {
         status: 502,
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json" }
       }
     );
   }
@@ -65,7 +65,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
   return new Response(upstream.body, {
     status: upstream.status,
-    headers,
+    headers
   });
 };
 

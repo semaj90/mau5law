@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       caseNumber: data.caseNumber,
       title: data.title,
       userId: userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     // ✅ REAL PostgreSQL DATABASE INSERT
@@ -44,8 +44,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         metadata: {
           source: 'test-case-api',
           createdVia: 'form-submission',
-          userAgent: request.headers.get('user-agent') || 'unknown',
-        },
+          userAgent: request.headers.get('user-agent') || 'unknown'
+        }
       })
       .returning();
 
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       status: createdCase.status,
       priority: createdCase.priority,
       userId: createdCase.user_id,
-      timestamp: createdCase.created_at,
+      timestamp: createdCase.created_at
     });
 
     return json({
@@ -73,8 +73,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         userId: createdCase.user_id,
         jurisdiction: createdCase.jurisdiction,
         createdAt: createdCase.created_at,
-        updatedAt: createdCase.updated_at,
-      },
+        updatedAt: createdCase.updated_at
+      }
     });
   } catch (error) {
     console.error('❌ PostgreSQL Case Creation Error:', error);
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         success: false,
         error: error instanceof Error ? error.message: 'Database error occurred',
         details: error instanceof Error ? error.stack : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async () => {
         title: cases.title,
         status: cases.status,
         priority: cases.priority,
-        created_at: cases.created_at,
+        created_at: cases.created_at
       })
       .from(cases)
       .limit(5)
@@ -114,15 +114,15 @@ export const GET: RequestHandler = async () => {
       database: {
         connection: 'Active',
         recent_cases_count: recentCases.length,
-        recent_cases: recentCases,
+        recent_cases: recentCases
       },
       features: {
         'postgresql-integration': '✅ Active',
         'drizzle-orm': '✅ Connected',
         'case-creation': '✅ Functional',
         'database-queries': '✅ Working',
-        'api-endpoints': '✅ Production Ready',
-      },
+        'api-endpoints': '✅ Production Ready'
+      }
     });
   } catch (error) {
     console.error('❌ Database connectivity test failed:', error);
@@ -136,8 +136,8 @@ export const GET: RequestHandler = async () => {
           'postgresql-integration': '❌ Failed',
           'drizzle-orm': '❌ Error',
           'case-creation': '❌ Unavailable',
-          'database-queries': '❌ Failed',
-        },
+          'database-queries': '❌ Failed'
+        }
       },
       { status: 500 }
     );

@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
       fileId,
       fileName: file.name,
       filePath,
-      size: file.size,
+      size: file.size
     });
 
   } catch (error: any) {

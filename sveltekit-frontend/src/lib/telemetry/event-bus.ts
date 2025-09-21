@@ -23,7 +23,7 @@ interface TelemetryMetrics {
   eventsFlushed: number;
   bufferSize: number;
   avgFlushTime: number;
-  lastFlushTimestamp: number;,
+  lastFlushTimestamp: number;
 }
 
 export class TelemetryEventBus {
@@ -37,7 +37,7 @@ export class TelemetryEventBus {
     maxBufferSize: 100,
     flushInterval: 30000, // 30 seconds
     enableDebug: ENV_CONFIG.GPU_DEBUG,
-    endpoint: import.meta.env.VITE_ANALYTICS_ENDPOINT,
+    endpoint: import.meta.env.VITE_ANALYTICS_ENDPOINT
   };
 
   private constructor() {
@@ -47,7 +47,7 @@ export class TelemetryEventBus {
       eventsFlushed: 0,
       bufferSize: 0,
       avgFlushTime: 0,
-      lastFlushTimestamp: 0,
+      lastFlushTimestamp: 0
     };
 
     this.startAutoFlush();
@@ -60,7 +60,7 @@ export class TelemetryEventBus {
     if (this.options.enableDebug) {
       console.log('[Telemetry] Event bus initialized', {
         sessionId: this.sessionId,
-        options: this.options,
+        options: this.options
       });
     }
   }
@@ -79,7 +79,7 @@ export class TelemetryEventBus {
     const event: Telemetry.GPUEvent = {
       ...data,
       timestamp: performance.now(),
-      sessionId: this.sessionId,
+      sessionId: this.sessionId
     };
     
     this.addEvent(event);
@@ -92,7 +92,7 @@ export class TelemetryEventBus {
     const event: Telemetry.PerformanceEvent = {
       ...data,
       timestamp: performance.now(),
-      sessionId: this.sessionId,
+      sessionId: this.sessionId
     };
     
     this.addEvent(event);
@@ -105,7 +105,7 @@ export class TelemetryEventBus {
     const event: Telemetry.ErrorEvent = {
       ...data,
       timestamp: performance.now(),
-      sessionId: this.sessionId,
+      sessionId: this.sessionId
     };
     
     this.addEvent(event);
@@ -163,7 +163,7 @@ export class TelemetryEventBus {
       type: 'cache_hit',
       duration: 0,
       operation: `${bank.type}_usage`,
-      success: utilizationPercent < 90 // Flag high memory usage,
+      success: utilizationPercent < 90 // Flag high memory usage
     });
 
     if (this.options.enableDebug) {
@@ -203,7 +203,7 @@ export class TelemetryEventBus {
   getMetrics(): TelemetryMetrics & { bufferUtilization: number } {
     return {
       ...this.metrics,
-      bufferUtilization: (this.eventBuffer.length / this.options.maxBufferSize) * 100,
+      bufferUtilization: (this.eventBuffer.length / this.options.maxBufferSize) * 100
     };
   }
 
@@ -228,7 +228,7 @@ export class TelemetryEventBus {
     };
 
     return new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json',
+      type: 'application/json'
     });
   }
 
@@ -318,7 +318,7 @@ export class TelemetryEventBus {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
@@ -335,7 +335,7 @@ export class TelemetryEventBus {
       if (window.__GPU_MANAGER__) {
         return {
           acceleration: window.__GPU_MANAGER__.getAcceleration(),
-          contextType: 'detected',
+          contextType: 'detected'
         };
       }
     } catch {

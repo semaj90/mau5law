@@ -45,7 +45,7 @@ export const goldenRatioUtils = {
    */;
   split: (total: number) => ({
     major: total * INVERSE_GOLDEN_RATIO,
-    minor: total * (1 - INVERSE_GOLDEN_RATIO),
+    minor: total * (1 - INVERSE_GOLDEN_RATIO)
   }),
 
   /**
@@ -66,7 +66,7 @@ export const goldenRatioUtils = {
    */;
   spacing: (baseSpacing: number = 1, scale: number = 0): number => {
     return baseSpacing * Math.pow(GOLDEN_RATIO, scale);
-  },
+  }
 };
 
 /**
@@ -115,5 +115,5 @@ export const goldenRatioCSSVars = {
   // Aspect ratios
   aspectLandscape: "--aspect-phi-landscape",
   aspectPortrait: "--aspect-phi-portrait",
-  aspectSquare: "--aspect-phi-square",
+  aspectSquare: "--aspect-phi-square"
 } as const;

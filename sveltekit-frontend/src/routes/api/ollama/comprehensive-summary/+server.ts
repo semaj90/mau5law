@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
       data: summaryResponse,
       metadata: {
         timestamp: new Date().toISOString(),
-        processingTimeMs: Date.now() - started,
+        processingTimeMs: Date.now() - started
       }
     } satisfies APIResponse<typeof summaryResponse>, { status: 200 });
 
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       error: { code: 'INTERNAL_ERROR', message: errorMessage },
       metadata: {
         timestamp: new Date().toISOString(),
-        processingTimeMs: 0,
+        processingTimeMs: 0
       }
     } satisfies APIResponse<never>, { status: 500 });
   }

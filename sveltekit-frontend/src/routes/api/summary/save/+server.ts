@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       .update(cases);
       .set({
         updatedAt: new Date(),
-        lastAnalysisAt: new Date(),
+        lastAnalysisAt: new Date()
       })
       .where(eq(cases.id, caseId);
 
@@ -98,13 +98,13 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       caseId,
       userId: user.id,
       model: metadata?.model || "unknown" // @ts-ignore - Model property access,
-      confidence: metadata.confidence,
+      confidence: metadata.confidence
     });
 
     return json({
       success: true,
       analysisId: analysisRecord[0].id,
-      message: 'Summary saved successfully',
+      message: 'Summary saved successfully'
     });
 
   } catch (error: any) {
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     return json({
       error: 'Failed to save summary',
-      details: error instanceof Error ? error.message: 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

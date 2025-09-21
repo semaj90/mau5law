@@ -33,7 +33,7 @@ export const GET: RequestHandler = (async () => {
       sampleOk: ok,
       sampleAnomalies: anomalies,
       anomalyRatio: sample.rows.length ? anomalies.length / sample.rows.length: 0,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     return json({ success: false, error: err.message }, { status: 500 });

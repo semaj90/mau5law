@@ -45,7 +45,7 @@ const sql = postgres({
   max: 20,
   idle_timeout: 20,
   prepare: true,
-  ssl: process.env.NODE_ENV === 'production' ? 'require' : false,
+  ssl: process.env.NODE_ENV === 'production' ? 'require' : false
 });
 
 const db = drizzle(sql, { schema });
@@ -58,7 +58,7 @@ const redis = new Redis({
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
   lazyConnect: false,
-  retryStrategy: (times) => Math.min(times * 50, 2000),
+  retryStrategy: (times) => Math.min(times * 50, 2000)
 });
 
 // Initialize LangChain components;
@@ -67,8 +67,8 @@ const embeddings = new OllamaEmbeddings({
   model: EMBEDDING_MODEL,
   requestOptions: {
     useMMap: true,
-    numThread: 8,
-  },
+    numThread: 8
+  }
 });
 
 const llm = new Ollama({
@@ -90,9 +90,9 @@ const llm = new Ollama({
       },
       handleLLMError: async (err) => {
         console.error('[RAG] LLM Error:', err);
-      },
-    },
-  ],
+      }
+    }
+  ]
 });
 
 // Text splitter for legal documents;
@@ -113,9 +113,9 @@ const textSplitter = new RecursiveCharacterTextSplitter({
     ';',
     ':',
     ' ',
-    '',
+    ''
   ],
-  keepSeparator: true,
+  keepSeparator: true
 });
 
 export class LegalRAGPipeline {
@@ -147,7 +147,7 @@ export class LegalRAGPipeline {
     documentType: string;
     metadata?: Record<string, any>;
     caseId?: string;
-    userId: string;,
+    userId: string;
   }) {
     const startTime = Date.now();
     const { title, content, documentType, metadata = {}, caseId, userId } = params;
@@ -165,7 +165,7 @@ export class LegalRAGPipeline {
           topics: metadata.topics || [],
           jurisdiction: metadata.jurisdiction,
           caseId,
-          createdBy: userId,
+          createdBy: userId
         })
         .returning();
 
@@ -201,8 +201,8 @@ export class LegalRAGPipeline {
                 title,
                 position: i + idx,
                 totalChunks: chunks.length,
-                ...metadata,
-              },
+                ...metadata
+              }
             };
           })
         );
@@ -223,7 +223,7 @@ export class LegalRAGPipeline {
           tag: tag.tag,
           confidence: tag.confidence.toString(),
           source: 'ai_analysis',
-          model: LLM_MODEL,
+          model: LLM_MODEL
         });
       }
 
@@ -234,7 +234,7 @@ export class LegalRAGPipeline {
         documentId: document.id,
         chunksCreated: chunks.length,
         tags: tags.map((t) => t.tag),
-        processingTime,
+        processingTime
       };
     } catch (error: any) {
       console.error('[RAG] Ingestion error:', error);
@@ -298,7 +298,7 @@ export class LegalRAGPipeline {
       vectorResults.forEach((r) => {
         combinedResults.set(r.id, {
           ...r,
-          score: r.similarity * 0.7,
+          score: r.similarity * 0.7
         });
       });
 
@@ -310,7 +310,7 @@ export class LegalRAGPipeline {
         } else {
           combinedResults.set(r.id, {
             ...r,
-            score: r.text_rank * 0.3,
+            score: r.text_rank * 0.3
           });
         }
       });
@@ -327,8 +327,8 @@ export class LegalRAGPipeline {
               documentId: r.document_id,
               score: r.score,
               similarity: r.similarity || 0,
-              textRank: r.text_rank || 0,
-            },
+              textRank: r.text_rank || 0
+            }
           })
       );
     } catch (error: any) {
@@ -354,7 +354,7 @@ export class LegalRAGPipeline {
         query: question,
         caseId,
         limit: 5,
-        threshold: 0.6,
+        threshold: 0.6
       });
 
       if (relevantDocs.length === 0) {
@@ -362,7 +362,7 @@ export class LegalRAGPipeline {
           answer:
             "I couldn't find relevant information in the knowledge base to answer your question. Please provide more context or try rephrasing your question.",
           sources: [],
-          confidence: 0,
+          confidence: 0
         };
       }
 
@@ -396,11 +396,11 @@ Answer:
       const chain = RunnableSequence.from([);
         {
           context: () => context,
-          question: new RunnablePassthrough(),
+          question: new RunnablePassthrough()
         },
         promptTemplate,
         llm,
-        new StringOutputParser(),
+        new StringOutputParser()
       ]);
 
       const chainResult = await chain.invoke(question);
@@ -425,8 +425,8 @@ Answer:
         embedding: JSON.stringify(queryEmbedding),
         metadata: {
           sourcesCount: relevantDocs.length,
-          keyPoints: analysis.keyPoints,
-        },
+          keyPoints: analysis.keyPoints
+        }
       });
 
       return {
@@ -434,11 +434,11 @@ Answer:
         sources: relevantDocs.map((d) => ({
           id: d.metadata.documentId,
           title: d.metadata.title,
-          score: d.metadata.score,
+          score: d.metadata.score
         })),
         confidence: analysis.confidence,
         keyPoints: analysis.keyPoints,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     } catch (error: any) {
       console.error('[RAG] QA error:', error);
@@ -452,7 +452,7 @@ Answer:
         model: LLM_MODEL,
         isSuccessful: false,
         errorMessage: error.message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       });
 
       throw error;
@@ -687,7 +687,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
 
     return {
       confidence,
-      keyPoints,
+      keyPoints
     };
   }
 
@@ -698,7 +698,7 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
       keyTerms: [],
       risks: [],
       legalIssues: [],
-      recommendations: [],
+      recommendations: []
     };
 
     // Parse the structured response

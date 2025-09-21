@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       filters.push(
         orExpr([
           like(caseActivities.title, `%${search}%`),
-          like(caseActivities.description, `%${search}%`),
+          like(caseActivities.description, `%${search}%`)
         ]),
       );
     }
@@ -108,8 +108,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       pagination: {
         limit,
         offset,
-        total: totalCount,
-      },
+        total: totalCount
+      }
     });
   } catch (error: any) {
     console.error("Error fetching activities:", error);
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       relatedEvidence: data.relatedEvidence || [],
       relatedCriminals: data.relatedCriminals || [],
       metadata: data.metadata || {},
-      createdBy: locals.user.id,
+      createdBy: locals.user.id
     };
 
     const [newActivity] = await db

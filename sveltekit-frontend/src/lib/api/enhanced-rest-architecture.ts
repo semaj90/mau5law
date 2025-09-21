@@ -10,7 +10,7 @@ export interface APIResponse<T = any> {
   metadata?: {
     timestamp: string;
     version: string;
-    processing_time: number;,
+    processing_time: number;
   };
 }
 
@@ -18,7 +18,7 @@ export interface ClusteringConfig {
   k: number;
   maxIterations: number;
   tolerance: number;
-  algorithm: 'kmeans' | 'som' | 'hierarchical';,
+  algorithm: 'kmeans' | 'som' | 'hierarchical';
 }
 
 export interface KMeansConfig extends ClusteringConfig {
@@ -60,7 +60,7 @@ export interface ClusterResult {
   clusterId: string;
   silhouetteScore: number;
   iterations: number;
-  converged: boolean;,
+  converged: boolean;
 }
 
 export class KMeansClusterer {
@@ -84,7 +84,7 @@ export interface ClusterResultDetails {
   metrics: {
     silhouetteScore: number;
     inertia: number;
-    converged: boolean;,
+    converged: boolean;
   };
 }
 
@@ -95,7 +95,7 @@ export class EnhancedRESTClient {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
     return response.json();
   }

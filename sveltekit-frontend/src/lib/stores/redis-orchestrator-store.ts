@@ -12,18 +12,18 @@ export interface RedisStats {
   llm_cache: {
     total_keys: number;
     memory_usage: string;
-    hit_rate_estimate: number;,
+    hit_rate_estimate: number;
   };
   agent_memory: {
-    active_sessions: number;,
+    active_sessions: number;
   };
   task_queue: {
     queued_tasks: number;
     processing_tasks: number;
-    completed_tasks_count: number;,
+    completed_tasks_count: number;
   };
   redis_memory: string;
-  last_updated: string;,
+  last_updated: string;
 }
 
 export interface RedisOptimizationResult {
@@ -37,7 +37,7 @@ export interface RedisOptimizationResult {
     cache_strategy: string;
     memory_bank: string;
     session_id: string;
-    timestamp: string;,
+    timestamp: string;
   };
 }
 
@@ -144,7 +144,7 @@ export class RedisOrchestratorClient {
       const response = await fetch(this.baseUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           query,
@@ -153,7 +153,7 @@ export class RedisOrchestratorClient {
             endpoint: context.endpoint || 'client-query',
             ...context
           },
-          useOrchestrator: context.useOrchestrator !== false,
+          useOrchestrator: context.useOrchestrator !== false
         })
       });
 
@@ -177,7 +177,7 @@ export class RedisOrchestratorClient {
           query,
           status: 'queued',
           estimatedTime: '30-45 seconds',
-          submittedAt: new Date().toISOString(),
+          submittedAt: new Date().toISOString()
         });
       }
 
@@ -236,7 +236,7 @@ export class RedisOrchestratorClient {
       const response = await fetch(`${this.baseUrl}/tasks`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           taskType,
@@ -259,7 +259,7 @@ export class RedisOrchestratorClient {
         query,
         status: 'queued',
         estimatedTime: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).estimated_processing_time,
-        submittedAt: new Date().toISOString(),
+        submittedAt: new Date().toISOString()
       });
 
       return (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).taskId;
@@ -304,7 +304,7 @@ export class RedisOrchestratorClient {
 
     try {
       const response = await fetch(`${this.baseUrl}/cache?confirm=true`, {
-        method: 'DELETE',
+        method: 'DELETE'
       });
 
       return (response as { ok?: any; statusText?: any; json?: any }).ok;
@@ -331,7 +331,7 @@ export class RedisOrchestratorClient {
       
       const stats: RedisStats = {
         ...data.redis_stats,
-        last_updated: new Date().toISOString(),
+        last_updated: new Date().toISOString()
       };
 
       redisStats.set(stats);
@@ -352,7 +352,7 @@ export class RedisOrchestratorClient {
       const newEntry = {
         endpoint,
         time: Math.round(time),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
       
       const updated = [...times, newEntry].slice(-50); // Keep last 50 entries

@@ -21,7 +21,7 @@ export interface VectorCacheEntry {
   };
   ts: number;
   lastAccess: number;
-  ttlMs: number;,
+  ttlMs: number;
 }
 
 export interface EmbeddingCacheEntry {
@@ -31,7 +31,7 @@ export interface EmbeddingCacheEntry {
   dimensions: number;
   ts: number;
   lastAccess: number;
-  ttlMs: number;,
+  ttlMs: number;
 }
 
 // Configuration
@@ -61,7 +61,7 @@ function generateVectorKey(query: string, options: any = {}): string {
     metric: options.metric || 'cosine',
     threshold: options.threshold || 1,
     documentType: options.documentType,
-    includeContent: options.includeContent,
+    includeContent: options.includeContent
   };
   return crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex').substring(0, 16);
 }
@@ -173,7 +173,7 @@ export async function setVectorCache(
     metadata,
     ts: now,
     lastAccess: now,
-    ttlMs: VECTOR_TTL_MS,
+    ttlMs: VECTOR_TTL_MS
   };
   
   // Store in memory
@@ -251,7 +251,7 @@ export async function setEmbeddingCache(
     dimensions: embedding.length,
     ts: now,
     lastAccess: now,
-    ttlMs: EMBEDDING_TTL_MS,
+    ttlMs: EMBEDDING_TTL_MS
   };
   
   // Store in memory
@@ -302,12 +302,12 @@ export function getVectorCacheStats() {
     memory: {
       vectorEntries: vectorCache.size,
       embeddingEntries: embeddingCache.size,
-      maxItems: VECTOR_CACHE_MAX_ITEMS,
+      maxItems: VECTOR_CACHE_MAX_ITEMS
     },
     config: {
       vectorTtlMs: VECTOR_TTL_MS,
       embeddingTtlMs: EMBEDDING_TTL_MS,
-      redisEnabled: !!getRedisClient(),
+      redisEnabled: !!getRedisClient()
     }
   };
 }

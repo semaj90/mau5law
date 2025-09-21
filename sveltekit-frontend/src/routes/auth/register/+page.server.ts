@@ -40,7 +40,7 @@ export const actions: Actions = {
         password: password,
         firstName: firstName,
         lastName: lastName,
-        role: role || 'user',
+        role: role || 'user'
       }, { request, cookies, getClientAddress } as any);
 
       if (!(result as { success?: any; error?: any; user?: any }).success) {
@@ -54,7 +54,7 @@ export const actions: Actions = {
         email: email.toLowerCase(),
         password: password,
         ipAddress: clientIP,
-        userAgent: userAgent,
+        userAgent: userAgent
       });
 
       if (loginResult.success && loginResult.session) {
@@ -64,12 +64,12 @@ export const actions: Actions = {
           httpOnly: true,
           secure: import.meta.env.NODE_ENV === 'production',
           sameSite: 'strict',
-          maxAge: 60 * 60 * 24 // 1 day,
+          maxAge: 60 * 60 * 24 // 1 day
         });
 
         console.log('User registered and logged in successfully:', {
           userId: (result as { success?: any; error?: any; user?: any }).user?.id,
-          email: email,
+          email: email
         });
       }
 

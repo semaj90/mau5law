@@ -9,7 +9,7 @@ import {
   legal_documents,
   documentChunks,
   userAiQueries,
-  autoTags,
+  autoTags
 } from "$lib/server/db/schema-postgres";
 
 // Database model types (inferred from schema)
@@ -51,7 +51,7 @@ export interface Profile {
   bio?: string;
   specializations: string[];
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface NewProfile
@@ -65,7 +65,7 @@ export interface Session {
   id: string;
   userId: string;
   expiresAt: Date;
-  createdAt: Date;,
+  createdAt: Date;
 }
 
 export interface NewSession extends Omit<Session, "createdAt"> {
@@ -81,7 +81,7 @@ export interface UserProfile {
   isActive: boolean;
   emailVerified?: Date | null;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 // Type for the user object returned by Auth.js session;
@@ -97,7 +97,7 @@ export interface SessionUser {
 // Complete user session interface
 export interface UserSession {
   user: SessionUser | null;
-  expires: Date | null;,
+  expires: Date | null;
 }
 
 // Role-based type safety

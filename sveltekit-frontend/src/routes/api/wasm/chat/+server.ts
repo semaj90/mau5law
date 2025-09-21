@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!message) {
       return json({
         success: false,
-        error: 'Message is required',
+        error: 'Message is required'
       }, { status: 400 });
     }
 
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!wasm.isAvailable()) {
       return json({
         success: false,
-        error: 'WebAssembly LLM service not available',
+        error: 'WebAssembly LLM service not available'
       }, { status: 503 });
     }
 
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 sources: [{
                   type: 'system',
                   content: 'WebAssembly Legal Assistant',
-                  confidence: 0.7,
+                  confidence: 0.7
                 }]
               }
             };
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 metadata: {
                   type: 'text',
                   confidence: 0.75,
-                  model: 'webassembly-llm',
+                  model: 'webassembly-llm'
                 }
               };
               
@@ -205,11 +205,11 @@ export const POST: RequestHandler = async ({ request }) => {
         sources: [{
           type: 'system',
           content: 'WebAssembly Legal Assistant',
-          confidence: 0.7,
+          confidence: 0.7
         }],
         conversationId,
         timestamp: new Date().toISOString(),
-        note: 'Response generated using WebAssembly fallback. Connect to Ollama for enhanced capabilities.',
+        note: 'Response generated using WebAssembly fallback. Connect to Ollama for enhanced capabilities.'
       }
     });
 
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Failed to process chat request in WebAssembly mode',
-      details: error instanceof Error ? error.message: String(error),
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -246,13 +246,13 @@ export const GET: RequestHandler = async () => {
           'Limited legal knowledge base'
         ]
       },
-      note: 'WebAssembly mode provides basic functionality when Ollama is unavailable',
+      note: 'WebAssembly mode provides basic functionality when Ollama is unavailable'
     });
   } catch (error: any) {
     return json({
       success: false,
       error: 'WebAssembly service error',
-      details: error.message,
+      details: error.message
     }, { status: 500 });
   }
 };

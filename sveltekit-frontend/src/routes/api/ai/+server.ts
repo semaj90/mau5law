@@ -159,7 +159,7 @@ Provide comprehensive legal guidance as appropriate for the query.`
     evidenceConnections: string[];
     suggestedActions: AIServiceResponse['suggestedActions'];
     confidence: number;
-    reasoning: string;,
+    reasoning: string;
   } {
     const lines = response.split('\n').map(line => line.trim()).filter(Boolean);
 
@@ -190,7 +190,7 @@ Provide comprehensive legal guidance as appropriate for the query.`
           suggestedActions.push({
             type,
             description: this.cleanActionDescription(description),
-            priority: this.determinePriority(description),
+            priority: this.determinePriority(description)
           });
         }
       }
@@ -322,7 +322,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
         error: 'Internal server error',
-        message: error instanceof Error ? error.message: 'Unknown error occurred',
+        message: error instanceof Error ? error.message: 'Unknown error occurred'
       },)
       { status: 500 }
     );
@@ -346,7 +346,7 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       models: models.models || [],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
@@ -354,7 +354,7 @@ export const GET: RequestHandler = async () => {
       {
         status: 'unhealthy',
         error: error instanceof Error ? error.message: 'Service check failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

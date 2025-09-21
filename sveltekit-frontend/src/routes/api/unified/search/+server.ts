@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
         limit,
         threshold,
         caseId: caseId || null,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Unified search error:', error);
     return json({ 
         error: 'Search failed',
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
     );

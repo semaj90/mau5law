@@ -14,14 +14,14 @@ interface EvidenceContext {
   uploadProgress: number;
   processingSteps: string[];
   error: string | null;
-  artifactUrl: string | null;,
+  artifactUrl: string | null;
 }
 
 type StartProcessingEvent = {
   type: 'START_PROCESSING';
   file: File;
   evidenceId: string;
-  caseId: string;,
+  caseId: string;
 };
 
 type RetryEvent = { type: 'RETRY' };
@@ -46,7 +46,7 @@ const evidenceProcessingMachine = createMachine({
     uploadProgress: 0,
     processingSteps: [],
     error: null,
-    artifactUrl: null,
+    artifactUrl: null
   },
   states: {
     idle: {
@@ -58,7 +58,7 @@ const evidenceProcessingMachine = createMachine({
             evidenceId: ({ event }) => (event as StartProcessingEvent).evidenceId,
             caseId: ({ event }) => (event as StartProcessingEvent).caseId,
             error: null,
-            processingSteps: [],
+            processingSteps: []
           })
         }
       }
@@ -102,7 +102,7 @@ const evidenceProcessingMachine = createMachine({
 
           const response = await fetch('/api/ai/analyze-evidence', {
             method: 'POST',
-            body: formData,
+            body: formData
           });
 
           if (!response.ok) {
@@ -161,11 +161,11 @@ const evidenceProcessingMachine = createMachine({
             file_data: Array.from(new Uint8Array(context.pngArtifact!)),
             metadata: {
               original_filename: context.file!.name,
-              processing_timestamp: new Date().toISOString(),
+              processing_timestamp: new Date().toISOString()
             },
             ai_analysis: context.metadata,
             risk_assessment: context.metadata?.riskAssessment || 'unknown',
-            confidence: context.metadata?.confidence || 0.5,
+            confidence: context.metadata?.confidence || 0.5
           };
 
           const response = await fetch('http://localhost:8095/api/artifacts/upload', {
@@ -173,7 +173,7 @@ const evidenceProcessingMachine = createMachine({
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(uploadData),
+            body: JSON.stringify(uploadData)
           });
 
           if (!response.ok) {
@@ -199,13 +199,13 @@ const evidenceProcessingMachine = createMachine({
     },
     completed: {
       on: {
-        RESET: 'idle',
+        RESET: 'idle'
       }
     },
     error: {
       on: {
         RETRY: 'validating',
-        RESET: 'idle',
+        RESET: 'idle'
       }
     }
   }
@@ -263,7 +263,7 @@ export const searchArtifacts = async (searchParams: {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(searchParams),
+    body: JSON.stringify(searchParams)
   });
 
   if (!response.ok) {

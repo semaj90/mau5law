@@ -9,7 +9,7 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'YoRHa Command Center Dashboard - Main interface for legal AI operations',
+        component: 'YoRHa Command Center Dashboard - Main interface for legal AI operations'
       }
     }
   },
@@ -40,7 +40,7 @@ export const Default: Story = {
       systemLoad: 35,
       gpuUtilization: 22,
       memoryUsage: 68,
-      networkLatency: 45,
+      networkLatency: 45
     }
   }
 };
@@ -56,13 +56,13 @@ export const HighLoad: Story = {
       systemLoad: 85,
       gpuUtilization: 92,
       memoryUsage: 87,
-      networkLatency: 125,
+      networkLatency: 125
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Command Center under high system load - shows warning indicators',
+        story: 'Command Center under high system load - shows warning indicators'
       }
     }
   }
@@ -79,13 +79,13 @@ export const Critical: Story = {
       systemLoad: 96,
       gpuUtilization: 98,
       memoryUsage: 94,
-      networkLatency: 250,
+      networkLatency: 250
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Critical system state - all metrics in red zone',
+        story: 'Critical system state - all metrics in red zone'
       }
     }
   }
@@ -102,13 +102,13 @@ export const LowActivity: Story = {
       systemLoad: 15,
       gpuUtilization: 8,
       memoryUsage: 32,
-      networkLatency: 18,
+      networkLatency: 18
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Low activity scenario - minimal system usage',
+        story: 'Low activity scenario - minimal system usage'
       }
     }
   }
@@ -125,13 +125,13 @@ export const EmptyState: Story = {
       systemLoad: 5,
       gpuUtilization: 2,
       memoryUsage: 15,
-      networkLatency: 12,
+      networkLatency: 12
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Empty state - fresh system with no active cases or data',
+        story: 'Empty state - fresh system with no active cases or data'
       }
     }
   }
@@ -148,13 +148,13 @@ export const Interactive: Story = {
       systemLoad: 55,
       gpuUtilization: 42,
       memoryUsage: 63,
-      networkLatency: 38,
+      networkLatency: 38
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Interactive demo - test all quick actions and modal interactions',
+        story: 'Interactive demo - test all quick actions and modal interactions'
       }
     }
   },

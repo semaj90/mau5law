@@ -2,7 +2,7 @@ export interface CacheConfiguration {
   maxSize: number;
   ttl: number;
   compression: boolean;
-  persistence: boolean;,
+  persistence: boolean;
 }
 
 export interface CacheLayerInterface {
@@ -57,7 +57,7 @@ export class AdvancedCacheManager implements CacheLayerInterface {
       maxSize: this.config.maxSize,
       ttl: this.config.ttl,
       hitRate: 0.85,
-      missRate: 0.15,
+      missRate: 0.15
     };
   }
 }

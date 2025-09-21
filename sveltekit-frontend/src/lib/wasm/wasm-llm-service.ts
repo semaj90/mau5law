@@ -34,7 +34,7 @@ export class WASMLLMService {
 		totalTokens: 0,
 		totalProcessingTime: 0,
 		averageTokensPerSecond: 0,
-		modelLoadTime: 0,
+		modelLoadTime: 0
 	};
 
 	// Legal-specific tokenizer patterns;
@@ -42,7 +42,7 @@ export class WASMLLMService {
 		citations: /\b\d+\s+[A-Z][a-zA-Z\s]+\d+\b/g,
 		statutes: /\b\d+\s+U\.S\.C\.\s+§\s*\d+/g,
 		cases: /\b[A-Z][a-zA-Z\s]+v\.\s+[A-Z][a-zA-Z\s]+/g,
-		jurisdictions: /\b(federal|state|appellate|supreme|district)\s+court\b/gi,
+		jurisdictions: /\b(federal|state|appellate|supreme|district)\s+court\b/gi
 	};
 
 	async initialize(): Promise<boolean> {
@@ -322,7 +322,7 @@ export class WASMLLMService {
 			citationCount: (text.match(this.legalTokenPatterns.citations) || []).length,
 			statuteReferences: (text.match(this.legalTokenPatterns.statutes) || []).length,
 			caseReferences: (text.match(this.legalTokenPatterns.cases) || []).length,
-			jurisdictionMentions: (text.match(this.legalTokenPatterns.jurisdictions) || []).length,
+			jurisdictionMentions: (text.match(this.legalTokenPatterns.jurisdictions) || []).length
 		};
 	}
 
@@ -417,7 +417,7 @@ export class WASMLLMService {
 			...this.stats,
 			modelsLoaded: this.modelCache.size,
 			modelLoaded: this.modelLoaded,
-			isInitialized: this.isInitialized,
+			isInitialized: this.isInitialized
 		};
 	}
 

@@ -126,5 +126,5 @@ export const cssVars = {
 
   borderPrimary: 'var(--yorha-border-primary)',
   borderSecondary: 'var(--yorha-border-secondary)',
-  borderAccent: 'var(--yorha-border-accent)',
+  borderAccent: 'var(--yorha-border-accent)'
 } as const;

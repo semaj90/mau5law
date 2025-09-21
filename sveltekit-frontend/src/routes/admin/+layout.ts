@@ -15,7 +15,7 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
 
     // Check current session;
     const sessionResponse = await fetch('/api/auth/session', {
-      credentials: 'include',
+      credentials: 'include'
     });
 
     if (!sessionResponse.ok) {
@@ -41,7 +41,7 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     return {
       user: sessionData.user,
       session: sessionData.session,
-      permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? [],
+      permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? []
     };
 
   } catch (error: any) {

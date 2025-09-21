@@ -9,7 +9,7 @@ export const caseSearch = writable("");
 export const caseFilters = writable({
   status: "",
   priority: "",
-  dateRange: { start: "", end: "" },
+  dateRange: { start: "", end: "" }
 });
 
 // Filtered cases (derived store)
@@ -57,7 +57,7 @@ export const caseStore = {
       const latestCases = await response.json();
       cases.set(latestCases);
     }
-  },
+  }
 };
 
 export default caseStore;

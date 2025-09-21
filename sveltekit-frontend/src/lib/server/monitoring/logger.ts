@@ -43,7 +43,7 @@ class AppLogger {
       timestamp: new Date().toISOString(),
       level,
       message,
-      ...metadata,
+      ...metadata
     };
 
     this.logs.push(entry);
@@ -75,7 +75,7 @@ class AppLogger {
     if (metrics.duration > 5000) {
       this.log("warn", `Slow request detected: ${metrics.endpoint}`, {
         duration: metrics.duration,
-        endpoint: metrics.endpoint,
+        endpoint: metrics.endpoint
       });
     }
   }
@@ -97,7 +97,7 @@ class AppLogger {
         recent.reduce((sum, m) => sum + m.duration, 0) / recent.length,
       slowestEndpoints: this.getSlowEndpoints(recent),
       errorRate: recent.filter((m) => m.status >= 400).length / recent.length,
-      peakHours: this.getPeakHours(recent),
+      peakHours: this.getPeakHours(recent)
     };
   }
   private getSlowEndpoints(metrics: PerformanceMetrics[]) {
@@ -113,7 +113,7 @@ class AppLogger {
       .map(([endpoint, times]) => ({
         endpoint,
         avgTime: times.reduce((a, b) => a + b, 0) / times.length,
-        requests: times.length,
+        requests: times.length
       })
       .sort((a, b) => b.avgTime - a.avgTime)
       .slice(0, 10);
@@ -161,7 +161,7 @@ class AppLogger {
           method,
           duration,
           timestamp: new Date().toISOString(),
-          status: response.status,
+          status: response.status
         });
 
         return response;
@@ -172,8 +172,8 @@ class AppLogger {
           endpoint,
           duration,
           metadata: {
-            error: error instanceof Error ? error.message: String(error),
-          },
+            error: error instanceof Error ? error.message: String(error)
+          }
         });
 
         throw error;
@@ -203,6 +203,6 @@ export const logUserAction = (
   logger.log("info", `User action: ${action}`, {
     action,
     userId,
-    metadata,
+    metadata
   });
 };

@@ -30,11 +30,11 @@ const WorkerTriggerSchema = z.object({
       tags: z.array(z.string()).optional(),
       trigger: z.string().optional(),
       userId: z.string().optional(),
-      timestamp: z.string().optional(),
+      timestamp: z.string().optional()
     })
     .optional(),
   correlationId: z.string().optional(),
-  retry: z.boolean().default(false),
+  retry: z.boolean().default(false)
 });
 
 type WorkerTriggerData = z.infer<typeof WorkerTriggerSchema>;
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!triggerData.metadata?.timestamp) {
       triggerData.metadata = {
         ...triggerData.metadata,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
 
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       documentId: triggerData.documentId || '',
       metadata: JSON.stringify(triggerData.metadata || {}),
       retry: triggerData.retry ? '1' : '0',
-      timestamp: Date.now().toString(),
+      timestamp: Date.now().toString()
     };
 
     // Add to Redis stream for worker consumption
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       type: triggerData.type,
       action: triggerData.action,
       caseId: triggerData.caseId,
-      correlationId: triggerData.correlationId,
+      correlationId: triggerData.correlationId
     });
 
     // Optional: Send to PostgreSQL notification as well;
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             case_type: triggerData.metadata?.caseType || 'civil',
             trigger: triggerData.metadata?.trigger || 'api',
             correlation_id: triggerData.correlationId,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}'
         `);
         console.log(`📡 PostgreSQL NOTIFY sent for case: ${triggerData.caseId}`);
@@ -131,13 +131,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         correlationId: triggerData.correlationId,
         triggerType: triggerData.type,
         action: triggerData.action,
-        caseId: triggerData.caseId,
+        caseId: triggerData.caseId
       },
       metadata: {
         timestamp: new Date().toISOString(),
         worker: 'postgresql-first-autotag',
-        version: '2.0',
-      },
+        version: '2.0'
+      }
     });
   } catch (validationError) {
     console.error('❌ Worker trigger validation failed:', validationError);
@@ -184,7 +184,7 @@ export const GET: RequestHandler = async ({ url }) => {
       evidenceId: event.message.evidenceId || null,
       documentId: event.message.documentId || null,
       metadata: JSON.parse(event.message.metadata || '{}'),
-      retry: event.message.retry === '1',
+      retry: event.message.retry === '1'
     });
 
     return json({
@@ -194,18 +194,18 @@ export const GET: RequestHandler = async ({ url }) => {
           ? {
               length: streamInfo.length,
               firstEntry: streamInfo['first-entry'],
-              lastEntry: streamInfo['last-entry'],
+              lastEntry: streamInfo['last-entry']
             }
           : null,
         recentEvents: events,
         workerStatus: 'active', // TODO: Implement actual worker health check
-        lastProcessed: events.length > 0 ? events[0].timestamp: null,
+        lastProcessed: events.length > 0 ? events[0].timestamp: null
       },
       metadata: {
         timestamp: new Date().toISOString(),
         worker: 'postgresql-first-autotag',
-        version: '2.0',
-      },
+        version: '2.0'
+      }
     });
   } catch (error: any) {
     console.error('❌ Worker status check failed:', error);
@@ -214,8 +214,8 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: {
           message: 'Worker status check failed',
-          code: 'WORKER_STATUS_ERROR',
-        },
+          code: 'WORKER_STATUS_ERROR'
+        }
       },)
       { status: 500 }
     );
@@ -258,13 +258,13 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
       data: {
         deletedEvents: deletedCount,
         streamName,
-        clearedAt: new Date().toISOString(),
+        clearedAt: new Date().toISOString()
       },
       metadata: {
         timestamp: new Date().toISOString(),
         operation: 'stream-clear',
-        version: '2.0',
-      },
+        version: '2.0'
+      }
     });
   } catch (error: any) {
     console.error('❌ Worker stream clear failed:', error);

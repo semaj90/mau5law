@@ -12,7 +12,7 @@ interface DatabaseUser {
   role: string;
   isActive: boolean;
   avatarUrl: string | null;
-  name: string | null;,
+  name: string | null;
 }
 
 declare global {
@@ -55,7 +55,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     const sessionCookie = lucia.createSessionCookie(session.id);
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       path: '/',
-      ...sessionCookie.attributes,
+      ...sessionCookie.attributes
     });
   }
 
@@ -64,7 +64,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     const sessionCookie = lucia.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       path: '/',
-      ...sessionCookie.attributes,
+      ...sessionCookie.attributes
     });
   }
 
@@ -82,7 +82,7 @@ export const handle: Handle = async ({ event, resolve }) => {
             | 'investigator'
             | 'analyst'
             | 'viewer'
-            | 'user') || 'user',
+            | 'user') || 'user'
       }
     : null;
   event.locals.session = session;

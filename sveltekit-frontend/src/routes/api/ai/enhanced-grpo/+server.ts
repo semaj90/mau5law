@@ -67,7 +67,7 @@ Let me analyze this legal query step by step:
 ${query}
 
 Please provide a comprehensive legal analysis with structured reasoning.`,
-        stream: false,
+        stream: false
       })
     });
 
@@ -83,7 +83,7 @@ Please provide a comprehensive legal analysis with structured reasoning.`,
       return {
         thinking,
         response: responseText,
-        confidence: 0.85,
+        confidence: 0.85
       };
     }
   } catch (error) {
@@ -93,7 +93,7 @@ Please provide a comprehensive legal analysis with structured reasoning.`,
   return {
     thinking: 'Unable to generate thinking content',
     response: 'I apologize, but I encountered an issue processing your request.',
-    confidence: 0.3,
+    confidence: 0.3
   };
 }
 
@@ -169,7 +169,7 @@ async function getSimilarResponses(queryEmbedding: number[], maxResults: number 
         legal_domain: row.legal_domain as string,
         created_at: row.created_at as string,
         usage_count: row.usage_count as number,
-        confidence: row.confidence as string,
+        confidence: row.confidence as string
       }
     });
   } catch (error) {
@@ -251,7 +251,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (!query && !text) {
       return json({ 
         error: 'Query or text is required',
-        success: false ,
+        success: false 
       }, { status: 400 });
     }
 
@@ -283,7 +283,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       responseEmbedding,
       confidence: aiResponse.confidence,
       userId,
-      legalDomain: analysisType,
+      legalDomain: analysisType
     });
     
     // Step 6: Get trending topics
@@ -326,7 +326,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             similarity: rec.similarity,
             temporal_factor: rec.temporal_factor,
             legal_domain: rec.metadata.legal_domain,
-            created_at: rec.metadata.created_at,
+            created_at: rec.metadata.created_at
           }
         })),
         
@@ -334,7 +334,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         trending_topics: trendingTopics.rows.map(row => ({
           topic: row.topic as string,
           count: parseInt(row.count as string),
-          avg_confidence: parseFloat(row.avg_confidence as string),
+          avg_confidence: parseFloat(row.avg_confidence as string)
         })),
         
         // Reasoning breakdown;
@@ -344,7 +344,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           conclusions: structuredReasoning.conclusions,
           legal_principles: structuredReasoning.legal_principles,
           counter_arguments: structuredReasoning.counter_arguments,
-          confidence_factors: structuredReasoning.confidence_factors,
+          confidence_factors: structuredReasoning.confidence_factors
         }
       },
       
@@ -383,7 +383,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         model_used: 'gemma3-legal:latest',
         algorithm: 'enhanced-grpo',
         thinking_enabled: false,
-        error_type: error.constructor.name,
+        error_type: error.constructor.name
       }
     }, { status: 500 });
   }
@@ -419,9 +419,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             topic: row.topic as string,
             count: parseInt(row.count as string),
             avg_confidence: parseFloat(row.avg_confidence as string),
-            latest_activity: row.latest_activity as string,
+            latest_activity: row.latest_activity as string
           })),
-          period_days: days,
+          period_days: days
         });
 
       case 'recent':
@@ -448,7 +448,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             confidence: parseFloat(row.confidence as string || '0.8'),
             legal_domain: row.legal_domain as string,
             created_at: row.created_at as string,
-            usage_count: row.usage_count as number,
+            usage_count: row.usage_count as number
           })
         });
 
@@ -467,7 +467,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: 'Failed to retrieve data',
-      details: error.message,
+      details: error.message
     }, { status: 500 });
   }
 };
@@ -492,7 +492,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
     if (!responseId || !userRating || userRating < 1 || userRating > 5) {
       return json({ 
         error: 'responseId and userRating (1-5) are required',
-        success: false ,
+        success: false 
       }, { status: 400 });
     }
 
@@ -536,7 +536,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Feedback recorded successfully',
       feedback_id: responseId,
-      impact: 'Learning algorithms updated with your feedback',
+      impact: 'Learning algorithms updated with your feedback'
     });
 
   } catch (error: any) {
@@ -545,7 +545,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Failed to record feedback',
-      details: error.message,
+      details: error.message
     }, { status: 500 });
   }
 };

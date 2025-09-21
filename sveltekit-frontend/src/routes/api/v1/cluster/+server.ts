@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
             case 'metrics':
                 return await handleMetrics();
             default:
-                return await handleClusterOverview();,
+                return await handleClusterOverview();
         }
     } catch (err: any) {
         console.error('Cluster API Error:', err);
@@ -62,11 +62,11 @@ async function handleHealthCheck(): Promise<any> {
             health_percentage: Math.round(healthPercentage),
             total_services: totalServices,
             healthy_services: healthyServices,
-            unhealthy_services: totalServices - healthyServices,
+            unhealthy_services: totalServices - healthyServices
         },
         services: health,
         performance: metrics,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
     });
 }
 
@@ -91,9 +91,9 @@ async function handleServicesStatus(): Promise<any> {
         summary: {
             total: Object.keys(health).length,
             running: Object.values(health).filter(item => item.length),
-            down: Object.values(health).filter((h) => !h).length,
+            down: Object.values(health).filter((h) => !h).length
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
     });
 }
 
@@ -106,13 +106,13 @@ async function handleMetrics(): Promise<any> {
             overall: {
                 avg_latency: performance.reduce((sum, p) => sum + p.avgLatency, 0) / performance.length,
                 avg_success_rate: performance.reduce((sum, p) => sum + p.successRate, 0) / performance.length,
-                total_endpoints: performance.length,
+                total_endpoints: performance.length
             }
         },
         availability: {
             uptime_percentage: (Object.values(health).filter(item => item.length) / Object.keys(health).length) * 100,
             services_up: Object.values(health).filter(item => item.length),
-            services_total: Object.keys(health).length,
+            services_total: Object.keys(health).length
         },
         protocols: {
             quic: { avg_latency: 5, success_rate: 0.99 },
@@ -120,7 +120,7 @@ async function handleMetrics(): Promise<any> {
             http: { avg_latency: 45, success_rate: 0.97 },
             websocket: { avg_latency: 1, success_rate: 0.95 }
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
     });
 }
 
@@ -132,20 +132,20 @@ async function handleClusterOverview(): Promise<any> {
             version: '1.0.0',
             status: 'operational',
             node_count: 1,
-            service_count: Object.keys(health).length,
+            service_count: Object.keys(health).length
         },
         architecture: {
             protocols: ['HTTP/JSON', 'gRPC', 'QUIC', 'WebSocket'],
             tiers: ['Core Services', 'Enhanced Services', 'Specialized Services', 'Infrastructure'],
             load_balancing: 'Round Robin',
-            failover: 'Automatic',
+            failover: 'Automatic'
         },
         endpoints: {
             health: '/api/v1/cluster/health',
             services: '/api/v1/cluster/services',
-            metrics: '/api/v1/cluster/metrics',
+            metrics: '/api/v1/cluster/metrics'
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
     });
 }
 

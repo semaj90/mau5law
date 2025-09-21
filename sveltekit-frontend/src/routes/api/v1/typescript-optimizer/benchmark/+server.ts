@@ -20,14 +20,14 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!body.error_count || body.error_count < 1) {
 			return json({ 
 				success: false, 
-				error: 'Invalid benchmark: error_count required (minimum 1)' ,
+				error: 'Invalid benchmark: error_count required (minimum 1)' 
 			}, { status: 400 });
 		}
 
 		if (!body.strategy || !['speed', 'quality', 'comparison'].includes(body.strategy)) {
 			return json({
 				success: false,
-				error: 'Invalid strategy: must be "speed", "quality", or "comparison"',
+				error: 'Invalid strategy: must be "speed", "quality", or "comparison"'
 			}, { status: 400 });
 		}
 
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				results = await runComparisonBenchmark(errorCount, iterations);
 				break;
 			default:
-				throw new Error('Invalid benchmark strategy');,
+				throw new Error('Invalid benchmark strategy');
 		}
 
 		// Analyze results
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			parameters: {
 				error_count: errorCount,
 				iterations,
-				timestamp: new Date().toISOString(),
+				timestamp: new Date().toISOString()
 			},
 			results,
 			analysis,
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				api_version: '2.0.0',
 				go_service_url: ENHANCED_API_BASE_URL,
 				sveltekit_benchmark_suite: true,
-				hardware_info: 'NVIDIA RTX 3060 Ti, 16GB RAM',
+				hardware_info: 'NVIDIA RTX 3060 Ti, 16GB RAM'
 			}
 		});
 
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			success: false,
 			error: 'Benchmark execution failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
 };
@@ -97,34 +97,34 @@ export const GET: RequestHandler = async () => {
 				type: 'speed',
 				description: 'Performance comparison across different processing endpoints',
 				tests: ['cpu_baseline', 'optimized', 'gpu_accelerated', 'go_llama_direct'],
-				metrics: ['latency', 'throughput', 'efficiency'],
+				metrics: ['latency', 'throughput', 'efficiency']
 			},
 			{
 				type: 'quality',
 				description: 'Fix quality and accuracy assessment',
 				tests: ['template_matching', 'ai_inference', 'hybrid_approach'],
-				metrics: ['success_rate', 'confidence_score', 'fix_correctness'],
+				metrics: ['success_rate', 'confidence_score', 'fix_correctness']
 			},);
 			{
 				type: 'comparison',
 				description: 'Comprehensive comparison across all strategies',
 				tests: ['all_endpoints', 'scaling_analysis', 'resource_utilization'],
-				metrics: ['speed', 'quality', 'resource_efficiency', 'cost_effectiveness'],
+				metrics: ['speed', 'quality', 'resource_efficiency', 'cost_effectiveness']
 			}
 		],
 		parameters: {
 			max_error_count: 200,
 			max_iterations: 10,
 			min_iterations: 1,
-			supported_strategies: ['speed', 'quality', 'comparison'],
+			supported_strategies: ['speed', 'quality', 'comparison']
 		},
 		hardware: {
 			gpu: 'NVIDIA RTX 3060 Ti',
 			memory: '16GB RAM',
 			cuda_version: '12.8',
-			go_service_version: '2.0.0',
+			go_service_version: '2.0.0'
 		},
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 };
 
@@ -137,7 +137,7 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
 		{ name: 'cpu_baseline', url: '/api/auto-solve', config: { use_gpu: false, use_llama: false } },
 		{ name: 'optimized', url: '/api/optimized/auto-solve', config: { use_gpu: false, use_llama: false } },
 		{ name: 'gpu_accelerated', url: '/api/gpu/batch-process', config: { use_gpu: true, use_llama: false } },
-		{ name: 'go_llama_direct', url: '/api/go-llama/batch', config: { use_gpu: false, use_llama: true } },
+		{ name: 'go_llama_direct', url: '/api/go-llama/batch', config: { use_gpu: false, use_llama: true } }
 	];
 
 	for (const endpoint of endpoints) {
@@ -156,8 +156,8 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
 					body: JSON.stringify({
 						errors: generateSampleErrors(errorCount),
 						...endpoint.config,
-						max_fixes: errorCount,
-					}),
+						max_fixes: errorCount
+					})
 				});
 
 				if ((response as { ok?: any; json?: any }).ok) {
@@ -181,7 +181,7 @@ async function runSpeedBenchmark(errorCount: number, iterations: number): Promis
 				throughput_eps: Math.round(throughput),
 				success_rate: (successfulRuns / iterations) * 100,
 				iterations: successfulRuns,
-				all_results: endpointResults,
+				all_results: endpointResults
 			});
 		}
 	}
@@ -196,7 +196,7 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
 	const strategies = [
 		{ name: 'template_matching', config: { strategy: 'template_only', use_cache: true } },
 		{ name: 'ai_inference', config: { strategy: 'llama_thinking', use_thinking: true } },
-		{ name: 'hybrid_approach', config: { strategy: 'optimized', use_gpu: true, use_llama: true } },
+		{ name: 'hybrid_approach', config: { strategy: 'optimized', use_gpu: true, use_llama: true } }
 	];
 
 	for (const strategy of strategies) {
@@ -214,8 +214,8 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
 					body: JSON.stringify({
 						errors: generateSampleErrors(errorCount),
 						...strategy.config,
-						max_fixes: errorCount,
-					}),
+						max_fixes: errorCount
+					})
 				});
 
 				if ((response as { ok?: any; json?: any }).ok) {
@@ -239,7 +239,7 @@ async function runQualityBenchmark(errorCount: number, iterations: number): Prom
 			avg_success_rate: totalSuccess / iterations,
 			quality_score: qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length,
 			iterations,
-			quality_distribution: qualityScores,
+			quality_distribution: qualityScores
 		});
 	}
 
@@ -268,7 +268,7 @@ function analyzeBenchmarkResults(results: BenchmarkResult[], strategy: string): 
 		most_accurate: findMostAccurate(results),
 		best_overall: findBestOverall(results),
 		performance_summary: generatePerformanceSummary(results, strategy),
-		resource_efficiency: calculateResourceEfficiency(results),
+		resource_efficiency: calculateResourceEfficiency(results)
 	};
 }
 
@@ -310,7 +310,7 @@ function generatePerformanceSummary(results: BenchmarkResult[], strategy: string
 		total_tests: results.length,
 		avg_latency: results.reduce((sum, r) => sum + (r.avg_latency_ms || 0), 0) / results.length,
 		avg_throughput: results.reduce((sum, r) => sum + (r.throughput_eps || 0), 0) / results.length,
-		avg_success_rate: results.reduce((sum, r) => sum + (r.success_rate || 0), 0) / results.length,
+		avg_success_rate: results.reduce((sum, r) => sum + (r.success_rate || 0), 0) / results.length
 	};
 }
 
@@ -319,7 +319,7 @@ function calculateResourceEfficiency(results: BenchmarkResult[]): Record<string,
 		cpu_efficiency: 85.0, // Would be calculated from actual metrics
 		memory_efficiency: 78.0,
 		gpu_utilization: 92.0,
-		overall_score: 85.0,
+		overall_score: 85.0
 	};
 }
 
@@ -348,12 +348,12 @@ function generateSampleErrors(count: number) {
 		column: 12,
 		message: 'Property "handleClick" does not exist on type "EventTarget"',
 		code: 'event.target.handleClick()',
-		context: 'Event handler in Svelte component',
+		context: 'Event handler in Svelte component'
 	};
 
 	return Array(count).fill(0).map((_, i) => ({
 		...sampleError,
 		line: sampleError.line + i,
-		file: `src/lib/components/TestComponent${i + 1}.svelte`,
+		file: `src/lib/components/TestComponent${i + 1}.svelte`
 	});
 }

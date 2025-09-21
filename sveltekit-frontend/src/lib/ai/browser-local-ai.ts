@@ -9,7 +9,7 @@ export interface LocalModelConfig {
   quantized: boolean;
   device: 'webgpu' | 'wasm' | 'cpu';
   maxTokens: number;
-  temperature: number;,
+  temperature: number;
 }
 
 export interface LocalInferenceRequest {
@@ -26,7 +26,7 @@ export interface LocalInferenceResult {
   processingTime: number;
   device: string;
   confidence: number;
-  fromCache: boolean;,
+  fromCache: boolean;
 }
 
 export interface EmbeddingRequest {
@@ -38,7 +38,7 @@ export interface EmbeddingResult {
   embeddings: Float32Array[];
   processingTime: number;
   device: string;
-  dimensions: number;,
+  dimensions: number;
 }
 
 export interface SemanticSearchRequest {
@@ -62,7 +62,7 @@ export class BrowserCapabilities {
     wasm: boolean;
     sharedArrayBuffer: boolean;
     webworkers: boolean;
-    estimatedMemory: number;,
+    estimatedMemory: number;
   }> {
     const webgpu = !!navigator.gpu;
     const wasm = (() => {
@@ -121,7 +121,7 @@ export class BrowserLocalAI {
     totalEmbeddings: 0,
     averageInferenceTime: 0,
     averageEmbeddingTime: 0,
-    cacheHits: 0,
+    cacheHits: 0
   };
 
   constructor(config: Partial<LocalModelConfig> = {}) {
@@ -196,7 +196,7 @@ export class BrowserLocalAI {
         await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200);
         return {
           generated_text: `[Local AI Response] Based on the legal context: "${prompt}", here are the key considerations...`,
-          num_tokens: Math.floor(Math.random() * 100) + 50,
+          num_tokens: Math.floor(Math.random() * 100) + 50
         };
       }
     };
@@ -249,7 +249,7 @@ export class BrowserLocalAI {
         processingTime,
         device: this.config.device,
         confidence: 0.8 + Math.random() * 0.2, // Simulated confidence
-        fromCache: false,
+        fromCache: false
       };
 
       // Cache the result
@@ -316,7 +316,7 @@ export class BrowserLocalAI {
         embeddings,
         processingTime,
         device: this.config.device,
-        dimensions: embeddings[0]?.length || 384,
+        dimensions: embeddings[0]?.length || 384
       };
 
     } catch (error) {
@@ -355,7 +355,7 @@ export class BrowserLocalAI {
       id: request.documents[index].id,
       text: request.documents[index].text,
       similarity,
-      metadata: request.documents[index].metadata,
+      metadata: request.documents[index].metadata
     });
   }
 
@@ -419,9 +419,9 @@ export class BrowserLocalAI {
       ...this.metrics,
       cacheSize: {
         inference: this.inferenceCache.size,
-        embeddings: this.embeddingCache.size,
+        embeddings: this.embeddingCache.size
       },
-      config: this.config,
+      config: this.config
     };
   }
 
@@ -445,7 +445,7 @@ export const browserLocalAI = new BrowserLocalAI({
   modelId: 'gemma3-270m-q4',
   quantized: true,
   temperature: 0.2,
-  maxTokens: 512,
+  maxTokens: 512
 });
 
 // Legal-specific helper functions;
@@ -456,7 +456,7 @@ export class LegalLocalAI {
     fromId: string;
     toId: string;
     relationship: string;
-    confidence: number;,
+    confidence: number;
   }> {
     const suggestions = [];
 
@@ -483,14 +483,14 @@ Describe their relationship in one concise phrase:`;
           const result = await this.ai.generateText({
             prompt: relationshipPrompt,
             maxTokens: 50,
-            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.',
+            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.'
           });
 
           suggestions.push({
             fromId: evidenceNodes[i].id,
             toId: evidenceNodes[j].id,
             relationship: result.text.trim(),
-            confidence: similarity,
+            confidence: similarity
           });
         }
       }
@@ -508,7 +508,7 @@ Suggest 3 additional bullet points that should be added to the notes:`;
     const result = await this.ai.generateText({
       prompt,
       maxTokens: 200,
-      systemPrompt: 'You are a legal AI assistant helping with case note preparation.',
+      systemPrompt: 'You are a legal AI assistant helping with case note preparation.'
     });
 
     // Parse suggestions from the response
@@ -525,7 +525,7 @@ Suggest 3 additional bullet points that should be added to the notes:`;
       query,
       documents: documents.map(doc => ({ id: doc.id, text: doc.content })),
       topK: 5,
-      threshold: 0.4,
+      threshold: 0.4
     });
   }
 

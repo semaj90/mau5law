@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     if (file.size > MAX_FILE_SIZE) {
       return json({ 
-        error: 'File size too large. Maximum size is 50MB.' ,
+        error: 'File size too large. Maximum size is 50MB.' 
       }, { status: 400 });
     }
     
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
       user_id: userId || null,
       status: 'uploading',
       created_at: new Date(),
-      updated_at: new Date(),
+      updated_at: new Date()
     }).returning();
     
     // Forward to Go upload service
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
           s3_key: uploadResult.s3Key,
           s3_bucket: uploadResult.s3Bucket,
           status: 'uploaded',
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .where({ id: documentId });
       
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
         status: 'queued',
         processing_type: 'full_analysis',
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       });
       
       // Publish to RabbitMQ queue for background processing (Step 3)
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
           caseId,
           userId,
           processingType: 'full_analysis',
-          priority: 5,
+          priority: 5
         }
       );
       
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
         message: 'File uploaded successfully and queued for processing',
         s3Key: uploadResult.s3Key,
         processingStatus: 'queued',
-        jobQueueStatus: jobPublished ? 'published' : 'failed',
+        jobQueueStatus: jobPublished ? 'published' : 'failed'
       }, { status: 202 });
       
     } catch (uploadError) {
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .set({
           status: 'upload_failed',
           error_message: uploadError.message,
-          updated_at: new Date(),
+          updated_at: new Date()
         })
         .where({ id: documentId });
       
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       error: 'Internal server error',
-      details: error.message,
+      details: error.message
     }, { status: 500 });
   }
 };
@@ -197,7 +197,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       error: 'Failed to retrieve documents',
-      details: error.message,
+      details: error.message
     }, { status: 500 });
   }
 };

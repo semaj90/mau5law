@@ -17,7 +17,7 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
   if (!typedLocals.session) {
     return json({ 
       success: false, 
-      message: 'No active session to logout' ,
+      message: 'No active session to logout' 
     }, { status: 400 });
   }
 
@@ -30,19 +30,19 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
     cookies.set(sessionCookie.name, sessionCookie.value, {
       path: '.',
       ...sessionCookie.attributes
-    ,});
+    });
 
     // Log successful logout;
     console.log('User logged out successfully:', {
       sessionId: typedLocals.session.id,
       userId: typedLocals.user?.id,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     return json({ 
       success: true, 
       message: 'Successfully logged out',
-      sessionInvalidated: true ,
+      sessionInvalidated: true 
     });
 
   } catch (error) {
@@ -53,12 +53,12 @@ export const POST = async ({ cookies, locals }: RequestEvent) => {
     cookies.set(sessionCookie.name, sessionCookie.value, {
       path: '.',
       ...sessionCookie.attributes
-    ,});
+    });
 
     return json({ 
       success: true, 
       message: 'Logged out (with errors)',
-      error: 'Session cleanup encountered issues',
+      error: 'Session cleanup encountered issues'
     });
   }
 };

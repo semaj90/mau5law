@@ -127,7 +127,7 @@ function setupPerformanceMonitoring() {
             console.warn(`⚡ Long task detected: ${Math.round(entry.duration)}ms`, {
               name: entry.name,
               startTime: entry.startTime,
-              duration: entry.duration,
+              duration: entry.duration
             });
           }
         }
@@ -226,7 +226,7 @@ export function getObservabilityStatus() {
     browser: true,
     currentRoute: currentRouteId,
     capabilities: observabilityClient.getCapabilities(),
-    performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null,
+    performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null
   };
 }
 

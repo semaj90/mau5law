@@ -18,7 +18,7 @@ export interface AIContext {
   model: string;
   stream: string;
   cacheKey: string;
-  sources: any[];,
+  sources: any[];
 }
 type AIEvent =;
   | {
@@ -26,7 +26,7 @@ type AIEvent =;
     caseId: string;
     evidence: any[];
     userId: string;
-    model: string;,
+    model: string;
   }
   | { type: "SAVE_SUMMARY" }
   | { type: "RETRY" }
@@ -35,7 +35,7 @@ type AIEvent =;
 export const aiGlobalMachine = setup({
   types: {
     context: Record<string, any> as AIContext,
-    events: Record<string, any> as AIEvent,
+    events: Record<string, any> as AIEvent
   },
   actions: {
     setContext: assign(({ event }) => {
@@ -49,7 +49,7 @@ export const aiGlobalMachine = setup({
         cacheKey,
         loading: true,
         error: "",
-        stream: "",
+        stream: ""
       };
     }),
     setSuccess: assign(({ event }) => {
@@ -60,7 +60,7 @@ export const aiGlobalMachine = setup({
           sources: data?.sources || [],
           loading: false,
           stream: "",
-          error: "",
+          error: ""
         };
       }
       return {};
@@ -69,7 +69,7 @@ export const aiGlobalMachine = setup({
       if ((event as any).type === "xstate.error.actor.summarizeEvidence") {
         return {
           error: ((event as any).error as Error)?.message || "Error generating summary.",
-          loading: false,
+          loading: false
         };
       }
       return {};
@@ -78,8 +78,8 @@ export const aiGlobalMachine = setup({
     setSaveSuccess: assign({ saving: false }),
     setSaveError: assign(({ event }) => ({
       saving: false,
-      error: ((event as any).error as Error)?.message || "Failed to save summary.",
-    })),
+      error: ((event as any).error as Error)?.message || "Failed to save summary."
+    }))
   },
   actors: {
     summarizeEvidence: fromPromise(async ({ input }: { input: AIContext }) => {
@@ -95,9 +95,9 @@ export const aiGlobalMachine = setup({
           caseId: input.caseId,
           evidence: input.evidence,
           userId: input.userId,
-          model: input?.model || "unknown" // @ts-ignore - Model property access,
+          model: input?.model || "unknown" // @ts-ignore - Model property access
         }),
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }
       });
 
       if (!res.ok) {
@@ -111,7 +111,7 @@ export const aiGlobalMachine = setup({
       // Cache the result;
       const result = {
         summary: data.summary,
-        sources: data.sources || [],
+        sources: data.sources || []
       };
       summaryCache.set(input.cacheKey, result);
 
@@ -124,7 +124,7 @@ export const aiGlobalMachine = setup({
       const res = await fetch("/api/summary/save", {
         method: "POST",
         body: JSON.stringify({ caseId: input.caseId, summary: input.summary }),
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }
       });
 
       if (!res.ok) {
@@ -132,8 +132,8 @@ export const aiGlobalMachine = setup({
         throw new Error(`API request failed: ${res.statusText} - ${errorText}`);
       }
       return await res.json();
-    }),
-  },
+    })
+  }
 }).createMachine({
   id: "aiGlobalSummary",
   initial: "idle",
@@ -148,16 +148,16 @@ export const aiGlobalMachine = setup({
     model: "gemma3-legal:latest",
     stream: "",
     cacheKey: "",
-    sources: [],
+    sources: []
   },
   states: {
     idle: {
       on: {
         SUMMARIZE: {
           target: "summarizing",
-          actions: "setContext",
-        },
-      },
+          actions: "setContext"
+        }
+      }
     },
     summarizing: {
       invoke: {
@@ -165,36 +165,36 @@ export const aiGlobalMachine = setup({
         input: ({ context }) => context,
         onDone: {
           target: "success",
-          actions: "setSuccess",
+          actions: "setSuccess"
         },
         onError: {
           target: "failure",
-          actions: "setError",
-        },
-      },
+          actions: "setError"
+        }
+      }
     },
     success: {
       on: {
         SUMMARIZE: {
           target: "summarizing",
-          actions: "setContext",
+          actions: "setContext"
         },
         RESET: "idle",
         SAVE_SUMMARY: {
           target: "saving",
-          actions: "setSaving",
-        },
-      },
+          actions: "setSaving"
+        }
+      }
     },
     failure: {
       on: {
         SUMMARIZE: {
           target: "summarizing",
-          actions: "setContext",
+          actions: "setContext"
         },
         RETRY: "summarizing",
-        RESET: "idle",
-      },
+        RESET: "idle"
+      }
     },
     saving: {
       invoke: {
@@ -202,15 +202,15 @@ export const aiGlobalMachine = setup({
         input: ({ context }) => context,
         onDone: {
           target: "success",
-          actions: "setSaveSuccess",
+          actions: "setSaveSuccess"
         },
         onError: {
           target: "success",
-          actions: "setSaveError",
-        },
-      },
-    },
-  },
+          actions: "setSaveError"
+        }
+      }
+    }
+  }
 });
 
 // Utility: hash evidence array for cache key;
@@ -261,7 +261,7 @@ export const aiGlobalActions = {
       caseId,
       evidence,
       userId,
-      model,
+      model
     });
   },
   saveSummary: () => {
@@ -272,7 +272,7 @@ export const aiGlobalActions = {
   },
   reset: () => {
     aiGlobalActor.send({ type: "RESET" });
-  },
+  }
 };
 
 export default aiGlobalStore;

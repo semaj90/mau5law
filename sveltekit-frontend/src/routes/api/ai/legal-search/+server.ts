@@ -34,7 +34,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       q: query,
       jurisdiction,
       category,
-      limit: '20',
+      limit: '20'
     });
 
     const basicSearchResponse = await fetch(`/api/laws/search?${searchParams}`);
@@ -56,7 +56,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       query,
       filters: { jurisdiction, category },
       enhanced: true,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
@@ -65,7 +65,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         success: false, 
         error: 'AI search failed',
         laws: [],
-        count: 0 ,
+        count: 0 
       }, )
       { status: 500 }
     );
@@ -96,7 +96,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       body: JSON.stringify({
         message: aiAnalysisPrompt,
         temperature: 0.3, // Lower temperature for more focused analysis
-        model: 'gemma3-legal:latest',
+        model: 'gemma3-legal:latest'
       })
     });
 
@@ -148,7 +148,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       laws: enhancedLaws,
       summary: aiAnalysis.summary || 'AI analysis complete',
       suggestions: aiAnalysis.suggestions || generateSuggestions(query),
-      concepts: aiAnalysis.concepts || extractLegalConcepts(query),
+      concepts: aiAnalysis.concepts || extractLegalConcepts(query)
     };
 
   } catch (error: any) {
@@ -163,7 +163,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       })),
       summary: `Found ${laws.length} laws related to "${query}"`,
       suggestions: generateSuggestions(query),
-      concepts: extractLegalConcepts(query),
+      concepts: extractLegalConcepts(query)
     };
   }
 }

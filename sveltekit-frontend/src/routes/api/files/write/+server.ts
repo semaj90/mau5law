@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
       file,
       size: content.length,
       lines: content.split('\n').length,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {

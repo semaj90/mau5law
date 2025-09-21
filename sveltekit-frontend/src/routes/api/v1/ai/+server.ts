@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         serviceData = {
           content: data.content,
           userId: data.userId,
-          options: data.options,
+          options: data.options
         };
         break;
 
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         serviceData = {
           document: data.document,
           userId: data.userId,
-          options: data.options,
+          options: data.options
         };
         break;
 
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           sessionId: data.sessionId,
           userId: data.userId,
           content: data.content,
-          streaming: data.options?.streaming || false,
+          streaming: data.options?.streaming || false
         };
         break;
 
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           content: data.content || data.document,
           userId: data.userId,
           type: 'general_analysis',
-          options: data.options,
+          options: data.options
         };
         break;
 
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
 
     const result = await productionServiceClient.execute(operation, serviceData, {
-      timeout: data.options?.streaming ? 60000 : 30000,
+      timeout: data.options?.streaming ? 60000 : 30000
     });
 
     return json({
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         timestamp: new Date().toISOString(),
         service: getServiceName(data.type),
         operation: data.type,
-        userId: data.userId,
+        userId: data.userId
       }
     });
 
@@ -132,7 +132,7 @@ export const GET: RequestHandler = async ({ url }) => {
         summary: '/api/v1/ai (type: summary)',
         legal: '/api/v1/ai (type: legal)',
         live: '/api/v1/ai (type: live)',
-        analysis: '/api/v1/ai (type: analysis)',
+        analysis: '/api/v1/ai (type: analysis)'
       },
       health: {
         'ai-enhanced': health['ai-summary'] || false,
@@ -151,7 +151,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'nomic-embed-text',
         'deeds-web'
       ],
-      version: '1.0.0',
+      version: '1.0.0'
     });
   } catch (err: any) {
     return error(503, ensureError({ message: 'AI service health check failed' });
@@ -164,6 +164,6 @@ function getServiceName(type: string): string {
     case 'legal': return 'enhanced-legal-ai';
     case 'live': return 'live-agent-enhanced';
     case 'analysis': return 'ai-enhanced';
-    default: return 'unknown';,
+    default: return 'unknown';
   }
 }

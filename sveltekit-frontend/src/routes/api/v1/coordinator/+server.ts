@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: systemStatus,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'health':;
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
             performance: systemStatus.performance,
             uptime: Date.now(), // Simplified uptime
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'services':;
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
               {
                 success: false,
                 error: `Service '${serviceId}' not found`,
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toISOString()
               },
               { status: 404 }
             );
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return json({
             success: true,
             data: serviceStatus,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         }
 
@@ -70,21 +70,21 @@ export const GET: RequestHandler = async ({ url }) => {
             const { id: _ignoredId, ...rest } = status as any;
             return { id, ...rest };
           }),
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'metrics':;
         return json({
           success: true,
           data: systemStatus.performance,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'errors':;
         return json({
           success: true,
           data: systemStatus.activeErrors,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       default:
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
             success: false,
             error: `Unknown action: ${action}`,
             availableActions: ['status', 'health', 'services', 'metrics', 'errors'],
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 400 }
         );
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'All services startup initiated',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'stop_all':
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'All services shutdown initiated',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'restart_service':;
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               success: false,
               error: 'Service target required for restart action',
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             },
             { status: 400 }
           );
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
               success: false,
               error: `Service '${target}' not found`,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             },
             { status: 404 }
           );
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           message: `Service restart initiated for ${service.displayName}`,
           serviceId: target,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'force_health_check':
@@ -174,7 +174,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'Forced health check initiated for all services',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'clear_errors':
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'Non-critical errors cleared',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       default:
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
             success: false,
             error: `Unknown action: ${action}`,
             availableActions: ['start_all', 'stop_all', 'restart_service', 'force_health_check', 'clear_errors'],
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { status: 400 }
         );
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

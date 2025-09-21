@@ -27,7 +27,7 @@ export interface SavedCitation extends Citation {
   savedAt: Date;
   userId: string;
   collection?: string;
-  isPrivate: boolean;,
+  isPrivate: boolean;
 }
 
 export interface CitationCollection {
@@ -38,7 +38,7 @@ export interface CitationCollection {
   userId: string;
   createdAt: Date;
   updatedAt: Date;
-  isShared: boolean;,
+  isShared: boolean;
 }
 
 export interface AuthUser {
@@ -46,14 +46,14 @@ export interface AuthUser {
   email: string;
   name: string;
   role: 'attorney' | 'paralegal' | 'clerk' | 'admin';
-  isAuthenticated: boolean;,
+  isAuthenticated: boolean;
 }
 
 export interface CitationImportOptions {
   format: 'bluebook' | 'apa' | 'mla' | 'custom';
   includeKeyPoints: boolean;
   includeSummary: boolean;
-  includeNotes: boolean;,
+  includeNotes: boolean;
 }
 
 export class CitationsManager {
@@ -104,7 +104,7 @@ export class CitationsManager {
         savedAt: new Date(),
         userId: this.currentUser!.id,
         collection,
-        isPrivate: true,
+        isPrivate: true
       };
 
       const savedCitations = this.getSavedCitations();
@@ -142,7 +142,7 @@ export class CitationsManager {
         .filter(c => c.userId === this.currentUser!.id);
         .map(c => ({
           ...c,
-          savedAt: new Date(c.savedAt),
+          savedAt: new Date(c.savedAt)
         });
     } catch (error) {
       console.error('Failed to load saved citations:', error);
@@ -185,7 +185,7 @@ export class CitationsManager {
       userId: this.currentUser!.id,
       createdAt: new Date(),
       updatedAt: new Date(),
-      isShared: false,
+      isShared: false
     };
 
     const collections = this.getCollections();
@@ -208,7 +208,7 @@ export class CitationsManager {
         .map(c => ({
           ...c,
           createdAt: new Date(c.createdAt),
-          updatedAt: new Date(c.updatedAt),
+          updatedAt: new Date(c.updatedAt)
         });
     } catch (error) {
       console.error('Failed to load collections:', error);
@@ -485,6 +485,6 @@ export const useCitationsManager = () => {
     searchCitations: citationsManager.searchSavedCitations.bind(citationsManager),
     createCollection: citationsManager.createCollection.bind(citationsManager),
     getCollections: citationsManager.getCollections.bind(citationsManager),
-    exportCitations: citationsManager.exportCitations.bind(citationsManager),
+    exportCitations: citationsManager.exportCitations.bind(citationsManager)
   };
 };

@@ -18,26 +18,26 @@ interface SystemMetrics {
     memoryTotal: number;
     tensorCoreLoad: number;
     thermalStatus: string;
-    queueDepth: number;,
+    queueDepth: number;
   };
   cache: {
     hitRatio: number;
     totalOperations: number;
     compressionRatio: number;
     avgResponseTime: number;
-    memoryUsage: number;,
+    memoryUsage: number;
   };
   threading: {
     activeWorkers: number;
     totalThreadPools: number;
     queuedTasks: number;
-    completedTasks: number;,
+    completedTasks: number;
   };
   performance: {
     opsPerSecond: number;
     mbPerSecond: number;
     errorRate: number;
-    p95ResponseTime: number;,
+    p95ResponseTime: number;
   };
 }
 
@@ -46,9 +46,9 @@ interface HealthStatus {
   components: {
     webgpu: 'healthy' | 'degraded' | 'offline';
     cache: 'healthy' | 'warning' | 'critical';
-    workers: 'healthy' | 'overloaded' | 'offline';,
+    workers: 'healthy' | 'overloaded' | 'offline';
   };
-  alerts: Array<any>;,
+  alerts: Array<any>;
 }
 
 // In-memory metrics storage for demo (in production, use proper time-series DB)
@@ -88,8 +88,8 @@ export const GET: RequestHandler = async ({ url }) => {
         nodeVersion: process.version,
         platform: process.platform,
         memoryUsage: process.memoryUsage(),
-        cpuUsage: process.cpuUsage(),
-      },
+        cpuUsage: process.cpuUsage()
+      }
     };
 
     if (includeHistory) {
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Failed to collect system metrics',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
             success: false,
             error: 'Invalid action',
-            validActions: ['clear-cache', 'restart-workers', 'optimize-gpu', 'export-metrics'],
+            validActions: ['clear-cache', 'restart-workers', 'optimize-gpu', 'export-metrics']
           },)
           { status: 400 }
         );
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Action execution failed',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -163,7 +163,7 @@ async function collectSystemMetrics(): Promise<SystemMetrics> {
   try {
     const [webgpuStats, cacheStats] = await Promise.all([
       webgpuRedisOptimizer.getOptimizationStats(),
-      embeddingCache.getCacheStats(),
+      embeddingCache.getCacheStats()
     ]);
 
     return {
@@ -175,14 +175,14 @@ async function collectSystemMetrics(): Promise<SystemMetrics> {
         memoryTotal: 12288, // RTX 3060 Ti VRAM
         tensorCoreLoad: webgpuStats.gpuMetrics.tensorCoreLoad,
         thermalStatus: webgpuStats.gpuMetrics.thermalStatus,
-        queueDepth: webgpuStats.gpuMetrics.queueDepth,
+        queueDepth: webgpuStats.gpuMetrics.queueDepth
       },
       cache: {
         hitRatio: webgpuStats.cacheHitRatio,
         totalOperations: webgpuStats.threadPoolStats.queueDepth * 100, // Estimated
         compressionRatio: webgpuStats.compressionRatio,
         avgResponseTime: webgpuStats.averageResponseTime,
-        memoryUsage: process.memoryUsage().heapUsed,
+        memoryUsage: process.memoryUsage().heapUsed
       },
       threading: {
         activeWorkers: webgpuStats.threadPoolStats.activeWorkers,
@@ -194,8 +194,8 @@ async function collectSystemMetrics(): Promise<SystemMetrics> {
         opsPerSecond: Math.max(0, 1000 - webgpuStats.averageResponseTime * 10),
         mbPerSecond: webgpuStats.compressionRatio * 50, // Estimated throughput
         errorRate: Math.random() * 0.05, // Simulate low error rate
-        p95ResponseTime: webgpuStats.averageResponseTime * 1.8,
-      },
+        p95ResponseTime: webgpuStats.averageResponseTime * 1.8
+      }
     };
   } catch (error) {
     console.error('Failed to collect metrics:', error);
@@ -209,27 +209,27 @@ async function collectSystemMetrics(): Promise<SystemMetrics> {
         memoryTotal: 12288,
         tensorCoreLoad: 0,
         thermalStatus: 'unknown',
-        queueDepth: 0,
+        queueDepth: 0
       },
       cache: {
         hitRatio: 0,
         totalOperations: 0,
         compressionRatio: 1,
         avgResponseTime: 100,
-        memoryUsage: process.memoryUsage().heapUsed,
+        memoryUsage: process.memoryUsage().heapUsed
       },
       threading: {
         activeWorkers: 0,
         totalThreadPools: 0,
         queuedTasks: 0,
-        completedTasks: 0,
+        completedTasks: 0
       },
       performance: {
         opsPerSecond: 0,
         mbPerSecond: 0,
         errorRate: 1.0,
-        p95ResponseTime: 1000,
-      },
+        p95ResponseTime: 1000
+      }
     };
   }
 }
@@ -248,7 +248,7 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       severity: 'warning',
       component: 'webgpu',
       message: 'WebGPU not available, using CPU fallback',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } else if (metrics.webgpu.utilization > 90) {
     webgpuStatus = 'degraded';
@@ -256,14 +256,14 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       severity: 'warning',
       component: 'webgpu',
       message: `High GPU utilization: ${metrics.webgpu.utilization.toFixed(1)}%`,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } else if (metrics.webgpu.thermalStatus === 'hot') {
     alerts.push({
       severity: 'critical',
       component: 'webgpu',
       message: 'GPU thermal throttling detected',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -275,7 +275,7 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       severity: 'warning',
       component: 'cache',
       message: `Low cache hit ratio: ${(metrics.cache.hitRatio * 100).toFixed(1)}%`,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -285,7 +285,7 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       severity: 'warning',
       component: 'cache',
       message: `High cache response time: ${metrics.cache.avgResponseTime.toFixed(1)}ms`,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -297,7 +297,7 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       severity: 'critical',
       component: 'workers',
       message: 'No active worker threads detected',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } else if (metrics.threading.queuedTasks > 100) {
     workersStatus = 'overloaded';
@@ -305,7 +305,7 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       severity: 'warning',
       component: 'workers',
       message: `High task queue depth: ${metrics.threading.queuedTasks}`,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -315,7 +315,7 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
       severity: 'critical',
       component: 'performance',
       message: `High error rate: ${(metrics.performance.errorRate * 100).toFixed(1)}%`,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -335,9 +335,9 @@ function evaluateSystemHealth(metrics: SystemMetrics): HealthStatus {
     components: {
       webgpu: webgpuStatus,
       cache: cacheStatus,
-      workers: workersStatus,
+      workers: workersStatus
     },
-    alerts,
+    alerts
   };
 }
 
@@ -359,7 +359,7 @@ function getFilteredHistory(timeRange: string): SystemMetrics[] {
       cutoffTime = now - 7 * 24 * 60 * 60 * 1000;
       break;
     default:
-      cutoffTime = now - 60 * 60 * 1000; // Default to 1 hour,
+      cutoffTime = now - 60 * 60 * 1000; // Default to 1 hour
   }
 
   return metricsHistory.filter(m => m.timestamp >= cutoffTime);
@@ -431,9 +431,9 @@ async function exportMetricsData(timeRange: string): Promise<any> {
         filteredHistory.length > 0
           ? filteredHistory.reduce((sum, m) => sum + m.cache.avgResponseTime, 0) /
             filteredHistory.length
-          : 0,
+          : 0
     },
-    data: filteredHistory,
+    data: filteredHistory
   };
 }
 
@@ -446,14 +446,14 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Monitoring history cleared',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     return json();
       {
         success: false,
         error: 'Failed to clear monitoring history',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );

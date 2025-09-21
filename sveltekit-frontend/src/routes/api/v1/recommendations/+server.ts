@@ -16,14 +16,14 @@ const RecommendationsQuerySchema = z.object({
   priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
   status: z.enum(['pending', 'accepted', 'rejected', 'implemented']).optional(),
   page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(10),
+  limit: z.coerce.number().min(1).max(100).default(10)
 });
 
 const RateRecommendationSchema = z.object({
   recommendationId: z.string().uuid('Invalid recommendation ID'),
   rating: z.number().min(1).max(5),
   feedback: z.string().optional(),
-  implemented: z.boolean().default(false),
+  implemented: z.boolean().default(false)
 });
 
 /**
@@ -58,7 +58,7 @@ class RecommendationsService {
         status: 'pending',
         tags: ['constitutional', 'motion-to-suppress', 'fourth-amendment'],
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        createdBy: 'ai-system',
+        createdBy: 'ai-system'
       },
       {
         id: crypto.randomUUID(),
@@ -81,7 +81,7 @@ class RecommendationsService {
         status: 'pending',
         tags: ['witnesses', 'timeline', 'evidence-collection'],
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        createdBy: 'ai-system',
+        createdBy: 'ai-system'
       },
       {
         id: crypto.randomUUID(),
@@ -104,7 +104,7 @@ class RecommendationsService {
         status: 'pending',
         tags: ['expert-witness', 'digital-forensics', 'technical-evidence'],
         createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-        createdBy: 'ai-system',
+        createdBy: 'ai-system'
       },
       {
         id: crypto.randomUUID(),
@@ -126,7 +126,7 @@ class RecommendationsService {
         status: 'pending',
         tags: ['jury-selection', 'voir-dire', 'bias-assessment'],
         createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-        createdBy: 'ai-system',
+        createdBy: 'ai-system'
       }
     ];
 
@@ -164,7 +164,7 @@ class RecommendationsService {
         total: filteredRecommendations.length,
         totalPages: Math.max(1, Math.ceil(filteredRecommendations.length / query.limit)),
         hasNext: query.page < Math.ceil(filteredRecommendations.length / query.limit),
-        hasPrev: query.page > 1,
+        hasPrev: query.page > 1
       },
       analytics: {
         totalRecommendations: filteredRecommendations.length,
@@ -172,7 +172,7 @@ class RecommendationsService {
           critical: filteredRecommendations.filter(item => item.length),
           high: filteredRecommendations.filter(item => item.length),
           medium: filteredRecommendations.filter(item => item.length),
-          low: filteredRecommendations.filter(item => item.length),
+          low: filteredRecommendations.filter(item => item.length)
         },
         avgConfidence: filteredRecommendations.reduce((sum, r) => sum + r.confidence, 0) / filteredRecommendations.length
       }
@@ -188,13 +188,13 @@ class RecommendationsService {
       feedback: (data as { recommendationId?: any; rating?: any; feedback?: any; implemented?: any }).feedback,
       implemented: (data as { recommendationId?: any; rating?: any; feedback?: any; implemented?: any }).implemented,
       userId: this.userId,
-      ratedAt: new Date().toISOString(),
+      ratedAt: new Date().toISOString()
     };
 
     return {
       success: true,
       data: ratingRecord,
-      message: 'Recommendation rating recorded',
+      message: 'Recommendation rating recorded'
     };
   }
 }
@@ -224,7 +224,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       priority: z.string().optional(),
       confidence: z.number().optional(),
       aiModel: z.string().optional(),
-      createdAt: z.string().optional(),
+      createdAt: z.string().optional()
     }).passthrough();
 
     const RecommendationsListResponse = z.object({
@@ -235,15 +235,15 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
         total: z.number(),
         totalPages: z.number(),
         hasNext: z.boolean(),
-        hasPrev: z.boolean(),
+        hasPrev: z.boolean()
       }),
-      analytics: z.record(z.any()).optional(),
+      analytics: z.record(z.any()).optional()
     }).passthrough();
 
     const payload = {
       data: (result as { data?: any; pagination?: any; analytics?: any }).data,
       pagination: (result as { data?: any; pagination?: any; analytics?: any }).pagination,
-      analytics: (result as { data?: any; pagination?: any; analytics?: any }).analytics,
+      analytics: (result as { data?: any; pagination?: any; analytics?: any }).analytics
     };
 
     const validated = RecommendationsListResponse.safeParse(payload);
@@ -258,9 +258,9 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
         caseId: validatedQuery.caseId,
         userId: locals.user.id,
         timestamp: new Date().toISOString(),
-        aiModel: 'gemma-3-legal',
+        aiModel: 'gemma-3-legal'
       },
-      success: true,
+      success: true
     });
 
   } catch (err: any) {
@@ -294,7 +294,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       ...result,
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 201 });
 

@@ -29,7 +29,7 @@ export interface CaseState {
   pagination: {
     page: number;
     limit: number;
-    total: number;,
+    total: number;
   };
 }
 
@@ -44,8 +44,8 @@ const createCaseStore = () => {
     pagination: {
       page: 1,
       limit: 20,
-      total: 0,
-    },
+      total: 0
+    }
   });
 
   return {
@@ -67,7 +67,7 @@ const createCaseStore = () => {
         params.append("limit", currentState.pagination.limit.toString();
 
         const response = await fetch(`/api/cases?${params}`, {
-          credentials: "include",
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -77,24 +77,24 @@ const createCaseStore = () => {
             cases: data.cases,
             pagination: {
               ...state.pagination,
-              total: data.total,
+              total: data.total
             },
             filters: { ...state.filters, ...filters },
-            isLoading: false,
+            isLoading: false
           });
         } else {
           const error = await response.json();
           update((state) => ({
             ...state,
             error: error.message || "Failed to load cases",
-            isLoading: false,
+            isLoading: false
           });
         }
       } catch (error: any) {
         update((state) => ({
           ...state,
           error: "Network error while loading cases",
-          isLoading: false,
+          isLoading: false
         });
       }
     },
@@ -105,7 +105,7 @@ const createCaseStore = () => {
 
       try {
         const response = await fetch(`/api/cases/${caseId}`, {
-          credentials: "include",
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -114,7 +114,7 @@ const createCaseStore = () => {
             ...state,
             activeCase: caseData,
             activeCaseId: caseId,
-            isLoading: false,
+            isLoading: false
           });
           return { success: true, case: caseData };
         } else {
@@ -122,7 +122,7 @@ const createCaseStore = () => {
           update((state) => ({
             ...state,
             error: error.message || "Failed to load case",
-            isLoading: false,
+            isLoading: false
           });
           return { success: false, error: error.message };
         }
@@ -130,7 +130,7 @@ const createCaseStore = () => {
         update((state) => ({
           ...state,
           error: "Network error while loading case",
-          isLoading: false,
+          isLoading: false
         });
         return { success: false, error: "Network error" };
       }
@@ -149,10 +149,10 @@ const createCaseStore = () => {
         const response = await fetch("/api/cases", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify(caseData),
-          credentials: "include",
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -162,9 +162,9 @@ const createCaseStore = () => {
             cases: [newCase, ...state.cases],
             pagination: {
               ...state.pagination,
-              total: state.pagination.total + 1,
+              total: state.pagination.total + 1
             },
-            isLoading: false,
+            isLoading: false
           });
           return { success: true, case: newCase };
         } else {
@@ -172,7 +172,7 @@ const createCaseStore = () => {
           update((state) => ({
             ...state,
             error: error.message || "Failed to create case",
-            isLoading: false,
+            isLoading: false
           });
           return { success: false, error: error.message };
         }
@@ -180,7 +180,7 @@ const createCaseStore = () => {
         update((state) => ({
           ...state,
           error: "Network error while creating case",
-          isLoading: false,
+          isLoading: false
         });
         return { success: false, error: "Network error" };
       }
@@ -194,10 +194,10 @@ const createCaseStore = () => {
         const response = await fetch(`/api/cases/${caseId}`, {
           method: "PATCH",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify(updates),
-          credentials: "include",
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -211,7 +211,7 @@ const createCaseStore = () => {
               state.activeCase?.id === caseId
                 ? { ...state.activeCase, ...updatedCase }
                 : state.activeCase,
-            isLoading: false,
+            isLoading: false
           });
           return { success: true, case: updatedCase };
         } else {
@@ -219,7 +219,7 @@ const createCaseStore = () => {
           update((state) => ({
             ...state,
             error: error.message || "Failed to update case",
-            isLoading: false,
+            isLoading: false
           });
           return { success: false, error: error.message };
         }
@@ -227,7 +227,7 @@ const createCaseStore = () => {
         update((state) => ({
           ...state,
           error: "Network error while updating case",
-          isLoading: false,
+          isLoading: false
         });
         return { success: false, error: "Network error" };
       }
@@ -240,7 +240,7 @@ const createCaseStore = () => {
       try {
         const response = await fetch(`/api/cases/${caseId}`, {
           method: "DELETE",
-          credentials: "include",
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -253,9 +253,9 @@ const createCaseStore = () => {
               state.activeCaseId === caseId ? null : state.activeCaseId,
             pagination: {
               ...state.pagination,
-              total: Math.max(0, state.pagination.total - 1),
+              total: Math.max(0, state.pagination.total - 1)
             },
-            isLoading: false,
+            isLoading: false
           });
           return { success: true };
         } else {
@@ -263,7 +263,7 @@ const createCaseStore = () => {
           update((state) => ({
             ...state,
             error: error.message || "Failed to delete case",
-            isLoading: false,
+            isLoading: false
           });
           return { success: false, error: error.message };
         }
@@ -271,7 +271,7 @@ const createCaseStore = () => {
         update((state) => ({
           ...state,
           error: "Network error while deleting case",
-          isLoading: false,
+          isLoading: false
         });
         return { success: false, error: "Network error" };
       }
@@ -289,14 +289,14 @@ const createCaseStore = () => {
         const response = await fetch(`/api/cases/${caseId}/generate-report`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
             reportType,
             customPrompt,
             useContext7: true, // Enable Context7 MCP for better analysis
           }),
-          credentials: "include",
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -308,10 +308,10 @@ const createCaseStore = () => {
             activeCase: state.activeCase;
               ? {
                   ...state.activeCase,
-                  reports: [...(state.activeCase.reports || []), report],
+                  reports: [...(state.activeCase.reports || []), report]
                 }
               : state.activeCase,
-            isLoading: false,
+            isLoading: false
           });
 
           return { success: true, report };
@@ -320,7 +320,7 @@ const createCaseStore = () => {
           update((state) => ({
             ...state,
             error: error.message || "Failed to generate report",
-            isLoading: false,
+            isLoading: false
           });
           return { success: false, error: error.message };
         }
@@ -328,7 +328,7 @@ const createCaseStore = () => {
         update((state) => ({
           ...state,
           error: "Network error while generating report",
-          isLoading: false,
+          isLoading: false
         });
         return { success: false, error: "Network error" };
       }
@@ -343,7 +343,7 @@ const createCaseStore = () => {
         return {
           ...state,
           activeCaseId: caseId,
-          activeCase,
+          activeCase
         };
       });
     },
@@ -365,7 +365,7 @@ const createCaseStore = () => {
       update((state) => ({
         ...state,
         filters: Record<string, any>,
-        pagination: { ...state.pagination, page: 1 },
+        pagination: { ...state.pagination, page: 1 }
       });
 
       this.loadCases();
@@ -375,7 +375,7 @@ const createCaseStore = () => {
     setPage(page: number) {
       update((state) => ({
         ...state,
-        pagination: { ...state.pagination, page },
+        pagination: { ...state.pagination, page }
       });
 
       this.loadCases(get({ subscribe }).filters);
@@ -395,14 +395,14 @@ const createCaseStore = () => {
         const response = await fetch(`/api/cases/${caseId}/analyze`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
             analysisType,
             useContext7: true,
-            includeMCPMemory: true,
+            includeMCPMemory: true
           }),
-          credentials: "include",
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -415,7 +415,7 @@ const createCaseStore = () => {
       } catch (error: any) {
         return { success: false, error: "Network error during analysis" };
       }
-    },
+    }
   };
 };
 

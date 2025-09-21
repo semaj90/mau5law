@@ -129,7 +129,7 @@ export class SimpleWorkerPool {
       busyWorkers: this.free.filter(item => item.length),
       freeWorkers: this.free.filter(item => item.length),
       queuedJobs: this.queue.length,
-      pendingCallbacks: this.jobCallbacks.size,
+      pendingCallbacks: this.jobCallbacks.size
     };
   }
 
@@ -257,7 +257,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       minWorkers: options.minWorkers || 1,
       idleTimeout: options.idleTimeout || 30000, // 30 seconds
       jobTimeout: options.jobTimeout || 300000, // 5 minutes
-      retryAttempts: options.retryAttempts || 2,
+      retryAttempts: options.retryAttempts || 2
     };
 
     // Worker script path
@@ -273,7 +273,7 @@ export class AdvancedWorkerPool extends EventEmitter {
 
     this.emit('initialized', {
       maxWorkers: this.options.maxWorkers,
-      minWorkers: this.options.minWorkers,
+      minWorkers: this.options.minWorkers
     });
   }
 
@@ -329,7 +329,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       jobId: jobData.id,
       type: jobData.type,
       workerId: availableWorker.id,
-      activeJobs: this.activeJobs,
+      activeJobs: this.activeJobs
     });
 
     try {
@@ -355,7 +355,7 @@ export class AdvancedWorkerPool extends EventEmitter {
         jobId: jobData.id,
         type: jobData.type,
         workerId: availableWorker.id,
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error)
       });
 
       // Retry logic
@@ -466,7 +466,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       queuedJobs: this.jobQueue.length,
       totalProcessed: this.totalProcessed,
       busyWorkers: Array.from(this.workers.values()).filter(item => item.length),
-      idleWorkers: Array.from(this.workers.values()).filter(item => item.length),
+      idleWorkers: Array.from(this.workers.values()).filter(item => item.length)
     };
   }
 

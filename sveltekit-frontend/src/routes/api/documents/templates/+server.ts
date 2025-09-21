@@ -40,7 +40,7 @@ Date: [Date]
 `,
     documentType: "brief",
     tags: ["brief", "criminal", "template"],
-    citations: [],
+    citations: []
   },
   motion: {
     title: "Motion to [Action]",
@@ -74,7 +74,7 @@ Respectfully submitted,
 `,
     documentType: "motion",
     tags: ["motion", "template"],
-    citations: [],
+    citations: []
   },
   contract: {
     title: "Legal Contract",
@@ -122,7 +122,7 @@ Signature: _________________________ Date: __________
 `,
     documentType: "contract",
     tags: ["contract", "template"],
-    citations: [],
+    citations: []
   },
   evidence: {
     title: "Evidence Analysis Report",
@@ -166,7 +166,7 @@ Analyst: [Analyst Name]
 `,
     documentType: "evidence",
     tags: ["evidence", "analysis", "template"],
-    citations: [],
+    citations: []
   },
   memo: {
     title: "Legal Memorandum",
@@ -198,7 +198,7 @@ Analyst: [Analyst Name]
 `,
     documentType: "memo",
     tags: ["memo", "memorandum", "template"],
-    citations: [],
+    citations: []
   },
   pleading: {
     title: "Legal Pleading",
@@ -249,8 +249,8 @@ Respectfully submitted,
 `,
     documentType: "pleading",
     tags: ["pleading", "template"],
-    citations: [],
-  },
+    citations: []
+  }
 };
 
 // GET /api/documents/templates - Get available document templates;
@@ -265,14 +265,14 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       if (!template) {
         return json({
             success: false,
-            error: `Template not found for document type: ${documentType}`,
+            error: `Template not found for document type: ${documentType}`
           },)
           { status: 404 },
         );
       }
       return json({
         success: true,
-        template,
+        template
       });
     }
     // Return all templates with metadata;
@@ -281,19 +281,19 @@ export async function GET({ url }: RequestEvent): Promise<any> {
         name: template.title,
         documentType: template.documentType,
         tags: template.tags,
-        description: getTemplateDescription(key),
+        description: getTemplateDescription(key)
       }),
     );
 
     return json({
       success: true,
-      templates,
+      templates
     });
   } catch (error: any) {
     console.error("Error fetching templates:", error);
     return json({
         success: false,
-        error: "Failed to fetch templates",
+        error: "Failed to fetch templates"
       },)
       { status: 500 },
     );
@@ -312,7 +312,7 @@ function getTemplateDescription(templateKey: string): string {
       "A detailed template for evidence analysis reports with inventory and conclusions",
     memo: "A legal memorandum template with question presented, analysis, and conclusions",
     pleading:
-      "A formal pleading template with proper court formatting and claim structure",
+      "A formal pleading template with proper court formatting and claim structure"
   };
 
   return (
@@ -332,7 +332,7 @@ export async function POST({ url, request }: RequestEvent): Promise<any> {
     ) {
       return json({
           success: false,
-          error: `Template not found for type: ${templateType}`,
+          error: `Template not found for type: ${templateType}`
         },)
         { status: 404 },
       );
@@ -366,24 +366,24 @@ export async function POST({ url, request }: RequestEvent): Promise<any> {
       metadata: {
         templateType,
         customizations,
-        createdFromTemplate: true,
+        createdFromTemplate: true
       },
       status: "draft",
       version: 1,
       wordCount: customizedContent.split(/\s+/).length,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     return json({
       success: true,
-      document: newDocument,
+      document: newDocument
     });
   } catch (error: any) {
     console.error("Error creating document from template:", error);
     return json({
         success: false,
-        error: "Failed to create document from template",
+        error: "Failed to create document from template"
       },)
       { status: 500 },
     );

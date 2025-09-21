@@ -13,7 +13,7 @@ export interface FocusSettings {
   hideElements: string[];
   exemptElements: string[];
   enableFullscreen: boolean;
-  enableZenMode: boolean;,
+  enableZenMode: boolean;
 }
 
 export const defaultFocusSettings: FocusSettings = {
@@ -24,11 +24,11 @@ export const defaultFocusSettings: FocusSettings = {
     ".sidebar",
     ".status-bar",
     ".header-actions",
-    ".footer",
+    ".footer"
   ],
   exemptElements: [".editor-content", ".shortcuts-modal", ".save-indicator"],
   enableFullscreen: false,
-  enableZenMode: false,
+  enableZenMode: false
 };
 
 // Store for focus mode state
@@ -218,7 +218,7 @@ export class FocusManager {
       '[contenteditable="true"]',
       "textarea",
       'input[type="text"]',
-      ".writing-area",
+      ".writing-area"
     ];
 
     const isContentElement = contentSelectors.some(
@@ -261,7 +261,7 @@ export class FocusManager {
 
     this.observer.observe(document.body, {
       childList: true,
-      subtree: true,
+      subtree: true
     });
   }
 
@@ -318,7 +318,7 @@ export function focusModeAction(node: HTMLElement, enabled: boolean = false) {
     update,
     destroy() {
       manager.deactivate();
-    },
+    }
   };
 }
 
@@ -331,20 +331,20 @@ export const focusModeStyles = `;
 
   .focus-mode-active .focus-dim {
     opacity: var(--focus-dim-opacity);
-    transition: var(--focus-transition);,
+    transition: var(--focus-transition);
   }
 
   .focus-mode-active .focus-dim: hover {
-    opacity: 1;,
+    opacity: 1;
   }
 
   .focus-mode-active .focus-hide {
-    display: none;,
+    display: none;
   }
 
   .focus-mode-active .focus-exempt {
     opacity: 1 !important;
-    display: block !important;,
+    display: block !important;
   }
 
   /* Zen mode styles */
@@ -354,7 +354,7 @@ export const focusModeStyles = `;
   .focus-mode-active.zen-mode .header-actions {
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;,
+    transition: opacity 0.3s ease;
   }
 
   .focus-mode-active.zen-mode .toolbar: hover,
@@ -388,7 +388,7 @@ export function createFocusMode(initialSettings?: Partial<FocusSettings>) {
     toggle: () => manager.toggle(),
     isActive: () => manager.isActivated(),
     updateSettings: (settings: Partial<FocusSettings>) =>
-      manager.updateSettings(settings),
+      manager.updateSettings(settings)
   };
 }
 
@@ -415,22 +415,22 @@ export const focusPresets = {
   minimal: {
     dimOpacity: 0.7,
     enableZenMode: false,
-    hideElements: [],
+    hideElements: []
   },
   moderate: {
     dimOpacity: 0.5,
     enableZenMode: false,
-    hideElements: [".sidebar"],
+    hideElements: [".sidebar"]
   },
   intense: {
     dimOpacity: 0.3,
     enableZenMode: true,
-    hideElements: [".toolbar", ".sidebar", ".status-bar"],
+    hideElements: [".toolbar", ".sidebar", ".status-bar"]
   },
   zen: {
     dimOpacity: 0.1,
     enableZenMode: true,
     enableFullscreen: true,
-    hideElements: [".toolbar", ".sidebar", ".status-bar", ".header-actions"],
-  },
+    hideElements: [".toolbar", ".sidebar", ".status-bar", ".header-actions"]
+  }
 };

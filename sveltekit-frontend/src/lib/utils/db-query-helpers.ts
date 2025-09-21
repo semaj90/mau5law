@@ -15,7 +15,7 @@ export const fieldMap = {
     firstName: 'first_name',
     lastName: 'last_name',
     avatarUrl: 'avatar_url',
-    isActive: 'is_active',
+    isActive: 'is_active'
   },
   // Case fields;
   case: {
@@ -33,7 +33,7 @@ export const fieldMap = {
     createdBy: 'created_by',
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    closedAt: 'closed_at',
+    closedAt: 'closed_at'
   },
   // Evidence fields;
   evidence: {
@@ -66,7 +66,7 @@ export const fieldMap = {
     summaryEmbedding: 'summary_embedding',
     uploadedBy: 'uploaded_by',
     uploadedAt: 'uploaded_at',
-    updatedAt: 'updated_at',
+    updatedAt: 'updated_at'
   }
 } as const;
 
@@ -110,7 +110,7 @@ export const filterBuilders = {
 // Pagination helpers;
 export interface PaginationParams {
   page: number;
-  limit: number;,
+  limit: number;
 }
 
 export function getPaginationParams(
@@ -122,7 +122,7 @@ export function getPaginationParams(
 
   return {
     page: pageNum,
-    limit: limitNum,
+    limit: limitNum
   };
 }
 

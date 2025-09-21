@@ -15,7 +15,7 @@ const ALLOWED_TYPES = [
   "image/png",
   "image/gif",
   "image/svg+xml",
-  "image/webp",
+  "image/webp"
 ];
 
 // Ensure upload directory exists;
@@ -44,14 +44,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.log("File details:", {
       name: file.name,
       type: file.type,
-      size: file.size,
+      size: file.size
     });
 
     // Validate file type;
     if (!ALLOWED_TYPES.includes(file.type)) {
       console.log("Invalid file type:", file.type);
       return json({
-          error: "Invalid file type. Allowed: JPEG, PNG, GIF, SVG, WebP",
+          error: "Invalid file type. Allowed: JPEG, PNG, GIF, SVG, WebP"
         },)
         { status: 400 },
       );
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (file.size > MAX_FILE_SIZE) {
       console.log("File too large:", file.size);
       return json({
-          error: "File too large. Maximum size: 5MB",
+          error: "File too large. Maximum size: 5MB"
         },)
         { status: 400 },
       );
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       avatarUrl,
-      message: "Avatar uploaded successfully",
+      message: "Avatar uploaded successfully"
     });
   } catch (error: any) {
     console.error("Avatar upload error:", error);
@@ -115,7 +115,7 @@ export const DELETE: RequestHandler = async ({ locals }) => {
 
     return json({
       success: true,
-      message: "Avatar removed successfully",
+      message: "Avatar removed successfully"
     });
   } catch (error: any) {
     console.error("Avatar removal error:", error);

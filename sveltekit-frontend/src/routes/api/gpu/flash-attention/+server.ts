@@ -7,7 +7,7 @@ const flashAttentionService = new FlashAttention2RTX3060Service({
   enableGPUOptimization: true,
   memoryOptimization: 'balanced',
   batchSize: 8,
-  maxSequenceLength: 2048,
+  maxSequenceLength: 2048
 });
 
 // POST /api/gpu/flash-attention - Process legal text with FlashAttention2;
@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!text) {
       return json({
         success: false,
-        error: 'Text is required for FlashAttention2 processing',
+        error: 'Text is required for FlashAttention2 processing'
       }, { status: 400 });
     }
     
@@ -46,16 +46,16 @@ export const POST: RequestHandler = async ({ request }) => {
         flash_attention2: true,
         legal_domain: analysisType === 'legal',
         sequence_length: text.length,
-        context_count: context.length,
+        context_count: context.length
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, { status: 500 });
   }
 };
@@ -74,14 +74,14 @@ export const GET: RequestHandler = async () => {
         legal_domain_specialized: true,
         supported_operations: ['embedding', 'similarity', 'legal_analysis', 'error_processing']
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, { status: 500 });
   }
 };

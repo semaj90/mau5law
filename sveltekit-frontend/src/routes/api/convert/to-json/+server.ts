@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
           totalPages: ocrData.pages,
           totalCharacters: ocrData.totalCharacters,
           averageConfidence: ocrData.averageConfidence,
-          processingMethod: ocrData.processingStats,
+          processingMethod: ocrData.processingStats
         },
         content: {
           fullText: ocrData.text,
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
             confidence: page.confidence,
             extractionMethod: page.method,
             wordCount: page.text?.split(/\s+/).length || 0,
-            sections: extractSections(page.text || ''),
+            sections: extractSections(page.text || '')
           })) || []
         },
         legalAnalysis: {
@@ -40,24 +40,24 @@ export const POST: RequestHandler = async ({ request }) => {
           jurisdiction: extractJurisdiction(ocrData.text || ''),
           parties: extractParties(ocrData.text || ''),
           dates: extractDates(ocrData.text || ''),
-          amounts: extractMonetaryAmounts(ocrData.text || ''),
+          amounts: extractMonetaryAmounts(ocrData.text || '')
         },
         structure: {
           sections: identifyDocumentSections(ocrData.text || ''),
           headings: extractHeadings(ocrData.text || ''),
           paragraphs: (ocrData.text || '').split(/\n\s*\n/).filter(item => item.length) > 0),
-          tableOfContents: generateTableOfContents(ocrData.text || ''),
+          tableOfContents: generateTableOfContents(ocrData.text || '')
         },
         vectorization: {
           embeddings: generateEmbeddingIds(ocrData.text || ''),
           chunks: chunkTextForEmbedding(ocrData.text || ''),
-          semanticSections: identifySemanticSections(ocrData.text || ''),
+          semanticSections: identifySemanticSections(ocrData.text || '')
         },
         qualityMetrics: {
           confidence: ocrData.averageConfidence,
           completeness: calculateCompleteness(ocrData),
           readability: calculateReadabilityScore(ocrData.text || ''),
-          legalSpecificity: calculateLegalSpecificity(ocrData.legalConcepts || []),
+          legalSpecificity: calculateLegalSpecificity(ocrData.legalConcepts || [])
         }
       }
     };
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
         jsonSize: JSON.stringify(structuredData).length,
         sections: structuredData.document.structure.sections.length,
         chunks: structuredData.document.vectorization.chunks.length,
-        concepts: structuredData.document.legalAnalysis.concepts.length,
+        concepts: structuredData.document.legalAnalysis.concepts.length
       }
     });
 
@@ -96,7 +96,7 @@ function extractSections(text: string): unknown[] {
       currentSection = {
         title: line,
         content: '',
-        startLine: i,
+        startLine: i
       };
     } else {
       currentSection.content += line + '\n';
@@ -113,7 +113,7 @@ function extractSections(text: string): unknown[] {
 function isHeaderLine(line: string): boolean {
   // Patterns that suggest a header
   const headerPatterns = [
-    /^[A-Z][A-Z\s]{2,}$/, // ALL CAPS
+    /^[A-Z][A-Z\s]{2}$/, // ALL CAPS
     /^\d+\.\s+[A-Z]/, // Numbered sections
     /^ARTICLE\s+[IVX]+/i, // Articles
     /^SECTION\s+\d+/i, // Sections
@@ -204,9 +204,9 @@ function extractMonetaryAmounts(text: string): string[] {
   const amounts = new Set<string>();
   
   const moneyPatterns = [
-    /\$[\d,]+(?:\.\d{2})?/g,
-    /(?:USD|dollars?)\s+[\d,]+(?:\.\d{2})?/gi,
-    /[\d,]+(?:\.\d{2})?\s+(?:dollars?|USD)/gi
+    /\$[\d]+(?:\.\d{2})?/g,
+    /(?:USD|dollars?)\s+[\d]+(?:\.\d{2})?/gi,
+    /[\d]+(?:\.\d{2})?\s+(?:dollars?|USD)/gi
   ];
   
   moneyPatterns.forEach(pattern => {
@@ -234,7 +234,7 @@ function identifyDocumentSections(text: string): unknown[] {
     .map(section => ({
       name: section,
       found: true,
-      position: text.toLowerCase().indexOf(section.toLowerCase(),
+      position: text.toLowerCase().indexOf(section.toLowerCase()
     })
     .sort((a, b) => a.position - b.position);
 }
@@ -252,14 +252,14 @@ function generateTableOfContents(text: string): unknown[] {
   return headings.map((heading, index) => ({
     level: determineHeadingLevel(heading),
     title: heading,
-    order: index + 1,
+    order: index + 1
   });
 }
 
 function determineHeadingLevel(heading: string): number {
   if (/^\d+\.\s+/.test(heading)) return 1; // "1. Main Section"
   if (/^\d+\.\d+\s+/.test(heading)) return 2; // "1.1 Subsection"
-  if (/^[A-Z]{3,}/.test(heading)) return 1; // "ARTICLE I"
+  if (/^[A-Z]{3}/.test(heading)) return 1; // "ARTICLE I"
   return 2; // Default subsection
 }
 
@@ -304,7 +304,7 @@ function identifySemanticSections(text: string): unknown[] {
       return {
         type,
         count: matches.length,
-        density: matches.length / (text.length / 1000) // matches per 1000 chars,
+        density: matches.length / (text.length / 1000) // matches per 1000 chars
       };
     })
     .filter(section => section.count > 0);

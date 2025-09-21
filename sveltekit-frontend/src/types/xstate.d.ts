@@ -92,7 +92,7 @@ export interface JobDefinition {
     attempts?: number;
     backoff?: {
       type: 'exponential' | 'fixed';
-      delay: number;,
+      delay: number;
     };
   };
 }
@@ -113,7 +113,7 @@ export interface QueueState {
   size: number;
   processing: number;
   completed: number;
-  failed: number;,
+  failed: number;
 }
 
 // State machine context for async operations;
@@ -121,5 +121,5 @@ export interface AsyncStateContext {
   jobs: Map<string, JobStatus>;
   queues: Map<string, QueueState>;
   errors: string[];
-  isProcessing: boolean;,
+  isProcessing: boolean;
 }

@@ -46,13 +46,13 @@ interface PredictiveTypingContext {
     enableRealTimeLearning: boolean;
     enableTopologyNavigation: boolean;
     enableGlyphCompression: boolean;
-    confidenceThreshold: number;,
+    confidenceThreshold: number;
   };
   
   // Error handling
   error: string | null;
   retryCount: number;
-  lastErrorTime: number;,
+  lastErrorTime: number;
 }
 
 // Events for the predictive typing machine
@@ -79,7 +79,7 @@ const predictiveAnalyticsActor = fromPromise(async ({
     query: string;
     glyphContext: GlyphContext[];
     sessionData: any;
-    enableRealTimeLearning: boolean;,
+    enableRealTimeLearning: boolean;
   }
 }) => {
   try {
@@ -90,13 +90,13 @@ const predictiveAnalyticsActor = fromPromise(async ({
         session_id: input.sessionData.sessionId,
         query_history: input.sessionData.queryHistory || [],
         interaction_patterns: input.sessionData.interactionPatterns || [],
-        current_focus: input.sessionData.currentFocus,
+        current_focus: input.sessionData.currentFocus
       },);
       {
         prediction_depth: 5,
         enable_prefetching: true,
         include_optimization_insights: true,
-        real_time_learning: input.enableRealTimeLearning,
+        real_time_learning: input.enableRealTimeLearning
       }
     );
     
@@ -113,7 +113,7 @@ const glyphContextActor = fromPromise(async ({
   input: {
     query: string;
     maxGlyphs: number;
-    sessionData: any;,
+    sessionData: any;
   }
 }) => {
   try {
@@ -124,7 +124,7 @@ const glyphContextActor = fromPromise(async ({
         include_visual_context: false,
         optimize_for: 'speed',
         enable_predictive: true,
-        context_history: input.sessionData.queryHistory || [],
+        context_history: input.sessionData.queryHistory || []
       }
     );
     
@@ -143,7 +143,7 @@ const queryCompletionActor = fromPromise(async ({
     partialQuery: string;
     glyphContext: GlyphContext[];
     sessionData: any;
-    maxCompletions: number;,
+    maxCompletions: number;
   }
 }) => {
   try {
@@ -152,12 +152,12 @@ const queryCompletionActor = fromPromise(async ({
       {
         glyphs: input.glyphContext,
         user_session: input.sessionData,
-        topic_focus: input.sessionData.currentFocus,
+        topic_focus: input.sessionData.currentFocus
       },);
       {
         max_completions: input.maxCompletions,
         min_confidence: 0.3,
-        include_contextual: true,
+        include_contextual: true
       }
     );
     
@@ -165,7 +165,7 @@ const queryCompletionActor = fromPromise(async ({
       text: comp.completion,
       confidence: comp.confidence,
       intent: comp.predicted_intent,
-      topology_score: comp.topology_support,
+      topology_score: comp.topology_support
     });
   } catch (error: any) {
     console.warn('Query completion failed:', error);
@@ -181,7 +181,7 @@ const feedbackLearningActor = fromPromise(async ({
     originalQuery: string;
     predictiveResults: PredictiveAnalyticsResult;
     userFeedback: any;
-    sessionContext: any;,
+    sessionContext: any;
   }
 }) => {
   try {
@@ -269,14 +269,14 @@ export const predictiveTypingMachine = setup({
         event.type === 'ANALYTICS_SUCCESS' ? 
         event.results.prediction_confidence.overall_confidence : 0,
       error: null,
-      retryCount: 0,
+      retryCount: 0
     }),
     
     recordAnalyticsError: assign({
       error: ({ event }) => event.type === 'ANALYTICS_ERROR' ? event.error : null,
       retryCount: ({ context }) => context.retryCount + 1,
       lastErrorTime: () => Date.now(),
-      predictiveResults: null,
+      predictiveResults: null
     }),
     
     updateSuggestions: assign({
@@ -286,7 +286,7 @@ export const predictiveTypingMachine = setup({
             text: query.query,
             confidence: query.confidence,
             intent: query.predicted_intent,
-            topology_score: Math.random() * 0.3 + 0.7 // Would extract from topology data,
+            topology_score: Math.random() * 0.3 + 0.7 // Would extract from topology data
           });
         }
         return context.suggestions;
@@ -315,7 +315,7 @@ export const predictiveTypingMachine = setup({
         [...context.queryHistory, event.query] : context.queryHistory,
       currentQuery: '',
       suggestions: [],
-      predictiveResults: null,
+      predictiveResults: null
     }),
     
     updateConfig: assign({
@@ -334,7 +334,7 @@ export const predictiveTypingMachine = setup({
       interactionPatterns: [],
       keystrokePattern: [],
       error: null,
-      retryCount: 0,
+      retryCount: 0
     }),
     
     resetState: assign({
@@ -346,7 +346,7 @@ export const predictiveTypingMachine = setup({
       error: null,
       retryCount: 0,
       predictionLatency: 0,
-      analyticsAccuracy: 0,
+      analyticsAccuracy: 0
     }),
     
     recordInteractionPattern: assign({
@@ -409,7 +409,7 @@ export const predictiveTypingMachine = setup({
     // Error handling
     error: null,
     retryCount: 0,
-    lastErrorTime: 0,
+    lastErrorTime: 0
   }),
   
   initial: 'idle',
@@ -421,10 +421,10 @@ export const predictiveTypingMachine = setup({
       on: {
         SESSION_START: {
           actions: ['startSession'],
-          target: 'active',
+          target: 'active'
         },
         UPDATE_CONFIG: {
-          actions: ['updateConfig'],
+          actions: ['updateConfig']
         }
       }
     },
@@ -441,23 +441,23 @@ export const predictiveTypingMachine = setup({
           on: {
             TYPE: {
               actions: ['updateQuery', 'recordInteractionPattern'],
-              target: 'debouncing',
+              target: 'debouncing'
             },
             DELETE: {
               actions: ['updateQuery', 'recordInteractionPattern'],
-              target: 'debouncing',
+              target: 'debouncing'
             },
             CLEAR: {
               actions: ['updateQuery', 'recordInteractionPattern'],
-              target: 'waiting',
+              target: 'waiting'
             },
             SELECT_SUGGESTION: {
               actions: ['selectSuggestion', 'recordInteractionPattern'],
-              target: 'waiting',
+              target: 'waiting'
             },
             SUBMIT_QUERY: {
               actions: ['submitQuery', 'recordInteractionPattern'],
-              target: 'waiting',
+              target: 'waiting'
             }
           }
         },
@@ -469,14 +469,14 @@ export const predictiveTypingMachine = setup({
             200: [;
               {
                 guard: 'shouldGeneratePredictions',
-                target: 'analyzingContext',
+                target: 'analyzingContext'
               },
               {
                 guard: 'shouldGenerateCompletions',
-                target: 'generatingCompletions',
+                target: 'generatingCompletions'
               },
               {
-                target: 'waiting',
+                target: 'waiting'
               }
             ]
           },
@@ -485,12 +485,12 @@ export const predictiveTypingMachine = setup({
             TYPE: {
               actions: ['updateQuery'],
               target: 'debouncing', // Reset debounce timer
-              reenter: true,
+              reenter: true
             },
             DELETE: {
               actions: ['updateQuery'],
               target: 'debouncing',
-              reenter: true,
+              reenter: true
             }
           }
         },
@@ -508,7 +508,7 @@ export const predictiveTypingMachine = setup({
                 sessionId: context.sessionId,
                 queryHistory: context.queryHistory,
                 interactionPatterns: context.interactionPatterns,
-                currentFocus: context.currentFocus,
+                currentFocus: context.currentFocus
               }
             }),
             onDone: {
@@ -517,11 +517,11 @@ export const predictiveTypingMachine = setup({
                   glyphContext: ({ event }) => event.output
                 })
               ],
-              target: 'generatingPredictions',
+              target: 'generatingPredictions'
             },
             onError: {
               // Continue without glyph context if it fails
-              target: 'generatingPredictions',
+              target: 'generatingPredictions'
             }
           }
         },
@@ -539,20 +539,20 @@ export const predictiveTypingMachine = setup({
                 sessionId: context.sessionId,
                 queryHistory: context.queryHistory,
                 interactionPatterns: context.interactionPatterns,
-                currentFocus: context.currentFocus,
+                currentFocus: context.currentFocus
               },
-              enableRealTimeLearning: context.config.enableRealTimeLearning,
+              enableRealTimeLearning: context.config.enableRealTimeLearning
             }),
             onDone: {
               actions: [
                 'recordAnalyticsSuccess',
                 'updateSuggestions'
               ],
-              target: 'suggestionsReady',
+              target: 'suggestionsReady'
             },
             onError: {
               actions: ['recordAnalyticsError'],
-              target: 'error',
+              target: 'error'
             }
           }
         },
@@ -569,21 +569,21 @@ export const predictiveTypingMachine = setup({
               sessionData: {
                 sessionId: context.sessionId,
                 queryHistory: context.queryHistory,
-                currentFocus: context.currentFocus,
+                currentFocus: context.currentFocus
               },
-              maxCompletions: context.config.maxSuggestions,
+              maxCompletions: context.config.maxSuggestions
             }),
             onDone: {
               actions: [;
                 assign({
                   suggestions: ({ event }) => event.output,
-                  predictionLatency: () => Date.now() - Date.now() // Would track actual time,
+                  predictionLatency: () => Date.now() - Date.now() // Would track actual time
                 })
               ],
-              target: 'suggestionsReady',
+              target: 'suggestionsReady'
             },
             onError: {
-              target: 'waiting' // Fail silently for completions,
+              target: 'waiting' // Fail silently for completions
             }
           }
         },
@@ -605,22 +605,22 @@ export const predictiveTypingMachine = setup({
           on: {
             TYPE: {
               actions: ['updateQuery'],
-              target: 'debouncing',
+              target: 'debouncing'
             },
             DELETE: {
               actions: ['updateQuery'],
-              target: 'debouncing',
+              target: 'debouncing'
             },
             SELECT_SUGGESTION: {
               actions: ['selectSuggestion', 'recordInteractionPattern'],
-              target: 'waiting',
+              target: 'waiting'
             },
             SUBMIT_QUERY: {
               actions: ['submitQuery', 'recordInteractionPattern'],
-              target: 'waiting',
+              target: 'waiting'
             },
             PROVIDE_FEEDBACK: {
-              target: 'learningFromFeedback',
+              target: 'learningFromFeedback'
             }
           },
           
@@ -629,7 +629,7 @@ export const predictiveTypingMachine = setup({
             5000: [;
               {
                 guard: 'isTypingActivelyCheck',
-                target: 'waiting',
+                target: 'waiting'
               }
             ]
           }
@@ -648,7 +648,7 @@ export const predictiveTypingMachine = setup({
               sessionContext: {
                 session_id: context.sessionId,
                 interaction_timestamp: Date.now(),
-                session_quality: context.userSatisfactionScore,
+                session_quality: context.userSatisfactionScore
               }
             }),
             onDone: {
@@ -662,11 +662,11 @@ export const predictiveTypingMachine = setup({
                   }
                 })
               ],
-              target: 'waiting',
+              target: 'waiting'
             },
             onError: {
               // Learning failure doesn't break the flow
-              target: 'waiting',
+              target: 'waiting'
             }
           }
         },
@@ -678,19 +678,19 @@ export const predictiveTypingMachine = setup({
             RETRY: [;
               {
                 guard: 'shouldRetry',
-                target: 'analyzingContext',
+                target: 'analyzingContext'
               },
               {
-                target: 'waiting' // Give up after max retries,
+                target: 'waiting' // Give up after max retries
               }
             ],
             TYPE: {
               actions: ['updateQuery', 'resetState'],
-              target: 'debouncing',
+              target: 'debouncing'
             },
             CLEAR: {
               actions: ['resetState'],
-              target: 'waiting',
+              target: 'waiting'
             }
           },
           
@@ -699,7 +699,7 @@ export const predictiveTypingMachine = setup({
             2000: [;
               {
                 guard: 'shouldRetry',
-                target: 'analyzingContext',
+                target: 'analyzingContext'
               }
             ]
           }
@@ -708,14 +708,14 @@ export const predictiveTypingMachine = setup({
       
       on: {
         UPDATE_CONFIG: {
-          actions: ['updateConfig'],
+          actions: ['updateConfig']
         },
         RESET: {
           actions: ['resetState'],
-          target: '.waiting',
+          target: '.waiting'
         },
         SESSION_END: {
-          target: 'idle',
+          target: 'idle'
         }
       }
     }
@@ -725,7 +725,7 @@ export const predictiveTypingMachine = setup({
   on: {
     RESET: {
       actions: ['resetState'],
-      target: 'idle',
+      target: 'idle'
     }
   }
 });

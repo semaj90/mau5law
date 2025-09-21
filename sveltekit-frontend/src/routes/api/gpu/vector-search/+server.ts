@@ -13,7 +13,7 @@ import {
   formatLegalSearchResults,
   createLegalSearchContext,
   cacheVectorResults,
-  getCachedVectorResults,
+  getCachedVectorResults
 } from '$lib/services/cuda-vector-integration';
 import { createHash } from 'node:crypto';
 import { dev } from '$app/environment';
@@ -66,7 +66,7 @@ interface VectorSearchAPIResponse {
     timestamp: number;
     service_version: string;
     gpu_available: boolean;
-    request_id: string;,
+    request_id: string;
   };
 }
 
@@ -111,7 +111,7 @@ function generateCacheKey(request: VectorSearchAPIRequest): string {
     query_vectors: request.query_vectors,
     database_vectors: request.database_vectors,
     config: request.search_config,
-    legal_context: request.legal_context,
+    legal_context: request.legal_context
   };
 
   return createHash('sha256').update(JSON.stringify(cacheData)).digest('hex').substring(0, 16);
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
         query_count: validatedRequest.query_vectors.length,
         vector_dim: validatedRequest.query_vectors[0]?.length,
         database_count: validatedRequest.database_vectors?.length,
-        legal_context: validatedRequest.legal_context,
+        legal_context: validatedRequest.legal_context
       });
     }
 
@@ -157,15 +157,15 @@ export const POST: RequestHandler = async ({ request }) => {
             cache_info: {
               hit: true,
               key: cacheKey,
-              ttl: validatedRequest.cache_options?.cache_ttl,
-            },
+              ttl: validatedRequest.cache_options?.cache_ttl
+            }
           },
           metadata: {
             timestamp: Date.now(),
             service_version: '1.0.0',
             gpu_available: true,
-            request_id: requestId,
-          },
+            request_id: requestId
+          }
         };
 
         if (dev) {
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
         503,
         makeHttpErrorPayload({
           message: 'GPU vector search service is unavailable',
-          code: 'GPU_SERVICE_DOWN',
+          code: 'GPU_SERVICE_DOWN'
         })
       );
     }
@@ -204,9 +204,9 @@ export const POST: RequestHandler = async ({ request }) => {
         {
           practice_areas: validatedRequest.legal_context?.practice_area
             ? [validatedRequest.legal_context.practice_area]
-            : undefined,
+            : undefined
         }
-      ),
+      )
     };
 
     // Execute GPU vector search
@@ -229,15 +229,15 @@ export const POST: RequestHandler = async ({ request }) => {
         cache_info: {
           hit: false,
           key: useCache ? cacheKey : undefined,
-          ttl: validatedRequest.cache_options?.cache_ttl,
-        },
+          ttl: validatedRequest.cache_options?.cache_ttl
+        }
       },
       metadata: {
         timestamp: Date.now(),
         service_version: '1.0.0',
         gpu_available: true,
-        request_id: requestId,
-      },
+        request_id: requestId
+      }
     };
 
     if (dev) {
@@ -249,7 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
             (response.data!.gpu_metrics.memory_used_mb /
               response.data!.gpu_metrics.total_memory_mb) *
             100
-          ).toFixed(2) + '%',
+          ).toFixed(2) + '%'
       });
     }
 
@@ -262,14 +262,14 @@ export const POST: RequestHandler = async ({ request }) => {
       error: {
         message: err instanceof Error ? err.message: 'Unknown error occurred',
         code: err instanceof Error && 'code' in err ? (err as any).code : 'INTERNAL_ERROR',
-        details: dev ? (err instanceof Error ? err.stack : String(err)) : undefined,
+        details: dev ? (err instanceof Error ? err.stack : String(err)) : undefined
       },
       metadata: {
         timestamp: Date.now(),
         service_version: '1.0.0',
         gpu_available: false,
-        request_id: requestId,
-      },
+        request_id: requestId
+      }
     };
 
     // Return appropriate HTTP status;
@@ -303,8 +303,8 @@ export const GET: RequestHandler = async () => {
         endpoints: {
           search: 'POST /api/gpu/vector-search',
           status: 'GET /api/gpu/vector-search',
-          metrics: 'GET /api/gpu/metrics',
-        },
+          metrics: 'GET /api/gpu/metrics'
+        }
       },
       features: {
         cuda_acceleration: true,
@@ -314,18 +314,18 @@ export const GET: RequestHandler = async () => {
         neural_sprite_visualization: true,
         multi_metric_search: true,
         top_k_results: true,
-        batch_processing: true,
+        batch_processing: true
       },
       limitations: {
         max_batch_size: 32,
         max_vector_dimension: 1536,
         max_database_vectors: 100000,
-        request_timeout_ms: 30000,
+        request_timeout_ms: 30000
       },
       metadata: {
         timestamp: Date.now(),
-        request_id: requestId,
-      },
+        request_id: requestId
+      }
     };
 
     return json(response);
@@ -338,12 +338,12 @@ export const GET: RequestHandler = async () => {
         gpu_available: false,
         error: {
           message: 'Failed to check GPU service status',
-          code: 'STATUS_CHECK_FAILED',
+          code: 'STATUS_CHECK_FAILED'
         },
         metadata: {
           timestamp: Date.now(),
-          request_id: requestId,
-        },
+          request_id: requestId
+        }
       },
       { status: 500 }
     );

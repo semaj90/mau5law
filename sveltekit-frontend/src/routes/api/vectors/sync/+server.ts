@@ -50,8 +50,8 @@ class QdrantClient {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        points: [pointData],
-      }),
+        points: [pointData]
+      })
     });
 
     if (!response.ok) {
@@ -66,8 +66,8 @@ class QdrantClient {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        points: [pointId],
-      }),
+        points: [pointId]
+      })
     });
 
     if (!response.ok) {
@@ -92,9 +92,9 @@ class QdrantClient {
         body: JSON.stringify({
           vectors: {
             size: vectorSize,
-            distance: 'Cosine',
-          },
-        }),
+            distance: 'Cosine'
+          }
+        })
       });
 
       if (!createResponse.ok) {
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate required fields;
     if (!jobId || !ownerType || !ownerId || !event) {
       return json({
-          error: 'Missing required fields: jobId, ownerType, ownerId, event',
+          error: 'Missing required fields: jobId, ownerType, ownerId, event'
         },)
         { status: 400 }
       );
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
       .set({
         status: 'processing',
         progress: 50,
-        startedAt: new Date(),
+        startedAt: new Date()
       })
       .where(eq(vectorJobs.jobId, jobId);
 
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request }) => {
         status: 'succeeded',
         progress: 100,
         completedAt: new Date(),
-        result: result,
+        result: result
       })
       .where(eq(vectorJobs.jobId, jobId);
 
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       jobId,
       result,
-      message: `Vector ${event} completed successfully`,
+      message: `Vector ${event} completed successfully`
     });
   } catch (error: any) {
     console.error('❌ Vector sync error:', error);
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .set({
           status: 'failed',
           error: error instanceof Error ? error.message: 'Unknown error',
-          completedAt: new Date(),
+          completedAt: new Date()
         })
         .where(eq(vectorJobs.jobId, body.jobId)
         .catch(console.error);
@@ -185,7 +185,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
         success: false,
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -245,14 +245,14 @@ async function handleVectorUpsert(
       ...(ownerType === 'evidence' && {
         evidenceType: sourceData.evidenceType,
         caseId: sourceData.caseId,
-        tags: sourceData.tags,
+        tags: sourceData.tags
       }),
       ...(ownerType === 'report' && {
         reportType: sourceData.reportType,
         caseId: sourceData.caseId,
-        status: sourceData.status,
-      }),
-    },
+        status: sourceData.status
+      })
+    }
   };
 
   // Upsert to Qdrant
@@ -263,7 +263,7 @@ async function handleVectorUpsert(
     collection: collectionName,
     pointId: ownerId,
     vectorDimensions: pointData.vector.length,
-    qdrantResult,
+    qdrantResult
   };
 }
 
@@ -277,7 +277,7 @@ async function handleVectorDeletion(ownerType: string, ownerId: string): Promise
     action: 'deleted',
     collection: collectionName,
     pointId: ownerId,
-    qdrantResult,
+    qdrantResult
   };
 }
 
@@ -303,19 +303,19 @@ export const GET: RequestHandler = async () => {
       services: {
         qdrant: {
           connected: response.ok,
-          collections: collections?.result?.collections || [],
+          collections: collections?.result?.collections || []
         },
         postgresql: {
-          connected: !!pgTest,
+          connected: !!pgTest
         },
-        redis: { connected: redisOk },
+        redis: { connected: redisOk }
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json({
         success: false,
-        error: error instanceof Error ? error.message: 'Health check failed',
+        error: error instanceof Error ? error.message: 'Health check failed'
       },)
       { status: 500 }
     );

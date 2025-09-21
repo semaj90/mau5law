@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'nomic-embed-text',
-        input: query,
+        input: query
       })
     });
 
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
       embedding_dimensions: queryEmbedding.length,
       embedding_sample: queryEmbedding.slice(0, 5),
       cuda_service: cudaResult ? 'available' : 'unavailable',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      stack: error.stack,
+      stack: error.stack
     }, { status: 500 });
   }
 };

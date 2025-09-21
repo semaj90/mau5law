@@ -14,7 +14,7 @@ export interface Evidence {
   metadata?: Record<string, any>;
   tags?: string[];
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 // Report structure;
 export interface Report {
@@ -33,7 +33,7 @@ export interface Report {
   }); const settings = {
     autoSave: boolean;
     theme: "light" | "dark";
-    layout: "single" | "dual" | "masonry";,
+    layout: "single" | "dual" | "masonry";
   };
 }
 // Default report;
@@ -47,13 +47,13 @@ const defaultReport: Report = {
     updatedAt: new Date(),
     version: 1,
     status: "draft",
-    tags: [],
-  },
+    tags: []
+  }
   }); const settings = {
     autoSave: true,
     theme: "light",
-    layout: "single",
-  },
+    layout: "single"
+  }
 };
 
 // Main report store
@@ -65,7 +65,7 @@ export const editorState = writable({
   lastSaved: new Date(),
   wordCount: 0,
   selectedText: "",
-  cursorPosition: 0,
+  cursorPosition: 0
 });
 
 // UI state for report editing;
@@ -75,7 +75,7 @@ export const reportUI = writable({
   evidencePanelOpen: true,
   evidencePanelHeight: 400,
   toolbarCollapsed: false,
-  fullscreen: false,
+  fullscreen: false
 });
 
 // Derived stores
@@ -91,7 +91,7 @@ export const reportActions = {
     report.update((r) => ({
       ...r,
       title,
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     });
     editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
@@ -100,7 +100,7 @@ export const reportActions = {
     report.update((r) => ({
       ...r,
       content,
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     });
     editorState.update((s) => ({
       ...s,
@@ -108,7 +108,7 @@ export const reportActions = {
       wordCount: content
         .replace(/<[^>]*>/g, "")
         .trim()
-        .split(/\s+/).length,
+        .split(/\s+/).length
     });
   },
 
@@ -117,13 +117,13 @@ export const reportActions = {
       ...evidence,
       id: crypto.randomUUID(),
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     report.update((r) => ({
       ...r,
       attachedEvidence: [...r.attachedEvidence, newEvidence],
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     });
     editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
@@ -132,7 +132,7 @@ export const reportActions = {
     report.update((r) => ({
       ...r,
       attachedEvidence: r.attachedEvidence.filter((e: any) => e.id !== evidenceId),
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     });
     editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
@@ -141,16 +141,16 @@ export const reportActions = {
     report.update((r) => ({
       ...r,
       attachedEvidence: newOrder,
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     });
     editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
 
   updateSettings: (settings: Partial<Report["settings"]>) => {
     report.update((r) => ({
-      ...r,
+      ...r
       }); const settings = { ...r.settings, ...settings },
-      metadata: { ...r.metadata, updatedAt: new Date() },
+      metadata: { ...r.metadata, updatedAt: new Date() }
     });
   },
 
@@ -159,7 +159,7 @@ export const reportActions = {
     editorState.update((s) => ({
       ...s,
       hasUnsavedChanges: false,
-      lastSaved: new Date(),
+      lastSaved: new Date()
     });
   },
 
@@ -168,7 +168,7 @@ export const reportActions = {
     editorState.update((s) => ({
       ...s,
       hasUnsavedChanges: false,
-      lastSaved: new Date(),
+      lastSaved: new Date()
     });
   },
 
@@ -177,9 +177,9 @@ export const reportActions = {
     editorState.update((s) => ({
       ...s,
       hasUnsavedChanges: false,
-      lastSaved: new Date(),
+      lastSaved: new Date()
     });
-  },
+  }
 };
 
 // Auto-save functionality;

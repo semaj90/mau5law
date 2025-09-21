@@ -50,7 +50,7 @@ Context: ${context}
 
 Provide a brief 1-sentence legal relevance assessment and classification.
 Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|procedure|other", "actionable": true}`,
-        stream: false,
+        stream: false
       })
     });
 
@@ -68,7 +68,7 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
       analysis = {
         relevance: 'Content may have legal significance',
         legalContext: 'general',
-        actionable: false,
+        actionable: false
       };
     } else if (typeof result === 'string') {
       try {

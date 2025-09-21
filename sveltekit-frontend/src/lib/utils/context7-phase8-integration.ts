@@ -67,11 +67,11 @@ export interface RerankResult {
     type: string;
     priority: string;
     confidence: number;
-    component: string;,
+    component: string;
   };
   originalScore: number;
   rerankScore: number;
-  confidence: number;,
+  confidence: number;
 }
 
 export interface UserContext {
@@ -81,7 +81,7 @@ export interface UserContext {
   currentCase: string;
   recentActions: string[];
   userRole: string;
-  workflowState: string;,
+  workflowState: string;
 }
 
 export class Context7Phase8Integrator {
@@ -139,8 +139,8 @@ export class Context7Phase8Integrator {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         component: query.component,
-        context: query.context,
-      }),
+        context: query.context
+      })
     });
 
     if (!(response as { ok?: any; json?: any }).ok) throw new Error("Context7 MCP request failed");
@@ -158,10 +158,10 @@ export class Context7Phase8Integrator {
           component: query.component,
           code: rec.code,
           dependencies: rec.dependencies,
-          timeEstimate: rec.timeEstimate,
+          timeEstimate: rec.timeEstimate
         },
         benefits: rec.benefits || [],
-        risks: rec.risks || [],
+        risks: rec.risks || []
       })) || []
     );
   }
@@ -180,8 +180,8 @@ export class Context7Phase8Integrator {
       body: JSON.stringify({
         query: ragQuery,
         context: "legal-ai",
-        limit: 5,
-      }),
+        limit: 5
+      })
     });
 
     if (!(response as { ok?: any; json?: any }).ok) throw new Error("RAG query failed");
@@ -197,10 +197,10 @@ export class Context7Phase8Integrator {
         aiConfidence: Math.round((result as { score?: any; title?: any; content?: any }).score * 100),
         implementation: {
           component: query.component,
-          timeEstimate: "2-4 hours",
+          timeEstimate: "2-4 hours"
         },
         benefits: this.extractBenefits((result as { score?: any; title?: any; content?: any }).content),
-        risks: [],
+        risks: []
       })) || []
     );
   }
@@ -241,15 +241,15 @@ export class Context7Phase8Integrator {
   <p>Drag evidence files here or click to browse</p>
 </div>`,
           dependencies: ["@uppy/core", "@uppy/drag-drop"],
-          timeEstimate: "1-2 hours",
+          timeEstimate: "1-2 hours"
         },
         benefits: [
           "Faster evidence upload",
           "Better user experience",
-          "Reduced form abandonment",
+          "Reduced form abandonment"
         ],
         risks: ["Browser compatibility"],
-        relatedStates: ["evidenceUpload"],
+        relatedStates: ["evidenceUpload"]
       });
     }
 
@@ -265,15 +265,15 @@ export class Context7Phase8Integrator {
         aiConfidence: 78,
         implementation: {
           component: "ConfidenceBooster",
-          timeEstimate: "3-4 hours",
+          timeEstimate: "3-4 hours"
         },
         benefits: [
           "Higher AI accuracy",
           "Better recommendations",
-          "Improved user trust",
+          "Improved user trust"
         ],
         risks: ["Increased complexity"],
-        relatedStates: ["caseDetails", "review"],
+        relatedStates: ["caseDetails", "review"]
       });
     }
 
@@ -314,15 +314,15 @@ const adaptiveLOD = {
   mid: { vertexCount: 500, shaderComplexity: 'standard' },
   high: { vertexCount: 1000, shaderComplexity: 'advanced' }
 };`,
-          timeEstimate: "4-6 hours",
+          timeEstimate: "4-6 hours"
         },
         benefits: [
           "60% performance improvement",
           "Smoother animations",
-          "Better mobile experience",
+          "Better mobile experience"
         ],
         risks: ["Visual quality trade-offs"],
-        relatedStates: ["review", "submitting"],
+        relatedStates: ["review", "submitting"]
       });
     }
 
@@ -352,7 +352,7 @@ const adaptiveLOD = {
             implementation: rec.implementation || {},
             benefits: rec.benefits || [],
             risks: rec.risks || [],
-            relatedStates: rec.relatedStates || [],
+            relatedStates: rec.relatedStates || []
           });
         }
       });
@@ -376,11 +376,11 @@ const adaptiveLOD = {
         type: rec.type,
         priority: rec.priority,
         confidence: rec.aiConfidence,
-        component: query.component,
+        component: query.component
       },
       originalScore: rec.aiConfidence / 100,
       rerankScore: 0,
-      confidence: rec.aiConfidence,
+      confidence: rec.aiConfidence
     });
 
     const userContext: UserContext = {
@@ -390,7 +390,7 @@ const adaptiveLOD = {
       currentCase: "PHASE8_OPTIMIZATION",
       recentActions: ["analyze_component", "request_recommendations"],
       userRole: "admin",
-      workflowState: query.currentState === "review" ? "review" : "draft",
+      workflowState: query.currentState === "review" ? "review" : "draft"
     };
 
     try {
@@ -400,7 +400,7 @@ const adaptiveLOD = {
       // Simple fallback reranking based on confidence scores;
       reranked = rerankInput.map(item => ({
         ...item,
-        rerankScore: (item as { confidence?: any }).confidence / 100,
+        rerankScore: (item as { confidence?: any }).confidence / 100
       })).sort((a, b) => b.rerankScore - a.rerankScore);
 
       // Apply rerank scores back to recommendations
@@ -411,7 +411,7 @@ const adaptiveLOD = {
             ...rec,
             aiConfidence: rerankedItem
               ? Math.round(rerankedItem.rerankScore * 100)
-              : rec.aiConfidence,
+              : rec.aiConfidence
           };
         })
         .sort((a, b) => b.aiConfidence - a.aiConfidence);
@@ -460,7 +460,7 @@ const adaptiveLOD = {
       "faster",
       "better",
       "reduce",
-      "increase",
+      "increase"
     ];
 
     const benefits: string[] = [];
@@ -495,12 +495,12 @@ const adaptiveLOD = {
         aiConfidence: 60,
         implementation: {
           component: query.component,
-          timeEstimate: "1-2 hours",
+          timeEstimate: "1-2 hours"
         },
         benefits: ["Improved performance"],
         risks: [],
-        relatedStates: [],
-      },
+        relatedStates: []
+      }
     ];
   }
 }
@@ -519,7 +519,7 @@ export const commonContext7Phase8Queries = {
     context: "legal-ai" as const,
     area: "performance" as const,
     xstateContext,
-    currentState,
+    currentState
   }),
 
   /**
@@ -529,7 +529,7 @@ export const commonContext7Phase8Queries = {
     component: "MatrixUICompiler",
     context: "performance" as const,
     area: "performance" as const,
-    matrixNodes,
+    matrixNodes
   }),
 
   /**
@@ -543,7 +543,7 @@ export const commonContext7Phase8Queries = {
     context: "legal-ai" as const,
     area: "ui-ux" as const,
     xstateContext,
-    currentState,
+    currentState
   }),
 
   /**
@@ -553,8 +553,8 @@ export const commonContext7Phase8Queries = {
     component,
     context: "legal-ai" as const,
     feature: "ai-enhancement",
-    requirements,
-  }),
+    requirements
+  })
 };
 
 // Export singleton instance

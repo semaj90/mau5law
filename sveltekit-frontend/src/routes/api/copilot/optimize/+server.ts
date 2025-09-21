@@ -23,13 +23,13 @@ export const GET: RequestHandler = async ({ url }) => {
             simdProcessor: true,
             indexOptimizer: true,
             vectorEmbeddings: true,
-            cache: true,
+            cache: true
           },
           performance: {
             responseTime: 5,
-            memoryUsage: 50,
+            memoryUsage: 50
           },
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       
       case 'status':;
@@ -42,9 +42,9 @@ export const GET: RequestHandler = async ({ url }) => {
             'SIMD JSON Processing',
             'Vector Embeddings',
             'Context7 Pattern Boosting',
-            'Semantic Clustering',
+            'Semantic Clustering'
           ],
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       
       case 'load_copilot':;
@@ -56,9 +56,9 @@ export const GET: RequestHandler = async ({ url }) => {
             lines: 80,
             sections: 6,
             codeBlocks: 4,
-            hasContext7Patterns: true,
+            hasContext7Patterns: true
           },
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       
       default:
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
       error: err.message,
       stack: err.stack,
       action,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     return error(500, `API request failed: ${err.message || 'Unknown error'}`);
   }
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 id: 'demo_1',
                 content: content || 'Demo content',
                 score: 0.95,
-                patterns: ['$props()', '$state()', 'Context7'],
+                patterns: ['$props()', '$state()', 'Context7']
               }
             ]
           },
@@ -114,9 +114,9 @@ export const POST: RequestHandler = async ({ request }) => {
             optimizationTime: 150,
             cacheHitRate: 0.8,
             compressionSavings: '45%',
-            context7Patterns: 3,
+            context7Patterns: 3
           },
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       
       case 'semantic_search':;
@@ -128,11 +128,11 @@ export const POST: RequestHandler = async ({ request }) => {
               id: 'result_1',
               content: 'Example search result',
               score: 0.92,
-              explanation: 'Context7 pattern match: Svelte 5 runes',
+              explanation: 'Context7 pattern match: Svelte 5 runes'
             }
           ],
           count: 1,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       
       default:
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Copilot optimization POST error:', {
       error: err.message,
       stack: err.stack,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     return error(500, `Optimization failed: ${err.message || 'Unknown error'}`);
   }
@@ -180,7 +180,7 @@ export const cases = pgTable('cases', {
   id: text('id').primaryKey(),
   title: text('title').notNull(),
   status: text('status'),
-  embedding: vector('embedding', { dimensions: 384 }),
+  embedding: vector('embedding', { dimensions: 384 })
 });
 \`\`\`
 

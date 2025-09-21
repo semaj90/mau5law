@@ -4,7 +4,7 @@
 
 export interface Bucket {
   tokens: number;
-  updated: number; // epoch ms,
+  updated: number; // epoch ms
 }
 
 const buckets = new Map<string, Bucket>();

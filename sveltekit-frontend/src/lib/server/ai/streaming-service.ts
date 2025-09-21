@@ -9,12 +9,12 @@ import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
 
 export interface StreamEvent {
   type: 'status' | 'progress' | 'stage' | 'source' | 'complete' | 'error' | 'heartbeat';
-  data: any;,
+  data: any;
 }
 
 export interface StreamSubscriber {
   callback: (event: StreamEvent) => void;
-  subscribed: number;,
+  subscribed: number;
 }
 
 export interface StreamingOptions {
@@ -60,7 +60,7 @@ class StreamingService extends EventEmitter {
     
     const subscriber: StreamSubscriber = {
       callback,
-      subscribed: Date.now(),
+      subscribed: Date.now()
     };
     
     this.streams.get(streamId).push(subscriber);
@@ -109,7 +109,7 @@ class StreamingService extends EventEmitter {
         startTime: Date.now(),
         status: 'processing',
         progress: 0,
-        currentStage: 'initialization',
+        currentStage: 'initialization'
       });
       
       // Initialize progress tracking;
@@ -122,7 +122,7 @@ class StreamingService extends EventEmitter {
           quality_assessment: { progress: 0, complete: false }
         },
         sources: [],
-        totalProgress: 0,
+        totalProgress: 0
       });
       
       // Stage 1: Query Analysis (0-20%);
@@ -156,7 +156,7 @@ class StreamingService extends EventEmitter {
         
         options.onStage?.('retrieval', { 
           status: 'complete', 
-          sourceCount: sources.length ,
+          sourceCount: sources.length 
         });
         
         return sources;
@@ -190,7 +190,7 @@ class StreamingService extends EventEmitter {
         
         options.onStage?.('prompt_construction', { 
           status: 'complete',
-          promptLength: prompt.length,
+          promptLength: prompt.length
         });
         
         return prompt;
@@ -202,7 +202,7 @@ class StreamingService extends EventEmitter {
         // Actually call the synthesizer for the complete result;
         const result = await aiAssistantSynthesizer.synthesizeInput({
           query: options.input.query,
-          context: { userId: '', ...((options.input.context || {,}) as Record<string, any>) },
+          context: { userId: '', ...((options.input.context || {}) as Record<string, any>) },
           options: {
             enableMMR: true,
             enableCrossEncoder: true,
@@ -211,7 +211,7 @@ class StreamingService extends EventEmitter {
             maxSources: 5,
             similarityThreshold: 0.7,
             diversityLambda: 0.3,
-            ...((options.input.options || {,}) as Record<string, any>)
+            ...((options.input.options || {}) as Record<string, any>)
           }
         });
         
@@ -364,7 +364,7 @@ class StreamingService extends EventEmitter {
       enhanced: query + ' [enhanced]',
       intent: 'legal_query',
       entities: [],
-      complexity: 0.7,
+      complexity: 0.7
     };
   }
 
@@ -387,7 +387,7 @@ class StreamingService extends EventEmitter {
         title: `Legal Document ${i + 1}`,
         content: `Content of document ${i + 1}...`,
         relevanceScore: Math.random(),
-        type: 'document',
+        type: 'document'
       };
       
       sources.push(source);
@@ -460,7 +460,7 @@ class StreamingService extends EventEmitter {
       sources: tracking?.sources?.length || 0,
       subscribers: subscribers?.length || 0,
       startTime: processing?.startTime,
-      duration: processing?.duration,
+      duration: processing?.duration
     };
   }
 
@@ -477,7 +477,7 @@ class StreamingService extends EventEmitter {
         progress: processing.progress,
         currentStage: processing.currentStage,
         startTime: processing.startTime,
-        subscribers: this.streams.get(streamId)?.length || 0,
+        subscribers: this.streams.get(streamId)?.length || 0
       });
     }
     
@@ -577,7 +577,7 @@ export class OllamaStreamingAdapter {
         body: JSON.stringify({
           model,
           prompt,
-          stream: true,
+          stream: true
         })
       });
 

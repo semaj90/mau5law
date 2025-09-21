@@ -17,7 +17,7 @@ const fallbackFileUploadSchema = z.object({
   description: z.string().optional(),
   tags: z.array(z.string()).optional(),
   isPrivate: z.boolean().optional(),
-  aiAnalysis: z.boolean().optional(),
+  aiAnalysis: z.boolean().optional()
 });
 
 const getSchema = () => {
@@ -57,13 +57,13 @@ export const actions: Actions = {
       if (!(file instanceof File)) {
         return fail(400, {
           form,
-          message: 'Invalid file provided',
+          message: 'Invalid file provided'
         });
       }
       if (!file || file.size === 0) {
         return fail(400, {
           form,
-          message: 'No file provided',
+          message: 'No file provided'
         });
       }
 
@@ -90,14 +90,14 @@ export const actions: Actions = {
         isPrivate: form.data.isPrivate.toString(),
         aiAnalysis: form.data.aiAnalysis.toString(),
         uploadedBy: 'user', // TODO: Get from session
-        uploadedAt: new Date().toISOString(),
+        uploadedAt: new Date().toISOString()
       };
       uploadFormData.append('metadata', JSON.stringify(metadata);
 
       // Upload to MinIO service;
       const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
         method: 'POST',
-        body: uploadFormData,
+        body: uploadFormData
       });
 
       if (!uploadResponse.ok) {
@@ -114,7 +114,7 @@ export const actions: Actions = {
       if (!uploadResult.success) {
         return fail(500, {
           form,
-          message: uploadResult.message || 'Upload failed',
+          message: uploadResult.message || 'Upload failed'
         });
       }
 
@@ -122,14 +122,14 @@ export const actions: Actions = {
       return {
         form,
         uploadResult,
-        message: 'Document uploaded successfully!',
+        message: 'Document uploaded successfully!'
       };
 
     } catch (error: any) {
       console.error('Upload error:', error);
       return fail(500, {
         form,
-        message: 'Internal server error during upload',
+        message: 'Internal server error during upload'
       });
     }
   }

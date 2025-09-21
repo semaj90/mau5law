@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
         id: documents.id,
         filename: documents.filename,
         extractedText: documents.extractedText,
-        caseId: documents.caseId,
+        caseId: documents.caseId
       })
       .from(documents)
       .where(eq(documents.id, documentId)
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
         caseContext = {
           caseType: (caseData.metadata as any)?.type || 'general',
           jurisdiction: (caseData.metadata as any)?.jurisdiction || 'federal',
-          priority: caseData.priority || 'medium',
+          priority: caseData.priority || 'medium'
         };
       }
     }
@@ -108,10 +108,10 @@ export const POST: RequestHandler = async ({ request }) => {
           id: agentId,
           name: LEGAL_AGENTS[agentId].name,
           role: LEGAL_AGENTS[agentId].role,
-          expertise: LEGAL_AGENTS[agentId].expertise,
+          expertise: LEGAL_AGENTS[agentId].expertise
         })),
         estimatedTime: calculateEstimatedTime(assignedAgents, document.extractedText.length),
-        status: 'started',
+        status: 'started'
       },
       message: `CrewAI review started with ${assignedAgents.length} agents`
     });
@@ -152,7 +152,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 reviewType: review.reviewType,
                 priority: review.priority,
                 assignedAgents: review.assignedAgents.length,
-                status: 'in_progress',
+                status: 'in_progress'
               })
             }
           });
@@ -164,7 +164,7 @@ export const GET: RequestHandler = async ({ url }) => {
           if (!review) {
             return json({
               success: false,
-              error: 'Review not found or completed',
+              error: 'Review not found or completed'
             }, { status: 404 });
           }
           
@@ -177,7 +177,7 @@ export const GET: RequestHandler = async ({ url }) => {
               priority: review.priority,
               assignedAgents: review.assignedAgents,
               status: 'in_progress',
-              progress: calculateProgress(review),
+              progress: calculateProgress(review)
             }
           });
         }
@@ -195,7 +195,7 @@ export const GET: RequestHandler = async ({ url }) => {
               role: agent.role,
               expertise: agent.expertise,
               model: agent?.model || "unknown" // @ts-ignore - Model property access,
-              description: getAgentDescription(agent),
+              description: getAgentDescription(agent)
             })
           }
         });
@@ -262,7 +262,7 @@ export const GET: RequestHandler = async ({ url }) => {
             ]
           }
         }, { 
-          status: isHealthy ? 200 : 503 ,
+          status: isHealthy ? 200 : 503 
         });
 
       default:
@@ -274,7 +274,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       success: false,
-      error: err instanceof Error ? err.message: 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -296,7 +296,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (!cancelled) {
       return json({
         success: false,
-        error: 'Review not found or already completed',
+        error: 'Review not found or already completed'
       }, { status: 404 });
     }
 
@@ -304,9 +304,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       data: {
         taskId,
-        status: 'cancelled',
+        status: 'cancelled'
       },
-      message: 'Review cancelled successfully',
+      message: 'Review cancelled successfully'
     });
 
   } catch (err: any) {

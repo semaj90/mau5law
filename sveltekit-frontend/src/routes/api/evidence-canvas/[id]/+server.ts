@@ -23,7 +23,7 @@ const CanvasStateCache = new Map<string, {
   data: any; 
   timestamp: number; 
   ttl: number; 
-  version: number; ,
+  version: number; 
 }>();
 const CANVAS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes TTL
 const CACHE_VERSION = 1;
@@ -53,7 +53,7 @@ function setCanvasInCache(id: string, data: any, ttl: number = CANVAS_CACHE_TTL)
     data,
     timestamp: Date.now(),
     ttl,
-    version: CACHE_VERSION,
+    version: CACHE_VERSION
   });
 }
 
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         success: true,
         canvas: cached,
         cached: true,
-        source: 'cache',
+        source: 'cache'
       });
     }
 
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       metadata: {
         version: canvasState[0].version,
         isDefault: canvasState[0].isDefault,
-        annotationCount: annotations.length,
+        annotationCount: annotations.length
       }
     };
 
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       success: true,
       canvas,
       cached: false,
-      source: 'database',
+      source: 'database'
     });
 
   } catch (err) {
@@ -171,7 +171,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
         canvasData: canvas_json,
         name: name || existingCanvas[0].name,
         version: existingCanvas[0].version + 1,
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       })
       .where(eq(canvasStates.id, id)
       .returning();
@@ -200,7 +200,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
             metadata: ann.metadata || {},
             createdBy: null, // TODO: Get from session
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           }));
       }
     }
@@ -217,7 +217,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
         ...metadata,
         version: updatedCanvas[0].version,
         annotationCount: annotations?.length || 0,
-        lastModified: updatedCanvas[0].updatedAt,
+        lastModified: updatedCanvas[0].updatedAt
       }
     };
 
@@ -230,7 +230,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       message: 'Canvas updated successfully',
       canvas_id: id,
       canvas: responseData,
-      updated_at: updatedCanvas[0].updatedAt,
+      updated_at: updatedCanvas[0].updatedAt
     });
 
   } catch (err) {
@@ -290,7 +290,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       canvas_id: id,
       canvas_name: deletedCanvas[0].name,
       deleted_annotations: deletedAnnotations.length,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (err) {

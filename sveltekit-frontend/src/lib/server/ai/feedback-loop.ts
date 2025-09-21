@@ -18,7 +18,7 @@ export interface InteractionData {
   query: string;
   result: any;
   userId: string;
-  timestamp: Date;,
+  timestamp: Date;
 }
 
 export interface LearningMetrics {
@@ -40,7 +40,7 @@ class FeedbackLoop {
       queryPatterns: new Map(),
       sourcePreferences: new Map(),
       strategyEffectiveness: new Map(),
-      userSatisfaction: new Map(),
+      userSatisfaction: new Map()
     };
     
     this.initialize();
@@ -206,7 +206,7 @@ class FeedbackLoop {
         commonTopics: this.extractCommonTopics(userInteractions),
         preferredStrategies: this.getPreferredStrategies(userInteractions),
         averageComplexity: this.calculateAverageComplexity(userInteractions),
-        peakUsageTimes: this.findPeakUsageTimes(userInteractions),
+        peakUsageTimes: this.findPeakUsageTimes(userInteractions)
       };
       
       // Generate recommendations;
@@ -217,7 +217,7 @@ class FeedbackLoop {
         personalizedSettings: {
           defaultMaxSources: patterns.averageComplexity > 0.7 ? 15 : 10,
           defaultDiversityLambda: patterns.preferredStrategies.includes('diverse') ? 0.6 : 0.4,
-          enableAdvancedFeatures: patterns.averageComplexity > 0.8,
+          enableAdvancedFeatures: patterns.averageComplexity > 0.8
         }
       };
       
@@ -248,7 +248,7 @@ class FeedbackLoop {
       metrics: {
         queryPatterns: this.learningMetrics.queryPatterns.size,
         sourcePreferences: this.learningMetrics.sourcePreferences.size,
-        strategyEffectiveness: Array.from(this.learningMetrics.strategyEffectiveness.entries(),
+        strategyEffectiveness: Array.from(this.learningMetrics.strategyEffectiveness.entries()
       }
     };
   }
@@ -385,7 +385,7 @@ class FeedbackLoop {
     logger.info('[FeedbackLoop] Improvement recorded (stub)', {
       requestId: interaction.requestId,
       improvedResponse: improvedResponse.substring(0, 100) + '...'
-    ,});
+    });
   }
 
   private async persistInteraction(interaction: InteractionData): Promise<void> {
@@ -401,7 +401,7 @@ class FeedbackLoop {
       
       logger.debug('[FeedbackLoop] Interaction persisted (stub)', {
         requestId: interaction.requestId,
-        userId: interaction.userId,
+        userId: interaction.userId
       });
     } catch (error: any) {
       logger.warn('[FeedbackLoop] Failed to persist interaction:', error);
@@ -421,7 +421,7 @@ class FeedbackLoop {
       
       logger.debug('[FeedbackLoop] Feedback persisted (stub)', {
         requestId: feedback.requestId,
-        rating: feedback.rating,
+        rating: feedback.rating
       });
     } catch (error: any) {
       logger.warn('[FeedbackLoop] Failed to persist feedback:', error);
@@ -486,7 +486,7 @@ class FeedbackLoop {
       isResearch: false,
       isProcedural: false,
       hasCase: false,
-      hasStatute: false,
+      hasStatute: false
     };
     
     const queryLower = query.toLowerCase();

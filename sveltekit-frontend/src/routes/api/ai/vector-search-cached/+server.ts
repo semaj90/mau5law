@@ -50,7 +50,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (!query && !queryEmbedding) {
       return json({
         success: false,
-        error: 'Either query string or queryEmbedding array is required',
+        error: 'Either query string or queryEmbedding array is required'
       }, { status: 400 });
     }
 
@@ -78,7 +78,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'nomic-embed-text',
-            prompt: query,
+            prompt: query
           })
         });
 
@@ -112,7 +112,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           metadata: {
             ...cachedSearch.entry.metadata,
             fromCache: true,
-            cacheSource: cachedSearch.source,
+            cacheSource: cachedSearch.source
           }
         };
         searchFromCache = true;
@@ -128,7 +128,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         threshold: options.threshold || 1,
         documentType: options.documentType,
         includeContent: options.includeContent || false,
-        metric: options.metric || 'cosine',
+        metric: options.metric || 'cosine'
       });
 
       // Cache the search results;
@@ -157,11 +157,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           enabled: useCache,
           embeddingFromCache,
           searchFromCache,
-          cacheSource: searchFromCache ? cacheSource : null,
+          cacheSource: searchFromCache ? cacheSource : null
         }
       },
       error: searchResults.error,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
@@ -171,7 +171,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       success: false,
       error: error.message,
       responseTime: `${totalTime.toFixed(2)}ms`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -186,7 +186,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         cacheStats: stats,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
 
     case 'health':
@@ -211,7 +211,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             redis: getVectorCacheStats().config.redisEnabled,
             responseTime: `${testTime.toFixed(2)}ms`
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
         
       } catch (error: any) {
@@ -219,9 +219,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           success: false,
           health: {
             pgvector: false,
-            error: error.message,
+            error: error.message
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }, { status: 500 });
       }
 
@@ -232,7 +232,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         endpoints: {
           search: 'POST /api/ai/vector-search-cached',
           stats: 'GET /api/ai/vector-search-cached?action=stats',
-          health: 'GET /api/ai/vector-search-cached?action=health',
+          health: 'GET /api/ai/vector-search-cached?action=health'
         }
       }, { status: 400 });
   }
@@ -247,14 +247,14 @@ const originalDELETEHandler: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Vector cache cleared',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

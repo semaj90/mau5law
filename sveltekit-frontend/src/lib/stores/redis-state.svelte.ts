@@ -12,7 +12,7 @@ interface RedisConnectionState {
   activeChannels: Set<string>;
   messageCount: number;
   cacheHits: number;
-  cacheMisses: number;,
+  cacheMisses: number;
 }
 
 interface RedisMessage {
@@ -33,7 +33,7 @@ class RedisStateStore {
     activeChannels: new Set(),
     messageCount: 0,
     cacheHits: 0,
-    cacheMisses: 0,
+    cacheMisses: 0
   });
 
   // Recent messages buffer
@@ -74,7 +74,7 @@ class RedisStateStore {
   channelsSummary = $derived(() => {
     return Array.from(this.state.activeChannels).map(channel => ({
       name: channel,
-      messageCount: this.recentMessages.filter(item => item.length),
+      messageCount: this.recentMessages.filter(item => item.length)
     });
   });
   
@@ -87,7 +87,7 @@ class RedisStateStore {
     return {
       lastMinute: lastMinute.length,
       lastHour: lastHour.length,
-      total: this.recentMessages.length,
+      total: this.recentMessages.length
     };
   });
 
@@ -228,7 +228,7 @@ export function useRedisState() {
     isConnected: () => redisStateStore.isConnected,
     lastError: () => redisStateStore.lastError,
     activeChannels: () => redisStateStore.activeChannels,
-    messageCount: () => redisStateStore.messageCount,
+    messageCount: () => redisStateStore.messageCount
   };
 }
 

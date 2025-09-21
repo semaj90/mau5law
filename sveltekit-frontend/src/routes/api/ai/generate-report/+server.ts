@@ -31,10 +31,10 @@ const REPORT_TEMPLATES = {
       "Key Facts",
       "Evidence Summary",
       "Legal Analysis",
-      "Conclusions and Recommendations",
+      "Conclusions and Recommendations"
     ],
     prompt:
-      "Generate a comprehensive case summary report based on the provided case information. Include an executive summary, key facts, evidence analysis, and legal conclusions.",
+      "Generate a comprehensive case summary report based on the provided case information. Include an executive summary, key facts, evidence analysis, and legal conclusions."
   },
   "evidence-analysis": {
     title: "Evidence Analysis Report",
@@ -44,10 +44,10 @@ const REPORT_TEMPLATES = {
       "Technical Analysis",
       "Relevance Assessment",
       "Admissibility Review",
-      "Conclusions",
+      "Conclusions"
     ],
     prompt:
-      "Analyze the provided evidence comprehensively. Evaluate chain of custody, technical validity, legal relevance, and admissibility in court proceedings.",
+      "Analyze the provided evidence comprehensively. Evaluate chain of custody, technical validity, legal relevance, and admissibility in court proceedings."
   },
   "legal-brief": {
     title: "Legal Brief",
@@ -57,10 +57,10 @@ const REPORT_TEMPLATES = {
       "Legal Arguments",
       "Precedent Analysis",
       "Conclusion",
-      "Prayer for Relief",
+      "Prayer for Relief"
     ],
     prompt:
-      "Create a structured legal brief addressing the case issues. Include fact statements, legal arguments supported by precedent, and clear conclusions.",
+      "Create a structured legal brief addressing the case issues. Include fact statements, legal arguments supported by precedent, and clear conclusions."
   },
   "investigation-report": {
     title: "Investigation Report",
@@ -70,11 +70,11 @@ const REPORT_TEMPLATES = {
       "Interviews Conducted",
       "Evidence Collected",
       "Analysis and Findings",
-      "Next Steps",
+      "Next Steps"
     ],
     prompt:
-      "Generate a detailed investigation report documenting all activities, evidence collected, interviews conducted, and analytical findings.",
-  },
+      "Generate a detailed investigation report documenting all activities, evidence collected, interviews conducted, and analytical findings."
+  }
 };
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -116,8 +116,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         reportId,
         wordCount: reportContent.split(" ").length,
         aiModel: "Legal-GPT-4",
-        confidence: 0.92,
-      },
+        confidence: 0.92
+      }
     });
   } catch (error: any) {
     console.error("AI report generation error:", error);
@@ -136,7 +136,7 @@ function generateReportContent(
   const formattedDate = now.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
-    day: "numeric",
+    day: "numeric"
   });
 
   let content = `
@@ -265,7 +265,7 @@ function generateSectionContent(
         <li>Prepare for potential challenges to evidence admissibility</li>
         <li>Schedule follow-up review in 30 days</li>
       </ol>
-    `,
+    `
   };
 
   return (

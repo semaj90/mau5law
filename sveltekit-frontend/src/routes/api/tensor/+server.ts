@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const health = await goTensorService.healthCheck();
         return json({
           success: true,
-          data: health,
+          data: health
         });
       } catch (error) {
         return json({
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             status: 'offline',
             lastCheck: new Date(),
-            error: error instanceof Error ? error.message: 'Unknown error',
+            error: error instanceof Error ? error.message: 'Unknown error'
           }
         });
       }
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const metrics = await goTensorService.getMetrics();
         return json({
           success: true,
-          data: metrics,
+          data: metrics
         });
       } catch (error) {
         // Return mock metrics when service is unavailable;
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ url }) => {
             averageLatency: Math.floor(Math.random() * 50) + 20,
             uptime: Math.floor(Math.random() * 86400) + 3600,
             memoryUsage: Math.floor(Math.random() * 30) + 40,
-            lastUpdate: new Date().toISOString(),
+            lastUpdate: new Date().toISOString()
           }
         });
       }
@@ -81,10 +81,10 @@ export const GET: RequestHandler = async ({ url }) => {
             id: testRequest.id,
             documentId: testRequest.documentId,
             dataLength: testRequest.data.length,
-            operation: testRequest.operation,
+            operation: testRequest.operation
           },
           testVector: Array.from(testData).slice(0, 10), // First 10 values for preview
-          message: 'Test tensor data generated successfully',
+          message: 'Test tensor data generated successfully'
         }
       });
 
@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request }) => {
           } : undefined,
           error: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).error,
           timestamp: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).timestamp,
-          source: 'go-service',
+          source: 'go-service'
         }
       });
     } catch (serviceError) {
@@ -162,25 +162,25 @@ export const POST: RequestHandler = async ({ request }) => {
             documentId,
             processedAt: new Date().toISOString(),
             dataSize: (data as { length?: any }).length,
-            mockMode: true,
+            mockMode: true
           },
           similarity: operation === 'similarity' ? Math.random() * 0.3 + 0.7 : undefined,
-          processingTime: Math.random() * 1000 + 500,
+          processingTime: Math.random() * 1000 + 500
         },
         timestamp: new Date(),
-        source: 'mock-fallback',
+        source: 'mock-fallback'
       };
 
       return json({
         success: true,
-        data: mockResult,
+        data: mockResult
       });
     }
 
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Request processing failed',
+      error: error instanceof Error ? error.message: 'Request processing failed'
     }, { status: 500 });
   }
 };
@@ -196,7 +196,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!Array.isArray(requests) || requests.length === 0) {
       return json({
         success: false,
-        error: 'Invalid or empty requests array',
+        error: 'Invalid or empty requests array'
       }, { status: 400 });
     }
 
@@ -230,7 +230,7 @@ export const PUT: RequestHandler = async ({ request }) => {
             timestamp: (response as { id?: any; success?: any; result?: any; error?: any; timestamp?: any }).timestamp
           })),
           batchSize: responses.length,
-          source: 'go-service',
+          source: 'go-service'
         }
       });
     } catch (serviceError) {
@@ -247,13 +247,13 @@ export const PUT: RequestHandler = async ({ request }) => {
             operation: req.operation,
             documentId: req.documentId,
             processedAt: new Date().toISOString(),
-            mockMode: true,
+            mockMode: true
           },
           similarity: req.operation === 'similarity' ? Math.random() * 0.3 + 0.7 : undefined,
-          processingTime: Math.random() * 2000 + 500,
+          processingTime: Math.random() * 2000 + 500
         },
         timestamp: new Date(),
-        source: 'mock-fallback',
+        source: 'mock-fallback'
       });
 
       return json({
@@ -261,7 +261,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         data: {
           responses: mockResponses,
           batchSize: mockResponses.length,
-          source: 'mock-fallback',
+          source: 'mock-fallback'
         }
       });
     }
@@ -269,7 +269,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Batch processing failed',
+      error: error instanceof Error ? error.message: 'Batch processing failed'
     }, { status: 500 });
   }
 };

@@ -40,7 +40,7 @@ export interface EvidenceCustodyContext {
     timestampValid: boolean;
     digitalSignatureValid: boolean;
     aiAnalysisScore: number;
-    riskAssessment: string;,
+    riskAssessment: string;
   };
 
   // AI analysis and recommendations;
@@ -50,7 +50,7 @@ export interface EvidenceCustodyContext {
     relevance: number;
     riskLevel: "low" | "medium" | "high" | "critical";
     recommendations: string[];
-    flaggedAnomalies: string[];,
+    flaggedAnomalies: string[];
   };
 
   // Collaboration state
@@ -79,7 +79,7 @@ export interface EvidenceCustodyContext {
   error?: string;
   warnings: string[];
   retryCount: number;
-  maxRetries: number;,
+  maxRetries: number;
 }
 
 export type EvidenceCustodyEvent =;
@@ -88,7 +88,7 @@ export type EvidenceCustodyEvent =;
       evidenceId: string;
       caseId: string;
       userId: string;
-      originalHash: string;,
+      originalHash: string;
     }
   | { type: "VERIFY_INTEGRITY" }
   | { type: "START_AI_ANALYSIS" }
@@ -138,21 +138,21 @@ const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCus
         originalHash: input.originalHash,
         currentHash,
         hashMatch,
-        initialCustodian: input.userId,
+        initialCustodian: input.userId
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
         userId: input.userId,
         timestamp: new Date().toISOString(),
-        eventType: "intake",
-      }),
+        eventType: "intake"
+      })
     };
 
     return {
       evidenceData,
       currentHash,
       integrityStatus: hashMatch ? "verified" : "compromised",
-      custodyEvent,
+      custodyEvent
     };
   }
 );
@@ -169,7 +169,7 @@ const integrityVerificationService = fromPromise(async ({ input }: { input: Evid
       timestampValid: await verifyTimestamp(input.evidenceData!),
       digitalSignatureValid: await verifyDigitalSignature(input.evidenceData!),
       aiAnalysisScore: 0,
-      riskAssessment: "pending",
+      riskAssessment: "pending"
     };
 
     // AI-powered integrity analysis;
@@ -183,9 +183,9 @@ const integrityVerificationService = fromPromise(async ({ input }: { input: Evid
           verificationContext: {
             originalHash: input.originalHash,
             currentHash: input.currentHash,
-            metadata: input.evidenceData?.metadata,
-          },
-        }),
+            metadata: input.evidenceData?.metadata
+          }
+        })
       });
 
       if (aiResponse.ok) {
@@ -221,20 +221,20 @@ const integrityVerificationService = fromPromise(async ({ input }: { input: Evid
       details: {
         verificationResults,
         integrityStatus,
-        verificationMethod: "automated-ai-enhanced",
+        verificationMethod: "automated-ai-enhanced"
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
         userId: input.userId,
         timestamp: new Date().toISOString(),
-        eventType: "verification",
-      }),
+        eventType: "verification"
+      })
     };
 
     return {
       verificationResults,
       integrityStatus,
-      custodyEvent,
+      custodyEvent
     };
   }
 );
@@ -255,9 +255,9 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
         context: {
           custodyChain: input.custodyEvents,
           integrityStatus: input.integrityStatus,
-          verificationResults: input.verificationResults,
-        },
-      }),
+          verificationResults: input.verificationResults
+        }
+      })
     });
 
     if (!analysisResponse.ok) {
@@ -273,7 +273,7 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
       relevance: analysisResult.relevanceScore || 0.85,
       riskLevel: analysisResult.riskLevel || "medium",
       recommendations: analysisResult.recommendations || [],
-      flaggedAnomalies: analysisResult.anomalies || [],
+      flaggedAnomalies: analysisResult.anomalies || []
     };
 
     // Create analysis event;
@@ -287,20 +287,20 @@ const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustody
         analysisMethod: "multi-agent-pipeline",
         models: analysisResult.modelsUsed || [
           "gemma3-legal",
-          "crewai-legal-team",
-        ],
+          "crewai-legal-team"
+        ]
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
         userId: input.userId,
         timestamp: new Date().toISOString(),
-        eventType: "analysis",
-      }),
+        eventType: "analysis"
+      })
     };
 
     return {
       aiAnalysis,
-      custodyEvent,
+      custodyEvent
     };
   }
 );
@@ -326,11 +326,11 @@ const collaborationService = fromPromise(async ({ input }: { input: EvidenceCust
         {
           userId: input.userId,
           role: "investigator",
-          joinedAt: new Date().toISOString(),
-        },
+          joinedAt: new Date().toISOString()
+        }
       ],
       chatHistory: input.collaborationSession?.chatHistory || [],
-      annotations: input.collaborationSession?.annotations || [],
+      annotations: input.collaborationSession?.annotations || []
     };
 
     // Notify other participants via WebSocket;
@@ -338,11 +338,11 @@ const collaborationService = fromPromise(async ({ input }: { input: EvidenceCust
       type: "user-joined",
       userId: input.userId,
       evidenceId: input.evidenceId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     return {
-      collaborationSession,
+      collaborationSession
     };
   }
 );
@@ -368,20 +368,20 @@ const custodyTransferService = fromPromise(async ({ input }: { input: EvidenceCu
         toCustodian: input.userId, // New custodian is the current user
         transferReason: input.transferReason,
         integrityVerified: input.integrityStatus === "verified",
-        witnessSignatures: await getWitnessSignatures(input.evidenceId),
+        witnessSignatures: await getWitnessSignatures(input.evidenceId)
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
         userId: input.userId,
         timestamp: new Date().toISOString(),
-        eventType: "transfer",
-      }),
+        eventType: "transfer"
+      })
     };
 
     return {
       transferEvent,
       newCustodian: input.userId,
-      previousCustodian: input.currentCustodian,
+      previousCustodian: input.currentCustodian
     };
   }
 );
@@ -401,12 +401,12 @@ const custodyFinalizationService = fromPromise(async ({ input }: { input: Eviden
       collaborationSummary: {
         totalParticipants: input.activeCollaborators.length,
         sessionDuration: calculateSessionDuration(input.collaborationSession),
-        annotationCount: input.collaborationSession?.annotations.length || 0,
+        annotationCount: input.collaborationSession?.annotations.length || 0
       },
       stageTimes: input.stageTimes,
       totalProcessingTime: Date.now() - input.startTime,
       finalizedBy: input.userId,
-      finalizedAt: new Date().toISOString(),
+      finalizedAt: new Date().toISOString()
     };
 
     // Store final custody report
@@ -421,14 +421,14 @@ const custodyFinalizationService = fromPromise(async ({ input }: { input: Eviden
       details: {
         custodyReport,
         approvalStatus: input.approvalStatus,
-        finalIntegrityStatus: input.integrityStatus,
+        finalIntegrityStatus: input.integrityStatus
       },
       signature: await generateEventSignature({
         evidenceId: input.evidenceId,
         userId: input.userId,
         timestamp: new Date().toISOString(),
-        eventType: "finalization",
-      }),
+        eventType: "finalization"
+      })
     };
 
     // Close collaboration session;
@@ -438,7 +438,7 @@ const custodyFinalizationService = fromPromise(async ({ input }: { input: Eviden
 
     return {
       custodyReport,
-      finalizationEvent,
+      finalizationEvent
     };
   }
 );
@@ -449,7 +449,7 @@ export const evidenceCustodyMachine = createMachine();
     id: "evidenceCustody",
     types: {
       context: Record<string, any> as EvidenceCustodyContext,
-      events: Record<string, any> as EvidenceCustodyEvent,
+      events: Record<string, any> as EvidenceCustodyEvent
     },
     initial: "idle",
     context: {
@@ -469,7 +469,7 @@ export const evidenceCustodyMachine = createMachine();
       stageTimes: Record<string, any>,
       warnings: [],
       retryCount: 0,
-      maxRetries: 3,
+      maxRetries: 3
     },
     states: {
       idle: {
@@ -486,10 +486,10 @@ export const evidenceCustodyMachine = createMachine();
               progress: 5,
               startTime: Date.now(),
               stageStartTime: Date.now(),
-              retryCount: 0,
-            }),
-          },
-        },
+              retryCount: 0
+            })
+          }
+        }
       },
 
       evidenceIntake: {
@@ -504,16 +504,16 @@ export const evidenceCustodyMachine = createMachine();
               integrityStatus: ({ event }) => event.output.integrityStatus,
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
-                event.output.custodyEvent,
+                event.output.custodyEvent
               ],
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
-                evidenceIntake: Date.now() - context.stageStartTime,
+                evidenceIntake: Date.now() - context.stageStartTime
               }),
               workflowStage: "integrity-verification",
               progress: 20,
-              stageStartTime: Date.now(),
-            }),
+              stageStartTime: Date.now()
+            })
           },
           onError: {
             target: "error",
@@ -521,14 +521,14 @@ export const evidenceCustodyMachine = createMachine();
               error: ({ event }) => `Evidence intake failed: ${event.error}`,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
-                evidenceIntake: Date.now() - context.stageStartTime,
-              }),
-            }),
-          },
+                evidenceIntake: Date.now() - context.stageStartTime
+              })
+            })
+          }
         },
         on: {
-          CANCEL_WORKFLOW: "cancelled",
-        },
+          CANCEL_WORKFLOW: "cancelled"
+        }
       },
 
       integrityVerification: {
@@ -543,19 +543,19 @@ export const evidenceCustodyMachine = createMachine();
               integrityStatus: ({ event }) => event.output.integrityStatus,
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
-                event.output.custodyEvent,
+                event.output.custodyEvent
               ],
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
-                integrityVerification: Date.now() - context.stageStartTime,
+                integrityVerification: Date.now() - context.stageStartTime
               }),
               workflowStage: "ai-analysis",
               progress: 40,
               stageStartTime: Date.now(),
               // Set approval requirement if integrity is compromised
               requiresApproval: ({ event }) =>
-                event.output.integrityStatus === "compromised",
-            }),
+                event.output.integrityStatus === "compromised"
+            })
           },
           onError: {
             target: "error",
@@ -564,14 +564,14 @@ export const evidenceCustodyMachine = createMachine();
                 `Integrity verification failed: ${event.error}`,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
-                integrityVerification: Date.now() - context.stageStartTime,
-              }),
-            }),
-          },
+                integrityVerification: Date.now() - context.stageStartTime
+              })
+            })
+          }
         },
         on: {
-          CANCEL_WORKFLOW: "cancelled",
-        },
+          CANCEL_WORKFLOW: "cancelled"
+        }
       },
 
       aiAnalysis: {
@@ -584,16 +584,16 @@ export const evidenceCustodyMachine = createMachine();
               aiAnalysis: ({ event }) => event.output.aiAnalysis,
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
-                event.output.custodyEvent,
+                event.output.custodyEvent
               ],
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
-                aiAnalysis: Date.now() - context.stageStartTime,
+                aiAnalysis: Date.now() - context.stageStartTime
               }),
               workflowStage: "collaboration",
               progress: 60,
-              stageStartTime: Date.now(),
-            }),
+              stageStartTime: Date.now()
+            })
           },
           onError: {
             target: "error",
@@ -601,25 +601,25 @@ export const evidenceCustodyMachine = createMachine();
               error: ({ event }) => `AI analysis failed: ${event.error}`,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
-                aiAnalysis: Date.now() - context.stageStartTime,
+                aiAnalysis: Date.now() - context.stageStartTime
               }),
               warnings: ({ context }) => [
                 ...context.warnings,
-                "AI analysis failed, proceeding with manual review",
-              ],
-            }),
-          },
+                "AI analysis failed, proceeding with manual review"
+              ]
+            })
+          }
         },
         on: {
           START_AI_ANALYSIS: {
             // Allow manual restart of AI analysis
             target: "aiAnalysis",
             actions: assign({
-              stageStartTime: Date.now(),
-            }),
+              stageStartTime: Date.now()
+            })
           },
-          CANCEL_WORKFLOW: "cancelled",
-        },
+          CANCEL_WORKFLOW: "cancelled"
+        }
       },
 
       collaboration: {
@@ -634,13 +634,13 @@ export const evidenceCustodyMachine = createMachine();
                 event.output.collaborationSession,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
-                collaboration: Date.now() - context.stageStartTime,
+                collaboration: Date.now() - context.stageStartTime
               }),
               workflowStage: "awaiting-approval",
               progress: 80,
-              stageStartTime: Date.now(),
-            }),
-          },
+              stageStartTime: Date.now()
+            })
+          }
         },
         always: {
           target: "finalization",
@@ -648,8 +648,8 @@ export const evidenceCustodyMachine = createMachine();
           actions: assign({
             workflowStage: "finalization",
             progress: 90,
-            stageStartTime: Date.now(),
-          }),
+            stageStartTime: Date.now()
+          })
         },
         on: {
           JOIN_COLLABORATION: {
@@ -658,7 +658,7 @@ export const evidenceCustodyMachine = createMachine();
                 ...context.activeCollaborators.filter(
                   (id: any) => id !== event.userId
                 ),
-                event.userId,
+                event.userId
               ],
               collaborationSession: ({ context, event }) =>
                 context.collaborationSession;
@@ -671,12 +671,12 @@ export const evidenceCustodyMachine = createMachine();
                         {
                           userId: event.userId,
                           role: event.role,
-                          joinedAt: new Date().toISOString(),
-                        },
-                      ],
+                          joinedAt: new Date().toISOString()
+                        }
+                      ]
                     }
-                  : undefined,
-            }),
+                  : undefined
+            })
           },
           LEAVE_COLLABORATION: {
             actions: assign({
@@ -691,10 +691,10 @@ export const evidenceCustodyMachine = createMachine();
                       participants:
                         context.collaborationSession.participants.filter(
                           (p: any) => p.userId !== event.userId
-                        ),
+                        )
                     }
-                  : undefined,
-            }),
+                  : undefined
+            })
           },
           ADD_ANNOTATION: {
             actions: assign({
@@ -708,22 +708,22 @@ export const evidenceCustodyMachine = createMachine();
                           userId: event.userId,
                           content: event.content,
                           position: event.position,
-                          timestamp: new Date().toISOString(),
-                        },
-                      ],
+                          timestamp: new Date().toISOString()
+                        }
+                      ]
                     }
-                  : undefined,
-            }),
+                  : undefined
+            })
           },
           TRANSFER_CUSTODY: {
             target: "custodyTransfer",
             actions: assign({
               workflowStage: "custody-transfer",
-              stageStartTime: Date.now(),
-            }),
+              stageStartTime: Date.now()
+            })
           },
-          CANCEL_WORKFLOW: "cancelled",
-        },
+          CANCEL_WORKFLOW: "cancelled"
+        }
       },
 
       custodyTransfer: {
@@ -735,25 +735,25 @@ export const evidenceCustodyMachine = createMachine();
             actions: assign({
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
-                event.output.transferEvent,
+                event.output.transferEvent
               ],
               currentCustodian: ({ event }) => event.output.newCustodian,
               previousCustodian: ({ event }) => event.output.previousCustodian,
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
-                custodyTransfer: Date.now() - context.stageStartTime,
+                custodyTransfer: Date.now() - context.stageStartTime
               }),
               workflowStage: "collaboration",
-              stageStartTime: Date.now(),
-            }),
+              stageStartTime: Date.now()
+            })
           },
           onError: {
             target: "error",
             actions: assign({
-              error: ({ event }) => `Custody transfer failed: ${event.error}`,
-            }),
-          },
-        },
+              error: ({ event }) => `Custody transfer failed: ${event.error}`
+            })
+          }
+        }
       },
 
       awaitingApproval: {
@@ -764,18 +764,18 @@ export const evidenceCustodyMachine = createMachine();
               approvalStatus: "approved",
               workflowStage: "finalization",
               progress: 90,
-              stageStartTime: Date.now(),
-            }),
+              stageStartTime: Date.now()
+            })
           },
           REJECT_CUSTODY: {
             target: "rejected",
             actions: assign({
               approvalStatus: "rejected",
-              error: ({ event }) => event.reason,
-            }),
+              error: ({ event }) => event.reason
+            })
           },
-          CANCEL_WORKFLOW: "cancelled",
-        },
+          CANCEL_WORKFLOW: "cancelled"
+        }
       },
 
       finalization: {
@@ -787,16 +787,16 @@ export const evidenceCustodyMachine = createMachine();
             actions: assign({
               custodyEvents: ({ context, event }) => [
                 ...context.custodyEvents,
-                event.output.finalizationEvent,
+                event.output.finalizationEvent
               ],
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
                 finalization: Date.now() - context.stageStartTime,
-                total: Date.now() - context.startTime,
+                total: Date.now() - context.startTime
               }),
               workflowStage: "completed",
-              progress: 100,
-            }),
+              progress: 100
+            })
           },
           onError: {
             target: "error",
@@ -805,11 +805,11 @@ export const evidenceCustodyMachine = createMachine();
               stageTimes: ({ context }) => ({
                 ...context.stageTimes,
                 finalization: Date.now() - context.stageStartTime,
-                total: Date.now() - context.startTime,
-              }),
-            }),
-          },
-        },
+                total: Date.now() - context.startTime
+              })
+            })
+          }
+        }
       },
 
       completed: {
@@ -818,7 +818,7 @@ export const evidenceCustodyMachine = createMachine();
           console.log(
             "Evidence Chain of Custody workflow completed successfully"
           );
-        },
+        }
       },
 
       error: {
@@ -830,15 +830,15 @@ export const evidenceCustodyMachine = createMachine();
               actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
                 error: undefined,
-                stageStartTime: Date.now(),
-              }),
+                stageStartTime: Date.now()
+              })
             },
             {
-              target: "failed",
-            },
+              target: "failed"
+            }
           ],
-          FORCE_COMPLETE: "completed",
-        },
+          FORCE_COMPLETE: "completed"
+        }
       },
 
       failed: {
@@ -847,23 +847,23 @@ export const evidenceCustodyMachine = createMachine();
           console.error(
             `Evidence custody workflow failed after ${context.retryCount} retries: ${context.error}`
           );
-        },
+        }
       },
 
       rejected: {
         type: "final",
         entry: ({ context }) => {
           console.log(`Evidence custody workflow rejected: ${context.error}`);
-        },
+        }
       },
 
       cancelled: {
         type: "final",
         entry: () => {
           console.log("Evidence custody workflow cancelled by user");
-        },
-      },
-    },
+        }
+      }
+    }
   },
   {
     // Guards;
@@ -871,8 +871,8 @@ export const evidenceCustodyMachine = createMachine();
       requiresApproval: ({ context }) => context.requiresApproval,
       canRetry: ({ context }) => context.retryCount < context.maxRetries,
       integrityCompromised: ({ context }) =>
-        context.integrityStatus === "compromised",
-    },
+        context.integrityStatus === "compromised"
+    }
   }
 );
 
@@ -883,7 +883,7 @@ async function generateEvidenceHash(evidence: Evidence): Promise<string> {
     id: evidence.id,
     content: evidence.content,
     metadata: evidence.metadata,
-    createdAt: evidence.createdAt,
+    createdAt: evidence.createdAt
   });
 
   const encoder = new TextEncoder();
@@ -896,7 +896,7 @@ async function generateEventSignature(event: {
   evidenceId: string;
   userId: string;
   timestamp: string;
-  eventType: string;,
+  eventType: string;
 }): Promise<string> {
   // Implementation for digital signature generation
   const data = JSON.stringify(event);
@@ -964,7 +964,7 @@ export const createEvidenceCustodyActor = (
     },
     guards: {
       // Custom guards can be added here
-    },
+    }
   });
 };
 

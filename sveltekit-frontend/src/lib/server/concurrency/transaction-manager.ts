@@ -97,7 +97,7 @@ export class TransactionManager {
       const lock = await advisoryLocks.acquireLock(entityType, entityId, mode, {
         userId: ctx.userId,
         sessionId: ctx.sessionId,
-        timeout: options.timeout,
+        timeout: options.timeout
       });
 
       if (!lock) {
@@ -131,8 +131,8 @@ export class TransactionManager {
       metadata: {
         ...options.metadata,
         operationType: 'chain_of_custody',
-        evidenceId,
-      },
+        evidenceId
+      }
     });
   }
 
@@ -151,8 +151,8 @@ export class TransactionManager {
       metadata: {
         ...options.metadata,
         operationType: 'case_modification',
-        caseId,
-      },
+        caseId
+      }
     });
   }
 
@@ -175,8 +175,8 @@ export class TransactionManager {
         ...options.metadata,
         operationType: 'document_analysis',
         documentId,
-        readOnly: isReadOnly,
-      },
+        readOnly: isReadOnly
+      }
     });
   }
 
@@ -196,8 +196,8 @@ export class TransactionManager {
       metadata: {
         ...options.metadata,
         operationType: 'vector_index_update',
-        indexName,
-      },
+        indexName
+      }
     });
   }
 
@@ -224,7 +224,7 @@ export class TransactionManager {
           {
             userId: ctx.userId,
             sessionId: ctx.sessionId,
-            timeout: options.timeout,
+            timeout: options.timeout
           }
         );
 
@@ -235,7 +235,7 @@ export class TransactionManager {
         ctx.locks.push({
           entityType: entity.type,
           entityId: entity.id,
-          mode: entity.mode || LOCK_MODES.EXCLUSIVE,
+          mode: entity.mode || LOCK_MODES.EXCLUSIVE
         });
       }
 
@@ -332,7 +332,7 @@ export class TransactionManager {
     return {
       activeTransactions: transactions.length,
       oldestTransaction,
-      locksHeld: totalLocks,
+      locksHeld: totalLocks
     };
   }
 }

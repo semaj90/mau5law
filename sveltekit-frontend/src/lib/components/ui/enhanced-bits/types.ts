@@ -5,21 +5,21 @@
 
 export interface ComponentModule {
   name: string;
-  default: any;,
+  default: any;
 }
 
 export interface EnhancedComponentConfig {
   name: string;
   component: ComponentModule;
   priority: number;
-  category: 'form' | 'display' | 'interaction' | 'layout';,
+  category: 'form' | 'display' | 'interaction' | 'layout';
 }
 
 export interface PerformanceMetrics {
   loadTime: number;
   renderTime: number;
   memoryUsage: number;
-  bundleSize: number;,
+  bundleSize: number;
 }
 
 export interface ComponentLoadResult {
@@ -61,7 +61,7 @@ export interface AIAnalysis {
   confidence: number;
   entities: Array<any>;
   themes: Array<any>;
-  summary: string;,
+  summary: string;
 }
 
 export interface VectorSearchResult {
@@ -97,7 +97,7 @@ export interface BoardItem {
   width?: number;
   height?: number;
   data: any;
-  type: 'evidence' | 'note' | 'connection' | 'marker';,
+  type: 'evidence' | 'note' | 'connection' | 'marker';
 }
 
 // Chat and recommendation types for UI components;

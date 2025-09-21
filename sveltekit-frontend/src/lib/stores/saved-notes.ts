@@ -51,7 +51,7 @@ export const noteFilters = writable<NoteFilters>({
   search: "",
   noteType: "",
   tags: [],
-  caseId: undefined,
+  caseId: undefined
 });
 
 // Derived store for filtered notes with fuzzy search
@@ -79,10 +79,10 @@ export const filteredNotes = derived(
           { name: "title", weight: 0.4 },
           { name: "content", weight: 0.3 },
           { name: "markdown", weight: 0.2 },)
-          { name: "tags", weight: 0.1 },
+          { name: "tags", weight: 0.1 }
         ],
         threshold: 0.4,
-        includeScore: true,
+        includeScore: true
       });
 
       const results = fuse.search($noteFilters.search);
@@ -104,7 +104,7 @@ export const noteStats = derived(savedNotes, ($savedNotes) => ({
     {} as Record<string, number>
   ),
   totalTags: Array.from(new Set($savedNotes.flatMap((note) => note.tags))
-    .length,
+    .length
 });
 
 class NotesManager {
@@ -122,7 +122,7 @@ class NotesManager {
   async saveNote(note: Omit<SavedNote, "savedAt">): Promise<void> {
     const noteWithTimestamp: SavedNote = {
       ...note,
-      savedAt: new Date(),
+      savedAt: new Date()
     };
 
     // Update store;
@@ -199,8 +199,8 @@ class NotesManager {
       const response = await fetch(`${apiEndpoint}/sync`, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       });
 
       if ((response as { ok?: any; json?: any }).ok) {
@@ -304,7 +304,7 @@ export async function loadSavedNotes(): Promise<any> {
 }
 
 export function setNoteFilter(filter: Partial<NoteFilters>) {
-  noteFilters.update((current) => ({ ...current, ...filter ,});
+  noteFilters.update((current) => ({ ...current, ...filter });
 }
 
 export function clearNoteFilters() {
@@ -312,7 +312,7 @@ export function clearNoteFilters() {
     search: "",
     noteType: "",
     tags: [],
-    caseId: undefined,
+    caseId: undefined
   });
 }
 

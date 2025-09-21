@@ -22,7 +22,7 @@ export const aiProcessingMachine = createMachine();
     id: "aiProcessing",
     types: Record<string, any> as {
       context: AIProcessingContext;
-      events: AnyEvt;,
+      events: AnyEvt;
     },
 
     context: {
@@ -34,12 +34,12 @@ export const aiProcessingMachine = createMachine();
         id: "",
         type: "parse",
         payload: Record<string, any>,
-        priority: "medium",
+        priority: "medium"
       },
       progress: 0,
       provider: "go-microservice",
       result: undefined,
-      error: undefined,
+      error: undefined
     },
     initial: "idle",
 
@@ -53,10 +53,10 @@ export const aiProcessingMachine = createMachine();
               progress: 0,
               result: undefined,
               error: undefined,
-              timestamp: Date.now(),
-            }),
-          },
-        },
+              timestamp: Date.now()
+            })
+          }
+        }
       },
 
       processing: {
@@ -67,7 +67,7 @@ export const aiProcessingMachine = createMachine();
             invoke: {
               id: "executeTask",
               src: fromPromise(async ({
-                  input,
+                  input
                 }: {
                   input: { task: AITask; provider: string };
                 }) => {
@@ -87,35 +87,35 @@ export const aiProcessingMachine = createMachine();
               ),
               input: ({ context }) => ({
                 task: context.task,
-                provider: context.provider,
+                provider: context.provider
               }),
               onDone: {
                 target: "#aiProcessing.success",
                 actions: assign({
                   result: ({ event }) => event.output,
-                  progress: 100,
-                }),
+                  progress: 100
+                })
               },
         onError: {
                 target: "#aiProcessing.error",
                 actions: assign({
-          error: ({ event }) => ((event as any)?.error?.message ?? 'Task failed'),
-                }),
-              },
+          error: ({ event }) => ((event as any)?.error?.message ?? 'Task failed')
+                })
+              }
             },
 
             on: {
               PROCESSING_PROGRESS: {
                 actions: assign({
-                  progress: ({ event }) => (event as ProcessingProgress).progress,
-                }),
+                  progress: ({ event }) => (event as ProcessingProgress).progress
+                })
               },
               CANCEL_PROCESSING: {
-                target: "#aiProcessing.cancelled",
-              },
-            },
-          },
-        },
+                target: "#aiProcessing.cancelled"
+              }
+            }
+          }
+        }
       },
 
       success: {
@@ -128,10 +128,10 @@ export const aiProcessingMachine = createMachine();
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined,
-              error: undefined,
-            }),
-          },
-        },
+              error: undefined
+            })
+          }
+        }
       },
 
       error: {
@@ -144,13 +144,13 @@ export const aiProcessingMachine = createMachine();
               guard: "canRetry",
               actions: assign({
                 retryCount: ({ context }) => context.retryCount + 1,
-                error: undefined,
-              }),
+                error: undefined
+              })
             },
             {
               target: "error",
-              actions: ["maxRetriesReached"],
-            },
+              actions: ["maxRetriesReached"]
+            }
           ],
           START_PROCESSING: {
             target: "processing",
@@ -159,10 +159,10 @@ export const aiProcessingMachine = createMachine();
               progress: 0,
               result: undefined,
               error: undefined,
-              retryCount: 0,
-            }),
-          },
-        },
+              retryCount: 0
+            })
+          }
+        }
       },
 
       cancelled: {
@@ -175,12 +175,12 @@ export const aiProcessingMachine = createMachine();
               task: ({ event }) => (event as StartProcessing).task,
               progress: 0,
               result: undefined,
-              error: undefined,
-            }),
-          },
-        },
-      },
-    },
+              error: undefined
+            })
+          }
+        }
+      }
+    }
   },
   {
     actions: {
@@ -202,7 +202,7 @@ export const aiProcessingMachine = createMachine();
         // Dispatch custom event for UI updates;
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("ai-task-complete", {
-              detail: { taskId: context.task.id, result: context.result },
+              detail: { taskId: context.task.id, result: context.result }
             })
           );
         }
@@ -210,14 +210,14 @@ export const aiProcessingMachine = createMachine();
 
       maxRetriesReached: ({ context }) => {
         console.error(`❌ Max retries reached for task ${context.task.id}`);
-      },
+      }
     },
 
     guards: {
       canRetry: ({ context }) => {
         return context.retryCount < 3;
-      },
-    },
+      }
+    }
   }
 );
 
@@ -236,8 +236,8 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
           body: JSON.stringify({
             data: task.payload.data,
             format: task.payload.format || "json",
-            options: task.payload.options || {},
-          }),
+            options: task.payload.options || {}
+          })
         });
         break;
 
@@ -250,8 +250,8 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
             labels: task.payload.labels,
             dimensions: task.payload.dimensions || { width: 10, height: 10 },
             iterations: task.payload.iterations || 1000,
-            learning_rate: task.payload.learningRate || 0.1,
-          }),
+            learning_rate: task.payload.learningRate || 0.1
+          })
         });
         break;
 
@@ -264,8 +264,8 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
             input: task.payload.input,
             batch_size: task.payload.batchSize || 1,
             precision: task.payload.precision || "fp32",
-            streaming: task.payload.streaming || false,
-          }),
+            streaming: task.payload.streaming || false
+          })
         });
         break;
 
@@ -288,8 +288,8 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
       metrics: {
         processingTime: duration,
         memoryUsed: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).metrics?.memory_used || "Unknown",
-        throughput: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).metrics?.throughput || 0,
-      },
+        throughput: (result as { result?: any; metrics?: any; response?: any; embedding?: any }).metrics?.throughput || 0
+      }
     };
   } catch (error: any) {
     return {
@@ -300,8 +300,8 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
       metrics: {
         processingTime: Date.now() - startTime,
         memoryUsed: "Error",
-        throughput: 0,
-      },
+        throughput: 0
+      }
     };
   }
 }
@@ -319,8 +319,8 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "nomic-embed-text",
-            prompt: task.payload.text,
-          }),
+            prompt: task.payload.text
+          })
         });
         break;
 
@@ -332,8 +332,8 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
             model: task.payload?.model || "unknown" // @ts-ignore - Model property access || "gemma3-legal",
             prompt: task.payload.prompt,
             stream: false,
-            format: task.payload.format || undefined,
-          }),
+            format: task.payload.format || undefined
+          })
         });
         break;
 
@@ -356,15 +356,15 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
       metrics: {
         processingTime: duration,
         memoryUsed: "Unknown",
-        throughput: 0,
-      },
+        throughput: 0
+      }
     };
   } catch (error: any) {
     return {
       taskId: task.id,
       success: false,
       result: null,
-      duration: Date.now() - startTime,
+      duration: Date.now() - startTime
     };
   }
 }
@@ -380,7 +380,7 @@ async function executeLocalLLMTask(task: AITask): Promise<AITaskResult> {
     taskId: task.id,
     success: true,
     result: { message: "Local LLM processing not implemented yet" },
-    duration: Date.now() - startTime,
+    duration: Date.now() - startTime
   };
 }
 // Utility functions for working with the AI processing machine
@@ -396,7 +396,7 @@ export const createAITask = (
   type,
   payload,
   priority: options?.priority || "medium",
-  estimatedDuration: options?.estimatedDuration,
+  estimatedDuration: options?.estimatedDuration
 });
 
 // Common AI task creators;
@@ -407,7 +407,7 @@ export const aiTaskCreators = {
       {
         data,
         format: "json",
-        options,
+        options
       },)
       { priority: "high" }
     ),
@@ -418,7 +418,7 @@ export const aiTaskCreators = {
       {
         vectors,
         labels,
-  ...(options || {,}),
+  ...(options || {})
       },
       { priority: "low", estimatedDuration: 30000 }
     ),
@@ -429,7 +429,7 @@ export const aiTaskCreators = {
       {
         model,
         input,
-  ...(options || {,}),
+  ...(options || {})
       },
       { priority: "high" }
     ),
@@ -439,7 +439,7 @@ export const aiTaskCreators = {
       "embed",
       {
         text,
-        model: model || "nomic-embed-text",
+        model: model || "nomic-embed-text"
       },)
       { priority: "medium" }
     ),
@@ -450,10 +450,10 @@ export const aiTaskCreators = {
       {
         prompt,
         model: model || "gemma3-legal",
-        format,
+        format
       },)
       { priority: "medium" }
-    ),
+    )
 };
 
 // Helper to check if processing is active;

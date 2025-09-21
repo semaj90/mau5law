@@ -11,11 +11,11 @@ export const GET: RequestHandler = async ({ locals }) => {
   const payload = {
     user: (locals as any).user ?? null,
     session: (locals as any).session ?? null,
-    requestId: (locals as any).requestId ?? null,
+    requestId: (locals as any).requestId ?? null
   };
 
   return new Response(JSON.stringify(payload, null, 2), {
     status: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' }
   });
 };

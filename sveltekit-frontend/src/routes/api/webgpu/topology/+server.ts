@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
       riskLevel: complexity > 0.8 ? 'high' : complexity > 0.5 ? 'medium' : 'low',
       lastAccessed: Date.now(),
       compressed: true,
-      metadata: Record<string, any>,
+      metadata: Record<string, any>
     };
 
     // Create user behavior pattern (use satisfies to enforce exact keys & avoid stale interface collisions)
@@ -36,14 +36,14 @@ export const POST: RequestHandler = async ({ request }) => {
       documentFlow: [documentType || 'contract'],
       interactionVelocity: userPattern?.interactionVelocity ?? 0.5,
       qualityExpectation: userPattern?.qualityExpectation ?? 0.8,
-      timeConstraints: userPattern?.timeConstraints ?? 0.6,
+      timeConstraints: userPattern?.timeConstraints ?? 0.6
     } satisfies UserBehaviorPattern;
 
     // Performance requirements;
     const perfReqs = {
       maxLatency: performanceRequirements?.maxLatency || 1000,
       minAccuracy: performanceRequirements?.minAccuracy || 0.85,
-      memoryBudget: performanceRequirements?.memoryBudget || 512,
+      memoryBudget: performanceRequirements?.memoryBudget || 512
     };
 
     // Get topology prediction from QLoRA predictor with HMM
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Process query with WebGPU acceleration;
     const webgpuResult = await webgpuRAGService.processQuery(query || 'topology optimization', {
       useGPU: true,
-      topologyConfig: topologyPrediction.predictedConfig,
+      topologyConfig: topologyPrediction.predictedConfig
     });
 
     // Get HMM accuracy metrics
@@ -70,20 +70,20 @@ export const POST: RequestHandler = async ({ request }) => {
       prediction: topologyPrediction,
       webgpu: {
         initialized: webgpuInit,
-        result: webgpuResult,
+        result: webgpuResult
       },
       hmm: {
         accuracy: hmmMetrics.overallAccuracy,
         confidence: hmmMetrics.modelConfidence,
         totalPredictions: hmmMetrics.totalPredictions,
-        cacheHitRate: hmmMetrics.cacheHitRate,
+        cacheHitRate: hmmMetrics.cacheHitRate
       },
       document: {
         id: document.id,
         type: document.type,
-        complexity: document.confidenceLevel,
+        complexity: document.confidenceLevel
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('❌ WebGPU Topology Prediction Error:', error);
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -109,16 +109,16 @@ export const GET: RequestHandler = async () => {
 			services: {
 				qloraTopology: 'ready',
 				hmmPredictor: 'ready',
-				webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback',
+				webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback'
 			},
 			metrics: {
 				hmmAccuracy: hmmMetrics.overallAccuracy,
 				hmmConfidence: hmmMetrics.modelConfidence,
 				totalPredictions: hmmMetrics.totalPredictions,
-				cacheHitRate: hmmMetrics.cacheHitRate,
+				cacheHitRate: hmmMetrics.cacheHitRate
 			},
 			webgpu: webgpuInit,
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		});
 
 	} catch (error) {
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async () => {
 		return json({
 			status: 'error',
 			error: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
 };

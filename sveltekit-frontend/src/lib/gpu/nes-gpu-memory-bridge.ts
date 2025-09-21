@@ -20,7 +20,7 @@ export interface GPUNodeDataFB {
   embedding: Float32Array; // 384-dim vector
   metadata: Uint8Array; // Binary metadata
   priority: Uint8Array; // NES-style priority (0-255)
-  bankId: Uint8Array; // Memory bank reference,
+  bankId: Uint8Array; // Memory bank reference
 }
 
 export interface GPUTextureMatrix {
@@ -30,7 +30,7 @@ export interface GPUTextureMatrix {
   data: Float32Array;
   gpuBuffer: GPUBuffer | null;
   texture: GPUTexture | null;
-  bindGroup: GPUBindGroup | null;,
+  bindGroup: GPUBindGroup | null;
 }
 
 export interface CUDAMemoryRegion {
@@ -39,7 +39,7 @@ export interface CUDAMemoryRegion {
   size: number;
   devicePtr: bigint | null;
   mapped: boolean;
-  bankType: 'RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';,
+  bankType: 'RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
 }
 
 export class NESGPUMemoryBridge {
@@ -52,7 +52,7 @@ export class NESGPUMemoryBridge {
     gpuUploadTime: 0,
     cudaKernelTime: 0,
     memoryBandwidth: 0,
-    cacheMissRate: 0.0,
+    cacheMissRate: 0.0
   };
   
   // FlatBuffer binary data cache
@@ -67,12 +67,12 @@ export class NESGPUMemoryBridge {
     enableCUDA: boolean;
     maxTextureSize: number;
     cacheSizeMB: number;
-    syncIntervalMs: number;,
+    syncIntervalMs: number;
   } = {
     enableCUDA: true,
     maxTextureSize: 2048,
     cacheSizeMB: 256,
-    syncIntervalMs: 16.67 // 60 FPS sync,
+    syncIntervalMs: 16.67 // 60 FPS sync
   }) {
     this.initializeGPUBridge();
   }
@@ -90,7 +90,7 @@ export class NESGPUMemoryBridge {
         requiredFeatures: [] as GPUFeatureName[],
         requiredLimits: {
           maxTextureDimension2D: this.config.maxTextureSize,
-          maxBufferSize: this.config.cacheSizeMB * 1024 * 1024,
+          maxBufferSize: this.config.cacheSizeMB * 1024 * 1024
         }
       });
 
@@ -125,7 +125,7 @@ export class NESGPUMemoryBridge {
       size: 2048,
       devicePtr: null,
       mapped: false,
-      bankType: 'RAM',
+      bankType: 'RAM'
     });
 
     // CHR-ROM region (8KB) - pattern data;
@@ -135,7 +135,7 @@ export class NESGPUMemoryBridge {
       size: 8192,
       devicePtr: null,
       mapped: false,
-      bankType: 'CHR_ROM',
+      bankType: 'CHR_ROM'
     });
 
     // PRG-ROM region (32KB) - program logic;
@@ -145,7 +145,7 @@ export class NESGPUMemoryBridge {
       size: 32768,
       devicePtr: null,
       mapped: false,
-      bankType: 'PRG_ROM',
+      bankType: 'PRG_ROM'
     });
 
     console.log('🧠 CUDA memory regions initialized:', this.cudaRegions.size);
@@ -323,14 +323,14 @@ export class NESGPUMemoryBridge {
       const texture = this.device.createTexture({
         size: { width: dimensions.width, height: dimensions.height },
         format: 'r32float',
-        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING,
+        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING
       });
 
       // Create staging buffer;
       const buffer = this.device.createBuffer({
         size: similarityMatrix.byteLength,
         usage: GPUBufferUsage.COPY_SRC,
-        mappedAtCreation: true,
+        mappedAtCreation: true
       });
 
       // Copy data to buffer
@@ -360,7 +360,7 @@ export class NESGPUMemoryBridge {
         layout: bindGroupLayout,
         entries: [{
           binding: 0,
-          resource: texture.createView(),
+          resource: texture.createView()
         }]
       });
 
@@ -463,7 +463,7 @@ export class NESGPUMemoryBridge {
 
     await this.createRankingTexture('pattern_matching', patternData, {
       width: 128,
-      height: 64,
+      height: 64
     });
   }
 
@@ -543,7 +543,7 @@ export class NESGPUMemoryBridge {
       type: string;
       priority: number;
       compressedData: Uint8Array;
-      bankId: number;,
+      bankId: number;
     }
   ): Promise<boolean> {
     const startTime = performance.now();
@@ -592,7 +592,7 @@ export class NESGPUMemoryBridge {
     renderableHTML: string;
     textureId?: string;
     bankId: number;
-    priority: number;,
+    priority: number;
   } | null {
     const cachedPattern = this.chrRomPatterns.get(patternId);
     
@@ -608,7 +608,7 @@ export class NESGPUMemoryBridge {
       renderableHTML: cachedPattern.pattern.renderableHTML,
       textureId: cachedPattern.textureId,
       bankId: cachedPattern.bankId,
-      priority: cachedPattern.priority,
+      priority: cachedPattern.priority
     };
   }
 
@@ -618,7 +618,7 @@ export class NESGPUMemoryBridge {
   private async createPatternTexture(pattern: {
     renderableHTML: string;
     type: string;
-    compressedData: Uint8Array;,
+    compressedData: Uint8Array;
   }): Promise<GPUTextureMatrix | null> {
     if (!this.device) return null;
 
@@ -635,7 +635,7 @@ export class NESGPUMemoryBridge {
 
       return await this.createRankingTexture('chrrom_pattern', textureData, {
         width: textureSize,
-        height: textureSize,
+        height: textureSize
       });
     } catch (error) {
       console.warn('Failed to create pattern texture:', error);
@@ -668,7 +668,7 @@ export class NESGPUMemoryBridge {
       case 3: return 'CHR_ROM'; // Pattern data
       case 4:
       case 5: return 'PRG_ROM'; // Program logic
-      default: return 'CHR_ROM'; // Default to CHR-ROM,
+      default: return 'CHR_ROM'; // Default to CHR-ROM
     }
   }
 
@@ -697,7 +697,7 @@ export class NESGPUMemoryBridge {
     name: string;
     patternCount: number;
     memoryUsage: number;
-    accessSpeed: 'fastest' | 'fast' | 'normal' | 'slow';,
+    accessSpeed: 'fastest' | 'fast' | 'normal' | 'slow';
   }[] {
     const bankStats = new Map<number, { count: number; size: number }>();
     
@@ -717,7 +717,7 @@ export class NESGPUMemoryBridge {
         name: this.getBankNameForId(bankId),
         patternCount: stats.count,
         memoryUsage: stats.size,
-        accessSpeed: bankId <= 1 ? 'fastest' : bankId <= 3 ? 'fast' : bankId <= 5 ? 'normal' : 'slow',
+        accessSpeed: bankId <= 1 ? 'fastest' : bankId <= 3 ? 'fast' : bankId <= 5 ? 'normal' : 'slow'
       };
     });
   }
@@ -762,7 +762,7 @@ export class NESGPUMemoryBridge {
     const patterns = Array.from(this.chrRomPatterns.entries()).map(([id, cached]) => ({
       id,
       ...cached,
-      optimalBank: cached.priority >= 4 ? 0 : cached.priority >= 3 ? 1 : 2,
+      optimalBank: cached.priority >= 4 ? 0 : cached.priority >= 3 ? 1 : 2
     });
 
     // Reorganize patterns into optimal banks;
@@ -810,6 +810,6 @@ export const nesGPUBridge = new NESGPUMemoryBridge({
   enableCUDA: true,
   maxTextureSize: 2048,
   cacheSizeMB: 256,
-  syncIntervalMs: 16.67 // 60 FPS,
+  syncIntervalMs: 16.67 // 60 FPS
 });
 

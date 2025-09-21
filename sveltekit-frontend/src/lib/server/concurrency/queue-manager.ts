@@ -45,7 +45,7 @@ export const QueueStatsSchema = z.object({
   failed: z.number(),
   totalThroughput: z.number(),
   avgProcessingTime: z.number(),
-  lastUpdated: z.date(),
+  lastUpdated: z.date()
 });
 
 export type QueueStats = z.infer<typeof QueueStatsSchema>;
@@ -90,7 +90,7 @@ export class QueueManager {
       const job = QueueJobSchema.parse({
         id: randomUUID(),
         ...jobData
-      ,});
+      });
 
       // Check dependencies;
       if (job.dependencies.length > 0) {
@@ -212,7 +212,7 @@ export class QueueManager {
       this.completedJobs.set(job.id, {
         job,
         result,
-        completedAt: new Date(),
+        completedAt: new Date()
       });
 
       const duration = Date.now() - startTime;
@@ -234,7 +234,7 @@ export class QueueManager {
         this.failedJobs.set(job.id, {
           job,
           error: error instanceof Error ? error : new Error(String(error)),
-          failedAt: new Date(),
+          failedAt: new Date()
         });
         
         console.log(`💥 Permanently failed ${job.type} job ${job.id} after ${job.maxRetries} retries`);
@@ -258,7 +258,7 @@ export class QueueManager {
       analysisType,
       findings: ['Pattern identified', 'Metadata extracted', 'Classification complete'],
       confidence: 0.87,
-      processedAt: new Date(),
+      processedAt: new Date()
     };
   }
 
@@ -278,7 +278,7 @@ export class QueueManager {
       operations,
       extractedText: 'Sample extracted text...',
       classification: 'legal_contract',
-      processedAt: new Date(),
+      processedAt: new Date()
     };
   }
 
@@ -298,7 +298,7 @@ export class QueueManager {
       evidenceCount: evidenceIds.length,
       synthesis: 'Generated case synthesis...',
       recommendations: ['Review additional evidence', 'Consider expert testimony'],
-      processedAt: new Date(),
+      processedAt: new Date()
     };
   }
 
@@ -317,7 +317,7 @@ export class QueueManager {
       evidenceId,
       custodyEvent,
       integrityVerified: true,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
   }
 
@@ -336,7 +336,7 @@ export class QueueManager {
       indexName,
       vectorCount,
       rebuildTime: Date.now(),
-      performance: 'optimized',
+      performance: 'optimized'
     };
   }
 
@@ -351,7 +351,7 @@ export class QueueManager {
       failed: this.failedJobs.size,
       totalThroughput: this.completedJobs.size + this.failedJobs.size,
       avgProcessingTime: this.calculateAverageProcessingTime(),
-      lastUpdated: new Date(),
+      lastUpdated: new Date()
     };
 
     return QueueStatsSchema.parse(stats);

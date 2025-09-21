@@ -57,7 +57,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: "Activity not found" }, { status: 404 });
     }
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Map frontend fields to schema fields - only update provided fields
@@ -159,7 +159,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: "Activity not found" }, { status: 404 });
     }
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Handle specific patch operations;

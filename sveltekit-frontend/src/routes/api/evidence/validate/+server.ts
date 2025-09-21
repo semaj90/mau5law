@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       valid: Boolean(valid),
       feedback: feedback || null,
       corrections: corrections || null,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     // Update AI analysis with validation feedback;
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Update the evidence record;
     const updateData: any = {
       aiAnalysis: JSON.stringify(aiAnalysis),
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     // Update summary if corrected;
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       updatedAnalysis: aiAnalysis,
       message: valid
         ? "Validation recorded successfully"
-        : "Correction recorded successfully",
+        : "Correction recorded successfully"
     };
 
     return json(response);
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
         success: false,
         error: "Failed to record validation",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -161,7 +161,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       validations,
       validationScore: (aiAnalysis as any).validationScore || 0,
       totalValidations: validations.length,
-      validValidations: validations.filter((v) => v.valid).length,
+      validValidations: validations.filter((v) => v.valid).length
     });
   } catch (error: any) {
     console.error("Get validations error:", error);
@@ -169,7 +169,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({
         success: false,
         error: "Failed to retrieve validations",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );

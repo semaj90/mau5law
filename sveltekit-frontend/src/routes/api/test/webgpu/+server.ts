@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
       results.push({
         test: 'webgpu_polyfill_import',
         status: 'error',
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error)
       });
     }
 
@@ -57,14 +57,14 @@ export const GET: RequestHandler = async ({ url }) => {
         data: { 
           imported: true, 
           shaderCount,
-          shaders: Object.keys(LEGAL_AI_SHADERS),
+          shaders: Object.keys(LEGAL_AI_SHADERS)
         }
       });
     } catch (error: any) {
       results.push({
         test: 'webgl_shader_cache_import',
         status: 'error',
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error)
       });
     }
 
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url }) => {
             documentCount: memoryStats.documentCount,
             totalRAM: memoryStats.totalRAM,
             usedRAM: memoryStats.usedRAM,
-            bankSwitches: memoryStats.bankSwitches,
+            bankSwitches: memoryStats.bankSwitches
           }
         }
       });
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ url }) => {
       results.push({
         test: 'nes_memory_import',
         status: 'error',
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error)
       });
     }
 
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
         simulated: true,
         gpuInfo: 'NVIDIA GeForce RTX 3060 Ti',
         memoryAvailable: '8GB VRAM',
-        webgpuSupport: 'Requires browser context',
+        webgpuSupport: 'Requires browser context'
       }
     });
 
@@ -113,16 +113,16 @@ export const GET: RequestHandler = async ({ url }) => {
         total: results.length,
         passed: results.filter(item => item.length),
         failed: results.filter(item => item.length),
-        warnings: results.filter(item => item.length),
+        warnings: results.filter(item => item.length)
       },
-      note: "WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture.",
+      note: "WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture."
     });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

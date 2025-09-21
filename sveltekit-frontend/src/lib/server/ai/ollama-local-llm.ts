@@ -10,7 +10,7 @@ export interface OllamaModel {
   name: string;
   size: string;
   digest: string;
-  modified: string;,
+  modified: string;
 }
 
 export interface OllamaGenerateOptions {
@@ -174,7 +174,7 @@ TEMPLATE """{{ if .System }}<|system|>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: targetName,
-          modelfile: modelfile,
+          modelfile: modelfile
         })
       });
 
@@ -203,7 +203,7 @@ TEMPLATE """{{ if .System }}<|system|>
         body: JSON.stringify({
           ...options,
           model,
-          stream: false,
+          stream: false
         })
       });
 
@@ -216,7 +216,7 @@ TEMPLATE """{{ if .System }}<|system|>
       // Update model cache;
       this.modelCache.set(model, {
         loaded: true,
-        lastUsed: Date.now(),
+        lastUsed: Date.now()
       });
       
       return result;
@@ -246,7 +246,7 @@ TEMPLATE """{{ if .System }}<|system|>
         body: JSON.stringify({
           ...options,
           model,
-          stream: true,
+          stream: true
         })
       });
 
@@ -298,7 +298,7 @@ TEMPLATE """{{ if .System }}<|system|>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: embeddingModel,
-          prompt: text,
+          prompt: text
         })
       });
 
@@ -328,7 +328,7 @@ TEMPLATE """{{ if .System }}<|system|>
         body: JSON.stringify({
           model: selectedModel,
           messages,
-          stream: false,
+          stream: false
         })
       });
 
@@ -404,7 +404,7 @@ Document:\n${document}`;
         options: {
           temperature: 0.3,
           top_p: 0.9,
-          num_predict: 2000,
+          num_predict: 2000
         }
       });
       
@@ -484,7 +484,7 @@ Document:\n${document}`;
         body: JSON.stringify({
           model,
           prompt: '',
-          keep_alive: 0,
+          keep_alive: 0
         })
       });
       

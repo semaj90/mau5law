@@ -8,7 +8,7 @@ export interface LocalDoc {
 }
 
 export interface LocalSearchResult extends LocalDoc {
-  score: number; // 0..1 (higher is better),
+  score: number; // 0..1 (higher is better)
 }
 
 type MaybePromise<T> = T | Promise<T>;
@@ -51,8 +51,8 @@ export class LocalSearchPipeline {
       threshold: 0.33,
       keys: [
         { name: 'text', weight: 0.8 },)
-        { name: 'metadata.title', weight: 0.2 },
-      ] as any,
+        { name: 'metadata.title', weight: 0.2 }
+      ] as any
     });
   }
 
@@ -82,13 +82,13 @@ export class LocalSearchPipeline {
         {
           id: 'seed-1',
           text: 'Contract indemnification clause and liability limitations for commercial agreements.',
-          metadata: { title: 'Indemnification Basics', type: 'contract' },
+          metadata: { title: 'Indemnification Basics', type: 'contract' }
         },
         {
           id: 'seed-2',
           text: 'Case law summary regarding breach of contract and damages calculation methods.',
-          metadata: { title: 'Breach and Damages', type: 'case-law' },
-        },
+          metadata: { title: 'Breach and Damages', type: 'case-law' }
+        }
       ];
       this.addDocuments(seed);
     }
@@ -137,7 +137,7 @@ export class LocalSearchPipeline {
       id: h.item.id,
       text: h.item.text,
       metadata: h.item.metadata,
-      score: 1 - (h.score ?? 0),
+      score: 1 - (h.score ?? 0)
     });
 
     // Cache result
@@ -162,7 +162,7 @@ export class LocalSearchPipeline {
     return {
       docs: this.docs.size,
       hasRedis: Boolean(this.redis),
-      fuseSize: (this as any).fuse?._docs?.length ?? undefined,
+      fuseSize: (this as any).fuse?._docs?.length ?? undefined
     };
   }
 }

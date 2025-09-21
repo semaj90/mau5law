@@ -115,7 +115,7 @@ export async function batchLegalDocumentProcessing(device: GPUDevice) {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     quantization: 'legal_standard',
     label: 'legal-document-batch',
-    debugMode: true,
+    debugMode: true
   });
   
   console.log(`✅ Batch processed ${batchResults.length} legal documents`);
@@ -158,20 +158,20 @@ export async function legalAIComputePipeline(device: GPUDevice) {
   const weightsBuffer = await uploader.uploadBuffer(weightsQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     quantization: weightsQuantized.data.originalType,
-    label: 'legal-ai-weights',
+    label: 'legal-ai-weights'
   });
   
   const inputBuffer = await uploader.uploadBuffer(inputQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
     quantization: inputQuantized.data.originalType,
-    label: 'legal-ai-input',
+    label: 'legal-ai-input'
   });
   
   // Create output buffer;
   const outputBuffer = device.createBuffer({
     size: inputDocument.byteLength,
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-    label: 'legal-ai-output',
+    label: 'legal-ai-output'
   });
   
   console.log('✅ Legal AI compute buffers ready');
@@ -214,7 +214,7 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   const queryBuffer = await uploader.uploadBuffer(queryDocument, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     quantization: 'legal_critical', // High precision for query
-    label: 'similarity-query',
+    label: 'similarity-query'
   });
   
   // Upload corpus with compression
@@ -222,7 +222,7 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     quantization: 'legal_compressed', // Compressed for bulk storage
     label: 'similarity-corpus',
-    debugMode: false,
+    debugMode: false
   });
   
   console.log('📚 Similarity search setup complete:');
@@ -280,7 +280,7 @@ export async function debugAndAnalysisExample(device: GPUDevice) {
     console.log(`- ${profileName}:`, {
       compressionRatio: `${quantized.compressionRatio.toFixed(2)}x`,
       size: `${(quantized.byteLength / 1024).toFixed(2)} KB`,
-      mode: profile.mode,
+      mode: profile.mode
     });
   }
 }

@@ -298,7 +298,7 @@ export function registerWASMAcceleratedHandlers(worker: typeof rabbitmqServiceWo
         ...message,
         embeddings: message.embeddings,
         wasmAccelerated: true,
-        stage: 'ready_for_storage',
+        stage: 'ready_for_storage'
       });
     }
   }, { batchNormalization: true });
@@ -320,7 +320,7 @@ export function registerWASMAcceleratedHandlers(worker: typeof rabbitmqServiceWo
         ...message,
         similarities,
         wasmAccelerated: true,
-        processingTime: performance.now() - message.timestamp,
+        processingTime: performance.now() - message.timestamp
       });
     }
   }, { vectorSimilarity: true });

@@ -12,7 +12,7 @@ export interface QLoRAProtobufTopologyRequest {
   useCache: boolean;
   trainingMode: boolean;
   binaryResponse: boolean;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface QLoRAProtobufMetrics {
@@ -43,14 +43,14 @@ export interface QLoRAProtobufTopologyResponse {
     topology: {
       nodes: number;
       edges: number;
-      connectivity: number;,
+      connectivity: number;
     };
   };
   accuracy: number;
   topology: {
     structure: string;
     complexity: number;
-    patternMatch: number;,
+    patternMatch: number;
   };
   cacheHit: boolean;
   processingTime: number;
@@ -60,7 +60,7 @@ export interface QLoRAProtobufTopologyResponse {
     compressionRatio: number;
     originalSize: number;
     compressedSize: number;
-    encoding: 'gzip' | 'brotli' | 'lz4';,
+    encoding: 'gzip' | 'brotli' | 'lz4';
   };
 }
 
@@ -79,7 +79,7 @@ export class QLoRABinaryCodec {
       if (value instanceof Float32Array) {
         return {
           __type: 'Float32Array',
-          data: Array.from(value),
+          data: Array.from(value)
         };
       }
       return value;
@@ -112,7 +112,7 @@ export class QLoRABinaryCodec {
   static getCompressionStats(original: any, compressed: Buffer): {
     originalSize: number;
     compressedSize: number;
-    compressionRatio: number;,
+    compressionRatio: number;
   } {
     const originalSize = JSON.stringify(original).length;
     const compressedSize = compressed.length;
@@ -120,7 +120,7 @@ export class QLoRABinaryCodec {
     return {
       originalSize,
       compressedSize,
-      compressionRatio: Math.round((originalSize / compressedSize) * 100) / 100,
+      compressionRatio: Math.round((originalSize / compressedSize) * 100) / 100
     };
   }
 }
@@ -142,7 +142,7 @@ export class QLoRANetworkCacheKey {
       context: request.context || '',
       topologyType: request.topologyType,
       accuracyTarget: request.accuracyTarget,
-      trainingMode: request.trainingMode,
+      trainingMode: request.trainingMode
     };
     
     const hash = crypto.createHash('sha256');
@@ -182,7 +182,7 @@ export class QLoRAPerformanceMonitor {
   static recordMetrics(metrics: QLoRABinaryPerformanceMetrics): void {
     this.metrics.push({
       ...metrics,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     } as any);
     
     // Keep only last 100 entries for memory efficiency;
@@ -199,13 +199,13 @@ export class QLoRAPerformanceMonitor {
       responseSize: acc.responseSize + m.responseSize,
       compressionRatio: acc.compressionRatio + m.compressionRatio,
       processingTime: acc.processingTime + m.processingTime,
-      cacheHitRate: acc.cacheHitRate + (m.cacheHit ? 1 : 0),
+      cacheHitRate: acc.cacheHitRate + (m.cacheHit ? 1 : 0)
     } as any), {
       requestSize: 0,
       responseSize: 0,
       compressionRatio: 0,
       processingTime: 0,
-      cacheHitRate: 0,
+      cacheHitRate: 0
     });
     
     const count = this.metrics.length;
@@ -214,7 +214,7 @@ export class QLoRAPerformanceMonitor {
       responseSize: Math.round(totals.responseSize / count),
       compressionRatio: Math.round((totals.compressionRatio / count) * 100) / 100,
       processingTime: Math.round(totals.processingTime / count),
-      cacheHit: totals.cacheHitRate / count > 0.5,
+      cacheHit: totals.cacheHitRate / count > 0.5
     };
   }
 }

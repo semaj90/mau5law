@@ -29,17 +29,17 @@ import type { DocumentMetadata } from './schema-unified.js';
 interface DatabaseConfig {
   runtime: {
     url: string;
-    poolSize: number;,
+    poolSize: number;
   };
   admin: {
     url: string;
-    poolSize: number;,
+    poolSize: number;
   };
   qdrant?: {
     url: string;
     apiKey?: string;
   };
-  environment: 'development' | 'production';,
+  environment: 'development' | 'production';
 }
 
 interface VectorSearchOptions {
@@ -56,7 +56,7 @@ interface HybridSearchResult {
   performance: {
     postgresqlTime?: number;
     qdrantTime?: number;
-    totalTime: number;,
+    totalTime: number;
   };
 }
 
@@ -69,17 +69,17 @@ const isDev = process.env.NODE_ENV === 'development';
 const config: DatabaseConfig = {
   runtime: {
     url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
-    poolSize: isDev ? 5 : 10,
+    poolSize: isDev ? 5 : 10
   },
   admin: {
     url: process.env.DATABASE_URL_ADMIN || process.env.ADMIN_DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
-    poolSize: 2,
+    poolSize: 2
   },
   qdrant: process.env.QDRANT_URL ? {
     url: process.env.QDRANT_URL,
-    apiKey: process.env.QDRANT_API_KEY,
+    apiKey: process.env.QDRANT_API_KEY
   } : undefined,
-  environment: isDev ? 'development' : 'production',
+  environment: isDev ? 'development' : 'production'
 };
 
 // ============================================================================
@@ -130,15 +130,15 @@ class DatabaseManager {
                 return x.slice(1, -1).split(',').map(Number);
               }
               return [];
-            },
-          },
+            }
+          }
         },
         debug: isDev ? (connection: any, query: string, parameters: any[]) => {
           console.log('🐘 PostgreSQL Query:', query);
           if (parameters?.length) {
             console.log('📝 Parameters:', parameters);
           }
-        } : false,
+        } : false
       });
     }
     return this.runtimeConnection;
@@ -158,7 +158,7 @@ class DatabaseManager {
           if (parameters?.length) {
             console.log('📝 Parameters:', parameters);
           }
-        } : false,
+        } : false
       });
     }
     return this.adminConnection;
@@ -168,7 +168,7 @@ class DatabaseManager {
     if (config.qdrant && !this.qdrantClient) {
       this.qdrantClient = new QdrantClient({
         url: config.qdrant.url,
-        apiKey: config.qdrant.apiKey,
+        apiKey: config.qdrant.apiKey
       });
     }
     return this.qdrantClient;
@@ -179,7 +179,7 @@ class DatabaseManager {
     if (!this.runtimeDb) {
       this.runtimeDb = drizzle(this.createRuntimeConnection(), {
         schema,
-        logger: isDev,
+        logger: isDev
       });
     }
     return this.runtimeDb;
@@ -189,7 +189,7 @@ class DatabaseManager {
     if (!this.adminDb) {
       this.adminDb = drizzle(this.createAdminConnection(), {
         schema,
-        logger: isDev,
+        logger: isDev
       });
     }
     return this.adminDb;
@@ -270,18 +270,18 @@ class DatabaseManager {
         await qdrant.createCollection(collectionName, {
           vectors: {
             size: vectorSize,
-            distance,
+            distance
           },
           optimizers_config: {
             default_segment_number: 2,
             memmap_threshold: 20000,
-            indexing_threshold: 20000,
+            indexing_threshold: 20000
           },
           hnsw_config: {
             m: 16,
             ef_construct: 64,
-            full_scan_threshold: 10000,
-          },
+            full_scan_threshold: 10000
+          }
         });
 
         console.log(`✅ Created Qdrant collection: ${collectionName}`);
@@ -303,7 +303,7 @@ class DatabaseManager {
       threshold = 0.7,
       filter = {},
       usePostgreSQL = true,
-      useQdrant = true,
+      useQdrant = true
     } = options;
 
     const results: HybridSearchResult['results'] = [];
@@ -334,7 +334,7 @@ class DatabaseManager {
             id: row.id,
             score: row.similarity,
             document: row as DocumentMetadata,
-            source: 'postgresql',
+            source: 'postgresql'
           });
         }
       } catch (error) {
@@ -357,9 +357,9 @@ class DatabaseManager {
             filter: Object.keys(filter).length > 0 ? {
               must: Object.entries(filter).map(([key, value]) => ({
                 key,
-                match: { value },
-              })),
-            } : undefined,
+                match: { value }
+              }))
+            } : undefined
           });
 
           qdrantTime = Date.now() - qdrantStart;
@@ -383,7 +383,7 @@ class DatabaseManager {
                   id: (result as { id?: any; score?: any }).id.toString(),
                   score: (result as { id?: any; score?: any }).score,
                   document,
-                  source: 'qdrant',
+                  source: 'qdrant'
                 });
               }
             }
@@ -412,8 +412,8 @@ class DatabaseManager {
       performance: {
         postgresqlTime,
         qdrantTime,
-        totalTime: Date.now() - startTime,
-      },
+        totalTime: Date.now() - startTime
+      }
     };
   }
 
@@ -426,7 +426,7 @@ class DatabaseManager {
       postgresql: false,
       qdrant: false,
       pgvector: false,
-      overallHealth: false,
+      overallHealth: false
     };
 
     try {
@@ -513,7 +513,7 @@ export const unifiedDb = {
   vectorSearch: (embedding: number[], options?: VectorSearchOptions) =>
     dbManager.hybridVectorSearch(embedding, options),
   ensureCollection: (name: string, size?: number, distance?: 'Cosine' | 'Dot' | 'Euclid') =>
-    dbManager.ensureQdrantCollection(name, size, distance),
+    dbManager.ensureQdrantCollection(name, size, distance)
 };
 
 // Re-export schema for convenience

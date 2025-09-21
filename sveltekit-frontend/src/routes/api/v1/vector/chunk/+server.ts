@@ -48,7 +48,7 @@ interface ChunkingResponse {
     totalTokens: number;
     processingTime: number;
     chunkingMethod: string;
-    usedCUDA: boolean;,
+    usedCUDA: boolean;
   };
   embeddings?: number[][];
 }
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request }) => {
         chunkingMethod: useSemanticChunking ? 'semantic' : preserveParagraphs ? 'paragraph-aware' : 'basic',
         usedCUDA
       },
-      embeddings: generateEmbeddings ? embeddings : undefined,
+      embeddings: generateEmbeddings ? embeddings : undefined
     };
 
     return json(response);
@@ -165,7 +165,7 @@ async function performSemanticChunking(
     chunkOverlap: number;
     minChunkSize: number;
     maxChunkSize: number;
-    extractMetadata: boolean;,
+    extractMetadata: boolean;
   }
 ): Promise<SemanticChunk[]> {
   const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } = options;
@@ -265,7 +265,7 @@ async function performParagraphAwareChunking(
     chunkOverlap: number;
     minChunkSize: number;
     maxChunkSize: number;
-    extractMetadata: boolean;,
+    extractMetadata: boolean;
   }
 ): Promise<SemanticChunk[]> {
   const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } = options;
@@ -344,7 +344,7 @@ async function performBasicChunking(
   options: {
     chunkSize: number;
     chunkOverlap: number;
-    extractMetadata: boolean;,
+    extractMetadata: boolean;
   }
 ): Promise<SemanticChunk[]> {
   const { chunkSize, chunkOverlap, extractMetadata } = options;
@@ -404,7 +404,7 @@ async function createSemanticChunk(
       sentenceCount,
       complexity,
       entities: extractMetadata ? entities : undefined,
-      keyTerms: extractMetadata ? keyTerms : undefined,
+      keyTerms: extractMetadata ? keyTerms : undefined
     }
   };
 }
@@ -420,14 +420,14 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
       model: getEmbeddingModel(),
       config: {
         normalize: true,
-        use_tensor_cores: true,
+        use_tensor_cores: true
       }
     };
 
     const response = await fetch(cudaUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
@@ -559,7 +559,7 @@ export const GET: RequestHandler = async () => {
       semanticChunking: true,
       metadataExtraction: true,
       embeddingGeneration: true,
-      cudaAcceleration: true,
+      cudaAcceleration: true
     },
     defaultOptions: {
       chunkSize: 512,
@@ -570,8 +570,8 @@ export const GET: RequestHandler = async () => {
       maxChunkSize: 2048,
       extractMetadata: true,
       useCUDA: true,
-      generateEmbeddings: false,
+      generateEmbeddings: false
     },
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };

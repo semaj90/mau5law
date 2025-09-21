@@ -15,7 +15,7 @@ export interface SimpleUser {
   first_name?: string;
   last_name?: string;
   role: string;
-  is_active: boolean;,
+  is_active: boolean;
 }
 
 export class SimpleAuthService {
@@ -30,7 +30,7 @@ export class SimpleAuthService {
       port: 5432,
       database: 'legal_ai_db',
       user: 'legal_admin',
-      password: '123456',
+      password: '123456'
     });
     await client.connect();
     return client;
@@ -79,7 +79,7 @@ export class SimpleAuthService {
         first_name: user.first_name,
         last_name: user.last_name,
         role: user.role,
-        is_active: user.is_active,
+        is_active: user.is_active
       };
 
     } finally {

@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     const profileData = {
       id: u.id,
       firstName: u.firstName || '',
-      lastName: u.lastName || '',
+      lastName: u.lastName || ''
     };
 
     // Initialize the SuperForm with drizzle-zod schema
@@ -38,7 +38,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       totalEvidence,
       felonyCases,
       misdemeanorCases,
-      citationCases,
+      citationCases
     ] = await Promise.all([
       // Total cases
       db.select({ count: helpers.count() as any }).from(cases),
@@ -71,7 +71,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       Promise.resolve([{ count: 0 }]),
 
       // Citation cases (placeholder)
-      Promise.resolve([{ count: 0 }]),
+      Promise.resolve([{ count: 0 }])
     ]);
 
     const userStats = {
@@ -83,7 +83,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       totalEvidence: totalEvidence[0]?.count || 0,
       felonyCases: felonyCases[0]?.count || 0,
       misdemeanorCases: misdemeanorCases[0]?.count || 0,
-      citationCases: citationCases[0]?.count || 0,
+      citationCases: citationCases[0]?.count || 0
     };
 
     return {
@@ -108,9 +108,9 @@ export const load: PageServerLoad = async ({ locals }) => {
         totalEvidence: 0,
         felonyCases: 0,
         misdemeanorCases: 0,
-        citationCases: 0,
+        citationCases: 0
       },
-      profileForm: null,
+      profileForm: null
     };
   }
 };
@@ -143,5 +143,5 @@ export const actions: Actions = {
       console.error('Profile update failed:', err);
       throw error(500, 'Failed to update profile');
     }
-  },
+  }
 };

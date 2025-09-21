@@ -52,11 +52,11 @@ export interface DataTableColumn<T = any> {
 }
 
 export interface InputVariant {
-  variant: 'default' | 'legal' | 'search' | 'ai';,
+  variant: 'default' | 'legal' | 'search' | 'ai';
 }
 
 export interface ComponentSize {
-  size: 'sm' | 'md' | 'lg';,
+  size: 'sm' | 'md' | 'lg';
 }
 
 // Component status and capabilities;
@@ -65,74 +65,74 @@ export const BITS_UI_STATUS = {
     BitsDialog: { 
       status: 'stable',
       features: ['accessibility', 'keyboard-nav', 'focus-trap', 'legal-styling'],
-      dependencies: ['bits-ui/Dialog'],
+      dependencies: ['bits-ui/Dialog']
     },
     BitsSelect: {
       status: 'stable', 
       features: ['searchable', 'keyboard-nav', 'legal-options', 'form-integration'],
-      dependencies: ['bits-ui/Select'],
+      dependencies: ['bits-ui/Select']
     },
     BitsInput: {
       status: 'stable',
       features: ['variants', 'icons', 'validation', 'legal-styling'],
-      dependencies: [],
+      dependencies: []
     },
     BitsCombobox: {
       status: 'stable',
       features: ['searchable', 'creatable', 'categories', 'multiple-selection', 'legal-entities'],
-      dependencies: ['bits-ui/Combobox'],
+      dependencies: ['bits-ui/Combobox']
     },
     BitsDatePicker: {
       status: 'stable',
       features: ['time-picker', 'deadline-warnings', 'legal-deadlines', 'accessibility'],
-      dependencies: ['bits-ui/DatePicker'],
+      dependencies: ['bits-ui/DatePicker']
     },
     BitsDataTable: {
       status: 'stable',
       features: ['sorting', 'filtering', 'pagination', 'selection', 'export', 'evidence-management'],
-      dependencies: [],
+      dependencies: []
     },
     BitsToast: {
       status: 'stable',
       features: ['variants', 'actions', 'legal-notifications', 'case-updates'],
-      dependencies: ['bits-ui/Toast'],
+      dependencies: ['bits-ui/Toast']
     },
     Button: {
       status: 'stable',
       features: ['variants', 'sizes', 'loading-states', 'svelte5-props'],
-      dependencies: [],
+      dependencies: []
     }
   },
   legalComponents: {
     CaseTimeline: {
       status: 'stable',
       features: ['timeline-visualization', 'event-tracking', 'legal-milestones'],
-      dependencies: [],
+      dependencies: []
     },
     ChainOfCustodyTracker: {
       status: 'stable',
       features: ['evidence-integrity', 'transfer-tracking', 'custody-verification'],
-      dependencies: [],
+      dependencies: []
     },
     LegalPrecedentCard: {
       status: 'stable',
       features: ['precedent-analysis', 'relevance-scoring', 'citation-tracking'],
-      dependencies: [],
+      dependencies: []
     },
     CriminalProfile: {
       status: 'stable',
       features: ['criminal-records', 'risk-assessment', 'biometric-data', 'warrant-tracking'],
-      dependencies: [],
+      dependencies: []
     }
   },
   svelte5: {
     compatible: true,
     patterns: ['$props()', '$bindable()', '$derived', '$state()'],
-    migration: 'complete',
+    migration: 'complete'
   },
   bitsUI: {
     version: '2.x',
     primitives: ['Dialog', 'Select', 'Button', 'Input', 'Combobox', 'DatePicker', 'Toast'],
-    accessibility: 'WCAG 2.1 AA compliant',
+    accessibility: 'WCAG 2.1 AA compliant'
   }
 } as const;

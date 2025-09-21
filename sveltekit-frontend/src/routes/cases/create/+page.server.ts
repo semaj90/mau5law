@@ -16,11 +16,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     data: {
       title: '',
       description: '',
-      priority: 'medium' as const,
+      priority: 'medium' as const
     },
     errors: Record<string, any>,
     valid: true,
-    posted: false,
+    posted: false
   };
 
   // Pre-populate form if editing (check for case ID in URL) - temporarily disabled for testing
@@ -74,7 +74,7 @@ export const actions: Actions = {
       dueDate: formData.get('dueDate')?.toString() || null,
       tags: formData.get('tags')?.toString()?.split(',').map(t => t.trim()).filter(Boolean) || [],
       isConfidential: formData.get('isConfidential') === 'true',
-      notifyAssignee: formData.get('notifyAssignee') !== 'false',
+      notifyAssignee: formData.get('notifyAssignee') !== 'false'
     };
 
     // Basic validation
@@ -94,7 +94,7 @@ export const actions: Actions = {
       data,
       errors,
       valid: Object.keys(errors).length === 0,
-      posted: true,
+      posted: true
     };
 
     // Return form with errors if validation fails;
@@ -118,7 +118,7 @@ export const actions: Actions = {
             file,
             originalName: file.name,
             size: file.size,
-            type: file.type,
+            type: file.type
           });
         }
       }
@@ -182,24 +182,24 @@ export const actions: Actions = {
           isConfidential,
           notifyAssignee,
           createdBy: locals.user?.id || 'anonymous',
-          createdAt: new Date().toISOString(),
+          createdAt: new Date().toISOString()
         },
         attachments: attachments.map((a) => ({
           name: a.originalName,
           size: a.size,
-          mimeType: a.type,
+          mimeType: a.type
         })),
         storage: {
           bucket: 'case-documents',
-          basePath: `cases/${caseNumber}/documents/`,
+          basePath: `cases/${caseNumber}/documents/`
         },
         featureFlags: {
           embedWith: 'nomic', // instruct orchestrator to use Nomic / configured embedder
           persistVectorTo: ['pgvector', 'qdrant'],
           autoTagWith: 'qdrant',
           cacheHits: true,
-          scheduleGpu: true,
-        },
+          scheduleGpu: true
+        }
       };
 
       // Fire-and-forget: prefer orchestrator enqueue API if available.;
@@ -215,7 +215,7 @@ export const actions: Actions = {
               'Content-Type': 'application/json',
               ...(locals.orchestrator.apiKey ? { Authorization: `Bearer ${locals.orchestrator.apiKey}` } : Record<string, any>)
             },
-            body: JSON.stringify(ingestionPayload),
+            body: JSON.stringify(ingestionPayload)
           }).catch((err) => console.error('Ingestion service request failed:', err);
         } else {
           // If no orchestrator is configured, attempt a minimal local best-effort:
@@ -251,9 +251,9 @@ export const actions: Actions = {
                   metadata: {
                     title,
                     priority,
-                    createdBy: locals.user?.id || 'anonymous',
-                  },
-                },
+                    createdBy: locals.user?.id || 'anonymous'
+                  }
+                }
               });
             } catch (embedErr) {
               console.error('Local embedding (best-effort) failed:', embedErr);
@@ -265,7 +265,7 @@ export const actions: Actions = {
             await locals.db.ingestQueue.create({
               data: {
                 jobType: 'case_creation',
-                payload: ingestionPayload,
+                payload: ingestionPayload
               }
             });
           } catch (qErr) {
@@ -341,7 +341,7 @@ export const actions: Actions = {
           priority,
           assignedTo,
           createdBy: locals.user?.id || 'anonymous',
-          createdAt: new Date(),
+          createdAt: new Date()
         };
 
         // 3) Vector persistence temporarily disabled - would need proper Drizzle setup;
@@ -463,7 +463,7 @@ export const actions: Actions = {
       return {
         form: {
           ...form,
-          valid: true,
+          valid: true
         },
         success: true,
         message: `Case ${caseNumber} created successfully`,
@@ -481,14 +481,14 @@ export const actions: Actions = {
       if (error.code === 'P2002') {
         return fail(409, {
           form,
-          message: 'A case with this number already exists',
+          message: 'A case with this number already exists'
         });
       }
 
       // Generic server error;
       return fail(500, {
         form,
-        message: 'Failed to create case. Please try again.',
+        message: 'Failed to create case. Please try again.'
       });
     }
   },
@@ -516,7 +516,7 @@ export const actions: Actions = {
       if (!existingCase) {
         return fail(404, {
           form,
-          message: 'Case not found',
+          message: 'Case not found'
         });
       }
 
@@ -527,7 +527,7 @@ export const actions: Actions = {
     ) {
       return fail(403, {
         form,
-        message: 'You do not have permission to edit this case',
+        message: 'You do not have permission to edit this case'
       });
     }
 
@@ -544,7 +544,7 @@ export const actions: Actions = {
           title,
           description,
           priority,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         },
         include: {
           documents: true,
@@ -568,9 +568,9 @@ export const actions: Actions = {
               priority:
                 existingCase.priority !== priority
                   ? { from: existingCase.priority, to: priority }
-                  : undefined,
-            },
-          },
+                  : undefined
+            }
+          }
         } as any);
       }
 
@@ -584,7 +584,7 @@ export const actions: Actions = {
       console.error('Case update failed:', error);
       return fail(500, {
         form,
-        message: 'Failed to update case. Please try again.',
+        message: 'Failed to update case. Please try again.'
       });
     }
   },
@@ -598,18 +598,18 @@ export const actions: Actions = {
     where: {
       userId_draftKey: {
         userId: locals.user?.id || 'anonymous',
-        draftKey: 'case_creation',
-      },
+        draftKey: 'case_creation'
+      }
     },
     update: {
       data: form.data,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     },
     create: {
       userId: locals.user?.id || 'anonymous',
       draftKey: 'case_creation',
-      data: form.data,
-    },
+      data: form.data
+    }
   });
 
       return message(form, {
@@ -622,7 +622,7 @@ export const actions: Actions = {
       console.error('Draft save failed:', error);
       return fail(500, {
         form,
-        message: 'Failed to save draft',
+        message: 'Failed to save draft'
       });
     }
   }

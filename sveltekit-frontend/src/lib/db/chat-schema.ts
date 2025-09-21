@@ -9,7 +9,7 @@ export const chatSessions = pgTable('chat_sessions', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   messageCount: integer('message_count').default(0).notNull(),
-  isActive: boolean('is_active').default(true).notNull(),
+  isActive: boolean('is_active').default(true).notNull()
 });
 
 export const chatMessages = pgTable('chat_messages', {
@@ -23,7 +23,7 @@ export const chatMessages = pgTable('chat_messages', {
   model: text('model'),
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
 // Legal documents stored in MinIO with metadata in PostgreSQL;
@@ -39,7 +39,7 @@ export const legalDocuments = pgTable('legal_documents', {
   embedding: text('embedding'), // JSON string of embedding vector
   metadata: jsonb('metadata').default(sql`'{}'::jsonb`),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
 // Neo4j relationship tracking (metadata only - actual relationships in Neo4j);
@@ -51,7 +51,7 @@ export const documentRelationships = pgTable('document_relationships', {
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   neo4jId: text('neo4j_id'), // Reference to Neo4j relationship ID
   metadata: jsonb('metadata').default({}),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
 // Enhanced RAG queries and results;
@@ -62,7 +62,7 @@ export const ragQueries = pgTable('rag_queries', {
   queryEmbedding: text('query_embedding'), // JSON string of query embedding
   results: jsonb('results'),
   metadata: jsonb('metadata').default({}),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
 export type ChatSession = typeof chatSessions.$inferSelect;

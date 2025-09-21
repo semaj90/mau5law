@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         id: cases.id,
         title: cases.title,
         case_number: cases.case_number,
-        status: cases.status,
+        status: cases.status
       })
       .from(cases)
   .where(helpers.eq(cases.status, 'active') as any)
@@ -33,13 +33,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 
     return {
       form,
-      cases: userCases,
+      cases: userCases
     };
   } catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
-      cases: [],
+      cases: []
     };
   }
 };
@@ -143,7 +143,7 @@ export const actions: Actions = {
 
           const ocrResponse = await fetch('/api/ocr/extract', {
             method: 'POST',
-            body: ocrFormData,
+            body: ocrFormData
           });
 
           if (ocrResponse.ok) {
@@ -153,7 +153,7 @@ export const actions: Actions = {
               pages: ocrResult.pages,
               averageConfidence: ocrResult.averageConfidence,
               legalConceptsFound: ocrResult.legalConcepts?.length || 0,
-              citationsFound: ocrResult.citations?.length || 0,
+              citationsFound: ocrResult.citations?.length || 0
             });
           } else {
             console.warn('OCR processing failed:', ocrResponse.statusText);
@@ -172,7 +172,7 @@ export const actions: Actions = {
           enableAiAnalysis: form.data.enableAiAnalysis,
           enableOcr: form.data.enableOcr,
           enableEmbeddings: form.data.enableEmbeddings,
-          enableSummarization: form.data.enableSummarization,
+          enableSummarization: form.data.enableSummarization
         }
       };
 
@@ -187,7 +187,7 @@ export const actions: Actions = {
             extractedText: ocrResult?.text,
             legalConcepts: ocrResult?.legalConcepts || [],
             citations: ocrResult?.citations || [],
-            ocrConfidence: ocrResult?.averageConfidence,
+            ocrConfidence: ocrResult?.averageConfidence
           };
           break;
 
@@ -199,7 +199,7 @@ export const actions: Actions = {
             format: file.type.split('/')[1] || 'unknown',
             hasAlphaChannel: file.type === 'image/png',
             extractedText: ocrResult?.text,
-            ocrConfidence: ocrResult?.averageConfidence,
+            ocrConfidence: ocrResult?.averageConfidence
           };
           break;
 
@@ -211,7 +211,7 @@ export const actions: Actions = {
             codec: 'unknown',
             frameRate: 0,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString(),
+            uploadedAt: new Date().toISOString()
           };
           break;
 
@@ -223,7 +223,7 @@ export const actions: Actions = {
             sampleRate: 44100,
             channels: 2,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString(),
+            uploadedAt: new Date().toISOString()
           };
           break;
 
@@ -236,7 +236,7 @@ export const actions: Actions = {
             characterCount: textContent.length,
             language: 'unknown', // Could detect with a language detection library
             fileSize: file.size,
-            uploadedAt: new Date().toISOString(),
+            uploadedAt: new Date().toISOString()
           };
           break;
 
@@ -244,7 +244,7 @@ export const actions: Actions = {
           metadata = {
             kind: 'UNKNOWN',
             fileSize: file.size,
-            uploadedAt: new Date().toISOString(),
+            uploadedAt: new Date().toISOString()
           };
       }
 
@@ -276,7 +276,7 @@ export const actions: Actions = {
               confidence: ocrResult.averageConfidence,
               legalConcepts: ocrResult.legalConcepts,
               citations: ocrResult.citations,
-              pageCount: ocrResult.pages,
+              pageCount: ocrResult.pages
             } : null
           }
         })
@@ -288,7 +288,7 @@ export const actions: Actions = {
         type: evidenceRecord[0].evidence_type,
         size: file.size,
         hash: fileHash.substring(0, 8) + '...'
-      ,});
+      });
 
       // Trigger Go Upload Service for additional processing;
       try {
@@ -303,7 +303,7 @@ export const actions: Actions = {
 
         const goServiceResponse = await fetch('http://localhost:5173/api/upload/go-service', {
           method: 'POST',
-          body: uploadFormData,
+          body: uploadFormData
         });
 
         if (goServiceResponse.ok) {
@@ -317,7 +317,7 @@ export const actions: Actions = {
               goServiceProcessing: {
                 embeddings: goResult.embeddings,
                 analysis: goResult.analysis,
-                processedAt: new Date().toISOString(),
+                processedAt: new Date().toISOString()
               }
             };
           }

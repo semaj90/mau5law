@@ -20,7 +20,7 @@ interface GPUMetrics {
   tensorCoreLoad: number;
   thermalStatus: 'cool' | 'warm' | 'hot';
   availableComputeUnits: number;
-  queueDepth: number;,
+  queueDepth: number;
 }
 
 interface CacheWorkload {
@@ -83,7 +83,7 @@ export class WebGPURedisOptimizer {
         requiredLimits: {
           maxComputeWorkgroupSizeX: 1024,
           maxComputeInvocationsPerWorkgroup: 1024,
-          maxBufferSize: 1024 * 1024 * 1024 // 1GB buffer limit,
+          maxBufferSize: 1024 * 1024 * 1024 // 1GB buffer limit
         }
       });
 
@@ -114,7 +114,7 @@ export class WebGPURedisOptimizer {
         layout: 'auto',
         compute: {
           module: shaderModule,
-          entryPoint: 'main',
+          entryPoint: 'main'
         }
       });
 
@@ -132,7 +132,7 @@ export class WebGPURedisOptimizer {
       if ('serviceWorker' in navigator) {
         const registration = await navigator.serviceWorker.register('/cache-worker.js', {
           scope: '/api/',
-          type: 'module',
+          type: 'module'
         });
 
         this.serviceWorker = registration.active || registration.waiting || registration.installing;
@@ -171,7 +171,7 @@ export class WebGPURedisOptimizer {
                 poolType, 
                 threadId: i,
                 rtxOptimizations: true,
-                simdEnabled: true,
+                simdEnabled: true
               } 
             });
             
@@ -199,7 +199,7 @@ export class WebGPURedisOptimizer {
       if (this.gpuDevice) {
         const querySet = this.gpuDevice.createQuerySet({
           type: 'timestamp',
-          count: 2,
+          count: 2
         });
 
         // Simulate GPU metrics (in production, would use actual GPU monitoring);
@@ -209,7 +209,7 @@ export class WebGPURedisOptimizer {
           tensorCoreLoad: Math.random() * this.MAX_TENSOR_CORES,
           thermalStatus: Math.random() > 0.8 ? 'hot' : Math.random() > 0.5 ? 'warm' : 'cool',
           availableComputeUnits: this.MAX_TENSOR_CORES - Math.floor(Math.random() * 20),
-          queueDepth: this.loadBalancerQueue.size,
+          queueDepth: this.loadBalancerQueue.size
         };
 
         this.metricsHistory.push(metrics);
@@ -230,7 +230,7 @@ export class WebGPURedisOptimizer {
       tensorCoreLoad: 0,
       thermalStatus: 'cool',
       availableComputeUnits: 0,
-      queueDepth: this.loadBalancerQueue.size,
+      queueDepth: this.loadBalancerQueue.size
     };
   }
 
@@ -282,19 +282,19 @@ export class WebGPURedisOptimizer {
       const inputBuffer = this.gpuDevice.createBuffer({
         size: byteSize,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true,
+        mappedAtCreation: true
       });
       new Float32Array(inputBuffer.getMappedRange()).set(data);
       inputBuffer.unmap();
 
       const outputBuffer = this.gpuDevice.createBuffer({
         size: byteSize,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const uniformBuffer = this.gpuDevice.createBuffer({
         size: 16, // vec4<u32>
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       // Set compression parameters
@@ -326,7 +326,7 @@ export class WebGPURedisOptimizer {
       // Read result;
       const stagingBuffer = this.gpuDevice.createBuffer({
         size: byteSize,
-        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
       });
 
       commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, byteSize);
@@ -394,11 +394,11 @@ export class WebGPURedisOptimizer {
         priority: options.priority || 'medium',
         dataSize: JSON.stringify(value).length,
         tensorDimensions: value instanceof Float32Array ? [value.length] : undefined,
-        requiresGPU: options.compress && value instanceof Float32Array,
+        requiresGPU: options.compress && value instanceof Float32Array
       },
       data: value,
       key,
-      ttl: options.ttl,
+      ttl: options.ttl
     };
 
     const strategy = await this.optimizeWorkloadDistribution(job);
@@ -410,7 +410,7 @@ export class WebGPURedisOptimizer {
         type: 'compressed_tensor',
         originalLength: value.length,
         compressionRatio: 4,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
       
       await cache.set(`${key}:data`, compressed, options.ttl);
@@ -492,11 +492,11 @@ export class WebGPURedisOptimizer {
       threadPoolStats: {
         totalPools: this.threadPools.size,
         activeWorkers: Array.from(this.threadPools.values()).flat().length,
-        queueDepth: this.loadBalancerQueue.size,
+        queueDepth: this.loadBalancerQueue.size
       },
       cacheHitRatio: 0.85, // Would calculate from actual cache stats
       averageResponseTime: 12.5, // ms
-      compressionRatio: 4.2 // Average compression achieved,
+      compressionRatio: 4.2 // Average compression achieved
     };
   }
 
@@ -528,14 +528,14 @@ export const optimizedCache = {
       ttl, 
       compress: value instanceof Float32Array,
       parallel: true,
-      priority: 'medium',
+      priority: 'medium'
     });
   },
 
   async get(key: string): Promise<any> {
     return webgpuRedisOptimizer.getOptimized(key, { 
       decompress: true,
-      parallel: true ,
+      parallel: true 
     });
   },
 

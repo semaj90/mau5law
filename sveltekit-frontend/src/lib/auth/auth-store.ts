@@ -22,7 +22,7 @@ export interface AuthUser extends Partial<User> {
 export interface AuthSession {
   id: string;
   userId: string;
-  expiresAt: Date;,
+  expiresAt: Date;
 }
 
 export interface AuthState {
@@ -42,7 +42,7 @@ const initialState: AuthState = {
   isLoading: true,
   isAuthenticated: false,
   permissions: [],
-  lastActivity: null,
+  lastActivity: null
 };
 
 // Create writable store for auth state
@@ -100,10 +100,10 @@ export class AuthStore {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ email, password, rememberMe }),
-        credentials: 'include',
+        credentials: 'include'
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -147,10 +147,10 @@ export class AuthStore {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(userData),
-        credentials: 'include',
+        credentials: 'include'
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -188,7 +188,7 @@ export class AuthStore {
     try {
       await fetch('/api/auth/logout', {
         method: 'POST',
-        credentials: 'include',
+        credentials: 'include'
       });
     } catch (error: any) {
       console.error('Logout error:', error);
@@ -211,7 +211,7 @@ export class AuthStore {
 
     try {
       const response = await fetch('/api/auth/session', {
-        credentials: 'include',
+        credentials: 'include'
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -243,10 +243,10 @@ export class AuthStore {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(updates),
-        credentials: 'include',
+        credentials: 'include'
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -276,10 +276,10 @@ export class AuthStore {
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ currentPassword, newPassword }),
-        credentials: 'include',
+        credentials: 'include'
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -362,7 +362,7 @@ export class AuthStore {
       isAuthenticated: true,
       permissions,
       lastActivity: new Date(),
-      isLoading: false,
+      isLoading: false
     });
   }
 
@@ -372,7 +372,7 @@ export class AuthStore {
   private static clearAuth(): void {
     authState.set({
       ...initialState,
-      isLoading: false,
+      isLoading: false
     });
   }
 
@@ -446,7 +446,7 @@ export class AuthStore {
   private static trackActivity(type: string): void {
     authState.update(state => ({
       ...state,
-      lastActivity: new Date(),
+      lastActivity: new Date()
     });
 
     // Send activity ping to server occasionally;
@@ -455,7 +455,7 @@ export class AuthStore {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, timestamp: new Date() }),
-        credentials: 'include',
+        credentials: 'include'
       }).catch(() => {}); // Silently fail
     }
   }

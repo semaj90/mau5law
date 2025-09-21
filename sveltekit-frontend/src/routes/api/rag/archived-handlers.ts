@@ -32,8 +32,8 @@ async function forwardToRAGBackend(
       signal: controller.signal,
       headers: {
         "User-Agent": "SvelteKit-Frontend/1.0.0",
-        ...(options.headers || {,}),
-      },
+        ...(options.headers || {})
+      }
     });
 
     clearTimeout(timeoutId);
@@ -51,7 +51,7 @@ async function forwardToRAGBackend(
         output: { error: errorText, status: (response as { ok?: any; text?: any; status?: any; json?: any }).status },
         duration,
         success: false,
-        error: `HTTP ${(response as { ok?: any; text?: any; status?: any; json?: any }).status}: ${errorText}`,
+        error: `HTTP ${(response as { ok?: any; text?: any; status?: any; json?: any }).status}: ${errorText}`
       });
 
       throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`);
@@ -67,7 +67,7 @@ async function forwardToRAGBackend(
       input: { endpoint, options: { ...options, signal: undefined } },
       output: { success: true, resultKeys: Object.keys(result) },
       duration,
-      success: true,
+      success: true
     });
 
     return result;
@@ -84,7 +84,7 @@ async function forwardToRAGBackend(
       output: { error: errorMessage(err) },
       duration,
       success: false,
-      error: errorMessage(err),
+      error: errorMessage(err)
     });
 
     if (
@@ -120,14 +120,14 @@ export async function handleUpload(request: Request): Promise<any> {
 
     const result = await forwardToRAGBackend("/api/v1/rag/upload", {
       method: "POST",
-      body: ragFormData,
+      body: ragFormData
     });
 
     return json({
       success: true,
       document: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).document,
       processing: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).processing,
-      metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata,
+      metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata
     });
   } catch (err: any) {
     console.error("Upload error:", err);
@@ -142,7 +142,7 @@ export async function handleCrawl(request: Request): Promise<any> {
       maxPages = 5,
       depth = 2,
       caseId,
-      documentType = "web_content",
+      documentType = "web_content"
     } = await request.json();
 
     if (!crawlUrl) {
@@ -157,15 +157,15 @@ export async function handleCrawl(request: Request): Promise<any> {
         maxPages,
         depth,
         caseId,
-        documentType,
-      }),
+        documentType
+      })
     });
 
     return json({
       success: true,
       document: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).document,
       crawlStats: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).crawlStats,
-      processingTime: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).processingTime,
+      processingTime: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).processingTime
     });
   } catch (err: any) {
     console.error("Crawl error:", err);
@@ -187,14 +187,14 @@ export async function handleWorkflow(request: Request): Promise<any> {
       body: JSON.stringify({
         workflowType,
         input,
-        options,
-      }),
+        options
+      })
     });
 
     return json({
       success: true,
       workflow: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).result,
-      metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata,
+      metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata
     });
   } catch (err: any) {
     console.error("Workflow error:", err);
@@ -215,14 +215,14 @@ export async function handleChat(request: Request): Promise<any> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         messages,
-        options,
-      }),
+        options
+      })
     });
 
     return json({
       success: true,
       response: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
-      metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata,
+      metadata: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).metadata
     });
   } catch (err: any) {
     console.error("Chat error:", err);
@@ -262,9 +262,9 @@ export async function handlePgaiProcess(request: Request): Promise<any> {
         }`,
         options: {
           temperature: 0.1,
-          num_predict: 1500,
-        },
-      }),
+          num_predict: 1500
+        }
+      })
     });
 
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
@@ -279,7 +279,7 @@ export async function handlePgaiProcess(request: Request): Promise<any> {
         entities: Record<string, any>,
         legal_issues: [],
         risk_level: "medium",
-        recommended_actions: [],
+        recommended_actions: []
       };
     }
 
@@ -289,8 +289,8 @@ export async function handlePgaiProcess(request: Request): Promise<any> {
         document_id: documentId,
         summary: parsedResult,
         chunks_created: 5,
-        processing_time_ms: 2500,
-      },
+        processing_time_ms: 2500
+      }
     });
   } catch (err: any) {
     console.error("pgai process error:", err);
@@ -316,16 +316,16 @@ export async function handlePgaiCustomAnalysis(request: Request): Promise<any> {
         prompt: `${prompt}\n\nDocument content: ${content.substring(0, 4000)}`,
         options: {
           temperature: 0.2,
-          num_predict: 2000,
-        },
-      }),
+          num_predict: 2000
+        }
+      })
     });
 
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
     return json({
       success: true,
-      data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
+      data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response
     });
   } catch (err: any) {
     console.error("pgai custom analysis error:", err);
@@ -338,7 +338,7 @@ export async function handlePgaiComparison(request: Request): Promise<any> {
     const {
       document1,
       document2,
-      model = "gemma3-legal",
+      model = "gemma3-legal"
     } = await request.json();
 
     if (!document1 || !document2) {
@@ -365,16 +365,16 @@ Provide analysis covering:
 4. Recommendations`,
         options: {
           temperature: 0.3,
-          num_predict: 2500,
-        },
-      }),
+          num_predict: 2500
+        }
+      })
     });
 
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
     return json({
       success: true,
-      data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
+      data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response
     });
   } catch (err: any) {
     console.error("pgai comparison error:", err);
@@ -387,7 +387,7 @@ export async function handlePgaiExtraction(request: Request): Promise<any> {
     const {
       content,
       extractionPrompt,
-      model = "gemma3-legal",
+      model = "gemma3-legal"
     } = await request.json();
 
     if (!content || !extractionPrompt) {
@@ -406,16 +406,16 @@ export async function handlePgaiExtraction(request: Request): Promise<any> {
 Document content: ${content.substring(0, 4000)}`,
         options: {
           temperature: 0.1,
-          num_predict: 1500,
-        },
-      }),
+          num_predict: 1500
+        }
+      })
     });
 
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
     return json({
       success: true,
-      data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response,
+      data: (result as { document?: any; processing?: any; metadata?: any; crawlStats?: any; processingTime?: any; result?: any; response?: any }).response
     });
   } catch (err: any) {
     console.error("pgai extraction error:", err);

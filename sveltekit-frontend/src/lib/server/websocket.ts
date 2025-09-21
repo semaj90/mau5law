@@ -32,7 +32,7 @@ export function setupWebSocketServer(server: any) {
     const user = {
       id: `user-${Math.random().toString(36).substr(2, 9)}`,
       name: `Prosecutor ${Math.floor(Math.random() * 100)}`,
-      email: `user${Math.floor(Math.random() * 100)}@prosecutor.office`,
+      email: `user${Math.floor(Math.random() * 100)}@prosecutor.office`
     };
 
     // Add user to active users;
@@ -46,7 +46,7 @@ export function setupWebSocketServer(server: any) {
       caseId,);
       {
         type: "USER_JOINED",
-        payload: user,
+        payload: user
       },
       ws,
     );
@@ -54,7 +54,7 @@ export function setupWebSocketServer(server: any) {
     // Send current active users to new connection;
     ws.send(JSON.stringify({
         type: "ACTIVE_USERS",
-        payload: Array.from(activeUsers.get(caseId) || []),
+        payload: Array.from(activeUsers.get(caseId) || [])
       }),
     );
 
@@ -81,7 +81,7 @@ export function setupWebSocketServer(server: any) {
       activeUsers.get(caseId)?.delete(user);
       broadcastToCase(caseId, {
         type: "USER_LEFT",
-        payload: user,
+        payload: user
       });
 
       if (activeUsers.get(caseId)?.size === 0) {
@@ -111,8 +111,8 @@ function handleWebSocketMessage(
           type: "EVIDENCE_POSITION_UPDATED",
           payload: {
             ...message.payload,
-            updatedBy: user,
-          },
+            updatedBy: user
+          }
         },
         sender,
       );
@@ -126,8 +126,8 @@ function handleWebSocketMessage(
           type: "EVIDENCE_UPDATED",
           payload: {
             ...message.payload,
-            updatedBy: user,
-          },
+            updatedBy: user
+          }
         },
         sender,
       );
@@ -141,8 +141,8 @@ function handleWebSocketMessage(
           type: "EVIDENCE_DELETED",
           payload: {
             ...message.payload,
-            deletedBy: user,
-          },
+            deletedBy: user
+          }
         },
         sender,
       );
@@ -156,8 +156,8 @@ function handleWebSocketMessage(
           type: "USER_CURSOR_UPDATED",
           payload: {
             user,
-            ...message.payload,
-          },
+            ...message.payload
+          }
         },
         sender,
       );
@@ -182,7 +182,7 @@ function broadcastToCase(
 
   const messageStr = JSON.stringify({
     ...message,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 
   connections.forEach((ws) => {
@@ -204,6 +204,6 @@ export function broadcastEvidenceUpdate(
 ) {
   broadcastToCase(caseId, {
     type,
-    payload,
+    payload
   });
 }

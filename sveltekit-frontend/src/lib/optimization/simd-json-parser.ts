@@ -186,7 +186,7 @@ export class SIMDJSONParser {
     return {
       simdEnabled: this.initialized,
       workerAvailable: !!this.worker,
-      memoryUsage: this.getMemoryUsage(),
+      memoryUsage: this.getMemoryUsage()
     };
   }
 
@@ -224,7 +224,7 @@ export class SIMDPerformanceTester {
     const results = {
       simd: 0,
       native: 0,
-      speedup: 0,
+      speedup: 0
     };
 
     // Test SIMD parsing
@@ -264,7 +264,7 @@ export class SIMDPerformanceTester {
     return {
       sizeGB: sizeGB.toFixed(3),
       elapsed: elapsed.toFixed(3),
-      throughput: throughput.toFixed(2),
+      throughput: throughput.toFixed(2)
     };
   }
 
@@ -275,7 +275,7 @@ export class SIMDPerformanceTester {
       documentType: 'contract',
       content: '',
       parties: [],
-      citations: [],
+      citations: []
     };
 
     // Fill with test data to reach target size

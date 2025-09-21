@@ -71,7 +71,7 @@ export const chainOfCustodyEntrySchema = z.object({
   action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'returned']),
   location: z.string().min(1, 'Location is required'),
   notes: z.string().optional(),
-  signature: z.string().optional(),
+  signature: z.string().optional()
 });
 
 // File metadata schema;
@@ -82,12 +82,12 @@ export const fileMetadataSchema = z.object({
   hash: z.string().optional(),
   dimensions: z.object({
     width: z.number().optional(),
-    height: z.number().optional(),
+    height: z.number().optional()
   }).optional(),
   duration: z.number().optional(),
   pages: z.number().optional(),
   extractedText: z.string().optional(),
-  ocrConfidence: z.number().min(0).max(1).optional(),
+  ocrConfidence: z.number().min(0).max(1).optional()
 });
 
 // Single file upload schema: accepts a file-like object (works in SSR/browser);
@@ -147,7 +147,7 @@ export const multipleFileUploadSchema = z.object({
     }, { message: 'Total file size cannot exceed 500MB' }),
 
   caseId: z.string().uuid().optional(),
-  enableAiAnalysis: z.boolean().default(true),
+  enableAiAnalysis: z.boolean().default(true)
 });
 
 // Case creation with file upload schema;
@@ -199,7 +199,7 @@ export const caseWithFilesSchema = z.object({
   fileDescriptions: z.array(z.string()).default([]),
   fileTitles: z.array(z.string()).default([]),
   fileTypes: z.array(fileTypeEnum).default([]),
-  fileEvidenceTypes: z.array(evidenceTypeEnum).default([]),
+  fileEvidenceTypes: z.array(evidenceTypeEnum).default([])
 });
 
 // File search schema;
@@ -220,7 +220,7 @@ export const fileSearchSchema = z.object({
   sortBy: z.enum(['created_at', 'updated_at', 'title', 'size', 'relevance']).default('created_at'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   limit: z.number().min(1).max(100).default(20),
-  offset: z.number().min(0).default(0),
+  offset: z.number().min(0).default(0)
 });
 
 // AI analysis result schema;
@@ -230,7 +230,7 @@ export const aiAnalysisResultSchema = z.object({
   entities: z.array(z.object({
     name: z.string(),
     type: z.string(),
-    confidence: z.number().min(0).max(1),
+    confidence: z.number().min(0).max(1)
   })).default([]),
   sentiment: z.object({
     score: z.number().min(-1).max(1),
@@ -240,7 +240,7 @@ export const aiAnalysisResultSchema = z.object({
   confidence: z.number().min(0).max(1).default(0),
   processingTime: z.number().positive().optional(),
   model: z.string().optional(),
-  embedding: z.array(z.number()).optional(),
+  embedding: z.array(z.number()).optional()
 });
 
 // Export types
@@ -313,5 +313,5 @@ export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = {
   fileDescriptions: [],
   fileTitles: [],
   fileTypes: [],
-  fileEvidenceTypes: [],
+  fileEvidenceTypes: []
 };

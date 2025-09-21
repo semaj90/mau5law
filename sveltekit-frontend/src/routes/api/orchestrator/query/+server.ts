@@ -24,12 +24,12 @@ interface QueryResponse {
   classification?: {
     type: string;
     confidence: number;
-    reasoning: string;,
+    reasoning: string;
   };
   nintendo_diagnostics?: {
     bank_switches: number;
     memory_pressure: 'low' | 'medium' | 'high';
-    cache_efficiency: number;,
+    cache_efficiency: number;
   };
 }
 
@@ -63,7 +63,7 @@ class MockLLMClient {
       'Based on general legal principles, this typically involves...',
       'In most jurisdictions, the standard approach is...',
       'Generally speaking, this concept refers to...',
-      'From a basic legal perspective, you should consider...',
+      'From a basic legal perspective, you should consider...'
     ];
     return (
       responses[Math.floor(Math.random() * responses.length)] +
@@ -113,7 +113,7 @@ function generateCacheKey(query: string, context?: any[]): string {
 function classifyQuery(query: string): {
   type: 'simple' | 'complex_legal' | 'embedding';
   confidence: number;
-  reasoning: string;,
+  reasoning: string;
 } {
   const legalKeywords = [
     'contract',
@@ -129,7 +129,7 @@ function classifyQuery(query: string): {
     'regulation',
     'compliance',
     'precedent',
-    'jurisdiction',
+    'jurisdiction'
   ];
   const embeddingKeywords = [
     'similar',
@@ -138,7 +138,7 @@ function classifyQuery(query: string): {
     'semantic',
     'find documents',
     'search',
-    'similarity',
+    'similarity'
   ];
 
   const queryLower = query.toLowerCase();
@@ -148,7 +148,7 @@ function classifyQuery(query: string): {
     return {
       type: 'embedding',
       confidence: 0.9,
-      reasoning: 'Query contains embedding/similarity keywords',
+      reasoning: 'Query contains embedding/similarity keywords'
     };
   }
 
@@ -160,7 +160,7 @@ function classifyQuery(query: string): {
     return {
       type: 'complex_legal',
       confidence: 0.8 + legalMatches * 0.05,
-      reasoning: `Found ${legalMatches} legal keywords in ${queryLength}-word query`,
+      reasoning: `Found ${legalMatches} legal keywords in ${queryLength}-word query`
     };
   }
 
@@ -168,14 +168,14 @@ function classifyQuery(query: string): {
     return {
       type: 'complex_legal',
       confidence: 0.7,
-      reasoning: 'Simple legal query requiring specialized knowledge',
+      reasoning: 'Simple legal query requiring specialized knowledge'
     };
   }
 
   return {
     type: 'simple',
     confidence: 0.8,
-    reasoning: 'General query suitable for fast processing',
+    reasoning: 'General query suitable for fast processing'
   };
 }
 
@@ -206,8 +206,8 @@ export const POST: RequestHandler = async ({ request }) => {
           nintendo_diagnostics: {
             bank_switches: 0,
             memory_pressure: 'low',
-            cache_efficiency: 98.5,
-          },
+            cache_efficiency: 98.5
+          }
         };
 
         return json(response);
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 ? 'complex_legal'
                 : 'embedding',
           confidence: 1.0,
-          reasoning: 'Forced by user',
+          reasoning: 'Forced by user'
         }
       : classifyQuery(query);
 
@@ -264,7 +264,7 @@ export const POST: RequestHandler = async ({ request }) => {
     queryCache.set(cacheKey, {
       response: answer,
       timestamp: Date.now(),
-      model: modelUsed,
+      model: modelUsed
     });
 
     // Clean up old cache entries (Nintendo memory management);
@@ -288,13 +288,13 @@ export const POST: RequestHandler = async ({ request }) => {
       classification: {
         type: classification.type,
         confidence: classification.confidence,
-        reasoning: classification.reasoning,
+        reasoning: classification.reasoning
       },
       nintendo_diagnostics: {
         bank_switches: bankSwitches,
         memory_pressure: responseTime > 2000 ? 'high' : responseTime > 1000 ? 'medium' : 'low',
-        cache_efficiency: (queryCache.size / 1000) * 100,
-      },
+        cache_efficiency: (queryCache.size / 1000) * 100
+      }
     };
 
     return json(response);
@@ -309,7 +309,7 @@ export const POST: RequestHandler = async ({ request }) => {
         memory_bank_used: 'none',
         response_time_ms: Date.now() - startTime,
         cost_saved: 0,
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       },
       { status: 500 }
     );

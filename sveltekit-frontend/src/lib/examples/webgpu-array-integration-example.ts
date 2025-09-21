@@ -168,11 +168,11 @@ export function integrateWithTextureStreaming(
   textureConfig: {
     width: number;
     height: number;
-    format: GPUTextureFormat;,
+    format: GPUTextureFormat;
   }
 ): {
   textureData: Uint8Array | Uint16Array | Float32Array;
-  compressionInfo: ArrayConversionResult;,
+  compressionInfo: ArrayConversionResult;
 } {
   console.log('🎨 Integrating embeddings with WebGPU texture streaming...');
   
@@ -214,7 +214,7 @@ export function integrateWithTextureStreaming(
         data: flatEmbeddings,
         originalSize: flatEmbeddings.length * 4,
         compressedSize: flatEmbeddings.length * 4,
-        compressionRatio: 1.0,
+        compressionRatio: 1.0
       };
       break;
   }

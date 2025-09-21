@@ -125,7 +125,7 @@ export class BrowserErrorHandler {
         source: event.filename || 'unknown',
         line: event.lineno || 0,
         column: event.colno || 0,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     });
 
@@ -136,7 +136,7 @@ export class BrowserErrorHandler {
         source: 'promise',
         line: 0,
         column: 0,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     });
   }
@@ -169,7 +169,7 @@ export class BrowserErrorHandler {
     gpuSupport: boolean;
     hardwareAcceleration: boolean;
     errors: number;
-    recommendations: string[];,
+    recommendations: string[];
   } {
     const recommendations: string[] = [];
     

@@ -40,7 +40,7 @@ interface EmbeddingResponse {
   model: string;
   backend: string;
   dimensions: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 /**
@@ -73,7 +73,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             model: result?.model || "unknown" // @ts-ignore - Model property access,
             backend: (result as { embedding?: any; backend?: any }).backend,
             dimensions: (result as { embedding?: any; backend?: any }).embedding.length,
-            processingTime: Math.round(processingTime),
+            processingTime: Math.round(processingTime)
           } as EmbeddingResponse);
         }
       } catch (error) {
@@ -88,7 +88,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json();
       {
         error: 'Internal server error',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -102,7 +102,7 @@ const originalGETHandler: RequestHandler = async () => {
   const health = {
     ollama: await checkOllamaHealth(),
     vllm: await checkVLLMHealth(),
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
 
   return json(health);
@@ -128,7 +128,7 @@ async function generateEmbedding(
       return await generateFallbackEmbedding(text, targetDimensions);
 
     default:
-      return null;,
+      return null;
   }
 }
 
@@ -142,9 +142,9 @@ async function generateOllamaEmbedding(text: string, model: string) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model,
-        prompt: text,
+        prompt: text
       }),
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(30000)
     });
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -160,7 +160,7 @@ async function generateOllamaEmbedding(text: string, model: string) {
     return {
       embedding: (data as { embedding?: any; data?: any; models?: any }).embedding,
       model,
-      backend: 'ollama',
+      backend: 'ollama'
     };
   } catch (error) {
     console.error('Ollama embedding error:', error);
@@ -178,9 +178,9 @@ async function generateVLLMEmbedding(text: string, model: string) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: model || 'sentence-transformers/all-MiniLM-L6-v2',
-        input: text,
+        input: text
       }),
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(30000)
     });
 
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -196,7 +196,7 @@ async function generateVLLMEmbedding(text: string, model: string) {
     return {
       embedding: (data as { embedding?: any; data?: any; models?: any }).data[0].embedding,
       model: data?.model || "unknown" // @ts-ignore - Model property access || model,
-      backend: 'vllm',
+      backend: 'vllm'
     };
   } catch (error) {
     console.error('vLLM embedding error:', error);
@@ -254,7 +254,7 @@ async function generateFallbackEmbedding(text: string, dimensions: number) {
     return {
       embedding,
       model: 'fallback-tfidf',
-      backend: 'fallback',
+      backend: 'fallback'
     };
   } catch (error) {
     console.error('Fallback embedding error:', error);
@@ -281,7 +281,7 @@ function simpleHash(str: string): number {
 async function checkOllamaHealth(): Promise<any> {
   try {
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/tags`, {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
 
     if ((response as { ok?: any; status?: any; json?: any }).ok) {
@@ -303,7 +303,7 @@ async function checkOllamaHealth(): Promise<any> {
   } catch (error) {
     return {
       healthy: false,
-      error: error instanceof Error ? error.message: 'Connection failed',
+      error: error instanceof Error ? error.message: 'Connection failed'
     };
   }
 }
@@ -314,7 +314,7 @@ async function checkOllamaHealth(): Promise<any> {
 async function checkVLLMHealth(): Promise<any> {
   try {
     const response = await fetch(`${VLLM_ENDPOINT}/models`, {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
 
     if ((response as { ok?: any; status?: any; json?: any }).ok) {
@@ -331,7 +331,7 @@ async function checkVLLMHealth(): Promise<any> {
   } catch (error) {
     return {
       healthy: false,
-      error: error instanceof Error ? error.message: 'Connection failed',
+      error: error instanceof Error ? error.message: 'Connection failed'
     };
   }
 }

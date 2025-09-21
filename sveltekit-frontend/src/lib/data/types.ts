@@ -54,7 +54,7 @@ export function extendEvidence(evidence: Evidence): ExtendedEvidence {
     ...evidence,
     status: evidence.isAdmissible ? "approved" : "pending",
     type: evidence.evidenceType,
-    createdAt: evidence.collectedAt || evidence.uploadedAt,
+    createdAt: evidence.collectedAt || evidence.uploadedAt
   };
 }
 
@@ -76,7 +76,7 @@ export interface CitationPoint {
   aiSummary?: string;
   relevanceScore?: number;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface NewCitationPoint {
@@ -131,13 +131,13 @@ export interface Book {
     jurisdiction: string;
     createdDate: string;
     lastModified: string;
-    completionStatus: "draft" | "review" | "final" | "archived";,
+    completionStatus: "draft" | "review" | "final" | "archived";
   };
   aiSummary?: string;
   aiTags: string[];
   createdBy: string;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 // Report Editor types;
@@ -175,7 +175,7 @@ export interface AIAnalysis {
     confidence: number;
     metadata: Record<string, any>;
   };
-  timestamp: Date;,
+  timestamp: Date;
 }
 
 export interface CitationSuggestion {
@@ -184,7 +184,7 @@ export interface CitationSuggestion {
   relevanceScore: number;
   source: CitationPoint;
   context: string;
-  reasoning: string;,
+  reasoning: string;
 }
 
 // Fabric.js Canvas types;
@@ -204,19 +204,19 @@ export interface CanvasStateData {
   background?: string;
   dimensions: {
     width: number;
-    height: number;,
+    height: number;
   };
   viewport: {
     zoom: number;
     panX: number;
-    panY: number;,
+    panY: number;
   };
   metadata: {
     title?: string;
     description?: string;
     tags: string[];
     evidenceIds: string[];
-    citationIds: string[];,
+    citationIds: string[];
   };
 }
 
@@ -227,7 +227,7 @@ export interface SearchFilters {
   reportType?: string;
   dateRange?: {
     start: Date;
-    end: Date;,
+    end: Date;
   };
   tags?: string[];
   jurisdiction?: string;
@@ -242,7 +242,7 @@ export interface SearchResult {
   excerpt: string;
   relevanceScore: number;
   metadata: Record<string, any>;
-  highlights: string[];,
+  highlights: string[];
 }
 
 // Export types;
@@ -254,7 +254,7 @@ export interface ExportOptions {
   watermark?: string;
   headerFooter?: {
     header: string;
-    footer: string;,
+    footer: string;
   };
 }
 
@@ -265,7 +265,7 @@ export interface ExportResult {
   metadata: {
     fileSize: number;
     pageCount?: number;
-    generatedAt: Date;,
+    generatedAt: Date;
   };
 }
 
@@ -283,7 +283,7 @@ export interface LegacyCitationPoint {
   aiSummary?: string;
   relevanceScore?: number;
   createdAt: string; // ISO string for Loki.js compatibility
-  updatedAt: string; // ISO string for Loki.js compatibility,
+  updatedAt: string; // ISO string for Loki.js compatibility
 }
 
 // UI State types;
@@ -293,11 +293,11 @@ export interface EditorState {
   selectedCitations: string[];
   clipboardContent?: {
     type: "text" | "citation" | "canvas-object";
-    data: any;,
+    data: any;
   };
   autoSaveEnabled: boolean;
   lastSaved?: Date;
-  isDirty: boolean;,
+  isDirty: boolean;
 }
 
 export interface SidebarState {
@@ -307,7 +307,7 @@ export interface SidebarState {
     tags?: string[];
     searchQuery?: string;
   };
-  collapsed: boolean;,
+  collapsed: boolean;
 }
 
 // Real-time collaboration types (future feature);
@@ -317,14 +317,14 @@ export interface CollaborationState {
     userName: string;
     cursor?: {
       x: number;
-      y: number;,
+      y: number;
     };
     selection?: {
       reportId: string;
       sectionId: string;
       range: {
         start: number;
-        end: number;,
+        end: number;
       };
     };
   }[];
@@ -333,7 +333,7 @@ export interface CollaborationState {
     userId: string;
     type: "text" | "canvas" | "citation";
     timestamp: Date;
-    data: any;,
+    data: any;
   }[];
 }
 
@@ -349,7 +349,7 @@ export interface AIResponse {
     model: string;
     confidence: number;
     executionTime: number;
-    fromCache: boolean;,
+    fromCache: boolean;
   };
 }
 
@@ -360,7 +360,7 @@ export interface Gemma3Config {
   topP: number;
   topK: number;
   repeatPenalty: number;
-  systemPrompt: string;,
+  systemPrompt: string;
 }
 
 // Local Model types;
@@ -369,7 +369,7 @@ export interface LocalModel {
   path: string;
   format: string;
   size: string;
-  available: boolean;,
+  available: boolean;
 }
 
 // API Response types;

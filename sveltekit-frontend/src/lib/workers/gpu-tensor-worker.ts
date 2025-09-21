@@ -33,7 +33,7 @@ export interface GPUProcessingStats {
   cacheHitRate: number;
   averageProcessingTime: number;
   webgpuSupported: boolean;
-  lastProcessedTime: number;,
+  lastProcessedTime: number;
 }
 
 class GPUTensorWorker {
@@ -46,7 +46,7 @@ class GPUTensorWorker {
     cacheHitRate: 0,
     averageProcessingTime: 0,
     webgpuSupported: false,
-    lastProcessedTime: 0,
+    lastProcessedTime: 0
   };
   private goServiceUrl = 'http://localhost:8095'; // GPU tensor service
 
@@ -66,7 +66,7 @@ class GPUTensorWorker {
         data: {
           webgpuSupported: this.stats.webgpuSupported,
           wasmLoaded: this.wasmModule !== null,
-          goServiceConnected: true,
+          goServiceConnected: true
         }
       });
 
@@ -85,7 +85,7 @@ class GPUTensorWorker {
     if ('gpu' in navigator) {
       try {
         const adapter = await navigator.gpu.requestAdapter({
-          powerPreference: 'high-performance',
+          powerPreference: 'high-performance'
         });
 
         if (adapter) {
@@ -93,7 +93,7 @@ class GPUTensorWorker {
             requiredFeatures: ['shader-f16'] as GPUFeatureName[],
             requiredLimits: {
               maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-              maxComputeWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension,
+              maxComputeWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension
             }
           });
 
@@ -251,7 +251,7 @@ class GPUTensorWorker {
         layout: 'auto',
         compute: {
           module: shaderModule,
-          entryPoint: 'main',
+          entryPoint: 'main'
         }
       });
     }
@@ -260,7 +260,7 @@ class GPUTensorWorker {
     const inputBuffer = this.gpuDevice.createBuffer({
       size: tensorData.data.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
 
     new Float32Array(inputBuffer.getMappedRange()).set(tensorData.data);
@@ -268,14 +268,14 @@ class GPUTensorWorker {
 
     const outputBuffer = this.gpuDevice.createBuffer({
       size: tensorData.data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     // Create uniform buffers for shape and metadata;
     const shapeBuffer = this.gpuDevice.createBuffer({
       size: 16, // 4 * 4 bytes for int32 array
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
 
     const shapeData = new Int32Array(shapeBuffer.getMappedRange();
@@ -287,7 +287,7 @@ class GPUTensorWorker {
     const metadataBuffer = this.gpuDevice.createBuffer({
       size: 16, // 4 * 4 bytes for vec4<i32>
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
 
     const metadataArray = new Int32Array(metadataBuffer.getMappedRange();
@@ -310,7 +310,7 @@ class GPUTensorWorker {
         { binding: 0, resource: { buffer: inputBuffer } },
         { binding: 1, resource: { buffer: outputBuffer } },
         { binding: 2, resource: { buffer: shapeBuffer } },
-        { binding: 3, resource: { buffer: metadataBuffer } },
+        { binding: 3, resource: { buffer: metadataBuffer } }
       ]
     });
 
@@ -326,7 +326,7 @@ class GPUTensorWorker {
     // Read results back;
     const resultBuffer = this.gpuDevice.createBuffer({
       size: tensorData.data.byteLength,
-      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
 
     const copyEncoder = this.gpuDevice.createCommandEncoder();
@@ -349,7 +349,7 @@ class GPUTensorWorker {
       ...tensorData,
       data: processedData,
       layout: 'webgpu_processed',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
 
@@ -360,9 +360,9 @@ class GPUTensorWorker {
         headers: {
           'Content-Type': 'application/json',
           'X-Request-ID': `worker_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          'X-Processing-Mode': 'webworker',
+          'X-Processing-Mode': 'webworker'
         },
-        body: JSON.stringify(tensorData),
+        body: JSON.stringify(tensorData)
       });
 
       if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -377,7 +377,7 @@ class GPUTensorWorker {
 
       return {
         ...result.data,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
     } catch (error: any) {
       throw new Error(`Go service communication failed: ${error.message}`);
@@ -393,7 +393,7 @@ class GPUTensorWorker {
 
     this.tensorCache.set(cacheKey, {
       data: result,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -415,7 +415,7 @@ class GPUTensorWorker {
     return {
       ...this.stats,
       cacheHitRate: Math.round(this.stats.cacheHitRate * 10000) / 100, // Convert to percentage with 2 decimals
-      averageProcessingTime: Math.round(this.stats.averageProcessingTime * 100) / 100 // Round to 2 decimals,
+      averageProcessingTime: Math.round(this.stats.averageProcessingTime * 100) / 100 // Round to 2 decimals
     };
   }
 
@@ -454,7 +454,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
         tensorWorker.postMessage({
           type: 'SUCCESS',
           id,
-          data: result,
+          data: result
         });
         break;
 
@@ -463,7 +463,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
         tensorWorker.postMessage({
           type: 'STATS',
           id,
-          data: stats,
+          data: stats
         });
         break;
 
@@ -483,7 +483,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
     tensorWorker.postMessage({
       type: 'ERROR',
       id,
-      error: error instanceof Error ? error.message: String(error),
+      error: error instanceof Error ? error.message: String(error)
     });
   }
 };

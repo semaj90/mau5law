@@ -10,18 +10,18 @@ export interface ContextMenuState {
   show: boolean;
   x: number;
   y: number;
-  item: any | null;,
+  item: any | null;
 }
 
 const defaultContextMenuState: ContextMenuState = {
   show: false,
   x: 0,
   y: 0,
-  item: null,
+  item: null
 };
 
 export const contextMenuStore: Writable<ContextMenuState> = writable({
-  ...defaultContextMenuState,
+  ...defaultContextMenuState
 });
 
 export const contextMenuActions = {
@@ -29,11 +29,11 @@ export const contextMenuActions = {
     contextMenuStore.set({ show: true, x, y, item });
   },
   close: () => {
-    contextMenuStore.set({ ...defaultContextMenuState ,});
+    contextMenuStore.set({ ...defaultContextMenuState });
   },
   update: (state: Partial<ContextMenuState>) => {
-    contextMenuStore.update((s) => ({ ...s, ...state ,});
-  },
+    contextMenuStore.update((s) => ({ ...s, ...state });
+  }
 };
 
 // Theme system
@@ -48,7 +48,7 @@ export type NotificationData = {
 };
 
 export type Notification = NotificationData & {
-  id: string;,
+  id: string;
 };
 
 // UI State stores
@@ -60,14 +60,14 @@ export const loading = writable({});
 export const sidebar = writable({
   isOpen: false,
   width: 280,
-  collapsed: false,
+  collapsed: false
 });
 
 // Animation preferences;
 export const motion = writable({
   reduceMotion: false,
   duration: "normal" as "fast" | "normal" | "slow",
-  spring: true,
+  spring: true
 });
 
 // Component state
@@ -151,9 +151,9 @@ export const uiStore = {
   updateForm: (formId: string, updates: Partial<FormState>) => {
     forms.update((state) => ({
       ...state,
-      [formId]: { ...state[formId], ...updates },
+      [formId]: { ...state[formId], ...updates }
     });
-  },
+  }
 };
 
 export default uiStore;

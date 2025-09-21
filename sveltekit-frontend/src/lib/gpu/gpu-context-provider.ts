@@ -68,7 +68,7 @@ export class GPUContextProvider {
         allowWebGL1: options.preferredBackend !== 'webgpu' && options.preferredBackend !== 'webgl2' || GPU_CONFIG.allowWebGL1,
         requireCompute: options.requireCompute ?? GPU_CONFIG.requireCompute,
         lodSystemIntegration: GPU_CONFIG.lodSystemIntegration,
-        nesMemoryOptimization: GPU_CONFIG.nesMemoryOptimization,
+        nesMemoryOptimization: GPU_CONFIG.nesMemoryOptimization
       };
 
       const { createHybridGPUContext } = await import('./hybrid-gpu-context.js');
@@ -82,7 +82,7 @@ export class GPUContextProvider {
       if (CLIENT_ENV.GPU_DEBUG) {
         console.log('🎮 GPU Context Provider initialized:', {
           backend: this.capabilities.backend,
-          capabilities: this.capabilities,
+          capabilities: this.capabilities
         });
       }
 
@@ -99,7 +99,7 @@ export class GPUContextProvider {
         supportsInteger: true,
         maxTextureSize: 2048,
         maxBufferSize: 16 * 1024 * 1024, // 16MB
-        memoryBudget: 64 * 1024 * 1024 // 64MB,
+        memoryBudget: 64 * 1024 * 1024 // 64MB
       };
 
       this.initialized = true;
@@ -282,7 +282,7 @@ export class GPUContextProvider {
         const buffer = device.createBuffer({
           size: data.byteLength,
           usage: gpuUsage,
-          mappedAtCreation: true,
+          mappedAtCreation: true
         });
         trackAllocation(buffer);
         return buffer;
@@ -303,7 +303,7 @@ export class GPUContextProvider {
         return data;
 
       default:
-        return null;,
+        return null;
     }
   }
 
@@ -354,7 +354,7 @@ export class GPUContextProvider {
       maxTextureSize: 8192, // WebGPU typical limit
       maxBufferSize: 256 * 1024 * 1024, // 256MB
       maxWorkgroupSize: 256,
-      memoryBudget: GPU_CONFIG.memoryLimit,
+      memoryBudget: GPU_CONFIG.memoryLimit
     };
   }
 
@@ -366,7 +366,7 @@ export class GPUContextProvider {
       supportsInteger: true,
       maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE),
       maxBufferSize: 64 * 1024 * 1024, // 64MB typical
-      memoryBudget: GPU_CONFIG.memoryLimit * 0.75 // Leave some headroom,
+      memoryBudget: GPU_CONFIG.memoryLimit * 0.75 // Leave some headroom
     };
   }
 
@@ -378,7 +378,7 @@ export class GPUContextProvider {
       supportsInteger: false,
       maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE),
       maxBufferSize: 32 * 1024 * 1024, // 32MB typical
-      memoryBudget: GPU_CONFIG.memoryLimit * 0.5 // Conservative limit,
+      memoryBudget: GPU_CONFIG.memoryLimit * 0.5 // Conservative limit
     };
   }
 
@@ -508,7 +508,7 @@ export class GPUContextProvider {
       VERTEX: 0x20,
       INDEX: 0x10,
       COPY_SRC: 0x04,
-      COPY_DST: 0x08,
+      COPY_DST: 0x08
     };
 
     switch (usage) {
@@ -516,7 +516,7 @@ export class GPUContextProvider {
       case 'storage': return GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST;
       case 'vertex': return GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST;
       case 'index': return GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST;
-      default: return GPUBufferUsage.COPY_DST;,
+      default: return GPUBufferUsage.COPY_DST;
     }
   }
 
@@ -526,7 +526,7 @@ export class GPUContextProvider {
       case 'storage': return WebGLRenderingContext.ARRAY_BUFFER;
       case 'vertex': return WebGLRenderingContext.ARRAY_BUFFER;
       case 'index': return WebGLRenderingContext.ELEMENT_ARRAY_BUFFER;
-      default: return WebGLRenderingContext.ARRAY_BUFFER;,
+      default: return WebGLRenderingContext.ARRAY_BUFFER;
     }
   }
 
@@ -585,7 +585,7 @@ export class GPUContextProvider {
         supportsInteger: true,
         maxTextureSize: 2048,
         maxBufferSize: 16 * 1024 * 1024,
-        memoryBudget: 64 * 1024 * 1024,
+        memoryBudget: 64 * 1024 * 1024
       } as GPUCapabilities;
       this.initialized = true;
       return true; // treated as success (demoted to cpu);

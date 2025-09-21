@@ -6,7 +6,7 @@ import {
   context7Service,
   autoGenAgent,
   crewAIAgent,
-  enhancedRAGService,
+  enhancedRAGService
 } from '$lib/services/agent-stubs';
 
 /*
@@ -64,14 +64,14 @@ export interface AgentOrchestrationResponse {
     bestResult: string;
     consensusScore: number;
     recommendations: string[];
-    nextSteps: string[];,
+    nextSteps: string[];
   };
   orchestrationMetadata: {
     totalProcessingTime: number;
     agentsUsed: number;
     context7Enhanced: boolean;
     autoFixApplied: boolean;
-    timestamp: string;,
+    timestamp: string;
   };
 }
 
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
       prompt,
       context = {},
       agents = ['claude', 'autogen', 'crewai', 'rag'],
-      options = {},
+      options = {}
     } = requestData;
 
     // Validate request;
@@ -99,15 +99,15 @@ export const POST: RequestHandler = async ({ request }) => {
             bestResult: '',
             consensusScore: 0,
             recommendations: [],
-            nextSteps: [],
+            nextSteps: []
           },
           orchestrationMetadata: {
             totalProcessingTime: Date.now() - startTime,
             agentsUsed: 0,
             context7Enhanced: false,
             autoFixApplied: false,
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         },
         { status: 400 }
       );
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (options.autoFix) {
       const autoFixResult = await context7Service.autoFixCodebase({
         area: options.autoFixArea as any,
-        dryRun: false,
+        dryRun: false
       });
       context.autoFixResults = autoFixResult;
       autoFixApplied = true;
@@ -144,20 +144,20 @@ export const POST: RequestHandler = async ({ request }) => {
           options: {
             includeContext7: options.includeContext7,
             autoFix: options.autoFix,
-            area: options.autoFixArea,
-          },
+            area: options.autoFixArea
+          }
         });
         .then((result: any) => ({
           agent: 'claude',
           ...result,
-          error: undefined,
+          error: undefined
         });
         .catch((error: any) => ({
           agent: 'claude',
           output: '',
           score: 0,
           metadata: { error: true },
-          error: error.message,
+          error: error.message
         });
 
       agentPromises.push(claudePromise);
@@ -173,20 +173,20 @@ export const POST: RequestHandler = async ({ request }) => {
             priority: options.priority || 'medium',
             caseId: options.caseId,
             includeContext7: options.includeContext7,
-            autoFix: options.autoFix,
-          },
+            autoFix: options.autoFix
+          }
         });
         .then((result: any) => ({
           agent: 'autogen',
           ...result,
-          error: undefined,
+          error: undefined
         });
         .catch((error: any) => ({
           agent: 'autogen',
           output: '',
           score: 0,
           metadata: { error: true },
-          error: error.message,
+          error: error.message
         });
 
       agentPromises.push(autogenPromise);
@@ -200,20 +200,20 @@ export const POST: RequestHandler = async ({ request }) => {
           options: {
             crewType: 'legal_research',
             includeContext7: options.includeContext7,
-            autoFix: options.autoFix,
-          },
+            autoFix: options.autoFix
+          }
         });
         .then((result: any) => ({
           agent: 'crewai',
           ...result,
-          error: undefined,
+          error: undefined
         });
         .catch((error: any) => ({
           agent: 'crewai',
           output: '',
           score: 0,
           metadata: { error: true },
-          error: error.message,
+          error: error.message
         });
 
       agentPromises.push(crewaiPromise);
@@ -229,13 +229,13 @@ export const POST: RequestHandler = async ({ request }) => {
             includeContext7: options.includeContext7,
             autoFix: options.autoFix,
             maxResults: 5,
-            confidenceThreshold: 0.7,
-          },
+            confidenceThreshold: 0.7
+          }
         });
         .then((result: any) => ({
           agent: 'rag',
           ...result,
-          error: undefined,
+          error: undefined
         });
         .catch((error: any) => ({
           agent: 'rag',
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request }) => {
           score: 0,
           sources: [],
           metadata: { error: true },
-          error: error.message,
+          error: error.message
         });
 
       agentPromises.push(ragPromise);
@@ -260,7 +260,7 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         const agentResults = (await Promise.race([
           Promise.allSettled(agentPromises),
-          timeoutPromise,
+          timeoutPromise
         ])) as PromiseSettledResult<any>[];
 
         agentResults.forEach((result, index) => {
@@ -279,7 +279,7 @@ export const POST: RequestHandler = async ({ request }) => {
               metadata: { error: true },
               error:
                 (result as { status?: any; value?: any; reason?: any; score?: any }).reason
-                  ?.message || 'Agent execution failed',
+                  ?.message || 'Agent execution failed'
             });
           }
         });
@@ -291,7 +291,7 @@ export const POST: RequestHandler = async ({ request }) => {
           output: '',
           score: 0,
           metadata: { error: true },
-          error: 'Execution timeout - partial results may be available',
+          error: 'Execution timeout - partial results may be available'
         });
       }
     } else {
@@ -306,7 +306,7 @@ export const POST: RequestHandler = async ({ request }) => {
             output: '',
             score: 0,
             metadata: { error: true },
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message : 'Unknown error'
           });
         }
       }
@@ -326,8 +326,8 @@ export const POST: RequestHandler = async ({ request }) => {
         agentsUsed: results.length,
         context7Enhanced,
         autoFixApplied,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
 
     return json(response);
@@ -343,15 +343,15 @@ export const POST: RequestHandler = async ({ request }) => {
           bestResult: '',
           consensusScore: 0,
           recommendations: ['Check agent configurations', 'Verify service availability'],
-          nextSteps: ['Review error logs', 'Test individual agents'],
+          nextSteps: ['Review error logs', 'Test individual agents']
         },
         orchestrationMetadata: {
           totalProcessingTime: Date.now() - startTime,
           agentsUsed: 0,
           context7Enhanced: false,
           autoFixApplied: false,
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -367,7 +367,7 @@ function synthesizeResults(results: any[], originalPrompt: string) {
       bestResult: 'No valid results from agents',
       consensusScore: 0,
       recommendations: ['Check agent configurations', 'Review error logs'],
-      nextSteps: ['Test individual agent endpoints', 'Verify Context7 integration'],
+      nextSteps: ['Test individual agent endpoints', 'Verify Context7 integration']
     };
   }
 
@@ -387,14 +387,14 @@ function synthesizeResults(results: any[], originalPrompt: string) {
   const recommendations = [
     `Best performing agent: ${bestResult.agent} (score: ${bestResult.score.toFixed(2)})`,
     `Average confidence: ${avgScore.toFixed(2)}`,
-    `${validResults.length}/${results.length} agents completed successfully`,
+    `${validResults.length}/${results.length} agents completed successfully`
   ];
 
   // Generate next steps
   const nextSteps = [
     'Review best result for actionable insights',
     'Consider running additional analysis if needed',
-    'Document findings for case records',
+    'Document findings for case records'
   ];
 
   if (avgScore < 0.6) {
@@ -406,7 +406,7 @@ function synthesizeResults(results: any[], originalPrompt: string) {
     bestResult: bestResult.output,
     consensusScore: avgScore,
     recommendations,
-    nextSteps,
+    nextSteps
   };
 }
 
@@ -417,6 +417,6 @@ export const GET: RequestHandler = async () => {
     timestamp: new Date().toISOString(),
     availableAgents: ['claude', 'autogen', 'crewai', 'rag'],
     context7Enabled: true,
-    autoFixEnabled: true,
+    autoFixEnabled: true
   });
 };

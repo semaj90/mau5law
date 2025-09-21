@@ -5,7 +5,7 @@ import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: varchar("email", { length: 255 }).notNull().unique(),
-  hashed_password: varchar("hashed_password", { length: 255 }),
+  hashed_password: varchar("hashed_password", { length: 255 })
 });
 
 // Sessions table - exactly as Lucia expects;
@@ -16,6 +16,6 @@ export const sessions = pgTable("sessions", {
     .references(() => users.id, { onDelete: "cascade" }),
   expires_at: timestamp("expires_at", {
     withTimezone: true,
-    mode: "date",
-  }).notNull(),
+    mode: "date"
+  }).notNull()
 });

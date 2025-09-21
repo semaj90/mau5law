@@ -25,7 +25,7 @@ export const POST: RequestHandler = (async ({ request }) => {
     const res = await fetch(`${baseUrl}/cluster`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     const data = await res.json();
     return json(data, { status: res.status });

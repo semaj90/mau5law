@@ -32,7 +32,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const ollamaRes = await fetch("http://localhost:11436/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "gemma3-legal:latest", prompt }),
+      body: JSON.stringify({ model: "gemma3-legal:latest", prompt })
     });
 
     if (!ollamaRes.ok) {

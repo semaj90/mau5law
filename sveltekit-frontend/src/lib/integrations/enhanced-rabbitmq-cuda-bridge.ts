@@ -21,7 +21,7 @@ export const rabbitMQCudaState = writable({
   performance: {
     averageProcessingTime: 0,
     cudaAcceleration: true,
-    wasmFallback: false,
+    wasmFallback: false
   }
 });
 
@@ -85,7 +85,7 @@ class EnhancedRabbitMQCudaBridge {
       rabbitMQCudaState.update(state => ({
         ...state,
         connected: true,
-        cudaHealthy: this.cudaHealthy,
+        cudaHealthy: this.cudaHealthy
       });
       
       console.log('✅ Enhanced RabbitMQ-CUDA Bridge initialized successfully');
@@ -96,7 +96,7 @@ class EnhancedRabbitMQCudaBridge {
       rabbitMQCudaState.update(state => ({
         ...state,
         connected: false,
-        lastError: error.message,
+        lastError: error.message
       });
       return false;
     }
@@ -183,7 +183,7 @@ class EnhancedRabbitMQCudaBridge {
       
       rabbitMQCudaState.update(state => ({
         ...state,
-        activeJobs: state.activeJobs + 1,
+        activeJobs: state.activeJobs + 1
       });
       
       let result;
@@ -193,7 +193,7 @@ class EnhancedRabbitMQCudaBridge {
         result = await this.submitToCudaService({
           type: 'tensor_compute',
           data: job.payload,
-          priority: job.priority || 5,
+          priority: job.priority || 5
         });
       } else {
         // Fallback to CPU processing
@@ -207,7 +207,7 @@ class EnhancedRabbitMQCudaBridge {
         success: true,
         result,
         processingTime,
-        cudaAccelerated: this.cudaHealthy,
+        cudaAccelerated: this.cudaHealthy
       });
       
       rabbitMQCudaState.update(state => ({
@@ -216,7 +216,7 @@ class EnhancedRabbitMQCudaBridge {
         completedJobs: state.completedJobs + 1,
         performance: {
           ...state.performance,
-          averageProcessingTime: (state.performance.averageProcessingTime + processingTime) / 2,
+          averageProcessingTime: (state.performance.averageProcessingTime + processingTime) / 2
         }
       });
       
@@ -225,7 +225,7 @@ class EnhancedRabbitMQCudaBridge {
       await this.publishResult(job?.id || 'unknown', {
         success: false,
         error: error.message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       });
     }
   }
@@ -253,9 +253,9 @@ class EnhancedRabbitMQCudaBridge {
             query: queryVector,
             vectors: candidateVectors,
             algorithm,
-            batch_size: 1000 // RTX 3060 Ti optimized batch size,
+            batch_size: 1000 // RTX 3060 Ti optimized batch size
           },
-          priority: job.priority || 7,
+          priority: job.priority || 7
         });
       } else {
         // Use WebAssembly fallback for smaller batches
@@ -268,7 +268,7 @@ class EnhancedRabbitMQCudaBridge {
         success: true,
         result: { similarities, algorithm, vectorCount: candidateVectors.length },
         processingTime,
-        cudaAccelerated: this.cudaHealthy && candidateVectors.length > 100,
+        cudaAccelerated: this.cudaHealthy && candidateVectors.length > 100
       });
       
     } catch (error) {
@@ -276,7 +276,7 @@ class EnhancedRabbitMQCudaBridge {
       await this.publishResult(job?.id || 'unknown', {
         success: false,
         error: error.message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       });
     }
   }
@@ -303,9 +303,9 @@ class EnhancedRabbitMQCudaBridge {
           data: {
             vectors: embeddings,
             batch_size: Math.min(batchSize, 500), // GPU memory optimized
-            normalize_type: 'l2',
+            normalize_type: 'l2'
           },
-          priority: job.priority || 6,
+          priority: job.priority || 6
         });
       } else {
         // WebAssembly fallback
@@ -318,7 +318,7 @@ class EnhancedRabbitMQCudaBridge {
         success: true,
         result: { embeddings: normalizedEmbeddings, count: embeddings.length },
         processingTime,
-        cudaAccelerated: this.cudaHealthy,
+        cudaAccelerated: this.cudaHealthy
       });
       
     } catch (error) {
@@ -326,7 +326,7 @@ class EnhancedRabbitMQCudaBridge {
       await this.publishResult(job?.id || 'unknown', {
         success: false,
         error: error.message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       });
     }
   }
@@ -339,7 +339,7 @@ class EnhancedRabbitMQCudaBridge {
       const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/compute`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(jobData),
+        body: JSON.stringify(jobData)
       });
       
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -361,7 +361,7 @@ class EnhancedRabbitMQCudaBridge {
   private async checkCudaHealth() {
     try {
       const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/health`, {
-        method: 'GET',
+        method: 'GET'
       } as any);
       
       if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -370,7 +370,7 @@ class EnhancedRabbitMQCudaBridge {
         
         rabbitMQCudaState.update(state => ({
           ...state,
-          cudaHealthy: this.cudaHealthy,
+          cudaHealthy: this.cudaHealthy
         });
         
         if (this.cudaHealthy) {
@@ -446,7 +446,7 @@ class EnhancedRabbitMQCudaBridge {
       Buffer.from(JSON.stringify(message)),
       { 
         priority: (result as { success?: any }).success ? 5 : 8, // Higher priority for errors
-        persistent: true ,
+        persistent: true 
       }
     );
   }
@@ -463,7 +463,7 @@ class EnhancedRabbitMQCudaBridge {
       type,
       payload,
       priority,
-      createdAt: Date.now(),
+      createdAt: Date.now()
     };
     
     // Route to appropriate queue;
@@ -529,7 +529,7 @@ class EnhancedRabbitMQCudaBridge {
       rabbitMQCudaState.update(state => ({
         ...state,
         connected: false,
-        activeJobs: 0,
+        activeJobs: 0
       });
       
       console.log('✅ RabbitMQ-CUDA bridge shutdown complete');

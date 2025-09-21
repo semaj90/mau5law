@@ -295,7 +295,7 @@ export class WebGPUSOMCache {
       autoload: true,
       autoloadCallback: () => this.initializeCollections(),
       autosave: true,
-      autosaveInterval: 4000,
+      autosaveInterval: 4000
     });
   }
 
@@ -304,14 +304,14 @@ export class WebGPUSOMCache {
       this.lokiDB.getCollection('todos') ||;
       this.lokiDB.addCollection('todos', {
         indices: ['priority', 'category', 'confidence'],
-        unique: ['id'],
+        unique: ['id']
       });
 
     this.errorsCollection =
       this.lokiDB.getCollection('errors') ||;
       this.lokiDB.addCollection('errors', {
         indices: ['severity', 'category', 'file'],
-        unique: ['id'],
+        unique: ['id']
       });
 
     this.cacheCollection =
@@ -345,7 +345,7 @@ export class WebGPUSOMCache {
       }
 
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
 
       if (!adapter) {
@@ -357,8 +357,8 @@ export class WebGPUSOMCache {
         requiredFeatures: ['shader-f16'] as GPUFeatureName[],
         requiredLimits: {
           maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-          maxComputeWorkgroupStorageSize: adapter.limits.maxComputeWorkgroupStorageSize,
-        },
+          maxComputeWorkgroupStorageSize: adapter.limits.maxComputeWorkgroupStorageSize
+        }
       });
 
       console.log('🚀 WebGPU initialized for SOM semantic caching');
@@ -462,7 +462,7 @@ export class WebGPUSOMCache {
             category: this.determineCategory(match[3]),
             type: 'error',
             timestamp: new Date().toISOString(),
-            context: [line],
+            context: [line]
           });
         }
       }
@@ -497,15 +497,15 @@ export class WebGPUSOMCache {
 
     // Create compute pipeline;
     const shaderModule = this.device.createShaderModule({
-      code: this.errorEmbeddingShader,
+      code: this.errorEmbeddingShader
     });
 
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: shaderModule,
-        entryPoint: 'compute_error_embedding',
-      },
+        entryPoint: 'compute_error_embedding'
+      }
     });
 
     for (const error of errors) {
@@ -518,22 +518,22 @@ export class WebGPUSOMCache {
       // Create buffers;
       const textBuffer = this.device.createBuffer({
         size: paddedText.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const embeddingBuffer = this.device.createBuffer({
         size: embeddingDim * 4, // 4 bytes per float32
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const configBuffer = this.device.createBuffer({
         size: 16, // 4 uint32s
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       const resultBuffer = this.device.createBuffer({
         size: embeddingDim * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       // Write data to buffers
@@ -550,8 +550,8 @@ export class WebGPUSOMCache {
         entries: [
           { binding: 0, resource: { buffer: textBuffer } },
           { binding: 1, resource: { buffer: embeddingBuffer } },>
-          { binding: 2, resource: { buffer: configBuffer } },
-        ],
+          { binding: 2, resource: { buffer: configBuffer } }
+        ]
       });
 
       // Run compute
@@ -602,7 +602,7 @@ export class WebGPUSOMCache {
       const response = await fetch('http://localhost:8080/api/som/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ errors }),
+        body: JSON.stringify({ errors })
       });
 
       if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -656,8 +656,8 @@ export class WebGPUSOMCache {
         created_at: new Date().toISOString(),
         metadata: {
           error_count: categoryErrors.length,
-          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size,
-        },
+          files_affected: new Set(categoryErrors.map((e: any) => e.file)).size
+        }
       });
     });
 
@@ -674,13 +674,13 @@ export class WebGPUSOMCache {
       typescript: [
         'Add missing type declarations',
         'Fix import statements',
-        'Update tsconfig.json',
+        'Update tsconfig.json'
       ],
       import: ['Check module paths', 'Install missing dependencies', 'Update import syntax'],
       syntax: ['Fix syntax errors', 'Check parentheses and brackets', 'Review code formatting'],
       service: ['Check service connectivity', 'Verify configuration', 'Restart services'],
       build: ['Clear build cache', 'Update dependencies', 'Check build configuration'],
-      general: ['Review error messages', 'Check documentation', 'Apply standard fixes'],
+      general: ['Review error messages', 'Check documentation', 'Apply standard fixes']
     };
     return fixes[category] ?? fixes.general;
   }
@@ -707,41 +707,41 @@ export class WebGPUSOMCache {
 
     // Create WebGPU resources;
     const shaderModule = this.device.createShaderModule({
-      code: this.pageRankShader,
+      code: this.pageRankShader
     });
 
     const computePipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: shaderModule,
-        entryPoint: 'pagerank_iteration',
-      },
+        entryPoint: 'pagerank_iteration'
+      }
     });
 
     // Create buffers;
     const adjacencyBuffer = this.device.createBuffer({
       size: adjacencyMatrix.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const scoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const newScoresBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
     const resultBuffer = this.device.createBuffer({
       size: pageRankScores.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
     // Write initial data
@@ -756,8 +756,8 @@ export class WebGPUSOMCache {
         { binding: 0, resource: { buffer: adjacencyBuffer } },
         { binding: 1, resource: { buffer: scoresBuffer } },
         { binding: 2, resource: { buffer: newScoresBuffer } },>
-        { binding: 3, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 3, resource: { buffer: paramsBuffer } }
+      ]
     });
 
     // Run PageRank iterations;
@@ -853,7 +853,7 @@ export class WebGPUSOMCache {
     this.cacheCollection.insert({
       key,
       result,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -921,7 +921,7 @@ export class WebGPUSOMCache {
       const testConnection = await fetch('/api/cache/redis/ping', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(this.redisConfig),
+        body: JSON.stringify(this.redisConfig)
       });
 
       if (testConnection.ok) {
@@ -962,7 +962,7 @@ export class WebGPUSOMCache {
     try {
       // Get local cache entries that need to be synced;
       const localEntries = this.cacheCollection.find({
-        timestamp: { $gte: Date.now() - this.redisConfig.syncInterval },
+        timestamp: { $gte: Date.now() - this.redisConfig.syncInterval }
       });
 
       // Sync recent entries to Redis;
@@ -976,7 +976,7 @@ export class WebGPUSOMCache {
             key: redisKey,
             value: entry.value,
             ttl: 3600, // 1 hour
-          }),
+          })
         });
       }
 
@@ -986,8 +986,8 @@ export class WebGPUSOMCache {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prefix: this.redisConfig.keyPrefix,
-          since: Date.now() - this.redisConfig.syncInterval,
-        }),
+          since: Date.now() - this.redisConfig.syncInterval
+        })
       });
 
       if (redisUpdates.ok) {
@@ -1003,7 +1003,7 @@ export class WebGPUSOMCache {
             key: localKey,
             value: update.value,
             timestamp: Date.now(),
-            source: 'redis',
+            source: 'redis'
           });
         }
       }
@@ -1034,7 +1034,7 @@ export class WebGPUSOMCache {
       timestamp: Date.now(),
       priority: opts.priority,
       ttl: opts.ttl,
-      source: 'local',
+      source: 'local'
     });
 
     // Distribute to Redis if connected and requested;
@@ -1048,8 +1048,8 @@ export class WebGPUSOMCache {
           body: JSON.stringify({
             key: redisKey,
             value: data,
-            ttl: opts.ttl,
-          }),
+            ttl: opts.ttl
+          })
         });
       } catch (error) {
         console.error('Failed to distribute to Redis:', error);
@@ -1075,7 +1075,7 @@ export class WebGPUSOMCache {
         const response = await fetch('/api/cache/redis/get', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key: redisKey }),
+          body: JSON.stringify({ key: redisKey })
         });
 
         if ((response as { ok?: any; status?: any; json?: any }).ok) {
@@ -1087,7 +1087,7 @@ export class WebGPUSOMCache {
               key,
               value: (result as { value?: any; similarity?: any }).value,
               timestamp: Date.now(),
-              source: 'redis',
+              source: 'redis'
             });
 
             return (result as { value?: any; similarity?: any }).value;
@@ -1131,14 +1131,14 @@ export class WebGPUSOMCache {
                 severity: 'medium' as const,
                 category: 'cache',
                 type: 'webgpu-cache-error',
-                timestamp: new Date().toISOString(),
-              } satisfies NPMError,
+                timestamp: new Date().toISOString()
+              } satisfies NPMError
             ]);
             const embedding = embeddings[0];
             await this.storeResult(embeddingKey, embedding, {
               ttl: 7200, // 2 hours
               priority: 3,
-              distributeToRedis: true,
+              distributeToRedis: true
             });
           }
         }
@@ -1158,7 +1158,7 @@ export class WebGPUSOMCache {
     try {
       // Get recent error data for training;
       const recentErrors = this.errorsCollection.find({
-        timestamp: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() },
+        timestamp: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() }
       });
 
       if (recentErrors.length < 10) {
@@ -1174,7 +1174,7 @@ export class WebGPUSOMCache {
           error.dependencies?.length || 0,
           this.hashString(error.category) / 1000000, // Normalized category hash
         ],
-        metadata: { id: error.id, category: error.category },
+        metadata: { id: error.id, category: error.category }
       });
 
       // Train SOM (simplified implementation)
@@ -1184,7 +1184,7 @@ export class WebGPUSOMCache {
       await this.storeResult('som:model:latest', somResult, {
         ttl: 86400, // 24 hours
         priority: 10,
-        distributeToRedis: true,
+        distributeToRedis: true
       });
 
       console.log('🧠 SOM background training completed');
@@ -1230,7 +1230,7 @@ export class WebGPUSOMCache {
     return {
       clusters,
       trainingCount: trainingData.length,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
 
@@ -1294,7 +1294,7 @@ export class WebGPUSOMCache {
         weight,
         timestamp: now,
         lastUpdated: now,
-        updateCount: 1,
+        updateCount: 1
       };
 
       // Check if vector already exists
@@ -1312,7 +1312,7 @@ export class WebGPUSOMCache {
         vectorData.weight = totalWeight;
         vectorData.updateCount = existing.updateCount + 1;
 
-        this.cacheCollection.update({ ...existing, ...vectorData ,});
+        this.cacheCollection.update({ ...existing, ...vectorData });
       } else {
         // Insert new vector
         this.cacheCollection.insert(vectorData);
@@ -1322,7 +1322,7 @@ export class WebGPUSOMCache {
       if (this.redisConnected) {
         await this.storeResult(`vector:${id}`, vectorData, {
           ttl: 86400, // 24 hours
-          distributeToRedis: true,
+          distributeToRedis: true
         });
       }
     } catch (error) {
@@ -1340,7 +1340,7 @@ export class WebGPUSOMCache {
     avgSimilarity: number;
     memoryUsage: number;
     gpuEnabled: boolean;
-    redisConnected: boolean;,
+    redisConnected: boolean;
   } {
     try {
       const vectors = this.cacheCollection.find({ type: 'vector' });
@@ -1368,7 +1368,7 @@ export class WebGPUSOMCache {
         avgSimilarity,
         memoryUsage,
         gpuEnabled: this.device !== null,
-        redisConnected: this.redisConnected,
+        redisConnected: this.redisConnected
       };
     } catch (error) {
       console.error('Get stats failed:', error);
@@ -1379,7 +1379,7 @@ export class WebGPUSOMCache {
         avgSimilarity: 0,
         memoryUsage: 0,
         gpuEnabled: false,
-        redisConnected: false,
+        redisConnected: false
       };
     }
   }
@@ -1396,7 +1396,7 @@ export class WebGPUSOMCache {
         metadata,
         timestamp: Date.now(),
         weight: 1.0,
-        updateCount: 1,
+        updateCount: 1
       };
 
       // Remove existing vector with same ID
@@ -1409,7 +1409,7 @@ export class WebGPUSOMCache {
       if (this.redisConnected) {
         await this.storeResult(`vector:${id}`, vectorData, {
           ttl: 86400, // 24 hours
-          distributeToRedis: true,
+          distributeToRedis: true
         });
       }
     } catch (error) {
@@ -1434,22 +1434,22 @@ export class WebGPUSOMCache {
       // Create buffers for GPU computation;
       const queryBuffer = this.device.createBuffer({
         size: vectorDim * 4, // 4 bytes per float32
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const vectorsBuffer = this.device.createBuffer({
         size: numVectors * vectorDim * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const similaritiesBuffer = this.device.createBuffer({
         size: numVectors * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const metadataBuffer = this.device.createBuffer({
         size: 16, // 4 u32 values
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       // Write data to buffers
@@ -1471,7 +1471,7 @@ export class WebGPUSOMCache {
       const shaderModule = this.device.createShaderModule({ code: this.similarityShader });
       const computePipeline = this.device.createComputePipeline({
         layout: 'auto',
-        compute: { module: shaderModule, entryPoint: 'compute_similarity' },
+        compute: { module: shaderModule, entryPoint: 'compute_similarity' }
       });
 
       const bindGroup = this.device.createBindGroup({
@@ -1480,8 +1480,8 @@ export class WebGPUSOMCache {
           { binding: 0, resource: { buffer: queryBuffer } },
           { binding: 1, resource: { buffer: vectorsBuffer } },
           { binding: 2, resource: { buffer: similaritiesBuffer } },>
-          { binding: 3, resource: { buffer: metadataBuffer } },
-        ],
+          { binding: 3, resource: { buffer: metadataBuffer } }
+        ]
       });
 
       const commandEncoder = this.device.createCommandEncoder();
@@ -1496,7 +1496,7 @@ export class WebGPUSOMCache {
       // Read results;
       const resultBuffer = this.device.createBuffer({
         size: numVectors * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       const copyEncoder = this.device.createCommandEncoder();
@@ -1512,7 +1512,7 @@ export class WebGPUSOMCache {
         if (similarities[i] >= threshold) {
           results.push({
             ...allVectors[i],
-            similarity: similarities[i],
+            similarity: similarities[i]
           });
         }
       }
@@ -1558,7 +1558,7 @@ export class WebGPUSOMCache {
       if (similarity >= threshold) {
         results.push({
           ...vectorData,
-          similarity,
+          similarity
         });
       }
     }
@@ -1581,17 +1581,17 @@ export class WebGPUSOMCache {
       // Create buffers;
       const textDataBuffer = this.device.createBuffer({
         size: textBuffer.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const embeddingBuffer = this.device.createBuffer({
         size: embeddingDim * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const configBuffer = this.device.createBuffer({
         size: 32, // 8 u32 values
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       // Write data
@@ -1605,17 +1605,17 @@ export class WebGPUSOMCache {
         0,
         0,
         0,
-        0,
+        0
       ]);
       this.device.queue.writeBuffer(configBuffer, 0, config);
 
       // Create and run compute pipeline;
       const shaderModule = this.device.createShaderModule({
-        code: this.legalDocumentEmbeddingShader,
+        code: this.legalDocumentEmbeddingShader
       });
       const pipeline = this.device.createComputePipeline({
         layout: 'auto',
-        compute: { module: shaderModule, entryPoint: 'compute_legal_embedding' },
+        compute: { module: shaderModule, entryPoint: 'compute_legal_embedding' }
       });
 
       const bindGroup = this.device.createBindGroup({
@@ -1623,8 +1623,8 @@ export class WebGPUSOMCache {
         entries: [
           { binding: 0, resource: { buffer: textDataBuffer } },
           { binding: 1, resource: { buffer: embeddingBuffer } },
-          { binding: 2, resource: { buffer: configBuffer } },
-        ],
+          { binding: 2, resource: { buffer: configBuffer } }
+        ]
       });
 
       const commandEncoder = this.device.createCommandEncoder();
@@ -1639,7 +1639,7 @@ export class WebGPUSOMCache {
       // Read results;
       const resultBuffer = this.device.createBuffer({
         size: embeddingDim * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       const copyEncoder = this.device.createCommandEncoder();
@@ -1680,27 +1680,27 @@ export class WebGPUSOMCache {
       // Create buffers;
       const queryBuffer = this.device.createBuffer({
         size: vectorDim * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const docsBuffer = this.device.createBuffer({
         size: numDocs * vectorDim * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const metadataBuffer = this.device.createBuffer({
         size: numDocs * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const similaritiesBuffer = this.device.createBuffer({
         size: numDocs * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const configBuffer = this.device.createBuffer({
         size: 32,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       // Write data - fix buffer type compatibility
@@ -1729,11 +1729,11 @@ export class WebGPUSOMCache {
 
       // Run compute;
       const shaderModule = this.device.createShaderModule({
-        code: this.legalSimilarityShader,
+        code: this.legalSimilarityShader
       });
       const pipeline = this.device.createComputePipeline({
         layout: 'auto',
-        compute: { module: shaderModule, entryPoint: 'compute_legal_similarity' },
+        compute: { module: shaderModule, entryPoint: 'compute_legal_similarity' }
       });
 
       const bindGroup = this.device.createBindGroup({
@@ -1743,8 +1743,8 @@ export class WebGPUSOMCache {
           { binding: 1, resource: { buffer: docsBuffer } },
           { binding: 2, resource: { buffer: metadataBuffer } },
           { binding: 3, resource: { buffer: similaritiesBuffer } },>
-          { binding: 4, resource: { buffer: configBuffer } },
-        ],
+          { binding: 4, resource: { buffer: configBuffer } }
+        ]
       });
 
       const commandEncoder = this.device.createCommandEncoder();
@@ -1759,7 +1759,7 @@ export class WebGPUSOMCache {
       // Read results;
       const resultBuffer = this.device.createBuffer({
         size: numDocs * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       const copyEncoder = this.device.createCommandEncoder();
@@ -1803,17 +1803,17 @@ export class WebGPUSOMCache {
       // Create buffers;
       const inputBuffer = this.device.createBuffer({
         size: totalElements * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const outputBuffer = this.device.createBuffer({
         size: totalElements * 4, // Use 4 bytes for i32 output
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       const paramsBuffer = this.device.createBuffer({
         size: 32,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       // Flatten input vectors and calculate scale/offset
@@ -1842,11 +1842,11 @@ export class WebGPUSOMCache {
 
       // Run quantization;
       const shaderModule = this.device.createShaderModule({
-        code: this.vectorQuantizationShader,
+        code: this.vectorQuantizationShader
       });
       const pipeline = this.device.createComputePipeline({
         layout: 'auto',
-        compute: { module: shaderModule, entryPoint: 'quantize_vectors' },
+        compute: { module: shaderModule, entryPoint: 'quantize_vectors' }
       });
 
       const bindGroup = this.device.createBindGroup({
@@ -1854,8 +1854,8 @@ export class WebGPUSOMCache {
         entries: [
           { binding: 0, resource: { buffer: inputBuffer } },
           { binding: 1, resource: { buffer: outputBuffer } },>
-          { binding: 2, resource: { buffer: paramsBuffer } },
-        ],
+          { binding: 2, resource: { buffer: paramsBuffer } }
+        ]
       });
 
       const commandEncoder = this.device.createCommandEncoder();
@@ -1870,7 +1870,7 @@ export class WebGPUSOMCache {
       // Read results;
       const resultBuffer = this.device.createBuffer({
         size: totalElements * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       const copyEncoder = this.device.createCommandEncoder();

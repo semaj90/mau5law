@@ -15,14 +15,14 @@ export interface GRPOAnalysis extends ThinkingAnalysis {
     conclusions: string[];
     legalPrinciples: string[];
     counterArguments: string[];
-    confidenceFactors: string[];,
+    confidenceFactors: string[];
   };
   temporalScore: number;
   recommendationContext: RecommendationContext[];
   feedbackLoop: {
     previousRatings: number[];
     userPreferences: string[];
-    improvementSuggestions: string[];,
+    improvementSuggestions: string[];
   };
 }
 
@@ -32,7 +32,7 @@ export interface RecommendationContext {
   contextRelevance: number;
   temporalFactor: number;
   finalScore: number;
-  snippet: string;,
+  snippet: string;
 }
 
 // GRPO enhancement configuration;
@@ -42,7 +42,7 @@ export interface GRPOConfig {
   enableRecommendations: boolean;
   maxRecommendations: number;
   temporalDecayDays: number;
-  semanticSimilarityThreshold: number;,
+  semanticSimilarityThreshold: number;
 }
 
 export class EnhancedGRPOProcessor extends ThinkingProcessor {
@@ -52,7 +52,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
     enableRecommendations: true,
     maxRecommendations: 5,
     temporalDecayDays: 30,
-    semanticSimilarityThreshold: 0.7,
+    semanticSimilarityThreshold: 0.7
   };
 
   /**
@@ -107,7 +107,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       responseEmbedding,
       confidence: baseAnalysis.confidence,
       processingTime: baseAnalysis.metadata.processing_time,
-      options,
+      options
     });
 
     return {
@@ -116,7 +116,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       structuredReasoning,
       temporalScore,
       recommendationContext,
-      feedbackLoop,
+      feedbackLoop
     };
   }
 
@@ -152,8 +152,8 @@ Extract and format as JSON:;
         body: JSON.stringify({
           model: 'gemma3-legal:latest',
           prompt: structurePrompt,
-          stream: false,
-        }),
+          stream: false
+        })
       });
 
       if ((response as { ok?: any; json?: any }).ok) {
@@ -191,7 +191,7 @@ Extract and format as JSON:;
         body: JSON.stringify({
           model: 'nomic-embed-text',
           prompt: text.slice(0, 2048), // Limit length
-        }),
+        })
       });
 
       if ((response as { ok?: any; json?: any }).ok) {
@@ -244,7 +244,7 @@ Extract and format as JSON:;
           temporalFactor,
           finalScore:
             similarity * 0.6 + temporalFactor * 0.2 + ((row.confidence as number) || 0.8) * 0.2,
-          snippet: (row.response as string).slice(0, 200) + '...',
+          snippet: (row.response as string).slice(0, 200) + '...'
         });
       }
 
@@ -306,14 +306,14 @@ Extract and format as JSON:;
       return {
         previousRatings,
         userPreferences,
-        improvementSuggestions,
+        improvementSuggestions
       };
     } catch (error) {
       console.warn('Failed to get feedback loop data:', error);
       return {
         previousRatings: [],
         userPreferences: [],
-        improvementSuggestions: [],
+        improvementSuggestions: []
       };
     }
   }
@@ -330,7 +330,7 @@ Extract and format as JSON:;
     responseEmbedding: number[];
     confidence: number;
     processingTime: number;
-    options: AnalysisOptions;,
+    options: AnalysisOptions;
   }): Promise<string> {
     try {
       const [result] = await db
@@ -353,8 +353,8 @@ Extract and format as JSON:;
           caseId: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.caseId,
           metadata: {
             useThinkingStyle: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.useThinkingStyle,
-            contextDocuments: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.contextDocuments || [],
-          },
+            contextDocuments: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).options.contextDocuments || []
+          }
         })
         .returning({ id: aiResponses.id });
 
@@ -392,7 +392,7 @@ Extract and format as JSON:;
         relevance: feedback.relevance,
         userId: feedback.userId,
         userRole: feedback.userRole,
-        feedbackType: 'rating',
+        feedbackType: 'rating'
       });
 
       // Update the response's usage metrics
@@ -415,7 +415,7 @@ Extract and format as JSON:;
       conclusions: [],
       legalPrinciples: [],
       counterArguments: [],
-      confidenceFactors: [],
+      confidenceFactors: []
     };
   }
 
@@ -443,7 +443,7 @@ Extract and format as JSON:;
       ),
       confidenceFactors: lines.filter(
         (line) => line.toLowerCase().includes('confident') || line.toLowerCase().includes('certain')
-      ),
+      )
     };
   }
 
@@ -518,7 +518,7 @@ export const GRPOUtils = {
         30
       ),
       finalScore: (row.user_preference_score as number) || 0.6,
-      snippet: (row.response as string).slice(0, 200) + '...',
+      snippet: (row.response as string).slice(0, 200) + '...'
     });
   },
 
@@ -544,7 +544,7 @@ export const GRPOUtils = {
     return (result as { id?: any; map?: any }).map((row: any) => ({
       topic: row.topic as string,
       count: parseInt(row.count as string),
-      avgRating: parseFloat(row.avg_rating as string),
+      avgRating: parseFloat(row.avg_rating as string)
     });
-  },
+  }
 };

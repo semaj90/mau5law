@@ -11,7 +11,7 @@ import {
   evidence,
   criminals,
   embeddingCache,
-  vectorMetadata,
+  vectorMetadata
 } from '../db/schema-postgres-enhanced.js';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../db.js';
@@ -24,7 +24,7 @@ export class EnhancedVectorService {
 
   constructor() {
     this.qdrant = createQdrantWrapper({
-      url: import.meta.env.QDRANT_URL || 'http://localhost:6333',
+      url: import.meta.env.QDRANT_URL || 'http://localhost:6333'
     });
 
     // Centralized Redis instance (injects password & consistent options). Fallback not needed here.
@@ -38,7 +38,7 @@ export class EnhancedVectorService {
     if (!exists) {
       await this.qdrant.createCollection(this.collectionName, {
         vectors: { size: 768, distance: 'Cosine' },
-        optimizers_config: { default_segment_number: 2 },
+        optimizers_config: { default_segment_number: 2 }
       });
 
       try {
@@ -65,8 +65,8 @@ export class EnhancedVectorService {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'nomic-embed-text',
-        prompt: text,
-      }),
+        prompt: text
+      })
     });
 
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) throw new Error(`Ollama API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
@@ -94,9 +94,9 @@ export class EnhancedVectorService {
         {
           id,
           vector: embedding,
-          payload: { content, ...metadata },
-        },
-      ],
+          payload: { content, ...metadata }
+        }
+      ]
     });
   }
 
@@ -109,7 +109,7 @@ export class EnhancedVectorService {
       vector: queryEmbedding,
       limit,
       score_threshold: threshold,
-      with_payload: true,
+      with_payload: true
     });
 
     // Keyword search in PostgreSQL
@@ -130,7 +130,7 @@ export class EnhancedVectorService {
     id: c.id,
     score: 0.8,
     metadata: { type: 'case', title: c.title },
-    content: `${c.title} ${c.description}`,
+    content: `${c.title} ${c.description}`
   });
   }
 

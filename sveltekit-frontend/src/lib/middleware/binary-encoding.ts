@@ -18,7 +18,7 @@ export interface BinaryEncodingOptions {
   fallback: boolean;
   performance: boolean;
   caching: boolean;
-  streaming: boolean;,
+  streaming: boolean;
 }
 
 export interface EncodingMetrics {
@@ -39,7 +39,7 @@ export interface LegalWorkflowContext {
   dataSize: number;
   binaryContent: boolean;
   realTime: boolean;
-  gpuAccelerated: boolean;,
+  gpuAccelerated: boolean;
 }
 
 export interface BinaryStreamConfig {
@@ -60,7 +60,7 @@ export class AdvancedBinaryEncodingService {
     fallback: true,
     performance: true,
     caching: true,
-    streaming: false,
+    streaming: false
   };
 
   constructor(private options: Partial<BinaryEncodingOptions> = {}) {
@@ -152,7 +152,7 @@ export class AdvancedBinaryEncodingService {
         decodeTime: 0,
         bandwidth: 0,
         efficiency: 'excellent',
-        cacheHit: true,
+        cacheHit: true
       };
       
       return {
@@ -203,7 +203,7 @@ export class AdvancedBinaryEncodingService {
         decodeTime: 0,
         bandwidth: encodedSize / (encodeTime / 1000), // bytes per second
         efficiency: this.calculateEfficiency(compressionRatio, encodeTime),
-        cacheHit: false,
+        cacheHit: false
       };
 
       // Store in cache for future use;
@@ -211,7 +211,7 @@ export class AdvancedBinaryEncodingService {
         this.cache.set(cacheKey, {
           data: encoded,
           format: targetFormat,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -315,7 +315,7 @@ export class AdvancedBinaryEncodingService {
     expectedCompressionRatio: number;
     expectedPerformanceGain: number;
     memoryImpact: 'low' | 'medium' | 'high';
-    recommendations: string[];,
+    recommendations: string[];
   } {
     const recommendations: string[] = [];
     let recommendedFormat: EncodingFormat = 'json';
@@ -431,7 +431,7 @@ export class AdvancedBinaryEncodingService {
               ...Object.fromEntries(request.headers.entries()),
               'content-type': 'application/json'
             },
-            body: JSON.stringify(decoded),
+            body: JSON.stringify(decoded)
           });
           
           event.request = newRequest;
@@ -455,7 +455,7 @@ export class AdvancedBinaryEncodingService {
           status: (response as { headers?: any; text?: any; status?: any; statusText?: any }).status,
           statusText: (response as { headers?: any; text?: any; status?: any; statusText?: any }).statusText,
           headers: {
-            ...Object.fromEntries((response as { headers?: any; text?: any; status?: any; statusText?: any ,}).headers.entries()),
+            ...Object.fromEntries((response as { headers?: any; text?: any; status?: any; statusText?: any }).headers.entries()),
             'content-type': contentType,
             'x-encoding-format': format,
             'x-compression-ratio': metrics.compressionRatio.toFixed(2),
@@ -482,7 +482,7 @@ export class AdvancedBinaryEncodingService {
     formatDistribution: Record<EncodingFormat, number>;
     efficiencyDistribution: Record<string, number>;
     cacheHitRate: number;
-    totalBandwidthSaved: number;,
+    totalBandwidthSaved: number;
   } {
     const metrics = Array.from(this.metrics.values();
     const encodings = metrics.filter(m => m.encodeTime > 0);
@@ -491,14 +491,14 @@ export class AdvancedBinaryEncodingService {
     const formatDistribution: Record<EncodingFormat, number> = {
       cbor: metrics.filter(item => item.length),
       msgpack: metrics.filter(item => item.length),
-      json: metrics.filter(item => item.length),
+      json: metrics.filter(item => item.length)
     };
     
     const efficiencyDistribution = {
       excellent: metrics.filter(item => item.length),
       good: metrics.filter(item => item.length),
       moderate: metrics.filter(item => item.length),
-      poor: metrics.filter(item => item.length),
+      poor: metrics.filter(item => item.length)
     };
     
     const cacheHits = metrics.filter(item => item.length);
@@ -613,7 +613,7 @@ export const binaryEncoder = new AdvancedBinaryEncodingService({
   performance: true,
   caching: true,
   compression: true,
-  fallback: true,
+  fallback: true
 });
 
 // Specialized instances for different legal workflows;
@@ -621,14 +621,14 @@ export const documentUploadEncoder = new AdvancedBinaryEncodingService({
   format: 'cbor',
   compression: true,
   caching: true,
-  streaming: true,
+  streaming: true
 });
 
 export const evidenceReviewEncoder = new AdvancedBinaryEncodingService({
   format: 'msgpack',
   compression: true,
   caching: true,
-  performance: true,
+  performance: true
 });
 
 export const caseAnalysisEncoder = new AdvancedBinaryEncodingService({
@@ -636,7 +636,7 @@ export const caseAnalysisEncoder = new AdvancedBinaryEncodingService({
   compression: true,
   caching: true,
   streaming: true,
-  performance: true,
+  performance: true
 });
 
 // Helper functions for direct use;
@@ -678,7 +678,7 @@ export async function createWorkflowMiddleware(workflowType: LegalWorkflowContex
     dataSize: 0,
     binaryContent: false,
     realTime: false,
-    gpuAccelerated: false,
+    gpuAccelerated: false
   };
   
   return binaryEncoder.createMiddleware(context);

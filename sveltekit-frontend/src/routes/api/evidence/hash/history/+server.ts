@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     evidenceId,
     verifiedHash,
     method = "manual",
-    notes,
+    notes
   } = await request.json();
 
   if (!evidenceId || !verifiedHash) {
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         result,
         verificationMethod: method,
         verifiedBy: userId,
-        notes,
+        notes
       })
       .returning();
 
@@ -68,13 +68,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       message: result
         ? "Hash verification successful - file integrity confirmed"
         : "Hash verification failed - file may have been modified",
-      verifiedAt: new Date().toISOString(),
+      verifiedAt: new Date().toISOString()
     });
   } catch (error: any) {
     console.error("Error recording hash verification:", error);
     return json({
         error: "Failed to record verification",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         verifiedAt: hashVerifications.verifiedAt,
         verifierName: users.name,
         evidenceTitle: evidence.title,
-        evidenceFileName: evidence.fileName,
+        evidenceFileName: evidence.fileName
       })
       .from(hashVerifications)
       .leftJoin(users, eq(hashVerifications.verifiedBy, users.id)

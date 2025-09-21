@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const prompt = `Analyze the following text using the WWWH (Who, What, When, How) framework. For each, provide a concise answer.\n\nText:\n"""${text}"""\n\nFormat your response as:\nWho: ...\nWhat: ...\nWhen: ...\nHow: ...`;
     const analysis = await ollamaService.generate(prompt, {
       temperature: 0.3,
-      maxTokens: 512,
+      maxTokens: 512
     });
     return new Response(JSON.stringify({ analysis }), { status: 200 });
   } catch (err: any) {

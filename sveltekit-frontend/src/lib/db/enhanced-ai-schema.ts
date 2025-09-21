@@ -55,7 +55,7 @@ export const aiResponses = pgTable('ai_responses', {
   
   // Quality indicators
   isValidated: boolean('is_validated').default(false), // Human verified
-  flaggedForReview: boolean('flagged_for_review').default(false),
+  flaggedForReview: boolean('flagged_for_review').default(false)
 });
 
 // Recommendation scores and rankings;
@@ -80,7 +80,7 @@ export const recommendationScores = pgTable('recommendation_scores', {
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
 
 // Feedback loop for GRPO (Generalized Reinforcement from Preference Optimization);
@@ -109,7 +109,7 @@ export const grpoFeedback = pgTable('grpo_feedback', {
   userId: uuid('user_id'),
   userRole: text('user_role'), // lawyer, paralegal, judge, etc.
   
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
 // Vector similarity cache for performance;
@@ -149,7 +149,7 @@ export const legalEntityRelations = pgTable('legal_entity_relations', {
   discoveredBy: text('discovered_by'), // 'nlp', 'manual', 'graph_algorithm'
   confidence: decimal('confidence', { precision: 5, scale: 4 }),
   
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
 // Performance analytics for recommendation tuning;
@@ -170,7 +170,7 @@ export const recommendationAnalytics = pgTable('recommendation_analytics', {
   periodEnd: timestamp('period_end').notNull(),
   totalRecommendations: integer('total_recommendations'),
   
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
 // Type exports for use in API and components
@@ -190,12 +190,12 @@ export const RECOMMENDATION_WEIGHTS = {
   TEMPORAL_SCORE: 0.15,
   CONTEXT_RELEVANCE: 0.25,
   USER_PREFERENCE: 0.20,
-  USAGE_COUNT: 0.05,
+  USAGE_COUNT: 0.05
 } as const;
 
 // Temporal decay function parameters;
 export const TEMPORAL_DECAY = {
   HALF_LIFE_DAYS: 30, // Score halves every 30 days
   MIN_SCORE: 0.1, // Minimum temporal score
-  MAX_SCORE: 1.0 // Maximum temporal score,
+  MAX_SCORE: 1.0 // Maximum temporal score
 } as const;

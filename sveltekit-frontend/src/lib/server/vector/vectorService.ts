@@ -10,7 +10,7 @@ import {
   vectorMetadata,
   cases,
   evidence,
-  criminals,
+  criminals
 } from '../db/schema-postgres.js';
 import { eq, and, sql, or, ilike } from 'drizzle-orm';
 import cuid2 from '@paralleldrive/cuid2';
@@ -27,7 +27,7 @@ export interface EmbeddingResult {
   id: string;
   score: number;
   metadata: any;
-  content: string;,
+  content: string;
 }
 
 export class VectorService {
@@ -39,7 +39,7 @@ export class VectorService {
   constructor() {
     this.qdrant = new QdrantClient({
       url: import.meta.env.QDRANT_URL || 'http://localhost:6333',
-      apiKey: import.meta.env.QDRANT_API_KEY,
+      apiKey: import.meta.env.QDRANT_API_KEY
     });
 
     try {
@@ -53,7 +53,7 @@ export class VectorService {
         ),
         password: import.meta.env.REDIS_PASSWORD,
         db: parseInt(import.meta.env.REDIS_DB || '0'),
-        maxRetriesPerRequest: 3,
+        maxRetriesPerRequest: 3
       });
     }
 
@@ -70,12 +70,12 @@ export class VectorService {
         await this.qdrant.createCollection(this.collectionName, {
           vectors: {
             size: 768, // Nomic Embed dimension
-            distance: 'Cosine',
+            distance: 'Cosine'
           },
           optimizers_config: {
-            default_segment_number: 2,
+            default_segment_number: 2
           },
-          replication_factor: 1,
+          replication_factor: 1
         });
 
         // Create index for better performance - API compatibility issue
@@ -113,12 +113,12 @@ export class VectorService {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           model: 'nomic-embed-text',
-          prompt: text,
-        }),
+          prompt: text
+        })
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any; points?: any }).ok) {
@@ -145,7 +145,7 @@ export class VectorService {
           textHash: Buffer.from(text).toString('base64'),
           embedding: embedding,
           model: 'nomic-embed-text',
-          createdAt: new Date(),
+          createdAt: new Date()
         })
         .onConflictDoNothing();
 
@@ -197,10 +197,10 @@ export class VectorService {
             vector: embedding,
             payload: {
               content,
-              ...metadata,
-            },
-          },
-        ],
+              ...metadata
+            }
+          }
+        ]
       });
 
       // Store metadata in PostgreSQL
@@ -212,15 +212,15 @@ export class VectorService {
           collectionName: this.collectionName,
           metadata: metadata,
           contentHash: Buffer.from(content).toString('base64'),
-          createdAt: new Date(),
+          createdAt: new Date()
         });
         .onConflictDoUpdate({
           target: vectorMetadata.documentId,
           set: {
             metadata: metadata,
             contentHash: Buffer.from(content).toString('base64'),
-            updatedAt: new Date(),
-          },
+            updatedAt: new Date()
+          }
         });
 
       console.log(`Stored document ${id} in vector database`);
@@ -247,7 +247,7 @@ export class VectorService {
         limit,
         score_threshold: threshold,
         filter: qdrantFilter,
-        with_payload: true,
+        with_payload: true
       });
 
       // Format results;
@@ -255,7 +255,7 @@ export class VectorService {
         id: point.id.toString(),
         score: point.score,
         metadata: includeMetadata ? point.payload: Record<string, any>,
-        content: (point.payload?.content as string) || '',
+        content: (point.payload?.content as string) || ''
       });
 
       // Cache search results
@@ -287,14 +287,14 @@ export class VectorService {
       threshold = 0.7,
       keywordWeight = 0.3,
       vectorWeight = 0.7,
-      filter = {},
+      filter = {}
     } = options;
 
     try {
       // Perform vector search;
       const vectorResults = await this.search(query, {
         ...options,
-        limit: limit * 2,
+        limit: limit * 2
       });
 
       // Perform keyword search in PostgreSQL
@@ -342,7 +342,7 @@ export class VectorService {
             id: c.id,
             score: 0.8, // Default keyword score
             metadata: { type: 'case', title: c.title, case_id: c.id },
-            content: `${c.title} ${c.description}`,
+            content: `${c.title} ${c.description}`
           })
         );
       }
@@ -365,7 +365,7 @@ export class VectorService {
             id: e.id,
             score: 0.8,
             metadata: { type: 'evidence', title: e.title, case_id: e.caseId },
-            content: `${e.title} ${e.description || ''} ${e.summary || ''}`,
+            content: `${e.title} ${e.description || ''} ${e.summary || ''}`
           })
         );
       }
@@ -389,9 +389,9 @@ export class VectorService {
             score: 0.8,
             metadata: {
               type: 'criminal',
-              title: `${c.firstName} ${c.lastName}`,
+              title: `${c.firstName} ${c.lastName}`
             },
-            content: `${c.firstName} ${c.lastName} ${c.notes || ''}`,
+            content: `${c.firstName} ${c.lastName} ${c.notes || ''}`
           })
         );
       }
@@ -416,7 +416,7 @@ export class VectorService {
     vectorResults.forEach((result) => {
       combinedMap.set((result as { embedding?: any; id?: any; score?: any }).id, {
         ...result,
-        score: (result as { embedding?: any; id?: any; score?: any }).score * vectorWeight,
+        score: (result as { embedding?: any; id?: any; score?: any }).score * vectorWeight
       });
     });
 
@@ -429,7 +429,7 @@ export class VectorService {
       } else {
         combinedMap.set((result as { embedding?: any; id?: any; score?: any }).id, {
           ...result,
-          score: (result as { embedding?: any; id?: any; score?: any }).score * keywordWeight,
+          score: (result as { embedding?: any; id?: any; score?: any }).score * keywordWeight
         });
       }
     });
@@ -449,28 +449,28 @@ export class VectorService {
     if (filter.type) {
       must.push({
         key: 'type',
-        match: { value: filter.type },
+        match: { value: filter.type }
       });
     }
 
     if (filter.case_id) {
       must.push({
         key: 'case_id',
-        match: { value: filter.case_id },
+        match: { value: filter.case_id }
       });
     }
 
     if (filter.created_after) {
       must.push({
         key: 'created_at',
-        range: { gte: filter.created_after },
+        range: { gte: filter.created_after }
       });
     }
 
     if (filter.created_before) {
       must.push({
         key: 'created_at',
-        range: { lte: filter.created_before },
+        range: { lte: filter.created_before }
       });
     }
 
@@ -509,7 +509,7 @@ export class VectorService {
         limit: (options.limit || 10) + 1, // +1 to exclude self
         score_threshold: options.threshold || 0.7,
         filter: this.buildQdrantFilter(options.filter || {}),
-        with_payload: true,
+        with_payload: true
       });
 
       // Filter out the original document
@@ -519,7 +519,7 @@ export class VectorService {
           id: point.id.toString(),
           score: point.score,
           metadata: point.payload,
-          content: (point.payload?.content as string) || '',
+          content: (point.payload?.content as string) || ''
         });
 
       return results.slice(0, options.limit || 10);
@@ -550,14 +550,14 @@ export class VectorService {
           vector: embeddings[index],
           payload: {
             content: doc.content,
-            ...doc.metadata,
-          },
+            ...doc.metadata
+          }
         });
 
         // Upsert batch to Qdrant;
         await this.qdrant.upsert(this.collectionName, {
           wait: true,
-          points,
+          points
         });
 
         // Store metadata in PostgreSQL;
@@ -567,7 +567,7 @@ export class VectorService {
           collectionName: this.collectionName,
           metadata: doc.metadata,
           contentHash: Buffer.from(doc.content).toString('base64'),
-          createdAt: new Date(),
+          createdAt: new Date()
         });
 
         await db.insert(vectorMetadata).values(metadataRecords).onConflictDoNothing();
@@ -590,7 +590,7 @@ export class VectorService {
       // Delete from Qdrant;
       await this.qdrant.delete(this.collectionName, {
         wait: true,
-        points: [documentId],
+        points: [documentId]
       });
 
       // Delete metadata from PostgreSQL
@@ -608,7 +608,7 @@ export class VectorService {
     const status = {
       qdrant: false,
       redis: false,
-      collection: false,
+      collection: false
     };
 
     try {
@@ -645,13 +645,13 @@ export class VectorService {
 
       return {
         documentCount: info.points_count || 0,
-        collectionInfo: info,
+        collectionInfo: info
       };
     } catch (error: any) {
       console.error('Failed to get collection stats:', error);
       return {
         documentCount: 0,
-        collectionInfo: null,
+        collectionInfo: null
       };
     }
   }

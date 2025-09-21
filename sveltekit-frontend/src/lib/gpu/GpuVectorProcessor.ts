@@ -52,13 +52,13 @@ export class GpuVectorProcessor {
       this.gl = gl;
       telemetryBus.publish({
         type: 'gpu.backend',
-        meta: { operation: 'init_webgl2', success: true },
+        meta: { operation: 'init_webgl2', success: true }
       });
     } catch (e) {
       console.warn('[GpuVectorProcessor] WebGL2 init failed', e);
       telemetryBus.publish({
         type: 'error',
-        meta: { operation: 'init_webgl2', success: false, error: (e as Error).message },
+        meta: { operation: 'init_webgl2', success: false, error: (e as Error).message }
       });
     }
   }
@@ -115,7 +115,7 @@ export class GpuVectorProcessor {
     const took = performance.now() - t0;
     telemetryBus.publish({
       type: 'gpu.vector.process.start',
-      meta: { operation: 'compile_program', duration: took, dimension: dim, vec4Count },
+      meta: { operation: 'compile_program', duration: took, dimension: dim, vec4Count }
     });
     const rec = { program: prog, vao, attribCount: vec4Count };
     this.webglProgCache.set(dim, rec);
@@ -256,8 +256,8 @@ export class GpuVectorProcessor {
           dimension: dim,
           count: vectors.length,
           vec4Count,
-          buffersReused: true,
-        },
+          buffersReused: true
+        }
       });
 
       return results;
@@ -270,8 +270,8 @@ export class GpuVectorProcessor {
           duration: totalTime,
           error: (error as Error).message,
           dimension: dim,
-          count: vectors.length,
-        },
+          count: vectors.length
+        }
       });
       throw error;
     }
@@ -294,7 +294,7 @@ export class GpuVectorProcessor {
     inputVectors: Float32Array[];
     similarityThreshold: number;
     topK: number;
-    useAdaptiveQuantization: boolean;,
+    useAdaptiveQuantization: boolean;
   }): Promise<any> {
     const start = performance.now();
     const processedVectors = await this.processBatch(params.inputVectors);
@@ -336,7 +336,7 @@ export class GpuVectorProcessor {
 
     telemetryBus.publish({
       type: 'gpu.backend',
-      meta: { operation: 'cleanup_resources' },
+      meta: { operation: 'cleanup_resources' }
     });
   }
 }

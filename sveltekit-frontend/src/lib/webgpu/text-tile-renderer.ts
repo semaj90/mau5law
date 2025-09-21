@@ -17,7 +17,7 @@ export interface TextTileRenderConfig {
   qualityTier: 'nes' | 'snes' | 'n64';
   enableInstantRender: boolean;
   maxConcurrentTiles: number;
-  gpuMemoryPool: number; // MB,
+  gpuMemoryPool: number; // MB
 }
 
 export interface InstantUIComponent {
@@ -28,7 +28,7 @@ export interface InstantUIComponent {
   domStructure: string;
   interactionHandlers: string;
   renderTime: number;
-  gpuUtilization: number;,
+  gpuUtilization: number;
 }
 
 export interface RenderingPipeline {
@@ -37,7 +37,7 @@ export interface RenderingPipeline {
   computeShader: string;
   uniformBuffer: ArrayBuffer;
   vertexBuffer: ArrayBuffer;
-  indexBuffer: ArrayBuffer;,
+  indexBuffer: ArrayBuffer;
 }
 
 export class WebGPUTextTileRenderer {
@@ -92,7 +92,7 @@ export class WebGPUTextTileRenderer {
 
       // Request adapter and device;
       this.adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       
       if (!this.adapter) {
@@ -104,7 +104,7 @@ export class WebGPUTextTileRenderer {
         requiredFeatures: ['compute', 'timestamp-query'] as GPUFeatureName[],
         requiredLimits: {
           maxBufferSize: this.config.gpuMemoryPool * 1024 * 1024,
-          maxComputeWorkgroupStorageSize: 16384,
+          maxComputeWorkgroupStorageSize: 16384
         }
       });
 
@@ -114,7 +114,7 @@ export class WebGPUTextTileRenderer {
         this.context.configure({
           device: this.device,
           format: 'bgra8unorm',
-          alphaMode: 'premultiplied',
+          alphaMode: 'premultiplied'
         });
       }
 
@@ -138,14 +138,14 @@ export class WebGPUTextTileRenderer {
     this.vertexBuffer = this.device.createBuffer({
       size: this.config.maxConcurrentTiles * 32, // 32 bytes per tile vertex
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-      label: 'text-tile-vertices',
+      label: 'text-tile-vertices'
     });
 
     // Create uniform buffer for rendering parameters;
     this.uniformBuffer = this.device.createBuffer({
       size: 256, // Uniform data
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      label: 'text-tile-uniforms',
+      label: 'text-tile-uniforms'
     });
 
     // Create texture atlas for NES-style tile patterns;
@@ -153,13 +153,13 @@ export class WebGPUTextTileRenderer {
       size: { width: 256, height: 256, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
-      label: 'nes-tile-atlas',
+      label: 'nes-tile-atlas'
     });
 
     // Create render pipeline with NES-style shaders;
     const shaderModule = this.device.createShaderModule({
       code: this.generateShaderCode(),
-      label: 'text-tile-shaders',
+      label: 'text-tile-shaders'
     });
 
     this.renderPipeline = this.device.createRenderPipeline({
@@ -188,22 +188,22 @@ export class WebGPUTextTileRenderer {
       },
       primitive: { topology: 'triangle-list' },
       layout: 'auto',
-      label: 'text-tile-render-pipeline',
+      label: 'text-tile-render-pipeline'
     });
 
     // Create compute pipeline for tile processing;
     const computeModule = this.device.createShaderModule({
       code: this.generateComputeShaderCode(),
-      label: 'text-tile-compute',
+      label: 'text-tile-compute'
     });
 
     this.computePipeline = this.device.createComputePipeline({
       compute: {
         module: computeModule,
-        entryPoint: 'cs_main',
+        entryPoint: 'cs_main'
       },
       layout: 'auto',
-      label: 'text-tile-compute-pipeline',
+      label: 'text-tile-compute-pipeline'
     });
   }
 
@@ -233,7 +233,7 @@ struct Uniforms {
   time: f32,
   qualityTier: f32, // 0=NES, 1=SNES, 2=N64
   tileSize: f32,
-  compressionRatio: f32,
+  compressionRatio: f32
 }
 
 @group(0) @binding(0) var<uniform> uniforms: Uniforms;
@@ -334,13 +334,13 @@ struct TileData {
   compressedData: array<u32, 2>, // 7 bytes packed into 2 u32s
   semanticHash: u32,
   patternId: u32,
-  metadata: vec4<f32>,
+  metadata: vec4<f32>
 }
 
 struct RenderData {
   position: vec2<f32>,
   texCoord: vec2<f32>, 
-  tileInfo: vec4<f32>,
+  tileInfo: vec4<f32>
 }
 
 @group(0) @binding(0) var<storage, read> inputTiles: array<TileData>;
@@ -518,7 +518,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       domStructure,
       interactionHandlers,
       renderTime: 0, // Will be set by caller
-      gpuUtilization: 0 // Will be set by caller,
+      gpuUtilization: 0 // Will be set by caller
     };
   }
 
@@ -664,12 +664,12 @@ document.querySelector('.text-tile-${tile.id}').addEventListener('click', functi
         adapterInfo: this.adapter?.info,
         memoryUsage: this.gpuMemoryUsage,
         maxMemory: this.config.gpuMemoryPool * 1024 * 1024,
-        utilization: this.calculateGPUUtilization(),
+        utilization: this.calculateGPUUtilization()
       },
       cacheStats: {
         tilesCached: this.tileCache.size,
         renderQueueSize: this.renderQueue.length,
-        maxConcurrentTiles: this.config.maxConcurrentTiles,
+        maxConcurrentTiles: this.config.maxConcurrentTiles
       },
       capabilities: {
         webgpuSupported: !!navigator.gpu,

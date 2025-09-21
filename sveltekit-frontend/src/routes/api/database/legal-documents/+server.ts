@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
             timestamp: new Date().toISOString(),
             actor: session.userId,
             action: 'uploaded',
-            details: 'Document uploaded via legal AI system',
+            details: 'Document uploaded via legal AI system'
           }],
           analysisResults: (result as { success?: any; documentId?: any; fileName?: any; metadata?: any; aiInsights?: any }).aiInsights || {}
         }
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
               totalUploads,
               successRate,
               lastUploadDate: new Date().toISOString(),
-              recentDocuments: documentIds.slice(-5) // Keep last 5 document IDs,
+              recentDocuments: documentIds.slice(-5) // Keep last 5 document IDs
             }
           }
         })
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Database storage error:', error);
     return json({
       error: 'Failed to store documents',
-      details: error instanceof Error ? error.message: 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -167,7 +167,7 @@ async function generateSearchEmbeddings(documentIds: string[]) {
       const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           model: 'mxbai-embed-large',
@@ -188,7 +188,7 @@ async function generateSearchEmbeddings(documentIds: string[]) {
             model: 'mxbai-embed-large',
             createdAt: new Date().toISOString(),
             documentType: docData.fileType,
-            caseId: docData.caseId,
+            caseId: docData.caseId
           }
         });
       }
@@ -207,14 +207,14 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       database: 'connected',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json({
       status: 'unhealthy',
       database: 'disconnected',
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

@@ -106,12 +106,12 @@ declare interface WebLlamaResponse {
   confidence: number;
   fromCache: boolean;
   cacheHit?: boolean;
-  processingPath: 'cache' | 'fallback' | 'wasm' | 'worker';,
+  processingPath: 'cache' | 'fallback' | 'wasm' | 'worker';
 }
 
 declare interface WebAssemblyInstantiateResult {
   module: WebAssembly.Module;
-  instance: WebAssembly.Instance;,
+  instance: WebAssembly.Instance;
 }
 
 declare interface LlamaGenerationParams {
@@ -125,7 +125,7 @@ declare namespace QdrantClient {
   interface Client {
     search: any;
     upsert: any;
-    count: any;,
+    count: any;
   }
 }
 
@@ -133,7 +133,7 @@ declare namespace QdrantClientType {
   interface Client {
     search: any;
     upsert: any;
-    count: any;,
+    count: any;
   }
 }
 
@@ -141,13 +141,13 @@ declare namespace MultiLayerCache {
   interface CacheConfig {
     maxSize: number;
     ttl: number;
-    layers: number;,
+    layers: number;
   }
 
   interface CacheInstance {
     get: any;
     set: any;
-    clear: any;,
+    clear: any;
   }
 }
 
@@ -164,7 +164,7 @@ declare interface ActivationIdentifier extends String {
 
 declare interface TensorSlice {
   data: Float32Array;
-  dimensions: number[];,
+  dimensions: number[];
 }
 
 declare interface SOMConfig {
@@ -174,7 +174,7 @@ declare interface SOMConfig {
   epochs: number;
   enableGPU: boolean;
   inputDimension: number;
-  decayRate: number;,
+  decayRate: number;
 }
 
 declare interface RerankResult {
@@ -187,7 +187,7 @@ declare interface RerankResult {
 declare interface UserContext {
   sessionId: string;
   preferences: any;
-  history: any[];,
+  history: any[];
 }
 
 // Processing path types for routing
@@ -199,14 +199,14 @@ interface RouteDecision {
   reasoning: string;
   expectedLatency: number;
   fallbackChain: any[];
-  confidence: number;,
+  confidence: number;
 }
 
 // Texture region types;
 interface TextureRegion {
   offset: number;
   size: number;
-  format: string;,
+  format: string;
 }
 
 // SvelteKit component interfaces

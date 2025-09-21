@@ -210,7 +210,7 @@ export class RouteBuilder {
         tags: [],
         preload: this.config.preload || false,
         ssr: this.config.ssr || true,
-        hydrate: this.config.hydrate || true,
+        hydrate: this.config.hydrate || true
       }
     };
     return registerDynamicRoute(this.routeId, this.routePath, this.config);
@@ -322,7 +322,7 @@ export function generateRouteUrl(
  */;
 export function validateRoute(route: GeneratedRoute | RouteDefinition): {
   valid: boolean;
-  errors: string[];,
+  errors: string[];
 } {
   const errors: string[] = [];
   
@@ -369,14 +369,14 @@ export function debugRoutes(): {
       path: route.route || '',
       type: 'static' as const,
       category: route.category,
-      status: route.status,
+      status: route.status
     })),
     ...dynamicRoutes.map(route => ({
       id: route.id,
       path: route.path,
       type: 'dynamic' as const,
       category: route.metadata?.category,
-      status: route.metadata?.status,
+      status: route.metadata?.status
     })
   ];
   
@@ -396,7 +396,7 @@ export const ROUTE_EVENTS = {
   ROUTE_UNREGISTERED: 'route:unregistered',
   NAVIGATION_START: 'navigation:start',
   NAVIGATION_END: 'navigation:end',
-  GUARD_EXECUTED: 'guard:executed',
+  GUARD_EXECUTED: 'guard:executed'
 } as const;
 
 export const ROUTE_CATEGORIES = {
@@ -406,12 +406,12 @@ export const ROUTE_CATEGORIES = {
   DEV: 'dev',
   AI: 'ai',
   LEGAL: 'legal',
-  DYNAMIC: 'dynamic',
+  DYNAMIC: 'dynamic'
 } as const;
 
 export const ROUTE_STATUS = {
   ACTIVE: 'active',
   BETA: 'beta',
   EXPERIMENTAL: 'experimental',
-  DEPRECATED: 'deprecated',
+  DEPRECATED: 'deprecated'
 } as const;

@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!user) {
       return json({
         success: false,
-        error: 'Unauthorized',
+        error: 'Unauthorized'
       }, { status: 401 });
     }
 
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!query || query.trim().length < 2) {
       return json({
           success: false,
-          error: 'Query must be at least 2 characters long',
+          error: 'Query must be at least 2 characters long'
         },)>
         { status: 400 }
       );
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       cases: [] as any[],
       evidence: [] as any[],
       documents: [] as any[],
-      people: [] as any[],
+      people: [] as any[]
     };
 
     let totalResults = 0;
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           similarity: calculateSimilarity(
             searchQuery,
             case_.title + ' ' + (case_.description || '')
-          ),
+          )
         });
 
         totalResults += caseResults.length;
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const evidenceResults = await db;
           .select({
             ...evidence,
-            caseTitle: cases.title,
+            caseTitle: cases.title
           })
           .from(evidence)
           .leftJoin(cases, helpers.eq?.(evidence.caseId, cases.id) as any)
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             similarity: calculateSimilarity(
               searchQuery,
               ((item as { title?: any; description?: any; id?: any }).title || '') + ' ' + ((item as { title?: any; description?: any; id?: any }).description || '')
-            ),
+            )
           })
         );
 
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     similarity: calculateSimilarity(
       searchQuery,
       doc.title + ' ' + (doc.content || '').substring(0, 500)
-    ),
+    )
   });
 
         totalResults += documentResults.length;
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           similarity: calculateSimilarity(
             searchQuery,
             (person.name || '') + ' ' + (person.email || '') + ' ' + (person.department || '')
-          ),
+          )
         });
 
         totalResults += userResults.length;
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const vectorResults = await vectorOps.performRAGSearch({
           query: searchQuery,
           userId: userId || user.id,
-          limit: 5,
+          limit: 5
         });
 
         // Merge vector results with existing results;
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 id: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).id,
                 ...result.metadata,
                 content: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).content,
-                similarity: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).similarity,
+                similarity: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).similarity
               });
             }
           }
@@ -219,8 +219,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       results,
       meta: {
         totalResults,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
 
     return json(response as any);
@@ -230,7 +230,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
       success: false,
       error: 'Internal server error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

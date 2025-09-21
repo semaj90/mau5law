@@ -16,7 +16,7 @@ const goServiceManager = {
     return {
       enhancedRAG: { success: true, status: 'healthy' },
       uploadService: { success: true, status: 'healthy' },
-      vectorDB: { success: true, status: 'healthy' },
+      vectorDB: { success: true, status: 'healthy' }
     };
   },
 
@@ -27,13 +27,13 @@ const goServiceManager = {
           success: true,
           results: [
             { id: '1', content: 'Mock legal document result', score: 0.95 },
-            { id: '2', content: 'Mock case law result', score: 0.87 },
+            { id: '2', content: 'Mock case law result', score: 0.87 }
           ],
           query,
           totalResults: 2,
           responseTime: 45,
           protocol: 'QUIC',
-          error: null,
+          error: null
         };
       },
 
@@ -42,14 +42,14 @@ const goServiceManager = {
           success: true,
           results: [
             { id: '1', content: 'Mock semantic search result', score: 0.92 },
-            { id: '2', content: 'Mock legal context result', score: 0.84 },
+            { id: '2', content: 'Mock legal context result', score: 0.84 }
           ],
           query,
           totalResults: 2,
           responseTime: 38,
-          protocol: 'QUIC',
+          protocol: 'QUIC'
         };
-      },
+      }
     };
   },
 
@@ -61,7 +61,7 @@ const goServiceManager = {
           documentId: 'mock-doc-123',
           filename: file.name || 'test.pdf',
           size: file.size || 1024,
-          processed: true,
+          processed: true
         };
       },
 
@@ -71,9 +71,9 @@ const goServiceManager = {
           status: 'healthy',
           uptime: '2h 15m',
           activeConnections: 5,
-          protocol: 'QUIC',
+          protocol: 'QUIC'
         };
-      },
+      }
     };
   },
 
@@ -85,11 +85,11 @@ const goServiceManager = {
           service,
           method,
           mockResponse: true,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         };
-      },
+      }
     };
-  },
+  }
 };
 
 /*
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
     testResults.servicesHealth = {
       test: 'Go Services Health Check',
       status: Object.values(servicesHealth).every((s) => s.success) ? 'PASS' : 'PARTIAL',
-      details: servicesHealth,
+      details: servicesHealth
     };
 
     // Test 2: Enhanced RAG Service
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const enhancedRagClient = goServiceManager.getEnhancedRAG();
       const ragResponse = await enhancedRagClient.ragQuery('test legal query', {
         maxResults: 3,
-        threshold: 0.5,
+        threshold: 0.5
       });
 
       testResults.enhancedRag = {
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: ragResponse.success ? 'PASS' : 'FAIL',
         responseTime: ragResponse.responseTime,
         protocol: ragResponse.protocol,
-        error: ragResponse.error || null,
+        error: ragResponse.error || null
       };
 
       if (!ragResponse.success) overallSuccess = false;
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testResults.enhancedRag = {
         test: 'Enhanced RAG Query',
         status: 'ERROR',
-        error: ragError instanceof Error ? ragError.message: 'Unknown error',
+        error: ragError instanceof Error ? ragError.message: 'Unknown error'
       };
       overallSuccess = false;
     }
@@ -142,7 +142,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const enhancedRagClient = goServiceManager.getEnhancedRAG();
       const vectorResponse = await enhancedRagClient.semanticSearch('test legal document search', {
         collection: 'legal_documents',
-        limit: 5,
+        limit: 5
       });
 
       testResults.vectorService = {
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: vectorResponse.success ? 'PASS' : 'FAIL',
         responseTime: vectorResponse.responseTime,
         protocol: vectorResponse.protocol,
-        error: vectorResponse.error || null,
+        error: vectorResponse.error || null
       };
 
       if (!vectorResponse.success) overallSuccess = false;
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testResults.vectorService = {
         test: 'Vector Semantic Search',
         status: 'ERROR',
-        error: vectorError instanceof Error ? vectorError.message: 'Unknown error',
+        error: vectorError instanceof Error ? vectorError.message: 'Unknown error'
       };
       overallSuccess = false;
     }
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: healthResponse.success ? 'PASS' : 'FAIL',
         responseTime: healthResponse.responseTime,
         protocol: healthResponse.protocol,
-        error: healthResponse.error || null,
+        error: healthResponse.error || null
       };
 
       if (!healthResponse.success) overallSuccess = false;
@@ -182,7 +182,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testResults.uploadService = {
         test: 'Upload Service Health',
         status: 'ERROR',
-        error: uploadError instanceof Error ? uploadError.message: 'Unknown error',
+        error: uploadError instanceof Error ? uploadError.message: 'Unknown error'
       };
       overallSuccess = false;
     }
@@ -197,8 +197,8 @@ export const GET: RequestHandler = async ({ url }) => {
         body: JSON.stringify({
           query: 'test legal query',
           maxResults: 3,
-          threshold: 0.7,
-        }),
+          threshold: 0.7
+        })
       });
 
       const ragProxyResult = ragProxyResponse.ok;
@@ -207,7 +207,7 @@ export const GET: RequestHandler = async ({ url }) => {
         test: 'QUIC RAG Proxy Integration',
         status: ragProxyResult ? 'PASS' : 'FAIL',
         httpStatus: ragProxyResponse.status,
-        statusText: ragProxyResponse.statusText,
+        statusText: ragProxyResponse.statusText
       };
 
       if (!ragProxyResult) overallSuccess = false;
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testResults.quicEndpoints = {
         test: 'QUIC RAG Proxy Integration',
         status: 'ERROR',
-        error: quicError instanceof Error ? quicError.message: 'Unknown error',
+        error: quicError instanceof Error ? quicError.message: 'Unknown error'
       };
       overallSuccess = false;
     }
@@ -227,7 +227,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testsRun: Object.keys(testResults).length,
       testsPassed: Object.values(testResults).filter((t) => t.status === 'PASS').length,
       testsFailed: Object.values(testResults).filter((t) => t.status === 'FAIL').length,
-      testsError: Object.values(testResults).filter((t) => t.status === 'ERROR').length,
+      testsError: Object.values(testResults).filter((t) => t.status === 'ERROR').length
     };
 
     return json({
@@ -242,8 +242,8 @@ export const GET: RequestHandler = async ({ url }) => {
         '✅ Vector service integration via Enhanced RAG',
         '✅ Upload service health monitoring',
         '✅ Multi-protocol support (HTTP/QUIC/gRPC)',
-        '✅ Automatic service discovery and health checks',
-      ],
+        '✅ Automatic service discovery and health checks'
+      ]
     });
   } catch (err: any) {
     console.error('Integration test failed:', err);
@@ -251,7 +251,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       message: 'QUIC-Go Integration Test Failed',
       error: err instanceof Error ? err.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 };
@@ -302,7 +302,7 @@ export const POST: RequestHandler = async ({ request }) => {
       service,
       endpoint,
       result: testResult,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Custom integration test failed:', err);
@@ -310,7 +310,7 @@ export const POST: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Custom integration test failed',
-        error: err instanceof Error ? err.message: 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error'
       })
     );
   }

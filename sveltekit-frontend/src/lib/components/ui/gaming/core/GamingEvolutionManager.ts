@@ -13,13 +13,13 @@ import type {
   GamingEra,
   GamingThemeState,
   ProgressiveGamingConfig,
-  GamepadState,
+  GamepadState
 } from '../types/gaming-types.js';
 
 import {
   GAMING_BREAKPOINTS,
   GAMING_ERA_SPECS,
-  N64_TEXTURE_PRESETS,
+  N64_TEXTURE_PRESETS
 } from '../constants/gaming-constants.js';
 
 interface DeviceCapabilities {
@@ -30,7 +30,7 @@ interface DeviceCapabilities {
   screenSize: { width: number; height: number };
   pixelRatio: number;
   webgl: boolean;
-  webgpu: boolean;,
+  webgpu: boolean;
 }
 
 export class GamingEvolutionManager {
@@ -51,24 +51,24 @@ export class GamingEvolutionManager {
     nesSettings: {
       strictPalette: true,
       enableScanlines: true,
-      pixelScale: 2,
+      pixelScale: 2
     },
 
     snesSettings: {
       enableGradients: true,
       enableModeViitColors: true,
-      layerCount: 4,
+      layerCount: 4
     },
 
     n64Settings: {
       ...N64_TEXTURE_PRESETS.balanced,
       enableRealTimeReflections: false,
-      textureQuality: 'standard',
+      textureQuality: 'standard'
     },
 
     yorhaIntegration: true,
     bitsUICompatibility: true,
-    ...config,
+    ...config
   } as unknown as ProgressiveGamingConfig;
 
   this.currentState = {
@@ -85,7 +85,7 @@ export class GamingEvolutionManager {
     },
     soundEnabled: true,
     particleEffects: true,
-    retroShaders: true,
+    retroShaders: true
   };
 
     this.initialize();
@@ -124,11 +124,11 @@ export class GamingEvolutionManager {
       connection: this.detectConnectionSpeed(),
       screenSize: {
         width: window.innerWidth,
-        height: window.innerHeight,
+        height: window.innerHeight
       },
       pixelRatio: window.devicePixelRatio || 1,
       webgl: this.hasWebGL(),
-      webgpu: await this.hasWebGPU(),
+      webgpu: await this.hasWebGPU()
     };
 
     this.capabilities = capabilities;
@@ -259,7 +259,7 @@ export class GamingEvolutionManager {
   private updatePerformanceLevel(level: GamingThemeState['performanceLevel']): void {
     this.currentState = {
       ...this.currentState,
-      performanceLevel: level,
+      performanceLevel: level
     };
 
     // Auto-adjust era based on performance;
@@ -298,7 +298,7 @@ export class GamingEvolutionManager {
 
     this.currentState = {
       ...this.currentState,
-      isTransitioning: true,
+      isTransitioning: true
     };
 
     this.notifyListeners();
@@ -309,7 +309,7 @@ export class GamingEvolutionManager {
     this.currentState = {
       ...this.currentState,
       currentEra: era,
-      isTransitioning: false,
+      isTransitioning: false
     };
 
     this.notifyListeners();

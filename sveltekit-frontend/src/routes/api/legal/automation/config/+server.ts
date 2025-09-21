@@ -15,7 +15,7 @@ interface AutomationConfig {
   batchSize: number;
   confidenceThreshold: number;
   processingOptions: string[];
-  createdAt: string;,
+  createdAt: string;
 }
 
 interface ProcessingJob {
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Store configuration;
     automationConfigs.set(config.id, {
       ...config,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     });
 
     // Create initial processing job if auto-processing is enabled
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
         status: 'pending',
         documentsProcessed: 0,
         totalDocuments: config.batchSize || 50,
-        startTime: new Date(),
+        startTime: new Date()
       };
       processingJobs.set(jobId, job);
 
@@ -102,14 +102,14 @@ export const POST: RequestHandler = async ({ request }) => {
         configId: config.id,
         jobId,
         message: 'Automation configuration saved successfully',
-        autoProcessing: config.autoProcessing,
+        autoProcessing: config.autoProcessing
       }
     });
 
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Configuration failed',
+      error: error instanceof Error ? error.message: 'Configuration failed'
     }, { status: 500 });
   }
 };
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!config) {
         return json({
           success: false,
-          error: 'Configuration not found',
+          error: 'Configuration not found'
         }, { status: 404 });
       }
 
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         data: {
           config,
-          jobs: relatedJobs,
+          jobs: relatedJobs
         }
       });
     }
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!job) {
         return json({
           success: false,
-          error: 'Job not found',
+          error: 'Job not found'
         }, { status: 404 });
       }
 
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async ({ url }) => {
           totalConfigs: configs.length,
           activeJobs: jobs.filter(item => item.length),
           completedJobs: jobs.filter(item => item.length),
-          failedJobs: jobs.filter(item => item.length),
+          failedJobs: jobs.filter(item => item.length)
         }
       }
     });
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Request failed',
+      error: error instanceof Error ? error.message: 'Request failed'
     }, { status: 500 });
   }
 };
@@ -200,7 +200,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!id) {
       return json({
         success: false,
-        error: 'Configuration ID is required',
+        error: 'Configuration ID is required'
       }, { status: 400 });
     }
 
@@ -208,7 +208,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!existingConfig) {
       return json({
         success: false,
-        error: 'Configuration not found',
+        error: 'Configuration not found'
       }, { status: 404 });
     }
 
@@ -216,7 +216,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const updatedConfig = {
       ...existingConfig,
       ...configUpdates,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     automationConfigs.set(id, updatedConfig);
@@ -225,14 +225,14 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       data: {
         config: updatedConfig,
-        message: 'Configuration updated successfully',
+        message: 'Configuration updated successfully'
       }
     });
 
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Update failed',
+      error: error instanceof Error ? error.message: 'Update failed'
     }, { status: 500 });
   }
 };
@@ -245,7 +245,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (!configId) {
       return json({
         success: false,
-        error: 'Configuration ID is required',
+        error: 'Configuration ID is required'
       }, { status: 400 });
     }
 
@@ -253,7 +253,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (!config) {
       return json({
         success: false,
-        error: 'Configuration not found',
+        error: 'Configuration not found'
       }, { status: 404 });
     }
 
@@ -277,14 +277,14 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       data: {
         message: 'Configuration and related jobs deleted successfully',
-        deletedJobs: relatedJobs.length,
+        deletedJobs: relatedJobs.length
       }
     });
 
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Delete failed',
+      error: error instanceof Error ? error.message: 'Delete failed'
     }, { status: 500 });
   }
 };
@@ -346,7 +346,7 @@ function getProcessingDelay(automationType: string): number {
     batch_upload: 1000,
     evidence_automation: 1200,
     case_discovery: 1500,
-    contract_analysis: 2000,
+    contract_analysis: 2000
   };
   
   return delays[automationType as keyof typeof delays] || 800;

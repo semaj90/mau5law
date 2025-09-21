@@ -23,7 +23,7 @@ export interface TestResult {
   performance_impact?: {
     before: number;
     after: number;
-    improvement: number;,
+    improvement: number;
   };
 }
 
@@ -33,7 +33,7 @@ export interface TestSuite {
   passed: number;
   failed: number;
   total_duration_ms: number;
-  overall_passed: boolean;,
+  overall_passed: boolean;
 }
 
 export interface ValidationReport {
@@ -41,7 +41,7 @@ export interface ValidationReport {
   environment: {
     node_version: string;
     memory_limit: string;
-    cpu_cores: number;,
+    cpu_cores: number;
   };
   test_suites: TestSuite[];
   overall_results: {
@@ -49,16 +49,16 @@ export interface ValidationReport {
     passed_tests: number;
     failed_tests: number;
     success_rate: number;
-    total_duration_ms: number;,
+    total_duration_ms: number;
   };
   performance_benchmarks: {
     vs_code_commands: number;
     cache_operations_per_second: number;
     json_parse_speed_mb_per_second: number;
     docker_optimization_time_ms: number;
-    memory_usage_mb: number;,
+    memory_usage_mb: number;
   };
-  recommendations: string[];,
+  recommendations: string[];
 }
 
 // === Main Test Suite Class ===;
@@ -95,14 +95,14 @@ export class OptimizationTestSuite {
         tests.push({
           name: 'VS Code Extension Initialization',
           passed: true,
-          duration_ms: performance.now() - start,
+          duration_ms: performance.now() - start
         });
       } catch (error: any) {
         tests.push({
           name: 'VS Code Extension Initialization',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -138,7 +138,7 @@ export class OptimizationTestSuite {
           details: {
             tested_commands: commands_to_test.length,
             successful_commands,
-            success_rate: success_rate * 100,
+            success_rate: success_rate * 100
           }
         });
       } catch (error: any) {
@@ -146,7 +146,7 @@ export class OptimizationTestSuite {
           name: 'Command Execution Performance',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -164,7 +164,7 @@ export class OptimizationTestSuite {
           duration_ms: performance.now() - start,
           details: {
             cache_utilization: stats.cache.utilization,
-            commands_registered: stats.commands,
+            commands_registered: stats.commands
           }
         });
       } catch (error: any) {
@@ -172,7 +172,7 @@ export class OptimizationTestSuite {
           name: 'Memory Usage Monitoring',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -187,7 +187,7 @@ export class OptimizationTestSuite {
       passed,
       failed,
       total_duration_ms: total_duration,
-      overall_passed: failed === 0,
+      overall_passed: failed === 0
     };
   }
 
@@ -217,7 +217,7 @@ export class OptimizationTestSuite {
           name: 'Basic Cache Operations',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -230,11 +230,11 @@ export class OptimizationTestSuite {
         for (let i = 0; i < 50; i++) {
           await (this.suite.cache as any)?.set?.(`som_test_${i}`, {
             data: `test_data_${i}`,
-            type: i % 3 === 0 ? 'frequent' : i % 3 === 1 ? 'burst' : 'random',
+            type: i % 3 === 0 ? 'frequent' : i % 3 === 1 ? 'burst' : 'random'
           }, {
             metadata: {
               access_pattern: i % 3 === 0 ? 'frequent' : i % 3 === 1 ? 'burst' : 'random',
-              ai_relevance: Math.random(),
+              ai_relevance: Math.random()
             }
           });
         }
@@ -247,7 +247,7 @@ export class OptimizationTestSuite {
           duration_ms: performance.now() - start,
           details: {
             clusters_found: clusters.length,
-            recommendations_generated: recommendations.length,
+            recommendations_generated: recommendations.length
           }
         });
       } catch (error: any) {
@@ -255,7 +255,7 @@ export class OptimizationTestSuite {
           name: 'Self-Organizing Map Clustering',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -282,7 +282,7 @@ export class OptimizationTestSuite {
           details: {
             before_utilization: before_stats.memory.utilization,
             after_utilization: after_stats.memory.utilization,
-            items_cached: after_stats.cache.size,
+            items_cached: after_stats.cache.size
           }
         });
       } catch (error: any) {
@@ -290,7 +290,7 @@ export class OptimizationTestSuite {
           name: 'Memory Pressure Handling',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -305,7 +305,7 @@ export class OptimizationTestSuite {
       passed,
       failed,
       total_duration_ms: total_duration,
-      overall_passed: failed === 0,
+      overall_passed: failed === 0
     };
   }
 
@@ -332,7 +332,7 @@ export class OptimizationTestSuite {
           details: {
             containers: stats.containers.length,
             efficiency_score: stats.efficiency_score,
-            memory_allocated_gb: Math.round(stats.total_memory_allocated / (1024 * 1024 * 1024),
+            memory_allocated_gb: Math.round(stats.total_memory_allocated / (1024 * 1024 * 1024)
           }
         });
       } catch (error: any) {
@@ -340,7 +340,7 @@ export class OptimizationTestSuite {
           name: 'Container Resource Monitoring',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -363,7 +363,7 @@ export class OptimizationTestSuite {
           details: {
             before_efficiency: before_stats.efficiency_score,
             after_efficiency: after_stats.efficiency_score,
-            efficiency_change: after_stats.efficiency_score - before_stats.efficiency_score,
+            efficiency_change: after_stats.efficiency_score - before_stats.efficiency_score
           }
         });
       } catch (error: any) {
@@ -371,7 +371,7 @@ export class OptimizationTestSuite {
           name: 'Optimization Preset Application',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -391,7 +391,7 @@ export class OptimizationTestSuite {
           duration_ms: performance.now() - start,
           details: {
             compose_length: dockerCompose.length,
-            has_resource_limits: dockerCompose.includes('resources:'),
+            has_resource_limits: dockerCompose.includes('resources:')
           }
         });
       } catch (error: any) {
@@ -399,7 +399,7 @@ export class OptimizationTestSuite {
           name: 'Docker Compose Generation',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -414,7 +414,7 @@ export class OptimizationTestSuite {
       passed,
       failed,
       total_duration_ms: total_duration,
-      overall_passed: failed === 0,
+      overall_passed: failed === 0
     };
   }
 
@@ -441,12 +441,12 @@ export class OptimizationTestSuite {
           details: {
             parsed_items: Array.isArray(data.data) ? data.data.length: 0,
             parse_time_ms: stats.parse_time_ms,
-            wasm_acceleration: stats.wasm_acceleration,
+            wasm_acceleration: stats.wasm_acceleration
           },
           performance_impact: {
             before: this.test_data.large_json.length,
             after: stats.parse_time_ms,
-            improvement: this.test_data.large_json.length / stats.parse_time_ms // chars per ms,
+            improvement: this.test_data.large_json.length / stats.parse_time_ms // chars per ms
           }
         });
       } catch (error: any) {
@@ -454,7 +454,7 @@ export class OptimizationTestSuite {
           name: 'JSON Parsing Performance',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -477,7 +477,7 @@ export class OptimizationTestSuite {
             original_size: stats.original_size,
             compressed_size: stats.compressed_size,
             compression_ratio: stats.compression_ratio,
-            wasm_acceleration: stats.wasm_acceleration,
+            wasm_acceleration: stats.wasm_acceleration
           }
         });
       } catch (error: any) {
@@ -485,7 +485,7 @@ export class OptimizationTestSuite {
           name: 'JSON Compression',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -502,7 +502,7 @@ export class OptimizationTestSuite {
           duration_ms: performance.now() - start,
           details: {
             wasm_available: wasm_initialized,
-            note: wasm_initialized ? 'WebAssembly acceleration available' : 'Using JavaScript fallback',
+            note: wasm_initialized ? 'WebAssembly acceleration available' : 'Using JavaScript fallback'
           }
         });
       } catch (error: any) {
@@ -510,7 +510,7 @@ export class OptimizationTestSuite {
           name: 'WebAssembly Initialization',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -525,7 +525,7 @@ export class OptimizationTestSuite {
       passed,
       failed,
       total_duration_ms: total_duration,
-      overall_passed: failed === 0,
+      overall_passed: failed === 0
     };
   }
 
@@ -551,7 +551,7 @@ export class OptimizationTestSuite {
           duration_ms: performance.now() - start,
           details: {
             recommendations_count: response.optimization_recommendations?.length || 0,
-            context7_success: response.success,
+            context7_success: response.success
           }
         });
       } catch (error: any) {
@@ -559,7 +559,7 @@ export class OptimizationTestSuite {
           name: 'Stack Analysis with Optimization',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -577,7 +577,7 @@ export class OptimizationTestSuite {
           duration_ms: performance.now() - start,
           details: {
             has_performance_impact: has_impact_estimate,
-            expected_improvement: response.performance_impact?.expected_improvement || 0,
+            expected_improvement: response.performance_impact?.expected_improvement || 0
           }
         });
       } catch (error: any) {
@@ -585,7 +585,7 @@ export class OptimizationTestSuite {
           name: 'Best Practices Generation',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -606,7 +606,7 @@ export class OptimizationTestSuite {
           details: {
             metrics_available: has_metrics,
             recommendations_count: analysis.recommendations.length,
-            implementation_steps: analysis.implementation_plan.length,
+            implementation_steps: analysis.implementation_plan.length
           }
         });
       } catch (error: any) {
@@ -614,7 +614,7 @@ export class OptimizationTestSuite {
           name: 'Comprehensive Analysis',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -629,7 +629,7 @@ export class OptimizationTestSuite {
       passed,
       failed,
       total_duration_ms: total_duration,
-      overall_passed: failed === 0,
+      overall_passed: failed === 0
     };
   }
 
@@ -645,7 +645,7 @@ export class OptimizationTestSuite {
       cache_operations_per_second: 0,
       json_parse_speed_mb_per_second: 0,
       docker_optimization_time_ms: 0,
-      memory_usage_mb: 0,
+      memory_usage_mb: 0
     };
 
     // Benchmark VS Code commands;
@@ -753,7 +753,7 @@ export class OptimizationTestSuite {
       environment: {
         node_version: process.version || 'unknown',
         memory_limit: `${Math.round(performance_benchmarks.memory_usage_mb)}MB`,
-        cpu_cores: typeof navigator !== 'undefined' ? navigator.hardwareConcurrency || 4 : 4,
+        cpu_cores: typeof navigator !== 'undefined' ? navigator.hardwareConcurrency || 4 : 4
       },
       test_suites,
       overall_results: {
@@ -761,7 +761,7 @@ export class OptimizationTestSuite {
         passed_tests,
         failed_tests,
         success_rate: (passed_tests / total_tests) * 100,
-        total_duration_ms: total_duration,
+        total_duration_ms: total_duration
       },
       performance_benchmarks,
       recommendations
@@ -858,7 +858,7 @@ export async function runQuickValidation(): Promise<any> {
   return {
     passed: report.overall_results.success_rate >= 80,
     summary: `${report.overall_results.passed_tests}/${report.overall_results.total_tests} tests passed (${report.overall_results.success_rate.toFixed(1)}%)`,
-    details: report,
+    details: report
   };
 }
 

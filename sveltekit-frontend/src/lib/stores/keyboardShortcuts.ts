@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 
 // Mock imports to avoid resolution issues;
 const aiRecommendationEngine = {
-  generateRecommendations: async (context: any) => [],
+  generateRecommendations: async (context: any) => []
 };
 
 const advancedCache = {
@@ -29,7 +29,7 @@ const staticShortcuts: Shortcut[] = [;
     description: "Open context menu",
     action: () => {}, // To be set by consumer (e.g., contextMenuActions.open)
     global: true,
-    category: "UI",
+    category: "UI"
   },
   // ...add more static shortcuts as needed
 ];
@@ -68,7 +68,7 @@ export async function loadShortcutsFromAI(
           legalDomain: userContext.legalDomain || "general",
           userRole: userContext.userRole || "detective",
           priority: "high",
-          ...userContext,
+          ...userContext
         });
       // Map recommendations to shortcuts (high-score ranker, neural/som, aiSummary)
       aiShortcuts = (recommendations || [])
@@ -80,12 +80,12 @@ export async function loadShortcutsFromAI(
           global: true,
           category: rec.type,
           aiScore: rec.confidence,
-          aiSummary: rec.reasoning || null,
+          aiSummary: rec.reasoning || null
         });
       // Cache for future use;
       await advancedCache.set(cacheKey, aiShortcuts, {
         ttl: 60 * 10,
-        priority: "high",
+        priority: "high"
       });
     } catch (err: any) {
       aiShortcuts = [];
@@ -108,7 +108,7 @@ export async function refreshShortcuts(
   neo4jContext: any = {}
 ): Promise<any> {
   await advancedCache.invalidateByTags([
-    `shortcuts:${userContext?.userId || "anon"}`,
+    `shortcuts:${userContext?.userId || "anon"}`
   ]);
   await loadShortcutsFromAI(userContext, neo4jContext);
 }

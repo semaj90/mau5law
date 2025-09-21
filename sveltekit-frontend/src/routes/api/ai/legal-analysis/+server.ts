@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           performance: {
             cached: true,
             totalResponseTimeMs: performance.now() - startTime,
-            modelVersion: cachedResult.modelVersion,
+            modelVersion: cachedResult.modelVersion
           }
         });
       }
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const embeddingResponse = await tensorrtClient.generateEmbedding({
       text,
       model: 'gemma3-legal:latest',
-      dimensions: 512,
+      dimensions: 512
     });
     const embeddingTime = performance.now() - embeddingStartTime;
 
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           analysisEmbedding: embeddingResponse.embedding,
           processingTimeMs: totalTime,
           tokenCount: legalAnalysis.token_count || 0,
-          expiresInHours: 24,
+          expiresInHours: 24
         });
         console.log(`💾 Analysis cached for 24 hours`);
       } catch (cacheError) {
@@ -134,9 +134,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
           id: doc.id,
           title: doc.title,
           similarity: doc.similarity,
-          documentType: doc.documentType,
+          documentType: doc.documentType
         })),
-        queryIntent: analysisType,
+        queryIntent: analysisType
       });
     } catch (logError) {
       console.warn('Failed to log query:', logError);
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         jurisdiction: doc.jurisdiction,
         similarity: doc.similarity,
         content: doc.content.substring(0, 300) + '...'
-      ,})),
+      })),
       performance: {
         embeddingTimeMs: embeddingTime,
         searchTimeMs: searchTime,
@@ -161,14 +161,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         totalResponseTimeMs: totalTime,
         modelVersion: 'gemma3-legal:latest',
         cached: false,
-        documentsFound: similarDocuments.length,
+        documentsFound: similarDocuments.length
       },
       metadata: {
         analysisType,
         documentType,
         practiceArea,
         timestamp: new Date().toISOString(),
-        cacheKey: cacheEnabled ? cacheKey : null,
+        cacheKey: cacheEnabled ? cacheKey : null
       }
     });
 
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
       error: 'Legal analysis failed',
       details: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -195,11 +195,11 @@ export const GET: RequestHandler = async ({ url }) => {
         tensorrt: {
           available: !!tensorrtHealth,
           url: process.env.TENSORRT_URL || 'http://localhost:8100',
-          health: tensorrtHealth,
+          health: tensorrtHealth
         },
         database: {
           available: true,
-          statistics: dbStats,
+          statistics: dbStats
         }
       },
       capabilities: [
@@ -221,7 +221,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json({
       status: 'error',
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         type: 'yorha-api',
         description: 'Get real-time system health and metrics',
         headers: Record<string, any>,
-        body: null,
+        body: null
       },
       {
         id: 'graph-data',
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         type: 'yorha-api',
         description: 'Retrieve system architecture graph data',
         headers: Record<string, any>,
-        body: null,
+        body: null
       },
       {
         id: 'enhanced-rag',
@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         type: 'context7',
         description: 'Get Context7 multicore service health',
         headers: Record<string, any>,
-        body: null,
+        body: null
       },
       {
         id: 'process-text',
@@ -72,7 +72,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         type: 'yorha-api',
         description: 'Get 3D component performance metrics',
         headers: Record<string, any>,
-        body: null,
+        body: null
       },
       {
         id: 'database-health',
@@ -82,7 +82,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
         type: 'standard',
         description: 'Test database connectivity and performance',
         headers: Record<string, any>,
-        body: null,
+        body: null
       },
       {
         id: 'vector-search',
@@ -170,7 +170,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       testSuites,
       documentation: testDocumentation,
       initialLoad: true,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (error: any) {
     console.error('Error loading API test data:', error);
@@ -181,7 +181,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       documentation: { overview: '', features: [], protocols: [], metrics: [] },
       initialLoad: false,
       timestamp: new Date().toISOString(),
-      error: 'Failed to load API test configuration',
+      error: 'Failed to load API test configuration'
     };
   }
 };

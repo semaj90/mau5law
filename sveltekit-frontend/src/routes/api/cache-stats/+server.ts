@@ -34,13 +34,13 @@ export const GET: RequestHandler = async () => {
       services: {
         redis: {
           connected: redisConnected,
-          status: redisConnected ? 'connected' : 'disconnected',
+          status: redisConnected ? 'connected' : 'disconnected'
         },
         database: {
           pools: dbStats.totalPools,
           drizzleInstances: dbStats.totalDrizzleInstances,
           health: dbHealthCheck,
-          allHealthy: Object.values(dbHealthCheck).every(h => h),
+          allHealthy: Object.values(dbHealthCheck).every(h => h)
         }
       },
       cache: {
@@ -58,14 +58,14 @@ export const GET: RequestHandler = async () => {
                      queryHitRate > 50 ? 'good' : 
                      queryHitRate > 30 ? 'fair' : 'poor'
         },
-        sessions: cacheStats.sessions,
+        sessions: cacheStats.sessions
       },
       performance: {
         embedding_cache_efficiency: embeddingHitRate,
         query_cache_efficiency: queryHitRate,
         total_requests: cacheStats.embeddings.hits + cacheStats.embeddings.misses + 
                        cacheStats.queries.hits + cacheStats.queries.misses,
-        cache_size_total: cacheStats.embeddings.size + cacheStats.queries.size,
+        cache_size_total: cacheStats.embeddings.size + cacheStats.queries.size
       },
       recommendations: generateRecommendations(cacheStats, dbStats, redisConnected)
     };
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
       status: 'error',
       error: 'Failed to retrieve cache statistics',
-      message: error instanceof Error ? error.message: 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

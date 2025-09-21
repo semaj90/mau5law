@@ -5,7 +5,7 @@ export const GET: RequestHandler = async ({ request }) => {
   const headers = new Headers({
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    Connection: 'keep-alive',
+    Connection: 'keep-alive'
   });
 
   const stream = new ReadableStream({

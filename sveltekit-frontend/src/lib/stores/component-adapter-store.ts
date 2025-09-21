@@ -30,7 +30,7 @@ export interface ComponentAdapter<TData = any> {
     update: (data: Partial<TData>) => void;
     reset: () => void;
     setLoading: (loading: boolean) => void;
-    setError: (error: string | null) => void;,
+    setError: (error: string | null) => void;
   };
 }
 
@@ -57,7 +57,7 @@ export function createComponentAdapter<TData = any>(
   const props = writable<UIProps>({
     variant: 'default',
     size: 'medium',
-    disabled: false,
+    disabled: false
   });
 
   return {
@@ -96,7 +96,7 @@ export interface ChatData {
   messages: Array<any>;
   currentInput: string;
   isTyping: boolean;
-  connectionStatus: 'connected' | 'disconnected' | 'connecting';,
+  connectionStatus: 'connected' | 'disconnected' | 'connecting';
 }
 
 export function createChatAdapter(initialMessages: ChatData['messages'] = []): ComponentAdapter<ChatData> {
@@ -104,7 +104,7 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
     messages: initialMessages,
     currentInput: '',
     isTyping: false,
-    connectionStatus: 'disconnected',
+    connectionStatus: 'disconnected'
   });
 
   // Enhanced actions for chat-specific operations;
@@ -131,7 +131,7 @@ export function createChatAdapter(initialMessages: ChatData['messages'] = []): C
 
   return {
     ...adapter,
-    actions: chatActions,
+    actions: chatActions
   };
 }
 
@@ -146,10 +146,10 @@ export interface SearchData {
   pagination: {
     page: number;
     limit: number;
-    total: number;,
+    total: number;
   };
   sortBy: string;
-  sortOrder: 'asc' | 'desc';,
+  sortOrder: 'asc' | 'desc';
 }
 
 export function createSearchAdapter(): ComponentAdapter<SearchData> {
@@ -159,7 +159,7 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
     filters: Record<string, any>,
     pagination: { page: 1, limit: 20, total: 0 },
     sortBy: 'relevance',
-    sortOrder: 'desc',
+    sortOrder: 'desc'
   });
 
   const searchActions = {
@@ -187,7 +187,7 @@ export function createSearchAdapter(): ComponentAdapter<SearchData> {
 
   return {
     ...adapter,
-    actions: searchActions,
+    actions: searchActions
   };
 }
 
@@ -201,7 +201,7 @@ export interface UploadData {
   uploadStatus: Record<string, 'pending' | 'uploading' | 'completed' | 'error'>;
   maxFileSize: number;
   allowedTypes: string[];
-  multiple: boolean;,
+  multiple: boolean;
 }
 
 export function createUploadAdapter(options: {
@@ -216,7 +216,7 @@ export function createUploadAdapter(options: {
     uploadStatus: Record<string, any>,
     maxFileSize: options.maxFileSize || 10 * 1024 * 1024, // 10MB
     allowedTypes: options.allowedTypes || ['*'],
-    multiple: options.multiple ?? true,
+    multiple: options.multiple ?? true
   });
 
   const uploadActions = {
@@ -237,7 +237,7 @@ export function createUploadAdapter(options: {
       adapter.actions.update({
         files: [...currentFiles, ...newFiles],
         uploadProgress: updatedProgress,
-        uploadStatus: updatedStatus,
+        uploadStatus: updatedStatus
       });
     },
     updateProgress: (fileName: string, progress: number) => {
@@ -266,14 +266,14 @@ export function createUploadAdapter(options: {
       adapter.actions.update({
         files: updatedFiles,
         uploadProgress: updatedProgress,
-        uploadStatus: updatedStatus,
+        uploadStatus: updatedStatus
       });
     }
   };
 
   return {
     ...adapter,
-    actions: uploadActions,
+    actions: uploadActions
   };
 }
 
@@ -286,7 +286,7 @@ export interface FormData {
   errors: Record<string, string>;
   touched: Record<string, boolean>;
   isSubmitting: boolean;
-  isValid: boolean;,
+  isValid: boolean;
 }
 
 export function createFormAdapter(
@@ -298,7 +298,7 @@ export function createFormAdapter(
     errors: Record<string, any>,
     touched: Record<string, any>,
     isSubmitting: false,
-    isValid: true,
+    isValid: true
   });
 
   const formActions = {
@@ -325,7 +325,7 @@ export function createFormAdapter(
         values: newValues,
         touched: newTouched,
         errors,
-        isValid: Object.keys(errors).length === 0,
+        isValid: Object.keys(errors).length === 0
       });
     },
     setError: (field: string, error: string) => {
@@ -335,13 +335,13 @@ export function createFormAdapter(
       const newErrors = { ...current.errors, [field]: error };
       adapter.actions.update({
         errors: newErrors,
-        isValid: Object.keys(newErrors).length === 0,
+        isValid: Object.keys(newErrors).length === 0
       });
     },
     clearErrors: () => {
       adapter.actions.update({
         errors: Record<string, any>,
-        isValid: true,
+        isValid: true
       });
     },
     setSubmitting: (isSubmitting: boolean) => {
@@ -351,7 +351,7 @@ export function createFormAdapter(
 
   return {
     ...adapter,
-    actions: formActions,
+    actions: formActions
   };
 }
 

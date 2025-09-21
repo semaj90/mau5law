@@ -8,7 +8,7 @@ import {
   uuid,
   varchar,
   serial,
-  real,
+  real
 } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 
@@ -22,7 +22,7 @@ export const casesTable = pgTable('legal_cases', {
   priority: varchar('priority', { length: 20 }).default('medium'),
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow()
 });
 
 export const documentsTable = pgTable('legal_documents', {
@@ -46,7 +46,7 @@ export const documentsTable = pgTable('legal_documents', {
 
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
-  processed_at: timestamp('processed_at'),
+  processed_at: timestamp('processed_at')
 });
 
 export const evidenceTable = pgTable('evidence_items', {
@@ -72,7 +72,7 @@ export const evidenceTable = pgTable('evidence_items', {
   metadata: jsonb('metadata'),
 
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow()
 });
 
 export const timelineEventsTable = pgTable('timeline_events', {
@@ -91,7 +91,7 @@ export const timelineEventsTable = pgTable('timeline_events', {
 
   metadata: jsonb('metadata'),
 
-  created_at: timestamp('created_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow()
 });
 
 // Vector similarity search materialized view for performance;
@@ -103,7 +103,7 @@ export const vectorSimilarityView = pgTable('vector_similarity_cache', {
   similarity_type: varchar('similarity_type', { length: 50 }), // 'document', 'evidence', 'case'
 
   created_at: timestamp('created_at').defaultNow(),
-  expires_at: timestamp('expires_at'),
+  expires_at: timestamp('expires_at')
 });
 
 // Cache table for frequently accessed queries;
@@ -121,7 +121,7 @@ export const queryCache = pgTable('query_cache', {
   last_accessed: timestamp('last_accessed').defaultNow(),
 
   created_at: timestamp('created_at').defaultNow(),
-  expires_at: timestamp('expires_at').notNull(),
+  expires_at: timestamp('expires_at').notNull()
 });
 
 // Analytics and metrics;
@@ -139,7 +139,7 @@ export const analyticsEvents = pgTable('analytics_events', {
   cache_hit: boolean('cache_hit'),
   cache_layer: varchar('cache_layer', { length: 50 }),
 
-  created_at: timestamp('created_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow()
 });
 
 // Full-text search configuration;
@@ -157,7 +157,7 @@ export const searchConfigTable = pgTable('search_config', {
   fuzzy_config: jsonb('fuzzy_config'),
 
   created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow()
 });
 
 // Types for enhanced type safety

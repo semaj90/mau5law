@@ -13,12 +13,12 @@ const authMachine = createMachine({
     authToken: undefined,
     error: undefined,
     retryCount: 0,
-    performanceMetrics: undefined,
+    performanceMetrics: undefined
   },
   states: {
     idle: {
       on: {
-        LOGIN: 'authenticating',
+        LOGIN: 'authenticating'
       }
     },
     authenticating: {
@@ -59,10 +59,10 @@ const authMachine = createMachine({
     authenticated: {
       on: {
         LOGOUT: 'idle',
-        TOKEN_EXPIRED: 'refreshingToken',
+        TOKEN_EXPIRED: 'refreshingToken'
       },
       after: {
-        3600000: 'refreshingToken' // Auto-refresh after 1 hour,
+        3600000: 'refreshingToken' // Auto-refresh after 1 hour
       }
     },
     refreshingToken: {
@@ -92,7 +92,7 @@ const authMachine = createMachine({
                 : String(err || 'Unknown error');
             },
             user: undefined,
-            authToken: undefined,
+            authToken: undefined
           })
         }
       }
@@ -147,7 +147,7 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       // Assert service was called correctly;
       expect(mockServices.validateCredentials).toHaveBeenCalledWith({
         email: 'test@example.com',
-        password: 'password',
+        password: 'password'
       });
 
       const duration = endMeasure();
@@ -308,12 +308,12 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
           sessionMachineHandler('USER_AUTHENTICATED', {
             userId: snapshot.context.user.userId || snapshot.context.user.id,
             token: snapshot.context.authToken,
-            performanceMetrics: snapshot.context.performanceMetrics,
+            performanceMetrics: snapshot.context.performanceMetrics
           });
 
           evidenceCanvasHandler('ENABLE_COLLABORATION', {
             userId: snapshot.context.user.userId || snapshot.context.user.id,
-            role: snapshot.context.user.role,
+            role: snapshot.context.user.role
           });
         }
       });
@@ -331,14 +331,14 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         expect.objectContaining({
           userId: 'test-123',
           token: expect.any(String),
-          performanceMetrics: expect.any(Object),
+          performanceMetrics: expect.any(Object)
         })
       );
 
       expect(evidenceCanvasHandler).toHaveBeenCalledWith('ENABLE_COLLABORATION',
         expect.objectContaining({
           userId: 'test-123',
-          role: 'attorney',
+          role: 'attorney'
         })
       );      authActor.stop();
     });

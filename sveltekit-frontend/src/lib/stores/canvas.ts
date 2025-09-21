@@ -8,7 +8,7 @@ export const sidebarStore = writable({
   width: 320,
   items: [] as any[],
   searchQuery: "",
-  loading: false,
+  loading: false
 });
 
 // Toolbar state;
@@ -23,17 +23,17 @@ export const toolbarStore = writable({
     fontFamily: "Arial",
     color: "#000000",
     backgroundColor: "transparent",
-    textAlign: "left",
+    textAlign: "left"
   },
   drawing: {
     strokeWidth: 2,
     strokeColor: "#000000",
     fillColor: "transparent",
-    opacity: 1,
+    opacity: 1
   },
   zoom: 100,
   canUndo: false,
-  canRedo: false,
+  canRedo: false
 });
 
 // Canvas state;
@@ -47,7 +47,7 @@ export const canvasStore = writable({
   isLoading: false,
   panX: 0,
   panY: 0,
-  scale: 1,
+  scale: 1
 });
 
 // AI state;
@@ -57,7 +57,7 @@ export const aiStore = writable({
   prompt: "",
   response: "",
   isGenerating: false,
-  history: [] as any[],
+  history: [] as any[]
 });
 
 // File upload state;
@@ -65,5 +65,5 @@ export const uploadStore = writable({
   isUploading: false,
   progress: 0,
   queue: [] as File[],
-  uploadedFiles: [] as Evidence[],
+  uploadedFiles: [] as Evidence[]
 });

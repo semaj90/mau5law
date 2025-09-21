@@ -25,12 +25,12 @@ interface UnifiedShader {
     usageCount: number;
     averageExecutionTime: number;
     description: string;
-    tags: string[];,
+    tags: string[];
   };
   config: any;
   relevanceScore?: number;
   embeddingSimilarity?: number;
-  hasEmbedding: boolean;,
+  hasEmbedding: boolean;
 }
 
 // GET endpoint - Unified shader search capabilities;
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async () => {
       totalShaders: {
         webgpu: webgpuStats.totalShaders,
         webgl: webglShaderCount,
-        total: webgpuStats.totalShaders + webglShaderCount,
+        total: webgpuStats.totalShaders + webglShaderCount
       },
       searchOptions: {
         text: 'string (optional) - Semantic text search across shader code and descriptions',
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
           operation: query.operation,
           tags: query.tags,
           sortBy: query.sortBy,
-          limit: query.limit || 20,
+          limit: query.limit || 20
         });
 
         for (const shader of webgpuResults) {
@@ -127,12 +127,12 @@ export const POST: RequestHandler = async ({ request }) => {
               usageCount: shader.metadata.usageCount,
               averageExecutionTime: shader.metadata.averageExecutionTime,
               description: shader.metadata.description,
-              tags: shader.metadata.tags,
+              tags: shader.metadata.tags
             },
             config: shader.config,
             relevanceScore: shader.relevanceScore,
             embeddingSimilarity: shader.embeddingSimilarity,
-            hasEmbedding: !!shader.embedding,
+            hasEmbedding: !!shader.embedding
           });
         }
       } catch (error) {
@@ -208,12 +208,12 @@ export const POST: RequestHandler = async ({ request }) => {
               usageCount: shaderData.metadata.usageCount,
               averageExecutionTime: shaderData.metadata.averageExecutionTime,
               description: shaderData.metadata.description,
-              tags: shaderData.metadata.tags,
+              tags: shaderData.metadata.tags
             },
             config: shaderData.config,
             relevanceScore,
             embeddingSimilarity,
-            hasEmbedding: !!shaderData.embedding,
+            hasEmbedding: !!shaderData.embedding
           });
         }
       } catch (error) {
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return new Date(b.metadata.lastUsed).getTime() - new Date(a.metadata.lastUsed).getTime();
         case 'relevance':
         default:
-          return (b.relevanceScore || 0) - (a.relevanceScore || 0);,
+          return (b.relevanceScore || 0) - (a.relevanceScore || 0);
       }
     });
 
@@ -248,14 +248,14 @@ export const POST: RequestHandler = async ({ request }) => {
         // Truncate shader code for list view
         shaderCodePreview: shader.shaderCode.length > 500 ?
           shader.shaderCode.substring(0, 500) + '...' : shader.shaderCode
-      ,})),
+      })),
       metadata: {
         totalResults: limitedResults.length,
         searchTime,
         query,
         breakdown: {
           webgpu: limitedResults.filter(item => item.length),
-          webgl: limitedResults.filter(item => item.length),
+          webgl: limitedResults.filter(item => item.length)
         }
       }
     };
@@ -273,7 +273,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalResults: 0,
         searchTime,
         query: Record<string, any>,
-        error: error.message || 'Unified search failed',
+        error: error.message || 'Unified search failed'
       }
     }, { status: 500 });
   }

@@ -60,10 +60,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         tagging: { status: "pending" },
         analysis: { status: "pending" },
         vectorSearch: { status: "pending" },
-        graphDiscovery: { status: "pending" },
+        graphDiscovery: { status: "pending" }
       },
       overallStatus: "processing",
-      startTime: new Date(),
+      startTime: new Date()
     };
 
     // Stage 1: Generate Embeddings;
@@ -75,8 +75,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content: evidence.content,
-          model: options.embeddingModel || "nomic-embed-text",
-        }),
+          model: options.embeddingModel || "nomic-embed-text"
+        })
       });
 
       const embeddingResult = await embeddingResponse.json();
@@ -99,8 +99,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             evidence,
             context: "legal_investigation",
             enhance_tags: true,
-            model: options.taggingModel || "gemma3-legal",
-          }),
+            model: options.taggingModel || "gemma3-legal"
+          })
         });
 
         const taggingResult = await taggingResponse.json();
@@ -127,8 +127,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             evidence,
             analysisType: "comprehensive",
             model: options.analysisModel || "gemma3-legal",
-            includeRecommendations: true,
-          }),
+            includeRecommendations: true
+          })
         });
 
         const analysisResult = await analysisResponse.json();
@@ -146,7 +146,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     // Wait for parallel processing to complete
     const [taggingResult, analysisResult] = await Promise.all([
       taggingPromise,
-      analysisPromise,
+      analysisPromise
     ]);
 
     // Stage 4: Vector Similarity Search
@@ -167,7 +167,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             limit: options.vectorSearchLimit || 10,
             threshold: options.similarityThreshold || 0.7,
             excludeIds: [evidence.id], // Don't match with itself
-          }),
+          })
         });
 
         const searchResult = await searchResponse.json();
@@ -198,9 +198,9 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
             "involves",
             "located_at",
             "connected_to",
-            "similar_to",
-          ],
-        }),
+            "similar_to"
+          ]
+        })
       });
 
       const graphResult = await graphResponse.json();
@@ -239,21 +239,21 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         recommendations:
           analysisResult?.recommendations ||
           analysisResult?.suggestedActions ||
-          [],
+          []
       },
       performance: {
         processingTime: pipeline.processingTime,
         totalStages: Object.keys(pipeline.stages).length,
         successfulStages: Object.values(pipeline.stages).filter(
           (s) => s.status === "complete",
-        ).length,
-      },
+        ).length
+      }
     });
   } catch (error: any) {
     console.error("Evidence processing failed:", error);
     return json({
         error: "Processing failed",
-        details: error.message,
+        details: error.message
       },)
       { status: 500 },
     );

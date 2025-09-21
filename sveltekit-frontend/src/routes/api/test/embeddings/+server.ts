@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
           enableGpuAcceleration: true,
           enableCaching: true,
           chunkSize: 1000,
-          chunkOverlap: 200,
+          chunkOverlap: 200
         };
 
         results.push({
@@ -41,16 +41,16 @@ export const GET: RequestHandler = async ({ url }) => {
             ...config,
             ollama_url: 'http://localhost:11434',
             gpu_optimization: 'RTX 3060 Ti optimized',
-            legal_analysis: 'sentence-transformer integration',
+            legal_analysis: 'sentence-transformer integration'
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'embedding_service_config',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -76,16 +76,16 @@ export const GET: RequestHandler = async ({ url }) => {
             is_normalized: Math.abs(Math.sqrt(normalizedEmbedding.reduce((sum, val) => sum + val * val, 0)) - 1) < 0.001,
             sample_values: normalizedEmbedding.slice(0, 5).map(v => Math.round(v * 1000) / 1000),
             model: 'nomic-embed-text',
-            processing_mode: 'batch_optimized',
+            processing_mode: 'batch_optimized'
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'embedding_generation',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
             content: chunk.trim(),
             startIndex,
             endIndex,
-            length: chunk.trim().length,
+            length: chunk.trim().length
           });
           
           startIndex = endIndex - chunkOverlap;
@@ -142,16 +142,16 @@ export const GET: RequestHandler = async ({ url }) => {
               index: c.index,
               length: c.length,
               preview: c.content.substring(0, 50) + '...'
-            ,})
+            })
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'document_chunking',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return {
             id: doc.id,
             content: doc.content,
-            similarity: Math.round(similarity * 1000) / 1000,
+            similarity: Math.round(similarity * 1000) / 1000
           };
         });
 
@@ -193,16 +193,16 @@ export const GET: RequestHandler = async ({ url }) => {
             document_count: documents.length,
             threshold: 0.7,
             results: similarities,
-            top_match: similarities[0],
+            top_match: similarities[0]
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'similarity_search',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -220,7 +220,7 @@ export const GET: RequestHandler = async ({ url }) => {
           keywords: ['summary_judgment', '42_usc_1983', 'material_facts'],
           entities: ['defendant', 'plaintiff', 'court'],
           citations: ['42 U.S.C. § 1983'],
-          document_type: 'judicial_order',
+          document_type: 'judicial_order'
         };
 
         results.push({
@@ -231,16 +231,16 @@ export const GET: RequestHandler = async ({ url }) => {
             analysis,
             embedding_enhanced: true,
             semantic_enrichment: 'legal NLP pipeline integration',
-            vector_dimensions: 384,
+            vector_dimensions: 384
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'legal_analysis_integration',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -258,21 +258,21 @@ export const GET: RequestHandler = async ({ url }) => {
           memory_usage: '128MB for 10,000 cached embeddings',
           gpu_utilization: '85% RTX 3060 Ti',
           model_loading_time: '2.3 seconds',
-          average_embedding_time: '6.7ms per text',
+          average_embedding_time: '6.7ms per text'
         };
 
         results.push({
           test: 'performance_metrics',
           status: 'success',
           data: performanceData,
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'performance_metrics',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -299,14 +299,14 @@ export const GET: RequestHandler = async ({ url }) => {
         legal_analysis: 'sentence-transformer integration',
         caching: 'in-memory with TTL',
         database_integration: 'PostgreSQL pgvector',
-        chunking_strategy: 'legal-aware with overlap',
+        chunking_strategy: 'legal-aware with overlap'
       },
       integration_status: {
         qdrant_service: 'compatible',
         som_clustering: 'compatible',
         nes_cache: 'compatible',
         postgresql_sync: 'ready',
-        vector_dimensions: '768 (corrected)',
+        vector_dimensions: '768 (corrected)'
       }
     });
 
@@ -314,7 +314,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -346,21 +346,21 @@ export const POST: RequestHandler = async ({ request, url }) => {
         success: true,
         action: 'process_document',
         result,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
     return json({
       success: false,
       error: 'Invalid action. Supported actions: process_document',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 400 });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

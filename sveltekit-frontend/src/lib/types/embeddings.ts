@@ -48,7 +48,7 @@ export interface TextPreprocessingResult {
     originalLength: number;
     cleanedLength: number;
     tokenCount: number;
-    hasSpecialChars: boolean;,
+    hasSpecialChars: boolean;
   };
 }
 
@@ -67,7 +67,7 @@ export interface BatchEmbeddingResponse {
     total: number;
     successful: number;
     failed: number;
-    processingTime: string;,
+    processingTime: string;
   };
 }
 

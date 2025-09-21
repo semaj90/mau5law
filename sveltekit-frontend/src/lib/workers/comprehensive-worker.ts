@@ -23,7 +23,7 @@ interface ChunkJob {
     totalChunks: number;
     priority: string;
     userId?: string;
-    timestamp: string;,
+    timestamp: string;
   };
 }
 
@@ -40,7 +40,7 @@ async function processChunkJob(job: ChunkJob) {
   try {
     // Generate embedding;
     const result = await getEmbeddingViaGate(fetch, text, { 
-      model: job.metadata.priority === 'high' ? 'nomic-embed-text' : undefined ,
+      model: job.metadata.priority === 'high' ? 'nomic-embed-text' : undefined 
     });
     const embedding = (result as { embedding?: any; backend?: any }).embedding;
     
@@ -58,8 +58,8 @@ async function processChunkJob(job: ChunkJob) {
         priority: job.metadata.priority,
         workerId,
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
-      } as any,
+        timestamp: new Date().toISOString()
+      } as any
     } as any);
 
     console.log(`✅ Stored embedding for ${job.jobId}:${job.chunkIndex}`);
@@ -70,7 +70,7 @@ async function processChunkJob(job: ChunkJob) {
     return {
       success: true,
       processingTime: Date.now() - startTime,
-      chunkIndex: job.chunkIndex,
+      chunkIndex: job.chunkIndex
     };
 
   } catch (error) {
@@ -133,7 +133,7 @@ async function runRabbitConsumer() {
       startedAt: new Date().toISOString(),
       status: 'active',
       queues: ['evidence.embedding.queue', 'evidence.embedding.priority'],
-      pid: process.pid,
+      pid: process.pid
     }, 300); // 5 minute TTL, renewed by heartbeat
 
     // Start heartbeat;
@@ -202,7 +202,7 @@ async function runRedisLoop() {
       startedAt: new Date().toISOString(),
       status: 'active',
       queues: ['embedding:jobs'],
-      pid: process.pid,
+      pid: process.pid
     }, 300);
 
     console.log('🚀 Redis BLPOP loop started on embedding:jobs');

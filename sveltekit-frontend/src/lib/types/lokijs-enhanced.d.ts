@@ -278,7 +278,7 @@ declare module 'lokijs' {
 // Additional type augmentations for global Loki;
 declare global {
   interface LokiStatic {
-    LokiMemoryAdapter: new () => any;,
+    LokiMemoryAdapter: new () => any;
   }
 }
 

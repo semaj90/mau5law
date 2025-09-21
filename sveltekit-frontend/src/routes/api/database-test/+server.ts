@@ -22,12 +22,12 @@ export const GET: RequestHandler = async () => {
       
       results.pgvector = {
         installed: vectorCheck.length > 0,
-        version: vectorCheck[0]?.extversion || null,
+        version: vectorCheck[0]?.extversion || null
       };
     } catch (error: any) {
       results.pgvector = {
         installed: false,
-        error: error.message,
+        error: error.message
       };
     }
 
@@ -92,12 +92,12 @@ export const GET: RequestHandler = async () => {
       
       results.vectorOperations = {
         success: true,
-        testVector: vectorTest[0]?.test_vector,
+        testVector: vectorTest[0]?.test_vector
       };
     } catch (error: any) {
       results.vectorOperations = {
         success: false,
-        error: error.message,
+        error: error.message
       };
     }
 
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async () => {
       success: false,
       error: error.message,
       stack: error.stack,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -133,14 +133,14 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       query,
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

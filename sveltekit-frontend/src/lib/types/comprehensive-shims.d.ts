@@ -113,7 +113,7 @@ declare module "$lib/utils/webgpu-array-utils" {
 declare module "./webgpu-rag-service" {
   export interface GPUSearchMetrics {
     searchTime: number;
-    resultCount: number;,
+    resultCount: number;
   }
 }
 

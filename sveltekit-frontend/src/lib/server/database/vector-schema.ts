@@ -128,6 +128,6 @@ export const searchEmbeddings = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
   },
   (table) => ({
-    userIdIdx: index("search_embeddings_user_id_idx").on(table.userId),
+    userIdIdx: index("search_embeddings_user_id_idx").on(table.userId)
   }),
 );

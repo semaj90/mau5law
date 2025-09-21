@@ -28,7 +28,7 @@ export interface CopilotIndexEntry {
     relevanceScore: number;
     timestamp: number;
     fileSize: number;
-    tokens: number;,
+    tokens: number;
   };
   semanticChunks: Array<any>;
 }
@@ -42,7 +42,7 @@ export interface CopilotIndex {
     totalTokens: number;
     avgEmbeddingTime: number;
     indexSizeMB: number;
-    lastUpdated: number;,
+    lastUpdated: number;
   };
   clusters: Array<any>
 
@@ -52,7 +52,7 @@ export interface VectorEmbeddingConfig {
   dimensions: 384 | 768 | 1536;
   backend: 'pgvector' | 'qdrant' | 'hybrid';
   chunkSize: number;
-  overlap: number;,
+  overlap: number;
 }
 
 export class SIMDJSONIndexProcessor {
@@ -64,7 +64,7 @@ export class SIMDJSONIndexProcessor {
     embeddingTime: 0,
     indexTime: 0,
     totalProcessed: 0,
-    cacheHits: 0,
+    cacheHits: 0
   };
 
   constructor(config: Partial<VectorEmbeddingConfig> = {}) {
@@ -74,7 +74,7 @@ export class SIMDJSONIndexProcessor {
       backend: 'hybrid',
       chunkSize: 512,
       overlap: 50,
-      ...config,
+      ...config
     };
 
     // Initialize SIMD JSON parser with worker thread support
@@ -105,7 +105,7 @@ export class SIMDJSONIndexProcessor {
         indexType: 'enhanced_legal_ai',
         entries: optimizedEntries,
         statistics,
-        clusters,
+        clusters
       };
 
       this.performanceMetrics.indexTime = performance.now() - startTime;
@@ -186,7 +186,7 @@ export class SIMDJSONIndexProcessor {
     // Calculate similarities using SIMD operations;
     const similarities = index.entries.map((entry) => ({
       entry,
-      similarity: this.calculateCosineSimilaritySIMD(queryEmbedding, entry.embedding),
+      similarity: this.calculateCosineSimilaritySIMD(queryEmbedding, entry.embedding)
     });
 
     // Filter and sort by similarity
@@ -232,11 +232,11 @@ export class SIMDJSONIndexProcessor {
         procedural: similarity * 0.8,
         precedential: similarity * 0.85,
         jurisdictional: similarity * 0.95,
-        confidence: entry.metadata.relevanceScore,
+        confidence: entry.metadata.relevanceScore
       },
       relevanceScore: similarity,
       rank: index + 1,
-      snippet: entry.content.substring(0, 200),
+      snippet: entry.content.substring(0, 200)
     });
   }
 
@@ -365,9 +365,9 @@ export class SIMDJSONIndexProcessor {
             relevanceScore: entry.relevance_score || 0.8,
             timestamp: Date.now(),
             fileSize: entry.content?.length || 0,
-            tokens: this.estimateTokens(entry.content || ''),
+            tokens: this.estimateTokens(entry.content || '')
           },
-          semanticChunks,
+          semanticChunks
         } as CopilotIndexEntry;
       });
 
@@ -395,7 +395,7 @@ export class SIMDJSONIndexProcessor {
           content: chunkContent,
           embedding,
           startOffset: i,
-          endOffset: Math.min(i + chunkSize, content.length),
+          endOffset: Math.min(i + chunkSize, content.length)
         });
       }
     }
@@ -427,9 +427,9 @@ export class SIMDJSONIndexProcessor {
             lastModified: new Date(entry.metadata.timestamp || Date.now()),
             fileSize: entry.metadata.fileSize || entry.content.length,
             language: 'en',
-            tags: [],
+            tags: []
           },
-          version: '1.0',
+          version: '1.0'
         });
       }
 
@@ -439,7 +439,7 @@ export class SIMDJSONIndexProcessor {
         id: cluster.id,
         centroid: new Float32Array(cluster.centroid || []),
         memberIds: cluster.documents || [],
-        relevantTerms: cluster.metadata?.dominant_legal_type ? [cluster.metadata.dominant_legal_type] : [],
+        relevantTerms: cluster.metadata?.dominant_legal_type ? [cluster.metadata.dominant_legal_type] : []
       });
     } catch (error: any) {
       console.error('Cluster generation failed:', error);
@@ -460,7 +460,7 @@ export class SIMDJSONIndexProcessor {
       totalTokens,
       avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(entries.length, 1),
       indexSizeMB: totalSize / (1024 * 1024),
-      lastUpdated: Date.now(),
+      lastUpdated: Date.now()
     };
   }
 
@@ -495,9 +495,9 @@ export class SIMDJSONIndexProcessor {
         lastModified: new Date(entry.metadata.timestamp),
         fileSize: entry.metadata.fileSize,
         language: entry.language,
-        tags: [entry.metadata.source, entry.metadata.priority],
+        tags: [entry.metadata.source, entry.metadata.priority]
       },
-      version: '1.0',
+      version: '1.0'
     } as import('$lib/types/rag').RAGDocument;
   }
 
@@ -513,8 +513,8 @@ export class SIMDJSONIndexProcessor {
         body: JSON.stringify({ 
           content, 
           model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
-          backend: 'pgvector',
-        }),
+          backend: 'pgvector'
+        })
       });
 
       if (!response.ok) {
@@ -538,8 +538,8 @@ export class SIMDJSONIndexProcessor {
         body: JSON.stringify({ 
           content, 
           model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
-          backend: 'qdrant',
-        }),
+          backend: 'qdrant'
+        })
       });
 
       if (!response.ok) {
@@ -626,7 +626,7 @@ export class SIMDJSONIndexProcessor {
       javascript: 'memo',
       svelte: 'memo',
       markdown: 'memo',
-      json: 'evidence',
+      json: 'evidence'
     };
     return typeMap[language] || 'memo';
   }
@@ -655,7 +655,7 @@ export class SIMDJSONIndexProcessor {
       cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalProcessed, 1),
       avgParseTime: this.performanceMetrics.parseTime / Math.max(this.performanceMetrics.totalProcessed, 1),
       avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(this.performanceMetrics.totalProcessed, 1),
-      avgIndexTime: this.performanceMetrics.indexTime / Math.max(this.performanceMetrics.totalProcessed, 1),
+      avgIndexTime: this.performanceMetrics.indexTime / Math.max(this.performanceMetrics.totalProcessed, 1)
     };
   }
 
@@ -668,7 +668,7 @@ export class SIMDJSONIndexProcessor {
       embeddingTime: 0,
       indexTime: 0,
       totalProcessed: 0,
-      cacheHits: 0,
+      cacheHits: 0
     };
   }
 
@@ -686,6 +686,6 @@ export const simdIndexProcessor = new SIMDJSONIndexProcessor({
   dimensions: 384,
   backend: 'hybrid',
   chunkSize: 512,
-  overlap: 50,
+  overlap: 50
 });
 

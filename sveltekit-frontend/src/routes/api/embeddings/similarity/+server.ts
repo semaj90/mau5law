@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!query_embedding || !Array.isArray(query_embedding)) {
       return json({ 
           success: false,
-          error: 'Query embedding vector is required' ,
+          error: 'Query embedding vector is required' 
         },)
         { status: 400 }
       );
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
           threshold,
           limit
         },
-        executionTime: Math.random() * 100 + 50 // Simulate realistic response time,
+        executionTime: Math.random() * 100 + 50 // Simulate realistic response time
       }
     });
   } catch (error) {
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
         success: false,
         error: 'Failed to perform similarity search',
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );

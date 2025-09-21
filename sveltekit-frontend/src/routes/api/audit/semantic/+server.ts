@@ -55,7 +55,7 @@ async function logAuditResult(results: SemanticAuditResult[]): Promise<any> {
         status: (result as any).status || 'unknown',
         message: (result as any).message || JSON.stringify(result),
         suggestedFix: (result as any).suggestedFix ?? null,
-        agentTriggered: (result as any).agentTriggered ?? false,
+        agentTriggered: (result as any).agentTriggered ?? false
       }
     };
     context7AgentOrchestrator.logAuditEntry(logEntry);
@@ -84,13 +84,13 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
           action = 'code_review';
           break;
         default:
-          action = 'summarize';,
+          action = 'summarize';
       }
 
       const trigger: AgentTrigger = {
         todoId: (result as { id?: any; status?: any; todoId?: any; agentTriggered?: any; step?: any }).todoId,
         action: action,
-        status: 'pending',
+        status: 'pending'
       };
 
       // Trigger agent using the real Context7 orchestrator;
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
       maxResults: 10,
       confidenceThreshold: 0.7,
       includeCode: true,
-      includeDocs: true,
+      includeDocs: true
     });
 
     console.log(`[Real Semantic Search] Found ${searchResults.length} results`);
@@ -167,11 +167,11 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
         totalResults: enhancedResults.length,
         totalTriggers: triggeredAgents.length,
-        context7Integration: true,
+        context7Integration: true
       }
     }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" }
     });
 
   } catch (error: any) {
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request }) => {
         step: 'semantic_audit_error',
         status: 'error',
         message: `Semantic audit failed: ${error}`,
-        agentTriggered: false,
+        agentTriggered: false
       }
     };
     context7AgentOrchestrator.logAuditEntry(errorLogEntry);
@@ -198,10 +198,10 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(JSON.stringify({
       error: 'Semantic audit failed',
       message: String(error),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" }
     });
   }
 };

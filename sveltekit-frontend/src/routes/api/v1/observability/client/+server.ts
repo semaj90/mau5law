@@ -19,9 +19,9 @@ const metricsStore = {
       lcp: 0,
       fid: 0,
       cls: 0,
-      fcp: 0,
+      fcp: 0
     },
-    lastUpdated: Date.now(),
+    lastUpdated: Date.now()
   }
 };
 
@@ -44,7 +44,7 @@ function updateAggregatedStats() {
       cls: calculateWebVitalAverage(allMetrics, 'cls'),
       fcp: calculateWebVitalAverage(allMetrics, 'fcp')
     },
-    lastUpdated: Date.now(),
+    lastUpdated: Date.now()
   };
 }
 
@@ -62,7 +62,7 @@ function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: stri
     timestamp: new Date(payload.timestamp).toISOString(),
     metricsCount: payload.metrics.length,
     userAgent: payload.userAgent.slice(0, 50) + '...',
-    url: payload.url,
+    url: payload.url
   });
 
   payload.metrics.forEach((metric, index) => {
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
     // Store metrics (in production, save to PostgreSQL/Redis);
     metricsStore.clientMetrics.push({
       ...payload,
-      timestamp: Date.now() // Use server timestamp for consistency,
+      timestamp: Date.now() // Use server timestamp for consistency
     });
 
     // Keep only last 1000 entries to prevent memory issues;
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
       requestId,
       processed: payload.metrics.length,
       processingTime: Math.round(processingTime * 100) / 100,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, {
       headers: {
         'X-Request-ID': requestId,
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
     return json({
       error: 'Failed to process client metrics',
       requestId,
-      processingTime: Math.round(processingTime * 100) / 100,
+      processingTime: Math.round(processingTime * 100) / 100
     }, { 
       status: 500,
       headers: {
@@ -172,7 +172,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             timestamp: payload.timestamp,
             metricsCount: payload.metrics.length,
             averageLoadTime: payload.metrics.reduce((sum, m) => sum + m.loadTime, 0) / payload.metrics.length,
-            routes: payload.metrics.map(m => m.routeId || m.pathname),
+            routes: payload.metrics.map(m => m.routeId || m.pathname)
           });
 
         return json({
@@ -190,7 +190,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             averageRenderTime: metricsStore.aggregatedStats.averageRenderTime < 1000,
             lcpUnder2_5s: (metricsStore.aggregatedStats.webVitalsAverages.lcp || 0) < 2500,
             fidUnder100ms: (metricsStore.aggregatedStats.webVitalsAverages.fid || 0) < 100,
-            clsUnder0_1: (metricsStore.aggregatedStats.webVitalsAverages.cls || 0) < 0.1,
+            clsUnder0_1: (metricsStore.aggregatedStats.webVitalsAverages.cls || 0) < 0.1
           },
           aggregatedStats: metricsStore.aggregatedStats,
           requestId
@@ -203,19 +203,19 @@ export const GET: RequestHandler = async ({ url, locals }) => {
                    calculateHealthScore() > 60 ? 'good' : 
                    calculateHealthScore() > 40 ? 'fair' : 'poor',
             score: calculateHealthScore(),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           frontend: {
             averageLoadTime: metricsStore.aggregatedStats.averageLoadTime,
             averageRenderTime: metricsStore.aggregatedStats.averageRenderTime,
             totalRequests: metricsStore.aggregatedStats.totalRequests,
-            webVitalsAverages: metricsStore.aggregatedStats.webVitalsAverages,
+            webVitalsAverages: metricsStore.aggregatedStats.webVitalsAverages
           },
           backend: {
             averageResponseTime: 0, // Would be populated from server metrics
             requestsPerSecond: 0,   // Would be calculated from time windows
             errorRate: 0,           // Would be tracked from error logs
-            uptime: process.uptime() * 1000 // Convert to ms,
+            uptime: process.uptime() * 1000 // Convert to ms
           },
           cognitive: {
             routingEfficiency: 85,    // Would come from cognitive modules
@@ -223,7 +223,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             gpuUtilization: 45,      // Would come from GPU monitoring
             consciousnessLevel: 12,   // Emergent behavior metric
             quantumCoherence: 50,     // Quantum state coherence
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         };
 

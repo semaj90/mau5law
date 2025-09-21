@@ -38,7 +38,7 @@ interface T5TransformResponse {
     processingTime: number;
     tokensGenerated: number;
     beamSearch: boolean;
-    parameters: any;,
+    parameters: any;
   };
   structured?: {
     summary?: string;
@@ -63,8 +63,8 @@ export const POST: RequestHandler = async ({ request }) => {
             'paraphrase',
             'generate',
             'analyze',
-            'extract',
-          ],
+            'extract'
+          ]
         },)
         { status: 400 }
       );
@@ -86,11 +86,11 @@ export const POST: RequestHandler = async ({ request }) => {
           repetitionPenalty: parameters.repetitionPenalty || 1.2,
           lengthPenalty: parameters.lengthPenalty || 1.0,
           beams: parameters.beams || 4,
-          ...parameters,
+          ...parameters
         },
         context,
         domain,
-        outputFormat,
+        outputFormat
       });
 
       const processingTime = performance.now() - startTime;
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
             ).output.split(' ').length,
             compressionRatio:
               input.length /
-              (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output.length,
+              (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output.length
           };
           confidence = 0.9;
           break;
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
             recommendations: generateRecommendations(
               (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output,
               domain
-            ),
+            )
           };
           confidence = 0.88;
           break;
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
             confidence: calculateExtractionConfidence(
               input,
               (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output
-            ),
+            )
           };
           confidence = structuredOutput.confidence || 0.82;
           break;
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
             relevance: assessRelevance(
               input,
               (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output
-            ),
+            )
           };
           confidence = 0.85;
           break;
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
         default:;
           structuredOutput = {
             transformed: (result as { output?: any; modelVersion?: any; tokensGenerated?: any })
-              .output,
+              .output
           };
       }
 
@@ -200,10 +200,10 @@ export const POST: RequestHandler = async ({ request }) => {
           parameters: {
             domain,
             outputFormat,
-            ...parameters,
-          },
+            ...parameters
+          }
         },
-        structured: structuredOutput,
+        structured: structuredOutput
       };
 
       return json(response);
@@ -219,8 +219,8 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: {
           ...mockResult.metadata,
           fallbackMode: true,
-          serviceError: serviceError.message,
-        },
+          serviceError: serviceError.message
+        }
       });
     }
   } catch (error: any) {
@@ -229,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message: String(error),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       { status: 500 }
     );
@@ -253,8 +253,8 @@ export const GET: RequestHandler = async ({ url }) => {
               'paraphrase',
               'generate',
               'analyze',
-              'extract',
-            ],
+              'extract'
+            ]
           },)
           { status: 400 }
         );
@@ -263,7 +263,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         task: taskInfo,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }
 
@@ -275,7 +275,7 @@ export const GET: RequestHandler = async ({ url }) => {
         name: 'T5-Legal-v2.1',
         type: 'sequence-to-sequence',
         parameters: '3B',
-        specialization: 'Legal document processing',
+        specialization: 'Legal document processing'
       },
       capabilities: {
         tasks: [;
@@ -283,61 +283,61 @@ export const GET: RequestHandler = async ({ url }) => {
             name: 'summarize',
             description: 'Generate concise summaries of legal documents',
             inputRange: '100-10000 tokens',
-            outputRange: '50-1000 tokens',
+            outputRange: '50-1000 tokens'
           },
           {
             name: 'analyze',
             description: 'Extract insights and analyze legal content',
             inputRange: '50-5000 tokens',
-            outputRange: '100-2000 tokens',
+            outputRange: '100-2000 tokens'
           },
           {
             name: 'extract',
             description: 'Extract specific information and entities',
             inputRange: '100-8000 tokens',
-            outputRange: '10-1500 tokens',
+            outputRange: '10-1500 tokens'
           },
           {
             name: 'generate',
             description: 'Generate legal content based on prompts',
             inputRange: '10-1000 tokens',
-            outputRange: '50-3000 tokens',
+            outputRange: '50-3000 tokens'
           },
           {
             name: 'paraphrase',
             description: 'Rephrase legal text for clarity',
             inputRange: '10-2000 tokens',
-            outputRange: '10-2500 tokens',
+            outputRange: '10-2500 tokens'
           },);
           {
             name: 'translate',
             description: 'Translate legal documents (if supported)',
             inputRange: '10-5000 tokens',
-            outputRange: '10-6000 tokens',
-          },
+            outputRange: '10-6000 tokens'
+          }
         ],
         domains: ['legal', 'contract', 'litigation', 'compliance', 'general'],
-        outputFormats: ['text', 'json', 'structured'],
+        outputFormats: ['text', 'json', 'structured']
       },
       performance: {
         averageLatency: '2.1s',
         throughput: '15 requests/minute',
         gpuAcceleration: true,
-        batchProcessing: true,
+        batchProcessing: true
       },
       endpoints: {
         process: '/api/t5-transformer (POST)',
         status: '/api/t5-transformer (GET)',
-        task_info: '/api/t5-transformer?task={task_name} (GET)',
+        task_info: '/api/t5-transformer?task={task_name} (GET)'
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: error instanceof Error ? error.message: String(error),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       { status: 500 }
     );
@@ -358,7 +358,7 @@ function extractLegalEntities(text: string): Array<any> {
     PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
     ORG: /\b[A-Z][a-z]+ (Inc|LLC|Corp|Company|Co\.)\b/g,
     DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\w+ \d{1,2}, \d{4}\b/g,
-    MONEY: /\$[\d,]+/g,
+    MONEY: /\$[\d]+/g
   };
 
   for (const [type, pattern] of Object.entries(patterns)) {
@@ -367,7 +367,7 @@ function extractLegalEntities(text: string): Array<any> {
       entities.push({
         text: match,
         type,
-        confidence: 0.85 + Math.random() * 0.1,
+        confidence: 0.85 + Math.random() * 0.1
       });
     });
   }
@@ -388,7 +388,7 @@ function analyzeSentiment(text: string): { label: string; score: number } {
 
   return {
     label: score > 0.1 ? 'positive' : score < -0.1 ? 'negative' : 'neutral',
-    score: Math.round((score + 1) * 50) / 100,
+    score: Math.round((score + 1) * 50) / 100
   };
 }
 
@@ -451,8 +451,8 @@ function parseStructuredData(text: string, domain: string): any {
     fields: {
       title: text.split('\n')[0] || 'Untitled',
       sections: text.split('\n\n').length,
-      wordCount: text.split(/\s+/).length,
-    },
+      wordCount: text.split(/\s+/).length
+    }
   };
 }
 
@@ -487,29 +487,29 @@ function getTaskInformation(task: string): any {
       description: 'Generate concise, accurate summaries of legal documents',
       examples: ['Contract summaries', 'Case brief generation', 'Policy abstracts'],
       parameters: ['maxLength', 'minLength', 'extractKeyPoints'],
-      outputStructure: ['summary', 'keyPoints', 'wordCount', 'compressionRatio'],
+      outputStructure: ['summary', 'keyPoints', 'wordCount', 'compressionRatio']
     },
     analyze: {
       name: 'Legal Analysis',
       description: 'Perform deep analysis of legal content and extract insights',
       examples: ['Risk assessment', 'Compliance analysis', 'Precedent identification'],
       parameters: ['depth', 'focus', 'includeEntities'],
-      outputStructure: ['analysis', 'entities', 'sentiment', 'recommendations'],
+      outputStructure: ['analysis', 'entities', 'sentiment', 'recommendations']
     },
     extract: {
       name: 'Information Extraction',
       description: 'Extract specific information, entities, and data points',
       examples: ['Party identification', 'Date extraction', 'Financial terms'],
       parameters: ['entityTypes', 'confidenceThreshold', 'structuredOutput'],
-      outputStructure: ['extracted', 'entities', 'structuredData', 'confidence'],
+      outputStructure: ['extracted', 'entities', 'structuredData', 'confidence']
     },
     generate: {
       name: 'Content Generation',
       description: 'Generate legal content based on prompts and context',
       examples: ['Clause generation', 'Document drafting', 'Legal opinions'],
       parameters: ['creativity', 'length', 'style', 'domain'],
-      outputStructure: ['generated', 'creativity', 'coherence', 'relevance'],
-    },
+      outputStructure: ['generated', 'creativity', 'coherence', 'relevance']
+    }
   };
 
   return taskMap[task] || null;
@@ -554,7 +554,7 @@ async function generateMockT5Response(
       processingTime: Math.round(processingTime),
       tokensGenerated: Math.ceil(output.split(' ').length * 1.3),
       beamSearch: true,
-      parameters: { domain, mockMode: true },
-    },
+      parameters: { domain, mockMode: true }
+    }
   };
 }

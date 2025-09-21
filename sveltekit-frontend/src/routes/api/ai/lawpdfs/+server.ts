@@ -46,7 +46,7 @@ export interface LawPdfResponse {
   riskAssessment: {
     riskLevel: 'low' | 'medium' | 'high';
     riskFactors: string[];
-    recommendations: string[];,
+    recommendations: string[];
   };
   embedding?: number[];
   metadata: {
@@ -54,7 +54,7 @@ export interface LawPdfResponse {
     modelUsed: string;
     embeddingModel: string;
     localProcessing: boolean;
-    confidence: number;,
+    confidence: number;
   };
 }
 
@@ -77,7 +77,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       fileName = 'document.pdf',
       analysisType = 'comprehensive',
       useLocalModels = true,
-      modelPreferences = {},
+      modelPreferences = {}
     } = body;
 
     if (!content) {
@@ -100,7 +100,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     response.metadata = {
       ...response.metadata,
       processingTime: Date.now() - startTime,
-      localProcessing: useLocalModels,
+      localProcessing: useLocalModels
     };
 
     return json(response);
@@ -111,7 +111,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json({
         error: 'Document processing failed',
         details: message,
-        fallbackSuggestion: 'Try with useLocalModels: false for cloud processing',
+        fallbackSuggestion: 'Try with useLocalModels: false for cloud processing'
       },)
       { status: 500 }
     );
@@ -139,7 +139,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
         results.push({
           filename: file.name,
           success: false,
-          error: 'Only PDF files are supported',
+          error: 'Only PDF files are supported'
         });
         continue;
       }
@@ -198,7 +198,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
         results.push({
           filename: file.name,
           success: false,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -211,7 +211,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
       message: `${successCount}/${files.length} files queued for processing`,
       totalFiles: files.length,
       successfulFiles: successCount,
-      failedFiles: files.length - successCount,
+      failedFiles: files.length - successCount
     });
     
   } catch (error: any) {
@@ -220,7 +220,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
       {
         success: false,
         error: 'File upload processing failed',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -249,9 +249,9 @@ async function processWithLocalModels(
           temperature: 0.3, // Lower temperature for legal accuracy
           top_p: 0.9,
           max_tokens: 1500,
-          stop: ['<|end|>', '\n\n---'],
-        },
-      }),
+          stop: ['<|end|>', '\n\n---']
+        }
+      })
     });
 
     if (!summaryResponse.ok) {
@@ -270,7 +270,7 @@ async function processWithLocalModels(
         body: JSON.stringify({
           model: embeddingModel.replace(':latest', ''),
           prompt: content.substring(0, 2000), // Limit for embedding
-        }),
+        })
       });
 
       if (embeddingResponse.ok) {
@@ -296,8 +296,8 @@ async function processWithLocalModels(
         modelUsed: summaryModel,
         embeddingModel,
         localProcessing: true,
-        confidence: parsedAnalysis.confidence,
-      },
+        confidence: parsedAnalysis.confidence
+      }
     };
   } catch (error: any) {
     console.error('[LawPDF] Local processing failed:', error);
@@ -337,8 +337,8 @@ async function processWithCloudFallback(
       modelUsed: 'fallback-processor',
       embeddingModel: 'none',
       localProcessing: false,
-      confidence: 0.6,
-    },
+      confidence: 0.6
+    }
   };
 }
 
@@ -374,7 +374,7 @@ Focus on accuracy and legal precision. Use clear, professional language.`;
       '\n\nProvide detailed analysis with citations and cross-references where applicable.',
     'legal-focused':
       basePrompt +
-      '\n\nFocus particularly on contract terms, obligations, liabilities, and enforceability issues.',
+      '\n\nFocus particularly on contract terms, obligations, liabilities, and enforceability issues.'
   };
 
   return enhancedPrompts[analysisType] || enhancedPrompts['comprehensive'];
@@ -385,7 +385,7 @@ function parseGemmaLegalResponse(response: string): {
   legalConcepts: LawPdfResponse['legalConcepts'];
   keyTerms: string[];
   riskAssessment: LawPdfResponse['riskAssessment'];
-  confidence: number;,
+  confidence: number;
 } {
   const sections: {
     summary: string;
@@ -393,7 +393,7 @@ function parseGemmaLegalResponse(response: string): {
     legalConcepts: LawPdfResponse['legalConcepts'];
     keyTerms: string[];
     riskAssessment: LawPdfResponse['riskAssessment'];
-    confidence: number;,
+    confidence: number;
   } = {
     summary: '',
     entities: [] as LawPdfResponse['entities'],
@@ -402,9 +402,9 @@ function parseGemmaLegalResponse(response: string): {
     riskAssessment: {
       riskLevel: 'medium',
       riskFactors: [],
-      recommendations: [],
+      recommendations: []
     },
-    confidence: 0.8,
+    confidence: 0.8
   };
 
   try {
@@ -420,7 +420,7 @@ function parseGemmaLegalResponse(response: string): {
         .map((line) => ({
           text: line.replace(/^[-•*]\s*/, '').trim(),
           type: 'LEGAL_CONCEPT' as const,
-          confidence: 0.8,
+          confidence: 0.8
         })
         .slice(0, 10);
     }
@@ -431,7 +431,7 @@ function parseGemmaLegalResponse(response: string): {
       sections.legalConcepts = conceptLines;
         .map((line) => ({
           concept: line.replace(/^[-•*]\s*/, '').trim(),
-          relevance: 0.8,
+          relevance: 0.8
         })
         .slice(0, 8);
     }
@@ -492,7 +492,7 @@ function extractBasicEntities(content: string) {
     PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
     ORGANIZATION: /\b[A-Z][a-z]+ (?:Inc|Corp|LLC|Ltd|Company)\b/g,
     DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g,
-    LEGAL_CONCEPT: /\b(?:contract|agreement|liability|warranty|indemnification|termination)\b/gi,
+    LEGAL_CONCEPT: /\b(?:contract|agreement|liability|warranty|indemnification|termination)\b/gi
   };
 
   for (const [type, pattern] of Object.entries(patterns)) {
@@ -501,7 +501,7 @@ function extractBasicEntities(content: string) {
       entities.push({
         text: match,
         type: type as any,
-        confidence: 0.7,
+        confidence: 0.7
       });
     });
   }
@@ -517,14 +517,14 @@ function detectLegalConcepts(content: string) {
     'Employment Law',
     'Corporate Governance',
     'Regulatory Compliance',
-    'Data Privacy',
+    'Data Privacy'
   ];
 
   return concepts
     .filter((concept) => content.toLowerCase().includes(concept.toLowerCase());
     .map((concept) => ({
       concept,
-      relevance: 0.7,
+      relevance: 0.7
     });
 }
 
@@ -539,7 +539,7 @@ function extractKeyTerms(content: string) {
     'breach',
     'damages',
     'confidentiality',
-    'intellectual property',
+    'intellectual property'
   ];
 
   return commonLegalTerms.filter((term) => content.toLowerCase().includes(term)).slice(0, 10);
@@ -570,7 +570,7 @@ function assessBasicRisk(content: string) {
       ? ['Review with legal counsel', 'Consider liability caps']
       : hasMediumRisk
         ? ['Standard legal review recommended']
-        : ['Minimal legal review required'],
+        : ['Minimal legal review required']
   };
 }
 

@@ -20,7 +20,7 @@ const FLATBUFFER_SCHEMA = {
     NODE_COUNT: 6,      // 4 bytes - number of nodes
     TIMESTAMP: 10,      // 8 bytes - creation timestamp
     CHECKSUM: 18,       // 4 bytes - data integrity checksum
-    RESERVED: 22        // 10 bytes - future expansion,
+    RESERVED: 22        // 10 bytes - future expansion
   },
   NODE: {
     ID: 0,              // 4 bytes - node ID (uint32)
@@ -39,7 +39,7 @@ const FLATBUFFER_SCHEMA = {
     METADATA_SIZE: 36,  // 4 bytes - metadata blob size
     EMBEDDING_OFFSET: 40, // 4 bytes - offset to embedding data
     METADATA_OFFSET: 44,  // 4 bytes - offset to metadata blob
-    TOTAL_SIZE: 48      // Total node header size,
+    TOTAL_SIZE: 48      // Total node header size
   }
 } as const;
 }
@@ -76,7 +76,7 @@ export class FlatBufferNodeSerializer {
     compressionRatio: 0,
     totalNodes: 0,
     cacheHits: 0,
-    cacheMisses: 0,
+    cacheMisses: 0
   };
 
   // Binary data cache with LRU eviction
@@ -308,7 +308,7 @@ export class FlatBufferNodeSerializer {
         timestamp,
         checksum,
         nodes,
-        totalSize: buffer.byteLength,
+        totalSize: buffer.byteLength
       };
 
     } catch (error: any) {
@@ -364,7 +364,7 @@ export class FlatBufferNodeSerializer {
       embedding: embeddings,
       metadata,
       priority: priorities,
-      bankId: bankIds,
+      bankId: bankIds
     };
   }
 
@@ -427,7 +427,7 @@ export class FlatBufferNodeSerializer {
       cacheSize: this.binaryCache.size,
       cacheHitRate: isNaN(cacheHitRate) ? 0 : cacheHitRate,
       avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes: 0,
-      avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0,
+      avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0
     };
   }
 
@@ -443,7 +443,7 @@ export class FlatBufferNodeSerializer {
       compressionRatio: 0,
       totalNodes: 0,
       cacheHits: 0,
-      cacheMisses: 0,
+      cacheMisses: 0
     };
   }
 }

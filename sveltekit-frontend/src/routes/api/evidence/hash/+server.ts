@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json();
       {
         error:
-          "Invalid hash format. Expected 64-character hexadecimal string (SHA256)",
+          "Invalid hash format. Expected 64-character hexadecimal string (SHA256)"
       },
       { status: 400 },
     );
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         uploadedBy: evidence.uploadedBy,
         caseName: cases.name,
         caseNumber: cases.caseNumber,
-        uploaderName: users.name,
+        uploaderName: users.name
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id)
@@ -53,20 +53,20 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json({
         found: false,
         message: "No evidence found with the specified hash",
-        hash,
+        hash
       });
     }
     return json({
       found: true,
       message: `Found ${evidenceResults.length} evidence item(s) matching the hash`,
       hash,
-      evidence: evidenceResults,
+      evidence: evidenceResults
     });
   } catch (error: any) {
     console.error("Error searching evidence by hash:", error);
     return json({
         error: "Failed to search evidence by hash",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json();
       {
         error:
-          "Invalid hash format. Expected 64-character hexadecimal string (SHA256)",
+          "Invalid hash format. Expected 64-character hexadecimal string (SHA256)"
       },
       { status: 400 },
     );
@@ -121,13 +121,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         ? "Hash verification successful - file integrity confirmed"
         : "Hash verification failed - file may have been modified or corrupted",
       uploadedAt: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).uploadedAt,
-      fileSize: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).fileSize,
+      fileSize: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).fileSize
     });
   } catch (error: any) {
     console.error("Error verifying evidence hash:", error);
     return json({
         error: "Failed to verify evidence hash",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );

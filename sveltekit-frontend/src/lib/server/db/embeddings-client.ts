@@ -14,7 +14,7 @@ const pool = new Pool({
   database: "legal_ai_db",
   max: 10, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 2000
 });
 
 export const db = drizzle(pool);
@@ -68,7 +68,7 @@ export class EmbeddingsService {
       source: row.source,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
-      similarity: parseFloat(row.similarity),
+      similarity: parseFloat(row.similarity)
     });
   }
 

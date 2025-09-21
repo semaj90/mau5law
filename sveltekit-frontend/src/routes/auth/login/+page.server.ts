@@ -27,7 +27,7 @@ export const actions: Actions = {
           httpOnly: true,
           secure: false, // Set to true in production with HTTPS
           sameSite: 'lax',
-          maxAge: 60 * 60 * 24 * 30 // 30 days,
+          maxAge: 60 * 60 * 24 * 30 // 30 days
         });
 
         console.log('✅ Demo login successful for:', email);

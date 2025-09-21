@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       controller.enqueue(`data: ${JSON.stringify({
         type: 'connection',
         message: 'Connected to job status stream',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       })}\n\n`);
 
       // Send current job statuses;
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             controller.enqueue(`data: ${JSON.stringify({
               type: 'jobs_snapshot',
               jobs: allJobs,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             })}\n\n`);
           } else if (jobIds.length > 0) {
             // Send specific jobs
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             controller.enqueue(`data: ${JSON.stringify({
               type: 'jobs_snapshot', 
               jobs,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             })}\n\n`);
           }
 
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           controller.enqueue(`data: ${JSON.stringify({
             type: 'stats',
             stats,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\n\n`);
         } catch (error) {
           console.error('Error sending current statuses:', error);
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
         controller.enqueue(`data: ${JSON.stringify({
           type: 'heartbeat',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         })}\n\n`);
       }, 30000);
 

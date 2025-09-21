@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!body.errors || !Array.isArray(body.errors)) {
 			return json({ 
 				success: false, 
-				error: 'Invalid request: errors array required' ,
+				error: 'Invalid request: errors array required' 
 			}, { status: 400 });
 		}
 
@@ -36,9 +36,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		const response = await fetch(apiUrl, {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(body),
+			body: JSON.stringify(body)
 		});
 
 		if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				api_version: '2.0.0',
 				go_service_url: apiUrl,
 				sveltekit_integration: true,
-				performance_tier: getPerformanceTier(body.errors.length),
+				performance_tier: getPerformanceTier(body.errors.length)
 			}
 		};
 
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			success: false,
 			error: 'Internal server error during TypeScript optimization',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
 };
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async () => {
 			go_service: {
 				available: healthResponse.ok,
 				health: healthData,
-				url: ENHANCED_API_BASE_URL,
+				url: ENHANCED_API_BASE_URL
 			},
 			performance: performanceData,
 			capabilities: {
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async () => {
 				auto_solve: '/api/v1/typescript-optimizer',
 				batch_fix: '/api/v1/typescript-optimizer/batch',
 				gpu_accelerated: '/api/v1/typescript-optimizer/gpu',
-				benchmark: '/api/v1/typescript-optimizer/benchmark',
+				benchmark: '/api/v1/typescript-optimizer/benchmark'
 			}
 		});
 
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async () => {
 			status: 'degraded',
 			error: 'Unable to connect to Go service',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 503 });
 	}
 };

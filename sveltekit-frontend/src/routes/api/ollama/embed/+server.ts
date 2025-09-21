@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
       text,
       model = 'nomic-embed-text:latest',
       normalize = true,
-      truncate = true,
+      truncate = true
     } = await request.json();
 
     if (!text) {
@@ -29,12 +29,12 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: model.replace(':latest', ''),
-        prompt: truncatedText,
-      }),
+        prompt: truncatedText
+      })
     });
 
     if (!response.ok) {
@@ -62,8 +62,8 @@ export const POST: RequestHandler = async ({ request }) => {
         originalTextLength: text.length,
         truncatedTextLength: truncatedText.length,
         normalized: normalize,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     console.error('Embeddings API error:', error);
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to generate embeddings',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );

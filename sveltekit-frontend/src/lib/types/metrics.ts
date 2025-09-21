@@ -9,7 +9,7 @@ export interface CognitiveMetrics {
   gpuUtilization: number;
   consciousnessLevel: number;
   quantumCoherence: number;
-  timestamp: string;,
+  timestamp: string;
 }
 
 export interface RouteMetrics {
@@ -41,21 +41,21 @@ export interface TimingMetrics {
   requestId?: string;
   timestamp: number;
   url: string;
-  userAgent: string;,
+  userAgent: string;
 }
 
 export interface ClientMetricsPayload {
   metrics: RouteMetrics[];
   timestamp: number;
   userAgent: string;
-  url: string;,
+  url: string;
 }
 
 export interface PerformanceMetrics {
   overall: {
     status: 'excellent' | 'good' | 'fair' | 'poor';
     score: number;
-    timestamp: string;,
+    timestamp: string;
   };
   frontend: {
     averageLoadTime: number;
@@ -65,16 +65,16 @@ export interface PerformanceMetrics {
       lcp: number;
       fid: number;
       cls: number;
-      fcp: number;,
+      fcp: number;
     };
   };
   backend: {
     averageResponseTime: number;
     requestsPerSecond: number;
     errorRate: number;
-    uptime: number;,
+    uptime: number;
   };
-  cognitive: CognitiveMetrics;,
+  cognitive: CognitiveMetrics;
 }
 
 export interface SystemMetrics {
@@ -84,19 +84,19 @@ export interface SystemMetrics {
       heapUsed: number;
       heapTotal: number;
       external: number;
-      rss: number;,
+      rss: number;
     };
     cpu: {
       usage: number;
-      loadAverage: number[];,
+      loadAverage: number[];
     };
     gpu?: {
       utilization: number;
       memory: {
         used: number;
-        total: number;,
+        total: number;
       };
-      temperature: number;,
+      temperature: number;
     };
   };
   services: {
@@ -116,10 +116,10 @@ export interface MetricsAggregation {
     lcp: number;
     fid: number;
     cls: number;
-    fcp: number;,
+    fcp: number;
   };
   topRoutes: Array<any>;
-  cognitiveMetrics: CognitiveMetrics;,
+  cognitiveMetrics: CognitiveMetrics;
 }
 
 // ---- Cognitive Metrics Builders & Utilities ----;
@@ -152,7 +152,7 @@ export function buildCognitiveMetrics(partial: PartialCognitiveMetrics): Cogniti
     gpuUtilization: clampMetric(partial.gpuUtilization),
     consciousnessLevel: clampMetric(partial.consciousnessLevel),
     quantumCoherence: clampMetric(partial.quantumCoherence),
-    timestamp: partial.timestamp || new Date().toISOString(),
+    timestamp: partial.timestamp || new Date().toISOString()
   };
 }
 

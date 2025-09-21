@@ -17,7 +17,7 @@ const UpdateTimelineEventSchema = z.object({
   location: z.string().max(500).optional(),
   participants: z.array(z.string()).optional(),
   metadata: z.record(z.any()).optional(),
-  severity: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+  severity: z.enum(['low', 'medium', 'high', 'critical']).optional()
 });
 
 /**
@@ -55,8 +55,8 @@ export const GET: RequestHandler = async ({ params, cookies }) => {
     return json({
       success: true,
       data: {
-        event: timelineEvent[0],
-      },
+        event: timelineEvent[0]
+      }
     });
   } catch (err: any) {
     console.error('Get timeline event error:', err);
@@ -102,7 +102,7 @@ export const PUT: RequestHandler = async ({ params, cookies, request }) => {
     // Prepare update data;
     const updateData: any = {
       ...validatedData,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Convert eventDate string to Date if provided;
@@ -121,8 +121,8 @@ export const PUT: RequestHandler = async ({ params, cookies, request }) => {
       success: true,
       message: 'Timeline event updated successfully',
       data: {
-        event: updatedEvent[0],
-      },
+        event: updatedEvent[0]
+      }
     });
   } catch (err: any) {
     console.error('Update timeline event error:', err);
@@ -176,8 +176,8 @@ export const DELETE: RequestHandler = async ({ params, cookies }) => {
       success: true,
       message: 'Timeline event deleted successfully',
       data: {
-        deletedEventId: eventId,
-      },
+        deletedEventId: eventId
+      }
     });
   } catch (err: any) {
     console.error('Delete timeline event error:', err);

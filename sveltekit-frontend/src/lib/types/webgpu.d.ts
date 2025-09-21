@@ -7,7 +7,7 @@ export interface WebGPUDevice {
   adapter: GPUAdapter;
   queue: GPUCommandQueue;
   features: Set<string>;
-  limits: GPUSupportedLimits;,
+  limits: GPUSupportedLimits;
 }
 
 export interface WebGPUBuffer {
@@ -20,7 +20,7 @@ export interface WebGPUBuffer {
 export interface WebGPUShaderModule {
   module: GPUShaderModule;
   code: string;
-  entryPoint: string;,
+  entryPoint: string;
 }
 
 export interface WebGPUComputePipeline {
@@ -33,7 +33,7 @@ export interface WebGPUMemoryInfo {
   totalMemory: number;
   usedMemory: number;
   availableMemory: number;
-  fragmentationLevel: number;,
+  fragmentationLevel: number;
 }
 
 export interface WebGPUTensorOperation {
@@ -48,7 +48,7 @@ export interface WebGPUTensor {
   shape: number[];
   strides: number[];
   dataType: 'f32' | 'i32' | 'u32';
-  buffer: WebGPUBuffer;,
+  buffer: WebGPUBuffer;
 }
 
 export interface WebGPUKernel {
@@ -56,19 +56,19 @@ export interface WebGPUKernel {
   source: string;
   entryPoint: string;
   workgroupSize: [number, number, number];
-  bindings: WebGPUBinding[];,
+  bindings: WebGPUBinding[];
 }
 
 export interface WebGPUBinding {
   binding: number;
   resource: GPUBindingResource;
-  type: 'buffer' | 'texture' | 'sampler';,
+  type: 'buffer' | 'texture' | 'sampler';
 }
 
 export interface WebGPUComputeContext {
   device: WebGPUDevice;
   commandEncoder: GPUCommandEncoder;
-  computePass: GPUComputePassEncoder;,
+  computePass: GPUComputePassEncoder;
 }
 
 export interface WebGPUPerformanceMetrics {
@@ -76,7 +76,7 @@ export interface WebGPUPerformanceMetrics {
   memoryTransferTime: number;
   totalExecutionTime: number;
   throughput: number;
-  efficiency: number;,
+  efficiency: number;
 }
 
 export interface WebGPULegalProcessor {
@@ -90,7 +90,7 @@ export interface WebGPUProcessingResult {
   success: boolean;
   processedText: string;
   metadata: Record<string, any>;
-  performanceMetrics: WebGPUPerformanceMetrics;,
+  performanceMetrics: WebGPUPerformanceMetrics;
 }
 
 export interface WebGPUEntityResult {
@@ -112,7 +112,7 @@ export interface WebGPUConfiguration {
   memoryLimit: number;
   enableDebug: boolean;
   enableProfiling: boolean;
-  shaderOptimization: 'none' | 'basic' | 'aggressive';,
+  shaderOptimization: 'none' | 'basic' | 'aggressive';
 }
 
 export interface WebGPUCapabilities {
@@ -121,7 +121,7 @@ export interface WebGPUCapabilities {
   maxComputeWorkgroupsPerDimension: number;
   maxComputeInvocationsPerWorkgroup: number;
   maxBufferSize: number;
-  maxTextureSize: number;,
+  maxTextureSize: number;
 }
 
 // Legal AI specific interfaces
@@ -138,7 +138,7 @@ export interface ContractAnalysis {
   obligations: string[];
   risks: RiskFactor[];
   recommendations: string[];
-  confidence: number;,
+  confidence: number;
 }
 
 export interface ClauseExtraction {
@@ -146,14 +146,14 @@ export interface ClauseExtraction {
   text: string;
   importance: 'low' | 'medium' | 'high' | 'critical';
   legalImplications: string[];
-  suggestedActions: string[];,
+  suggestedActions: string[];
 }
 
 export interface RiskAssessment {
   overallRisk: 'low' | 'medium' | 'high' | 'critical';
   riskFactors: RiskFactor[];
   mitigationStrategies: string[];
-  legalReview: boolean;,
+  legalReview: boolean;
 }
 
 export interface RiskFactor {
@@ -161,7 +161,7 @@ export interface RiskFactor {
   severity: number;
   likelihood: number;
   impact: string;
-  mitigation: string[];,
+  mitigation: string[];
 }
 
 export interface DocumentComparison {
@@ -169,14 +169,14 @@ export interface DocumentComparison {
   keyDifferences: string[];
   addedClauses: string[];
   removedClauses: string[];
-  modifiedClauses: ModifiedClause[];,
+  modifiedClauses: ModifiedClause[];
 }
 
 export interface ModifiedClause {
   original: string;
   modified: string;
   changeType: 'minor' | 'major' | 'critical';
-  legalImpact: string;,
+  legalImpact: string;
 }
 
 // Memory management interfaces
@@ -212,7 +212,7 @@ export interface WebGPUValidationError extends WebGPUError {
 export interface WebGPUOutOfMemoryError extends WebGPUError {
   requestedSize: number;
   availableSize: number;
-  totalSize: number;,
+  totalSize: number;
 }
 
 // Event interfaces

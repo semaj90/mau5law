@@ -65,7 +65,7 @@ export interface TestResults {
   timestamp: Date;
   performance: {
     duration: number;
-    documentsSearched: number;,
+    documentsSearched: number;
   };
   error?: unknown;
 }
@@ -104,10 +104,10 @@ export interface GPUProcessingStatus {
   gpuMemory?: {
     total: number;
     used: number;
-    free: number;,
+    free: number;
   };
   activeJobs: number;
-  queueLength: number;,
+  queueLength: number;
 }
 
 export interface StreamingResponse {

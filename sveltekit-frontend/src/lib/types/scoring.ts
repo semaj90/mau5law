@@ -23,7 +23,7 @@ export interface ScoringCriteria {
   legal_precedent: number;
   public_interest: number;
   case_complexity: number;
-  resource_requirements: number;,
+  resource_requirements: number;
 }
 
 export interface CaseScoringResult {
@@ -56,8 +56,8 @@ export interface ScoringAnalysis {
   strengthsWeaknesses: {
     strengths: string[];
     weaknesses: string[];
-    riskFactors: string[];,
+    riskFactors: string[];
   };
   recommendations: string[];
-  confidence: number;,
+  confidence: number;
 }

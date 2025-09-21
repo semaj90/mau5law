@@ -24,7 +24,7 @@ export class SearchExamples {
       {
         limit: 5,
         threshold: 0.75,
-        useCache: true,
+        useCache: true
       }
     );
 
@@ -52,7 +52,7 @@ export class SearchExamples {
         limit: 10,
         threshold: 0.7,
         includeContent: true,
-        useCache: true,
+        useCache: true
       }
     );
 
@@ -68,7 +68,7 @@ export class SearchExamples {
       console.log(`   Source: ${item.source_collection}`);
       console.log(`   Similarity: ${(item.similarity * 100).toFixed(1)}%`);
       console.log(`   Content: ${item.content.substring(0, 150)}...`);
-    ,});
+    });
 
     return result;
   }
@@ -85,7 +85,7 @@ export class SearchExamples {
         collections: ['legal_documents', 'case_embeddings'],
         limit: 8,
         useCache: true,
-        includeSnippets: true,
+        includeSnippets: true
       }
     );
 
@@ -118,7 +118,7 @@ export class SearchExamples {
         textWeight: 0.35,     // 35% full-text ranking
         keywordWeight: 0.25,  // 25% keyword matching
         threshold: 0.6,
-        useCache: true,
+        useCache: true
       }
     );
 
@@ -156,7 +156,7 @@ export class SearchExamples {
         algorithm: 'hybrid',
         useCache: true,
         threshold: 0.75,
-        includeMetadata: true,
+        includeMetadata: true
       }
     );
 
@@ -173,7 +173,7 @@ export class SearchExamples {
       console.log(`   Similarity: ${(item.similarity * 100).toFixed(1)}%`);
       console.log(`   Score: ${item.score.toFixed(4)}`);
       console.log(`   Content: ${item.content.substring(0, 120)}...`);
-    ,});
+    });
 
     return result;
   }
@@ -196,7 +196,7 @@ export class SearchExamples {
       const docResults = await this.server.searchDocuments(query, { limit: 5, useCache: false });
       results.document = {
         count: docResults.length,
-        time: performance.now() - docStart,
+        time: performance.now() - docStart
       };
 
       // Semantic search
@@ -204,7 +204,7 @@ export class SearchExamples {
       const semResults = await this.server.semanticSearch(query, { limit: 5, useCache: false });
       results.semantic = {
         count: semResults.total_results,
-        time: performance.now() - semStart,
+        time: performance.now() - semStart
       };
 
       // Full-text search
@@ -212,7 +212,7 @@ export class SearchExamples {
       const textResults = await this.server.fullTextSearch(query, { limit: 5, useCache: false });
       results.fulltext = {
         count: textResults.total_results,
-        time: performance.now() - textStart,
+        time: performance.now() - textStart
       };
 
       // Hybrid search
@@ -220,7 +220,7 @@ export class SearchExamples {
       const hybridResults = await this.server.hybridSearch(query, { limit: 5, useCache: false });
       results.hybrid = {
         count: hybridResults.total_results,
-        time: performance.now() - hybridStart,
+        time: performance.now() - hybridStart
       };
 
       // Advanced vector search
@@ -228,7 +228,7 @@ export class SearchExamples {
       const vectorResults = await this.server.advancedVectorSearch(query, { k: 5, useCache: false });
       results.vector = {
         count: vectorResults.results.length,
-        time: performance.now() - vectorStart,
+        time: performance.now() - vectorStart
       };
 
     } catch (error) {

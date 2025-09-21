@@ -39,7 +39,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     conversationId,
     userId = 'mock-user-id',
     caseId,
-    useRAG = true,
+    useRAG = true
   } = body;
 
   if (!message || !message.trim()
@@ -61,7 +61,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       userId,
       title,
       caseId,
-      context: { model, temperature, useRAG },
+      context: { model, temperature, useRAG }
     });
     currentConversationId = created.id;
   }
@@ -70,7 +70,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     conversationId: currentConversationId,
     role: 'user',
     content: message,
-    metadata: { requestId, useRAG },
+    metadata: { requestId, useRAG }
   });
 
   let prompt = `You are an expert legal AI assistant. Provide accurate, professional legal information.\n\nUser question: ${message}`;
@@ -79,7 +79,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       const ragResp = await fetch('http://localhost:8094/api/rag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: message, limit: 5, threshold: 0.7 }),
+        body: JSON.stringify({ query: message, limit: 5, threshold: 0.7 })
       });
       if (ragResp.ok) {
         const ragData = await ragResp.json();
@@ -112,7 +112,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
             conversationId: currentConversationId!,
             role: 'assistant',
             content: buffer,
-            metadata: { requestId, model, temperature, tokenCount: tokens, useRAG, incomplete },
+            metadata: { requestId, model, temperature, tokenCount: tokens, useRAG, incomplete }
           });
         } catch (e) {
           logger.error(
@@ -125,7 +125,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
         type: 'connection',
         conversationId: currentConversationId,
         requestId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
 
       try {
@@ -136,8 +136,8 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
             model,
             prompt,
             stream: true,
-            options: { temperature, num_predict: 2048, top_k: 40, top_p: 0.9, repeat_penalty: 1.1 },
-          }),
+            options: { temperature, num_predict: 2048, top_k: 40, top_p: 0.9, repeat_penalty: 1.1 }
+          })
         });
         if (!resp.ok) throw new Error(`Ollama API error ${resp.status}`);
         const reader = resp.body?.getReader();
@@ -162,7 +162,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                   type: 'token',
                   content: data.response,
                   fullResponse: buffer,
-                  tokenCount: tokens,
+                  tokenCount: tokens
                 });
               }
               if (data.done) {
@@ -173,7 +173,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                   fullResponse: buffer,
                   tokenCount: tokens,
                   conversationId: currentConversationId,
-                  timestamp: new Date().toISOString(),
+                  timestamp: new Date().toISOString()
                 });
               }
             } catch (e) {
@@ -192,14 +192,14 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
         send({
           type: 'error',
           error: e instanceof Error ? e.message: 'Streaming failed',
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       } finally {
         if (!finished) await persist(true);
         send({ type: 'close', timestamp: new Date().toISOString() });
         controller.close();
       }
-    },
+    }
   });
 
   return new Response(stream, {
@@ -207,8 +207,8 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'Access-Control-Allow-Origin': '*',
-    },
+      'Access-Control-Allow-Origin': '*'
+    }
   });
 });
 
@@ -218,8 +218,8 @@ export const OPTIONS: RequestHandler = async () =>;
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
   });
 
 

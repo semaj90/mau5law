@@ -30,7 +30,7 @@ export interface StreamingConfig {
   bufferSize: number;
   updateFrequency: number;
   chrRomIntegration: boolean;
-  nesMemoryBanks: number;,
+  nesMemoryBanks: number;
 }
 
 export class WebGPUVertexStreamer {
@@ -90,7 +90,7 @@ export class WebGPUVertexStreamer {
     const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
     this.context.configure({
       device: this.device,
-      format: canvasFormat,
+      format: canvasFormat
     });
 
     await this.createRenderPipeline(canvasFormat);
@@ -107,14 +107,14 @@ export class WebGPUVertexStreamer {
         struct Uniforms {
           mvpMatrix: mat4x4<f32>,
           time: f32,
-          caseCount: f32,
+          caseCount: f32
         }
 
         struct VertexInput {
           @location(0) position: vec3<f32>,
           @location(1) color: vec4<f32>,
           @location(2) textureCoord: vec2<f32>,
-          @location(3) caseData: vec4<u32>,
+          @location(3) caseData: vec4<u32>
         }
 
         struct VertexOutput {
@@ -122,7 +122,7 @@ export class WebGPUVertexStreamer {
           @location(0) color: vec4<f32>,
           @location(1) textureCoord: vec2<f32>,
           @location(2) caseId: f32,
-          @location(3) riskLevel: f32,
+          @location(3) riskLevel: f32
         }
 
         @group(0) @binding(0)
@@ -196,7 +196,7 @@ export class WebGPUVertexStreamer {
         targets: [{ format }]
       },
       primitive: {
-        topology: 'triangle-list',
+        topology: 'triangle-list'
       }
     });
   }
@@ -207,13 +207,13 @@ export class WebGPUVertexStreamer {
     // Create vertex buffer;
     this.vertexBuffer = this.device.createBuffer({
       size: this.config.bufferSize,
-      usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
     });
 
     // Create uniform buffer;
     this.uniformBuffer = this.device.createBuffer({
       size: 80, // mat4x4 (64 bytes) + 2 floats (16 bytes for alignment)
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
     // Create bind group;
@@ -401,7 +401,7 @@ export class WebGPUVertexStreamer {
         view: this.context.getCurrentTexture().createView(),
         clearValue: { r: 0.1, g: 0.1, b: 0.2, a: 1.0 },
         loadOp: 'clear',
-        storeOp: 'store',
+        storeOp: 'store'
       }]
     });
 
@@ -421,13 +421,13 @@ export class WebGPUVertexStreamer {
     vertexCount: number;
     chrRomCacheSize: number;
     memoryBanksUsed: number;
-    bufferUtilization: number;,
+    bufferUtilization: number;
   } {
     return {
       vertexCount: this.vertices.length,
       chrRomCacheSize: this.chrRomCache.size,
       memoryBanksUsed: this.nesMemoryBanks.length,
-      bufferUtilization: (this.vertices.length * 48) / this.config.bufferSize,
+      bufferUtilization: (this.vertices.length * 48) / this.config.bufferSize
     };
   }
 
@@ -466,7 +466,7 @@ export function createLegalVertexBuffer(
       caseId: doc.metadata.caseId,
       documentType: doc.metadata.documentType,
       riskLevel: doc.metadata.riskLevel,
-      confidence: doc.metadata.confidence,
+      confidence: doc.metadata.confidence
     }
   });
 }

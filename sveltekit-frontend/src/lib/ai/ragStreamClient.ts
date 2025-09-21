@@ -60,7 +60,7 @@ import { writable, get } from 'svelte/store';
 
 export interface InternalSSEState {
   currentEvent?: string;
-  dataLines: string[];,
+  dataLines: string[];
 }
 
 function finalizeEvent(
@@ -113,18 +113,18 @@ export async function streamRag(opts: RagStreamOptions): Promise<any> {
     onDone,
     onError,
     endpoint = '/rag/query/stream',
-    extra = {},
+    extra = {}
   } = opts;
 
   let doneEmitted = false;
 
   try {
-    const body = JSON.stringify({ query, contextIds, intent, model, ingestionId, ...extra ,});
+    const body = JSON.stringify({ query, contextIds, intent, model, ingestionId, ...extra });
     const resp = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body,
-      signal,
+      signal
     });
     if (!resp.ok || !resp.body) {
       throw new Error(`Stream request failed: ${resp.status}`);
@@ -248,13 +248,13 @@ export async function* streamRagGenerator(
         intent: base.intent,
         model: base?.model || "unknown", // @ts-ignore - Model property access ?? 'default'
         ingestionId: base.ingestionId,
-        ...(base.extra || {,}),
+        ...(base.extra || {})
       });
       const resp = await fetch(base.endpoint || '/rag/query/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body,
-        signal: outerAbort.signal,
+        signal: outerAbort.signal
       });
       if (!resp.ok || !resp.body) {
         if (attempt < maxRetries && isRetryableStatus(resp.status, retryStatusCodes)) {
@@ -268,7 +268,7 @@ export async function* streamRagGenerator(
           type: 'error',
           error: new Error(`Stream request failed: ${resp.status}`),
           final: true,
-          attempt,
+          attempt
         };
         return;
       }
@@ -362,7 +362,7 @@ export interface RagStreamStore {
   clear: () => void;
   resetMetrics: () => void;
   rebuildApplied: (upToIndex?: number) => void; // rebuild derived object up to index
-  undoLast: (count?: number) => void; // undo last N patches,
+  undoLast: (count?: number) => void; // undo last N patches
 }
 
 export interface RagStreamStoreInit extends Partial<RagStreamGeneratorOptions> {
@@ -472,7 +472,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       tokenCountW.set(next.length);
       persist(next);
       return next;
-    ,});
+    });
     pendingBatch = [];
     if (batchTimer) {
       clearTimeout(batchTimer);
@@ -522,7 +522,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
             else delete parent[key];
             break;
           default:
-            return false;,
+            return false;
         }
       }
       return true;
@@ -658,7 +658,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
                 ...m,
                 errors: m.errors + 1,
                 endedAt: Date.now(),
-                durationMs: m.startedAt ? Date.now() - m.startedAt: undefined,
+                durationMs: m.startedAt ? Date.now() - m.startedAt: undefined
               });
             }
             break;
@@ -667,7 +667,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
             metricsW.update((m) => ({
               ...m,
               endedAt: Date.now(),
-              durationMs: m.startedAt ? Date.now() - m.startedAt: undefined,
+              durationMs: m.startedAt ? Date.now() - m.startedAt: undefined
             });
             // Generate local summary if allowed and none received;
             if (!get(summaryW) && initial?.summarization?.localOnMissing) {
@@ -694,7 +694,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
           ...m,
           errors: m.errors + 1,
           endedAt: Date.now(),
-          durationMs: m.startedAt ? Date.now() - m.startedAt: undefined,
+          durationMs: m.startedAt ? Date.now() - m.startedAt: undefined
         });
       }
     } finally {
@@ -764,7 +764,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       await fetch('/rag/interrupt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ streamId: sid, mode }),
+        body: JSON.stringify({ streamId: sid, mode })
       });
       // If graceful, wait briefly for server summary; if force, abort now;
       if (mode === 'force') {
@@ -863,7 +863,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
     clear,
     resetMetrics,
     rebuildApplied,
-    undoLast,
+    undoLast
   };
 }
 

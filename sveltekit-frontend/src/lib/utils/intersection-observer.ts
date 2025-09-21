@@ -14,7 +14,7 @@ export interface LazyLoadEntry {
   element: Element;
   isIntersecting: boolean;
   intersectionRatio: number;
-  target: Element;,
+  target: Element;
 }
 
 export type LazyLoadCallback = (entry: LazyLoadEntry) => void;
@@ -49,7 +49,7 @@ class LazyLoadManager {
       {
         root: this.options.root,
         rootMargin: this.options.rootMargin,
-        threshold: this.options.threshold,
+        threshold: this.options.threshold
       }
     );
   }
@@ -66,7 +66,7 @@ class LazyLoadManager {
           element: entry.target,
           isIntersecting: entry.isIntersecting,
           intersectionRatio: entry.intersectionRatio,
-          target: entry.target,
+          target: entry.target
         };
 
         callback(lazyEntry);
@@ -102,7 +102,7 @@ class LazyLoadManager {
         element,
         isIntersecting: true,
         intersectionRatio: 1,
-        target: element,
+        target: element
       });
     }, this.options.fallbackDelay);
 
@@ -150,7 +150,7 @@ export function getLazyLoader(options?: LazyLoadOptions): LazyLoadManager {
 export function lazyLoad(
   element: Element,
   options: LazyLoadOptions & { 
-    onIntersect: LazyLoadCallback;,
+    onIntersect: LazyLoadCallback;
   }
 ) {
   const { onIntersect, ...loaderOptions } = options;
@@ -172,7 +172,7 @@ import { writable } from 'svelte/store';
 export interface LazyComponentState {
   isVisible: boolean;
   hasBeenVisible: boolean;
-  intersectionRatio: number;,
+  intersectionRatio: number;
 }
 
 export function createLazyStore(initialState: Partial<LazyComponentState> = {}) {
@@ -181,7 +181,7 @@ export function createLazyStore(initialState: Partial<LazyComponentState> = {}) 
     hasBeenVisible: false,
     intersectionRatio: 0,
     ...initialState
-  ,});
+  });
 
   return {
     subscribe,
@@ -197,7 +197,7 @@ export function createLazyStore(initialState: Partial<LazyComponentState> = {}) 
       set({
         isVisible: false,
         hasBeenVisible: false,
-        intersectionRatio: 0,
+        intersectionRatio: 0
       });
     }
   };
@@ -210,7 +210,7 @@ export function createComponentLazyLoader(
   options: LazyLoadOptions = {}
 ): Promise<LazyLoadEntry> {
   return new Promise((resolve) => {
-    const loader = getLazyLoader({ once: true, ...options ,});
+    const loader = getLazyLoader({ once: true, ...options });
     
     loader.observe(element, (entry) => {
       if (entry.isIntersecting) {
@@ -221,7 +221,7 @@ export function createComponentLazyLoader(
 }
 
 export function lazyLoadImage(img: HTMLImageElement, src: string, options: LazyLoadOptions = {}): void {
-  const loader = getLazyLoader({ once: true, ...options ,});
+  const loader = getLazyLoader({ once: true, ...options });
   
   loader.observe(img, (entry) => {
     if (entry.isIntersecting) {
@@ -236,7 +236,7 @@ export interface LazyLoadMetrics {
   totalObserved: number;
   totalLoaded: number;
   averageLoadTime: number;
-  loadTimes: number[];,
+  loadTimes: number[];
 }
 
 class LazyLoadProfiler {
@@ -244,7 +244,7 @@ class LazyLoadProfiler {
     totalObserved: 0,
     totalLoaded: 0,
     averageLoadTime: 0,
-    loadTimes: [],
+    loadTimes: []
   };
 
   private loadStartTimes = new Map<Element, number>();
@@ -278,7 +278,7 @@ class LazyLoadProfiler {
       totalObserved: 0,
       totalLoaded: 0,
       averageLoadTime: 0,
-      loadTimes: [],
+      loadTimes: []
     };
     this.loadStartTimes.clear();
   }
@@ -293,21 +293,21 @@ export const LAZY_LOAD_PRESETS = {
   EAGER: {
     rootMargin: '100px',
     threshold: 0,
-    once: true,
+    once: true
   },
   
   // Load when partially visible;
   NORMAL: {
     rootMargin: '50px',
     threshold: 0.1,
-    once: true,
+    once: true
   },
   
   // Load only when mostly visible;
   LAZY: {
     rootMargin: '0px',
     threshold: 0.5,
-    once: true,
+    once: true
   },
   
   // For heavy components that should load early;
@@ -315,21 +315,21 @@ export const LAZY_LOAD_PRESETS = {
     rootMargin: '200px',
     threshold: 0,
     once: true,
-    fallbackDelay: 1000,
+    fallbackDelay: 1000
   },
   
   // For images and media;
   MEDIA: {
     rootMargin: '50px',
     threshold: 0,
-    once: true,
+    once: true
   },
   
   // For continuous monitoring (animations, etc.);
   CONTINUOUS: {
     rootMargin: '0px',
     threshold: [0, 0.25, 0.5, 0.75, 1],
-    once: false,
+    once: false
   }
 } as const;
 

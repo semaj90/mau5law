@@ -78,7 +78,7 @@ export interface VectorSearchCache {
   timestamp: Date;
   expiresAt: Date;
   lodLevel: number;
-  hitCount: number; // Track cache usage,
+  hitCount: number; // Track cache usage
 }
 
 export interface UserAnnotation {
@@ -96,7 +96,7 @@ export interface UserAnnotation {
   importance: 'low' | 'medium' | 'high' | 'critical';
   userId?: string;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface LegalEntity {
@@ -110,7 +110,7 @@ export interface LegalEntity {
   extractedFrom: {
     documentId: string;
     chunkId?: string;
-    context: string;,
+    context: string;
   }[];
   metadata: {
     jurisdiction?: string;
@@ -118,7 +118,7 @@ export interface LegalEntity {
     role?: string;
     importance?: number;
   };
-  lastUpdated: Date;,
+  lastUpdated: Date;
 }
 
 export interface GraphVisualizationData {
@@ -130,12 +130,12 @@ export interface GraphVisualizationData {
   layout: {
     algorithm: string;
     parameters: any;
-    dimensions: 2 | 3;,
+    dimensions: 2 | 3;
   };
   cameraPosition?: { x: number; y: number; z: number };
   createdAt: Date;
   lastAccessed: Date;
-  computationTime: number;,
+  computationTime: number;
 }
 
 export interface AIAnalysisCache {
@@ -148,7 +148,7 @@ export interface AIAnalysisCache {
   confidence: number;
   processingTime: number;
   timestamp: Date;
-  expiresAt: Date;,
+  expiresAt: Date;
 }
 
 export interface UserPreferences {
@@ -161,22 +161,22 @@ export interface UserPreferences {
     cacheSettings: {
       maxDocuments: number;
       maxSearchResults: number;
-      cacheExpiry: number; // hours,
+      cacheExpiry: number; // hours
     };
     visualization: {
       defaultGraphType: string;
       showLabels: boolean;
       enablePhysics: boolean;
-      colorScheme: string;,
+      colorScheme: string;
     };
     ai: {
       preferredModel: string;
       temperature: number;
       includeAnalysis: boolean;
-      autoSummarize: boolean;,
+      autoSummarize: boolean;
     };
   };
-  lastUpdated: Date;,
+  lastUpdated: Date;
 }
 
 // ============================================================================
@@ -283,7 +283,7 @@ export class LegalDBUtils {
     const stats = {
       totalRecords: 0,
       storageUsed: 'Unknown',
-      tables: [] as Array<,
+      tables: [] as Array<
     };
 
     // Count records in each table
@@ -346,7 +346,7 @@ export class LegalDBUtils {
       .where('hitCount')
       .below(2) // Remove rarely used cached searches;
       .and(item => {
-        const daysSinceCreated = (Date.now() - (item as { timestamp?: any ,}).timestamp.getTime()) / (1000 * 60 * 60 * 24);
+        const daysSinceCreated = (Date.now() - (item as { timestamp?: any }).timestamp.getTime()) / (1000 * 60 * 60 * 24);
         return daysSinceCreated > 7; // Older than a week
       })
       .delete();

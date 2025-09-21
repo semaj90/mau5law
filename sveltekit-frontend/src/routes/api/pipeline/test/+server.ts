@@ -17,7 +17,7 @@ const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:1
 const db = drizzle(sql);
 
 const redis = createClient({ 
-  url: import.meta.env.REDIS_URL || 'redis://localhost:6379' ,
+  url: import.meta.env.REDIS_URL || 'redis://localhost:6379' 
 });
 
 let redisConnected = false;
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       testType,
       result: testResult,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Test failed',
-      testType: body?.testType || 'unknown',
+      testType: body?.testType || 'unknown'
     }, { status: 500 });
   }
 };
@@ -97,7 +97,7 @@ async function testFullPipeline(testData?: any): Promise<any> {
     description: 'This is a test evidence for pipeline validation',
     evidenceType: 'document',
     fileType: 'pdf',
-    tags: ['test', 'pipeline', 'validation'],
+    tags: ['test', 'pipeline', 'validation']
   }).returning();
 
   console.log(`✅ Created test evidence: ${testEvidence.id}`);
@@ -114,9 +114,9 @@ async function testFullPipeline(testData?: any): Promise<any> {
         title: testEvidence.title,
         description: testEvidence.description,
         tags: testEvidence.tags,
-        testId,
-      },
-    }),
+        testId
+      }
+    })
   });
 
   if (!computeResponse.ok) {
@@ -173,8 +173,8 @@ async function testFullPipeline(testData?: any): Promise<any> {
         vectorId: vectorResult?.id,
         ownerType: 'evidence',
         ownerId: testEvidence.id,
-        event: 'upsert',
-      }),
+        event: 'upsert'
+      })
     });
     
     if (syncResponse.ok) {
@@ -196,16 +196,16 @@ async function testFullPipeline(testData?: any): Promise<any> {
       computeSubmitted: !!computeResult.jobId,
       jobCompleted,
       vectorCreated: !!vectorResult,
-      qdrantSynced,
+      qdrantSynced
     },
     timings: {
       totalTimeMs: totalTime,
-      jobCompletionTimeMs: finalJobStatus?.job?.processingTime || 0,
+      jobCompletionTimeMs: finalJobStatus?.job?.processingTime || 0
     },
     jobDetails: finalJobStatus,
     evidenceId: testEvidence.id,
     vectorId: vectorResult?.id,
-    success: jobCompleted && !!vectorResult,
+    success: jobCompleted && !!vectorResult
   };
 }
 
@@ -222,22 +222,22 @@ async function testEvidenceProcessing(testData?: any): Promise<any> {
       description: 'Employment contract with indemnification clause',
       evidenceType: 'document',
       fileType: 'pdf',
-      tags: [],
+      tags: []
     },
     {
       title: `Email Evidence ${testId}`,
       description: 'Email communication regarding contract terms',
       evidenceType: 'communication',
       fileType: 'email',
-      tags: [],
+      tags: []
     },);
     {
       title: `Photo Evidence ${testId}`,
       description: 'Photograph of signed contract',
       evidenceType: 'visual',
       fileType: 'image',
-      tags: [],
-    },
+      tags: []
+    }
   ]).returning();
 
   console.log(`✅ Created ${testEvidenceList.length} test evidence entries`);
@@ -250,7 +250,7 @@ async function testEvidenceProcessing(testData?: any): Promise<any> {
       {
         type: 'evidence',
         id: evidence.id,
-        testId,
+        testId
       }
     );
   }
@@ -270,7 +270,7 @@ async function testEvidenceProcessing(testData?: any): Promise<any> {
     evidenceCreated: testEvidenceList.length,
     evidenceTagged: updatedEvidence[0]?.tags?.length > 0,
     tags: updatedEvidence[0]?.tags || [],
-    success: true,
+    success: true
   };
 }
 
@@ -287,7 +287,7 @@ async function testBatchClustering(testData?: any): Promise<any> {
       id: `batch_item_${i}_${testId}`,
       title: `Batch Evidence ${i}`,
       description: `Test description for clustering ${i}`,
-      embedding: Array.from({ length: 768 }, () => Math.random() - 0.5),
+      embedding: Array.from({ length: 768 }, () => Math.random() - 0.5)
     })
   };
 
@@ -298,7 +298,7 @@ async function testBatchClustering(testData?: any): Promise<any> {
     {
       type: 'evidence_batch',
       id: testId,
-      data: JSON.stringify(batchData),
+      data: JSON.stringify(batchData)
     }
   );
 
@@ -312,7 +312,7 @@ async function testBatchClustering(testData?: any): Promise<any> {
     batchSize,
     streamId,
     clustered: true, // Would check actual clustering results
-    success: true,
+    success: true
   };
 }
 
@@ -328,8 +328,8 @@ async function testWebGPUFallback(testData?: any): Promise<any> {
       body: JSON.stringify({
         operation: 'generate_text',
         input: testText,
-        fallback: true,
-      }),
+        fallback: true
+      })
     });
 
     let webgpuResult = { success: false, device: 'none' };
@@ -343,14 +343,14 @@ async function testWebGPUFallback(testData?: any): Promise<any> {
       webgpuSupported: webgpuResult.device === 'webgpu',
       fallbackUsed: webgpuResult.device !== 'webgpu',
       deviceUsed: webgpuResult.device,
-      success: webgpuResult.success,
+      success: webgpuResult.success
     };
 
   } catch (error: any) {
     return {
       testInput: testText,
       error: error instanceof Error ? error.message: 'Unknown error',
-      success: false,
+      success: false
     };
   }
 }
@@ -371,7 +371,7 @@ async function testStressLoad(testData?: any): Promise<any> {
         title: `Stress Test Evidence ${i} ${testId}`,
         description: `Stress test evidence entry ${i}`,
         evidenceType: 'document',
-        tags: ['stress-test', testId],
+        tags: ['stress-test', testId]
       }).returning();
 
       const response = await fetch('http://localhost:5173/api/compute', {
@@ -381,8 +381,8 @@ async function testStressLoad(testData?: any): Promise<any> {
           ownerType: 'evidence',
           ownerId: testEvidence.id,
           event: 'upsert',
-          data: { stressTest: true, index: i },
-        }),
+          data: { stressTest: true, index: i }
+        })
       });
 
       const result = response.ok ? await response.json() : null;
@@ -391,14 +391,14 @@ async function testStressLoad(testData?: any): Promise<any> {
         index: i,
         evidenceId: testEvidence.id,
         jobId: result?.jobId,
-        success: !!result?.jobId,
+        success: !!result?.jobId
       };
 
     } catch (error: any) {
       return {
         index: i,
         error: error instanceof Error ? error.message: 'Unknown error',
-        success: false,
+        success: false
       };
     }
   });
@@ -420,7 +420,7 @@ async function testStressLoad(testData?: any): Promise<any> {
     totalTimeMs: totalTime,
     averageTimePerJob: totalTime / concurrentJobs,
     throughputJobsPerSecond: concurrentJobs / (totalTime / 1000),
-    success: successfulJobs > 0,
+    success: successfulJobs > 0
   };
 }
 
@@ -433,7 +433,7 @@ export const GET: RequestHandler = async () => {
       redis: false,
       compute: false,
       vectorSync: false,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     // Test PostgreSQL;
@@ -462,8 +462,8 @@ export const GET: RequestHandler = async () => {
           ownerType: 'evidence',
           ownerId: 'health-check-test',
           event: 'upsert',
-          data: { healthCheck: true },
-        }),
+          data: { healthCheck: true }
+        })
       });
       health.compute = computeTest.ok;
     } catch (computeError) {
@@ -473,7 +473,7 @@ export const GET: RequestHandler = async () => {
     // Test vector sync;
     try {
       const syncTest = await fetch('http://localhost:5173/api/vectors/sync', {
-        method: 'GET',
+        method: 'GET'
       });
       health.vectorSync = syncTest.ok;
     } catch (syncError) {
@@ -496,7 +496,7 @@ export const GET: RequestHandler = async () => {
       error: error instanceof Error ? error.message: 'Health check failed',
       health: Record<string, any>,
       healthScore: 0,
-      ready: false,
+      ready: false
     }, { status: 500 });
   }
 };

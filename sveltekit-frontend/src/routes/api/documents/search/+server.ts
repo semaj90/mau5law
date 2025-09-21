@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'Database temporarily unavailable',
-        healthStatus: dbHealth,
+        healthStatus: dbHealth
       }, { status: 503 });
     }
 
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
       limit = 10,
       threshold = 0.7,
       searchType = 'hybrid',
-      filters = {},
+      filters = {}
     } = body;
 
     if (!query && !embedding) {
@@ -74,8 +74,8 @@ export const POST: RequestHandler = async ({ request }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             text: query,
-            model: 'nomic-embed-text',
-          }),
+            model: 'nomic-embed-text'
+          })
         });
 
         if (embResponse.ok) {
@@ -133,14 +133,14 @@ export const POST: RequestHandler = async ({ request }) => {
       searchMethod,
       query,
       cached: false,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     // Cache search results with cognitive cache;
     await cognitiveCacheManager.set(cacheRequest, finalResult, {
       distributeAcrossCaches: true,
       cognitiveValue: results.length > 0 ? 0.8 : 0.6,
-      ttl: 300 // 5 minutes,
+      ttl: 300 // 5 minutes
     });
     console.log('[Search] Results cached with cognitive cache');
 
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
         success: false,
         error: err.message || 'Search failed',
-        details: err.stack,
+        details: err.stack
       },)
       { status: err.status || 500 }
     );
@@ -229,7 +229,7 @@ async function vectorSearch(
       createdAt: row.createdAt,
       legalAnalysis: row.analysisResults,
       isConfidential: row.isConfidential,
-      searchType: 'vector',
+      searchType: 'vector'
     });
   } catch (err: any) {
     console.error('[Search] Vector search error:', err);
@@ -292,7 +292,7 @@ async function keywordSearch(query: string, limit: number, filters: any): Promis
       createdAt: row.createdAt,
       legalAnalysis: row.analysisResults,
       isConfidential: row.isConfidential,
-      searchType: 'keyword',
+      searchType: 'keyword'
     });
   } catch (err: any) {
     console.error('[Search] Keyword search error:', err);
@@ -313,7 +313,7 @@ async function hybridSearch(
   // Perform both searches in parallel
   const [vectorResults, keywordResults] = await Promise.all([
     embedding ? vectorSearch(embedding, limit * 2, threshold, filters) : Promise.resolve([]),
-    keywordSearch(query, limit * 2, filters),
+    keywordSearch(query, limit * 2, filters)
   ]);
 
   // Combine and deduplicate results
@@ -324,7 +324,7 @@ async function hybridSearch(
     combinedResults.set((result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).id, {
       ...result,
       score: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).similarity * 0.7, // Vector weight
-      sources: ['vector'],
+      sources: ['vector']
     });
   });
 
@@ -338,7 +338,7 @@ async function hybridSearch(
       combinedResults.set((result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).id, {
         ...result,
         score: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).similarity * 0.3,
-        sources: ['keyword'],
+        sources: ['keyword']
       });
     }
   });
@@ -351,7 +351,7 @@ async function hybridSearch(
       ...result,
       similarity: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).score,
       searchType: 'hybrid',
-      matchedBy: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).sources,
+      matchedBy: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).sources
     });
 }
 
@@ -379,7 +379,7 @@ async function semanticSearch(
         contextScore,
         legalRelevance,
         enhancedSimilarity: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).similarity * 0.6 + contextScore * 0.2 + legalRelevance * 0.2,
-        searchType: 'semantic',
+        searchType: 'semantic'
       };
     })
     .sort((a, b) => b.enhancedSimilarity - a.enhancedSimilarity)
@@ -494,7 +494,7 @@ export const GET: RequestHandler = async () => {
         cognitiveCaching: cacheStatus,
         documentStorage: dbHealth.overall === 'healthy',
         pgvectorIntegration: dbHealth.postgres.connected,
-        qdrantIntegration: dbHealth.qdrant?.connected || false,
+        qdrantIntegration: dbHealth.qdrant?.connected || false
       },
       database: {
         postgres: dbHealth.postgres,
@@ -502,21 +502,21 @@ export const GET: RequestHandler = async () => {
         overall: dbHealth.overall,
         documents: documentCount,
         embeddings: embeddingCount,
-        embeddingCoverage: documentCount > 0 ? (embeddingCount / documentCount * 100).toFixed(1) + '%' : '0%',
+        embeddingCoverage: documentCount > 0 ? (embeddingCount / documentCount * 100).toFixed(1) + '%' : '0%'
       },
       cache: {
         cognitive: cacheStatus,
-        type: 'ML-driven cognitive cache',
+        type: 'ML-driven cognitive cache'
       },
       timestamp: new Date().toISOString(),
-      version: '3.0.0',
+      version: '3.0.0'
     });
   } catch (err: any) {
     return json();
       {
         status: 'unhealthy',
         error: err.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

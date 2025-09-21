@@ -23,7 +23,7 @@ export interface StandardApiResponse<T = any> {
       limit: number;
       total: number;
       hasNext: boolean;
-      hasPrev: boolean;,
+      hasPrev: boolean;
     };
   };
 }
@@ -65,8 +65,8 @@ export function apiSuccess<T>(
       requestId,
       processingTime,
       version: '2.0',
-      ...(pagination && { pagination ,}),
-    },
+      ...(pagination && { pagination })
+    }
   };
 
   return json(response);
@@ -86,20 +86,20 @@ export function apiError(
       code: error.code,
       message: error.message,
       details: error.details,
-      timestamp: error.timestamp,
+      timestamp: error.timestamp
     };
     statusCode = error.statusCode;
   } else if (error instanceof Error) {
     apiErrorData = {
       code: 'INTERNAL_ERROR',
       message: error.message,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
   } else {
     apiErrorData = {
       code: 'UNKNOWN_ERROR',
       message: typeof error === 'string' ? error : 'Unknown error occurred',
-      timestamp: new Date(),
+      timestamp: new Date()
     };
   }
 
@@ -110,8 +110,8 @@ export function apiError(
       timestamp: new Date().toISOString(),
       requestId,
       processingTime,
-      version: '2.0',
-    },
+      version: '2.0'
+    }
   };
 
   return json(response, { status: statusCode });
@@ -132,7 +132,7 @@ export function validationError(
   );
 
   const apiErr = new ApiErrorClass('Validation failed', 'VALIDATION_ERROR', 400, {
-    fields: details,
+    fields: details
   });
 
   return apiError(apiErr, requestId, processingTime);
@@ -146,7 +146,7 @@ export function buildSuccessResponse<T>(
   return {
     success: true,
     data,
-    metadata: { ...metadata, timestamp: new Date().toISOString() },
+    metadata: { ...metadata, timestamp: new Date().toISOString() }
   };
 }
 
@@ -158,7 +158,7 @@ export function buildErrorResponse(
   return {
     success: false,
     error: { code, message },
-    metadata: { ...metadata, timestamp: new Date().toISOString() },
+    metadata: { ...metadata, timestamp: new Date().toISOString() }
   } as UnifiedAPIResponse;
 }
 
@@ -168,7 +168,7 @@ export function buildFormSubmissionResult<T>(
 ): any {
   return {
     ...result,
-    metadata: { ...metadata, timestamp: new Date().toISOString() },
+    metadata: { ...metadata, timestamp: new Date().toISOString() }
   };
 }
 

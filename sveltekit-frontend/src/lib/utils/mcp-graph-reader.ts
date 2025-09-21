@@ -6,7 +6,7 @@ import {
   evidence,
   reports,
   users,
-  ragSessions,
+  ragSessions
 } from "$lib/server/db/schema-unified";
 import { eq, sql, and, or, desc, count, like } from "drizzle-orm";
 }
@@ -44,8 +44,8 @@ export class MCPGraphReader {
         creator: {
           id: users.id,
           name: users.name,
-          email: users.email,
-        },
+          email: users.email
+        }
       })
       .from(cases)
       .leftJoin(users, eq(cases.createdBy, users.id);
@@ -64,7 +64,7 @@ export class MCPGraphReader {
         status: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.status,
         priority: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.priority,
         caseType: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.category,
-        creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator,
+        creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator
       },
       connections: [],
       metadata: {
@@ -75,8 +75,8 @@ export class MCPGraphReader {
             ? 10
             : (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.priority === "medium"
               ? 7
-              : 5,
-      },
+              : 5
+      }
     });
 
     const relations = caseData
@@ -86,7 +86,7 @@ export class MCPGraphReader {
         to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case.id,
         type: "owns" as const,
         weight: 8,
-        metadata: { relationship: "case_owner" },
+        metadata: { relationship: "case_owner" }
       });
 
     return { nodes, relations };
@@ -112,12 +112,12 @@ export class MCPGraphReader {
         evidence: evidence,
         case: {
           id: cases.id,
-          title: cases.title,
+          title: cases.title
         },
         creator: {
           id: users.id,
-          name: users.name,
-        },
+          name: users.name
+        }
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id)
@@ -141,7 +141,7 @@ export class MCPGraphReader {
         tags: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.tags,
         aiTags: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.aiTags,
         case: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case,
-        creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator,
+        creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator
       },
       connections: [],
       metadata: {
@@ -151,29 +151,29 @@ export class MCPGraphReader {
             ? 10
             : (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.evidenceType === "digital"
               ? 8
-              : 6,
-      },
+              : 6
+      }
     });
 
     const relations = [
       ...evidenceData
-        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any ,}).case);
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).case);
         .map((item) => ({
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case!.id,
           type: "belongs_to" as const,
           weight: 9,
-          metadata: { relationship: "evidence_in_case" },
+          metadata: { relationship: "evidence_in_case" }
         })),
       ...evidenceData
-        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any ,}).creator);
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator);
         .map((item) => ({
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator!.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).evidence.id,
           type: "owns" as const,
           weight: 7,
-          metadata: { relationship: "evidence_owner" },
-        })),
+          metadata: { relationship: "evidence_owner" }
+        }))
     ];
 
     return { nodes, relations };
@@ -199,12 +199,12 @@ export class MCPGraphReader {
         report: reports,
         case: {
           id: cases.id,
-          title: cases.title,
+          title: cases.title
         },
         creator: {
           id: users.id,
-          name: users.name,
-        },
+          name: users.name
+        }
       })
       .from(reports)
       .leftJoin(cases, eq(reports.caseId, cases.id)
@@ -225,7 +225,7 @@ export class MCPGraphReader {
         status: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.status,
         aiAnalysis: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.metadata,
         case: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case,
-        creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator,
+        creator: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator
       },
       connections: [],
       metadata: {
@@ -236,29 +236,29 @@ export class MCPGraphReader {
             ? 9
             : (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.reportType === "case_analysis"
               ? 8
-              : 6,
-      },
+              : 6
+      }
     });
 
     const relations = [
       ...reportData
-        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any ,}).case);
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).case);
         .map((item) => ({
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).case!.id,
           type: "belongs_to" as const,
           weight: 8,
-          metadata: { relationship: "report_for_case" },
+          metadata: { relationship: "report_for_case" }
         })),
       ...reportData
-        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any ,}).creator);
+        .filter((item) => (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator);
         .map((item) => ({
           from: (item as { case?: any; creator?: any; evidence?: any; report?: any }).creator!.id,
           to: (item as { case?: any; creator?: any; evidence?: any; report?: any }).report.id,
           type: "generated_from" as const,
           weight: 7,
-          metadata: { relationship: "report_generator" },
-        })),
+          metadata: { relationship: "report_generator" }
+        }))
     ];
 
     return { nodes, relations };
@@ -297,8 +297,8 @@ export class MCPGraphReader {
         metadata: {
           totalNodes: nodes.length,
           queryTime: Date.now() - startTime,
-          mcpSource: "drizzle-postgres-graph-reader",
-        },
+          mcpSource: "drizzle-postgres-graph-reader"
+        }
       };
     } catch (error: any) {
       console.error("Graph reading error:", error);

@@ -28,7 +28,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
     if (!documentId) {
       return json({
           success: false,
-          error: "Document ID is required",
+          error: "Document ID is required"
         },)
         { status: 400 },
       );
@@ -39,7 +39,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
     if (!content && !title) {
       return json({
           success: false,
-          error: "Content or title is required for auto-save",
+          error: "Content or title is required for auto-save"
         },)
         { status: 400 },
       );
@@ -64,7 +64,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
         content,
         title,
         citations,
-        autoSavedAt: new Date().toISOString(),
+        autoSavedAt: new Date().toISOString()
       };
 
       const updatedDocument = await db
@@ -76,7 +76,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
       if (updatedDocument.length === 0) {
         return json({
             success: false,
-            error: "Document not found",
+            error: "Document not found"
           },)
           { status: 404 },
         );
@@ -89,7 +89,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
           lastSavedAt: updatedDocument[0].updatedAt,
           wordCount: updatedDocument[0].wordCount,
           isDirty: false, // Set as clean after save
-        },
+        }
       });
     } catch (dbError) {
       console.warn(
@@ -104,15 +104,15 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
           id: documentId,
           lastSavedAt: new Date().toISOString(),
           wordCount: wordCount || (content ? content.split(/\s+/).length: 0),
-          isDirty: false,
-        },
+          isDirty: false
+        }
       });
     }
   } catch (error: any) {
     console.error("Error auto-saving document:", error);
     return json({
         success: false,
-        error: "Failed to auto-save document",
+        error: "Failed to auto-save document"
       },)
       { status: 500 },
     );
@@ -126,7 +126,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
     if (!documentId) {
       return json({
           success: false,
-          error: "Document ID is required",
+          error: "Document ID is required"
         },)
         { status: 400 },
       );
@@ -138,7 +138,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
           id: legalDocuments.id,
           // isDirty field removed - not in schema
           lastSavedAt: legalDocuments.updatedAt, // Use updatedAt instead
-          autoSaveData: legalDocuments.autoSaveData,
+          autoSaveData: legalDocuments.autoSaveData
         })
         .from(legalDocuments)
         .where(eq(legalDocuments.id, documentId)
@@ -147,7 +147,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
       if (document.length === 0) {
         return json({
             success: false,
-            error: "Document not found",
+            error: "Document not found"
           },)
           { status: 404 },
         );
@@ -158,8 +158,8 @@ export async function GET({ params }: RequestEvent): Promise<any> {
           isDirty: !!(document[0].autoSaveData as any)?.isDirty,
           lastSavedAt: document[0].lastSavedAt,
           hasAutoSaveData: !!document[0].autoSaveData,
-          autoSaveData: document[0].autoSaveData,
-        },
+          autoSaveData: document[0].autoSaveData
+        }
       });
     } catch (dbError) {
       console.warn("Database query failed, returning mock response:", dbError);
@@ -170,15 +170,15 @@ export async function GET({ params }: RequestEvent): Promise<any> {
           isDirty: false,
           lastSavedAt: new Date().toISOString(),
           hasAutoSaveData: false,
-          autoSaveData: null,
-        },
+          autoSaveData: null
+        }
       });
     }
   } catch (error: any) {
     console.error("Error fetching auto-save status:", error);
     return json({
         success: false,
-        error: "Failed to fetch auto-save status",
+        error: "Failed to fetch auto-save status"
       },)
       { status: 500 },
     );

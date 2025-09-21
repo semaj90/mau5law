@@ -21,23 +21,23 @@ interface QueryCacheEntry {
   results: any[];
   metadata: any;
   timestamp: number;
-  ttl: number;,
+  ttl: number;
 }
 
 interface CacheStats {
   embeddings: {
     hits: number;
     misses: number;
-    size: number;,
+    size: number;
   };
   queries: {
     hits: number;
     misses: number;
-    size: number;,
+    size: number;
   };
   sessions: {
     active: number;
-    total: number;,
+    total: number;
   };
 }
 
@@ -77,7 +77,7 @@ class EmbeddingCacheService {
         model,
         timestamp: Date.now(),
         accessCount: 0,
-        lastAccessed: Date.now(),
+        lastAccessed: Date.now()
       };
 
       // Store with compression for large embeddings
@@ -85,7 +85,7 @@ class EmbeddingCacheService {
       const cacheData = {
         ...entry,
         embedding: compressed,
-        compressed: true,
+        compressed: true
       };
 
       await redisService.set(
@@ -176,10 +176,10 @@ class EmbeddingCacheService {
         metadata: {
           ...metadata,
           resultCount: results.length,
-          queryComplexity: this.calculateQueryComplexity(query),
+          queryComplexity: this.calculateQueryComplexity(query)
         },
         timestamp: Date.now(),
-        ttl,
+        ttl
       };
 
       await redisService.set(`${this.QUERY_PREFIX}${key}`, JSON.stringify(entry), ttl);
@@ -228,7 +228,7 @@ class EmbeddingCacheService {
         `${this.SESSION_PREFIX}${sessionId}`,
         JSON.stringify({
           ...data,
-          lastUpdated: Date.now(),
+          lastUpdated: Date.now()
         }),
         this.SESSION_TTL
       );
@@ -260,7 +260,7 @@ class EmbeddingCacheService {
           timestamp: Date.now(),
           accessCount: 0,
           lastAccessed: Date.now(),
-          compressed: true,
+          compressed: true
         };
 
         await redisService.set(
@@ -321,7 +321,7 @@ class EmbeddingCacheService {
     const defaultStats: CacheStats = {
       embeddings: { hits: 0, misses: 0, size: 0 },
       queries: { hits: 0, misses: 0, size: 0 },
-      sessions: { active: 0, total: 0 },
+      sessions: { active: 0, total: 0 }
     };
 
     if (!redisService.isHealthy()) return defaultStats;
@@ -332,17 +332,17 @@ class EmbeddingCacheService {
         embeddings: {
           hits: parseInt(stats['emb_hits'] || '0'),
           misses: parseInt(stats['emb_misses'] || '0'),
-          size: await this.getCacheSize('embeddings'),
+          size: await this.getCacheSize('embeddings')
         },
         queries: {
           hits: parseInt(stats['query_hits'] || '0'),
           misses: parseInt(stats['query_misses'] || '0'),
-          size: await this.getCacheSize('queries'),
+          size: await this.getCacheSize('queries')
         },
         sessions: {
           active: parseInt(stats['session_active'] || '0'),
-          total: parseInt(stats['session_total'] || '0'),
-        },
+          total: parseInt(stats['session_total'] || '0')
+        }
       };
     } catch (error) {
       console.warn('Stats retrieval error:', error);

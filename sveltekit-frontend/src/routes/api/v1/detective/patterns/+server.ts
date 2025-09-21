@@ -19,7 +19,7 @@ const PatternDetectionSchema = z.object({
     includePredictions: z.boolean().default(false),
     minOccurrences: z.number().min(1).default(2),
     timeWindow: z.string().optional(), // e.g., '30d', '7d', '24h'
-  }).optional(),
+  }).optional()
 });
 
 /*
@@ -88,9 +88,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           patternTypes: patternTypes || 'all',
           analyzedBy: locals.user.id,
           patternsFound: patternResults.patterns.length,
-          anomaliesFound: patternResults.anomalies.length,
-        },
-      },
+          anomaliesFound: patternResults.anomalies.length
+        }
+      }
     });
 
     return json({
@@ -102,14 +102,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           evidenceAnalyzed: evidence.length,
           sensitivity,
           patternTypes: patternTypes || ['all'],
-          analysisTime: new Date().toISOString(),
-        },
+          analysisTime: new Date().toISOString()
+        }
       },
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString(),
-        action: 'pattern_detection_completed',
-      },
+        action: 'pattern_detection_completed'
+      }
     });
 
   } catch (err: any) {
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid pattern detection request',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to detect patterns',
         code: 'PATTERN_DETECTION_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -152,7 +152,7 @@ async function detectSuspiciousPatterns(
     anomalies: [] as any[],
     insights: [] as string[],
     confidence: 0,
-    summary: '',
+    summary: ''
   };
 
   try {
@@ -217,7 +217,7 @@ async function detectSuspiciousPatterns(
     return {
       ...results,
       error: 'Pattern detection failed',
-      details: error instanceof Error ? error.message: 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -239,10 +239,10 @@ async function detectTemporalPatterns(evidence: any[], sensitivity: number, opti
     occurrences: Math.floor(evidence.length * 0.6),
     timeRanges: [
       { start: '2024-01-01T08:00:00Z', end: '2024-01-01T10:00:00Z', count: 3 },
-      { start: '2024-01-02T14:00:00Z', end: '2024-01-02T16:00:00Z', count: 4 },
+      { start: '2024-01-02T14:00:00Z', end: '2024-01-02T16:00:00Z', count: 4 }
     ],
     significance: 'high',
-    implications: ['Coordinated activity', 'Time-based planning'],
+    implications: ['Coordinated activity', 'Time-based planning']
   });
 
   // Detect temporal anomalies;
@@ -255,14 +255,14 @@ async function detectTemporalPatterns(evidence: any[], sensitivity: number, opti
       confidence: 0.78,
       timestamp: '2024-01-03T03:30:00Z',
       severity: 'medium',
-      context: 'Activity at unusual hour',
+      context: 'Activity at unusual hour'
     });
   }
 
   return {
     patterns,
     anomalies,
-    confidence: 0.82,
+    confidence: 0.82
   };
 }
 
@@ -280,11 +280,11 @@ async function detectLocationPatterns(evidence: any[], sensitivity: number, opti
         confidence: 0.76,
         locations: [
           { lat: 40.7128, lon: -74.0060, count: 5, name: 'Manhattan District' },
-          { lat: 40.7589, lon: -73.9851, count: 3, name: 'Upper West Side' },
+          { lat: 40.7589, lon: -73.9851, count: 3, name: 'Upper West Side' }
         ],
         radius: '2.5 km',
-        significance: 'high',
-      },
+        significance: 'high'
+      }
     ],
     anomalies: [;
       {
@@ -295,10 +295,10 @@ async function detectLocationPatterns(evidence: any[], sensitivity: number, opti
         confidence: 0.69,
         location: { lat: 40.6892, lon: -74.0445, name: 'Brooklyn' },
         distance: '15.2 km from cluster center',
-        severity: 'low',
-      },
+        severity: 'low'
+      }
     ],
-    confidence: 0.73,
+    confidence: 0.73
   };
 }
 
@@ -317,11 +317,11 @@ async function detectBehavioralPatterns(evidence: any[], sensitivity: number, op
         characteristics: [
           'Similar approach patterns',
           'Consistent tool usage',
-          'Repeated sequence of actions',
+          'Repeated sequence of actions'
         ],
         occurrences: Math.max(2, Math.floor(evidence.length * 0.4)),
-        significance: 'very_high',
-      },
+        significance: 'very_high'
+      }
     ],
     anomalies: [;
       {
@@ -331,10 +331,10 @@ async function detectBehavioralPatterns(evidence: any[], sensitivity: number, op
         description: 'Unusual deviation from established pattern',
         confidence: 0.74,
         context: 'Different methodology used in one instance',
-        severity: 'medium',
-      },
+        severity: 'medium'
+      }
     ],
-    confidence: 0.88,
+    confidence: 0.88
   };
 }
 
@@ -352,8 +352,8 @@ async function detectCommunicationPatterns(evidence: any[], sensitivity: number,
         confidence: 0.67,
         intervals: ['Every 2 hours', 'Daily at 9 AM', 'Weekly on Fridays'],
         channels: ['Email', 'Phone', 'Messaging'],
-        significance: 'medium',
-      },
+        significance: 'medium'
+      }
     ],
     anomalies: [;
       {
@@ -364,10 +364,10 @@ async function detectCommunicationPatterns(evidence: any[], sensitivity: number,
         confidence: 0.71,
         duration: '48 hours',
         context: 'Expected communication did not occur',
-        severity: 'medium',
-      },
+        severity: 'medium'
+      }
     ],
-    confidence: 0.69,
+    confidence: 0.69
   };
 }
 
@@ -386,8 +386,8 @@ async function detectFinancialPatterns(evidence: any[], sensitivity: number, opt
         amounts: ['$500.00', '$1,000.00', '$250.00'],
         frequency: 'Weekly',
         accounts: ['Account A', 'Account B'],
-        significance: 'high',
-      },
+        significance: 'high'
+      }
     ],
     anomalies: [;
       {
@@ -398,10 +398,10 @@ async function detectFinancialPatterns(evidence: any[], sensitivity: number, opt
         confidence: 0.83,
         amount: '$5,000.00',
         context: 'Amount 10x larger than typical pattern',
-        severity: 'high',
-      },
+        severity: 'high'
+      }
     ],
-    confidence: 0.81,
+    confidence: 0.81
   };
 }
 
@@ -420,8 +420,8 @@ async function detectDigitalPatterns(evidence: any[], sensitivity: number, optio
         systems: ['System A', 'Database B', 'Application C'],
         times: ['Business hours', 'After hours access'],
         methods: ['Standard login', 'API access'],
-        significance: 'high',
-      },
+        significance: 'high'
+      }
     ],
     anomalies: [;
       {
@@ -433,10 +433,10 @@ async function detectDigitalPatterns(evidence: any[], sensitivity: number, optio
         system: 'Restricted Database',
         time: '2024-01-01T02:30:00Z',
         method: 'Direct database connection',
-        severity: 'very_high',
-      },
+        severity: 'very_high'
+      }
     ],
-    confidence: 0.89,
+    confidence: 0.89
   };
 }
 

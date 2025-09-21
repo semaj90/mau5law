@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
       gpuInfo: 'NVIDIA RTX 3060 12GB', // Would need actual detection
       memoryUsage: `${Math.round(usedMem / 1024 / 1024 / 1024)}GB / ${Math.round(totalMem / 1024 / 1024 / 1024)}GB`,
       nodeVersion: process.version,
-      uptime: os.uptime(),
+      uptime: os.uptime()
     });
   } catch (error) {
     return json({ error: 'Failed to get system information', details: error instanceof Error ? error.message: String(error) }, { status: 500 });

@@ -40,9 +40,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         processingTime: Date.now(),
         systemHealth: {
           status: systemHealth.systemHealth,
-          confidence: systemHealth.modelConfidence,
-        },
-      },
+          confidence: systemHealth.modelConfidence
+        }
+      }
     });
   } catch (err: any) {
     console.error("❌ Semantic analysis API error:", err);
@@ -60,11 +60,11 @@ export const GET: RequestHandler = async ({ url }) => {
   return json({
     message: "Vector Intelligence Semantic Analysis API - Phase 4",
     endpoints: {
-      "POST /api/vector/analyze": "Perform semantic analysis on content",
+      "POST /api/vector/analyze": "Perform semantic analysis on content"
     },
     parameters: {
       content: "Text content to analyze (required, max 50,000 chars)",
-      options: "Analysis options (optional)",
+      options: "Analysis options (optional)"
     },
     analysisFeatures: [
       "Entity extraction (persons, organizations, locations, dates, legal concepts)",
@@ -73,14 +73,14 @@ export const GET: RequestHandler = async ({ url }) => {
       "Sentiment analysis with legal context",
       "Complexity assessment (readability, technical level, legal complexity)",
       "Keyword and phrase extraction",
-      "Document structure analysis",
+      "Document structure analysis"
     ],
     entityTypes: [
       "person",
       "organization",
       "location",
       "date",
-      "legal_concept",
+      "legal_concept"
     ],
     complexityMetrics: ["readability", "technicalLevel", "legalComplexity"],
     usage: {
@@ -93,10 +93,10 @@ export const GET: RequestHandler = async ({ url }) => {
           options: {
             extractEntities: true,
             analyzeSentiment: true,
-            assessComplexity: true,
-          },
-        },
-      },
-    },
+            assessComplexity: true
+          }
+        }
+      }
+    }
   });
 };

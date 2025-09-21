@@ -14,7 +14,7 @@ export interface SOMNode {
     evidenceType?: string;
     caseCategory?: string;
     confidence: number;
-    priority: number;,
+    priority: number;
   };
 }
 
@@ -25,7 +25,7 @@ export interface SOMConfig {
   learningRate: number;
   neighborhoodRadius: number;
   maxEpochs: number;
-  clusterCount: number;,
+  clusterCount: number;
 }
 
 export interface BooleanCluster {
@@ -37,7 +37,7 @@ export interface BooleanCluster {
     cluster_size: number;
     avg_confidence: number;
     dominant_legal_type: string;
-    creation_timestamp: number;,
+    creation_timestamp: number;
   };
 }
 
@@ -50,7 +50,7 @@ export interface DocumentEmbedding {
     evidence_type?: string;
     legal_category?: string;
     confidence: number;
-    timestamp: number;,
+    timestamp: number;
   };
 }
 
@@ -84,8 +84,8 @@ export class SelfOrganizingMapRAG {
           documents: [],
           legalContext: {
             confidence: 0,
-            priority: 0,
-          },
+            priority: 0
+          }
         };
       }
     }
@@ -236,7 +236,7 @@ export class SelfOrganizingMapRAG {
       forensic: 4,
       testimony: 3,
       digital: 2,
-      physical: 1,
+      physical: 1
     };
 
     const docPriority =
@@ -352,14 +352,14 @@ export class SelfOrganizingMapRAG {
         documents: clusterDocuments,
         boolean_pattern: [
           [false, false],
-          [false, false],
+          [false, false]
         ], // Will be populated later;
         metadata: {
           cluster_size: clusterNodes.length,
           avg_confidence: avgConfidence,
           dominant_legal_type: dominantType,
-          creation_timestamp: Date.now(),
-        },
+          creation_timestamp: Date.now()
+        }
       });
     }
 
@@ -376,7 +376,7 @@ export class SelfOrganizingMapRAG {
       // Generate boolean pattern based on cluster characteristics
       const pattern: boolean[][] = [
         [false, false],
-        [false, false],
+        [false, false]
       ];
 
       // Pattern generation logic based on legal context
@@ -511,7 +511,7 @@ export class SelfOrganizingMapRAG {
             avgConfidence: cluster.metadata.avg_confidence,
             dominantType: cluster.metadata.dominant_legal_type,
             clusterSize: cluster.metadata.cluster_size,
-            timestamp: cluster.metadata.creation_timestamp,
+            timestamp: cluster.metadata.creation_timestamp
           },
         );
 
@@ -606,7 +606,7 @@ export class SelfOrganizingMapRAG {
       forensic: 0.4,
       testimony: 0.3,
       digital: 0.2,
-      physical: 0.1,
+      physical: 0.1
     };
     boost +=
       evidenceBoost[metadata.evidence_type as keyof typeof evidenceBoost] || 0;
@@ -633,10 +633,10 @@ export class SelfOrganizingMapRAG {
       clusters: Array.from(this.clusters.values()),
       map_dimensions: {
         width: this.config.mapWidth,
-        height: this.config.mapHeight,
+        height: this.config.mapHeight
       },
       total_documents: this.documentEmbeddings.size,
-      export_timestamp: Date.now(),
+      export_timestamp: Date.now()
     };
 
     return JSON.stringify(exportData, null, 2);
@@ -657,7 +657,7 @@ export class SelfOrganizingMapRAG {
           cluster: node.cluster,
           confidence: node.legalContext.confidence,
           documents: node.documents.length,
-          evidenceType: node.legalContext.evidenceType || "unknown",
+          evidenceType: node.legalContext.evidenceType || "unknown"
         });
       }
     }
@@ -680,7 +680,7 @@ export class SelfOrganizingMapRAG {
         evidence_type: document.metadata?.type,
         legal_category: document.metadata?.practiceArea?.[0],
         confidence: 0.8,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       }
     };
 
@@ -829,7 +829,7 @@ export function createSOMRAGSystem(
     learningRate: 0.1,
     neighborhoodRadius: 3,
     maxEpochs: 1000,
-    clusterCount: 8,
+    clusterCount: 8
   };
 
   const finalConfig = { ...defaultConfig, ...config };

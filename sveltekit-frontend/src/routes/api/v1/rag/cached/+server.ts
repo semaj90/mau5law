@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Cached RAG API error:', error);
     return json({ 
       error: 'Internal server error', 
-      details: error.message ,
+      details: error.message 
     }, { status: 500 });
   }
 };
@@ -66,7 +66,7 @@ async function handleRAGQuery(queryData: any, options: any) {
       semantic: {
         useEmbeddings: queryData.semantic?.useEmbeddings ?? true,
         expandConcepts: queryData.semantic?.expandConcepts ?? true,
-        includeRelated: queryData.semantic?.includeRelated ?? true,
+        includeRelated: queryData.semantic?.includeRelated ?? true
       }
     };
 
@@ -75,14 +75,14 @@ async function handleRAGQuery(queryData: any, options: any) {
     return json({
       success: true,
       data: result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
     console.error('RAG query failed:', error);
     return json({ 
       success: false, 
-      error: error.message ,
+      error: error.message 
     }, { status: 500 });
   }
 }
@@ -116,14 +116,14 @@ async function handleDocumentIngestion(documents: any[], options: any) {
         results,
         summary
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
     console.error('Document ingestion failed:', error);
     return json({ 
       success: false, 
-      error: error.message ,
+      error: error.message 
     }, { status: 500 });
   }
 }
@@ -146,14 +146,14 @@ async function handleCacheTest(options: any) {
     return json({
       success: true,
       data: results,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
     console.error('Cache testing failed:', error);
     return json({ 
       success: false, 
-      error: error.message ,
+      error: error.message 
     }, { status: 500 });
   }
 }
@@ -169,7 +169,7 @@ async function handleCacheMetrics() {
       success: true,
       data: {
         metrics,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -177,7 +177,7 @@ async function handleCacheMetrics() {
     console.error('Cache metrics failed:', error);
     return json({ 
       success: false, 
-      error: error.message ,
+      error: error.message 
     }, { status: 500 });
   }
 }
@@ -193,7 +193,7 @@ async function handleCacheWarmup() {
       success: true,
       data: {
         message: 'Cache warmup completed successfully',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -201,7 +201,7 @@ async function handleCacheWarmup() {
     console.error('Cache warmup failed:', error);
     return json({ 
       success: false, 
-      error: error.message ,
+      error: error.message 
     }, { status: 500 });
   }
 }
@@ -225,7 +225,7 @@ export const GET: RequestHandler = async ({ url }) => {
               'Cache metrics and testing',
               'PostgreSQL pgvector integration'
             ],
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
 
@@ -244,7 +244,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Cached RAG API GET error:', error);
     return json({ 
       error: 'Internal server error', 
-      details: error.message ,
+      details: error.message 
     }, { status: 500 });
   }
 };

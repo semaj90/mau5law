@@ -231,7 +231,7 @@ export function useRedisComponent(
   let cacheMisses = $state(0);
 
   const queryWithCache = async (query: string, context: any = {}) => {
-    const cacheKey = `${componentName}:${JSON.stringify({ query, ...context ,})}`;
+    const cacheKey = `${componentName}:${JSON.stringify({ query, ...context })}`;
     
     // Check local component cache first;
     if (config.autoCache !== false && componentCache.has(cacheKey)) {
@@ -243,7 +243,7 @@ export function useRedisComponent(
     const result = await redisOrchestratorClient.processQuery(query, {
       endpoint: componentName,
       ...context
-    ,});
+    });
 
     // Cache result locally;
     if (config.autoCache !== false && (result as { cached?: any }).cached) {
@@ -276,7 +276,7 @@ export function useRedisComponent(
     size: componentCache.size,
     hits: cacheHits,
     misses: cacheMisses,
-    hitRate: cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses)) * 100 : 0,
+    hitRate: cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses)) * 100 : 0
   });
 
   return {
@@ -323,13 +323,13 @@ export function useRedisForm() {
         lastSubmission = {
           type: 'queued',
           taskId,
-          estimatedTime: '30-45 seconds',
+          estimatedTime: '30-45 seconds'
         };
       } else {
         // Process immediately with Redis optimization;
         const result = await redisOrchestratorClient.processQuery(query, {
           endpoint,
-          useOrchestrator: options.useCache !== false,
+          useOrchestrator: options.useCache !== false
         });
         
         lastSubmission = {

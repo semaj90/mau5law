@@ -12,7 +12,7 @@ export const GET: RequestHandler = async () => {
   const healthData: any = {
     timestamp: new Date().toISOString(),
     services: {} as Record<string, any>,
-    overall: 'checking',
+    overall: 'checking'
   };
   
   // Check Ollama service;
@@ -29,20 +29,20 @@ export const GET: RequestHandler = async () => {
         endpoint: 'http://localhost:11434',
         models: ollamaData.models?.map((m: any) => m.name) || [],
         responseTime: Date.now() - startTime,
-        version: ollamaData.version || 'unknown',
+        version: ollamaData.version || 'unknown'
       };
     } else {
       healthData.services.ollama = {
         status: 'unhealthy',
         error: 'HTTP ' + ollamaCheck.status,
-        endpoint: 'http://localhost:11434',
+        endpoint: 'http://localhost:11434'
       };
     }
   } catch (error: any) {
     healthData.services.ollama = {
       status: 'unavailable',
       error: (error as Error).message,
-      endpoint: 'http://localhost:11434',
+      endpoint: 'http://localhost:11434'
     };
   }
   
@@ -60,20 +60,20 @@ export const GET: RequestHandler = async () => {
         endpoint: 'http://localhost:8094',
         responseTime: Date.now() - startTime,
         capabilities: ['vector-search', 'semantic-analysis', 'legal-rag'],
-        version: ragData.version || '1.0.0',
+        version: ragData.version || '1.0.0'
       };
     } else {
       healthData.services.enhancedRAG = {
         status: 'unhealthy',
         error: 'HTTP ' + ragCheck.status,
-        endpoint: 'http://localhost:8094',
+        endpoint: 'http://localhost:8094'
       };
     }
   } catch (error: any) {
     healthData.services.enhancedRAG = {
       status: 'unavailable',
       error: (error as Error).message,
-      endpoint: 'http://localhost:8094',
+      endpoint: 'http://localhost:8094'
     };
   }
   
@@ -88,20 +88,20 @@ export const GET: RequestHandler = async () => {
       healthData.services.uploadService = {
         status: 'healthy',
         endpoint: 'http://localhost:8093',
-        responseTime: Date.now() - startTime,
+        responseTime: Date.now() - startTime
       };
     } else {
       healthData.services.uploadService = {
         status: 'unhealthy',
         error: 'HTTP ' + uploadCheck.status,
-        endpoint: 'http://localhost:8093',
+        endpoint: 'http://localhost:8093'
       };
     }
   } catch (error: any) {
     healthData.services.uploadService = {
       status: 'unavailable',
       error: (error as Error).message,
-      endpoint: 'http://localhost:8093',
+      endpoint: 'http://localhost:8093'
     };
   }
   
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async () => {
     healthy_services: healthyCount,
     degraded_services: serviceStatuses.filter(item => item.length),
     unavailable_services: serviceStatuses.filter(item => item.length),
-    total_check_time: Date.now() - startTime,
+    total_check_time: Date.now() - startTime
   };
   
   healthData.available_models = [

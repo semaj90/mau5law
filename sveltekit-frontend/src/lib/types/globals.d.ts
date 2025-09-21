@@ -19,7 +19,7 @@ export interface LokiCollection<T = any> {
 
 export interface LokiDB {
   listCollections: () => LokiCollection[];
-  getCollection: (name: string) => LokiCollection | undefined;,
+  getCollection: (name: string) => LokiCollection | undefined;
 }
 
 // Expose runtime globals inside a declare global block so they merge correctly;

@@ -16,7 +16,7 @@ interface EvidenceChainNode {
   metadata: {
     processingTime: number;
     recursionPath: string[];
-    analysisTimestamp: string;,
+    analysisTimestamp: string;
   };
 }
 
@@ -37,14 +37,14 @@ interface EvidenceRelationship {
   description: string;
   legalSignificance: 'critical' | 'high' | 'medium' | 'low';
   supportingEvidence: string[];
-  confidence: number;,
+  confidence: number;
 }
 
 interface RelatedEvidence {
   evidenceId: string;
   relationshipType: string;
   strength: number;
-  metadata: any;,
+  metadata: any;
 }
 
 // Main Recursive Evidence Chain Processor;
@@ -84,7 +84,7 @@ class RecursiveEvidenceChainProcessor {
         metadata: {
           processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
-          analysisTimestamp: new Date().toISOString(),
+          analysisTimestamp: new Date().toISOString()
         }
       };
     }
@@ -136,7 +136,7 @@ class RecursiveEvidenceChainProcessor {
         metadata: {
           processingTime,
           recursionPath: [...recursionPath, rootEvidenceId],
-          analysisTimestamp: new Date().toISOString(),
+          analysisTimestamp: new Date().toISOString()
         }
       };
 
@@ -153,7 +153,7 @@ class RecursiveEvidenceChainProcessor {
         metadata: {
           processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
-          analysisTimestamp: new Date().toISOString(),
+          analysisTimestamp: new Date().toISOString()
         }
       };
     }
@@ -195,7 +195,7 @@ class RecursiveEvidenceChainProcessor {
         body: JSON.stringify({
           evidenceIds: [evidenceId],
           analysisType: 'comprehensive',
-          includeWeakCorrelations: true,
+          includeWeakCorrelations: true
         })
       });
 
@@ -210,7 +210,7 @@ class RecursiveEvidenceChainProcessor {
         evidenceId: corr.evidenceB === evidenceId ? corr.evidenceA: corr.evidenceB,
         relationshipType: corr.correlationType,
         strength: corr.strength,
-        metadata: corr,
+        metadata: corr
       })) || [];
 
     } catch (error) {
@@ -468,7 +468,7 @@ self.addEventListener('message', async (event) => {
           recursionStatistics: {
             visitedNodes: processor.visitedEvidenceSize,
             maxDepth: processor.maxDepthLimit,
-            actualDepth: result.depth,
+            actualDepth: result.depth
           }
         }
       });
@@ -477,7 +477,7 @@ self.addEventListener('message', async (event) => {
         messageId,
         success: false,
         error: error.message,
-        stack: error.stack,
+        stack: error.stack
       });
     }
   } else if (type === 'RESET_PROCESSOR') {
@@ -487,13 +487,13 @@ self.addEventListener('message', async (event) => {
       self.postMessage({
         messageId,
         success: true,
-        message: 'Processor reset successfully',
+        message: 'Processor reset successfully'
       });
     } catch (error) {
       self.postMessage({
         messageId,
         success: false,
-        error: error.message,
+        error: error.message
       });
     }
   }

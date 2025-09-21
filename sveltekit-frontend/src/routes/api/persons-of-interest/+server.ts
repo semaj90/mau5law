@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         total,
         limit,
         offset,
-        hasMore: offset + persons.length < total,
+        hasMore: offset + persons.length < total
       }
     });
 
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     console.error('Error fetching persons of interest:', error);
     return json({
       success: false,
-      error: 'Failed to fetch persons of interest',
+      error: 'Failed to fetch persons of interest'
     }, { status: 500 });
   }
 };
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!body.name || !body.relationship) {
       return json({
         success: false,
-        error: 'Name and relationship are required',
+        error: 'Name and relationship are required'
       }, { status: 400 });
     }
 
@@ -100,21 +100,21 @@ export const POST: RequestHandler = async ({ request }) => {
       tags: body.tags || [],
       position: body.position || {},
       caseId: body.caseId || null,
-      createdBy: body.createdBy || null,
+      createdBy: body.createdBy || null
     };
 
     const [newPerson] = await db.insert(personsOfInterest).values(personData).returning();
 
     return json({
       success: true,
-      data: newPerson,
+      data: newPerson
     }, { status: 201 });
 
   } catch (error) {
     console.error('Error creating person of interest:', error);
     return json({
       success: false,
-      error: 'Failed to create person of interest',
+      error: 'Failed to create person of interest'
     }, { status: 500 });
   }
 };
@@ -126,20 +126,20 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!body.id) {
       return json({
         success: false,
-        error: 'Person ID is required for updates',
+        error: 'Person ID is required for updates'
       }, { status: 400 });
     }
 
     const updateData = {
-      ...(body.name && { name: body.name ,}),
-      ...(body.aliases && { aliases: body.aliases ,}),
-      ...(body.relationship && { relationship: body.relationship ,}),
-      ...(body.threatLevel && { threatLevel: body.threatLevel ,}),
-      ...(body.status && { status: body.status ,}),
-      ...(body.profileData && { profileData: body.profileData ,}),
-      ...(body.tags && { tags: body.tags ,}),
-      ...(body.position && { position: body.position ,}),
-      updatedAt: new Date().toISOString(),
+      ...(body.name && { name: body.name }),
+      ...(body.aliases && { aliases: body.aliases }),
+      ...(body.relationship && { relationship: body.relationship }),
+      ...(body.threatLevel && { threatLevel: body.threatLevel }),
+      ...(body.status && { status: body.status }),
+      ...(body.profileData && { profileData: body.profileData }),
+      ...(body.tags && { tags: body.tags }),
+      ...(body.position && { position: body.position }),
+      updatedAt: new Date().toISOString()
     };
 
     const [updatedPerson] = await db
@@ -151,20 +151,20 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!updatedPerson) {
       return json({
         success: false,
-        error: 'Person of interest not found',
+        error: 'Person of interest not found'
       }, { status: 404 });
     }
 
     return json({
       success: true,
-      data: updatedPerson,
+      data: updatedPerson
     });
 
   } catch (error) {
     console.error('Error updating person of interest:', error);
     return json({
       success: false,
-      error: 'Failed to update person of interest',
+      error: 'Failed to update person of interest'
     }, { status: 500 });
   }
 };
@@ -176,7 +176,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     if (!body.id) {
       return json({
         success: false,
-        error: 'Person ID is required for deletion',
+        error: 'Person ID is required for deletion'
       }, { status: 400 });
     }
 
@@ -188,20 +188,20 @@ export const DELETE: RequestHandler = async ({ request }) => {
     if (!deletedPerson) {
       return json({
         success: false,
-        error: 'Person of interest not found',
+        error: 'Person of interest not found'
       }, { status: 404 });
     }
 
     return json({
       success: true,
-      message: 'Person of interest deleted successfully',
+      message: 'Person of interest deleted successfully'
     });
 
   } catch (error) {
     console.error('Error deleting person of interest:', error);
     return json({
       success: false,
-      error: 'Failed to delete person of interest',
+      error: 'Failed to delete person of interest'
     }, { status: 500 });
   }
 };

@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ text, model, tags }),
+          body: JSON.stringify({ text, model, tags })
         });
         if (resp.ok) {
           const data = (await resp.json()) as { embedding: number[] };
@@ -49,12 +49,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         operation: 'vectorize',
         documentId: key,
         data: [] as number[],
-        options: { timeout: 5000 },
+        options: { timeout: 5000 }
       };
       const goResp = await fetch('/api/tensor', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(goReq),
+        body: JSON.stringify(goReq)
       });
       if (goResp.ok) {
         const goJson = await goResp.json();
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     // If we reached here, no backend produced an embedding
     return json();
       {
-        error: 'Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)',
+        error: 'Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)'
       },
       { status: 502 }
     );

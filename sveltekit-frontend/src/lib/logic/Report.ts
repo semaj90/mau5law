@@ -42,7 +42,7 @@ export class Report {
     height?: number;
     caseId?: string;
     version?: number;
-    createdBy: string;,
+    createdBy: string;
   }) {
     this.id = data.id || crypto.randomUUID();
     this.title = writable(data.title || "Untitled Report");
@@ -51,15 +51,15 @@ export class Report {
     const initialContent: ContentNode[] = data.content || [;
       {
         type: "paragraph",
-        children: [{ type: "text", text: "" }],
-      },
+        children: [{ type: "text", text: "" }]
+      }
     ];
 
     this.content = writable(initialContent);
     this.position = writable({ x: data.posX || 50, y: data.posY || 50 });
     this.size = writable({
       width: data.width || 650,
-      height: data.height || 450,
+      height: data.height || 450
     });
     this.isDirty = writable(false);
     this.version = writable(data.version || 1);
@@ -181,7 +181,7 @@ export class Report {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       createdBy: this.createdBy,
-      lastModifiedBy: this.lastModifiedBy,
+      lastModifiedBy: this.lastModifiedBy
     };
   }
   /**
@@ -198,7 +198,7 @@ export class Report {
       height: parseFloat(data.height) || 450,
       caseId: data.caseId,
       version: data.version,
-      createdBy: createdBy,
+      createdBy: createdBy
     });
   }
   /**
@@ -248,7 +248,7 @@ export class Report {
       width: 0,
       height: 0,
       caseId: this.caseId,
-      createdBy: this.createdBy,
+      createdBy: this.createdBy
     });
 
     // Subscribe to get current values and clone them
@@ -261,7 +261,7 @@ export class Report {
     this.position.subscribe((pos) =>
       clonedReport.position.set({ x: pos.x + 20, y: pos.y + 20 }),
     )();
-    this.size.subscribe((size) => clonedReport.size.set({ ...size ,}))();
+    this.size.subscribe((size) => clonedReport.size.set({ ...size }))();
 
     return clonedReport;
   }

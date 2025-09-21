@@ -18,7 +18,7 @@ function buildRedisOptions() {
     lazyConnect: true, // Changed to true to prevent immediate connection
     maxRetriesPerRequest: 1, // Limit retries to prevent flooding
     // If URL was provided separately, include it in options form
-    ...(url ? { host: undefined } : Record<string, any>),
+    ...(url ? { host: undefined } : Record<string, any>)
   } as any;
 }
 
@@ -51,7 +51,7 @@ redis.on('error', (error) => {
 });
 redis.on('reconnecting', (delay) => {
   console.log(`[redis] 🔄 Reconnecting in ${delay}ms...`);
-,});
+});
 redis.on('close', () => {
   console.log('[redis] 🔌 Connection closed');
 });
@@ -105,7 +105,7 @@ export function createRedisClientSet(): RedisClientSet {
       await Promise.all(
         [primary.quit(), subscriber.quit(), publisher.quit()].map((p) => p.catch(() => {})
       );
-    },
+    }
   };
 }
 

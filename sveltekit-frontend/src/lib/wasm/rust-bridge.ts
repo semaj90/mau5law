@@ -11,7 +11,7 @@ export interface WasmModule {
   process_legal_text_fast: (text: string) => string;
   optimize_embedding_vector: (vector: Float32Array) => Float32Array;
   compute_cosine_similarity: (vec1: Float32Array, vec2: Float32Array) => number;
-  batch_process_documents: (documents: string) => string;,
+  batch_process_documents: (documents: string) => string;
 }
 
 export interface WindowsServiceBridge {
@@ -218,7 +218,7 @@ export function isRustBridgeAvailable(): boolean {
 export function getBridgeStatus(): {
   initialized: boolean;
   capabilities: string[];
-  performance: boolean;,
+  performance: boolean;
 } {
   return {
     initialized: isRustBridgeAvailable(),
@@ -232,7 +232,7 @@ export function getBridgeStatus(): {
       'Vector Operations',
       'Batch Processing'
     ] : [],
-    performance: isRustBridgeAvailable(),
+    performance: isRustBridgeAvailable()
   };
 }
 
@@ -267,7 +267,7 @@ export async function benchmarkRustBridge(): Promise<any> {
     textProcessing: textTime,
     vectorOperations: vectorTime,
     systemAccess: systemTime,
-    overallScore: 1000 / totalTime // Higher is better,
+    overallScore: 1000 / totalTime // Higher is better
   };
 }
 

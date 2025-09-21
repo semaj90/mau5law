@@ -60,7 +60,7 @@ class MSAARenderTarget {
       samples: samples > 1 ? samples : 0,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
-      generateMipmaps: false,
+      generateMipmaps: false
     });
 
     this.scene = new THREE.Scene();
@@ -577,7 +577,7 @@ class TAAManager {
         format: THREE.RGBAFormat,
         type: THREE.FloatType,
         minFilter: THREE.LinearFilter,
-        magFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter
       });
     }
     
@@ -702,7 +702,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       uniforms: THREE.UniformsUtils.clone(FXAAShader.uniforms),
       vertexShader: FXAAShader.vertexShader,
       fragmentShader: FXAAShader.fragmentShader,
-      transparent: true,
+      transparent: true
     });
     
     // Configure FXAA quality based on settings
@@ -778,7 +778,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       vertexShader: EnhancedAAShader.vertexShader,
       fragmentShader: EnhancedAAShader.fragmentShader,
       transparent: this.style.opacity !== undefined && this.style.opacity < 1,
-      side: THREE.DoubleSide,
+      side: THREE.DoubleSide
     });
     
     // Configure enhanced material
@@ -929,14 +929,14 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     quality: string;
     samples: number;
     estimatedFPS: number;
-    memoryUsage: number;,
+    memoryUsage: number;
   } {
     return {
       type: this.aaConfig.type,
       quality: this.aaConfig.quality || 'high',
       samples: this.aaConfig.samples || 0,
       estimatedFPS: this.estimateFPS(),
-      memoryUsage: this.estimateMemoryUsage(),
+      memoryUsage: this.estimateMemoryUsage()
     };
   }
   
@@ -993,7 +993,7 @@ export const AntiAliasingUtils = {
       subpixelQuality: 0.75,
       enabled: true,
       adaptiveQuality: true,
-      performanceTarget: targetFPS,
+      performanceTarget: targetFPS
     };
   },
   
@@ -1004,21 +1004,21 @@ export const AntiAliasingUtils = {
         quality: 'medium' as const,
         samples: 2,
         adaptiveQuality: true,
-        performanceTarget: 60,
+        performanceTarget: 60
       },
       balanced: {
         type: 'auto' as const,
         quality: 'high' as const,
         samples: 4,
         adaptiveQuality: true,
-        performanceTarget: 60,
+        performanceTarget: 60
       },
       quality: {
         type: 'taa' as const,
         quality: 'ultra' as const,
         samples: 8,
         adaptiveQuality: false,
-        performanceTarget: 30,
+        performanceTarget: 30
       }
     };
     

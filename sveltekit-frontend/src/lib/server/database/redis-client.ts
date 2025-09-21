@@ -14,7 +14,7 @@ export interface RedisConfig {
   db: number;
   retryDelayOnFailover: number;
   maxRetriesPerRequest: number;
-  lazyConnect: boolean;,
+  lazyConnect: boolean;
 }
 
 // Use REDIS_URL if provided, otherwise fallback to individual config
@@ -28,7 +28,7 @@ const defaultConfig: RedisConfig = {
   db: 0,
   retryDelayOnFailover: 100,
   maxRetriesPerRequest: 3,
-  lazyConnect: true,
+  lazyConnect: true
 };
 
 let redis: Redis | null = null;
@@ -119,7 +119,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): Redi
   const client = new Redis({
     ...config,
     retryAttempts: 3,
-    retryDelayOnConnect: 1000,
+    retryDelayOnConnect: 1000
   });
 
   client.on('error', (error) => {
@@ -152,7 +152,7 @@ export async function checkRedisHealth(): Promise<any> {
   } catch (error) {
     return { 
       status: 'error', 
-      error: error instanceof Error ? error.message: String(error),
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }

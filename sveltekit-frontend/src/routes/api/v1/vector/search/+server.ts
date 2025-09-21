@@ -48,7 +48,7 @@ interface SearchResponse {
   query: {
     original: string;
     embedding?: number[];
-    filters: any;,
+    filters: any;
   };
 }
 
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
       performance: {
         searchTime,
         embeddingTime: embeddingTime > 0 ? embeddingTime : undefined,
-        rerankTime: rerankTime > 0 ? rerankTime : undefined,
+        rerankTime: rerankTime > 0 ? rerankTime : undefined
       },
       query: {
         original: query,
@@ -168,16 +168,16 @@ async function generateCUDAEmbedding(text: string, requestId?: string): Promise<
       query_type: 'legal_search',
       semantic_enhancement: true,
       entity_aware_embedding: true,
-      precedent_similarity_boost: true,
+      precedent_similarity_boost: true
     }
   };
 
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   });
 
   if (!response.ok) {
@@ -194,12 +194,12 @@ async function generateOllamaEmbedding(text: string): Promise<number[]> {
   const response = await fetch(`${ollamaUrl}/api/embeddings`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       model: 'embeddinggemma:latest',
-      prompt: text,
-    }),
+      prompt: text
+    })
   });
 
   if (!response.ok) {
@@ -217,7 +217,7 @@ async function performVectorSearch(params: {
   includeMetadata: boolean;
   filters: any;
   searchMethod: string;
-  useCUDA: boolean;,
+  useCUDA: boolean;
 }): Promise<SearchResult[]> {
   const { embedding, limit, threshold, includeMetadata, filters, searchMethod } = params;
 
@@ -308,7 +308,7 @@ async function performVectorSearch(params: {
         content: row.content,
         similarity: parseFloat(row.similarity),
         metadata: includeMetadata ? row.metadata: undefined,
-        embedding: includeMetadata ? row.embedding : undefined,
+        embedding: includeMetadata ? row.embedding : undefined
       });
 
   } catch (dbError) {
@@ -362,13 +362,13 @@ function generateSearchClientHints(query: string, filters: any, complexity: numb
       embedding_cache: true,
       query_preprocessing: queryLength > 20,
       filter_optimization: filterCount > 2,
-      result_ranking_gpu: complexity > 60,
+      result_ranking_gpu: complexity > 60
     },
     memory_patterns: {
       embedding_alignment: true,
       result_coalescing: true,
       metadata_streaming: filterCount > 1,
-      chr_rom_cache: complexity > 75,
+      chr_rom_cache: complexity > 75
     }
   };
 }
@@ -387,9 +387,9 @@ export const GET: RequestHandler = async () => {
         chrRomOptimization: true,
         cudaAcceleration: true,
         legalTextSpecialization: true,
-        webgpuClientHints: true,
+        webgpuClientHints: true
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err) {
     throw error(500, `Health check failed: ${err instanceof Error ? err.message: 'Unknown error'}`);

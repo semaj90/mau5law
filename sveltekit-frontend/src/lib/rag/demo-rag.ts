@@ -18,7 +18,7 @@ interface Case {
   title: string;
   description: string;
   createdAt: Date;
-  status: 'open' | 'closed' | 'archived';,
+  status: 'open' | 'closed' | 'archived';
 }
 
 interface Report {
@@ -26,7 +26,7 @@ interface Report {
   title: string;
   content: string;
   createdAt: Date;
-  generatedBy: string;,
+  generatedBy: string;
 }
 
 export interface RAGDemoQuery {
@@ -43,7 +43,7 @@ export interface RAGDemoResponse {
   sources: Array<any>;
   confidence: number;
   tokensUsed: number;
-  reasoning: string[];,
+  reasoning: string[];
 }
 
 /**
@@ -85,7 +85,7 @@ const mockCaseData = {
         title: 'Initial Assessment Report',
         content: 'Preliminary analysis shows patterns consistent with fraudulent activity...',
         createdAt: new Date('2024-01-18'),
-        generatedBy: 'AI Assistant',
+        generatedBy: 'AI Assistant'
       }
     ]
   },
@@ -110,7 +110,7 @@ const mockCaseData = {
         metadata: { size: '2.3MB', suspicious_ips: ['192.168.1.157', '10.0.0.233'] }
       }
     ],
-    reports: [],
+    reports: []
   }
 };
 
@@ -153,7 +153,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
         type: 'report',
         relevance,
         excerpt: report.content.substring(0, 150) + '...'
-      ,});
+      });
       reasoning.push(`Referenced report: ${report.title} (${Math.round(relevance * 100)}% relevance)`);
     }
   });

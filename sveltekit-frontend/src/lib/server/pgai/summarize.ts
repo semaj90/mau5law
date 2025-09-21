@@ -12,7 +12,7 @@ export async function summarizeWithQueue(content: string, documentId: string): P
 
     const task = { documentId, content };
     channel.sendToQueue(QUEUE_NAME, Buffer.from(JSON.stringify(task)), {
-      persistent: true,
+      persistent: true
     });
 
     await channel.close();
@@ -28,6 +28,6 @@ export async function summarizeWithQueue(content: string, documentId: string): P
   await setCache(documentId, { status: "processing" });
   return {
     success: true,
-    message: "Summarization task queued (or marked processing).",
+    message: "Summarization task queued (or marked processing)."
   };
 }

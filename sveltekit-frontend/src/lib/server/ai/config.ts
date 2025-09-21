@@ -81,7 +81,7 @@ export function createRAGConfig(): RAGConfiguration {
     maxRetries: env.RAG_MAX_RETRIES,
     timeoutMs: env.RAG_TIMEOUT_MS,
     cacheEnabled: env.RAG_ENABLE_CACHING,
-    cacheTtl: env.RAG_CACHE_TTL,
+    cacheTtl: env.RAG_CACHE_TTL
 };
 }
 
@@ -277,7 +277,7 @@ class CircuitBreaker {
     return {
       state: this.state,
       failures: this.failures,
-      lastFailureTime: this.lastFailureTime,
+      lastFailureTime: this.lastFailureTime
     };
   }
 }
@@ -415,7 +415,7 @@ export function extractLegalEntities(
   });
 
   // Dollar amounts
-  const dollarPattern = /\$[\d,]+(?:\.\d{2})?/g;
+  const dollarPattern = /\$[\d]+(?:\.\d{2})?/g;
   const dollarMatches = text.match(dollarPattern) || [];
   dollarMatches.forEach((match: string) => {
     entities.push({ type: 'monetary_amount', value: match.trim(), confidence: 0.95 });
@@ -451,14 +451,14 @@ export async function checkServiceHealth(name: string, checkFn: () => Promise<an
     return {
       service: name,
       status: 'healthy',
-      responseTime: Date.now() - start,
+      responseTime: Date.now() - start
 };
   } catch (error: any) {
     return {
       service: name,
       status: 'unhealthy',
       responseTime: Date.now() - start,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
 };
   }
 }

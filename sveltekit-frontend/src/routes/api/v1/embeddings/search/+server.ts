@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
           resultsFound: 0,
           processingTime: 0,
           threshold: searchRequest.threshold || 0.3,
-          topK: searchRequest.topK || 10,
+          topK: searchRequest.topK || 10
         }
       });
     }
@@ -63,16 +63,16 @@ export const POST: RequestHandler = async ({ request }) => {
         resultsFound: results.length,
         threshold: searchRequest.threshold || 0.3,
         topK: searchRequest.topK || 10,
-        gpuUsed: searchRequest.useGPU !== false,
+        gpuUsed: searchRequest.useGPU !== false
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error) {
     console.error('Semantic search API error:', error);
     return json({ 
         error: 'Failed to perform semantic search',
-        message: error instanceof Error ? error.message: 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -100,14 +100,14 @@ export const GET: RequestHandler = async () => {
       results: [{
         document: 'string',
         score: 'number',
-        index: 'number',
+        index: 'number'
       }],
       metadata: {
         documentCount: 'number',
         resultsFound: 'number',
         threshold: 'number',
         topK: 'number',
-        gpuUsed: 'boolean',
+        gpuUsed: 'boolean'
       }
     },
     examples: {
@@ -120,9 +120,9 @@ export const GET: RequestHandler = async () => {
         ],
         threshold: 0.4,
         topK: 5,
-        useGPU: true,
+        useGPU: true
       }
     },
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 };

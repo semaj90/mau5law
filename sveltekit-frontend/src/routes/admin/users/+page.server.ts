@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 				id: users.id,
 				email: users.email,
 				created_at: users.created_at,
-				updated_at: users.updated_at,
+				updated_at: users.updated_at
 			})
 			.from(users);
 
@@ -70,7 +70,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 				totalUsers,
 				limit,
 				hasNext: page < totalPages,
-				hasPrev: page > 1,
+				hasPrev: page > 1
 			},
 			search
 		};
@@ -137,7 +137,7 @@ export const actions: Actions = {
 				memoryCost: 19456,
 				timeCost: 2,
 				outputLen: 32,
-				parallelism: 1,
+				parallelism: 1
 			});
 
 			// Create user
@@ -145,7 +145,7 @@ export const actions: Actions = {
 				.insert(users);
 				.values({
 					email,
-					password_hash: passwordHash,
+					password_hash: passwordHash
 				})
 				.returning();
 
@@ -154,7 +154,7 @@ export const actions: Actions = {
 				user: {
 					id: newUser[0].id,
 					email: newUser[0].email,
-					created_at: newUser[0].created_at,
+					created_at: newUser[0].created_at
 				}
 			};
 		} catch (err) {

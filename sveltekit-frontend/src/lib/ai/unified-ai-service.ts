@@ -71,14 +71,14 @@ export interface UnifiedAIConfig {
   gpuConfig?: {
     useNESCache: boolean;
     enableBinaryPipeline: boolean;
-    batchSize: number;,
+    batchSize: number;
   };
   
   // Database Configuration;
   dbConfig?: {
     userId: string;
     enableVectorSearch: boolean;
-    cacheResults: boolean;,
+    cacheResults: boolean;
   };
 }
 
@@ -119,7 +119,7 @@ export class UnifiedAIService {
       wasmConfig: {
         modelPath: 'gemma3-legal',
         maxTokens: 2048,
-        temperature: 0.7,
+        temperature: 0.7
       },
       langChainConfig: {
         model: 'gemma3-legal:latest',
@@ -127,17 +127,17 @@ export class UnifiedAIService {
         temperature: 0.3,
         chunkSize: 1000,
         chunkOverlap: 200,
-        useCuda: true,
+        useCuda: true
       },
       gpuConfig: {
         useNESCache: true,
         enableBinaryPipeline: true,
-        batchSize: 20,
+        batchSize: 20
       },
       dbConfig: {
         userId: 'system',
         enableVectorSearch: true,
-        cacheResults: true,
+        cacheResults: true
       },
       ...config
     };
@@ -204,7 +204,7 @@ export class UnifiedAIService {
         metadata: { 
           model: cached.metadata?.model || 'cached',
           ...cached.metadata, 
-          cacheHit: true ,
+          cacheHit: true 
         }
       };
     }
@@ -224,7 +224,7 @@ export class UnifiedAIService {
           result = await this.queryGPU(options);
           break;
         default:
-          result = await this.queryHybrid(options);,
+          result = await this.queryHybrid(options);
       }
       
       const processingTime = performance.now() - startTime;
@@ -244,7 +244,7 @@ export class UnifiedAIService {
         response: '',
         mode: 'error',
         processingTime: performance.now() - startTime,
-        error: error.message,
+        error: error.message
       };
     }
   }
@@ -271,7 +271,7 @@ export class UnifiedAIService {
         metadata: {
           model: wasmResponse.metadata?.model || 'wasm-model',
           tokenCount: wasmResponse.tokens,
-          confidence: wasmResponse.confidence,
+          confidence: wasmResponse.confidence
         }
       };
     } catch (error: any) {
@@ -296,7 +296,7 @@ export class UnifiedAIService {
         options.query,);
         {
           maxResults: options.maxResults || 10,
-          relevanceThreshold: options.threshold || 0.7,
+          relevanceThreshold: options.threshold || 0.7
         }
       );
       
@@ -308,7 +308,7 @@ export class UnifiedAIService {
         sources: langChainResponse.sources,
         metadata: {
           model: this.config.langChainConfig?.model || 'langchain-model',
-          confidence: langChainResponse.confidence,
+          confidence: langChainResponse.confidence
         }
       };
     } catch (error: any) {
@@ -331,7 +331,7 @@ export class UnifiedAIService {
           limit: options.maxResults || 20,
           threshold: options.threshold || 0.7,
           useNESCache: this.config.gpuConfig?.useNESCache,
-          enableGPUAcceleration: this.config.enableGPUAcceleration,
+          enableGPUAcceleration: this.config.enableGPUAcceleration
         }
       );
       
@@ -346,11 +346,11 @@ export class UnifiedAIService {
         sources: gpuResults.map(doc => ({
           content: doc.content || doc.title,
           metadata: doc.metadata || {},
-          score: doc.score || 0.8,
+          score: doc.score || 0.8
         })),
         metadata: {
           model: 'gpu-accelerated',
-          confidence: 0.8,
+          confidence: 0.8
         }
       };
     } catch (error: any) {
@@ -425,7 +425,7 @@ export class UnifiedAIService {
               await langChainOllamaService.processDocument(doc.content, {
                 documentId: doc.id,
                 title: doc.title,
-                type: doc.type,
+                type: doc.type
               });
               processed++;
             }
@@ -440,7 +440,7 @@ export class UnifiedAIService {
         success: errors === 0,
         processed,
         errors,
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
       
     } catch (error: any) {
@@ -449,7 +449,7 @@ export class UnifiedAIService {
         success: false,
         processed,
         errors: documents.length - processed,
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
   }
@@ -461,7 +461,7 @@ export class UnifiedAIService {
     const stats: any = {
       initialized: this.initialized,
       cacheSize: this.cache.size,
-      config: this.config,
+      config: this.config
     };
     
     if (wasmLLMService) {
@@ -522,7 +522,7 @@ export class UnifiedAIService {
     return {
       ...best,
       mode: 'hybrid',
-      sources: results.flatMap(r => r.sources || []),
+      sources: results.flatMap(r => r.sources || [])
     };
   }
 

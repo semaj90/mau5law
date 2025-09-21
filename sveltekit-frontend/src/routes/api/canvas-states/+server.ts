@@ -71,7 +71,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
 
       // Get total count for pagination
       const totalCountResult = await db
-        .select({ count: sql<number>`count(*)` ,})
+        .select({ count: sql<number>`count(*)` })
         .from(canvasLayouts)
         .where(filters.length > 0 ? and(...filters) : undefined);
       const totalCount = totalCountResult[0]?.count || 0;
@@ -83,8 +83,8 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
         pagination: {
           limit,
           offset,
-          total: totalCount,
-        },
+          total: totalCount
+        }
       });
     }
   } catch (error: any) {
@@ -115,7 +115,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
       layoutData: data.layoutData,
       description: data.description || null,
       isDefault: data.isDefault || false,
-      createdBy: locals.user.id,
+      createdBy: locals.user.id
     };
 
     const [newCanvasState] = await db
@@ -153,7 +153,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
       return json({ error: "Canvas state not found" }, { status: 404 });
     }
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Only update provided fields
@@ -234,7 +234,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
       return json({ error: "Canvas state not found" }, { status: 404 });
     }
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Handle specific patch operations;

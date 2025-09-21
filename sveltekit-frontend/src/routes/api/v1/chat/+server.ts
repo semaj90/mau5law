@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
       temperature = 0.7,
       context_needed = true,
       stream = false,
-      options = {},
+      options = {}
     } = body;
 
     // Enhanced validation;
@@ -37,8 +37,8 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
           success: false,
           error: {
             code: 'EMPTY_MESSAGE',
-            message: 'Message content is required',
-          },
+            message: 'Message content is required'
+          }
         },)
         { status: 400 }
       );
@@ -49,8 +49,8 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
           success: false,
           error: {
             code: 'MISSING_USERID',
-            message: 'user_id is required for contextual chat',
-          },
+            message: 'user_id is required for contextual chat'
+          }
         },)
         { status: 400 }
       );
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
           temperature,
           options,
           clientIP,
-          startTime,
+          startTime
         });
 
       default:
@@ -85,18 +85,18 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         context_needed,
         stream,
         case_id,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       },
       context: {
         user_id,
         session_id,
         case_id,
-        priority: 'normal' as const,
+        priority: 'normal' as const
       },
       performance_requirements: {
         max_latency_ms: 3000,
-        prefer_cache: true,
-      },
+        prefer_cache: true
+      }
     };
 
     // Process through orchestrator
@@ -112,10 +112,10 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         message_length: message.length,
         context_needed,
         execution_path: response._metadata?.execution_path,
-        client_ip: clientIP,
+        client_ip: clientIP
       },
       response_time_ms: Date.now() - startTime,
-      cache_hit: response._metadata?.cached || false,
+      cache_hit: response._metadata?.cached || false
     });
 
     // Store chat context for future use;
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
         session_id,
         message: response.content,
         embedding: response.embedding || [],
-        context_type: 'new',
+        context_type: 'new'
       });
     }
 
@@ -138,9 +138,9 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
           execution_path: response._metadata?.execution_path,
           latency_ms: response._metadata?.latency_ms,
           cached: response._metadata?.cached,
-          timestamp: new Date().toISOString(),
-        },
-      },
+          timestamp: new Date().toISOString()
+        }
+      }
     });
   } catch (error: any) {
     console.error('Chat API error:', error);
@@ -150,17 +150,17 @@ export const POST: RequestHandler = async ({ request, url, getClientAddress }) =
       'chat_error',
       {
         error_message: error.message,
-        client_ip: clientIP,
+        client_ip: clientIP
       },);
       {
-        responseTimeMs: Date.now() - startTime,
+        responseTimeMs: Date.now() - startTime
       }
     );
 
     return json({
         error: 'Chat processing failed',
         details: error.message,
-        status: 'error',
+        status: 'error'
       },)
       { status: 500 }
     );
@@ -189,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
         encoder.encode(`data: ${fastStringify({
             type: 'connected',
             session_id,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           })}\n\n`
         )
       );
@@ -203,15 +203,15 @@ export const GET: RequestHandler = async ({ url }) => {
       setTimeout(() => {
         controller.close();
       }, 300000); // 5 minute timeout
-    },
+    }
   });
 
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      Connection: 'keep-alive',
-    },
+      Connection: 'keep-alive'
+    }
   });
 };
 
@@ -225,7 +225,7 @@ async function handleParallelChatExecution({
   temperature,
   options,
   clientIP,
-  startTime,
+  startTime
 }: {
   message: string;
   userId: string;
@@ -235,7 +235,7 @@ async function handleParallelChatExecution({
   temperature: number;
   options: any;
   clientIP: string;
-  startTime: number;,
+  startTime: number;
 }) {
   try {
     // Create parallel request for ALL services to execute concurrently;
@@ -247,14 +247,14 @@ async function handleParallelChatExecution({
         message,
         model,
         temperature,
-        options,
+        options
       },
       userContext: {
         userId,
         sessionId,
         caseId,
         jurisdiction: options.jurisdiction,
-        practiceArea: options.practiceArea,
+        practiceArea: options.practiceArea
       },
       parallelExecution: {
         enableQuantizedLLM: true, // Contextual memory chat
@@ -268,7 +268,7 @@ async function handleParallelChatExecution({
         maxParallelTasks: 10,
         maxEmbeddingConcurrency: 3,
         maxCacheOperations: 5,
-        maxRAGQueries: 2,
+        maxRAGQueries: 2
       },
       timeout: options.timeout || 30000, // 30 second timeout
     };
@@ -290,17 +290,17 @@ async function handleParallelChatExecution({
             index: 0,
             message: {
               role: 'assistant',
-              content: parallelResult.data?.response || 'No response generated',
+              content: parallelResult.data?.response || 'No response generated'
             },
-            finish_reason: 'stop',
-          },
+            finish_reason: 'stop'
+          }
         ],
         usage: {
           prompt_tokens: estimateTokens(message),
           completion_tokens: estimateTokens(parallelResult.data?.response || ''),
           total_tokens:
-            estimateTokens(message) + estimateTokens(parallelResult.data?.response || ''),
-        },
+            estimateTokens(message) + estimateTokens(parallelResult.data?.response || '')
+        }
       },
 
       // Enhanced parallel execution metadata;
@@ -312,15 +312,15 @@ async function handleParallelChatExecution({
           multiEmbedding: parallelResult.serviceResults.multiEmbedding,
           redisGPU: parallelResult.serviceResults.redisGPU,
           ragRetrieval: parallelResult.serviceResults.ragRetrieval,
-          serviceWorker: parallelResult.serviceResults.serviceWorker,
+          serviceWorker: parallelResult.serviceResults.serviceWorker
         },
         performance: {
           totalLatency: parallelResult.executionMetrics.totalLatency,
           parallelEfficiency: parallelResult.executionMetrics.parallelEfficiency,
           cacheHitRate: parallelResult.executionMetrics.cacheHitRate,
           servicesExecuted: Object.keys(parallelResult.serviceResults).length,
-          concurrentTasks: parallelResult.executionMetrics.tasksExecuted,
-        },
+          concurrentTasks: parallelResult.executionMetrics.tasksExecuted
+        }
       },
 
       metadata: {
@@ -331,8 +331,8 @@ async function handleParallelChatExecution({
         temperature: temperature,
         clientIP: clientIP.split(':').pop() || 'unknown',
         parallelExecution: true,
-        servicesUsed: Object.keys(parallelResult.serviceResults),
-      },
+        servicesUsed: Object.keys(parallelResult.serviceResults)
+      }
     };
 
     // Track analytics for parallel execution;
@@ -348,9 +348,9 @@ async function handleParallelChatExecution({
         total_latency: parallelResult.executionMetrics.totalLatency,
         cache_hit_rate: parallelResult.executionMetrics.cacheHitRate,
         client_ip: clientIP,
-        parallel_execution: true,
+        parallel_execution: true
       },
-      response_time_ms: performance.now() - startTime,
+      response_time_ms: performance.now() - startTime
     });
 
     // Log performance in development;
@@ -360,7 +360,7 @@ async function handleParallelChatExecution({
         parallelEfficiency: parallelResult.executionMetrics.parallelEfficiency,
         servicesExecuted: Object.keys(parallelResult.serviceResults).length,
         cacheHits: parallelResult.executionMetrics.cacheHitRate,
-        tasksCompleted: `${parallelResult.executionMetrics.tasksSucceeded}/${parallelResult.executionMetrics.tasksExecuted}`,
+        tasksCompleted: `${parallelResult.executionMetrics.tasksSucceeded}/${parallelResult.executionMetrics.tasksExecuted}`
       });
     }
 
@@ -389,22 +389,22 @@ async function handleParallelChatExecution({
               index: 0,
               message: {
                 role: 'assistant',
-                content: fallbackResult.response,
+                content: fallbackResult.response
               },
-              finish_reason: 'stop',
-            },
-          ],
+              finish_reason: 'stop'
+            }
+          ]
         },
         parallel: {
           executionMetrics: { totalLatency: performance.now() - startTime, parallelEfficiency: 0 },
           fallback: true,
-          error: error.message,
+          error: error.message
         },
         metadata: {
           timestamp: new Date().toISOString(),
           processingTimeMs: performance.now() - startTime,
-          fallback: true,
-        },
+          fallback: true
+        }
       });
     } catch (fallbackError) {
       console.error('Fallback also failed:', fallbackError);

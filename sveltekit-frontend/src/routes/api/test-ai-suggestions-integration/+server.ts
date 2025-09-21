@@ -81,7 +81,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
     },
     results: testResults,
     timestamp: new Date().toISOString(),
-    recommendations: generateRecommendations(testResults),
+    recommendations: generateRecommendations(testResults)
   });
 }
 
@@ -107,7 +107,7 @@ async function testDatabaseConnection(): Promise<IntegrationTestResult> {
         message: 'Database connection failed',
         details: health,
         responseTime,
-        error: health.error,
+        error: health.error
       };
     }
   } catch (error: any) {
@@ -116,7 +116,7 @@ async function testDatabaseConnection(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Database connection test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -143,7 +143,7 @@ async function testPgVectorIntegration(): Promise<IntegrationTestResult> {
         message: 'pgvector extension not available',
         details: health,
         responseTime,
-        error: health.error,
+        error: health.error
       };
     }
   } catch (error: any) {
@@ -152,7 +152,7 @@ async function testPgVectorIntegration(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'pgvector test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -164,7 +164,7 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true,
+      cache: true
     });
     
     const responseTime = Date.now() - startTime;
@@ -177,7 +177,7 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
         details: {
           dimensions: embedding.length,
           sampleValues: embedding.slice(0, 5),
-          provider: 'nomic-embed',
+          provider: 'nomic-embed'
         },
         responseTime
       };
@@ -196,7 +196,7 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
       status: 'fail',
       message: 'Embedding generation failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -216,7 +216,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
         details: {
           model: (result as any)?.model || "unknown",
           availableModels: (result as any).availableModels,
-          testSuggestion: (result as any).testSuggestion,
+          testSuggestion: (result as any).testSuggestion
         },
         responseTime
       };
@@ -227,7 +227,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
         message: 'Ollama service not available',
         details: result,
         responseTime,
-        error: (result as any)?.error,
+        error: (result as any)?.error
       };
     }
   } catch (error: any) {
@@ -236,7 +236,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Ollama test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -257,7 +257,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
           serviceAvailable: (result as any).serviceAvailable,
           version: (result as any).version,
           testSuggestion: (result as any).testSuggestion,
-          responseTime: (result as any).responseTime,
+          responseTime: (result as any).responseTime
         },
         responseTime
       };
@@ -268,7 +268,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
         message: (result as any)?.serviceAvailable ? 'Service available but test failed' : 'Enhanced RAG service not available',
         details: result,
         responseTime,
-        error: (result as any)?.error,
+        error: (result as any)?.error
       };
     }
   } catch (error: any) {
@@ -277,7 +277,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Enhanced RAG test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -313,7 +313,7 @@ async function testProtobufGRPCService(): Promise<IntegrationTestResult> {
       status: 'warning',
       message: 'gRPC test failed (HTTP fallback available)',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -331,7 +331,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
         maxSuggestions: 3,
         useVectorSearch: true,
         useOllamaAI: true,
-        useEnhancedRAG: false // Disable to avoid timeout in tests,
+        useEnhancedRAG: false // Disable to avoid timeout in tests
       })
     });
     
@@ -347,7 +347,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
         details: {
           suggestionsCount: result?.suggestions?.length || 0,
           confidence: result?.confidence,
-          servicesUsed: result?.servicesUsed,
+          servicesUsed: result?.servicesUsed
         },
         responseTime
       };
@@ -358,7 +358,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
         status: 'fail',
         message: `API request failed with status ${response.status}`,
         responseTime,
-        error: errorText,
+        error: errorText
       };
     }
   } catch (error: any) {
@@ -367,7 +367,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -377,7 +377,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
   
   try {
     const response = await fetch('/api/ai/suggestions/stream?content=Test streaming suggestions&max=2', {
-      method: 'GET',
+      method: 'GET'
     });
     
     const responseTime = Date.now() - startTime;
@@ -389,7 +389,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
         message: 'Streaming API is operational',
         details: {
           contentType: response.headers.get('content-type'),
-          status: response.status,
+          status: response.status
         },
         responseTime
       };
@@ -407,7 +407,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Streaming API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -428,7 +428,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
         message: 'Rating API is operational (validation working)',
         details: {
           status: response.status,
-          validation: 'userId parameter required',
+          validation: 'userId parameter required'
         },
         responseTime
       };
@@ -447,7 +447,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Rating API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -483,7 +483,7 @@ async function testHealthCheckAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Health check API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }

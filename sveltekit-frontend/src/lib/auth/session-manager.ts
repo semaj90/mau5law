@@ -29,7 +29,7 @@ export interface SessionConfig {
   maxInactivity: number; // Max inactivity before session expires
   renewalThreshold: number; // Renew session if less than this time remains
   maxSessionsPerUser: number; // Maximum concurrent sessions per user
-  cleanupInterval: number; // Cleanup expired sessions interval,
+  cleanupInterval: number; // Cleanup expired sessions interval
 }
 
 const DEFAULT_CONFIG: SessionConfig = {
@@ -127,7 +127,7 @@ export class SessionManager {
       ipAddress: request.ipAddress,
       userAgent: request.userAgent,
       deviceFingerprint: request.deviceFingerprint,
-      metadata: request.metadata || {},
+      metadata: request.metadata || {}
     };
 
     // Enforce max sessions per user
@@ -386,7 +386,7 @@ export class SessionManager {
         totalSessions,
         activeSessions,
         expiredSessions,
-        userSessionCounts,
+        userSessionCounts
       };
     } catch (error: any) {
       console.error('Error getting session stats:', error);
@@ -394,7 +394,7 @@ export class SessionManager {
         totalSessions: 0,
         activeSessions: 0,
         expiredSessions: 0,
-        userSessionCounts: Record<string, any>,
+        userSessionCounts: Record<string, any>
       };
     }
   }

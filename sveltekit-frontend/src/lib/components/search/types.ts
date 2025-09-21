@@ -26,7 +26,7 @@ export interface SearchOptions {
   aiSuggestions: boolean;
   maxResults: number;
   similarityThreshold: number;
-  includeMetadata: boolean;,
+  includeMetadata: boolean;
 }
 
 export interface SearchMetadata {
@@ -35,13 +35,13 @@ export interface SearchMetadata {
   totalResults: number;
   processingTime: number;
   vectorSearchUsed: boolean;
-  aiEnhanced: boolean;,
+  aiEnhanced: boolean;
 }
 
 export interface SearchFilter {
   field: string;
   operator: 'equals' | 'contains' | 'startsWith' | 'endsWith' | 'gt' | 'lt' | 'in';
-  value: string | number | string[];,
+  value: string | number | string[];
 }
 
 export interface SearchSuggestion {

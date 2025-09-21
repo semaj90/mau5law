@@ -87,7 +87,7 @@ export function createLayoutConfig(variant: LayoutVariant, theme: LegalAITheme =
     theme,
     showSidebar: variant !== 'minimal',
     showFooter: true,
-    title: variant === 'demo' ? 'Demo Environment' : undefined,
+    title: variant === 'demo' ? 'Demo Environment' : undefined
   };
 }
 

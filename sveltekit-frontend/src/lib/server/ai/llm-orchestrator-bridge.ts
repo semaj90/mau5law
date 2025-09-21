@@ -61,7 +61,7 @@ export interface LLMBridgeResponse {
   citations?: any[];
   followupSuggestions?: string[];
   error?: string;
-  requestId: string;,
+  requestId: string;
 }
 
 export class LLMOrchestratorBridge {
@@ -73,7 +73,7 @@ export class LLMOrchestratorBridge {
     averageLatency: 0,
     cacheHitRate: 0,
     serverRoutedRequests: 0,
-    clientRoutedRequests: 0,
+    clientRoutedRequests: 0
   };
 
   constructor() {
@@ -171,10 +171,10 @@ export class LLMOrchestratorBridge {
         executionMetrics: {
           totalLatency: performance.now() - startTime,
           routingTime: 0,
-          processingTime: 0,
+          processingTime: 0
         },
         error: error instanceof Error ? error.message: 'Unknown error',
-        requestId,
+        requestId
       };
     } finally {
       this.activeRequests.delete(requestId);
@@ -190,7 +190,7 @@ export class LLMOrchestratorBridge {
       return {
         orchestrator: 'server',
         reasoning: 'Explicitly requested server orchestrator',
-        confidence: 1.0,
+        confidence: 1.0
       };
     }
 
@@ -199,7 +199,7 @@ export class LLMOrchestratorBridge {
       return {
         orchestrator: 'client',
         reasoning: `Client-side model requested: ${request.options?.model || 'unknown'}`,
-        confidence: 1.0,
+        confidence: 1.0
       };
     }
 
@@ -217,7 +217,7 @@ export class LLMOrchestratorBridge {
       return {
         orchestrator: 'mcp',
         reasoning: `MCP multi-core optimal: ${mcpMetrics.onlineCores} cores available, load: ${mcpMetrics.totalLoad}/${mcpMetrics.totalCapacity}`,
-        confidence: 0.85,
+        confidence: 0.85
       };
     }
 
@@ -227,14 +227,14 @@ export class LLMOrchestratorBridge {
         return {
           orchestrator: 'client',
           reasoning: 'Embedding tasks are faster on client-side ONNX',
-          confidence: 0.9,
+          confidence: 0.9
         };
 
       case 'workflow':;
         return {
           orchestrator: 'server',
           reasoning: 'Complex workflows require server orchestrator with XState',
-          confidence: 0.95,
+          confidence: 0.95
         };
 
       case 'legal_analysis':
@@ -247,21 +247,21 @@ export class LLMOrchestratorBridge {
         return {
           orchestrator: isComplex ? 'server' : 'client',
           reasoning: `Legal analysis complexity: ${isComplex ? 'high' : 'low'}`,
-          confidence: 0.8,
+          confidence: 0.8
         };
 
       case 'search':;
         return {
           orchestrator: 'server',
           reasoning: 'Search requires pgvector and Neo4j integration',
-          confidence: 0.9,
+          confidence: 0.9
         };
 
       case 'document_processing':;
         return {
           orchestrator: 'server',
           reasoning: 'Document processing needs full pipeline with caching',
-          confidence: 0.85,
+          confidence: 0.85
         };
 
       case 'chat':
@@ -271,13 +271,13 @@ export class LLMOrchestratorBridge {
           return {
             orchestrator: 'client',
             reasoning: 'Realtime chat requires low latency',
-            confidence: 0.7,
+            confidence: 0.7
           };
         } else {
           return {
             orchestrator: 'server',
             reasoning: 'Default to server for comprehensive chat capabilities',
-            confidence: 0.6,
+            confidence: 0.6
           };
         }
     }
@@ -300,7 +300,7 @@ export class LLMOrchestratorBridge {
         temperature: request.options?.temperature || 0.3,
         maxTokens: request.options?.maxTokens || 1024,
         useGPU: request.options?.useGPU || true,
-        enableStreaming: request.options?.enableStreaming || false,
+        enableStreaming: request.options?.enableStreaming || false
       });
 
       return {
@@ -313,12 +313,12 @@ export class LLMOrchestratorBridge {
           routingTime: 0,  // Will be set by caller
           processingTime: 0, // Will be set by caller
           gpuAccelerated: true,
-          cacheHitRate: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).metadata?.cacheHit ? 1.0 : 0.0,
+          cacheHitRate: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).metadata?.cacheHit ? 1.0 : 0.0
         },
         confidence: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).confidence_score || 0.8,
         citations: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).sources_cited || [],
         followupSuggestions: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).recommendations || [],
-        requestId: request.id,
+        requestId: request.id
       };
     } catch (error) {
       throw new Error(`Server orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
@@ -343,21 +343,21 @@ export class LLMOrchestratorBridge {
           sessionId: request.context?.sessionId || 'default',
           legalDomain: request.context?.legalDomain,
           documentType: request.context?.documentType,
-          previousContext: request.context?.previousContext,
+          previousContext: request.context?.previousContext
         },
         modelPreferences: {
           preferredModel: request.options?.model === 'auto' ? 'auto' : request.options?.model as any,
           maxLatency: request.options?.maxLatency,
           qualityThreshold: 0.8,
           enableRLTraining: false,
-          enableContextSwitching: true,
+          enableContextSwitching: true
         },
         resourceLimits: {
           maxGPUMemoryMB: 4096,
           maxDDRRAMCacheMB: 8192,
           allowModelSwitching: true,
-          enableParallelInference: true,
-        },
+          enableParallelInference: true
+        }
       };
 
       const result: InferenceResult = await unifiedClientLLMOrchestrator.executeInference(clientRequest);
@@ -373,10 +373,10 @@ export class LLMOrchestratorBridge {
           processingTime: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.totalLatency,
           cacheHitRate: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.cacheHitRate,
           memoryUsed: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.memoryUsed,
-          gpuAccelerated: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).modelUsed.includes('gpu'),
+          gpuAccelerated: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).modelUsed.includes('gpu')
         },
         confidence: (result as { executionMetrics?: any; requestId?: any; success?: any; summary?: any; detailed_discussion?: any; response?: any; metadata?: any; confidence_score?: any; sources_cited?: any; recommendations?: any; modelUsed?: any }).executionMetrics.qualityScore,
-        requestId: request.id,
+        requestId: request.id
       };
     } catch (error) {
       throw new Error(`Client orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
@@ -402,10 +402,10 @@ export class LLMOrchestratorBridge {
             model: request.options?.model || 'auto',
             temperature: request.options?.temperature || 0.3,
             maxTokens: request.options?.maxTokens || 1024,
-            useGPU: request.options?.useGPU !== false,
+            useGPU: request.options?.useGPU !== false
           },
-          metadata: request.metadata,
-        },
+          metadata: request.metadata
+        }
       };
 
       const mcpResponse = await mcpMultiCore.submitTask(mcpTask);
@@ -424,10 +424,10 @@ export class LLMOrchestratorBridge {
           routingTime: 0,
           processingTime: mcpResponse.processingTime,
           cacheHitRate: mcpResponse.metadata?.cacheHit ? 1.0 : 0.0,
-          gpuAccelerated: mcpResponse.metadata?.gpuAccelerated || false,
+          gpuAccelerated: mcpResponse.metadata?.gpuAccelerated || false
         },
         confidence: 0.8, // Default confidence for MCP tasks
-        requestId: request.id,
+        requestId: request.id
       };
     } catch (error) {
       throw new Error(`MCP orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
@@ -445,7 +445,7 @@ export class LLMOrchestratorBridge {
       // Start both orchestrators in parallel
       const [serverResult, clientResult] = await Promise.allSettled([
         this.executeServerOrchestrator(request, routing),
-        this.executeClientOrchestrator(request, routing),
+        this.executeClientOrchestrator(request, routing)
       ]);
 
       // Choose best result based on confidence and success
@@ -485,7 +485,7 @@ export class LLMOrchestratorBridge {
       case 'workflow': return 'legal_analysis';
       case 'chat':
       default:
-        return 'chat';,
+        return 'chat';
     }
   }
 
@@ -498,7 +498,7 @@ export class LLMOrchestratorBridge {
       case 'workflow': return 'workflow';
       case 'chat':
       default:
-        return 'generation';,
+        return 'generation';
     }
   }
 
@@ -508,7 +508,7 @@ export class LLMOrchestratorBridge {
       case 'normal': return 'normal';
       case 'high': return 'high';
       case 'realtime': return 'critical';
-      default: return 'normal';,
+      default: return 'normal';
     }
   }
 
@@ -559,7 +559,7 @@ export class LLMOrchestratorBridge {
   async getStatus(): Promise<any> {
     const [serverHealth, clientStatus] = await Promise.allSettled([
       this.checkServerOrchestrator(),
-      this.checkClientOrchestrator(),
+      this.checkClientOrchestrator()
     ]);
 
     const serverHealthy = serverHealth.status === 'fulfilled' && serverHealth.value;
@@ -581,10 +581,10 @@ export class LLMOrchestratorBridge {
         totalRequests: this.performanceMetrics.totalRequests,
         successRate: this.performanceMetrics.totalRequests > 0
           ? this.performanceMetrics.successfulRequests / this.performanceMetrics.totalRequests: 0,
-        averageLatency: this.performanceMetrics.averageLatency,
+        averageLatency: this.performanceMetrics.averageLatency
       },
       serverOrchestrator: serverHealthy ? await enhancedOrchestrator.health() : { status: 'offline' },
-      clientOrchestrator: clientHealthy ? await unifiedClientLLMOrchestrator.getStatus() : { status: 'offline' },
+      clientOrchestrator: clientHealthy ? await unifiedClientLLMOrchestrator.getStatus() : { status: 'offline' }
     };
   }
 

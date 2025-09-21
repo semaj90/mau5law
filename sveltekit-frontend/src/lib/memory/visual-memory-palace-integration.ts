@@ -39,12 +39,12 @@ export interface MemoryPalace {
   cognitiveMap: {
     totalLoad: number;
     efficiencyScore: number;
-    retrievalSpeed: number; // milliseconds average,
+    retrievalSpeed: number; // milliseconds average
   };
   visualEncoding: {
     glyphDictionary: Map<string, number>; // 7-bit ASCII mapping
     frequencyTable: Map<number, number>; // Character frequency for optimization
-    compressionTree: CompressionNode;,
+    compressionTree: CompressionNode;
   };
 }
 
@@ -72,7 +72,7 @@ export interface MemoryRetrievalResult {
   retrievalPath: string[]; // Sequence of rooms visited
   cognitiveEffort: number; // Mental effort required
   compressionSavings: number; // Bytes saved through compression
-  retrievalTime: number; // Milliseconds,
+  retrievalTime: number; // Milliseconds
 }
 
 export class VisualMemoryPalaceManager {
@@ -139,12 +139,12 @@ export class VisualMemoryPalaceManager {
       cognitiveMap: {
         totalLoad: 0,
         efficiencyScore: 1.0,
-        retrievalSpeed: 0,
+        retrievalSpeed: 0
       },
       visualEncoding: {
         glyphDictionary: new Map(this.compressionDictionary),
         frequencyTable: new Map(),
-        compressionTree: this.buildCompressionTree(),
+        compressionTree: this.buildCompressionTree()
       }
     };
     
@@ -179,7 +179,7 @@ export class VisualMemoryPalaceManager {
           originalSize: area.anchor.length,
           compressedSize: 0, // Will be calculated
           compressionRatio: 0,
-          glyphMap: new Map(),
+          glyphMap: new Map()
         }
       };
       
@@ -379,7 +379,7 @@ export class VisualMemoryPalaceManager {
       contract: 'contracts',
       evidence: 'evidence',
       brief: 'litigation',
-      citation: 'research',
+      citation: 'research'
     };
     
     let roomId = typeMapping[document.documentType] || 'archive';
@@ -584,7 +584,7 @@ export class VisualMemoryPalaceManager {
       averageCompressionRatio: totalCompressionRatio / roomCount,
       cognitiveMap: palace.cognitiveMap,
       dictionarySize: palace.visualEncoding.glyphDictionary.size,
-      navigationComplexity: palace.navigationGraph.size,
+      navigationComplexity: palace.navigationGraph.size
     };
   }
 
@@ -606,12 +606,12 @@ export class VisualMemoryPalaceManager {
       cognitiveMap: {
         totalLoad: 0,
         efficiencyScore: 1.0,
-        retrievalSpeed: 0,
+        retrievalSpeed: 0
       },
       visualEncoding: {
         glyphDictionary: new Map(this.compressionDictionary),
         frequencyTable: new Map(),
-        compressionTree: this.buildCompressionTree(),
+        compressionTree: this.buildCompressionTree()
       }
     };
     
@@ -635,7 +635,7 @@ export class VisualMemoryPalaceManager {
           originalSize: roomDef.anchor.length,
           compressedSize: 0,
           compressionRatio: 0,
-          glyphMap: new Map(),
+          glyphMap: new Map()
         }
       };
       

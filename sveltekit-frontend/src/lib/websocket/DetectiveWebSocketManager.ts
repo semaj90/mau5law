@@ -13,7 +13,7 @@ export interface DetectiveWebSocketMessage {
   userId?: string;
   sessionId?: string;
   timestamp: string;
-  data: any;,
+  data: any;
 }
 
 export interface CollaborativeUser {
@@ -169,7 +169,7 @@ export class DetectiveWebSocketManager {
             name: userInfo.name || 'Anonymous',
             typing: false,
             lastActivity: message.timestamp,
-            currentFocus: undefined,
+            currentFocus: undefined
           };
           this.collaborativeUsers.set(message.userId, user);
           this.onUserJoinedHandlers.forEach(handler => handler(user);
@@ -248,7 +248,7 @@ export class DetectiveWebSocketManager {
       data: {
         isTyping: ['typing', 'contextual_processing'].includes(state),
         typingState: state,
-        typingContext: context,
+        typingContext: context
       }
     });
   }
@@ -421,7 +421,7 @@ export class DetectiveWebSocketManager {
       focusDistribution: {
         evidence: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
         connections: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
-        analysis: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
+        analysis: Array.from(this.collaborativeUsers.values()).filter(item => item.length)
       }
     };
   }

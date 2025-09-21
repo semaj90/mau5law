@@ -24,7 +24,7 @@ export interface TestSuite {
   passedTests: number;
   failedTests: number;
   warnings: number;
-  totalDuration: number;,
+  totalDuration: number;
 }
 
 /*
@@ -75,10 +75,10 @@ export const POST: RequestHandler = async ({ request }) => {
         totalWarnings,
         totalDuration,
         successRate: Math.round((totalPassed / totalTests) * 100),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       testSuites: results,
-      recommendations: generateRecommendations(results),
+      recommendations: generateRecommendations(results)
     });
 
   } catch (error: any) {
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      duration: Date.now() - startTime,
+      duration: Date.now() - startTime
     }, { status: 500 });
   }
 };
@@ -113,7 +113,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
     }
     
     return `Generated prompt: "${prompt.substring(0, 50)}..."`;
-  ,});
+  });
 
   // Test 2: MCP Request Validation;
   await runTest(tests, 'MCP Request Validation', async () => {
@@ -142,7 +142,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
         useSemanticSearch: true,
         useMemory: true,
         synthesizeOutputs: true,
-        agents: ['claude'],
+        agents: ['claude']
       }
     );
     if (!result || typeof result !== 'object') {
@@ -195,7 +195,7 @@ async function testMCPIntegration(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: any) => t.status === 'pass').length,
     failedTests: tests.filter((t: any) => t.status === 'fail').length,
     warnings: tests.filter((t: any) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 
@@ -210,7 +210,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Ollama Service Health', async () => {
     const response = await fetch('http://localhost:11434/api/version', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
       throw new Error(`Ollama service returned ${(response as { ok?: any; status?: any; json?: any }).status}`);
@@ -224,7 +224,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
   await runTest(tests, 'Model Availability Check', async () => {
     const response = await fetch('http://localhost:11434/api/tags', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
       throw new Error(`Failed to get model list: ${(response as { ok?: any; status?: any; json?: any }).status}`);
@@ -256,7 +256,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
         stream: false,
         options: {
           temperature: 0.1,
-          max_tokens: 50,
+          max_tokens: 50
         }
       })
     });
@@ -275,7 +275,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     }
     
     return `AI generated response: "${(data as { version?: any; models?: any; response?: any; success?: any; error?: any; results?: any; metadata?: any; mcpContext?: any; autoSuggestions?: any; suggestions?: any; result?: any }).response.substring(0, 50)}..."`;
-  ,});
+  });
 
   // Test 4: JSON Response Parsing;
   await runTest(tests, 'Structured AI Response', async () => {
@@ -294,7 +294,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
         stream: false,
         options: {
           temperature: 0.1,
-          max_tokens: 100,
+          max_tokens: 100
         }
       })
     });
@@ -325,7 +325,7 @@ async function testAIServices(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: any) => t.status === 'pass').length,
     failedTests: tests.filter((t: any) => t.status === 'fail').length,
     warnings: tests.filter((t: any) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 
@@ -345,7 +345,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
         query: 'test legal document',
         type: 'all',
         useAI: false,
-        mcpAnalysis: false,
+        mcpAnalysis: false
       })
     });
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -376,7 +376,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
         useAI: true,
         mcpAnalysis: false,
         semanticSearch: false,
-        confidenceThreshold: 0.5,
+        confidenceThreshold: 0.5
       })
     });
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -410,7 +410,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
         type: 'all',
         useAI: true,
         mcpAnalysis: true,
-        semanticSearch: false,
+        semanticSearch: false
       })
     });
     if (!(response as { ok?: any; status?: any; json?: any }).ok) {
@@ -463,7 +463,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
         body: JSON.stringify({
           query: 'rate limit test',
           type: 'all',
-          useAI: false,
+          useAI: false
         })
       })
     );
@@ -495,7 +495,7 @@ async function testFindAPI(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: any) => t.status === 'pass').length,
     failedTests: tests.filter((t: any) => t.status === 'fail').length,
     warnings: tests.filter((t: any) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 
@@ -514,7 +514,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
       body: JSON.stringify({
         filters: {
           nodeTypes: ['ai-interaction', 'search'],
-          limit: 10,
+          limit: 10
         }
       })
     });
@@ -542,7 +542,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
         relationType: 'performed-search',
         properties: {
           timestamp: new Date().toISOString(),
-          query: 'test memory relation',
+          query: 'test memory relation'
         }
       })
     });
@@ -566,7 +566,7 @@ async function testMemoryGraph(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: any) => t.status === 'pass').length,
     failedTests: tests.filter((t: any) => t.status === 'fail').length,
     warnings: tests.filter((t: any) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 
@@ -583,7 +583,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        query: 'legal document contract analysis',
+        query: 'legal document contract analysis'
       })
     });
     // If endpoint doesn't exist, this is expected for now;
@@ -609,7 +609,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
     try {
       const response = await fetch('http://localhost:6333/collections', {
         method: 'GET',
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
       if (!(response as { ok?: any; status?: any; json?: any }).ok) {
         throw new Error(`Qdrant connection failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
@@ -635,7 +635,7 @@ async function testSemanticSearch(verbose: boolean): Promise<TestSuite> {
     passedTests: tests.filter((t: any) => t.status === 'pass').length,
     failedTests: tests.filter((t: any) => t.status === 'fail').length,
     warnings: tests.filter((t: any) => t.status === 'warning').length,
-    totalDuration: Date.now() - suiteStartTime,
+    totalDuration: Date.now() - suiteStartTime
   };
 }
 
@@ -675,7 +675,7 @@ async function runTest(
       status: 'fail',
       duration: Date.now() - startTime,
       details: 'Test failed',
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
 }
@@ -731,7 +731,7 @@ export const GET: RequestHandler = async () => {
     const checks = await Promise.allSettled([
       // AI Service;
       fetch('http://localhost:11434/api/version', { 
-        signal: AbortSignal.timeout(3000) ,
+        signal: AbortSignal.timeout(3000) 
       }).then((r: any) => ({ ai: r.ok })),
       
       // Find API;
@@ -739,7 +739,7 @@ export const GET: RequestHandler = async () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: 'health check', useAI: false })
-      }).then((r: any) => ({ findApi: r.ok })),
+      }).then((r: any) => ({ findApi: r.ok }))
     ]);
     
     const results = checks.map((check: any) => check.status === 'fulfilled' ? check.value:  { error: true }
@@ -747,7 +747,7 @@ export const GET: RequestHandler = async () => {
     
     const healthStatus = {
       ai: (results[0] && 'ai' in results[0]) ? results[0].ai: false,
-      findApi: (results[1] && 'findApi' in results[1]) ? results[1].findApi : false,
+      findApi: (results[1] && 'findApi' in results[1]) ? results[1].findApi : false
     };
     
     const allHealthy = Object.values(healthStatus).every(Boolean);
@@ -756,7 +756,7 @@ export const GET: RequestHandler = async () => {
       healthy: allHealthy,
       status: healthStatus,
       duration: Date.now() - startTime,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
@@ -764,7 +764,7 @@ export const GET: RequestHandler = async () => {
       healthy: false,
       error: 'Health check failed',
       duration: Date.now() - startTime,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 503 });
   }
 };

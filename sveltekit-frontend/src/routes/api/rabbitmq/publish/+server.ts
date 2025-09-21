@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			exchange,
 			routingKey,
 			messageType: headers?.messageType,
-			messageSize: publishResult.messageSize,
+			messageSize: publishResult.messageSize
 		});
 
 		// Simulate different processing flows based on routing key;
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			error: 'Failed to publish message',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
 };
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async () => {
 					metadata: {
 						title: 'Service Agreement',
 						file_type: 'pdf',
-						upload_date: '2025-01-20T10:00:00Z',
+						upload_date: '2025-01-20T10:00:00Z'
 					}
 				}
 			},
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async () => {
 						start_position: 0,
 						end_position: 500,
 						chunk_size: 500,
-						overlap_size: 50,
+						overlap_size: 50
 					}
 				}
 			}

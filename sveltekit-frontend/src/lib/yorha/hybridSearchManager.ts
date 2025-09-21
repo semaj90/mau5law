@@ -46,7 +46,7 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
         status: d.status || 'active',
-        metadata: d,
+        metadata: d
       });
       addOrUpdateDocuments(docs);
       if (lokiCollection) {

@@ -14,7 +14,7 @@ export interface RAGContext {
   retryCount: number;
   searchStartTime: number;
   cacheStatus: "miss" | "hit" | "partial";
-  optimizationLevel: "basic" | "enhanced" | "neural";,
+  optimizationLevel: "basic" | "enhanced" | "neural";
 }
 
 export type RAGEvent =
@@ -36,7 +36,7 @@ export const ragStateMachine = createMachine({
     retryCount: 0,
     searchStartTime: 0,
     cacheStatus: "miss",
-    optimizationLevel: "basic",
+    optimizationLevel: "basic"
   },
   states: {
     idle: {
@@ -47,10 +47,10 @@ export const ragStateMachine = createMachine({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
-            error: null,
-          }),
-        },
-      },
+            error: null
+          })
+        }
+      }
     },
     searching: {
       on: {
@@ -58,23 +58,23 @@ export const ragStateMachine = createMachine({
           target: "success",
           actions: assign({
             results: ({ event }) => event.results,
-            cacheStatus: "miss",
-          }),
+            cacheStatus: "miss"
+          })
         },
         SEARCH_ERROR: {
           target: "error",
           actions: assign({
-            error: ({ event }) => event.error,
-          }),
+            error: ({ event }) => event.error
+          })
         },
         CACHE_HIT: {
           target: "success",
           actions: assign({
             results: ({ event }) => event.results,
-            cacheStatus: "hit",
-          }),
-        },
-      },
+            cacheStatus: "hit"
+          })
+        }
+      }
     },
     success: {
       on: {
@@ -84,11 +84,11 @@ export const ragStateMachine = createMachine({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
-            error: null,
-          }),
+            error: null
+          })
         },
         OPTIMIZE: {
-          target: "optimizing",
+          target: "optimizing"
         },
         RESET: {
           target: "idle",
@@ -96,10 +96,10 @@ export const ragStateMachine = createMachine({
             query: "",
             results: [],
             error: null,
-            retryCount: 0,
-          }),
-        },
-      },
+            retryCount: 0
+          })
+        }
+      }
     },
     error: {
       on: {
@@ -108,8 +108,8 @@ export const ragStateMachine = createMachine({
           guard: ({ context }) => context.retryCount < 3,
           actions: assign({
             retryCount: ({ context }) => context.retryCount + 1,
-            error: null,
-          }),
+            error: null
+          })
         },
         SEARCH_START: {
           target: "searching",
@@ -117,8 +117,8 @@ export const ragStateMachine = createMachine({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
-            error: null,
-          }),
+            error: null
+          })
         },
         RESET: {
           target: "idle",
@@ -126,10 +126,10 @@ export const ragStateMachine = createMachine({
             query: "",
             results: [],
             error: null,
-            retryCount: 0,
-          }),
-        },
-      },
+            retryCount: 0
+          })
+        }
+      }
     },
     optimizing: {
       after: {
@@ -141,9 +141,9 @@ export const ragStateMachine = createMachine({
                 ? "enhanced"
                 : context.optimizationLevel === "enhanced"
                   ? "neural"
-                  : "neural",
-          }),
-        },
+                  : "neural"
+          })
+        }
       },
       on: {
         SEARCH_START: {
@@ -152,10 +152,10 @@ export const ragStateMachine = createMachine({
             query: ({ event }) => event.query,
             searchStartTime: () => Date.now(),
             retryCount: 0,
-            error: null,
-          }),
-        },
-      },
-    },
-  },
+            error: null
+          })
+        }
+      }
+    }
+  }
 });

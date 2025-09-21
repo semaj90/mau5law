@@ -20,20 +20,20 @@ const CONFIG = {
         password: import.meta.env.DB_PASSWORD || 'password',
         host: import.meta.env.DB_HOST || 'localhost',
         port: parseInt(import.meta.env.DB_PORT || '5432'),
-        database: import.meta.env.DB_NAME || 'prosecutor_db',
+        database: import.meta.env.DB_NAME || 'prosecutor_db'
     },
     redis: {
-        url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+        url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
     },
     ollama: {
         url: ENV_CONFIG.OLLAMA_URL,
         model: import.meta.env.LLM_MODEL || 'gemma3-legal',
-        embeddingModel: 'nomic-embed-text',
+        embeddingModel: 'nomic-embed-text'
     },
     enhancement: {
         minConfidence: 0.6,
         maxSuggestions: 10,
-        similarityThreshold: 0.7,
+        similarityThreshold: 0.7
     }
 };
 
@@ -46,14 +46,14 @@ const EvidenceEnhancementRequestSchema = z.object({
         jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
         case_type: z.enum(['criminal', 'civil', 'administrative', 'constitutional']).optional(),
         charges: z.array(z.string()).optional(),
-        defendant_name: z.string().optional(),
+        defendant_name: z.string().optional()
     }).optional(),
     enhancement_options: z.object({
         suggest_labels: z.boolean().optional(),
         extract_entities: z.boolean().optional(),
         find_similar: z.boolean().optional(),
         prosecution_analysis: z.boolean().optional(),
-        fact_checking: z.boolean().optional(),
+        fact_checking: z.boolean().optional()
     }).optional()
 });
 
@@ -62,36 +62,36 @@ const EvidenceEnhancementResponseSchema = z.object({
         evidence_type: z.string(),
         confidence_score: z.number(),
         prosecution_strength: z.number(),
-        legal_relevance: z.number(),
+        legal_relevance: z.number()
     }),
     suggested_labels: z.array(z.object({
         label: z.string(),
         confidence: z.number(),
         category: z.string(),
-        justification: z.string(),
+        justification: z.string()
     })),
     extracted_entities: z.array(z.object({
         entity: z.string(),
         type: z.string(),
         confidence: z.number(),
-        context: z.string(),
+        context: z.string()
     })),
     similar_evidence: z.array(z.object({
         document_id: z.string(),
         similarity_score: z.number(),
         relevant_phrases: z.array(z.string()),
-        prosecution_outcome: z.string(),
+        prosecution_outcome: z.string()
     })),
     prosecution_insights: z.object({
         strengths: z.array(z.string()),
         weaknesses: z.array(z.string()),
         recommendations: z.array(z.string()),
-        precedent_support: z.number(),
+        precedent_support: z.number()
     }),
     metadata: z.object({
         processing_time_ms: z.number(),
         enhancement_version: z.string(),
-        data_sources: z.array(z.string(),
+        data_sources: z.array(z.string()
     })
 });
 
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
       find_similar: true,
       prosecution_analysis: true,
       fact_checking: false,
-      ...validatedRequest.enhancement_options,
+      ...validatedRequest.enhancement_options
     };
 
     // Parallel processing of different enhancement tasks
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request }) => {
       suggestedLabels,
       extractedEntities,
       similarEvidence,
-      prosecutionInsights,
+      prosecutionInsights
     ] = await Promise.allSettled([
       analyzeEvidence(validatedRequest.evidence_text, validatedRequest.evidence_type),
       options.suggest_labels
@@ -164,8 +164,8 @@ export const POST: RequestHandler = async ({ request }) => {
             strengths: [],
             weaknesses: [],
             recommendations: [],
-            precedent_support: 0,
-          }),
+            precedent_support: 0
+          })
     ]);
 
     // Compile results;
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request }) => {
               evidence_type: validatedRequest.evidence_type,
               confidence_score: 0.5,
               prosecution_strength: 50,
-              legal_relevance: 0.5,
+              legal_relevance: 0.5
             },
       suggested_labels: suggestedLabels.status === 'fulfilled' ? suggestedLabels.value : [],
       extracted_entities: extractedEntities.status === 'fulfilled' ? extractedEntities.value : [],
@@ -188,13 +188,13 @@ export const POST: RequestHandler = async ({ request }) => {
               strengths: [],
               weaknesses: [],
               recommendations: [],
-              precedent_support: 0,
+              precedent_support: 0
             },
       metadata: {
         processing_time_ms: Date.now() - startTime,
         enhancement_version: '2.0.0',
-        data_sources: ['legal_documents_processed', 'semantic_phrases_ranking'],
-      },
+        data_sources: ['legal_documents_processed', 'semantic_phrases_ranking']
+      }
     };
 
     // Validate response
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (err instanceof z.ZodError) {
       return json({
           message: 'Invalid request format',
-          errors: err.errors,
+          errors: err.errors
         },)
         { status: 400 }
       );
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
         message: 'Evidence enhancement service temporarily unavailable',
-        details: err instanceof Error ? err.message: 'Unknown error',
+        details: err instanceof Error ? err.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -256,9 +256,9 @@ Consider:
         stream: false,
         options: {
           temperature: 0.2,
-          top_p: 0.8,
-        },
-      }),
+          top_p: 0.8
+        }
+      })
     });
 
     if (response.ok) {
@@ -279,7 +279,7 @@ Consider:
     evidence_type: evidenceType,
     confidence_score: 0.7,
     prosecution_strength: 65,
-    legal_relevance: 0.6,
+    legal_relevance: 0.6
   };
 }
 
@@ -323,7 +323,7 @@ async function suggestLabels(evidenceText: string, caseContext?: unknown): Promi
           label: phrase.phrase,
           confidence,
           category,
-          justification: `High prosecution correlation (${phrase.avg_prosecution_score}%) based on ${phrase.frequency} similar cases`,
+          justification: `High prosecution correlation (${phrase.avg_prosecution_score}%) based on ${phrase.frequency} similar cases`
         });
       }
     }
@@ -335,7 +335,7 @@ async function suggestLabels(evidenceText: string, caseContext?: unknown): Promi
           label: `Supports '${charge}' charge`,
           confidence: 0.8,
           category: 'charge_support',
-          justification: 'Evidence directly relates to stated charges',
+          justification: 'Evidence directly relates to stated charges'
         });
       }
     }
@@ -371,9 +371,9 @@ ${evidenceText}`;
         stream: false,
         options: {
           temperature: 0.1,
-          top_p: 0.7,
-        },
-      }),
+          top_p: 0.7
+        }
+      })
     });
 
     if (response.ok) {
@@ -401,9 +401,9 @@ function extractEntitiesWithRegex(text: string) {
   const patterns = {
     PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
     DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g,
-    AMOUNT: /\$[\d,]+(?:\.\d{2})?/g,
+    AMOUNT: /\$[\d]+(?:\.\d{2})?/g,
     CASE_NUMBER: /\b\d{2,4}-\w{2,4}-\d{4,6}\b/g,
-    STATUTE: /\b\d+\s+U\.?S\.?C\.?\s+§?\s*\d+/g,
+    STATUTE: /\b\d+\s+U\.?S\.?C\.?\s+§?\s*\d+/g
   };
 
   for (const [type, pattern] of Object.entries(patterns)) {
@@ -414,7 +414,7 @@ function extractEntitiesWithRegex(text: string) {
           entity: match,
           type,
           confidence: 0.7,
-          context: getContext(text, match),
+          context: getContext(text, match)
         });
       }
     }
@@ -471,7 +471,7 @@ async function findSimilarEvidence(evidenceText: string, caseContext?: unknown):
           document_id: doc.document_id,
           similarity_score: similarity,
           relevant_phrases: phrases.slice(0, 5),
-          prosecution_outcome: doc.judgement_outcome || 'Unknown',
+          prosecution_outcome: doc.judgement_outcome || 'Unknown'
         });
       }
     }
@@ -515,9 +515,9 @@ Focus on:
         stream: false,
         options: {
           temperature: 0.3,
-          top_p: 0.9,
-        },
-      }),
+          top_p: 0.9
+        }
+      })
     });
 
     if (response.ok) {
@@ -538,7 +538,7 @@ Focus on:
     strengths: ['Documentary evidence', 'Clear factual content'],
     weaknesses: ['May require corroboration', 'Context dependent'],
     recommendations: ['Verify authenticity', 'Gather supporting evidence'],
-    precedent_support: 0.6,
+    precedent_support: 0.6
   };
 }
 
@@ -549,8 +549,8 @@ async function generateEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: CONFIG.ollama.embeddingModel,
-        prompt: text,
-      }),
+        prompt: text
+      })
     });
 
     if (response.ok) {
@@ -604,7 +604,7 @@ async function cacheEnhancementResults(evidenceText: string, results: any): Prom
       3600,
       JSON.stringify({
         results,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       })
     );
   } catch (error: any) {
@@ -640,20 +640,20 @@ export const GET: RequestHandler = async () => {
         total_documents: parseInt(stats.rows[0]?.total_documents || '0'),
         average_prosecution_score: parseFloat(stats.rows[0]?.avg_prosecution_score || '0'),
         jurisdictions_covered: parseInt(stats.rows[0]?.jurisdictions_covered || '0'),
-        case_types_covered: parseInt(stats.rows[0]?.case_types_covered || '0'),
+        case_types_covered: parseInt(stats.rows[0]?.case_types_covered || '0')
       },
       phrase_stats: {
         total_phrases: parseInt(phrasesStats.rows[0]?.total_phrases || '0'),
         high_value_phrases: parseInt(phrasesStats.rows[0]?.high_value_phrases || '0'),
-        average_frequency: parseFloat(phrasesStats.rows[0]?.avg_phrase_frequency || '0'),
+        average_frequency: parseFloat(phrasesStats.rows[0]?.avg_phrase_frequency || '0')
       },
       enhancement_options: [
         'suggest_labels',
         'extract_entities',
         'find_similar',
         'prosecution_analysis',
-        'fact_checking',
-      ],
+        'fact_checking'
+      ]
     });
   } catch (err: any) {
     console.error('Enhancement stats error:', err);

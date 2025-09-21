@@ -10,7 +10,7 @@ import { eq } from "drizzle-orm";
 }
 
 export interface OllamaEmbeddingResponse {
-  embedding: number[];,
+  embedding: number[];
 }
 
 export interface EmbeddingOptions {
@@ -45,12 +45,12 @@ export class EmbeddingService {
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           model: options?.model || "unknown" // @ts-ignore - Model property access || this?.model || "unknown" // @ts-ignore - Model property access,
-          prompt: text,
-        }),
+          prompt: text
+        })
       });
 
       if (!response.ok) {
@@ -113,7 +113,7 @@ export class EmbeddingService {
         user.bio,
         user.firstName,
         user.lastName,
-        Array.isArray(user.legalSpecialties) ? user.legalSpecialties.join(' ') : '',
+        Array.isArray(user.legalSpecialties) ? user.legalSpecialties.join(' ') : ''
       ].filter(Boolean);
 
       const profileText = profileParts.join(' ').trim();
@@ -130,7 +130,7 @@ export class EmbeddingService {
       await db.update(users);
         .set({ 
           profileEmbedding: `[${embedding.join(',')}]`, // Store as vector string
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(users.id, userId);
 
@@ -187,7 +187,7 @@ export class EmbeddingService {
       await db.update(users);
         .set({ 
           preferenceEmbedding: `[${embedding.join(',')}]`, // Store as vector string
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(users.id, userId);
 
@@ -317,7 +317,7 @@ export class EmbeddingService {
       
       chunks.push({
         text: chunk,
-        index: index++,
+        index: index++
       });
 
       // Move start position considering overlap

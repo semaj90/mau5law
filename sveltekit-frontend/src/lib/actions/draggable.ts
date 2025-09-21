@@ -150,7 +150,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     const mouseEvent = new MouseEvent('mousedown', {
       clientX: touch.clientX,
       clientY: touch.clientY,
-      button: 0,
+      button: 0
     });
 
     handleMouseDown(mouseEvent);
@@ -164,7 +164,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     const touch = event.touches[0];
     const mouseEvent = new MouseEvent('mousemove', {
       clientX: touch.clientX,
-      clientY: touch.clientY,
+      clientY: touch.clientY
     });
 
     handleMouseMove(mouseEvent);
@@ -175,7 +175,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
 
     const mouseEvent = new MouseEvent('mouseup', {
       clientX: 0,
-      clientY: 0,
+      clientY: 0
     });
 
     handleMouseUp(mouseEvent);
@@ -221,6 +221,6 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
 
       // Update cursor
       node.style.cursor = disabled ? '' : (isDragging ? 'grabbing' : 'grab');
-    },
+    }
   };
 }

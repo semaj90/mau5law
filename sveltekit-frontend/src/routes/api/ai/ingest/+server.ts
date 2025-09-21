@@ -54,7 +54,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       jurisdiction: jurisdiction || "federal",
       caseId,
       userId,
-      fileSize: file.size,
+      fileSize: file.size
     });
 
     return json({
@@ -67,8 +67,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       metadata: {
         filename: file.name,
         fileSize: file.size,
-        mimeType: file.type,
-      },
+        mimeType: file.type
+      }
     });
   } catch (error: any) {
     console.error("Document ingestion error:", error);
@@ -76,7 +76,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         error: "Document ingestion failed",
         message: error instanceof Error ? error.message: "Unknown error",
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -92,13 +92,13 @@ const originalGETHandler: RequestHandler = async () => {
     return json({
       success: true,
       stats,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error("Ingestion stats error:", error);
     return json({
         error: "Failed to get statistics",
-        message: error instanceof Error ? error.message: "Unknown error",
+        message: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 }
     );

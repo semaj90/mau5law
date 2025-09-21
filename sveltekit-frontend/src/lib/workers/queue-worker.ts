@@ -61,7 +61,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     try {
       locked = await (redis as any).set(`job:processed:${job.id}`, '1', {
         NX: true,
-        EX: 24 * 60 * 60,
+        EX: 24 * 60 * 60
       });
     } catch {
       // older ioredis style;
@@ -106,8 +106,8 @@ async function processJob(job: { id: string; text: string; model?: string }) {
           source: 'pipeline',
           jobId: job.id,
           model: result?.model || "unknown" // @ts-ignore - Model property access,
-          backend: (result as { embedding?: any; backend?: any }).backend,
-        } as any,
+          backend: (result as { embedding?: any; backend?: any }).backend
+        } as any
       } as any)
       .onConflictDoNothing({ target: sql`(metadata->>'jobId')` as any });
     // We can't directly know if inserted; do a cheap existence check
@@ -129,7 +129,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
         model: result?.model || "unknown" // @ts-ignore - Model property access,
         backend: (result as { embedding?: any; backend?: any }).backend,
         ts: Date.now(),
-        inserted,
+        inserted
       });
     } catch {}
     try {

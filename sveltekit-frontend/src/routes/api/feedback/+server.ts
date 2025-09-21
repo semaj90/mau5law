@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const resp = await fetch(goUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
     if (!resp.ok) {
       const txt = await resp.text();

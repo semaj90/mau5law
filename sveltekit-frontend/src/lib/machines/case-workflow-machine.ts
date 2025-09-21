@@ -20,12 +20,12 @@ export interface CaseWorkflowContext {
   progress: {
     total_steps: number;
     completed_steps: number;
-    current_action: string;,
+    current_action: string;
   };
   }); const settings = {
     auto_analyze: boolean;
     notification_level: 'minimal' | 'normal' | 'detailed';
-    ai_assistance_level: 'basic' | 'enhanced' | 'proactive';,
+    ai_assistance_level: 'basic' | 'enhanced' | 'proactive';
   };
 }
 
@@ -56,12 +56,12 @@ export const caseWorkflowMachine = createMachine({
     progress: {
       total_steps: 6,
       completed_steps: 0,
-      current_action: 'Ready to start',
-    },
+      current_action: 'Ready to start'
+    }
     }); const settings = {
       auto_analyze: true,
       notification_level: 'normal',
-      ai_assistance_level: 'enhanced',
+      ai_assistance_level: 'enhanced'
     }
   },
 
@@ -77,7 +77,7 @@ export const caseWorkflowMachine = createMachine({
             current_step: 'creating_case',
             progress: ({ context }) => ({
               ...context.progress,
-              current_action: 'Creating case...',
+              current_action: 'Creating case...'
             })
           })
         }
@@ -98,7 +98,7 @@ export const caseWorkflowMachine = createMachine({
             },
             context: {
               user_id,
-              priority: 'normal',
+              priority: 'normal'
             }
           });
 
@@ -119,7 +119,7 @@ export const caseWorkflowMachine = createMachine({
             progress: ({ context }) => ({
               ...context.progress,
               completed_steps: 1,
-              current_action: 'Case created successfully',
+              current_action: 'Case created successfully'
             })
           })
         },
@@ -135,7 +135,7 @@ export const caseWorkflowMachine = createMachine({
 
     caseReady: {
       entry: assign({
-        current_step: 'case_ready',
+        current_step: 'case_ready'
       }),
       
       on: {
@@ -144,7 +144,7 @@ export const caseWorkflowMachine = createMachine({
           actions: assign({
             progress: ({ context }) => ({
               ...context.progress,
-              current_action: 'Uploading document...',
+              current_action: 'Uploading document...'
             })
           })
         },
@@ -155,7 +155,7 @@ export const caseWorkflowMachine = createMachine({
         },
         
         REQUEST_AI_ASSISTANCE: {
-          target: 'providingAssistance',
+          target: 'providingAssistance'
         }
       }
     },
@@ -178,7 +178,7 @@ export const caseWorkflowMachine = createMachine({
             context: {
               user_id,
               case_id,
-              priority: 'normal',
+              priority: 'normal'
             }
           });
 
@@ -209,7 +209,7 @@ export const caseWorkflowMachine = createMachine({
               ...context.progress,
               completed_steps: Math.min(context.progress.completed_steps + 1, context.progress.total_steps),
               current_action: 'Document uploaded, processing...'
-            ,})
+            })
           })
         },
         
@@ -249,7 +249,7 @@ export const caseWorkflowMachine = createMachine({
               context: {
                 user_id,
                 case_id,
-                priority: 'normal',
+                priority: 'normal'
               }
             });
           }
@@ -264,7 +264,7 @@ export const caseWorkflowMachine = createMachine({
             actions: assign({
               progress: ({ context }) => ({
                 ...context.progress,
-                current_action: 'Document processed',
+                current_action: 'Document processed'
               })
             })
           },
@@ -294,7 +294,7 @@ export const caseWorkflowMachine = createMachine({
         current_step: 'analyzing',
         progress: ({ context }) => ({
           ...context.progress,
-          current_action: 'Analyzing case and documents...',
+          current_action: 'Analyzing case and documents...'
         })
       }),
       
@@ -309,12 +309,12 @@ export const caseWorkflowMachine = createMachine({
               action: 'comprehensive_analysis',
               case_id,
               documents: documents.map(d => d.id),
-              analysis_type: 'full',
+              analysis_type: 'full'
             },
             context: {
               user_id,
               case_id,
-              priority: 'high',
+              priority: 'high'
             }
           });
 
@@ -344,7 +344,7 @@ export const caseWorkflowMachine = createMachine({
               ...context.progress,
               completed_steps: Math.min(context.progress.completed_steps + 1, context.progress.total_steps),
               current_action: 'Analysis complete, reviewing recommendations...'
-            ,})
+            })
           })
         },
         
@@ -359,7 +359,7 @@ export const caseWorkflowMachine = createMachine({
 
     reviewingRecommendations: {
       entry: assign({
-        current_step: 'reviewing_recommendations',
+        current_step: 'reviewing_recommendations'
       }),
       
       on: {
@@ -368,7 +368,7 @@ export const caseWorkflowMachine = createMachine({
           actions: assign({
             progress: ({ context }) => ({
               ...context.progress,
-              current_action: 'Executing recommendation...',
+              current_action: 'Executing recommendation...'
             })
           })
         },
@@ -381,7 +381,7 @@ export const caseWorkflowMachine = createMachine({
         },
         
         REQUEST_AI_ASSISTANCE: {
-          target: 'providingAssistance',
+          target: 'providingAssistance'
         },
         
         NEXT_STEP: {
@@ -414,7 +414,7 @@ export const caseWorkflowMachine = createMachine({
             context: {
               user_id,
               case_id,
-              priority: recommendation.timing_suggestion === 'immediate' ? 'high' : 'normal',
+              priority: recommendation.timing_suggestion === 'immediate' ? 'high' : 'normal'
             }
           });
 
@@ -427,7 +427,7 @@ export const caseWorkflowMachine = createMachine({
             response: JSON.stringify(result),
             metadata: {
               recommendation_id,
-              execution_result: result,
+              execution_result: result
             }
           });
 
@@ -446,7 +446,7 @@ export const caseWorkflowMachine = createMachine({
             progress: ({ context }) => ({
               ...context.progress,
               completed_steps: Math.min(context.progress.completed_steps + 1, context.progress.total_steps),
-              current_action: 'Recommendation executed successfully',
+              current_action: 'Recommendation executed successfully'
             })
           })
         },
@@ -483,7 +483,7 @@ export const caseWorkflowMachine = createMachine({
             context: {
               user_id,
               case_id,
-              priority: 'normal',
+              priority: 'normal'
             }
           });
 
@@ -495,7 +495,7 @@ export const caseWorkflowMachine = createMachine({
           actions: assign({
             progress: ({ context }) => ({
               ...context.progress,
-              current_action: 'AI assistance provided',
+              current_action: 'AI assistance provided'
             })
           })
         },
@@ -516,7 +516,7 @@ export const caseWorkflowMachine = createMachine({
         progress: ({ context }) => ({
           ...context.progress,
           completed_steps: context.progress.total_steps,
-          current_action: 'Workflow completed successfully',
+          current_action: 'Workflow completed successfully'
         })
       })
     },
@@ -526,7 +526,7 @@ export const caseWorkflowMachine = createMachine({
         RETRY: {
           target: 'idle',
           actions: assign({
-            error_message: undefined,
+            error_message: undefined
           })
         },
         
@@ -543,7 +543,7 @@ export const caseWorkflowMachine = createMachine({
             progress: {
               total_steps: 6,
               completed_steps: 0,
-              current_action: 'Ready to start',
+              current_action: 'Ready to start'
             }
           })
         }
@@ -558,7 +558,7 @@ export const caseWorkflowMachine = createMachine({
         settings: ({ context, event }) => ({
           ...context.settings,
           ...event.settings
-        ,})
+        })
       })
     }
   }

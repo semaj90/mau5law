@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
       entities: (result as { entities?: any; processingTime?: any; modelUsed?: any }).entities,
       processingTime: (result as { entities?: any; processingTime?: any; modelUsed?: any }).processingTime,
       modelUsed: (result as { entities?: any; processingTime?: any; modelUsed?: any }).modelUsed,
-      totalTime: Date.now() - startTime,
+      totalTime: Date.now() - startTime
     });
     
   } catch (error: any) {
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ 
         success: false, 
         error: 'Entity extraction failed', 
-        details: error.message ,
+        details: error.message 
       },)
       { status: 500 }
     );

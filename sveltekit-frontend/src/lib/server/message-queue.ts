@@ -6,7 +6,7 @@ interface QueueMessage {
   data: any;
   timestamp: number;
   attempts: number;
-  maxAttempts: number;,
+  maxAttempts: number;
 }
 
 interface QueueOptions {
@@ -38,7 +38,7 @@ class InMemoryQueue extends EventEmitter {
       data: typeof data === 'string' ? JSON.parse(data) : data,
       timestamp: Date.now(),
       attempts: 0,
-      maxAttempts: this.options.maxRetries || 3,
+      maxAttempts: this.options.maxRetries || 3
     };
 
     if (!this.messages.has(queueName)) {
@@ -57,7 +57,7 @@ class InMemoryQueue extends EventEmitter {
       data: typeof data === 'string' ? JSON.parse(data) : data,
       timestamp: Date.now(),
       attempts: 0,
-      maxAttempts: this.options.maxRetries || 3,
+      maxAttempts: this.options.maxRetries || 3
     };
 
     if (!this.messages.has(queueName)) {
@@ -202,7 +202,7 @@ class InMemoryQueue extends EventEmitter {
 const messageQueue = new InMemoryQueue({
   maxRetries: 3,
   retryDelay: 2000,
-  concurrency: 10,
+  concurrency: 10
 });
 
 // Redis-compatible interface
@@ -226,7 +226,7 @@ export const cache = {
 
   async close(): Promise<void> {
     await messageQueue.close();
-  },
+  }
 };
 
 // RabbitMQ-compatible interface
@@ -241,7 +241,7 @@ export const rabbit = {
 
   async close(): Promise<void> {
     await messageQueue.close();
-  },
+  }
 };
 
 // Enhanced message queue with workflow support;
@@ -253,7 +253,7 @@ export class WorkflowQueue extends InMemoryQueue {
       id: workflowId,
       state: initialState,
       history: [{ state: initialState, timestamp: Date.now() }],
-      status: 'active',
+      status: 'active'
     });
 
     await this.rpush(
@@ -261,7 +261,7 @@ export class WorkflowQueue extends InMemoryQueue {
       JSON.stringify({
         type: 'workflow_start',
         workflowId,
-        state: initialState,
+        state: initialState
       })
     );
   }
@@ -277,7 +277,7 @@ export class WorkflowQueue extends InMemoryQueue {
         JSON.stringify({
           type: 'workflow_update',
           workflowId,
-          state: newState,
+          state: newState
         })
       );
     }

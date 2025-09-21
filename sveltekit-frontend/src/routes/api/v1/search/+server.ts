@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!query) {
       return json({
         error: 'Query parameter is required',
-        status: 'error',
+        status: 'error'
       }, { status: 400 });
     }
 
@@ -47,16 +47,16 @@ export const POST: RequestHandler = async ({ request }) => {
         collections,
         embedding: queryEmbedding,
         dataset_size: await estimateDatasetSize(collections, filters),
-        has_filters: Object.keys(filters).length > 0,
+        has_filters: Object.keys(filters).length > 0
       },
       context: {
         user_id,
         case_id,
-        priority: 'normal' as const,
+        priority: 'normal' as const
       },
       performance_requirements: {
         max_latency_ms: 2000,
-        accuracy_threshold: threshold,
+        accuracy_threshold: threshold
       }
     };
 
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
           latency_ms: Date.now() - startTime,
           cached: (response as { _metadata?: any })._metadata?.cached,
           threshold_used: threshold,
-          collections_searched: collections,
+          collections_searched: collections
         },
         suggestions: await generateSearchSuggestions(query, finalResults.results || [])
       }
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       error: 'Search processing failed',
       details: error.message,
-      status: 'error',
+      status: 'error'
     }, { status: 500 });
   }
 };
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       error: 'Search request failed',
-      details: error.message,
+      details: error.message
     }, { status: 500 });
   }
 };
@@ -215,7 +215,7 @@ async function performHybridSearch(
           collection: collection as any,
           filters,
           limit: Math.ceil(limit / collections.length),
-          scoreThreshold: threshold,
+          scoreThreshold: threshold
         })
       );
     }
@@ -273,7 +273,7 @@ async function performTextSearch(query: string, filters: any, limit: number): Pr
         title: doc.title,
         content_preview: doc.content?.substring(0, 200),
         score: 0.5, // Default score for text search
-        source: 'text_search',
+        source: 'text_search'
       })
     };
     
@@ -319,7 +319,7 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
     metadata: {
       hybrid: true,
       sources_combined: results.length,
-      total_results: combinedResults.length,
+      total_results: combinedResults.length
     }
   };
 }
@@ -347,7 +347,7 @@ function extractCommonTerms(results: any[]): string[] {
   
   for (const result of results) {
     const text = ((result as { status?: any; value?: any; title?: any; content_preview?: any }).title + ' ' + ((result as { status?: any; value?: any; title?: any; content_preview?: any }).content_preview || '')).toLowerCase();
-    const words = text.match(/\b\w{4,}\b/g) || [];
+    const words = text.match(/\b\w{4}\b/g) || [];
     
     for (const word of words) {
       termCounts.set(word, (termCounts.get(word) || 0) + 1);

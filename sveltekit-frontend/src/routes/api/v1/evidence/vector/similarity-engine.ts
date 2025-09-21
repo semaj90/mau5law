@@ -16,7 +16,7 @@ export interface PerformSimilaritySearchArgs {
 interface ClusterResult {
   evidenceIds: string[];
   coherenceScore: number; // 0..1
-  themes: string[];,
+  themes: string[];
 }
 
 interface SimilaritySearchResult {
@@ -51,7 +51,7 @@ export class AdvancedSimilarityEngine {
         clusters.push({
           evidenceIds: slice,
             coherenceScore: coherence,
-          themes: deriveThemes(slice),
+          themes: deriveThemes(slice)
         });
       }
     }

@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         libraries,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         topics,
         library,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
     
@@ -83,9 +83,9 @@ export const GET: RequestHandler = async ({ url }) => {
         fetch: 'POST /api/context7/docs - Fetch documentation from Context7',
         search: 'POST /api/context7/docs?action=search - Search documentation',
         libraries: 'GET /api/context7/docs?action=libraries - List libraries',
-        topics: 'GET /api/context7/docs?action=topics - List topics',
+        topics: 'GET /api/context7/docs?action=topics - List topics'
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -165,7 +165,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
             context7CompatibleLibraryID: library.id,
             topic: req.topic,
             tokens: 15000,
-            format: 'markdown',
+            format: 'markdown'
           }
         })
       });
@@ -191,7 +191,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
       action: 'fetch',
       results,
       count: results.length,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
@@ -205,7 +205,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
     if (!req.query) {
       return json({
           success: false,
-          error: 'Query parameter is required for search',
+          error: 'Query parameter is required for search'
         },)
         { status: 400 }
       );
@@ -223,7 +223,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       library: req.library,
       topic: req.topic,
       limit: req.limit || 10,
-      threshold: 0.7,
+      threshold: 0.7
     };
     
     const response = await fetch(searchEndpoint, {
@@ -232,7 +232,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify(searchRequest),
+      body: JSON.stringify(searchRequest)
     });
     
     if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -268,7 +268,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       count: searchResults.count || searchResults.length,
       memory_context: memoryContext,
       service: req.useEnhancedRAG ? 'enhanced-rag' : 'go-rag',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
@@ -297,7 +297,7 @@ async function listDocumentation(): Promise<Response> {
       libraries,
       topics,
       health,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {

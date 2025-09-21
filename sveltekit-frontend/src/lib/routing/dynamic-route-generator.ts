@@ -32,7 +32,7 @@ export interface GeneratedRoute {
     tags: string[];
     preload: boolean;
     ssr: boolean;
-    hydrate: boolean;,
+    hydrate: boolean;
   };
 }
 
@@ -60,7 +60,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/demo/+layout.svelte',
       preload: true,
       ssr: true,
-      hydrate: true,
+      hydrate: true
     });
 
     // AI route pattern;
@@ -71,7 +71,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/ai/+layout.svelte',
       preload: true,
       ssr: false,
-      hydrate: true,
+      hydrate: true
     });
 
     // Legal route pattern;
@@ -82,7 +82,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/legal/+layout.svelte',
       preload: true,
       ssr: true,
-      hydrate: true,
+      hydrate: true
     });
 
     // Admin route pattern;
@@ -93,7 +93,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/admin/+layout.svelte',
       preload: false,
       ssr: true,
-      hydrate: true,
+      hydrate: true
     });
 
     // Dev tools pattern;
@@ -104,7 +104,7 @@ export class DynamicRouteGenerator {
       layout: 'routes/dev/+layout.svelte',
       preload: false,
       ssr: false,
-      hydrate: true,
+      hydrate: true
     });
   }
 
@@ -137,7 +137,7 @@ export class DynamicRouteGenerator {
         tags: routeConfig.tags,
         preload: config?.preload ?? true,
         ssr: config?.ssr ?? true,
-        hydrate: config?.hydrate ?? true,
+        hydrate: config?.hydrate ?? true
       }
     };
   }
@@ -191,7 +191,7 @@ export class DynamicRouteGenerator {
         
         params[name] = {
           optional: isOptional,
-          type: 'string',
+          type: 'string'
         };
       });
     }
@@ -237,7 +237,7 @@ export class DynamicRouteGenerator {
         tags: ['dynamic'],
         preload: config.preload!,
         ssr: config.ssr!,
-        hydrate: config.hydrate!,
+        hydrate: config.hydrate!
       }
     };
 
@@ -306,7 +306,7 @@ export class DynamicRouteGenerator {
         component: route.component,
         layout: route.layout,
         params: route.params,
-        metadata: route.metadata,
+        metadata: route.metadata
       };
     }
     
@@ -418,7 +418,7 @@ export function createDynamicRouteHandler(route: GeneratedRoute) {
     return {
       route: route,
       params: params,
-      metadata: route.metadata,
+      metadata: route.metadata
     };
   };
 }

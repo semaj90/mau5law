@@ -9,7 +9,7 @@ export interface AIAnalysisContext {
   context: {
     caseId?: string;
     documentIds: string[];
-    analysisType: 'summary' | 'recommendation' | 'risk-assessment' | 'precedent-analysis';,
+    analysisType: 'summary' | 'recommendation' | 'risk-assessment' | 'precedent-analysis';
   };
   options: {
     includeReferences: boolean;
@@ -30,7 +30,7 @@ export interface AIAnalysisContext {
   confidence: number;
   isStreaming: boolean;
   validationErrors: Record<string, string[]>;
-  error: string | null;,
+  error: string | null;
 }
 
 export const aiAnalysisMachine = createMachine({
@@ -50,12 +50,12 @@ export const aiAnalysisMachine = createMachine({
     prompt: '',
     context: {
       documentIds: [],
-      analysisType: 'summary',
+      analysisType: 'summary'
     },
     options: {
       includeReferences: true,
       maxTokens: 1000,
-      temperature: 0.7,
+      temperature: 0.7
     },
     analysisResults: Record<string, any>,
     processingTime: 0,
@@ -63,7 +63,7 @@ export const aiAnalysisMachine = createMachine({
     confidence: 0,
     isStreaming: false,
     validationErrors: Record<string, any>,
-    error: null,
+    error: null
   },
   states: {
     idle: {
@@ -71,7 +71,7 @@ export const aiAnalysisMachine = createMachine({
         UPDATE_PROMPT: {
           actions: assign({
             prompt: ({ event }) => event.prompt,
-            error: null,
+            error: null
           })
         },
         UPDATE_OPTIONS: {
@@ -79,10 +79,10 @@ export const aiAnalysisMachine = createMachine({
             options: ({ context, event }) => ({
               ...context.options,
               ...event.options
-            ,})
+            })
           })
         },
-        START_ANALYSIS: 'validating',
+        START_ANALYSIS: 'validating'
       }
     },
     validating: {
@@ -123,7 +123,7 @@ export const aiAnalysisMachine = createMachine({
           target: 'analyzing',
           actions: assign({
             validationErrors: Record<string, any>,
-            error: null,
+            error: null
           })
         },
         onError: {
@@ -133,7 +133,7 @@ export const aiAnalysisMachine = createMachine({
               const error = event.error as any;
               return error?.validationErrors || {};
             },
-            error: 'Validation failed',
+            error: 'Validation failed'
           })
         }
       }
@@ -142,7 +142,7 @@ export const aiAnalysisMachine = createMachine({
       entry: assign({
         isStreaming: true,
         analysisResults: Record<string, any>,
-        processingTime: 0,
+        processingTime: 0
       }),
       invoke: {
         id: 'performAIAnalysis',
@@ -156,7 +156,7 @@ export const aiAnalysisMachine = createMachine({
             prompt: context.prompt,
             context: context.context,
             options: context.options,
-            streaming: true,
+            streaming: true
           };
 
           // Call AI analysis API;
@@ -165,7 +165,7 @@ export const aiAnalysisMachine = createMachine({
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(analysisRequest),
+            body: JSON.stringify(analysisRequest)
           });
 
           if (!response.ok) {
@@ -213,7 +213,7 @@ export const aiAnalysisMachine = createMachine({
             analysisResults,
             processingTime,
             tokensUsed,
-            confidence: (analysisResults as any)?.confidence || 0.8,
+            confidence: (analysisResults as any)?.confidence || 0.8
           };
         }),
         onDone: {
@@ -224,7 +224,7 @@ export const aiAnalysisMachine = createMachine({
             tokensUsed: ({ event }) => event.output.tokensUsed,
             confidence: ({ event }) => event.output.confidence,
             isStreaming: false,
-            error: null,
+            error: null
           })
         },
         onError: {
@@ -234,7 +234,7 @@ export const aiAnalysisMachine = createMachine({
               const error = event.error as any;
               return error?.message || 'Analysis failed';
             },
-            isStreaming: false,
+            isStreaming: false
           })
         }
       },
@@ -244,7 +244,7 @@ export const aiAnalysisMachine = createMachine({
             // Handle streaming chunks if needed;
             analysisResults: ({ context, event }) => ({
               ...context.analysisResults,
-              streamingText: ((context.analysisResults as any).streamingText || '') + (event as any).chunk,
+              streamingText: ((context.analysisResults as any).streamingText || '') + (event as any).chunk
             })
           })
         }
@@ -266,7 +266,7 @@ export const aiAnalysisMachine = createMachine({
             validationErrors: Record<string, any>
           })
         },
-        START_ANALYSIS: 'validating',
+        START_ANALYSIS: 'validating'
       }
     },
     error: {
@@ -275,7 +275,7 @@ export const aiAnalysisMachine = createMachine({
         RESET: {
           target: 'idle',
           actions: assign({
-            error: null,
+            error: null
           })
         }
       }

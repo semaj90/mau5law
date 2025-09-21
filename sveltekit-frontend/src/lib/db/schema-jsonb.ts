@@ -74,7 +74,7 @@ export interface SummaryData {
   recommendations: Recommendation[];
   risk_assessment: RiskAssessment;
   confidence_score: number;
-  processing_metrics: ProcessingMetrics;,
+  processing_metrics: ProcessingMetrics;
 }
 
 export interface LegalIssue {
@@ -94,7 +94,7 @@ export interface Recommendation {
 export interface RiskAssessment {
   overall_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   risk_factors: Array<any>;
-  mitigation: string[];,
+  mitigation: string[];
 }
 
 export interface ProcessingMetrics {
@@ -139,7 +139,7 @@ export interface UserPreferences {
   };
   api_limits: {
     daily_quota: number;
-    rate_limit_per_minute: number;,
+    rate_limit_per_minute: number;
   };
 }
 

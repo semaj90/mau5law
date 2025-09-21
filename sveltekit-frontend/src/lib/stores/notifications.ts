@@ -44,7 +44,7 @@ function createNotificationStore() {
       closable: options.closable ?? true,
       icon: options.icon,
       position: options.position || 'top-right',
-      showProgress: options.showProgress ?? true,
+      showProgress: options.showProgress ?? true
     };
 
     update(notifications => [...notifications, notification]);
@@ -81,7 +81,7 @@ function createNotificationStore() {
       ...options, 
       type: 'system',
       persistent: options.persistent ?? true,
-      position: options.position || 'center',
+      position: options.position || 'center'
     });
   }
 
@@ -92,7 +92,7 @@ function createNotificationStore() {
       type: 'info',
       title,
       icon: '📋',
-      duration: 7000,
+      duration: 7000
     });
   }
 
@@ -102,7 +102,7 @@ function createNotificationStore() {
       type: 'success',
       title,
       icon: '🔍',
-      duration: 5000,
+      duration: 5000
     });
   }
 
@@ -112,7 +112,7 @@ function createNotificationStore() {
       type: 'success',
       title: 'AI Analysis Complete',
       icon: '🤖',
-      duration: 8000,
+      duration: 8000
     });
   }
 
@@ -122,7 +122,7 @@ function createNotificationStore() {
       title: 'Security Alert',
       icon: '🚨',
       persistent: true,
-      position: 'center',
+      position: 'center'
     });
   }
 
@@ -132,7 +132,7 @@ function createNotificationStore() {
       title: 'System Status',
       icon: isOnline ? '🟢' : '🔴',
       persistent: !isOnline,
-      position: 'top-left',
+      position: 'top-left'
     });
   }
 

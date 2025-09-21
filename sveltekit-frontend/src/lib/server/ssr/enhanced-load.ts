@@ -35,7 +35,7 @@ export interface SSRMetrics {
   loadTime: number;
   dbQueries: number;
   cacheHits: number;
-  errors: string[];,
+  errors: string[];
 }
 
 // Enhanced cache with TTL;
@@ -46,7 +46,7 @@ class SSRCache {
   static set(key: string, data: any, ttl = SSRCache.DEFAULT_TTL): void {
     this.cache.set(key, {
       data,
-      expires: Date.now() + ttl,
+      expires: Date.now() + ttl
     });
   }
 
@@ -70,7 +70,7 @@ class SSRCache {
     return {
       size: this.cache.size,
       entries: Array.from(this.cache.values()).filter((entry) => Date.now() <= entry.expires)
-        .length,
+        .length
     };
   }
 
@@ -102,7 +102,7 @@ export const createEnhancedLayoutLoad = () => {
           session,
           user,
           hydrationContext: createHydrationContext(url, request, user),
-          _metrics: { ...metrics, loadTime: Date.now() - startTime },
+          _metrics: { ...metrics, loadTime: Date.now() - startTime }
         };
       }
 
@@ -124,13 +124,13 @@ export const createEnhancedLayoutLoad = () => {
           total: 0,
           open: 0,
           investigating: 0,
-          closed: 0,
+          closed: 0
         },
         systemStatus: {
           apiHealthy: true,
           pgvectorEnabled: dbHealth.pgvectorEnabled,
-          aiServicesOnline: false,
-        },
+          aiServicesOnline: false
+        }
       };
 
       // Load user-specific data if authenticated;
@@ -140,7 +140,7 @@ export const createEnhancedLayoutLoad = () => {
           const { cases: userCases } = await CaseOperations.search({
             assignedTo: user.id,
             limit: 10,
-            offset: 0,
+            offset: 0
           });
           metrics.dbQueries++;
 
@@ -154,7 +154,7 @@ export const createEnhancedLayoutLoad = () => {
           // Get recent evidence;
           const { evidence: recentEvidence } = await EvidenceOperations.search({
             limit: 5,
-            offset: 0,
+            offset: 0
           });
           metrics.dbQueries++;
           layoutData.recentEvidence = recentEvidence;
@@ -184,7 +184,7 @@ export const createEnhancedLayoutLoad = () => {
         session,
         user,
         hydrationContext: createHydrationContext(url, request, user),
-        _metrics: metrics,
+        _metrics: metrics
       };
     } catch (error: any) {
       console.error('Layout load error:', error);
@@ -199,7 +199,7 @@ export const createEnhancedLayoutLoad = () => {
           connected: false,
           pgvectorEnabled: false,
           queryTime: 0,
-          errors: ['Database unavailable'],
+          errors: ['Database unavailable']
         },
         userCases: [],
         recentEvidence: [],
@@ -207,7 +207,7 @@ export const createEnhancedLayoutLoad = () => {
         systemStatus: { apiHealthy: false, pgvectorEnabled: false, aiServicesOnline: false },
         hydrationContext: createHydrationContext(url, request, locals.user),
         _metrics: metrics,
-        _error: error instanceof Error ? error.message: 'Unknown error',
+        _error: error instanceof Error ? error.message: 'Unknown error'
       };
     }
   };
@@ -243,7 +243,7 @@ export const createEnhancedCasePageLoad = () => {
         return {
           ...parentData,
           ...cachedData,
-          _metrics: metrics,
+          _metrics: metrics
         };
       }
 
@@ -259,7 +259,7 @@ export const createEnhancedCasePageLoad = () => {
       const { evidence: caseEvidence } = await EvidenceOperations.search({
         caseId,
         limit: 50,
-        offset: 0,
+        offset: 0
       });
       metrics.dbQueries++;
 
@@ -267,7 +267,7 @@ export const createEnhancedCasePageLoad = () => {
         case: caseWithRelations,
         evidence: caseEvidence,
         canEdit:
-          caseWithRelations.createdBy === user.id || caseWithRelations.leadProsecutor === user.id,
+          caseWithRelations.createdBy === user.id || caseWithRelations.leadProsecutor === user.id
       };
 
       // Cache the case data
@@ -278,7 +278,7 @@ export const createEnhancedCasePageLoad = () => {
       return {
         ...parentData,
         ...caseData,
-        _metrics: metrics,
+        _metrics: metrics
       };
     } catch (error: any) {
       console.error('Case page load error:', error);
@@ -302,14 +302,14 @@ function createHydrationContext(url: URL, request: Request, user: User | null) {
       phi: 1.618,
       containerWidth: 1200,
       mainContentRatio: 0.618,
-      sidebarRatio: 0.382,
+      sidebarRatio: 0.382
     },
     // AI system status for client hydration;
     aiSystemStatus: {
       localLLMEnabled: true,
       ragEnabled: true,
       vectorSearchEnabled: true,
-      streamingEnabled: true,
+      streamingEnabled: true
     },
     // Theme and UI preferences;
     uiPreferences: {
@@ -318,11 +318,11 @@ function createHydrationContext(url: URL, request: Request, user: User | null) {
       accessibility: {
         highContrast: false,
         reducedMotion: false,
-        screenReader: false,
+        screenReader: false
       }
     },
     // Cache statistics for debugging
-    cacheStats: SSRCache.getStats(),
+    cacheStats: SSRCache.getStats()
   };
 }
 
@@ -335,7 +335,7 @@ async function getCaseStatistics(userId: string): Promise<any> {
       total: 15,
       open: 8,
       investigating: 4,
-      closed: 3,
+      closed: 3
     };
   } catch (error: any) {
     console.error('Error getting case statistics:', error);
@@ -343,7 +343,7 @@ async function getCaseStatistics(userId: string): Promise<any> {
       total: 0,
       open: 0,
       investigating: 0,
-      closed: 0,
+      closed: 0
     };
   }
 }

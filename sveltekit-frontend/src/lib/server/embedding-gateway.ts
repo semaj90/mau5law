@@ -10,7 +10,7 @@ export interface EmbedGatewayOptions {
 export interface EmbedGatewayResult {
   embedding: number[];
   backend: BackendId;
-  model: string;,
+  model: string;
 }
 
 // Backend-agnostic embedding gateway: tries New Embedder -> FastAPI -> vLLM -> Ollama -> Go
@@ -35,7 +35,7 @@ export async function getEmbeddingViaGate(
       return {
         embedding,
         backend: status.activeService === 'local' ? 'ollama' : ('fastapi' as BackendId),
-        model,
+        model
       };
     }
   } catch (error) {
@@ -107,7 +107,7 @@ export async function getEmbeddingViaGate(
     const goResp = await fetchFn('/api/tensor', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(goReq),
+      body: JSON.stringify(goReq)
     });
     if (goResp.ok) {
       const goJson = await goResp.json();

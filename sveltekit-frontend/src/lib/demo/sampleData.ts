@@ -13,7 +13,7 @@ export interface DemoCase {
   createdAt: Date;
   updatedAt: Date;
   assignedTo?: string;
-  tags: string[];,
+  tags: string[];
 }
 
 export interface DemoEvidence {
@@ -32,7 +32,7 @@ export interface DemoEvidence {
   content: string;
   uploadedAt: Date;
   fileSize: number;
-  tags: string[];,
+  tags: string[];
 }
 
 export interface DemoPerson {
@@ -44,7 +44,7 @@ export interface DemoPerson {
     email?: string;
     address?: string;
   };
-  notes: string;,
+  notes: string;
 }
 
 class DemoDataGenerator {
@@ -62,36 +62,36 @@ class DemoDataGenerator {
         description:
           "Corporate embezzlement investigation involving $2.3M in misappropriated funds. Multiple financial institutions affected.",
         priority: "high" as const,
-        tags: ["embezzlement", "corporate", "financial-crimes"],
+        tags: ["embezzlement", "corporate", "financial-crimes"]
       },
       {
         title: "People v. Martinez - Assault Case",
         description:
           "Aggravated assault incident outside downtown restaurant. Multiple witnesses, security footage available.",
         priority: "medium" as const,
-        tags: ["assault", "public-incident", "witnesses"],
+        tags: ["assault", "public-incident", "witnesses"]
       },
       {
         title: "State v. Chen - Identity Theft Ring",
         description:
           "Multi-state identity theft operation targeting elderly victims. Complex digital evidence trail.",
         priority: "urgent" as const,
-        tags: ["identity-theft", "cybercrime", "elderly-victims"],
+        tags: ["identity-theft", "cybercrime", "elderly-victims"]
       },
       {
         title: "People v. Anderson - DUI Vehicular Homicide",
         description:
           "Fatal traffic collision involving suspected DUI. Blood analysis and accident reconstruction required.",
         priority: "high" as const,
-        tags: ["dui", "vehicular-homicide", "traffic-fatality"],
+        tags: ["dui", "vehicular-homicide", "traffic-fatality"]
       },
       {
         title: "State v. Williams - Drug Distribution",
         description:
           "Large-scale narcotics distribution network. Surveillance operations and controlled purchases documented.",
         priority: "medium" as const,
-        tags: ["drug-crimes", "distribution", "surveillance"],
-      },
+        tags: ["drug-crimes", "distribution", "surveillance"]
+      }
     ];
 
     return Array.from({ length: count }, (_, i) => {
@@ -112,7 +112,7 @@ class DemoDataGenerator {
         ),
         assignedTo: ["Detective Smith", "Prosecutor Jones", "Officer Brown"][
           Math.floor(Math.random() * 3)
-        ],
+        ]
       };
     });
   }
@@ -168,7 +168,7 @@ This case requires further investigation to identify the fleeing suspect and det
 Report submitted by: Officer Martinez
 Supervisor Review: Sergeant Johnson
 Date: ${new Date().toLocaleDateString()}`,
-        tags: ["initial-report", "arrest", "evidence-collection"],
+        tags: ["initial-report", "arrest", "evidence-collection"]
       },
       {
         title: "Witness Statement - Jane Smith",
@@ -212,7 +212,7 @@ This statement was given voluntarily. I have read this statement, and it is true
 Witness Signature: _________________ Date: _______,
 Officer: Detective Brown, Badge #3451
 Case Status: Open Investigation`,
-        tags: ["witness", "drug-transaction", "firsthand-account"],
+        tags: ["witness", "drug-transaction", "firsthand-account"]
       },
       {
         title: "Financial Records Analysis",
@@ -272,7 +272,7 @@ This analysis supports charges of money laundering in addition to narcotics traf
 Prepared by: Sarah Chen, CPA, CFE
 Reviewed by: Supervisor Johnson
 Distribution: Prosecutor Williams, Detective Brown`,
-        tags: ["financial-crimes", "money-laundering", "forensic-accounting"],
+        tags: ["financial-crimes", "money-laundering", "forensic-accounting"]
       },
       {
         title: "Digital Forensics Report",
@@ -363,8 +363,8 @@ ATTACHMENTS:
 Report Prepared: Maria Rodriguez, Digital Forensics Specialist
 Quality Review: Supervisor Chen
 Legal Review: Prosecutor Williams`,
-        tags: ["digital-forensics", "mobile-device", "recovered-data"],
-      },
+        tags: ["digital-forensics", "mobile-device", "recovered-data"]
+      }
     ];
 
     return Array.from({ length: count }, (_, i) => {
@@ -383,7 +383,7 @@ Legal Review: Prosecutor Williams`,
         ] as any,
         uploadedAt,
         fileSize: Math.floor(Math.random() * 5000000) + 10000, // 10KB to 5MB
-        tags: [...template.tags, "demo-data"],
+        tags: [...template.tags, "demo-data"]
       };
     });
   }
@@ -398,10 +398,10 @@ Legal Review: Prosecutor Williams`,
         role: "suspect" as const,
         contactInfo: {
           phone: "(555) 234-5678",
-          address: "742 Elm Street, Apt 2B",
+          address: "742 Elm Street, Apt 2B"
         },
         notes:
-          "Primary suspect in narcotics investigation. Known associates include several individuals with prior drug convictions.",
+          "Primary suspect in narcotics investigation. Known associates include several individuals with prior drug convictions."
       },
       {
         name: "Jane Elizabeth Smith",
@@ -409,49 +409,49 @@ Legal Review: Prosecutor Williams`,
         contactInfo: {
           phone: "(555) 123-4567",
           email: "jane.smith@email.com",
-          address: "1427 Main Street, Apt 3B",
+          address: "1427 Main Street, Apt 3B"
         },
         notes:
-          "Key eyewitness to alleged drug transaction. Cooperative and credible witness.",
+          "Key eyewitness to alleged drug transaction. Cooperative and credible witness."
       },
       {
         name: "Officer Robert Martinez",
         role: "officer" as const,
         contactInfo: {
-          phone: "(555) 987-6543",
+          phone: "(555) 987-6543"
         },
         notes:
-          "Arresting officer. Badge #1247. 8 years experience in narcotics enforcement.",
+          "Arresting officer. Badge #1247. 8 years experience in narcotics enforcement."
       },
       {
         name: "Detective Sarah Brown",
         role: "officer" as const,
         contactInfo: {
-          phone: "(555) 555-0123",
+          phone: "(555) 555-0123"
         },
         notes:
-          "Lead detective on case. Conducted follow-up interviews and evidence analysis.",
+          "Lead detective on case. Conducted follow-up interviews and evidence analysis."
       },
       {
         name: "Dr. Michael Chen",
         role: "expert" as const,
         contactInfo: {
           phone: "(555) 444-5555",
-          email: "mchen@forensicslab.gov",
+          email: "mchen@forensicslab.gov"
         },
         notes:
-          "Forensic chemist. Analyzed suspected narcotics and provided expert testimony.",
+          "Forensic chemist. Analyzed suspected narcotics and provided expert testimony."
       },
       {
         name: "Maria Rodriguez",
         role: "expert" as const,
         contactInfo: {
           phone: "(555) 333-7777",
-          email: "mrodriguez@digitalforensics.gov",
+          email: "mrodriguez@digitalforensics.gov"
         },
         notes:
-          "Digital forensics specialist. Examined mobile devices and recovered deleted data.",
-      },
+          "Digital forensics specialist. Examined mobile devices and recovered deleted data."
+      }
     ];
 
     return Array.from({ length: count }, (_, i) => {
@@ -459,7 +459,7 @@ Legal Review: Prosecutor Williams`,
 
       return {
         id: `PER-${caseId}-${(this.personCounter++).toString().padStart(3, "0")}`,
-        ...template,
+        ...template
       };
     });
   }
@@ -470,7 +470,7 @@ Legal Review: Prosecutor Williams`,
   generateCompleteCase(): {
     case: DemoCase;
     evidence: DemoEvidence[];
-    persons: DemoPerson[];,
+    persons: DemoPerson[];
   } {
     const cases = this.generateCases(1);
     const caseData = cases[0];
@@ -478,7 +478,7 @@ Legal Review: Prosecutor Williams`,
     return {
       case: caseData,
       evidence: this.generateEvidence(caseData.id, 4),
-      persons: this.generatePersons(caseData.id, 4),
+      persons: this.generatePersons(caseData.id, 4)
     };
   }
 
@@ -497,42 +497,42 @@ Legal Review: Prosecutor Williams`,
             "Drug transaction observed by witness Jane Smith",
             "Suspect John Doe arrested with narcotics and cash",
             "Co-conspirator fled scene on foot",
-            "Physical evidence secured in police custody",
+            "Physical evidence secured in police custody"
           ],
           timelineEvents: [;
             {
               date: "2024-01-15",
               time: "14:30",
-              event: "Initial drug transaction observed",
+              event: "Initial drug transaction observed"
             },
             {
               date: "2024-01-15",
               time: "14:35",
-              event: "Police arrived on scene",
+              event: "Police arrived on scene"
             },
             {
               date: "2024-01-15",
               time: "14:40",
-              event: "Suspect arrested, co-conspirator fled",
+              event: "Suspect arrested, co-conspirator fled"
             },
             {
               date: "2024-01-15",
               time: "15:00",
-              event: "Evidence secured and processed",
-            },
+              event: "Evidence secured and processed"
+            }
           ],
           evidenceItems: [
             "$847 in cash",
             "Suspected cocaine (field tested positive)",
             "Digital scale",
-            "Multiple cell phones",
+            "Multiple cell phones"
           ],
           concerns: [
             "Co-conspirator still at large",
             "Need laboratory confirmation of narcotics",
-            "Require additional witness interviews",
+            "Require additional witness interviews"
           ],
-          confidence: 0.92,
+          confidence: 0.92
         },
         persons_extracted: {
           persons: [;
@@ -542,12 +542,12 @@ Legal Review: Prosecutor Williams`,
               aliases: ["Johnny D"],
               role: "suspect",
               contactInfo: {
-                address: "742 Elm Street, Apt 2B",
+                address: "742 Elm Street, Apt 2B"
               },
               physicalDescription:
                 "Male, Age 34, 5'10\", Brown hair, Blue eyes",
               organizations: [],
-              firstMentioned: "police_report_initial",
+              firstMentioned: "police_report_initial"
             },
             {
               personId: "per_002",
@@ -556,12 +556,12 @@ Legal Review: Prosecutor Williams`,
               role: "witness",
               contactInfo: {
                 phone: "(555) 123-4567",
-                address: "1427 Main Street, Apt 3B",
+                address: "1427 Main Street, Apt 3B"
               },
               physicalDescription: "Female, Age 28",
               organizations: [],
-              firstMentioned: "witness_statement",
-            },
+              firstMentioned: "witness_statement"
+            }
           ],
           relationships: [;
             {
@@ -571,89 +571,89 @@ Legal Review: Prosecutor Williams`,
               description:
                 "Jane Smith witnessed John Doe's alleged criminal activity",
               strength: "strong",
-              evidence: "eyewitness testimony and police report",
-            },
+              evidence: "eyewitness testimony and police report"
+            }
           ],
           summary: {
             totalPersons: 2,
             totalRelationships: 1,
             keyFigures: ["per_001", "per_002"],
-            missingInfo: ["identity of fleeing co-conspirator"],
-          },
+            missingInfo: ["identity of fleeing co-conspirator"]
+          }
         },
         neo4j_updates: {
           cypherQueries: [
             "MERGE (p:Person {name: 'John Michael Doe'}) SET p.age = 34, p.role = 'suspect'",
             "MERGE (p:Person {name: 'Jane Elizabeth Smith'}) SET p.age = 28, p.role = 'witness'",
-            "MATCH (s:Person {name: 'John Michael Doe'}), (w:Person {name: 'Jane Elizabeth Smith'}) MERGE (w)-[:WITNESSED]->(s)",
+            "MATCH (s:Person {name: 'John Michael Doe'}), (w:Person {name: 'Jane Elizabeth Smith'}) MERGE (w)-[:WITNESSED]->(s)"
           ],
           nodesCreated: 2,
           relationshipsCreated: 1,
           conflicts: [],
-          success: true,
+          success: true
         },
         case_synthesis: {
           caseStrength: "strong",
           keyFindings: [
             "Direct eyewitness testimony from credible witness",
             "Physical evidence recovered from suspect",
-            "Suspect cooperative during arrest",
+            "Suspect cooperative during arrest"
           ],
           evidenceAnalysis: {
             strengths: [
               "Eyewitness testimony from Jane Smith",
               "Physical narcotics evidence",
               "Large amount of cash consistent with drug sales",
-              "Digital evidence on seized phones",
+              "Digital evidence on seized phones"
             ],
             weaknesses: [
               "Co-conspirator still unidentified",
               "No direct observation of money exchange by officer",
-              "Field test needs laboratory confirmation",
+              "Field test needs laboratory confirmation"
             ],
             gaps: [
               "Laboratory analysis of suspected narcotics",
               "Digital forensics of seized phones",
-              "Canvas for additional witnesses",
-            ],
+              "Canvas for additional witnesses"
+            ]
           },
           personNetworkAnalysis: {
             centralFigures: ["John Michael Doe"],
             suspiciousConnections: [
-              "Multiple phone numbers suggest larger operation",
+              "Multiple phone numbers suggest larger operation"
             ],
             investigationPriorities: [
               "Identify and apprehend fleeing co-conspirator",
-              "Analyze phone records for additional suspects",
-            ],
+              "Analyze phone records for additional suspects"
+            ]
           },
           legalStrategy: {
             viableCharges: [
               "Possession with Intent to Distribute",
               "Drug Distribution",
-              "Money Laundering",
+              "Money Laundering"
             ],
             evidenceRequirements: [
               "Laboratory confirmation of narcotics",
               "Digital forensics report",
-              "Financial records analysis",
+              "Financial records analysis"
             ],
             risks: [
               "Defense may challenge witness credibility",
-              "Search and seizure issues if warrant improper",
+              "Search and seizure issues if warrant improper"
             ],
             timeline:
-              "Ready for preliminary hearing in 3-4 weeks pending lab results",
+              "Ready for preliminary hearing in 3-4 weeks pending lab results"
           },
           nextSteps: [
             "Submit evidence to laboratory for analysis",
             "Execute search warrant for suspect's residence",
             "Interview additional potential witnesses",
-            "Coordinate with DEA for larger investigation",
+            "Coordinate with DEA for larger investigation"
           ],
-          confidence: 0.87,
-        },
-      },
+          confidence: 0.87
+        }
+      }
     };
   }
 }

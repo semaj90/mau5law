@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
                     last_name: authResponse.profile.lastName,
                     role: authResponse.profile.role || 'user',
                     created_at: new Date(),
-                    updated_at: new Date(),
+                    updated_at: new Date()
                 })
                 .returning();
 
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
             session_context: {
                 quic_auth: true,
                 access_token: authResponse.accessToken,
-                refresh_token: authResponse.refreshToken,
+                refresh_token: authResponse.refreshToken
             }
         });
 
@@ -95,10 +95,10 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
                 email: authResponse.profile?.email,
                 firstName: authResponse.profile?.firstName,
                 lastName: authResponse.profile?.lastName,
-                role: authResponse.profile?.role,
+                role: authResponse.profile?.role
             },
             sessionId: authResponse.sessionId,
-            expiresAt: authResponse.expiresAt,
+            expiresAt: authResponse.expiresAt
         });
     } catch (error) {
         console.error('QUIC login error:', error);
@@ -151,9 +151,9 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress }) => {
                 email: validation.profile?.email,
                 firstName: validation.profile?.firstName,
                 lastName: validation.profile?.lastName,
-                role: validation.profile?.role,
+                role: validation.profile?.role
             },
-            expiresAt: validation.expiresAt,
+            expiresAt: validation.expiresAt
         });
     } catch (error) {
         console.error('QUIC session validation error:', error);

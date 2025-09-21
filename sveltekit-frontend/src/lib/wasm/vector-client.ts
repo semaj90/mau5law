@@ -102,7 +102,7 @@ class VectorWasmClient {
     results: number[];
     usedServer: boolean;
     processingTime: number;
-    chunksProcessed: number;,
+    chunksProcessed: number;
   }> {
     if (!this.isInitialized || !this.wasmModule) {
       throw new Error('WASM module not initialized');
@@ -125,13 +125,13 @@ class VectorWasmClient {
         vectors: vectors.map(v => Array.from(v)),
         algorithm: this.algorithmToNumber(algorithm),
         useCUDA: true,
-        parallel: true,
+        parallel: true
       };
 
       const response = await fetch('/api/v1/vector/similarity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request),
+        body: JSON.stringify(request)
       });
 
       if (!response.ok) {
@@ -180,7 +180,7 @@ class VectorWasmClient {
   ): Promise<{
     embeddings: number[][];
     processingTime: number;
-    tokensProcessed: number;,
+    tokensProcessed: number;
   }> {
     const startTime = performance.now();
 
@@ -192,7 +192,7 @@ class VectorWasmClient {
         model: options.model || 'embeddinggemma:latest',
         chunkSize: options.chunkSize || 512,
         normalize: options.normalize !== false,
-        useCUDA: true,
+        useCUDA: true
       })
     });
 
@@ -206,7 +206,7 @@ class VectorWasmClient {
     return {
       embeddings: data.embeddings,
       processingTime,
-      tokensProcessed: data.performance?.tokensProcessed || 0,
+      tokensProcessed: data.performance?.tokensProcessed || 0
     };
   }
 
@@ -221,7 +221,7 @@ class VectorWasmClient {
   ): Promise<{
     result: number[][];
     processingTime: number;
-    flops: number;,
+    flops: number;
   }> {
     const response = await fetch('/api/v1/vector/matrix', {
       method: 'POST',
@@ -232,7 +232,7 @@ class VectorWasmClient {
         matrixB,
         options: {
           useCUDA: options.useCUDA !== false,
-          parallel: options.parallel !== false,
+          parallel: options.parallel !== false
         }
       })
     });
@@ -246,7 +246,7 @@ class VectorWasmClient {
     return {
       result: data.result,
       processingTime: data.metadata.processingTime,
-      flops: data.metadata.flops || 0,
+      flops: data.metadata.flops || 0
     };
   }
 
@@ -269,7 +269,7 @@ class VectorWasmClient {
       metadata?: any;
     }>;
     totalCount: number;
-    processingTime: number;,
+    processingTime: number;
   }> {
     const response = await fetch('/api/v1/vector/search', {
       method: 'POST',
@@ -281,7 +281,7 @@ class VectorWasmClient {
         includeMetadata: true,
         filters: options.filters || {},
         useCUDA: options.useCUDA !== false,
-        rerank: true,
+        rerank: true
       })
     });
 
@@ -294,7 +294,7 @@ class VectorWasmClient {
     return {
       results: data.results,
       totalCount: data.totalCount,
-      processingTime: data.performance.searchTime,
+      processingTime: data.performance.searchTime
     };
   }
 
@@ -348,13 +348,13 @@ class VectorWasmClient {
       vectorA: Array.from(vectorA),
       vectorB: Array.from(vectorB),
       useCUDA: true,
-      parallel: true,
+      parallel: true
     };
 
     const response = await fetch('/api/v1/vector/similarity', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request),
+      body: JSON.stringify(request)
     });
 
     if (!response.ok) {
@@ -371,7 +371,7 @@ class VectorWasmClient {
       case 'euclidean': return 1;
       case 'dot': return 2;
       case 'manhattan': return 3;
-      default: return 0;,
+      default: return 0;
     }
   }
 
@@ -384,7 +384,7 @@ class VectorWasmClient {
       case 'euclidean': return baseScore * 1.2;
       case 'manhattan': return baseScore * 1.0;
       case 'dot': return baseScore * 0.8; // Simplest operation
-      default: return baseScore;,
+      default: return baseScore;
     }
   }
 
@@ -396,7 +396,7 @@ class VectorWasmClient {
   async benchmark(iterations = 100): Promise<{
     localPerformance: number;
     memoryUsage: number;
-    recommendations: string[];,
+    recommendations: string[];
   }> {
     if (!this.wasmModule) throw new Error('WASM module not initialized');
 

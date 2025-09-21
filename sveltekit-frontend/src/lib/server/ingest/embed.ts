@@ -35,7 +35,7 @@ export interface BatchEmbeddingResult {
     batchSize: number;
     successCount: number;
     failureCount: number;
-    totalProcessingTime: number;,
+    totalProcessingTime: number;
   };
 }
 
@@ -49,7 +49,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
   if (!endpoint) {
     return {
       success: false,
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set',
+      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
     };
   }
 
@@ -65,9 +65,9 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
       },
       body: JSON.stringify({
         mode: 'text',
-        input: inputTexts,
+        input: inputTexts
       }),
-      timeout: 30000 // 30 second timeout,
+      timeout: 30000 // 30 second timeout
     });
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
@@ -86,7 +86,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
           batchSize: inputTexts.length,
           successCount: embeddings.length,
           failureCount: Math.max(0, inputTexts.length - embeddings.length),
-          totalProcessingTime: Date.now() - startTime,
+          totalProcessingTime: Date.now() - startTime
         }
       };
     } else {
@@ -98,14 +98,14 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
           dimensions: embeddings[0]?.length,
           processingTime: Date.now() - startTime,
           inputType: 'text',
-          inputSize: texts.length,
+          inputSize: texts.length
         }
       };
     }
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message: String(error),
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }
@@ -120,7 +120,7 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
   if (!endpoint) {
     return {
       success: false,
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set',
+      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
     };
   }
 
@@ -137,9 +137,9 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
       },
       body: JSON.stringify({
         mode: 'image',
-        input: dataUri,
+        input: dataUri
       }),
-      timeout: 60000 // 60 second timeout for images,
+      timeout: 60000 // 60 second timeout for images
     });
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
@@ -162,13 +162,13 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
         dimensions: embedding.length,
         processingTime: Date.now() - startTime,
         inputType: 'image',
-        inputSize: buffer.length,
+        inputSize: buffer.length
       }
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message: String(error),
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }
@@ -183,7 +183,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
   if (!endpoint) {
     return {
       success: false,
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set',
+      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
     };
   }
 
@@ -201,9 +201,9 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
       },
       body: JSON.stringify({
         mode: 'audio',
-        input: dataUri,
+        input: dataUri
       }),
-      timeout: 90000 // 90 second timeout for audio,
+      timeout: 90000 // 90 second timeout for audio
     });
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
@@ -226,13 +226,13 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
         dimensions: embedding.length,
         processingTime: Date.now() - startTime,
         inputType: 'audio',
-        inputSize: audioBuffer.length,
+        inputSize: audioBuffer.length
       }
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message: String(error),
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }
@@ -290,7 +290,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
         if (failFast) throw error;
         return {
           success: false,
-          error: error instanceof Error ? error.message: String(error),
+          error: error instanceof Error ? error.message: String(error)
         };
       }
     });
@@ -324,7 +324,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
       batchSize: buffers.length,
       successCount: embeddings.length,
       failureCount: errors.length,
-      totalProcessingTime: Date.now() - startTime,
+      totalProcessingTime: Date.now() - startTime
     }
   };
 }
@@ -364,7 +364,7 @@ export async function embedContent(
 
   return {
     success: false,
-    error: `Unsupported content type for embedding: ${contentType}`,
+    error: `Unsupported content type for embedding: ${contentType}`
   };
 }
 
@@ -378,7 +378,7 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
   if (!endpoint) {
     return {
       healthy: false,
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set',
+      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
     };
   }
 
@@ -392,9 +392,9 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
       },
       body: JSON.stringify({
         mode: 'text',
-        input: ['health check'],
+        input: ['health check']
       }),
-      timeout: 10000 // 10 second timeout for health check,
+      timeout: 10000 // 10 second timeout for health check
     });
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
@@ -412,7 +412,7 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
     return {
       healthy: false,
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: String(error),
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }

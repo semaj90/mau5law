@@ -16,10 +16,10 @@ export interface CacheContext {
     timestamp: number;
     source: 'memory' | 'indexeddb' | 'server' | 'semantic';
     hitRatio: number;
-    responseTime: number;,
+    responseTime: number;
   } | null;
   semanticQuery?: string;
-  computationCost: number;,
+  computationCost: number;
 }
 
 export type CacheEvent =
@@ -35,7 +35,7 @@ export type CacheEvent =
  * XState Cache Actor - manages caching operations
  */;
 export const cacheActor = fromPromise(async ({
-    input,
+    input
   }: {
     input: {
       operation: 'get' | 'set' | 'invalidate' | 'sync';
@@ -65,8 +65,8 @@ export const cacheActor = fromPromise(async ({
                 timestamp: Date.now(),
                 source: 'cache' as const,
                 hitRatio: headlessUICache.getStats().hitRatio,
-                responseTime,
-              },
+                responseTime
+              }
             };
           } else {
             return {
@@ -77,8 +77,8 @@ export const cacheActor = fromPromise(async ({
                 timestamp: Date.now(),
                 source: 'none' as const,
                 hitRatio: headlessUICache.getStats().hitRatio,
-                responseTime,
-              },
+                responseTime
+              }
             };
           }
         }
@@ -100,7 +100,7 @@ export const cacheActor = fromPromise(async ({
             success: true,
             stored: true,
             key: input.key,
-            responseTime: performance.now() - startTime,
+            responseTime: performance.now() - startTime
           };
         }
 
@@ -119,7 +119,7 @@ export const cacheActor = fromPromise(async ({
           return {
             success: true,
             invalidated: true,
-            responseTime: performance.now() - startTime,
+            responseTime: performance.now() - startTime
           };
         }
 
@@ -129,7 +129,7 @@ export const cacheActor = fromPromise(async ({
           return {
             success: true,
             synced: true,
-            responseTime: performance.now() - startTime,
+            responseTime: performance.now() - startTime
           };
         }
 
@@ -140,7 +140,7 @@ export const cacheActor = fromPromise(async ({
       return {
         success: false,
         error: error.message,
-        responseTime: performance.now() - startTime,
+        responseTime: performance.now() - startTime
       };
     }
   }
@@ -161,8 +161,8 @@ export function withCache<TContext extends Record<string, any>(
       cachedData: null,
       cacheHit: false,
       cacheMetadata: null,
-      computationCost: 0,
-    } as CacheContext,
+      computationCost: 0
+    } as CacheContext
   };
 }
 
@@ -181,8 +181,8 @@ export const cacheActions = {
           ...context.cache,
           cachedData: event.data,
           cacheHit: true,
-          cacheMetadata: event.metadata,
-        },
+          cacheMetadata: event.metadata
+        }
       };
     } else if (event.type === 'CACHE_MISS') {
       return {
@@ -191,8 +191,8 @@ export const cacheActions = {
           ...context.cache,
           cachedData: null,
           cacheHit: false,
-          cacheMetadata: null,
-        },
+          cacheMetadata: null
+        }
       };
     }
     return context;
@@ -208,8 +208,8 @@ export const cacheActions = {
         cache: {
           ...context.cache,
           cacheKey: event.key,
-          semanticQuery: event.semanticQuery,
-        },
+          semanticQuery: event.semanticQuery
+        }
       };
     }
     return context;
@@ -224,8 +224,8 @@ export const cacheActions = {
         ...context,
         cache: {
           ...context.cache,
-          computationCost: event.cost,
-        },
+          computationCost: event.cost
+        }
       };
     }
     return context;
@@ -241,9 +241,9 @@ export const cacheActions = {
       cachedData: null,
       cacheHit: false,
       cacheMetadata: null,
-      computationCost: 0,
-    },
-  })),
+      computationCost: 0
+    }
+  }))
 };
 
 /**
@@ -271,7 +271,7 @@ export const cacheGuards = {
     if (!context.cache?.cacheMetadata?.timestamp) return false;
     const ageMs = Date.now() - context.cache.cacheMetadata.timestamp;
     return ageMs < 5 * 60 * 1000; // 5 minutes
-  },
+  }
 };
 
 /**
@@ -282,8 +282,8 @@ export const createCachedMachineStates = () => ({
   states: {
     idle: {
       on: {
-        FETCH_DATA: 'checkingCache',
-      },
+        FETCH_DATA: 'checkingCache'
+      }
     },
 
     checkingCache: {
@@ -293,7 +293,7 @@ export const createCachedMachineStates = () => ({
         input: ({ context, event }: { context: any; event: any }) => ({
           operation: 'get' as const,
           key: context.cache.cacheKey,
-          semanticQuery: context.cache.semanticQuery,
+          semanticQuery: context.cache.semanticQuery
         }),
         onDone: [;
           {
@@ -305,9 +305,9 @@ export const createCachedMachineStates = () => ({
                 ...context.cache,
                 cachedData: event.output.data,
                 cacheHit: true,
-                cacheMetadata: event.output.metadata,
-              },
-            })),
+                cacheMetadata: event.output.metadata
+              }
+            }))
           },
           {
             target: 'computing',
@@ -315,13 +315,13 @@ export const createCachedMachineStates = () => ({
               ...context,
               cache: {
                 ...context.cache,
-                cacheHit: false,
-              },
-            })),
-          },
+                cacheHit: false
+              }
+            }))
+          }
         ],
-        onError: 'computing',
-      },
+        onError: 'computing'
+      }
     },
 
     computing: {
@@ -337,11 +337,11 @@ export const createCachedMachineStates = () => ({
           target: 'cachingResult',
           actions: assign(({ context, event }) => ({
             ...context,
-            computedData: event.output.result,
-          })),
+            computedData: event.output.result
+          }))
         },
-        onError: 'error',
-      },
+        onError: 'error'
+      }
     },
 
     cachingResult: {
@@ -351,23 +351,23 @@ export const createCachedMachineStates = () => ({
           operation: 'set' as const,
           key: context.cache.cacheKey,
           data: context.computedData,
-          semanticText: context.cache.semanticQuery,
+          semanticText: context.cache.semanticQuery
         }),
         onDone: 'dataReady',
         onError: 'dataReady', // Still succeed even if caching fails
-      },
+      }
     },
 
     dataReady: {
       type: 'final',
-      entry: () => console.log('Data ready (cached or computed)'),
+      entry: () => console.log('Data ready (cached or computed)')
     },
 
     error: {
       type: 'final',
-      entry: () => console.log('Error occurred'),
-    },
-  },
+      entry: () => console.log('Error occurred')
+    }
+  }
 });
 
 /**
@@ -381,7 +381,7 @@ export function withNeuralSpriteCache(spriteConfig: any) {
       enabled: true,
       strategy: 'semantic',
       ttl: 30 * 60 * 1000, // 30 minutes
-      priority: 'high',
+      priority: 'high'
     },
 
     // Add cache-aware lifecycle methods;
@@ -408,7 +408,7 @@ export function withNeuralSpriteCache(spriteConfig: any) {
       );
 
       console.log(`[NeuralSprite] Cached result for sprite ${context.spriteId}`);
-    },
+    }
   };
 }
 
@@ -421,5 +421,5 @@ export function getCacheStats() {
 export const cacheControl = {
   clear: () => headlessUICache.clear(),
   getStats: () => headlessUICache.getStats(),
-  dispose: () => headlessUICache.dispose(),
+  dispose: () => headlessUICache.dispose()
 };

@@ -50,7 +50,7 @@ export type UnifiedDialogProps = {
     aiAnalysis?: {
       riskLevel: 'low' | 'medium' | 'high';
       confidence: number;
-      suggestions: string[];,
+      suggestions: string[];
     };
   };
   onOpenChange?: (open: boolean) => void;

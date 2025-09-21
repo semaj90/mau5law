@@ -255,8 +255,8 @@ export class EnhancedEmbeddingWorker {
           model: job?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
           textLength: job.text.length,
           batchId,
-          priority: job.priority || 1,
-        },
+          priority: job.priority || 1
+        }
       });
 
       // Step 3: Transition to processing state
@@ -296,10 +296,10 @@ export class EnhancedEmbeddingWorker {
       // Step 6: Persist to database with progress update
       await globalLoki.updateProgress(job.id, 75);
       await this.upsertEmbeddingToDB(job.id, job?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text', embedding, {
-        ...(job.meta || {,}),
+        ...(job.meta || {}),
         batchId,
         textLength: job.text.length,
-        cached,
+        cached
       });
 
       // Step 7: Complete successfully with detailed result
@@ -468,11 +468,11 @@ export class EnhancedEmbeddingWorker {
         ...job,
         retryCount,
         meta: {
-          ...(job.meta || {,}),
+          ...(job.meta || {}),
           previousError: error,
           retryAttempt: retryCount,
-          lastFailureTime: Date.now(),
-        },
+          lastFailureTime: Date.now()
+        }
       };
 
       // Re-queue with exponential backoff: 2s, 4s, 8s
@@ -494,7 +494,7 @@ export class EnhancedEmbeddingWorker {
             ...job,
             finalError: error,
             failedAt: Date.now(),
-            retryCount,
+            retryCount
           })
         );
       }
@@ -552,7 +552,7 @@ export class EnhancedEmbeddingWorker {
         avgBatchProcessingTime: 0, // TODO: Track this
         cacheHitRate: 0, // TODO: Track this
         throughput: 0, // TODO: Track jobs/second
-      },
+      }
     };
   }
 
@@ -568,7 +568,7 @@ export class EnhancedEmbeddingWorker {
     const fullJob: EmbeddingJob = {
       ...job,
       id: jobId,
-      createdAt: Date.now(),
+      createdAt: Date.now()
     };
 
     await this.redis.rPush(this.queueName, JSON.stringify(fullJob);
@@ -588,7 +588,7 @@ export class EnhancedEmbeddingWorker {
     const [queueLength, processingQueueLength, dlqLength] = await Promise.all([
       this.redis.lLen(this.queueName),
       this.redis.lLen(this.processingQueue),
-      this.redis.lLen('embedding:dlq'),
+      this.redis.lLen('embedding:dlq')
     ]);
 
     return { queueLength, processingQueueLength, dlqLength };
@@ -609,14 +609,14 @@ if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
     await enhancedEmbeddingWorker.stop();
     await globalLoki.shutdown();
     process.exit(0);
-  ,});
+  });
 
   process.on('SIGTERM', async () => {
     console.log('Received SIGTERM, shutting down embedding worker...');
     await enhancedEmbeddingWorker.stop();
     await globalLoki.shutdown();
     process.exit(0);
-  ,});
+  });
 }
 
 // Export types for external use

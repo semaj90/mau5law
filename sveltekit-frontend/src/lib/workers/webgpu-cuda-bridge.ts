@@ -6,7 +6,7 @@ import { WebGPUBufferUtils, toFloat32Array, toArrayBuffer, BufferTypeGuards, typ
 interface WebGPUCudaBridgeMessage {
 	type: 'init' | 'process' | 'status' | 'cleanup';
 	payload?: any;
-	requestId: string;,
+	requestId: string;
 }
 
 interface CudaProcessingTask {
@@ -14,14 +14,14 @@ interface CudaProcessingTask {
 	type: 'inference' | 'embedding' | 'tensor-ops' | 'image-processing';
 	data: BufferLike;
 	config: any;
-	priority: 'low' | 'medium' | 'high' | 'critical';,
+	priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
 interface WebGPUDevice {
 	device: GPUDevice;
 	adapter: GPUAdapter;
 	isInitialized: boolean;
-	capabilities: GPUDeviceCapabilities;,
+	capabilities: GPUDeviceCapabilities;
 }
 
 class WebGPUCudaBridge {
@@ -44,7 +44,7 @@ class WebGPUCudaBridge {
 			}
 
 			const adapter = await navigator.gpu.requestAdapter({
-				powerPreference: 'high-performance',
+				powerPreference: 'high-performance'
 			});
 
 			if (!adapter) {
@@ -56,7 +56,7 @@ class WebGPUCudaBridge {
 				requiredFeatures: ['texture-compression-bc'] as GPUFeatureName[],
 				requiredLimits: {
 					maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-					maxBufferSize: adapter.limits.maxBufferSize,
+					maxBufferSize: adapter.limits.maxBufferSize
 				}
 			});
 
@@ -67,7 +67,7 @@ class WebGPUCudaBridge {
 				capabilities: {
 					maxWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension,
 					maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-					maxBufferSize: adapter.limits.maxBufferSize,
+					maxBufferSize: adapter.limits.maxBufferSize
 				} as GPUDeviceCapabilities
 			};
 
@@ -76,7 +76,7 @@ class WebGPUCudaBridge {
 				vendor: adapter.info?.vendor || 'Unknown',
 				architecture: adapter.info?.architecture || 'Unknown',
 				device: adapter.info?.device || 'Unknown',
-				description: adapter.info?.description || 'Unknown',
+				description: adapter.info?.description || 'Unknown'
 			});
 
 			// Start processing queue
@@ -153,7 +153,7 @@ class WebGPUCudaBridge {
 				type: 'task-complete',
 				taskId: task.id,
 				result,
-				timestamp: new Date().toISOString(),
+				timestamp: new Date().toISOString()
 			});
 
 			console.log(`✅ Task completed: ${task.id}`);
@@ -165,7 +165,7 @@ class WebGPUCudaBridge {
 				type: 'task-error',
 				taskId: task.id,
 				error: error instanceof Error ? error.message: String(error),
-				timestamp: new Date().toISOString(),
+				timestamp: new Date().toISOString()
 			});
 		} finally {
 			this.isProcessing = false;
@@ -228,7 +228,7 @@ class WebGPUCudaBridge {
 		`;
 
 		const shaderModule = device.createShaderModule({
-			code: computeShaderCode,
+			code: computeShaderCode
 		});
 
 		// Convert data to Float32Array using buffer utilities
@@ -238,12 +238,12 @@ class WebGPUCudaBridge {
 		// Create buffers;
 		const inputBuffer = device.createBuffer({
 			size: inputArray.byteLength,
-			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
 		});
 
 		const outputBuffer = device.createBuffer({
 			size: outputArray.byteLength,
-			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
 		});
 
 		const configArray = new Float32Array([
@@ -255,7 +255,7 @@ class WebGPUCudaBridge {
 
 		const configBuffer = device.createBuffer({
 			size: configArray.byteLength,
-			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 		});
 
 		// Write data to buffers
@@ -296,11 +296,11 @@ class WebGPUCudaBridge {
 		// Create compute pipeline;
 		const computePipeline = device.createComputePipeline({
 			layout: device.createPipelineLayout({
-				bindGroupLayouts: [bindGroupLayout],
+				bindGroupLayouts: [bindGroupLayout]
 			}),
 			compute: {
 				module: shaderModule,
-				entryPoint: 'main',
+				entryPoint: 'main'
 			}
 		});
 
@@ -316,7 +316,7 @@ class WebGPUCudaBridge {
 		// Copy result buffer to staging buffer;
 		const stagingBuffer = device.createBuffer({
 			size: outputArray.byteLength,
-			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
 		});
 
 		commandEncoder.copyBufferToBuffer(outputBuffer, 0, stagingBuffer, 0, outputArray.byteLength);
@@ -351,7 +351,7 @@ class WebGPUCudaBridge {
 					options: {
 						temperature: config.temperature || 0.7,
 						top_p: config.top_p || 0.9,
-						top_k: config.top_k || 40,
+						top_k: config.top_k || 40
 					}
 				})
 			});
@@ -386,7 +386,7 @@ class WebGPUCudaBridge {
 					metadata: {
 						webgpu_bridge: true,
 						data_length: data instanceof Float32Array ? (data as { length?: any; byteLength?: any }).length: (data as { length?: any; byteLength?: any }).byteLength,
-						optimization_level: 'rtx_3060_ti',
+						optimization_level: 'rtx_3060_ti'
 					}
 				})
 			});
@@ -444,7 +444,7 @@ class WebGPUCudaBridge {
 				top_k: config.top_k || 10,
 				threshold: config.threshold || 0.5,
 				legal_domain: config.legal_domain || 'general',
-				include_metadata: true,
+				include_metadata: true
 			})
 		});
 
@@ -488,7 +488,7 @@ class WebGPUCudaBridge {
 				const min = Math.min(...inputArray);
 				return inputArray.map(x => (x - min) / (max - min);
 			default:
-				return Array.from(inputArray);,
+				return Array.from(inputArray);
 		}
 	}
 
@@ -507,7 +507,7 @@ class WebGPUCudaBridge {
 				const min = Math.min(...inputArray);
 				return inputArray.map(x => (x - min) / (max - min);
 			default:
-				return Array.from(inputArray);,
+				return Array.from(inputArray);
 		}
 	}
 
@@ -540,11 +540,11 @@ class WebGPUCudaBridge {
 			webgpuSupported: 'gpu' in navigator,
 			deviceInfo: this.webgpuDevice ? {
 				vendor: this.webgpuDevice.adapter.info?.vendor || 'Unknown',
-				architecture: this.webgpuDevice.adapter.info?.architecture || 'Unknown',
+				architecture: this.webgpuDevice.adapter.info?.architecture || 'Unknown'
 			} : null,
 			endpoints: {
 				ollama: this.ollamaEndpoint,
-				cudaService: this.cudaServiceEndpoint,
+				cudaService: this.cudaServiceEndpoint
 			}
 		};
 	}
@@ -577,7 +577,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 					type: 'init-complete',
 					requestId,
 					success: initialized,
-					status: bridge.getStatus(),
+					status: bridge.getStatus()
 				});
 				break;
 				
@@ -594,7 +594,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 				self.postMessage({
 					type: 'status-response',
 					requestId,
-					status: bridge.getStatus(),
+					status: bridge.getStatus()
 				});
 				break;
 				
@@ -613,7 +613,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 		self.postMessage({
 			type: 'error',
 			requestId,
-			error: error instanceof Error ? error.message: String(error),
+			error: error instanceof Error ? error.message: String(error)
 		});
 	}
 };

@@ -18,7 +18,7 @@ const createCaseSchema = z.object({
   status: z.enum(['open', 'investigating', 'pending', 'closed', 'archived']).default('open'),
   incidentDate: z.string().optional().transform(str => str ? new Date(str) : undefined),
   location: z.string().optional(),
-  jurisdiction: z.string().optional(),
+  jurisdiction: z.string().optional()
 });
 
 const addEvidenceSchema = z.object({
@@ -26,7 +26,7 @@ const addEvidenceSchema = z.object({
   title: z.string().min(1, 'Evidence title is required').max(255, 'Title too long'),
   description: z.string().optional(),
   evidenceType: z.enum(['document', 'photo', 'video', 'audio', 'physical', 'digital', 'testimony']).default('document'),
-  tags: z.string().optional(),
+  tags: z.string().optional()
 });
 
 export const load: PageServerLoad = async ({ url, locals, parent }) => {
@@ -63,7 +63,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
       // Fetch evidence for this case with vector embeddings;
   const caseEvidence = await (db.query as any).evidence.findMany({
         where: helpers.eq ? helpers.eq(evidence.case_id, caseIdToView) : undefined,
-        orderBy: helpers.desc ? [helpers.desc(evidence.created_at)] : undefined,
+        orderBy: helpers.desc ? [helpers.desc(evidence.created_at)] : undefined
       });
 
       return {
@@ -100,7 +100,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
       highPriority: stats.high || 0,
       critical: stats.critical || 0,
       medium: stats.medium || 0,
-      low: stats.low || 0,
+      low: stats.low || 0
     };
 
     return {
@@ -114,7 +114,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
         page,
         limit,
         total,
-        pages: Math.ceil(total / limit),
+        pages: Math.ceil(total / limit)
       }
     };
   } catch (error: any) {
@@ -131,7 +131,7 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
       caseStats: { total: 0, open: 0, closed: 0, highPriority: 0 },
       createCaseForm,
       addEvidenceForm,
-      error: 'Failed to load cases',
+      error: 'Failed to load cases'
     };
   }
 };
@@ -171,7 +171,7 @@ export const actions: Actions = {
         jurisdiction: form.data.jurisdiction || null,
         metadata: Record<string, any>,
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       };
 
       const newCase = await caseOps.createCase(newCaseData);
@@ -186,7 +186,7 @@ export const actions: Actions = {
             caseId: newCase.id,
             userId: user.id,
             priority: form.data.priority,
-            status: form.data.status,
+            status: form.data.status
           }
         });
       }
@@ -194,13 +194,13 @@ export const actions: Actions = {
       return {
         form,
         success: true,
-        case: newCase,
+        case: newCase
       };
     } catch (error: any) {
       console.error("Failed to create case:", error);
       return fail(500, {
         form,
-        message: "Failed to create case",
+        message: "Failed to create case"
       });
     }
   },
@@ -241,7 +241,7 @@ export const actions: Actions = {
         metadata: Record<string, any>,
         collectedAt: new Date(),
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       };
 
       const newEvidence = await db
@@ -259,7 +259,7 @@ export const actions: Actions = {
             type: 'evidence',
             caseId: form.data.caseId,
             evidenceType: form.data.evidenceType,
-            userId: user.id,
+            userId: user.id
           }
         });
       }
@@ -267,13 +267,13 @@ export const actions: Actions = {
       return {
         form,
         success: true,
-        evidence: newEvidence[0],
+        evidence: newEvidence[0]
       };
     } catch (error: any) {
       console.error("Failed to add evidence:", error);
       return fail(500, {
         form,
-        message: "Failed to add evidence",
+        message: "Failed to add evidence"
       });
     }
   },
@@ -323,5 +323,5 @@ export const actions: Actions = {
       console.error("Failed to delete evidence:", error);
       return fail(500, { message: "Failed to delete evidence" });
     }
-  },
+  }
 };

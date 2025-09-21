@@ -17,7 +17,7 @@ const connectionConfig = {
   password: process.env.DB_PASSWORD || '123456',
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  connectionTimeoutMillis: 10000
 };
 
 // PostgreSQL Connection Pool with Error Handling;
@@ -88,17 +88,17 @@ export class PgVectorService {
           connectionPool: {
             totalCount: this.pool.totalCount,
             idleCount: this.pool.idleCount,
-            waitingCount: this.pool.waitingCount,
-          },
-        },
+            waitingCount: this.pool.waitingCount
+          }
+        }
       };
     } catch (error) {
       return {
         success: false,
         details: {
           error: error.message,
-          connectionConfig: { ...connectionConfig, password: '***' },
-        },
+          connectionConfig: { ...connectionConfig, password: '***' }
+        }
       };
     }
   }
@@ -137,7 +137,7 @@ export class PgVectorService {
             content,
             metadata.type || 'contract',
             JSON.stringify(metadata),
-            embeddingStr,
+            embeddingStr
           ]
         );
 
@@ -147,7 +147,7 @@ export class PgVectorService {
 
         return {
           success: true,
-          id: docId,
+          id: docId
         };
       } catch (error) {
         await client.query('ROLLBACK');
@@ -158,7 +158,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: error.message,
+        error: error.message
       };
     }
   }
@@ -189,14 +189,14 @@ export class PgVectorService {
         distanceMetric = 'cosine',
         threshold = 1.0,
         documentType,
-        includeContent = false,
+        includeContent = false
       } = options;
 
       // Choose distance operator based on metric;
       const distanceOperator = {
         cosine: '<->',
         euclidean: '<=>',
-        inner_product: '<#>',
+        inner_product: '<#>'
       }[distanceMetric];
 
       const embeddingStr = `[${queryEmbedding.join(',')}]`;
@@ -242,8 +242,8 @@ export class PgVectorService {
             totalResults: (result as { rows?: any; rowCount?: any }).rowCount,
             distanceMetric,
             threshold,
-            query: query.replace(/\$\d+/g, '?'),
-          },
+            query: query.replace(/\$\d+/g, '?')
+          }
         };
       } finally {
         client.release();
@@ -251,7 +251,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: error.message,
+        error: error.message
       };
     }
   }
@@ -290,7 +290,7 @@ export class PgVectorService {
                 doc.metadata?.title || 'Batch Insert',
                 doc.content,
                 doc.metadata?.type || 'contract',
-                doc.metadata || {},
+                doc.metadata || {}
               ]
             );
 
@@ -316,7 +316,7 @@ export class PgVectorService {
         return {
           success: true,
           inserted,
-          errors: errors.length > 0 ? errors : undefined,
+          errors: errors.length > 0 ? errors : undefined
         };
       } catch (error) {
         await client.query('ROLLBACK');
@@ -327,7 +327,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        errors: [error.message],
+        errors: [error.message]
       };
     }
   }
@@ -348,13 +348,13 @@ export class PgVectorService {
         lists = 100,
         metric = 'cosine',
         tableName = 'vector_embeddings',
-        columnName = 'embedding',
+        columnName = 'embedding'
       } = options;
 
       const metricMapping = {
         cosine: 'vector_cosine_ops',
         euclidean: 'vector_l2_ops',
-        inner_product: 'vector_ip_ops',
+        inner_product: 'vector_ip_ops'
       };
 
       const indexName = `idx_${tableName}_${columnName}_${metric}`;
@@ -390,8 +390,8 @@ export class PgVectorService {
             metric,
             lists,
             creationTime: `${indexTime}ms`,
-            query: indexQuery.trim(),
-          },
+            query: indexQuery.trim()
+          }
         };
       } finally {
         client.release();
@@ -399,7 +399,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: error.message,
+        error: error.message
       };
     }
   }
@@ -486,9 +486,9 @@ export class PgVectorService {
             connectionPool: {
               total: this.pool.totalCount,
               idle: this.pool.idleCount,
-              waiting: this.pool.waitingCount,
-            },
-          },
+              waiting: this.pool.waitingCount
+            }
+          }
         };
       } finally {
         client.release();
@@ -496,7 +496,7 @@ export class PgVectorService {
     } catch (error) {
       return {
         success: false,
-        error: error.message,
+        error: error.message
       };
     }
   }

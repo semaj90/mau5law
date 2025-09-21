@@ -36,11 +36,11 @@ export const mockDataGenerators = {
           wordCount: 500 + Math.floor(Math.random() * 2000),
           legalDomain: docType,
           jurisdiction: 'US',
-          practiceArea: 'corporate',
+          practiceArea: 'corporate'
         },
         embedding: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       };
       mockDocs.push(doc);
     }
@@ -67,7 +67,7 @@ export const mockDataGenerators = {
           documentFlow: [docType],
           interactionVelocity: Math.random() * 5,
           qualityExpectation: 0.7 + Math.random() * 0.3,
-          timeConstraints: Math.random(),
+          timeConstraints: Math.random()
         },
         contextEmbedding: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         temporalFeatures: {
@@ -75,7 +75,7 @@ export const mockDataGenerators = {
           dayOfWeek: Math.floor(Math.random() * 7),
           seasonality: Math.sin(2 * Math.PI * Date.now() / (365 * 24 * 60 * 60 * 1000)),
           workloadPressure: Math.random(),
-          recentPerformance: 0.6 + Math.random() * 0.4,
+          recentPerformance: 0.6 + Math.random() * 0.4
         },
         currentConfig: {
           rank: 8 + Math.floor(Math.random() * 24),
@@ -87,7 +87,7 @@ export const mockDataGenerators = {
           epochs: 2 + Math.floor(Math.random() * 6),
           quantizationBits: [4, 8][Math.floor(Math.random() * 2)]
         },
-        performanceHistory: [],
+        performanceHistory: []
       };
       states.push(state);
     }
@@ -119,7 +119,7 @@ export const mockDataGenerators = {
               userAction: ['search', 'analyze', 'draft', 'review'][Math.floor(Math.random() * 4)],
               assetTypes: [assetTypes[Math.floor(Math.random() * assetTypes.length)]],
               confidence: 0.7 + Math.random() * 0.3,
-              frequency: Math.floor(Math.random() * 100),
+              frequency: Math.floor(Math.random() * 100)
             },
             probability: 0.6 + Math.random() * 0.4,
             timeToStateMs: 100 + Math.random() * 2000,
@@ -139,7 +139,7 @@ export const mockDataGenerators = {
         chrPatternIds: [`chr_pattern_${i}`],
         totalConfidence: 0.75 + Math.random() * 0.25,
         predictionLatencyMs: 5 + Math.random() * 20,
-        cacheHitRatio: 0.6 + Math.random() * 0.4,
+        cacheHitRatio: 0.6 + Math.random() * 0.4
       };
       predictions.push(prediction);
     }
@@ -160,7 +160,7 @@ export const mockDataGenerators = {
         vec: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         compressionRatio: 0.2 + Math.random() * 0.3,
         cacheState: ['active', 'stale', 'pending'][Math.floor(Math.random() * 3)],
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       shards.push(shard);
     }
@@ -184,7 +184,7 @@ export const mockDataGenerators = {
         optimizationLevel: Math.floor(Math.random() * 5),
         keys: [`chr_key_${i}_1`, `chr_key_${i}_2`, `chr_key_${i}_3`],
         ttlSec: 300 + Math.random() * 3600,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       };
       manifests.push(manifest);
     }
@@ -275,7 +275,7 @@ export const vectorSearch = {
           title: doc.title,
           content: doc.content.slice(0, 200) + '...', // Truncated content
           documentType: doc.type,
-          confidenceLevel: doc.confidenceLevel,
+          confidenceLevel: doc.confidenceLevel
         }
       });
 
@@ -297,7 +297,7 @@ export const vectorSearch = {
         documentId: docId,
         embedding: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
         model: 'mock_ada_002',
-        dimensions: 1536,
+        dimensions: 1536
       });
 
       return results;
@@ -320,7 +320,7 @@ export const syncOrchestrator = {
       legalDocuments: await databaseSync.syncMockLegalDocuments(),
       qloraTraining: await databaseSync.syncQLoRATrainingData(),
       predictiveCache: await databaseSync.syncPredictiveAssetCache(),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     const totalSynced = Object.values(results)
@@ -336,7 +336,7 @@ export const syncOrchestrator = {
       performance: {
         syncDuration: '~2-5 seconds',
         cachePrewarmed: true,
-        vectorIndexReady: true,
+        vectorIndexReady: true
       }
     };
   },
@@ -350,7 +350,7 @@ export const syncOrchestrator = {
       pgvector: true, // Mock as working
       drizzle: true, // Mock as working
       redis: true, // Mock as working
-      mockDataReady: true // Always true for mock,
+      mockDataReady: true // Always true for mock
     };
 
     try {
@@ -361,7 +361,7 @@ export const syncOrchestrator = {
         status: Object.values(checks).every(Boolean) ? 'healthy' : 'partial',
         checks,
         mockSystem: true,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     } catch (error: any) {
       console.error('❌ Health check failed:', error);
@@ -370,7 +370,7 @@ export const syncOrchestrator = {
         checks,
         error: error.message,
         mockSystem: true,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
   }

@@ -34,10 +34,10 @@ export interface FullStackWorkflowResult {
     totalTime: number;
     gpuUtilization: number;
     agentsUsed: number;
-    multicoreWorkers: number;,
+    multicoreWorkers: number;
   };
   recommendations: string[];
-  nextSteps: string[];,
+  nextSteps: string[];
 }
 
 export class FullStackLegalAIWorkflow {
@@ -45,7 +45,7 @@ export class FullStackLegalAIWorkflow {
   private systemStatus = {
     orchestrator: false,
     flashattention: false,
-    multicore: false,
+    multicore: false
   };
 
   constructor() {
@@ -175,7 +175,7 @@ export class FullStackLegalAIWorkflow {
         svelte5_migration: 800,
         ui_component_mismatch: 600,
         css_unused_selectors: 400,
-        binding_issues: 162,
+        binding_issues: 162
       },
       sampleErrors: [
         'TS2322: Type mismatch in component props',
@@ -261,13 +261,13 @@ export class FullStackLegalAIWorkflow {
         agentOrchestration: results.orchestration,
         gpuProcessing: results.gpu,
         multicoreAnalysis: results.multicore,
-        systemMetrics: this.getSystemMetrics(),
+        systemMetrics: this.getSystemMetrics()
       },
       performance: {
         totalTime: 0, // Will be set by caller
         gpuUtilization,
         agentsUsed,
-        multicoreWorkers: this.getSystemStatus().multicoreWorkers,
+        multicoreWorkers: this.getSystemStatus().multicoreWorkers
       },
       recommendations,
       nextSteps
@@ -295,7 +295,7 @@ export class FullStackLegalAIWorkflow {
           analysisType: 'legal_research',
           priority: request.options?.priority || 'medium',
           useMulticoreAnalysis: true,
-          includeContext7: true,
+          includeContext7: true
         }
       };
 
@@ -314,7 +314,7 @@ export class FullStackLegalAIWorkflow {
           analysisType: 'legal',
           enableGPU: request.options?.useGPU !== false,
           useAgentOrchestration: true,
-          priority: request.options?.priority || 'medium',
+          priority: request.options?.priority || 'medium'
         }
       } as const;
 
@@ -343,7 +343,7 @@ export class FullStackLegalAIWorkflow {
         totalTime: 0,
         gpuUtilization: results.legal_gpu ? 0.8 : 0,
         agentsUsed: results.legal_orchestration?.systemStatus?.agentsExecuted || 0,
-        multicoreWorkers: this.getSystemStatus().multicoreWorkers,
+        multicoreWorkers: this.getSystemStatus().multicoreWorkers
       },
       recommendations: this.generateLegalProcessingRecommendations(results),
       nextSteps: ['Review legal analysis results', 'Apply findings to case strategy']
@@ -360,20 +360,20 @@ export class FullStackLegalAIWorkflow {
       orchestrator: this.systemStatus.orchestrator ? comprehensiveOrchestrator.getSystemStatus() : null,
       flashattention: this.systemStatus.flashattention ? flashAttentionMulticoreBridge.getStatus() : null,
       multicore: this.systemStatus.multicore ? getContext7MulticoreService().getSystemStatus() : null,
-      systemHealth: this.getSystemHealth(),
+      systemHealth: this.getSystemHealth()
     };
 
     return {
       mode: 'system_diagnostic',
       success: true,
       results: {
-        systemMetrics: diagnostics,
+        systemMetrics: diagnostics
       },
       performance: {
         totalTime: 0,
         gpuUtilization: diagnostics.flashattention?.flashattention_status?.gpuEnabled ? 0.3 : 0,
         agentsUsed: diagnostics.orchestrator?.supportedAgents?.length || 0,
-        multicoreWorkers: diagnostics.multicore?.workers?.length || 0,
+        multicoreWorkers: diagnostics.multicore?.workers?.length || 0
       },
       recommendations: this.generateDiagnosticRecommendations(diagnostics),
       nextSteps: ['Review system health', 'Apply recommended optimizations']
@@ -420,7 +420,7 @@ export class FullStackLegalAIWorkflow {
         totalTime: 0,
         gpuUtilization: results.gpu_performance?.utilization || 0,
         agentsUsed: results.agent_performance?.agentCount || 0,
-        multicoreWorkers: this.getSystemStatus().multicoreWorkers,
+        multicoreWorkers: this.getSystemStatus().multicoreWorkers
       },
       recommendations: this.generatePerformanceRecommendations(results),
       nextSteps: ['Review performance metrics', 'Apply optimizations']
@@ -514,13 +514,13 @@ export class FullStackLegalAIWorkflow {
         success: true,
         processingTime: performance.now() - startTime,
         agentCount: 1,
-        averageResponseTime: performance.now() - startTime,
+        averageResponseTime: performance.now() - startTime
       };
     } catch (error: any) {
       return {
         success: false,
         error: error?.message ?? String(error),
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
   }
@@ -541,7 +541,7 @@ export class FullStackLegalAIWorkflow {
       return {
         success: false,
         error: error?.message ?? String(error),
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
   }
@@ -552,13 +552,13 @@ export class FullStackLegalAIWorkflow {
       mode,
       success: false,
       results: {
-        error: error.message,
+        error: error.message
       },
       performance: {
         totalTime,
         gpuUtilization: 0,
         agentsUsed: 0,
-        multicoreWorkers: 0,
+        multicoreWorkers: 0
       },
       recommendations: ['Check system status and retry'],
       nextSteps: ['Review error logs', 'Initialize failed services']
@@ -572,7 +572,7 @@ export class FullStackLegalAIWorkflow {
       orchestrator: this.systemStatus.orchestrator,
       flashattention: this.systemStatus.flashattention,
       multicore: this.systemStatus.multicore,
-      multicoreWorkers: this.systemStatus.multicore ? multicoreService.getSystemStatus().workers.length: 0,
+      multicoreWorkers: this.systemStatus.multicore ? multicoreService.getSystemStatus().workers.length: 0
     };
   }
 

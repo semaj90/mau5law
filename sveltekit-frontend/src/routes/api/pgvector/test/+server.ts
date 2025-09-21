@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: connectionTest.success,
           details: connectionTest.details,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'stats':
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
           stats: statsResult.stats,
           error: statsResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'index':
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
           details: indexResult.details,
           error: indexResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'seed':
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
           action: 'pgvector_seed_documents',
           ...seedResult,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'gemma-integration':
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
           action: 'gemma_pgvector_integration_test',
           ...integrationResult,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'health':
@@ -88,14 +88,14 @@ export const GET: RequestHandler = async ({ url }) => {
           action: 'system_health_check',
           ...healthResult,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       default:;
         return json({
           error: 'Invalid action',
           availableActions: ['connection', 'stats', 'index', 'seed', 'gemma-integration', 'health'],
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }, { status: 400 });
     }
   } catch (error: any) {
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       error: error.message,
       responseTime: `${Date.now() - startTime}ms`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!queryEmbedding || !Array.isArray(queryEmbedding)) {
           return json({
             error: 'queryEmbedding is required and must be an array',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }, { status: 400 });
         }
 
@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           metadata: searchResult.metadata,
           error: searchResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'insert':
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!documentId || !content || !embedding) {
           return json({
             error: 'documentId, content, and embedding are required',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }, { status: 400 });
         }
 
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           id: insertResult.id,
           error: insertResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'batch':
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!documents || !Array.isArray(documents)) {
           return json({
             error: 'documents array is required',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }, { status: 400 });
         }
 
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           inserted: batchResult.inserted,
           errors: batchResult.errors,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'query':
@@ -194,7 +194,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!query || typeof query !== 'string') {
           return json({
             error: 'query string is required',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }, { status: 400 });
         }
 
@@ -204,7 +204,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const queryResult = await pgVectorService.vectorSimilaritySearch(mockQueryEmbedding, {
           limit,
           documentType,
-          includeContent: true,
+          includeContent: true
         });
 
         return json({
@@ -215,18 +215,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
           metadata: {
             ...queryResult.metadata,
             mockEmbeddingGenerated: true,
-            queryLength: query.length,
+            queryLength: query.length
           },
           error: queryResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       default:;
         return json({
           error: 'Invalid action',
           availableActions: ['search', 'insert', 'batch', 'query'],
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }, { status: 400 });
     }
   } catch (error: any) {
@@ -235,7 +235,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       success: false,
       error: error.message,
       responseTime: `${Date.now() - startTime}ms`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -286,13 +286,13 @@ async function seedSampleDocuments(count: number) {
         title: d.metadata.title,
         type: d.metadata.type,
         contentPreview: d.content.substring(0, 100) + '...',
-        embeddingDimensions: d.embedding.length,
+        embeddingDimensions: d.embedding.length
       })
     };
   } catch (error) {
     return {
       success: false,
-      error: error.message,
+      error: error.message
     };
   }
 }
@@ -455,7 +455,7 @@ async function testGemmaIntegration() {
       metadata: {
         title: "Gemma Integration Test Document",
         type: "test",
-        source: "integration_test",
+        source: "integration_test"
       }
     };
 
@@ -481,7 +481,7 @@ async function testGemmaIntegration() {
         ...testDoc.metadata,
         embeddingModel: embeddingResult?.model || "unknown" // @ts-ignore - Model property access,
         embeddingDimensions: embeddingResult.embedding.length,
-        processingTime: embeddingResult.processingTime,
+        processingTime: embeddingResult.processingTime
       }
     );
 
@@ -497,7 +497,7 @@ async function testGemmaIntegration() {
         limit: 5,
         distanceMetric: 'cosine',
         threshold: 1.0,
-        includeContent: true,
+        includeContent: true
       }
     );
 
@@ -508,17 +508,17 @@ async function testGemmaIntegration() {
           model: embeddingResult?.model || "unknown" // @ts-ignore - Model property access,
           dimensions: embeddingResult.embedding.length,
           processingTime: embeddingResult.processingTime,
-          success: true,
+          success: true
         },
         storage: {
           documentId: storageResult.id,
-          success: storageResult.success,
+          success: storageResult.success
         },
         search: {
           resultsFound: searchResult.results?.length || 0,
           searchTime: searchResult.metadata?.searchTime,
           topResult: searchResult.results?.[0],
-          success: searchResult.success,
+          success: searchResult.success
         }
       },
       summary: `✅ Full integration successful: Gemma (${embeddingResult?.model || "unknown" // @ts-ignore - Model property access}) → PostgreSQL → Vector Search`,
@@ -559,13 +559,13 @@ async function checkSystemHealth() {
         available: pgHealth.success,
         version: pgHealth.details?.connection?.current_time ? 'Connected' : 'Unknown',
         pgvector: pgHealth.details?.pgvectorExtension?.status !== 'not_installed',
-        details: pgHealth.details,
+        details: pgHealth.details
       },
       gemmaEmbeddings: {
         available: gemmaHealth.available,
         bestModel: gemmaHealth?.model || "unknown" // @ts-ignore - Model property access,
         modelHierarchy: gemmaHealth.modelHierarchy,
-        ollamaVersion: gemmaHealth.version,
+        ollamaVersion: gemmaHealth.version
       },
       integration: {
         ready: pgHealth.success && gemmaHealth.available,

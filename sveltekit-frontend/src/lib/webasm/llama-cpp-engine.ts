@@ -14,7 +14,7 @@ export interface LlamaCppConfig {
   threadCount: number;
   batchSize: number;
   useGPU: boolean;
-  quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';,
+  quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
 }
 
 export interface InferenceRequest {
@@ -54,7 +54,7 @@ export class WebASMLlamaCppEngine {
       threadCount: config.threadCount || navigator.hardwareConcurrency || 8,
       batchSize: config.batchSize || 512,
       useGPU: config.useGPU ?? true,
-      quantization: config.quantization || 'q4_0',
+      quantization: config.quantization || 'q4_0'
     };
   }
 
@@ -103,7 +103,7 @@ export class WebASMLlamaCppEngine {
     const memory = new WebAssembly.Memory({ 
       initial: 256,  // 16MB initial
       maximum: 2048, // 128MB maximum
-      shared: true   // Enable SharedArrayBuffer for threading,
+      shared: true   // Enable SharedArrayBuffer for threading
     });
     
     const instance = await WebAssembly.instantiate(wasmModule, {
@@ -117,7 +117,7 @@ export class WebASMLlamaCppEngine {
         __pthread_create: this.pthreadCreate.bind(this),
         __pthread_join: this.pthreadJoin.bind(this),
         // Performance counters
-        get_time_ms: () => performance.now(),
+        get_time_ms: () => performance.now()
       }
     });
     
@@ -134,7 +134,7 @@ export class WebASMLlamaCppEngine {
     }
 
     const adapter = await navigator.gpu.requestAdapter({
-      powerPreference: 'high-performance'  // RTX 3060 Ti,
+      powerPreference: 'high-performance'  // RTX 3060 Ti
     });
 
     if (!adapter) {
@@ -146,7 +146,7 @@ export class WebASMLlamaCppEngine {
       requiredLimits: {
         maxComputeWorkgroupSizeX: 1024,
         maxComputeInvocationsPerWorkgroup: 1024,
-        maxBufferSize: 2 * 1024 * 1024 * 1024 // 2GB for large models,
+        maxBufferSize: 2 * 1024 * 1024 * 1024 // 2GB for large models
       }
     });
 
@@ -178,7 +178,7 @@ export class WebASMLlamaCppEngine {
       gpu_layers: this.config.gpuLayers,
       thread_count: this.config.threadCount,
       batch_size: this.config.batchSize,
-      use_gpu: this.config.useGPU ? 1 : 0,
+      use_gpu: this.config.useGPU ? 1 : 0
     });
     
     if (!success) {
@@ -265,7 +265,7 @@ export class WebASMLlamaCppEngine {
         processingTime,
         tokensPerSecond,
         memoryUsage: this.getMemoryUsage(),
-        gpuUtilization: await this.getGPUUtilization(),
+        gpuUtilization: await this.getGPUUtilization()
       };
       
     } catch (error) {
@@ -285,7 +285,7 @@ export class WebASMLlamaCppEngine {
     this.wasmModule.llama_set_params({
       temperature: request.temperature,
       top_p: request.topP,
-      max_tokens: request.maxTokens,
+      max_tokens: request.maxTokens
     });
     
     // Initialize context with input tokens
@@ -318,7 +318,7 @@ export class WebASMLlamaCppEngine {
       max_tokens: request.maxTokens,
       temperature: request.temperature,
       top_p: request.topP,
-      batch_size: this.config.batchSize,
+      batch_size: this.config.batchSize
     });
   }
 
@@ -375,7 +375,7 @@ export class WebASMLlamaCppEngine {
     
     const buffer = this.gpuDevice.createBuffer({
       size,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
     });
     
     // Return buffer ID (simplified)
@@ -467,14 +467,14 @@ export class WebASMLlamaCppEngine {
     totalTokens: number;
     averageLatency: number;
     tokensPerSecond: number;
-    memoryUsage: number;,
+    memoryUsage: number;
   } {
     return {
       totalInferences: this.totalInferences,
       totalTokens: this.totalTokens,
       averageLatency: this.averageLatency,
       tokensPerSecond: this.averageLatency > 0 ? 1000 / this.averageLatency: 0,
-      memoryUsage: this.getMemoryUsage(),
+      memoryUsage: this.getMemoryUsage()
     };
   }
 
@@ -501,7 +501,7 @@ export const llamaCppEngine = new WebASMLlamaCppEngine({
   gpuLayers: 35,
   threadCount: 8,
   useGPU: true,
-  quantization: 'q4_0',
+  quantization: 'q4_0'
 });
 
 // Convenience function for quick inference

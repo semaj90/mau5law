@@ -26,26 +26,26 @@ declare global {
     origin: string;
     lastEventId: string;
     source: Client | ServiceWorker | MessagePort | null;
-    ports: MessagePort[];,
+    ports: MessagePort[];
   }
 
   interface SyncEvent extends ExtendableEvent {
     tag: string;
-    lastChance: boolean;,
+    lastChance: boolean;
   }
 
   interface PushEvent extends ExtendableEvent {
-    data: PushMessageData | null;,
+    data: PushMessageData | null;
   }
 
   interface NotificationEvent extends ExtendableEvent {
     notification: Notification;
-    action: string;,
+    action: string;
   }
 
   // Service Worker Registration;
   interface ServiceWorkerRegistration {
-    sync: SyncManager;,
+    sync: SyncManager;
   }
 
   interface SyncManager {

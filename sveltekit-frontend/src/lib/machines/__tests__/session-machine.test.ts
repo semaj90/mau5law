@@ -14,12 +14,12 @@ const sessionMachine = createMachine({
     collaborators: [],
     lastActivity: undefined,
     performanceMetrics: undefined,
-    error: undefined,
+    error: undefined
   },
   states: {
     inactive: {
       on: {
-        START_SESSION: 'initializing',
+        START_SESSION: 'initializing'
       }
     },
     initializing: {
@@ -34,13 +34,13 @@ const sessionMachine = createMachine({
             performanceMetrics: {
               responseTime: duration,
               protocol: 'HTTP',
-              operation: 'session_creation',
+              operation: 'session_creation'
             }
           };
         }),
         input: ({ event }) => ({
           userId: event.userId,
-          caseId: event.caseId,
+          caseId: event.caseId
         }),
         onDone: {
           target: 'active',
@@ -51,7 +51,7 @@ const sessionMachine = createMachine({
             collaborators: ({ event }) => event.output.collaborators || [],
             lastActivity: () => Date.now(),
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            error: undefined,
+            error: undefined
           })
         },
         onError: {
@@ -67,20 +67,20 @@ const sessionMachine = createMachine({
         ADD_COLLABORATOR: {
           target: 'updating',
           actions: assign({
-            lastActivity: () => Date.now(),
+            lastActivity: () => Date.now()
           })
         },
         UPDATE_CASE: {
           target: 'updating',
           actions: assign({
-            lastActivity: () => Date.now(),
+            lastActivity: () => Date.now()
           })
         },
         END_SESSION: 'terminating',
-        SESSION_TIMEOUT: 'terminating',
+        SESSION_TIMEOUT: 'terminating'
       },
       after: {
-        1800000: 'terminating' // 30 minutes timeout,
+        1800000: 'terminating' // 30 minutes timeout
       }
     },
     updating: {
@@ -96,7 +96,7 @@ const sessionMachine = createMachine({
               performanceMetrics: {
                 responseTime: duration,
                 protocol: 'HTTP',
-                operation: 'add_collaborator',
+                operation: 'add_collaborator'
               }
             };
           } else if (input.type === 'UPDATE_CASE') {
@@ -107,7 +107,7 @@ const sessionMachine = createMachine({
               performanceMetrics: {
                 responseTime: duration,
                 protocol: 'HTTP',
-                operation: 'update_case',
+                operation: 'update_case'
               }
             };
           }
@@ -116,7 +116,7 @@ const sessionMachine = createMachine({
           type: event.type,
           sessionId: context.sessionId,
           collaborator: event.type === 'ADD_COLLABORATOR' ? event.collaborator: undefined,
-          caseData: event.type === 'UPDATE_CASE' ? event.caseData : undefined,
+          caseData: event.type === 'UPDATE_CASE' ? event.caseData : undefined
         }),
         onDone: {
           target: 'active',
@@ -126,7 +126,7 @@ const sessionMachine = createMachine({
             activeCase: ({ event, context }) =>
               event.output.caseData || context.activeCase,
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            lastActivity: () => Date.now(),
+            lastActivity: () => Date.now()
           })
         },
         onError: {
@@ -149,19 +149,19 @@ const sessionMachine = createMachine({
             performanceMetrics: {
               responseTime: duration,
               protocol: 'HTTP',
-              operation: 'session_termination',
+              operation: 'session_termination'
             }
           };
         }),
         input: ({ context }) => ({ sessionId: context.sessionId }),
         onDone: 'inactive',
-        onError: 'inactive',
+        onError: 'inactive'
       }
     },
     error: {
       on: {
         RETRY: 'initializing',
-        RESET: 'inactive',
+        RESET: 'inactive'
       }
     }
   }
@@ -186,7 +186,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456',
+        caseId: 'case-456'
       });
 
       await new Promise(resolve => setTimeout(resolve, 100);
@@ -214,7 +214,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456',
+        caseId: 'case-456'
       });
       await new Promise(resolve => setTimeout(resolve, 100);
 
@@ -236,7 +236,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
         'session-789',
         expect.objectContaining({
           userId: 'paralegal-789',
-          role: 'paralegal',
+          role: 'paralegal'
         })
       );
 
@@ -295,7 +295,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456',
+        caseId: 'case-456'
       });
       await new Promise(resolve => setTimeout(resolve, 100);
 
@@ -327,7 +327,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456',
+        caseId: 'case-456'
       });
       await new Promise(resolve => setTimeout(resolve, 100);
 
@@ -357,13 +357,13 @@ describe('Session Machine - Legal AI Platform Testing', () => {
             sessionId: snapshot.context.sessionId,
             caseId: snapshot.context.activeCase.caseId,
             collaborators: snapshot.context.collaborators,
-            performanceMetrics: snapshot.context.performanceMetrics,
+            performanceMetrics: snapshot.context.performanceMetrics
           });
 
           // Enable document processing for session;
           documentProcessingHandler('ENABLE_PROCESSING', {
             sessionId: snapshot.context.sessionId,
-            userId: snapshot.context.userId,
+            userId: snapshot.context.userId
           });
         }
       });
@@ -373,7 +373,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456',
+        caseId: 'case-456'
       });
 
       await new Promise(resolve => setTimeout(resolve, 100);
@@ -382,14 +382,14 @@ describe('Session Machine - Legal AI Platform Testing', () => {
         expect.objectContaining({
           sessionId: 'session-789',
           caseId: 'case-456',
-          performanceMetrics: expect.any(Object),
+          performanceMetrics: expect.any(Object)
         })
       );
 
       expect(documentProcessingHandler).toHaveBeenCalledWith('ENABLE_PROCESSING',
         expect.objectContaining({
           sessionId: 'session-789',
-          userId: 'attorney-123',
+          userId: 'attorney-123'
         })
       );
 

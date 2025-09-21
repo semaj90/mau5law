@@ -121,7 +121,7 @@ export interface ServiceStatus {
   ollama: "connected" | "disconnected" | "error" | "unknown";
   qdrant: "connected" | "disconnected" | "error" | "unknown";
   database: "connected" | "disconnected" | "error" | "unknown";
-  gemma3: "ready" | "loading" | "error" | "unknown";,
+  gemma3: "ready" | "loading" | "error" | "unknown";
 }
 
 // Legal-specific types;
@@ -151,13 +151,13 @@ export interface EvidenceDocument {
 export interface UIState {
   sidebar: {
     isOpen: boolean;
-    activeTab: "conversations" | "documents" | "settings";,
+    activeTab: "conversations" | "documents" | "settings";
   };
   modal: {
     isOpen: boolean;
-    type: "settings" | "document-upload" | "context-injection" | null;,
+    type: "settings" | "document-upload" | "context-injection" | null;
   };
-  theme: "light" | "dark" | "system";,
+  theme: "light" | "dark" | "system";
 }
 
 // Error types;
@@ -173,21 +173,21 @@ export interface SystemConfig {
   api: {
     baseUrl: string;
     timeout: number;
-    retries: number;,
+    retries: number;
   };
   models: {
     default: string;
-    available: string[];,
+    available: string[];
   };
   features: {
     streaming: boolean;
     contextInjection: boolean;
     vectorSearch: boolean;
-    multimodal: boolean;,
+    multimodal: boolean;
   };
   ui: {
     theme: "light" | "dark" | "system";
     animations: boolean;
-    notifications: boolean;,
+    notifications: boolean;
   };
 }

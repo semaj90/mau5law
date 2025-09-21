@@ -9,7 +9,7 @@ interface PrecedentSearchRequest {
   practiceArea?: string;
   dateRange?: {
     start: string;
-    end: string;,
+    end: string;
   };
   precedentialValue?: string[];
   maxResults?: number;
@@ -40,7 +40,7 @@ interface PrecedentMatch {
     factualAlignment: number;
     legalPrinciples: number;
     jurisdictionalRelevance: number;
-    temporalRelevance: number;,
+    temporalRelevance: number;
   };
   relatedTopics: string[];
   practiceAreas: string[];
@@ -57,7 +57,7 @@ interface CitationNetwork {
   citationGraph: {
     depth: number;
     breadth: number;
-    clusters: string[];,
+    clusters: string[];
   };
 }
 
@@ -65,7 +65,7 @@ interface LegalReasoningChain {
   steps: Array<any>;
   overallCoherence: number;
   logicalGaps: string[];
-  alternativeTheories: string[];,
+  alternativeTheories: string[];
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
           practiceArea,
           processingTime,
           searchMode: query ? 'semantic' : 'fact-pattern',
-          confidenceScore: calculateOverallConfidence(searchResults.matches),
+          confidenceScore: calculateOverallConfidence(searchResults.matches)
         }
       }
     });
@@ -189,7 +189,7 @@ async function performPrecedentSearch(request: PrecedentSearchRequest) {
 
   return {
     matches: limitedMatches,
-    total: mockMatches.length,
+    total: mockMatches.length
   };
 }
 
@@ -204,7 +204,7 @@ async function buildCitationNetworks(matches: PrecedentMatch[]): Promise<Citatio
     citationGraph: {
       depth: Math.min(6, Math.floor(match.citationCount / 20)),
       breadth: Math.min(15, Math.floor(match.citationCount / 10)),
-      clusters: generateMockClusters(match.practiceAreas),
+      clusters: generateMockClusters(match.practiceAreas)
     }
   });
 }
@@ -220,7 +220,7 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
       logicalConnection: 'Core legal doctrine establishes framework for case evaluation',
       strengthScore: 0.92,
       vulnerabilities: ['Potential jurisdictional variations', 'Evolving legal standards'],
-      counterarguments: ['Alternative interpretations of foundational principles'],
+      counterarguments: ['Alternative interpretations of foundational principles']
     },
     {
       stepNumber: 2,
@@ -230,7 +230,7 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
       logicalConnection: 'Analogous facts justify similar legal treatment',
       strengthScore: 0.84,
       vulnerabilities: ['Distinguishing factual elements', 'Context-specific variations'],
-      counterarguments: ['Material differences in factual scenarios'],
+      counterarguments: ['Material differences in factual scenarios']
     },
     {
       stepNumber: 3,
@@ -240,7 +240,7 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
       logicalConnection: 'Hierarchical precedent system mandates adherence to higher court rulings',
       strengthScore: 0.96,
       vulnerabilities: ['Narrow holding interpretations', 'Jurisdictional limitations'],
-      counterarguments: ['Precedent distinguishability arguments'],
+      counterarguments: ['Precedent distinguishability arguments']
     },
     {
       stepNumber: 4,
@@ -250,7 +250,7 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
       logicalConnection: 'Policy coherence enhances predictability and fairness',
       strengthScore: 0.78,
       vulnerabilities: ['Competing policy considerations', 'Changed circumstances'],
-      counterarguments: ['Alternative policy frameworks'],
+      counterarguments: ['Alternative policy frameworks']
     }
   ];
 
@@ -293,7 +293,7 @@ async function analyzeApplicability(matches: PrecedentMatch[], request: Preceden
       averageSimilarity: avgSimilarity,
       recentAuthority: recentCount,
       jurisdictionalSpread: new Set(matches.map(m => m.jurisdiction)).size,
-      practiceAreaCoverage: new Set(matches.flatMap(m => m.practiceAreas)).size,
+      practiceAreaCoverage: new Set(matches.flatMap(m => m.practiceAreas)).size
     },
     recommendations: [
       bindingCount > 0 ? 'Emphasize binding precedent in primary arguments' : 'Build strong persuasive authority foundation',
@@ -415,10 +415,10 @@ function generateMockPrecedents(searchTerm: string, request: PrecedentSearchRequ
       factualAlignment: Math.floor(Math.random() * 30) + 70,
       legalPrinciples: Math.floor(Math.random() * 25) + 75,
       jurisdictionalRelevance: Math.floor(Math.random() * 35) + 65,
-      temporalRelevance: Math.floor(Math.random() * 40) + 60,
+      temporalRelevance: Math.floor(Math.random() * 40) + 60
     },
     relatedTopics: generateMockRelatedTopics(searchTerm),
-    practiceAreas: partial.practiceAreas || ['General Law'],
+    practiceAreas: partial.practiceAreas || ['General Law']
   })) as PrecedentMatch[];
 }
 

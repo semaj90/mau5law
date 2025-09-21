@@ -19,8 +19,8 @@ const ConnectionMappingSchema = z.object({
     includePredictedConnections: z.boolean().default(true),
     clusterSimilar: z.boolean().default(true),
     timeWindow: z.string().optional(), // e.g., '30d', '7d', 'all'
-    layout: z.enum(['force', 'circular', 'hierarchical', 'grid']).default('force'),
-  }).optional(),
+    layout: z.enum(['force', 'circular', 'hierarchical', 'grid']).default('force')
+  }).optional()
 });
 
 /*
@@ -81,9 +81,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           entityTypes: entityTypes || 'all',
           analyzedBy: locals.user.id,
           nodesGenerated: connectionMap.nodes.length,
-          edgesGenerated: connectionMap.edges.length,
-        },
-      },
+          edgesGenerated: connectionMap.edges.length
+        }
+      }
     });
 
     return json({
@@ -97,14 +97,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           maxDepth,
           entityTypes: entityTypes || ['all'],
           analysisTime: new Date().toISOString(),
-          layout: options.layout || 'force',
-        },
+          layout: options.layout || 'force'
+        }
       },
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString(),
-        action: 'connection_map_generated',
-      },
+        action: 'connection_map_generated'
+      }
     });
 
   } catch (err: any) {
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid connection mapping request',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to generate connection map',
         code: 'CONNECTION_MAP_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -152,13 +152,13 @@ async function generateConnectionMap(
       totalEdges: 0,
       strongConnections: 0,
       weakConnections: 0,
-      predictedConnections: 0,
+      predictedConnections: 0
     },
     layout: options.layout || 'force',
     metadata: {
       generated: new Date().toISOString(),
-      parameters: { entityTypes, connectionStrength, maxDepth, options },
-    },
+      parameters: { entityTypes, connectionStrength, maxDepth, options }
+    }
   };
 
   try {
@@ -215,7 +215,7 @@ async function generateConnectionMap(
     return {
       ...map,
       error: 'Connection map generation failed',
-      details: error instanceof Error ? error.message: 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -237,7 +237,7 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
         body: JSON.stringify({
           text: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).content || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).title || '',
           analysisType: 'evidence_classification',
-          useGemmaEmbeddings: true,
+          useGemmaEmbeddings: true
         })
       });
       
@@ -268,9 +268,9 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
         semanticClassification: semanticData?.classification,
         keyTerms: semanticData?.keyTerms || [],
         confidenceScore: semanticData?.confidence || 0,
-        embeddingVector: semanticData?.embedding,
+        embeddingVector: semanticData?.embedding
       },
-      position: generateRandomPosition(),
+      position: generateRandomPosition()
     };
   });
 }
@@ -283,7 +283,7 @@ async function generatePeopleNodes(evidence: any[]): Promise<any[]> {
   const people = [
     { id: 'person_1', name: 'John Doe', role: 'witness', mentions: 3 },
     { id: 'person_2', name: 'Jane Smith', role: 'subject', mentions: 5 },
-    { id: 'person_3', name: 'Bob Johnson', role: 'investigator', mentions: 2 },
+    { id: 'person_3', name: 'Bob Johnson', role: 'investigator', mentions: 2 }
   ];
 
   return people.map(person => ({
@@ -296,9 +296,9 @@ async function generatePeopleNodes(evidence: any[]): Promise<any[]> {
     metadata: {
       role: person.role,
       mentions: person.mentions,
-      importance: person.mentions > 3 ? 'high' : 'medium',
+      importance: person.mentions > 3 ? 'high' : 'medium'
     },
-    position: generateRandomPosition(),
+    position: generateRandomPosition()
   });
 }
 
@@ -310,7 +310,7 @@ async function generateLocationNodes(evidence: any[]): Promise<any[]> {
   const locations = [
     { id: 'loc_1', name: 'Office Building A', type: 'building', frequency: 4 },
     { id: 'loc_2', name: 'Central Park', type: 'public', frequency: 2 },
-    { id: 'loc_3', name: 'Residential Area', type: 'residential', frequency: 3 },
+    { id: 'loc_3', name: 'Residential Area', type: 'residential', frequency: 3 }
   ];
 
   return locations.map(location => ({
@@ -323,9 +323,9 @@ async function generateLocationNodes(evidence: any[]): Promise<any[]> {
     metadata: {
       locationType: location.type,
       frequency: location.frequency,
-      significance: location.frequency > 3 ? 'high' : 'medium',
+      significance: location.frequency > 3 ? 'high' : 'medium'
     },
-    position: generateRandomPosition(),
+    position: generateRandomPosition()
   });
 }
 
@@ -344,9 +344,9 @@ async function generateEventNodes(evidence: any[]): Promise<any[]> {
     metadata: {
       timestamp: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).createdAt,
       relatedEvidence: [(item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).id],
-      eventType: 'evidence_collection',
+      eventType: 'evidence_collection'
     },
-    position: generateRandomPosition(),
+    position: generateRandomPosition()
   });
 }
 
@@ -358,7 +358,7 @@ async function generateCommunicationNodes(evidence: any[]): Promise<any[]> {
   const communications = [
     { id: 'comm_1', type: 'email', participants: 2, importance: 'high' },
     { id: 'comm_2', type: 'phone', participants: 2, importance: 'medium' },
-    { id: 'comm_3', type: 'meeting', participants: 4, importance: 'high' },
+    { id: 'comm_3', type: 'meeting', participants: 4, importance: 'high' }
   ];
 
   return communications.map(comm => ({
@@ -371,9 +371,9 @@ async function generateCommunicationNodes(evidence: any[]): Promise<any[]> {
     metadata: {
       communicationType: comm.type,
       participants: comm.participants,
-      importance: comm.importance,
+      importance: comm.importance
     },
-    position: generateRandomPosition(),
+    position: generateRandomPosition()
   });
 }
 
@@ -385,7 +385,7 @@ async function generateFinancialNodes(evidence: any[]): Promise<any[]> {
   const financial = [
     { id: 'fin_1', type: 'transaction', amount: 1000, importance: 'high' },
     { id: 'fin_2', type: 'account', balance: 5000, importance: 'medium' },
-    { id: 'fin_3', type: 'transfer', amount: 2500, importance: 'high' },
+    { id: 'fin_3', type: 'transfer', amount: 2500, importance: 'high' }
   ];
 
   return financial.map(fin => ({
@@ -398,9 +398,9 @@ async function generateFinancialNodes(evidence: any[]): Promise<any[]> {
     metadata: {
       financialType: fin.type,
       amount: fin.amount || fin.balance,
-      importance: fin.importance,
+      importance: fin.importance
     },
-    position: generateRandomPosition(),
+    position: generateRandomPosition()
   });
 }
 
@@ -430,7 +430,7 @@ async function generateConnections(nodes: any[], connectionStrength: number, opt
             body: JSON.stringify({
               vector1: node1.metadata.embeddingVector,
               vector2: node2.metadata.embeddingVector,
-              similarityType: 'cosine',
+              similarityType: 'cosine'
             })
           });
           
@@ -460,8 +460,8 @@ async function generateConnections(nodes: any[], connectionStrength: number, opt
             connectionType: determineConnectionType(node1, node2),
             predicted: strength < 0.7 && includePredictedConnections,
             semanticEnhanced: !!(node1.metadata?.embeddingVector && node2.metadata?.embeddingVector),
-            sharedKeyTerms: getSharedKeyTerms(node1.metadata?.keyTerms || [], node2.metadata?.keyTerms || []),
-          },
+            sharedKeyTerms: getSharedKeyTerms(node1.metadata?.keyTerms || [], node2.metadata?.keyTerms || [])
+          }
         });
       }
     }
@@ -554,7 +554,7 @@ async function generateClusters(nodes: any[], edges: any[]): Promise<any[]> {
         label: `${type.charAt(0).toUpperCase() + type.slice(1)} Cluster`,
         nodes: typeNodes.map(n => n.id),
         color: getClusterColor(index),
-        size: typeNodes.length,
+        size: typeNodes.length
       });
     }
   });
@@ -575,7 +575,7 @@ function calculateConnectionStatistics(nodes: any[], edges: any[]): any {
     weakConnections,
     predictedConnections,
     averageConnections: edges.length > 0 ? (edges.reduce((sum, e) => sum + e.weight, 0) / edges.length).toFixed(2) : 0,
-    networkDensity: nodes.length > 1 ? (edges.length / (nodes.length * (nodes.length - 1) / 2)).toFixed(2) : 0,
+    networkDensity: nodes.length > 1 ? (edges.length / (nodes.length * (nodes.length - 1) / 2)).toFixed(2) : 0
   };
 }
 
@@ -589,7 +589,7 @@ function getNodeColor(type: string, subtype?: string): string {
     location: '#10B981',
     event: '#F59E0B',
     communication: '#8B5CF6',
-    financial: '#06B6D4',
+    financial: '#06B6D4'
   };
   return colors[type] || '#6B7280';
 }

@@ -13,7 +13,7 @@ const DATABASE_URL = import.meta.env.VITE_DATABASE_URL ||
 const sql = postgres(DATABASE_URL, {
   max: 10,
   idle_timeout: 30,
-  connect_timeout: 2,
+  connect_timeout: 2
 });
 
 // Create Drizzle instance with schema
@@ -39,8 +39,8 @@ export async function testDatabaseConnection(): Promise<any> {
         postgresVersion: (result as any)[0]?.version,
         pgvectorEnabled: hasVector,
         poolSize: 'n/a',
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
   } catch (error: any) {
     return {
@@ -48,8 +48,8 @@ export async function testDatabaseConnection(): Promise<any> {
       message: `Database connection failed: ${(error as Error).message}`,
       details: {
         error: (error as Error).stack,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
   }
 }
@@ -76,20 +76,20 @@ export async function vectorSimilaritySearch(
     const result = await pool.unsafe(query, [
       JSON.stringify(queryEmbedding),
       threshold,
-      limit,
+      limit
     ]);
 
     return {
       success: true,
       results: result,
-      count: Array.isArray(result) ? (result as { length?: any }).length: 0,
+      count: Array.isArray(result) ? (result as { length?: any }).length: 0
     };
   } catch (error: any) {
     return {
       success: false,
       error: (error as Error).message,
       results: [],
-      count: 0,
+      count: 0
     };
   }
 }
@@ -161,7 +161,7 @@ export async function hybridSemanticSearch(
       results: result,
       count: Array.isArray(result) ? (result as { length?: any }).length: 0,
       query,
-      queryEmbedding: queryEmbedding.slice(0, 5),
+      queryEmbedding: queryEmbedding.slice(0, 5)
     };
   } catch (error: any) {
     return {
@@ -169,7 +169,7 @@ export async function hybridSemanticSearch(
       error: (error as Error).message,
       results: [],
       count: 0,
-      query,
+      query
     };
   }
 }
@@ -201,7 +201,7 @@ export async function initializeDatabase(): Promise<any> {
     console.error('❌ Database initialization error:', error);
     return {
       success: false,
-      message: `Initialization failed: ${(error as Error).message}`,
+      message: `Initialization failed: ${(error as Error).message}`
     };
   }
 }

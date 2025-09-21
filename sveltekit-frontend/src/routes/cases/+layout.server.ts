@@ -8,7 +8,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
   const user = locals.user || {
     id: 'test-user-id',
     role: 'user' as const,
-    email: 'test@example.com',
+    email: 'test@example.com'
   };
 
   // REMOVED: Authentication redirect for testing;
@@ -86,6 +86,6 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
     priorityFilter,
     sortBy,
     sortOrder,
-    user,
+    user
   };
 };

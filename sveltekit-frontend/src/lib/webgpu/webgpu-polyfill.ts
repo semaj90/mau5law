@@ -22,7 +22,7 @@ export class WebGPUPolyfill {
     totalProcessingTime: 0,
     averageProcessingTime: 0,
     webgpuOpsCount: 0,
-    webglOpsCount: 0,
+    webglOpsCount: 0
   };
 
   async initialize(): Promise<boolean> {
@@ -30,7 +30,7 @@ export class WebGPUPolyfill {
     if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
       try {
         this.adapter = await (navigator as any).gpu.requestAdapter({
-          powerPreference: 'high-performance',
+          powerPreference: 'high-performance'
         });
 
         if (this.adapter) {
@@ -40,8 +40,8 @@ export class WebGPUPolyfill {
               maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize,
               maxComputeWorkgroupStorageSize: this.adapter.limits.maxComputeWorkgroupStorageSize,
               maxComputeInvocationsPerWorkgroup:
-                this.adapter.limits.maxComputeInvocationsPerWorkgroup,
-            },
+                this.adapter.limits.maxComputeInvocationsPerWorkgroup
+            }
           });
 
           this.queue = this.device.queue;
@@ -72,7 +72,7 @@ export class WebGPUPolyfill {
 
       this.canvas = document.createElement('canvas');
       this.webglFallback = this.canvas.getContext('webgl2', {
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
 
       if (!this.webglFallback) {
@@ -84,7 +84,7 @@ export class WebGPUPolyfill {
       const requiredExtensions = [
         'EXT_color_buffer_float',
         'OES_texture_float_linear',
-        'WEBGL_debug_renderer_info',
+        'WEBGL_debug_renderer_info'
       ];
 
       for (const ext of requiredExtensions) {
@@ -113,7 +113,7 @@ export class WebGPUPolyfill {
         limits: Object.fromEntries(
           Object.entries(this.device.limits).map(([key, value]) => [key, Number(value)])
         ),
-        isAvailable: true,
+        isAvailable: true
       };
     }
 
@@ -123,7 +123,7 @@ export class WebGPUPolyfill {
       adapter: null as any,
       features: [],
       limits: Record<string, any>,
-      isAvailable: false,
+      isAvailable: false
     };
   }
 
@@ -174,17 +174,17 @@ export class WebGPUPolyfill {
     // Create buffers;
     const inputBuffer = this.device.createBuffer({
       size: inputVector.length * 4, // 4 bytes per float32
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const outputBuffer = this.device.createBuffer({
       size: dimensions * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const resultBuffer = this.device.createBuffer({
       size: dimensions * 4,
-      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
 
     // Write input data
@@ -195,8 +195,8 @@ export class WebGPUPolyfill {
       layout: shader.bindGroupLayout,
       entries: [
         { binding: 0, resource: { buffer: inputBuffer } },)
-        { binding: 1, resource: { buffer: outputBuffer } },
-      ],
+        { binding: 1, resource: { buffer: outputBuffer } }
+      ]
     });
 
     // Dispatch compute shader
@@ -232,7 +232,7 @@ export class WebGPUPolyfill {
 
     const shaderCode = `;
 			struct VectorData {
-				values: array<f32>,
+				values: array<f32>
 			};
 
 			@group(0) @binding(0) var<storage, read> input_vector: VectorData;
@@ -261,7 +261,7 @@ export class WebGPUPolyfill {
 		`;
 
     const module = this.device.createShaderModule({
-      code: shaderCode,
+      code: shaderCode
     });
 
     const bindGroupLayout = this.device.createBindGroupLayout({
@@ -269,24 +269,24 @@ export class WebGPUPolyfill {
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },)>;
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' },
-        },
-      ],
+          buffer: { type: 'storage' }
+        }
+      ]
     });
 
     const pipeline = this.device.createComputePipeline({
       layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+        bindGroupLayouts: [bindGroupLayout]
       }),
       compute: {
         module,
-        entryPoint: 'main',
-      },
+        entryPoint: 'main'
+      }
     });
 
     return { module, pipeline, bindGroupLayout };
@@ -301,7 +301,7 @@ export class WebGPUPolyfill {
     try {
       const cached = await shaderCacheManager.getShader(shaderId, '', {
         type: 'compute',
-        entryPoint: 'main',
+        entryPoint: 'main'
       });
       
       if (cached && cached.shaderModule && cached.pipeline && cached.bindGroupLayout) {
@@ -309,7 +309,7 @@ export class WebGPUPolyfill {
         return {
           module: cached.shaderModule,
           pipeline: cached.pipeline as GPUComputePipeline,
-          bindGroupLayout: cached.bindGroupLayout,
+          bindGroupLayout: cached.bindGroupLayout
         };
       }
     } catch (error) {
@@ -318,13 +318,13 @@ export class WebGPUPolyfill {
 
     const shaderCode = `;
       struct VectorData {
-        values: array<f32>,
+        values: array<f32>
       };
 
       struct SimilarityResult {
         dot_product: f32,
         norm1: f32,
-        norm2: f32,
+        norm2: f32
       };
 
       @group(0) @binding(0) var<storage, read> vector1: VectorData;
@@ -369,7 +369,7 @@ export class WebGPUPolyfill {
     `;
 
     const module = this.device.createShaderModule({
-      code: shaderCode,
+      code: shaderCode
     });
 
     const bindGroupLayout = this.device.createBindGroupLayout({
@@ -377,29 +377,29 @@ export class WebGPUPolyfill {
         {
           binding: 0,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'read-only-storage' },
+          buffer: { type: 'read-only-storage' }
         },)>;
         {
           binding: 2,
           visibility: GPUShaderStage.COMPUTE,
-          buffer: { type: 'storage' },
-        },
-      ],
+          buffer: { type: 'storage' }
+        }
+      ]
     });
 
     const pipeline = this.device.createComputePipeline({
       layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [bindGroupLayout],
+        bindGroupLayouts: [bindGroupLayout]
       }),
       compute: {
         module,
-        entryPoint: 'main',
-      },
+        entryPoint: 'main'
+      }
     });
 
     const shaderResult = { module, pipeline, bindGroupLayout };
@@ -414,7 +414,7 @@ export class WebGPUPolyfill {
         bindGroupLayout,
         config: {
           type: 'compute' as const,
-          entryPoint: 'main',
+          entryPoint: 'main'
         },
         metadata: {
           compiledAt: Date.now(),
@@ -666,22 +666,22 @@ export class WebGPUPolyfill {
     // Create buffers;
     const vector1Buffer = this.device.createBuffer({
       size: vectorLength * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const vector2Buffer = this.device.createBuffer({
       size: vectorLength * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const resultBuffer = this.device.createBuffer({
       size: 12, // 3 floats: dot_product, norm1, norm2
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const readBuffer = this.device.createBuffer({
       size: 12,
-      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
 
     // Write input data
@@ -694,8 +694,8 @@ export class WebGPUPolyfill {
       entries: [
         { binding: 0, resource: { buffer: vector1Buffer } },
         { binding: 1, resource: { buffer: vector2Buffer } },)
-        { binding: 2, resource: { buffer: resultBuffer } },
-      ],
+        { binding: 2, resource: { buffer: resultBuffer } }
+      ]
     });
 
     // Dispatch compute shader
@@ -768,7 +768,7 @@ export class WebGPUPolyfill {
       webglPercentage:
         (this.performanceStats.webglOpsCount / this.performanceStats.operationsCompleted) * 100,
       isWebGPUAvailable: this.isWebGPUAvailable,
-      hasWebGLFallback: !!this.webglFallback,
+      hasWebGLFallback: !!this.webglFallback
     };
   }
 

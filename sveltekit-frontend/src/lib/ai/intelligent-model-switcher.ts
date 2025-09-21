@@ -19,12 +19,12 @@ export interface ModelSwitchDecision {
   estimatedImprovement: {
     speedGain: number; // percentage
     qualityGain: number; // percentage
-    userSatisfactionGain: number; // percentage,
+    userSatisfactionGain: number; // percentage
   };
   switchCost: {
     timeMs: number;
     memoryMB: number;
-    cpuUsage: number;,
+    cpuUsage: number;
   };
 }
 
@@ -39,10 +39,10 @@ export interface UserLearningProfile {
     avgQueryLength: number;
     commonIntents: string[];
     peakUsageHours: number[];
-    taskComplexityPreference: number; // 0-1,
+    taskComplexityPreference: number; // 0-1
   };
   satisfactionHistory: Array<any>;
-  adaptationRate: number; // How quickly to adapt to new patterns,
+  adaptationRate: number; // How quickly to adapt to new patterns
 }
 
 export interface FastUXOptimization {
@@ -68,7 +68,7 @@ class IntelligentModelSwitcher {
     totalSwitches: 0,
     successfulSwitches: 0,
     avgSwitchTime: 0,
-    userSatisfactionImprovement: 0,
+    userSatisfactionImprovement: 0
   };
 
   constructor() {
@@ -173,7 +173,7 @@ class IntelligentModelSwitcher {
         fastUXOptimizations: [],
         userLearningUpdates: [],
         didYouMeanSuggestions: [],
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
   }
@@ -261,7 +261,7 @@ class IntelligentModelSwitcher {
         {
           text: userContext || '',
           type: 'legal-analysis',
-          priority: 'normal',
+          priority: 'normal'
         }
       );
       
@@ -281,7 +281,7 @@ class IntelligentModelSwitcher {
       return {
         success: false,
         switchTime: performance.now() - startTime,
-        error: error?.message || 'Unknown error',
+        error: error?.message || 'Unknown error'
       };
     }
   }
@@ -315,10 +315,10 @@ class IntelligentModelSwitcher {
         avgQueryLength: 50,
         commonIntents: ['chat'],
         peakUsageHours: [9, 10, 14, 15], // Business hours
-        taskComplexityPreference: 0.5,
+        taskComplexityPreference: 0.5
       },
       satisfactionHistory: [],
-      adaptationRate: 0.1 // Moderate adaptation rate,
+      adaptationRate: 0.1 // Moderate adaptation rate
     };
     
     this.userProfiles.set(profileKey, profile);
@@ -398,7 +398,7 @@ class IntelligentModelSwitcher {
           modelUsed,
           query,
           satisfactionScore: userFeedback,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
         
         // Keep only recent 50 satisfaction scores;
@@ -446,7 +446,7 @@ class IntelligentModelSwitcher {
           tier: 'l2',
           ttl: 24 * 60 * 60 * 1000, // 24 hours
           priority: 'normal',
-          type: 'user_profile',
+          type: 'user_profile'
         }
       );
       
@@ -474,7 +474,7 @@ class IntelligentModelSwitcher {
           precomputedSwitches: new Map(),
           contextualPredictions: [],
           didYouMeanCache: new Map(),
-          userIntentShortcuts: new Map(),
+          userIntentShortcuts: new Map()
         };
         this.fastUXOptimizations.set(profileKey, fastUX);
       }
@@ -574,7 +574,7 @@ class IntelligentModelSwitcher {
   private generateContextualPredictions(profile: UserLearningProfile, currentQuery: string): Array<{
     nextLikelyIntent: string;
     probability: number;
-    suggestedModel: string;,
+    suggestedModel: string;
   }> {
     // Simplified prediction based on patterns
     return [
@@ -610,7 +610,7 @@ class IntelligentModelSwitcher {
       reason,
       performance,
       userSatisfaction: 0.8, // Would track actual satisfaction
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     
     // Keep only recent 1000 switches;
@@ -647,7 +647,7 @@ class IntelligentModelSwitcher {
       avgSwitchTime: this.performanceMonitor.avgSwitchTime,
       userSatisfactionImprovement: this.performanceMonitor.userSatisfactionImprovement,
       activeUserProfiles: this.userProfiles.size,
-      learningPhaseDistribution: phaseDistribution,
+      learningPhaseDistribution: phaseDistribution
     };
   }
 }

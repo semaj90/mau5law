@@ -18,7 +18,7 @@ const OrganizationRequestSchema = z.object({
     evidenceType: z.string().optional(),
     dateRange: z.string().optional(),
     priority: z.string().optional(),
-    status: z.string().optional(),
+    status: z.string().optional()
   }).optional(),
   aiClusteringParams: z.object({
     minClusterSize: z.number().min(1).default(2),
@@ -26,7 +26,7 @@ const OrganizationRequestSchema = z.object({
     similarityThreshold: z.number().min(0).max(1).default(0.7),
     method: z.enum(['kmeans', 'hierarchical', 'dbscan']).default('kmeans')
   }).optional(),
-  includeAnalytics: z.boolean().default(true),
+  includeAnalytics: z.boolean().default(true)
 });
 
 /*
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const evidenceResult = await evidenceService.listByCase(caseId, {
       page: 1,
       limit: 1000,
-      ...(filters && { filters ,})
+      ...(filters && { filters })
     });
 
     if (!evidenceResult || !evidenceResult.data) {
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Failed to retrieve evidence',
           code: 'EVIDENCE_FETCH_FAILED',
-          details: 'Service returned invalid response',
+          details: 'Service returned invalid response'
         })
       );
     }
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         organizationStructure = await organizeByRecursiveChain(evidence);
         break;
       default:
-        organizationStructure = await organizeByCategory(evidence);,
+        organizationStructure = await organizeByCategory(evidence);
     }
 
     // Generate analytics if requested;
@@ -126,13 +126,13 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           totalEvidence: evidence.length,
           organizedAt: new Date().toISOString(),
           organizationMethod: organizationMode,
-          filtersApplied: filters,
+          filtersApplied: filters
         }
       },
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString(),
-        action: 'evidence_organized',
+        action: 'evidence_organized'
       }
     });
 
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid organization request',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to organize evidence',
         code: 'ORGANIZATION_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -175,7 +175,7 @@ async function organizeByCategory(evidence: any[]) {
         displayName: formatCategoryName(category),
         evidence: [],
         count: 0,
-        priority: calculateCategoryPriority(category),
+        priority: calculateCategoryPriority(category)
       };
     }
     categories[category].evidence.push(item);
@@ -187,7 +187,7 @@ async function organizeByCategory(evidence: any[]) {
     categories: Object.values(categories).sort((a: any, b: any) => (b.priority || 0) - (a.priority || 0)),
     metadata: {
       totalCategories: Object.keys(categories).length,
-      method: 'evidence_type_classification',
+      method: 'evidence_type_classification'
     }
   };
 }
@@ -213,7 +213,7 @@ async function organizeByTimeline(evidence: any[]) {
       evidence: any[];
       count: number;
       startDate: Date;
-      endDate: Date;,
+      endDate: Date;
     }
   > = {};
   timelineEvidence.forEach((item) => {
@@ -228,7 +228,7 @@ async function organizeByTimeline(evidence: any[]) {
         evidence: [],
         count: 0,
         startDate: date,
-        endDate: date,
+        endDate: date
       };
     }
 
@@ -250,8 +250,8 @@ async function organizeByTimeline(evidence: any[]) {
     metadata: {
       totalPeriods: Object.keys(periods).length,
       timelineSpan: calculateTimelineSpan(Object.values(periods)),
-      uncategorizedCount: uncategorized.length,
-    },
+      uncategorizedCount: uncategorized.length
+    }
   };
 }
 
@@ -264,7 +264,7 @@ async function organizeByPriority(evidence: any[]) {
     high: { name: 'High', evidence: [], color: '#ea580c', weight: 3, count: 0 },
     medium: { name: 'Medium', evidence: [], color: '#d97706', weight: 2, count: 0 },
     low: { name: 'Low', evidence: [], color: '#65a30d', weight: 1, count: 0 },
-    unknown: { name: 'Unknown', evidence: [], color: '#6b7280', weight: 0, count: 0 },
+    unknown: { name: 'Unknown', evidence: [], color: '#6b7280', weight: 0, count: 0 }
   };
 
   evidence.forEach((item) => {
@@ -290,9 +290,9 @@ async function organizeByPriority(evidence: any[]) {
       priorityDistribution: nonEmptyPriorities.map((p) => ({
         level: p.name.toLowerCase(),
         count: p.count,
-        percentage: ((p.count / evidence.length) * 100).toFixed(1),
-      })),
-    },
+        percentage: ((p.count / evidence.length) * 100).toFixed(1)
+      }))
+    }
   };
 }
 
@@ -319,8 +319,8 @@ async function organizeByAIClusters(evidence: any[], clusteringParams: any) {
         parameters: clusteringParams,
         averageClusterSize:
           enhancedClusters.length > 0 ? (evidence.length / enhancedClusters.length).toFixed(1) : 0,
-        generatedAt: new Date().toISOString(),
-      },
+        generatedAt: new Date().toISOString()
+      }
     };
   } catch (error) {
     console.error('AI clustering failed:', error);
@@ -348,14 +348,14 @@ async function organizeByChainOfCustody(evidence: any[]) {
         officer: custody[0]?.officer_name || 'Unknown Officer',
         evidence: [],
         status: chainStatus,
-        completeness: 0,
+        completeness: 0
       };
     }
 
     custodyChains[chainId].evidence.push({
       ...item,
       custodyStatus: chainStatus,
-      custodySteps: custody.length,
+      custodySteps: custody.length
     });
   });
 
@@ -377,8 +377,8 @@ async function organizeByChainOfCustody(evidence: any[]) {
         (evidence.filter((e) => validateChainOfCustody(e.chain_of_custody) === 'complete').length /
           evidence.length) *
         100,
-      custodyStatistics: calculateCustodyStatistics(evidence),
-    },
+      custodyStatistics: calculateCustodyStatistics(evidence)
+    }
   };
 }
 
@@ -406,7 +406,7 @@ async function organizeByRecursiveChain(evidence: any[]) {
       metadata: {
         ...recursiveResult.metadata,
         organizationMethod: 'recursive_evidence_chain_analysis',
-        phase: 'phase_1_implementation',
+        phase: 'phase_1_implementation'
       }
     };
 
@@ -431,7 +431,7 @@ async function getEvidenceEmbeddings(evidence: any[]) {
       if ((item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).metadata?.aiAnalysis?.embeddingVector) {
         evidenceWithEmbeddings.push({
           ...item,
-          embedding: (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).metadata.aiAnalysis.embeddingVector,
+          embedding: (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).metadata.aiAnalysis.embeddingVector
         });
         continue;
       }
@@ -444,15 +444,15 @@ async function getEvidenceEmbeddings(evidence: any[]) {
           evidenceId: (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).id,
           content: (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).title + ' ' + ((item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).description || ''),
           useGemmaEmbeddings: true,
-          analysisType: 'embedding_generation',
-        }),
+          analysisType: 'embedding_generation'
+        })
       });
 
       if ((response as { ok?: any; json?: any }).ok) {
         const analysis = await (response as { ok?: any; json?: any }).json();
         evidenceWithEmbeddings.push({
           ...item,
-          embedding: analysis.embedding || null,
+          embedding: analysis.embedding || null
         });
       } else {
         evidenceWithEmbeddings.push({ ...item, embedding: null });
@@ -482,15 +482,15 @@ async function generateAIClusters(evidenceWithEmbeddings: any[], params: any) {
             title: e.title,
             type: e.evidenceType,
             description: e.description,
-            embedding: e.embedding,
+            embedding: e.embedding
           })),
         clusteringParams: {
           minClusterSize: params.minClusterSize || 2,
           maxClusters: params.maxClusters || 10,
           similarityThreshold: params.similarityThreshold || 0.7,
-          method: params.method || 'kmeans',
-        },
-      }),
+          method: params.method || 'kmeans'
+        }
+      })
     });
 
     if ((response as { ok?: any; json?: any }).ok) {
@@ -519,7 +519,7 @@ async function enhanceClusters(clusters: any[]) {
     keywords: cluster.keywords || extractClusterKeywords(cluster.evidence),
     color: getClusterColor(index),
     centroid: cluster.centroid,
-    coherence: calculateClusterCoherence(cluster.evidence),
+    coherence: calculateClusterCoherence(cluster.evidence)
   });
 }
 
@@ -532,7 +532,7 @@ function generateOrganizationAnalytics(evidence: any[], structure: any) {
     organizationEfficiency: 0,
     coverage: 0,
     qualityScore: 0,
-    recommendations: [],
+    recommendations: []
   };
 
   // Calculate metrics based on organization type;
@@ -590,7 +590,7 @@ function calculateCategoryPriority(category: string): number {
     photograph: 6,
     video: 6,
     audio: 5,
-    other: 1,
+    other: 1
   };
   return priorities[category] || 3;
 }
@@ -635,7 +635,7 @@ function calculateTimelineSpan(periods: any[]): any {
   return {
     start: minDate.toISOString(),
     end: maxDate.toISOString(),
-    durationDays: Math.ceil((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24)),
+    durationDays: Math.ceil((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24))
   };
 }
 
@@ -651,7 +651,7 @@ function calculateCustodyStatistics(evidence: any[]): any {
     statusDistribution: statuses,
     totalWithCustody: evidence.filter((e) => e.chain_of_custody?.length > 0).length,
     averageCustodySteps:
-      evidence.reduce((sum, e) => sum + (e.chain_of_custody?.length || 0), 0) / evidence.length,
+      evidence.reduce((sum, e) => sum + (e.chain_of_custody?.length || 0), 0) / evidence.length
   };
 }
 
@@ -665,7 +665,7 @@ function performSimpleClustering(evidenceWithEmbeddings: any[]) {
       clusters[type] = {
         evidence: [],
         name: formatCategoryName(type),
-        averageSimilarity: 0.5,
+        averageSimilarity: 0.5
       };
     }
     clusters[type].evidence.push(item);

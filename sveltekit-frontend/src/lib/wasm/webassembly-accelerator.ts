@@ -98,7 +98,7 @@ export class WebAssemblyAccelerator {
       const memory = new WebAssembly.Memory({
         initial: 256, // 16MB initial
         maximum: 1024, // 64MB maximum
-        shared: false,
+        shared: false
       });
 
       const defaultImports = {
@@ -107,9 +107,9 @@ export class WebAssemblyAccelerator {
           abort: () => {
             throw new Error("WASM module aborted");
           },
-          ...imports.env,
+          ...imports.env
         },
-        ...imports,
+        ...imports
       };
 
       const instance = await WebAssembly.instantiate(module, defaultImports);
@@ -118,7 +118,7 @@ export class WebAssemblyAccelerator {
         instance,
         module,
         memory,
-        exports: instance.exports,
+        exports: instance.exports
       };
 
       if (moduleId) {
@@ -370,16 +370,16 @@ export class WebAssemblyAccelerator {
     const modules: Record<string, number[]> = {
       simdjson: [
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x07, 0x01, 0x60,
-        0x02, 0x7f, 0x7f, 0x01, 0x7f,
+        0x02, 0x7f, 0x7f, 0x01, 0x7f
       ],
       "vector-ops": [
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x0a, 0x02, 0x60,
-        0x02, 0x7f, 0x7f, 0x00, 0x60, 0x00, 0x00,
+        0x02, 0x7f, 0x7f, 0x00, 0x60, 0x00, 0x00
       ],
       "ocr-processor": [
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x0d, 0x03, 0x60,
-        0x04, 0x7f, 0x7f, 0x7f, 0x7f, 0x01, 0x7f,
-      ],
+        0x04, 0x7f, 0x7f, 0x7f, 0x7f, 0x01, 0x7f
+      ]
     };
 
     return new Uint8Array(modules[moduleName] || modules["simdjson"]);

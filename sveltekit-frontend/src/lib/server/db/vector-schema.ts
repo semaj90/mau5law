@@ -8,7 +8,7 @@ import {
   timestamp,
   jsonb,
   integer,
-  real,
+  real
 } from "drizzle-orm/pg-core";
 import { vector } from "pgvector/drizzle-orm";
 import { relations } from "drizzle-orm";
@@ -37,7 +37,7 @@ export const documentEmbeddings = pgTable(
       .default({}),
     modelUsed: text("model_used").default("nomic-embed-text"),
     createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
   },
   (table) => ({
     // Vector similarity search index
@@ -47,7 +47,7 @@ export const documentEmbeddings = pgTable(
       table.documentId,
       table.documentType,
     ),
-    createdAtIdx: index("idx_created_at").on(table.createdAt),
+    createdAtIdx: index("idx_created_at").on(table.createdAt)
   }),
 );
 
@@ -73,15 +73,15 @@ export const searchQueries = pgTable(
     results: jsonb("results")
       .$type;
         totalFound: number;
-        searchTime: number;,
+        searchTime: number;
       }>()
       .default({ items: [], totalFound: 0, searchTime: 0 }),
-    createdAt: timestamp("created_at").defaultNow(),
+    createdAt: timestamp("created_at").defaultNow()
   },
   (table) => ({
     userIdx: index("idx_search_user").on(table.userId),
     queryEmbeddingIdx: index("idx_query_embedding").on(table.queryEmbedding),
-    createdAtIdx: index("idx_search_created").on(table.createdAt),
+    createdAtIdx: index("idx_search_created").on(table.createdAt)
   }),
 );
 
@@ -109,14 +109,14 @@ export const aiModels = pgTable(
       .default({}),
     isActive: integer("is_active").notNull().default(1),
     createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow()
   },
   (table) => ({
     nameIdx: index("idx_model_name").on(table.name),
     providerTypeIdx: index("idx_provider_type").on(
       table.provider,
       table.modelType,
-    ),
+    )
   }),
 );
 

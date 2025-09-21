@@ -15,9 +15,9 @@ const VerificationRequestSchema = z.object({
   citationId: z.string().uuid().optional(),
   citationText: z.string().optional(),
   verificationLevel: z.enum(['basic', 'comprehensive', 'deep']).default('basic'),
-  autoUpdate: z.boolean().default(false),
+  autoUpdate: z.boolean().default(false)
 }).refine(data => (data as { citationId?: any; citationText?: any }).citationId || (data as { citationId?: any; citationText?: any }).citationText, {
-  message: "Either citationId or citationText must be provided",
+  message: "Either citationId or citationText must be provided"
 });
 
 // External API configurations (mock endpoints for demonstration);
@@ -25,7 +25,7 @@ const LEGAL_DATABASES = {
   westlaw: 'https://api.westlaw.com/verify',
   lexis: 'https://api.lexisnexis.com/verify',
   justia: 'https://api.justia.com/verify',
-  courtlistener: 'https://api.courtlistener.com/verify',
+  courtlistener: 'https://api.courtlistener.com/verify'
 };
 
 /*
@@ -93,10 +93,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             verification: {
               ...verificationResult,
               verifiedAt: new Date().toISOString(),
-              verifiedBy: locals.user.id,
-            },
+              verifiedBy: locals.user.id
+            }
           },
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(citations.id, citationId);
     }
@@ -108,17 +108,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         citation: citation ? {
           id: citation.id,
           title: citation.title,
-          citation: citation.citation,
+          citation: citation.citation
         } : null,
-        updated: autoUpdate && citationId ? true : false,
+        updated: autoUpdate && citationId ? true : false
       },
       meta: {
         userId: locals.user.id,
         citationId: citationId || null,
         verificationLevel,
         timestamp: new Date().toISOString(),
-        action: 'citation_verified',
-      },
+        action: 'citation_verified'
+      }
     });
 
   } catch (err: any) {
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid verification request',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to verify citation',
         code: 'VERIFICATION_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -162,14 +162,14 @@ async function performCitationVerification(
       format: null,
       accessibility: null,
       accuracy: null,
-      completeness: null,
+      completeness: null
     },
     suggestions: [],
     warnings: [],
     metadata: {
       verificationLevel: level,
-      timestamp: new Date().toISOString(),
-    },
+      timestamp: new Date().toISOString()
+    }
   };
 
   try {
@@ -209,8 +209,8 @@ async function performCitationVerification(
       error: 'Verification process failed',
       details: {
         ...verification.details,
-        error: error instanceof Error ? error.message: 'Unknown error',
-      },
+        error: error instanceof Error ? error.message: 'Unknown error'
+      }
     };
   }
 }
@@ -225,7 +225,7 @@ async function validateCitationFormat(citationText: string): Promise<any> {
     hasVolume: /\b\d+\b/.test(citationText),
     hasReporter: /\b[A-Z]+\.?\s*\d*d?\b/.test(citationText),
     hasPage: /\d+/.test(citationText),
-    properCapitalization: /^[A-Z]/.test(citationText.trim()),
+    properCapitalization: /^[A-Z]/.test(citationText.trim())
   };
 
   const passedChecks = Object.values(formatChecks).filter(item => item.length);
@@ -238,7 +238,7 @@ async function validateCitationFormat(citationText: string): Promise<any> {
     totalChecks,
     details: formatChecks,
     isValidFormat: score >= 0.6,
-    commonFormat: detectCitationFormat(citationText),
+    commonFormat: detectCitationFormat(citationText)
   };
 }
 
@@ -251,7 +251,7 @@ async function verifyWithLegalDatabases(citationText: string): Promise<any> {
     westlaw: { found: true, confidence: 0.92, url: 'https://westlaw.com/result/...' },
     lexis: { found: true, confidence: 0.89, url: 'https://lexisnexis.com/result/...' },
     justia: { found: true, confidence: 0.85, url: 'https://justia.com/result/...' },
-    courtlistener: { found: false, confidence: 0, url: null },
+    courtlistener: { found: false, confidence: 0, url: null }
   };
 
   const sources = Object.entries(mockResults)
@@ -260,7 +260,7 @@ async function verifyWithLegalDatabases(citationText: string): Promise<any> {
       database: source,
       confidence: (result as { found?: any; confidence?: any; url?: any }).confidence,
       url: (result as { found?: any; confidence?: any; url?: any }).url,
-      verified: true,
+      verified: true
     });
 
   const averageConfidence = sources.length > 0
@@ -272,8 +272,8 @@ async function verifyWithLegalDatabases(citationText: string): Promise<any> {
     accessibility: {
       isAccessible: sources.length > 0,
       availableDatabases: sources.length,
-      totalChecked: Object.keys(mockResults).length,
-    },
+      totalChecked: Object.keys(mockResults).length
+    }
   };
 }
 
@@ -294,8 +294,8 @@ async function verifyContentAccuracy(citationText: string, existingCitation?: an
       court: 'verified',
       date: 'verified',
       jurisdiction: 'verified',
-      holding: 'verified',
-    },
+      holding: 'verified'
+    }
   };
 }
 

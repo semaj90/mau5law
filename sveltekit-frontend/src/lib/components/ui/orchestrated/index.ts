@@ -26,14 +26,14 @@ export interface LegalEvidenceItem {
   confidence: number;
   metadata?: Record<string, unknown>;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface AIAnalysisResult {
   confidence: number;
   entities: Array<any>;
   themes: Array<any>;
-  summary: string;,
+  summary: string;
 }
 
 // Orchestrated Dialog - combines headless functionality with enhanced styling;
@@ -44,7 +44,7 @@ export const OrchestratedDialog = Object.assign(HeadlessDialog, {
   // Legal AI specific dialog variants
   EvidenceAnalysis: HeadlessDialog,
   CaseManagement: HeadlessDialog,
-  AIInsights: HeadlessDialog,
+  AIInsights: HeadlessDialog
 });
 
 // Orchestrated Select - combines accessibility with legal categories;
@@ -54,7 +54,7 @@ export const OrchestratedSelect = Object.assign(HeadlessSelectField, {
   // Legal AI specific variants
   EvidenceType: HeadlessSelectField,
   PriorityLevel: HeadlessSelectField,
-  CaseStatus: HeadlessSelectField,
+  CaseStatus: HeadlessSelectField
 });
 
 // Orchestrated Button - combines loading states with legal actions;
@@ -64,7 +64,7 @@ export const OrchestratedButton = Object.assign(LoadingButton, {
   AnalyzeEvidence: LoadingButton,
   ProcessDocument: LoadingButton,
   GenerateReport: LoadingButton,
-  SearchSimilar: LoadingButton,
+  SearchSimilar: LoadingButton
 });
 
 // Orchestrated Card - legal evidence display;
@@ -72,7 +72,7 @@ export const OrchestratedCard = Object.assign(Card, {
   Evidence: Card,
   Analysis: Card,
   CaseFile: Card,
-  AIInsight: Card,
+  AIInsight: Card
 });
 
 // State management integration;
@@ -83,7 +83,7 @@ export interface OrchestrationState {
   evidenceItems: LegalEvidenceItem[];
   analysisResults: Map<string, AIAnalysisResult>;
   cacheStatus: 'idle' | 'loading' | 'syncing' | 'error';
-  gpuAcceleration: boolean;,
+  gpuAcceleration: boolean;
 }
 
 // Export the orchestration context for state machine integration;
@@ -98,7 +98,7 @@ export const OrchestrationContext = {
   webgpuService: null as any,
   
   // Vector search integration
-  vectorService: null as any,
+  vectorService: null as any
 };
 
 // Legal AI utility functions;
@@ -116,7 +116,7 @@ export function getPriorityClass(priority: LegalEvidenceItem['priority']): strin
 export function formatAnalysisDate(date: Date): string {
   return new Intl.DateTimeFormat('en-US', {
     dateStyle: 'medium',
-    timeStyle: 'short',
+    timeStyle: 'short'
   }).format(date);
 }
 
@@ -126,7 +126,7 @@ export const ORCHESTRATED_COMPONENTS = {
   Select: OrchestratedSelect,
   Button: OrchestratedButton,
   Card: OrchestratedCard,
-  Input,
+  Input
 } as const;
 
 // Type exports already defined above - no need to re-export;

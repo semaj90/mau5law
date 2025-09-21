@@ -11,7 +11,7 @@ import {
   decimal,
   serial,
   uuid,
-  real,
+  real
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { users, cases } from './schema-postgres.js';
@@ -46,7 +46,7 @@ export const reports = pgTable("reports", {
     .notNull()
     .references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // === PERSONS OF INTEREST (POIs) ===;
@@ -67,7 +67,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
       who: "",
       what: "",
       why: "",
-      how: "",
+      how: ""
     })
     .notNull(),
 
@@ -86,7 +86,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
     .notNull()
     .references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // === CANVAS CONNECTIONS (for linking evidence, reports, POIs) ===;
@@ -117,7 +117,7 @@ export const canvasConnections = pgTable("canvas_connections", {
     .default({
       color: "#007bff",
       thickness: 2,
-      style: "solid",
+      style: "solid"
     })
     .notNull(),
 
@@ -126,7 +126,7 @@ export const canvasConnections = pgTable("canvas_connections", {
     .notNull()
     .references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // === CANVAS LAYOUTS (for saving different views of the same case) ===;
@@ -145,7 +145,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
     .default({
       x: 0,
       y: 0,
-      zoom: 1,
+      zoom: 1
     })
     .notNull(),
 
@@ -157,7 +157,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
     .notNull()
     .references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // === CANVAS ANNOTATIONS (for drawing/highlighting on the canvas itself) ===;
@@ -184,7 +184,7 @@ export const canvasAnnotations = pgTable("canvas_annotations", {
     .notNull()
     .references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // === AI SUMMARIES (for tracking AI-generated content) ===;
@@ -211,7 +211,7 @@ export const aiSummaries = pgTable("ai_summaries", {
   requestedBy: uuid("requested_by")
     .notNull()
     .references(() => users.id),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // === RELATIONS ===
@@ -219,12 +219,12 @@ export const aiSummaries = pgTable("ai_summaries", {
 export const reportsRelations = relations(reports, ({ one }) => ({
   case: one(cases, {
     fields: [reports.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   createdBy: one(users, {
     fields: [reports.createdBy],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 });
 
 export const personsOfInterestRelations = relations(
@@ -232,12 +232,12 @@ export const personsOfInterestRelations = relations(
   ({ one }) => ({
     case: one(cases, {
       fields: [personsOfInterest.caseId],
-      references: [cases.id],
+      references: [cases.id]
     }),
     createdBy: one(users, {
       fields: [personsOfInterest.createdBy],
-      references: [users.id],
-    }),
+      references: [users.id]
+    })
   }),
 );
 
@@ -246,24 +246,24 @@ export const canvasConnectionsRelations = relations(
   ({ one }) => ({
     case: one(cases, {
       fields: [canvasConnections.caseId],
-      references: [cases.id],
+      references: [cases.id]
     }),
     createdBy: one(users, {
       fields: [canvasConnections.createdBy],
-      references: [users.id],
-    }),
+      references: [users.id]
+    })
   }),
 );
 
 export const canvasLayoutsRelations = relations(canvasLayouts, ({ one }) => ({
   case: one(cases, {
     fields: [canvasLayouts.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   createdBy: one(users, {
     fields: [canvasLayouts.createdBy],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 });
 
 export const canvasAnnotationsRelations = relations(
@@ -271,18 +271,18 @@ export const canvasAnnotationsRelations = relations(
   ({ one }) => ({
     case: one(cases, {
       fields: [canvasAnnotations.caseId],
-      references: [cases.id],
+      references: [cases.id]
     }),
     createdBy: one(users, {
       fields: [canvasAnnotations.createdBy],
-      references: [users.id],
-    }),
+      references: [users.id]
+    })
   }),
 );
 
 export const aiSummariesRelations = relations(aiSummaries, ({ one }) => ({
   requestedBy: one(users, {
     fields: [aiSummaries.requestedBy],
-    references: [users.id],
-  }),
+    references: [users.id]
+  })
 });

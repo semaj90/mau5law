@@ -12,7 +12,7 @@ export interface DocumentUploadContext {
   uploadedFiles: any[];
   aiResults: any;
   error: string | null;
-  retryCount: number;,
+  retryCount: number;
 }
 
 export const documentUploadMachine = createMachine({
@@ -36,7 +36,7 @@ export const documentUploadMachine = createMachine({
     uploadedFiles: [],
     aiResults: null,
     error: null,
-    retryCount: 0,
+    retryCount: 0
   },
   states: {
     idle: {
@@ -45,7 +45,7 @@ export const documentUploadMachine = createMachine({
           target: 'validating',
           actions: assign({
             files: ({ event }) => event.files,
-            error: null,
+            error: null
           })
         }
       }
@@ -87,14 +87,14 @@ export const documentUploadMachine = createMachine({
           target: 'validated',
           actions: assign({
             validationErrors: Record<string, any>,
-            error: null,
+            error: null
           })
         },
         onError: {
           target: 'idle',
           actions: assign({
             validationErrors: ({ event }) => (event as any).error?.validationErrors || {},
-            error: 'File validation failed',
+            error: 'File validation failed'
           })
         }
       }
@@ -132,7 +132,7 @@ export const documentUploadMachine = createMachine({
           try {
             const response = await fetch('/api/upload', {
               method: 'POST',
-              body: formData,
+              body: formData
             });
             
             clearInterval(progressInterval);
@@ -154,7 +154,7 @@ export const documentUploadMachine = createMachine({
           actions: assign({
             uploadedFiles: ({ event }) => event.output.files || [],
             uploadProgress: 100,
-            error: null,
+            error: null
           })
         },
         onError: [;
@@ -193,7 +193,7 @@ export const documentUploadMachine = createMachine({
               },
               body: JSON.stringify({
                 fileId: file.id,
-                analysisType: 'full',
+                analysisType: 'full'
               })
             });
             
@@ -223,7 +223,7 @@ export const documentUploadMachine = createMachine({
           actions: assign({
             aiResults: ({ event }) => event.output,
             processingProgress: 100,
-            error: null,
+            error: null
           })
         },
         onError: {
@@ -236,10 +236,10 @@ export const documentUploadMachine = createMachine({
     },
     retrying: {
       after: {
-        2000: 'uploading',
+        2000: 'uploading'
       },
       on: {
-        RETRY: 'uploading',
+        RETRY: 'uploading'
       }
     },
     completed: {
@@ -255,7 +255,7 @@ export const documentUploadMachine = createMachine({
             uploadedFiles: [],
             aiResults: null,
             error: null,
-            retryCount: 0,
+            retryCount: 0
           })
         }
       }
@@ -267,7 +267,7 @@ export const documentUploadMachine = createMachine({
           target: 'idle',
           actions: assign({
             error: null,
-            retryCount: 0,
+            retryCount: 0
           })
         }
       }

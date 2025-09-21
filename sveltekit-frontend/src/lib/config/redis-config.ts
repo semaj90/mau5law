@@ -31,7 +31,7 @@ export const REDIS_BASE_CONFIG: RedisOptions = {
   enableReadyCheck: true,
   
   // Connection pooling for high concurrency
-  maxLoadingTimeout: 5000,
+  maxLoadingTimeout: 5000
 };
 
 // Development-specific optimizations;
@@ -45,7 +45,7 @@ export const REDIS_DEV_CONFIG: RedisOptions = {
       return null;
     }
     return Math.min(times * 500, 1500);
-  },
+  }
 };
 
 // Production-specific optimizations;
@@ -68,7 +68,7 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
   
   // Production connection pooling
   lazyConnect: false,
-  enableAutoPipelining: true,
+  enableAutoPipelining: true
 };
 
 // Database assignments for different services;
@@ -91,7 +91,7 @@ export const SERVICE_CONFIGS = {
   MAIN_CACHE: {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.CACHE,
-    keyPrefix: 'legal_ai:',
+    keyPrefix: 'legal_ai:'
   },
   
   // Rate limiting service (redisRateLimit.ts);
@@ -107,7 +107,7 @@ export const SERVICE_CONFIGS = {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.LOKI_CACHE,
     keyPrefix: 'loki:',
-    enableAutoPipelining: true,
+    enableAutoPipelining: true
   },
   
   // GPU cache orchestration;
@@ -124,7 +124,7 @@ export const SERVICE_CONFIGS = {
     db: REDIS_DATABASES.WORKER_QUEUE,
     keyPrefix: 'worker:',
     enableReadyCheck: true,
-    maxLoadingTimeout: 10000,
+    maxLoadingTimeout: 10000
   },
   
   // Pub/Sub for real-time features;
@@ -132,8 +132,8 @@ export const SERVICE_CONFIGS = {
     ...REDIS_BASE_CONFIG,
     db: 0, // Pub/Sub uses db 0
     lazyConnect: false, // Immediate connection for pub/sub
-    enableOfflineQueue: false,
-  },
+    enableOfflineQueue: false
+  }
 } as const;
 
 // Environment-specific configuration selection;
@@ -145,7 +145,7 @@ export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOpt
   if (service && SERVICE_CONFIGS[service]) {
     return {
       ...baseConfig,
-      ...SERVICE_CONFIGS[service],
+      ...SERVICE_CONFIGS[service]
     };
   }
   
@@ -222,7 +222,7 @@ export const KEY_PATTERNS = {
   
   // Analytics
   USER_BEHAVIOR: (userId: string) => `analytics:user:${userId}`,
-  SYSTEM_METRICS: (component: string) => `metrics:${component}`,
+  SYSTEM_METRICS: (component: string) => `metrics:${component}`
 } as const;
 
 // Lua scripts for atomic operations;
@@ -276,7 +276,7 @@ export const LUA_SCRIPTS = {
     end
     
     return 'OK'
-  `,
+  `
 } as const;
 
 // Connection pool configuration;
@@ -290,7 +290,7 @@ export const POOL_CONFIG = {
     destroyTimeoutMillis: 5000,
     idleTimeoutMillis: 30000,
     createRetryIntervalMillis: 200,
-    maxRetries: 3,
+    maxRetries: 3
   },
   
   // Production pool (larger);
@@ -302,8 +302,8 @@ export const POOL_CONFIG = {
     destroyTimeoutMillis: 5000,
     idleTimeoutMillis: 60000,
     createRetryIntervalMillis: 500,
-    maxRetries: 5,
-  },
+    maxRetries: 5
+  }
 } as const;
 
 // Export the configuration based on environment
@@ -326,7 +326,7 @@ export const MONITORING_CONFIG = {
     connectionCount: 0.9,         // 90% max connections alert
     slowQueries: 100,             // Alert if > 100 slow queries/min
     responseTime: 1000,           // Alert if > 1000ms average response time
-  },
+  }
 };
 
 // Export everything for easy importing;
@@ -340,5 +340,5 @@ export default {
   MONITORING_CONFIG,
   getRedisConfig,
   createServiceConfig,
-  getRedisUrl,
+  getRedisUrl
 };

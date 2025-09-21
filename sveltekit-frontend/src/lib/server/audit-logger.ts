@@ -66,7 +66,7 @@ export class StorageAuditLogger {
           target: entry.key,
           bucket: entry.bucket,
           success: entry.success,
-          metadata: entry.metadata || null,
+          metadata: entry.metadata || null
         });
       } catch (e) {
         console.error('Failed to write audit entry to DB:', e);
@@ -108,7 +108,7 @@ export class StorageAuditLogger {
             userAgent: entry.userAgent,
             success: entry.success,
             error: entry.error,
-            metadata: entry.metadata ? JSON.stringify(entry.metadata) : null,
+            metadata: entry.metadata ? JSON.stringify(entry.metadata) : null
           }
         });
       }
@@ -147,7 +147,7 @@ export class StorageAuditLogger {
             userAgent: r.user_agent || undefined,
             success: r.success,
             error: r.error || undefined,
-            metadata: r.metadata || undefined,
+            metadata: r.metadata || undefined
           } as AuditEntry);
         } catch (e) {
           console.error('DB audit query failed:', e);
@@ -225,7 +225,7 @@ export class StorageAuditLogger {
         await global.database.auditLog.deleteMany({
           where: {
             timestamp: {
-              lt: cutoffDate,
+              lt: cutoffDate
             }
           }
         });

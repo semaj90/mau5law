@@ -21,10 +21,10 @@ export function createPubSubHelper(opts: PubSubHandlerOptions): PubSubController
   const { primary, subscriber, publisher } = set;
 
   if (opts.patterns?.length) {
-    (subscriber as any).psubscribe(...opts.patterns).catch(()=>{,});
+    (subscriber as any).psubscribe(...opts.patterns).catch(()=>{});
   }
   if (opts.channels?.length) {
-    (subscriber as any).subscribe(...opts.channels).catch(()=>{,});
+    (subscriber as any).subscribe(...opts.channels).catch(()=>{});
   }
 
   (subscriber as any).on('pmessage', (pattern: string, channel: string, message: string) => {

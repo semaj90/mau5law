@@ -17,7 +17,7 @@ declare global {
 
   interface GPUDevice {
     features: GPUSupportedFeatures;
-    limits: GPUSupportedLimits;,
+    limits: GPUSupportedLimits;
   }
 
   interface GPUSupportedFeatures extends Set<string> {}
@@ -31,7 +31,7 @@ declare global {
 
   namespace WebAssembly {
     const SIMD: {
-      supported: boolean;,
+      supported: boolean;
     };
   }
 }
@@ -48,24 +48,24 @@ export interface RuntimeCapabilities {
     available: boolean;
     context?: WebGL2RenderingContext;
     extensions: string[];
-    maxTextureSize: number;,
+    maxTextureSize: number;
   };
   wasmSIMD: {
     available: boolean;
     supportedInstructions: string[];
-    threadCount: number;,
+    threadCount: number;
   };
   tensorRT: {
     available: boolean;
     endpoint?: string;
-    models: string[];,
+    models: string[];
   };
   chrRomCache: {
     available: boolean;
     redisConnected: boolean;
     patterns: number;
     hitRate: number;
-    avgResponseTime: number;,
+    avgResponseTime: number;
   };
 }
 
@@ -151,7 +151,7 @@ export class UnifiedRuntimeAbstraction {
         webgpu: this.capabilities.webgpu.available,
         webgl2: this.capabilities.webgl2.available,
         wasmSIMD: this.capabilities.wasmSIMD.available,
-        tensorRT: this.capabilities.tensorRT.available,
+        tensorRT: this.capabilities.tensorRT.available
       });
 
       return true;
@@ -210,7 +210,7 @@ export class UnifiedRuntimeAbstraction {
         powerPreference: 'high-performance',
         antialias: false,
         depth: false,
-        stencil: false,
+        stencil: false
       });
 
       if (!gl) {
@@ -223,12 +223,12 @@ export class UnifiedRuntimeAbstraction {
         available: true,
         context: gl,
         extensions: gl.getSupportedExtensions() || [],
-        maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE),
+        maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE)
       };
 
       console.log('[Runtime] WebGL2 initialized:', {
         extensions: this.capabilities.webgl2.extensions.length,
-        maxTextureSize: this.capabilities.webgl2.maxTextureSize,
+        maxTextureSize: this.capabilities.webgl2.maxTextureSize
       });
 
     } catch (error) {
@@ -268,12 +268,12 @@ export class UnifiedRuntimeAbstraction {
       this.capabilities.wasmSIMD = {
         available: true,
         supportedInstructions,
-        threadCount: navigator.hardwareConcurrency || 4,
+        threadCount: navigator.hardwareConcurrency || 4
       };
 
       console.log('[Runtime] WASM SIMD initialized:', {
         instructions: supportedInstructions,
-        threads: this.capabilities.wasmSIMD.threadCount,
+        threads: this.capabilities.wasmSIMD.threadCount
       });
 
     } catch (error) {
@@ -288,7 +288,7 @@ export class UnifiedRuntimeAbstraction {
     try {
       const response = await fetch(`${this.tensorRTEndpoint}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(3000),
+        signal: AbortSignal.timeout(3000)
       });
 
       if (response.ok) {
@@ -296,12 +296,12 @@ export class UnifiedRuntimeAbstraction {
         this.capabilities.tensorRT = {
           available: true,
           endpoint: this.tensorRTEndpoint,
-          models: data.models || ['gemma3-legal:latest'],
+          models: data.models || ['gemma3-legal:latest']
         };
 
         console.log('[Runtime] TensorRT available:', {
           endpoint: this.tensorRTEndpoint,
-          models: this.capabilities.tensorRT.models,
+          models: this.capabilities.tensorRT.models
         });
       }
     } catch (error) {
@@ -316,7 +316,7 @@ export class UnifiedRuntimeAbstraction {
     try {
       const response = await fetch('/api/chrrom/events', {
         method: 'GET',
-        signal: AbortSignal.timeout(2000),
+        signal: AbortSignal.timeout(2000)
       });
 
       if (response.ok) {
@@ -326,7 +326,7 @@ export class UnifiedRuntimeAbstraction {
           redisConnected: cacheStatus.redis_connected || false,
           patterns: cacheStatus.pattern_count || 0,
           hitRate: cacheStatus.hit_rate || 0,
-          avgResponseTime: cacheStatus.avg_response_time || 0,
+          avgResponseTime: cacheStatus.avg_response_time || 0
         };
 
         console.log('[Runtime] CHR-ROM cache available:', {
@@ -476,7 +476,7 @@ export class UnifiedRuntimeAbstraction {
         model: request.model,
         prompt: request.prompt,
         useWebGL2: true,
-        maxTokens: request.maxTokens,
+        maxTokens: request.maxTokens
       })
     });
 
@@ -493,7 +493,7 @@ export class UnifiedRuntimeAbstraction {
         executionTime: 0,
         tokensGenerated: data.metadata?.tokensGenerated || 0,
         confidence: data.metadata?.confidence || 0.8,
-        deviceInfo: this.webgl2Context.getParameter(this.webgl2Context.RENDERER),
+        deviceInfo: this.webgl2Context.getParameter(this.webgl2Context.RENDERER)
       }
     };
   }
@@ -519,7 +519,7 @@ export class UnifiedRuntimeAbstraction {
         max_tokens: request.maxTokens || 2048,
         temperature: request.temperature || 0.7,
         use_tensor_cores: true,
-        optimize_for_legal: request.model === 'gemma3-legal:latest',
+        optimize_for_legal: request.model === 'gemma3-legal:latest'
       })
     });
 
@@ -536,7 +536,7 @@ export class UnifiedRuntimeAbstraction {
         executionTime: 0,
         tokensGenerated: data.tokens_generated || 0,
         confidence: data.confidence || 0.9,
-        deviceInfo: 'RTX-3060Ti-TensorRT',
+        deviceInfo: 'RTX-3060Ti-TensorRT'
       }
     };
   }
@@ -585,7 +585,7 @@ export class UnifiedRuntimeAbstraction {
       case 'tensorrt':
         return this.capabilities.tensorRT.available;
       default:
-        return false;,
+        return false;
     }
   }
 
@@ -616,9 +616,9 @@ export class UnifiedRuntimeAbstraction {
         body: JSON.stringify({
           action: 'get',
           key: cacheKey,
-          pattern_type: 'ai_response',
+          pattern_type: 'ai_response'
         }),
-        signal: AbortSignal.timeout(100) // Fast cache check,
+        signal: AbortSignal.timeout(100) // Fast cache check
       });
 
       if (response.ok) {
@@ -631,7 +631,7 @@ export class UnifiedRuntimeAbstraction {
               ...cached.data.metadata,
               fromCHRROMCache: true,
               cacheHitPattern: cached.pattern_id,
-              executionTime: 0.5 // CHR-ROM cache typical response time,
+              executionTime: 0.5 // CHR-ROM cache typical response time
             }
           };
         }
@@ -660,14 +660,14 @@ export class UnifiedRuntimeAbstraction {
           data: {
             text: result.text,
             embedding: result.embedding ? Array.from(result.embedding) : undefined,
-            metadata: result.metadata,
+            metadata: result.metadata
           },
           pattern_type: 'ai_response',
           model: request.model,
           use_case: request.useCase,
-          ttl: 3600 // 1 hour cache,
+          ttl: 3600 // 1 hour cache
         }),
-        signal: AbortSignal.timeout(200) // Non-blocking cache store,
+        signal: AbortSignal.timeout(200) // Non-blocking cache store
       });
     } catch (error) {
       // Non-critical error - cache store failed but execution succeeded

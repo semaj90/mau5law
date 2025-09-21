@@ -84,7 +84,7 @@ Respectfully submitted,
           { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: 'Attorney signature block' }
         ],
         lastUpdated: '2024-09-10T15:00:00Z',
-        usage_count: 127,
+        usage_count: 127
       },
       {
         id: 'plea_agreement_standard',
@@ -134,7 +134,7 @@ AGREED TO AND ACCEPTED:
           { name: 'SIGNATURE_BLOCK', type: 'text', required: true, description: 'Signature block' }
         ],
         lastUpdated: '2024-09-08T10:30:00Z',
-        usage_count: 89,
+        usage_count: 89
       },
       {
         id: 'discovery_standard',
@@ -188,7 +188,7 @@ Respectfully submitted,
           { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: 'Attorney signature block' }
         ],
         lastUpdated: '2024-09-05T16:45:00Z',
-        usage_count: 203,
+        usage_count: 203
       },
       {
         id: 'opening_criminal',
@@ -236,7 +236,7 @@ Thank you for your attention.`,
           { name: 'CONCLUSION', type: 'textarea', required: true, description: 'Opening conclusion' }
         ],
         lastUpdated: '2024-09-07T11:20:00Z',
-        usage_count: 156,
+        usage_count: 156
       },
       {
         id: 'sentencing_mitigation',
@@ -295,7 +295,7 @@ Respectfully submitted,
           { name: 'ATTORNEY_SIGNATURE', type: 'text', required: true, description: 'Attorney signature block' }
         ],
         lastUpdated: '2024-09-06T14:15:00Z',
-        usage_count: 94,
+        usage_count: 94
       }
     ];
 

@@ -55,7 +55,7 @@ export interface QUICServiceStatus {
   protocol: string;
   ports: {
     quic: number;
-    fallback: number;,
+    fallback: number;
   };
   url: string;
   responseTime?: number;
@@ -71,7 +71,7 @@ export interface QUICClusterStatus {
   unhealthyServices: number;
   overallStatus: 'healthy' | 'degraded' | 'unhealthy';
   services: Record<string, QUICServiceStatus>;
-  timestamp: string;,
+  timestamp: string;
 }
 
 /*
@@ -131,11 +131,11 @@ export const GET: RequestHandler = async ({ url }) => {
           protocol: 'N/A',
           ports: {
             quic: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].primaryPort,
-            fallback: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].fallbackPort,
+            fallback: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].fallbackPort
           },
           url: 'N/A',
           error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error',
-          features: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].features,
+          features: QUIC_SERVICES_CONFIG[serviceName as keyof typeof QUIC_SERVICES_CONFIG].features
         };
         unhealthyCount++;
       }
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
       unhealthyServices: unhealthyCount,
       overallStatus,
       services,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     return json(clusterStatus);
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('QUIC services status check failed:', err);
     error(500, ensureError({
       message: 'Failed to check QUIC services status',
-      error: err instanceof Error ? err.message: 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error'
     });
   }
 };
@@ -208,7 +208,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       } catch (commandError) {
         results[serviceName] = {
           success: false,
-          error: commandError instanceof Error ? commandError.message: 'Unknown error',
+          error: commandError instanceof Error ? commandError.message: 'Unknown error'
         };
       }
     }
@@ -217,14 +217,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
       command,
       services: targetServices,
       results,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (err: any) {
     console.error('QUIC services command execution failed:', err);
     error(500, ensureError({
       message: 'Command execution failed',
-      error: err instanceof Error ? err.message: 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error'
     });
   }
 };
@@ -250,7 +250,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     const updatedConfig = {
       ...serviceConfig,
       ...configuration,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     };
 
     return json({
@@ -258,14 +258,14 @@ export const PUT: RequestHandler = async ({ request }) => {
       service,
       message: `Configuration updated for ${serviceConfig.name}`,
       configuration: updatedConfig,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (err: any) {
     console.error('QUIC configuration update failed:', err);
     error(500, ensureError({
       message: 'Configuration update failed',
-      error: err instanceof Error ? err.message: 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error'
     });
   }
 };
@@ -289,7 +289,7 @@ async function checkServiceHealth(
   try {
     // Try primary QUIC endpoint first;
     const primaryResponse = await fetch(`${serviceConfig.baseUrl}/health`, {
-      signal: AbortSignal.timeout(timeout),
+      signal: AbortSignal.timeout(timeout)
     });
 
     if (primaryResponse.ok) {
@@ -312,7 +312,7 @@ async function checkServiceHealth(
     // Try fallback HTTP/2 endpoint;
     try {
       const fallbackResponse = await fetch(`${serviceConfig.fallbackUrl}/health`, {
-        signal: AbortSignal.timeout(timeout),
+        signal: AbortSignal.timeout(timeout)
       });
 
       if (fallbackResponse.ok) {
@@ -346,7 +346,7 @@ async function checkServiceHealth(
     protocol,
     ports: {
       quic: serviceConfig.primaryPort,
-      fallback: serviceConfig.fallbackPort,
+      fallback: serviceConfig.fallbackPort
     },
     url,
     responseTime,
@@ -373,17 +373,17 @@ async function executeServiceCommand(
       return {
         success: healthResponse.ok,
         status: healthResponse.status,
-        data: healthResponse.ok ? await healthResponse.json() : null,
+        data: healthResponse.ok ? await healthResponse.json() : null
       };
 
     case 'clear-cache':;
       const cacheResponse = await fetch(`${baseUrl}/cache`, {
-        method: 'DELETE',
+        method: 'DELETE'
       });
       return {
         success: cacheResponse.ok,
         message: 'Cache cleared',
-        data: cacheResponse.ok ? await cacheResponse.json() : null,
+        data: cacheResponse.ok ? await cacheResponse.json() : null
       };
 
     case 'update-config':;
@@ -394,13 +394,13 @@ async function executeServiceCommand(
       const configResponse = await fetch(`${baseUrl}/config`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parameters),
+        body: JSON.stringify(parameters)
       });
       
       return {
         success: configResponse.ok,
         message: 'Configuration updated',
-        data: configResponse.ok ? await configResponse.json() : null,
+        data: configResponse.ok ? await configResponse.json() : null
       };
 
     case 'restart':
@@ -408,7 +408,7 @@ async function executeServiceCommand(
       return {
         success: true,
         message: `Restart signal sent to ${serviceConfig.name}`,
-        note: 'Restart functionality would be implemented based on deployment method',
+        note: 'Restart functionality would be implemented based on deployment method'
       };
 
     default:

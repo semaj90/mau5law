@@ -36,7 +36,7 @@ function initializeDatabase(): NodePgDatabase<typeof schema> | null {
   console.log("🐘 Connecting to PostgreSQL database:", databaseUrl);
 
   _pool = new Pool({
-    connectionString: databaseUrl,
+    connectionString: databaseUrl
   });
 
   _db = drizzle(_pool, { schema });
@@ -62,7 +62,7 @@ export const db: NodePgDatabase<typeof schema> = new Proxy({} as any, {
       throw new Error("Database not initialized");
     }
     return Reflect.get(database, prop, receiver);
-  },
+  }
 });
 
 // Call Qdrant tag seeding on startup;

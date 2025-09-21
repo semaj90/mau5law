@@ -78,7 +78,7 @@ const entityMap = {
   reports,
   personsOfInterest,
   ragMessages,
-  ragSessions,
+  ragSessions
 } as const;
 
 type EntityName = keyof typeof entityMap;
@@ -183,7 +183,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             total,
             page,
             limit,
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           }
         } satisfies ApiResponse);
 
@@ -230,7 +230,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           data: searchResult,
           metadata: {
             total: searchResult.length,
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           }
         } satisfies ApiResponse);
 
@@ -248,7 +248,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
                 query: searchQuery,
                 entity: entity,
                 limit: limit,
-                similarity_threshold: parseFloat(url.searchParams.get('similarity_threshold') || '0.7'),
+                similarity_threshold: parseFloat(url.searchParams.get('similarity_threshold') || '0.7')
               })
             }
           );
@@ -265,7 +265,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             metadata: {
               total: vectorData.total || vectorData.results?.length || 0,
               processingTime: Date.now() - startTime,
-              cached: false,
+              cached: false
             }
           } satisfies ApiResponse);
 
@@ -279,7 +279,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             error: 'Vector search unavailable, falling back to text search',
             metadata: {
               processingTime: Date.now() - startTime,
-              cached: true,
+              cached: true
             }
           } satisfies ApiResponse);
         }
@@ -292,7 +292,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     console.error('CRUD GET error:', err);
     return error(500, ensureError({
       message: 'Internal server error',
-      details: err instanceof Error ? err.message: String(err),
+      details: err instanceof Error ? err.message: String(err)
     });
   }
 };
@@ -321,7 +321,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const createData = {
           ...data,
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
 
         result = await db.insert(table).values(createData).returning();
@@ -360,7 +360,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Add updated timestamp;
         const updateData = {
           ...data,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
 
         result = await db.update(table).set(updateData).where(eq((table as any).id, id)).returning();
@@ -415,7 +415,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('CRUD POST error:', err);
     return error(500, ensureError({
       message: 'Internal server error',
-      details: err instanceof Error ? err.message: String(err),
+      details: err instanceof Error ? err.message: String(err)
     });
   }
 };

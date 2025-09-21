@@ -64,6 +64,6 @@ async function performInference(prompt: string) {
   return {
     text: `Generated response for: ${prompt.slice(0, 60)}...`,
     tokensGenerated: Math.max(10, Math.floor(prompt.length / 6)),
-    processingTime: 10,
+    processingTime: 10
   };
 }

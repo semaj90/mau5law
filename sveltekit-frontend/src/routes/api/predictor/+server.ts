@@ -52,9 +52,9 @@ export const POST: RequestHandler = async ({ request }) => {
         totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
         redisConnected: stats.redisConnected,
-        pendingUpdates: stats.pendingUpdates,
+        pendingUpdates: stats.pendingUpdates
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error) {
@@ -106,14 +106,14 @@ export const GET: RequestHandler = async ({ url }) => {
         uniqueActions: stats.uniqueActions,
         cacheEnabled: stats.cacheEnabled,
         redisConnected: stats.redisConnected,
-        lastSync: stats.lastSync,
+        lastSync: stats.lastSync
       },
       performance: {
         predictionsGenerated: predictions.length,
         cacheHit: predictions.length > 0,
-        simdAccelerated: enhancedMode && (context.docId || context.query),
+        simdAccelerated: enhancedMode && (context.docId || context.query)
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error) {
@@ -152,7 +152,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           action: req.action,
           predictions,
           context,
-          enhancedMode: req.enhancedMode || false,
+          enhancedMode: req.enhancedMode || false
         };
       })
     );
@@ -165,9 +165,9 @@ export const PUT: RequestHandler = async ({ request }) => {
       stats: {
         totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
-        redisConnected: stats.redisConnected,
+        redisConnected: stats.redisConnected
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error) {

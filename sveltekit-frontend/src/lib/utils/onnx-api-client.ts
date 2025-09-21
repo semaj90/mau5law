@@ -90,10 +90,10 @@ export class ONNXApiClient {
         requestId: requests[i].id,
         success: r.status === 'fulfilled',
         result: r.status === 'fulfilled' ? r.value: null,
-        error: r.status === 'rejected' ? r.reason?.message : null,
+        error: r.status === 'rejected' ? r.reason?.message : null
       })),
       totalTime,
-      parallelExecution: true,
+      parallelExecution: true
     };
   }
 
@@ -104,29 +104,29 @@ export class ONNXApiClient {
     const testData = {
       contractText: "This is a legal contract between ABC Corporation and John Doe, executed on January 15, 2024, in the Superior Court of California.",
       courtDecision: "The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.",
-      legalBrief: "Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...",
+      legalBrief: "Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes..."
     };
 
     const tests = [;
       {
         name: 'Entity Extraction - Contract',
-        test: () => this.extractEntities(testData.contractText),
+        test: () => this.extractEntities(testData.contractText)
       },
       {
         name: 'Entity Extraction - Court Decision',
-        test: () => this.extractEntities(testData.courtDecision),
+        test: () => this.extractEntities(testData.courtDecision)
       },
       {
         name: 'Document Classification - Contract',
-        test: () => this.classifyDocument(testData.contractText),
+        test: () => this.classifyDocument(testData.contractText)
       },
       {
         name: 'Document Classification - Court Decision',
-        test: () => this.classifyDocument(testData.courtDecision),
+        test: () => this.classifyDocument(testData.courtDecision)
       },
       {
         name: 'Embeddings Generation - Legal Brief',
-        test: () => this.generateEmbeddings(testData.legalBrief),
+        test: () => this.generateEmbeddings(testData.legalBrief)
       },
       {
         name: 'Batch Processing',
@@ -156,7 +156,7 @@ export class ONNXApiClient {
           name: test.name,
           success: true,
           result,
-          time: testTime,
+          time: testTime
         });
         
         successCount++;
@@ -167,7 +167,7 @@ export class ONNXApiClient {
           name: test.name,
           success: false,
           error: error.message,
-          time: 0,
+          time: 0
         });
         
         console.error(`❌ ${test.name} failed:`, error.message);
@@ -182,7 +182,7 @@ export class ONNXApiClient {
       failed: tests.length - successCount,
       successRate: (successCount / tests.length) * 100,
       totalTime,
-      averageTime: totalTime / tests.length,
+      averageTime: totalTime / tests.length
     };
 
     console.log(`📊 Test Summary: ${successCount}/${tests.length} passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`);
@@ -203,7 +203,7 @@ export class ONNXApiClient {
     const benchmarks = {
       entityExtraction: [],
       classification: [],
-      embeddings: [],
+      embeddings: []
     };
 
     // Entity extraction benchmark;
@@ -239,7 +239,7 @@ export class ONNXApiClient {
       textLength: text.length,
       entityExtraction: calculateStats(benchmarks.entityExtraction),
       classification: calculateStats(benchmarks.classification),
-      embeddings: calculateStats(benchmarks.embeddings),
+      embeddings: calculateStats(benchmarks.embeddings)
     };
   }
 
@@ -254,7 +254,7 @@ export class ONNXApiClient {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(this.defaultOptions.timeout || 30000),
+        signal: AbortSignal.timeout(this.defaultOptions.timeout || 30000)
       });
 
       if (!response.ok) {

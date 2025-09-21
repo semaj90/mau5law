@@ -49,13 +49,13 @@ interface EnhancedAnalysisResponse {
     analysisType: string;
     processingTime: number;
     performanceGain?: number;
-    data: any;,
+    data: any;
   };
   metrics: {
     protocol: 'grpc-binary' | 'json-http';
     totalEntities: number;
     averageComplexity: number;
-    serviceChain: string[];,
+    serviceChain: string[];
   };
   orchestration: {
     healthy: boolean;
@@ -247,7 +247,7 @@ export const POST: RequestHandler = async ({ request }) => {
         analysisType,
         processingTime,
         performanceGain: Math.round(performanceGain * 100) / 100,
-        data: analysisResults,
+        data: analysisResults
       },
       metrics: {
         protocol: useGRPCOptimization ? 'grpc-binary' : 'json-http',
@@ -258,7 +258,7 @@ export const POST: RequestHandler = async ({ request }) => {
       orchestration: {
         healthy: healthStatus.healthy,
         servicesUsed: serviceChain,
-        compressionRatio: orchestratorMetrics.compressionRatio,
+        compressionRatio: orchestratorMetrics.compressionRatio
       }
     };
 
@@ -290,7 +290,7 @@ export const POST: RequestHandler = async ({ request }) => {
       error: {
         message: String(err),
         processingTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -313,16 +313,16 @@ export const GET: RequestHandler = async () => {
         legalReasoning: true,
         batchProcessing: true,
         grpcOptimization: true,
-        binaryProtocol: true,
+        binaryProtocol: true
       },
       metrics: {
         totalOperations: metrics.totalOperations,
         averageLatency: Math.round(metrics.averageLatency),
         binaryProtocolSavings: Math.round(metrics.binaryProtocolSavings * 100) / 100,
-        successRate: Math.round(metrics.successRate * 100) / 100,
+        successRate: Math.round(metrics.successRate * 100) / 100
       },
       supportedAnalysisTypes: ['full', 'semantic', 'entities', 'reasoning', 'batch'],
-      version: '2.0.0-phase2',
+      version: '2.0.0-phase2'
     });
 
   } catch (error) {

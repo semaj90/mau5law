@@ -28,7 +28,7 @@ interface CachedEmbedding {
     model: string;
     timestamp: number;
     gpuProcessed: boolean;
-    threadId: string;,
+    threadId: string;
   };
 }
 
@@ -42,7 +42,7 @@ export class EmbeddingCacheMiddleware {
       pythonWorkerUrl: config.pythonWorkerUrl || 'http://localhost:8000',
       cacheTTL: config.cacheTTL || 86400, // 24 hours
       batchSize: config.batchSize || 128, // RTX 3060 Ti optimized
-      useGPUAcceleration: config.useGPUAcceleration ?? true,
+      useGPUAcceleration: config.useGPUAcceleration ?? true
     };
   }
 
@@ -103,7 +103,7 @@ export class EmbeddingCacheMiddleware {
           ),
           metadata: (
             result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }
-          ).metadata,
+          ).metadata
         };
       }
     } catch (error) {
@@ -123,14 +123,14 @@ export class EmbeddingCacheMiddleware {
         headers: {
           'Content-Type': 'application/json',
           'X-GPU-Batch-Size': this.config.batchSize.toString(),
-          'X-Thread-ID': `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          'X-Thread-ID': `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         },
         body: JSON.stringify({
           texts,
           model: 'nomic-embed-text-v1',
           precision: 'fp16', // RTX 3060 Ti tensor core optimization
-          batch_size: this.config.batchSize,
-        }),
+          batch_size: this.config.batchSize
+        })
       });
 
       if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -170,8 +170,8 @@ export class EmbeddingCacheMiddleware {
         model: 'nomic-embed-text-v1',
         timestamp: Date.now(),
         gpuProcessed: true,
-        threadId: `middleware_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      },
+        threadId: `middleware_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      }
     };
 
     // Store using WebGPU-optimized cache with tensor compression;
@@ -195,7 +195,7 @@ export class EmbeddingCacheMiddleware {
         text,
         vector: Array.from(vector),
         metadata: embedding.metadata,
-        created_at: new Date().toISOString(),
+        created_at: new Date().toISOString()
       });
     } catch (error) {
       console.error('Postgres embedding storage failed:', error);
@@ -270,7 +270,7 @@ export class EmbeddingCacheMiddleware {
           model: 'nomic-embed-text-v1',
           precision: 'fp16',
           batchSize: 1,
-          priority: 'high',
+          priority: 'high'
         });
 
         if (gpuResult.result?.embeddings) {
@@ -311,7 +311,7 @@ export class EmbeddingCacheMiddleware {
       const cacheOperations = texts.map((text, i) => ({
         type: 'get' as const,
         key: `embed:${this.generateCacheKey(text)}`,
-        options: { decompress: true },
+        options: { decompress: true }
       });
 
       const cachedResults = await optimizedCache.batch(cacheOperations);
@@ -390,8 +390,8 @@ export class EmbeddingCacheMiddleware {
           ttl: 3600,
           compress: true,
           parallel: true,
-          priority: 'high' as const,
-        },
+          priority: 'high' as const
+        }
       });
 
       try {
@@ -448,7 +448,7 @@ export class EmbeddingCacheMiddleware {
       redisConnected: true, // Using centralized cache service
       postgresConnected: !!postgresHealth,
       totalEmbeddings,
-      gpuAcceleration: this.config.useGPUAcceleration,
+      gpuAcceleration: this.config.useGPUAcceleration
     };
   }
 
@@ -510,9 +510,9 @@ export async function getLegalEmbedding(query: LegalEmbeddingQuery): Promise<any
       documentContext: {
         documentType: query.documentType,
         jurisdiction: query.jurisdiction,
-        practiceArea: query.practiceArea,
-      },
-    },
+        practiceArea: query.practiceArea
+      }
+    }
   };
 }
 

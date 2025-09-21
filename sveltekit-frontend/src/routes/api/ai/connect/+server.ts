@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       model: model || modelList[0] || 'none',
       availableModels: modelList,
       status: 'connected',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (err: any) {

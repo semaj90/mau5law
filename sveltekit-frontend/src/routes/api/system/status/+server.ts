@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ url }) => {
       platform: process.platform,
       nodeVersion: process.version,
       memory: process.memoryUsage(),
-      pid: process.pid,
+      pid: process.pid
     };
 
     // Service summary
@@ -35,12 +35,12 @@ export const GET: RequestHandler = async ({ url }) => {
         servicesHealthy: healthyServices.length,
         servicesTotal: services.length,
         requiredHealthy: healthyRequiredServices.length,
-        requiredTotal: requiredServices.length,
+        requiredTotal: requiredServices.length
       },
       models: {
         chat: 'gemma3:legal:latest',
         embeddings: 'nomic-embed-text',
-        dimensions: 768,
+        dimensions: 768
       },
       database: 'legal_ai_db',
       features: {
@@ -51,15 +51,15 @@ export const GET: RequestHandler = async ({ url }) => {
         enhancedRag: serviceStatuses.get('enhanced_rag')?.status === 'healthy',
         gpuAcceleration: serviceStatuses.get('gpu_orchestrator')?.status === 'healthy',
         objectStorage: serviceStatuses.get('minio')?.status === 'healthy',
-        caching: serviceStatuses.get('redis')?.status === 'healthy',
-      },
+        caching: serviceStatuses.get('redis')?.status === 'healthy'
+      }
     };
 
     // Build response based on query parameters;
     let response: any = {
       system: systemInfo,
       summary,
-      services: Object.fromEntries(serviceStatuses),
+      services: Object.fromEntries(serviceStatuses)
     };
 
     if (showDetails) {
@@ -70,8 +70,8 @@ export const GET: RequestHandler = async ({ url }) => {
           OLLAMA_MODEL: import.meta.env.OLLAMA_MODEL || 'not set',
           EMBEDDING_MODEL: import.meta.env.EMBEDDING_MODEL || 'not set',
           REDIS_URL: import.meta.env.REDIS_URL ? 'configured' : 'missing',
-          QDRANT_URL: import.meta.env.QDRANT_URL ? 'configured' : 'missing',
-        },
+          QDRANT_URL: import.meta.env.QDRANT_URL ? 'configured' : 'missing'
+        }
       };
     }
 
@@ -94,8 +94,8 @@ export const GET: RequestHandler = async ({ url }) => {
         'X-Health-Score': summary.overall.healthScore.toString(),
         'X-Services': `${summary.overall.servicesHealthy}/${summary.overall.servicesTotal}`,
         'X-Required-Services': `${summary.overall.requiredHealthy}/${summary.overall.requiredTotal}`,
-        'Cache-Control': 'no-cache, must-revalidate',
-      },
+        'Cache-Control': 'no-cache, must-revalidate'
+      }
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message: 'Unknown system status error';
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         system: { timestamp: new Date().toISOString() },
         summary: { overall: { status: 'error', error: msg } },
-        services: Record<string, any>,
+        services: Record<string, any>
       },
       { status: 500 }
     );

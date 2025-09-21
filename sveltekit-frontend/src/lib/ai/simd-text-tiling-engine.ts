@@ -18,7 +18,7 @@ export interface TextTileConfig {
   qualityTier: 'nes' | 'snes' | 'n64';
   semanticClustering: boolean;
   vectorDimensions: number;
-  preserveSemantics: boolean;,
+  preserveSemantics: boolean;
 }
 
 export interface CompressedTextTile {
@@ -32,7 +32,7 @@ export interface CompressedTextTile {
     semanticDensity: number;
     patternId: string;
     frequency: number;
-    categories: string[];,
+    categories: string[];
   };
 }
 
@@ -45,14 +45,14 @@ export interface TextEmbeddingResult {
     instantRender: boolean;
     componentData: ArrayBuffer;
     renderingInstructions: string;
-    cssOptimized: string;,
+    cssOptimized: string;
   };
   processingStats: {
     compressionTime: number;
     totalCompressionRatio: number;
     gpuUtilization: number;
     cacheHits: number;
-    semanticPreservationScore: number;,
+    semanticPreservationScore: number;
   };
 }
 
@@ -71,7 +71,7 @@ export class SIMDTextTilingEngine {
       semanticClustering: true,
       vectorDimensions: 384, // Matches nomic-embed-text
       preserveSemantics: true,
-      ...config,
+      ...config
     };
 
     console.log('🔧 SIMD Text Tiling Engine initialized:', this.config);
@@ -123,8 +123,8 @@ export class SIMDTextTilingEngine {
         totalCompressionRatio,
         gpuUtilization: this.config.enableGPUAcceleration ? 0.85 : 0,
         cacheHits: this.calculateCacheHits(compressedTiles),
-        semanticPreservationScore: await this.calculateSemanticPreservation(text, compressedTiles),
-      },
+        semanticPreservationScore: await this.calculateSemanticPreservation(text, compressedTiles)
+      }
     };
   }
 
@@ -137,12 +137,12 @@ export class SIMDTextTilingEngine {
       const result = await webgpuLangChainBridge.processLegalDocument(text, {
         useWebGPUCache: true,
         compressVectors: true,
-        documentType: metadata.type === 'legal' ? 'general' : metadata.type,
+        documentType: metadata.type === 'legal' ? 'general' : metadata.type
       });
 
       // Convert embeddings to Float32Array format for SIMD processing
       const embeddings = (result as { embeddings?: any }).embeddings.sectionEmbeddings || [
-        (result as { embeddings?: any }).embeddings.documentEmbedding,
+        (result as { embeddings?: any }).embeddings.documentEmbedding
       ];
 
       return embeddings.map((embedding) =>
@@ -199,7 +199,7 @@ export class SIMDTextTilingEngine {
         {
           tileSize: this.config.tileSize,
           enableCompression: true,
-          priority: 'medium',
+          priority: 'medium'
         }
       );
 
@@ -268,8 +268,8 @@ export class SIMDTextTilingEngine {
           semanticDensity: this.calculateSemanticDensity(tileData),
           patternId: this.identifyPattern(tileData),
           frequency: this.calculateFrequency(tileText),
-          categories: this.categorizeContent(tileText),
-        },
+          categories: this.categorizeContent(tileText)
+        }
       };
 
       tiles.push(tile);
@@ -381,7 +381,7 @@ export class SIMDTextTilingEngine {
       instantRender: tiles.length < 100, // Instant for < 100 tiles
       componentData,
       renderingInstructions,
-      cssOptimized,
+      cssOptimized
     };
   }
 
@@ -482,7 +482,7 @@ export class SIMDTextTilingEngine {
       technical: ['system', 'process', 'function', 'algorithm', 'data'],
       narrative: ['story', 'character', 'plot', 'narrative', 'describes'],
       numeric: ['number', 'count', 'amount', 'total', 'sum'],
-      mixed: ['and', 'or', 'but', 'however', 'therefore'],
+      mixed: ['and', 'or', 'but', 'however', 'therefore']
     };
 
     const patternWords = keywords[pattern as keyof typeof keywords] || [];
@@ -552,7 +552,7 @@ export class SIMDTextTilingEngine {
 
     const results = await Promise.all(texts.map(async ({ text, metadata = {} }) => {
         try {
-          return await this.processText(text, { type: 'general', ...metadata ,});
+          return await this.processText(text, { type: 'general', ...metadata });
         } catch (error) {
           console.error(`Failed to process text: ${text.substring(0, 50)}...`, error);
           throw error;
@@ -577,8 +577,8 @@ export class SIMDTextTilingEngine {
         sevenBitCompression: true,
         gpuAcceleration: this.config.enableGPUAcceleration,
         semanticPreservation: this.config.preserveSemantics,
-        instantUIGeneration: true,
-      },
+        instantUIGeneration: true
+      }
     };
   }
 }
@@ -591,5 +591,5 @@ export const simdTextTilingEngine = new SIMDTextTilingEngine({
   qualityTier: 'nes',
   semanticClustering: true,
   vectorDimensions: 384,
-  preserveSemantics: true,
+  preserveSemantics: true
 });

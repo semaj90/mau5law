@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!key) {
       return json({
         success: false,
-        error: 'Key is required',
+        error: 'Key is required'
       }, { status: 400 });
     }
     
@@ -39,13 +39,13 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       key,
       ttl,
-      message: 'Value stored in Redis cache',
+      message: 'Value stored in Redis cache'
     });
     
   } catch (error: any) {
     return json({
       success: false,
-      error: error.message,
+      error: error.message
     }, { status: 500 });
   }
 };

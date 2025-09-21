@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
     const result = await productionServiceClient.execute('xstate.event', {
       event: eventData,
-      source: 'sveltekit-frontend',
+      source: 'sveltekit-frontend'
     });
 
     return json({
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         timestamp: new Date().toISOString(),
         service: 'xstate-manager',
         operation: 'event',
-        event_type: eventData.type,
+        event_type: eventData.type
       }
     });
 
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url }) => {
         machine_status: '/api/v1/xstate?machineId={id}',
         actor_status: '/api/v1/xstate?actorId={id}',
         machines: '/api/v1/xstate/machines',
-        actors: '/api/v1/xstate/actors',
+        actors: '/api/v1/xstate/actors'
       },
       health: {
         'xstate-manager': health['xstate-manager'] || false
@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'ERROR',
         'RESET'
       ],
-      version: '1.0.0',
+      version: '1.0.0'
     });
 
   } catch (err: any) {

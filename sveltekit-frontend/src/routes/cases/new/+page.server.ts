@@ -37,12 +37,12 @@ export const actions: Actions = {
         dangerScore,
         status,
         aiSummary,
-        createdBy: userId,
+        createdBy: userId
       });
       redirect(303, `/cases/${id}`);
     } catch (e: any) {
       console.error(e);
       return fail(500, { error: "Failed to create case." });
     }
-  },
+  }
 };

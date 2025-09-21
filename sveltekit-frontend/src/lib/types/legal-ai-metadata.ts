@@ -5,7 +5,7 @@
 export interface LegalAIMetadataEntity {
   name: string;
   type: string;
-  confidence: number;,
+  confidence: number;
 }
 
 export interface LegalAIClassifications {
@@ -52,7 +52,7 @@ export interface LegalAIMetadata {
       | Array<
       | LegalAIMetadataEntity[];
     risk_assessment: 'low' | 'medium' | 'high' | 'critical' | string;
-    summary: string;,
+    summary: string;
   };
 }
 

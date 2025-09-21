@@ -25,17 +25,17 @@ export interface AISummaryContext {
     model: string;
     confidence: number;
     tokens: number;
-    processingTime: number;,
+    processingTime: number;
   } | null;
   ragOutput: {
     relevantDocs: any[];
     contextSummary: string;
-    searchMetrics: any;,
+    searchMetrics: any;
   } | null;
   userActivity: {
     recentQueries: string[];
     preferredTopics: string[];
-    recommendations: string[];,
+    recommendations: string[];
   } | null;
 
   // Synthesis progress tracking;
@@ -44,7 +44,7 @@ export interface AISummaryContext {
     ragComplete: boolean;
     userActivityComplete: boolean;
     fusejsComplete: boolean;
-    finalSynthesisComplete: boolean;,
+    finalSynthesisComplete: boolean;
   };
 
   // Reading state
@@ -66,7 +66,7 @@ export interface AISummaryContext {
   // User preferences
   voiceEnabled: boolean;
   highlightMode: "key_points" | "entities" | "legal_terms" | "none";
-  readingMode: "sequential" | "insight_focused" | "summary_only";,
+  readingMode: "sequential" | "insight_focused" | "summary_only";
 }
 
 export interface SummarySection {
@@ -81,7 +81,7 @@ export interface SummarySection {
     | "legal_implications";
   importance: "critical" | "high" | "medium" | "low";
   entities: Entity[];
-  wordCount: number;,
+  wordCount: number;
 }
 
 export interface Entity {
@@ -105,7 +105,7 @@ export interface AnalysisResult {
     | "evidence_strength";
   score: number;
   explanation: string;
-  recommendations: string[];,
+  recommendations: string[];
 }
 
 export interface SynthesisData {
@@ -114,7 +114,7 @@ export interface SynthesisData {
   supportingEvidence: string[];
   gaps: string[];
   legalImplications: string[];
-  nextSteps: string[];,
+  nextSteps: string[];
 }
 
 export type AISummaryEvent =
@@ -122,7 +122,7 @@ export type AISummaryEvent =
   | {
       type: "GENERATE_SUMMARY";
       content: string;
-      documentType: AISummaryContext["documentType"];,
+      documentType: AISummaryContext["documentType"];
     }
   | { type: "START_READING" }
   | { type: "PAUSE_READING" }
@@ -158,7 +158,7 @@ const initialContext: AISummaryContext = {
     ragComplete: false,
     userActivityComplete: false,
     fusejsComplete: false,
-    finalSynthesisComplete: false,
+    finalSynthesisComplete: false
   },
   
   currentSection: 0,
@@ -173,13 +173,13 @@ const initialContext: AISummaryContext = {
   progress: 0,
   voiceEnabled: false,
   highlightMode: "key_points",
-  readingMode: "sequential",
+  readingMode: "sequential"
 };
 
 export const aiSummaryMachine = createMachine({
   types: Record<string, any> as {
     context: AISummaryContext;
-    events: AISummaryEvent;,
+    events: AISummaryEvent;
   },
   id: "aiSummaryMachine",
   initial: "idle",
@@ -191,50 +191,50 @@ export const aiSummaryMachine = createMachine({
             target: "loading",
             actions: assign({
               documentId: ({
-                event,
+                event
               }: {
                 event: Extract<AISummaryEvent, { type: "LOAD_DOCUMENT" }>;
               }) => event.documentId,
               caseId: ({
-                event,
+                event
               }: {
                 event: Extract<AISummaryEvent, { type: "LOAD_DOCUMENT" }>;
               }) => event.caseId || null,
               loading: true,
-              error: null,
-            }),
+              error: null
+            })
           },
           GENERATE_SUMMARY: {
             target: "generating",
             actions: assign({
               originalContent: ({
-                event,
+                event
               }: {
                 event: Extract<AISummaryEvent, { type: "GENERATE_SUMMARY" }>;
               }) => event.content,
               documentType: ({
-                event,
+                event
               }: {
                 event: Extract<AISummaryEvent, { type: "GENERATE_SUMMARY" }>;
               }) => event.documentType,
               loading: true,
-              error: null,
-            }),
+              error: null
+            })
           },
           UPDATE_PREFERENCES: {
             actions: assign(({
                 context,
-                event,
+                event
               }: {
                 context: AISummaryContext;
                 event: Extract<AISummaryEvent, { type: "UPDATE_PREFERENCES" }>;
               }) => ({
                 ...context,
-                ...event.preferences,
+                ...event.preferences
               }),
-            ),
-          },
-        },
+            )
+          }
+        }
       },
 
       loading: {
@@ -245,21 +245,21 @@ export const aiSummaryMachine = createMachine({
             actions: assign({
               originalContent: ({ event }) => event.output.content,
               documentType: ({ event }) => event.output.type,
-              loading: false,
-            }),
+              loading: false
+            })
           },
           onError: {
             target: "error",
             actions: assign({
               error: ({ event }) =>
                 (event.error as Error)?.message || "Failed to load document",
-              loading: false,
-            }),
-          },
+              loading: false
+            })
+          }
         },
         on: {
-          RESET: "idle",
-        },
+          RESET: "idle"
+        }
       },
 
       generating: {
@@ -274,21 +274,21 @@ export const aiSummaryMachine = createMachine({
               confidence: ({ event }) => event.output.confidence,
               estimatedReadTime: ({ event, context }) =>
                 Math.ceil(event.output.wordCount / context.readingSpeed),
-              loading: false,
-            }),
+              loading: false
+            })
           },
           onError: {
             target: "error",
             actions: assign({
               error: ({ event }) =>
                 (event.error as Error)?.message || "Failed to generate summary",
-              loading: false,
-            }),
-          },
+              loading: false
+            })
+          }
         },
         on: {
-          RESET: "idle",
-        },
+          RESET: "idle"
+        }
       },
 
       loaded: {
@@ -297,11 +297,11 @@ export const aiSummaryMachine = createMachine({
             target: "generating",
             actions: assign({
               loading: true,
-              error: null,
-            }),
+              error: null
+            })
           },
-          RESET: "idle",
-        },
+          RESET: "idle"
+        }
       },
 
       ready: {
@@ -312,13 +312,13 @@ export const aiSummaryMachine = createMachine({
               START_READING: "reading",
               ANALYZE_DOCUMENT: {
                 target: "#aiSummaryMachine.analyzing",
-                actions: assign({ loading: true }),
+                actions: assign({ loading: true })
               },
               SYNTHESIZE_INSIGHTS: {
                 target: "#aiSummaryMachine.synthesizing",
-                actions: assign({ loading: true }),
-              },
-            },
+                actions: assign({ loading: true })
+              }
+            }
           },
           reading: {
             initial: "playing",
@@ -328,23 +328,23 @@ export const aiSummaryMachine = createMachine({
               playing: {
                 invoke: {
                   src: "readingProgress",
-                  id: "readingProgress",
+                  id: "readingProgress"
                 },
                 on: {
                   PAUSE_READING: "paused_mid_read",
                   UPDATE_PROGRESS: {
                     actions: assign({
-                      progress: ({ event }) => event.progress,
-                    }),
-                  },
-                },
+                      progress: ({ event }) => event.progress
+                    })
+                  }
+                }
               },
               paused_mid_read: {
                 on: {
                   RESUME_READING: "playing",
-                  STOP_READING: "#aiSummaryMachine.ready.paused",
-                },
-              },
+                  STOP_READING: "#aiSummaryMachine.ready.paused"
+                }
+              }
             },
             on: {
               NEXT_SECTION: {
@@ -356,37 +356,37 @@ export const aiSummaryMachine = createMachine({
                     ),
                   progress: ({ context }) =>
                     ((context.currentSection + 1) / context.sections.length) *
-                    100,
-                }),
+                    100
+                })
               },
               PREVIOUS_SECTION: {
                 actions: assign({
                   currentSection: ({ context }) =>
                     Math.max(context.currentSection - 1, 0),
                   progress: ({ context }) =>
-                    (context.currentSection / context.sections.length) * 100,
-                }),
+                    (context.currentSection / context.sections.length) * 100
+                })
               },
               JUMP_TO_SECTION: {
                 actions: assign({
                   currentSection: ({ event }) => event.sectionIndex,
                   progress: ({ event, context }) =>
-                    (event.sectionIndex / context.sections.length) * 100,
-                }),
+                    (event.sectionIndex / context.sections.length) * 100
+                })
               },
-              STOP_READING: "paused",
-            },
-          },
+              STOP_READING: "paused"
+            }
+          }
         },
         on: {
           UPDATE_PREFERENCES: {
             actions: assign(({ context, event }) => ({
               ...context,
-              ...event.preferences,
-            })),
+              ...event.preferences
+            }))
           },
-          RESET: "#aiSummaryMachine.idle",
-        },
+          RESET: "#aiSummaryMachine.idle"
+        }
       },
 
       analyzing: {
@@ -396,17 +396,17 @@ export const aiSummaryMachine = createMachine({
             target: "ready",
             actions: assign({
               analysisResults: ({ event }) => event.output.results,
-              loading: false,
-            }),
+              loading: false
+            })
           },
           onError: {
             target: "error",
             actions: assign({
               error: ({ event }) => (event.error as Error)?.message || "Analysis failed",
-              loading: false,
-            }),
-          },
-        },
+              loading: false
+            })
+          }
+        }
       },
 
       synthesizing: {
@@ -416,17 +416,17 @@ export const aiSummaryMachine = createMachine({
             target: "ready",
             actions: assign({
               synthesisData: ({ event }) => event.output.synthesis,
-              loading: false,
-            }),
+              loading: false
+            })
           },
           onError: {
             target: "error",
             actions: assign({
               error: ({ event }) => (event.error as Error)?.message || "Synthesis failed",
-              loading: false,
-            }),
-          },
-        },
+              loading: false
+            })
+          }
+        }
       },
 
       error: {
@@ -435,13 +435,13 @@ export const aiSummaryMachine = createMachine({
             target: "idle",
             actions: assign({
               error: null,
-              loading: false,
-            }),
+              loading: false
+            })
           },
-          RESET: "idle",
-        },
-      },
-    },
+          RESET: "idle"
+        }
+      }
+    }
   },
   {
     actors: {
@@ -451,7 +451,7 @@ export const aiSummaryMachine = createMachine({
           setTimeout(() => {
             resolve({
               content: `Evidence Report #${input.documentId}\n\nThis is a comprehensive analysis of the evidence collected in case ${input.caseId}. The findings indicate significant legal implications that require careful consideration...`,
-              type: "evidence" as const,
+              type: "evidence" as const
             });
           }, 1000);
         });
@@ -473,15 +473,15 @@ export const aiSummaryMachine = createMachine({
                   {
                     text: "digital forensics",
                     type: "legal_term",
-                    confidence: 0.95,
+                    confidence: 0.95
                   },
                   {
                     text: "security violations",
                     type: "legal_term",
-                    confidence: 0.92,
-                  },
+                    confidence: 0.92
+                  }
                 ],
-                wordCount: 120,
+                wordCount: 120
               },
               {
                 id: "key-findings",
@@ -494,16 +494,16 @@ export const aiSummaryMachine = createMachine({
                   {
                     text: "unauthorized access",
                     type: "legal_term",
-                    confidence: 0.98,
+                    confidence: 0.98
                   },
                   {
                     text: "data exfiltration",
                     type: "legal_term",
-                    confidence: 0.96,
+                    confidence: 0.96
                   },
-                  { text: "6-month period", type: "date", confidence: 0.89 },
+                  { text: "6-month period", type: "date", confidence: 0.89 }
                 ],
-                wordCount: 180,
+                wordCount: 180
               },
               {
                 id: "legal-implications",
@@ -516,16 +516,16 @@ export const aiSummaryMachine = createMachine({
                   {
                     text: "Computer Fraud and Abuse Act",
                     type: "legal_term",
-                    confidence: 0.99,
+                    confidence: 0.99
                   },
                   {
                     text: "data protection laws",
                     type: "legal_term",
-                    confidence: 0.94,
-                  },
+                    confidence: 0.94
+                  }
                 ],
-                wordCount: 150,
-              },
+                wordCount: 150
+              }
             ];
 
             resolve({
@@ -536,13 +536,13 @@ export const aiSummaryMachine = createMachine({
                 "Strong digital forensics evidence chain",
                 "Clear CFAA violation patterns",
                 "Financial impact quantifiable",
-                "Insider threat indicators present",
+                "Insider threat indicators present"
               ],
               confidence: 0.92,
               wordCount: sections.reduce(
                 (total, section) => total + section.wordCount,
                 0,
-              ),
+              )
             });
           }, 2000);
         });
@@ -561,8 +561,8 @@ export const aiSummaryMachine = createMachine({
                     "Highly relevant to the case with direct evidence of alleged violations",
                   recommendations: [
                     "Prioritize in evidence presentation",
-                    "Prepare expert testimony",
-                  ],
+                    "Prepare expert testimony"
+                  ]
                 },
                 {
                   type: "credibility" as const,
@@ -571,8 +571,8 @@ export const aiSummaryMachine = createMachine({
                     "Strong chain of custody and forensic methodology",
                   recommendations: [
                     "Verify forensic tool calibration",
-                    "Document examiner credentials",
-                  ],
+                    "Document examiner credentials"
+                  ]
                 },);
                 {
                   type: "legal_significance" as const,
@@ -581,10 +581,10 @@ export const aiSummaryMachine = createMachine({
                     "Critical evidence for establishing intent and systematic violations",
                   recommendations: [
                     "Central to prosecution strategy",
-                    "Prepare for technical challenges",
-                  ],
-                },
-              ],
+                    "Prepare for technical challenges"
+                  ]
+                }
+              ]
             });
           }, 1500);
         });
@@ -599,35 +599,35 @@ export const aiSummaryMachine = createMachine({
                 mainThemes: [
                   "Systematic security violations over extended period",
                   "Clear evidence of unauthorized access and data theft",
-                  "Strong basis for federal cybercrime prosecution",
+                  "Strong basis for federal cybercrime prosecution"
                 ],
                 contradictions: [
                   "Timeline discrepancies require clarification",
-                  "Access log gaps during maintenance windows",
+                  "Access log gaps during maintenance windows"
                 ],
                 supportingEvidence: [
                   "Digital forensics findings",
                   "Network traffic analysis",
                   "System log correlations",
-                  "Financial impact assessment",
+                  "Financial impact assessment"
                 ],
                 gaps: [
                   "Need additional witness testimony on intent",
                   "Require expert analysis of technical methods",
-                  "Missing financial records for full impact assessment",
+                  "Missing financial records for full impact assessment"
                 ],
                 legalImplications: [
                   "Strong CFAA violation case",
                   "Potential RICO implications if organized",
-                  "Civil remedies available alongside criminal charges",
+                  "Civil remedies available alongside criminal charges"
                 ],
                 nextSteps: [
                   "Prepare technical expert testimony",
                   "Conduct additional financial analysis",
                   "Coordinate with cybercrime prosecutors",
-                  "Prepare jury-friendly technical explanations",
-                ],
-              },
+                  "Prepare jury-friendly technical explanations"
+                ]
+              }
             });
           }, 2000);
         });
@@ -645,8 +645,8 @@ export const aiSummaryMachine = createMachine({
             resolve({ progress: 100 });
           }, 5000);
         });
-      }),
-    },
+      })
+    }
   },
 );
 

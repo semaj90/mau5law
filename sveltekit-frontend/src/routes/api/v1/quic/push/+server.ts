@@ -3,12 +3,12 @@ import {
   getQUICMetrics,
   getAggregateAnomaliesLast5m,
   noteQuicP99Breach,
-  notePipelineAnomalySpike,
+  notePipelineAnomalySpike
 } from '$lib/services/pipeline-metrics';
 import {
   routeAlerts,
   maybeTriggerAutosolve,
-  getSustainedP99Info,
+  getSustainedP99Info
 } from '$lib/services/alert-center';
 import type { RequestHandler } from './$types.js';
 
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (hits[ip].length >= 60) {
       return new Response(JSON.stringify({ ok: false, error: 'rate_limited' }), {
         status: 429,
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json' }
       });
     }
     hits[ip].push(now);
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       total_connections: body.total_connections,
       total_streams: body.total_streams,
       total_errors: body.total_errors,
-      errorOccurred: body.errorOccurred,
+      errorOccurred: body.errorOccurred
     });
     // Alert threshold evaluation
     const quic = getQUICMetrics();
@@ -77,14 +77,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         p99: quic.p99,
         errors_1m: quic.error_rate_1m,
         anomalies5m,
-        sustainedP99: sustained,
+        sustainedP99: sustained
       }),
       { status: 200, headers: { 'content-type': 'application/json' } }
     );
   } catch (e: any) {
     return new Response(JSON.stringify({ ok: false, error: e.message }), {
       status: 400,
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json' }
     });
   }
 };

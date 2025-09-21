@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         clientId,
         timestamp: Date.now(),
         server: 'legal-ai-sse',
-        version: '1.0.0',
+        version: '1.0.0'
       });
       
       // If specific workflow requested, send current status;
@@ -46,12 +46,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
             progress: workflow.progress,
             type: workflow.type,
             updatedAt: workflow.updatedAt,
-            context: workflow.context,
+            context: workflow.context
           }, `status-${workflowId}-${Date.now()}`);
         } else {
           sendEvent('error', {
             message: `Workflow ${workflowId} not found`,
-            code: 'WORKFLOW_NOT_FOUND',
+            code: 'WORKFLOW_NOT_FOUND'
           });
         }
       } else {
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             progress: event.payload.progress,
             stage: event.payload.stage,
             state: event.payload.state,
-            timestamp: event.timestamp,
+            timestamp: event.timestamp
           }, `progress-${event.workflowId}-${event.timestamp}`);
         }
       });
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           sendEvent('completed', {
             workflowId: event.workflowId,
             timestamp: event.timestamp,
-            finalContext: event.payload.finalContext,
+            finalContext: event.payload.finalContext
           }, `completed-${event.workflowId}-${event.timestamp}`);
         }
       });
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           sendEvent('failed', {
             workflowId: event.workflowId,
             timestamp: event.timestamp,
-            error: event.payload.error,
+            error: event.payload.error
           }, `failed-${event.workflowId}-${event.timestamp}`);
         }
       });
@@ -180,7 +180,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       'Access-Control-Allow-Headers': 'Cache-Control',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'X-Accel-Buffering': 'no', // Disable nginx buffering
-    },
+    }
   });
 };
 
@@ -192,7 +192,7 @@ export const OPTIONS: RequestHandler = async () => {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'Cache-Control',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Max-Age': '86400',
-    },
+      'Access-Control-Max-Age': '86400'
+    }
   });
 };

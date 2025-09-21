@@ -14,7 +14,7 @@ export interface ServiceStatus {
 export interface SystemHealth {
   overall: 'healthy' | 'degraded' | 'down';
   services: ServiceStatus[];
-  lastUpdate: Date;,
+  lastUpdate: Date;
 }
 
 // Simple reactive system health store;
@@ -26,7 +26,7 @@ let healthState = $state<SystemHealth>({
     { name: 'File Storage', status: 'online' },
     { name: 'Vector Search', status: 'online' }
   ],
-  lastUpdate: new Date(),
+  lastUpdate: new Date()
 });
 
 export const systemHealthStore = {

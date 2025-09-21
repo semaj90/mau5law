@@ -16,7 +16,7 @@ interface PerformanceResult {
   uncachedTime: number;
   cachedTime: number;
   speedupFactor: number;
-  result: any;,
+  result: any;
 }
 
 // Simulate expensive operations like vector search, legal analysis, etc.;
@@ -32,22 +32,22 @@ async function expensiveVectorSearch(query: string): Promise<any> {
         title: 'Employment Contract Analysis - Remote Work Clauses',
         similarity: 0.94,
         content: 'This landmark case establishes precedent for remote work provisions...',
-        citations: ['Smith v. TechCorp, 123 F.3d 456 (2024)'],
+        citations: ['Smith v. TechCorp, 123 F.3d 456 (2024)']
       },
       {
         id: 'doc_002',
         title: 'Department of Labor Guidelines - Remote Work Rights',
         similarity: 0.87,
         content: 'Federal guidelines outline minimum standards for remote work agreements...',
-        citations: ['DOL Regulation 29 CFR 785.12'],
-      },
+        citations: ['DOL Regulation 29 CFR 785.12']
+      }
     ],
     metadata: {
       searchTime: '1200ms',
       totalResults: 2,
       model: 'legal-nomic-embed',
       embedding: new Array(768).fill(0).map(() => Math.random()), // Mock 768-dim vector
-    },
+    }
   };
 }
 
@@ -66,10 +66,10 @@ async function expensiveLegalAnalysis(document: string): Promise<any> {
       recommendations: [
         'Review remote work policy compliance',
         'Verify termination clause enforceability',
-        'Update compensation structure documentation',
-      ],
+        'Update compensation structure documentation'
+      ]
     },
-    processingTime: '800ms',
+    processingTime: '800ms'
   };
 }
 
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
         uncachedTime: Math.round(uncachedTime),
         cachedTime: Math.round(cachedTime),
         speedupFactor: Math.round(uncachedTime / cachedTime),
-        result: cachedResult,
+        result: cachedResult
       });
     }
 
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
         uncachedTime: Math.round(uncachedTime),
         cachedTime: Math.round(cachedTime),
         speedupFactor: Math.round(uncachedTime / cachedTime),
-        result: cachedAnalysis,
+        result: cachedAnalysis
       });
     }
 
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request }) => {
       keyCount: await redis.dbsize(),
       uptime: await redis
         .info('server')
-        .then((info) => parseRedisInfo(info).uptime_in_seconds || 0),
+        .then((info) => parseRedisInfo(info).uptime_in_seconds || 0)
     };
 
     const totalTime = performance.now() - startTime;
@@ -157,7 +157,7 @@ export const POST: RequestHandler = async ({ request }) => {
         title: 'Redis Cache Performance Demonstration',
         description: 'Real-world performance comparison showing dramatic speed improvements',
         testQuery: query,
-        operationsTested: operation,
+        operationsTested: operation
       },
       results,
       performance: {
@@ -167,15 +167,15 @@ export const POST: RequestHandler = async ({ request }) => {
             ? Math.round(results.reduce((sum, r) => sum + r.speedupFactor, 0) / results.length)
             : 0,
         cacheHitBenefit: 'Up to 240x faster response times',
-        productionImpact: 'Enables real-time legal AI with sub-second responses',
+        productionImpact: 'Enables real-time legal AI with sub-second responses'
       },
       redis: redisStats,
       costSavings: {
         computeReduction: '99.6%',
         estimatedSavings: '$1,200/month for 10K daily requests',
-        energyEfficiency: '240x reduction in CPU usage per query',
+        energyEfficiency: '240x reduction in CPU usage per query'
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     const totalTime = performance.now() - startTime;
@@ -188,10 +188,10 @@ export const POST: RequestHandler = async ({ request }) => {
         suggestions: [
           'Ensure Docker Redis is running: docker ps | grep redis',
           'Check Redis connectivity: redis-cli ping',
-          'Verify port 6379 is accessible',
+          'Verify port 6379 is accessible'
         ],
         responseTime: `${totalTime.toFixed(2)}ms`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -209,7 +209,7 @@ export const GET: RequestHandler = async () => {
     const [memoryInfo, serverInfo, keyCount] = await Promise.all([
       redis.info('memory'),
       redis.info('server'),
-      redis.dbsize(),
+      redis.dbsize()
     ]);
 
     const memory = parseRedisInfo(memoryInfo);
@@ -226,10 +226,10 @@ export const GET: RequestHandler = async () => {
         memory: {
           used: memory.used_memory_human,
           peak: memory.used_memory_peak_human,
-          fragmentation: memory.mem_fragmentation_ratio,
+          fragmentation: memory.mem_fragmentation_ratio
         },
         keys: keyCount,
-        performance: `${responseTime.toFixed(2)}ms`,
+        performance: `${responseTime.toFixed(2)}ms`
       },
       cacheDemo: {
         endpoint: 'POST /api/demo/redis-performance',
@@ -237,10 +237,10 @@ export const GET: RequestHandler = async () => {
         expectedSpeedup: '50x to 240x faster',
         examples: [
           'curl -X POST /api/demo/redis-performance -H "Content-Type: application/json" -d \'{"operation":"vector-search","query":"contract analysis"}\'',
-          'curl -X POST /api/demo/redis-performance -H "Content-Type: application/json" -d \'{"operation":"all","query":"employment law"}\'',
-        ],
+          'curl -X POST /api/demo/redis-performance -H "Content-Type: application/json" -d \'{"operation":"all","query":"employment law"}\''
+        ]
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
@@ -248,13 +248,13 @@ export const GET: RequestHandler = async () => {
         success: false,
         redis: {
           status: 'Disconnected',
-          error: error.message,
+          error: error.message
         },
         troubleshooting: {
           dockerCommand: 'docker run -d --name redis-demo -p 6379:6379 redis:7-alpine',
-          testConnection: 'redis-cli ping',
+          testConnection: 'redis-cli ping'
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

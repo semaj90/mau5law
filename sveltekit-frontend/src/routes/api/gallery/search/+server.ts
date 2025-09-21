@@ -72,7 +72,7 @@ interface SearchResponse {
   pagination: {
     page: number;
     pageSize: number;
-    totalPages: number;,
+    totalPages: number;
   };
 }
 
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         ocrText: includeContent ? evidence.ocrText : sql`NULL`,
         contentText: includeContent ? evidence.contentText : sql`NULL`,
         embedding: evidence.embedding,
-        isPublic: evidence.isPublic,
+        isPublic: evidence.isPublic
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id);
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       pagination: {
         page,
         pageSize,
-        totalPages: Math.ceil(totalCount / pageSize),
+        totalPages: Math.ceil(totalCount / pageSize)
       }
     };
 
@@ -304,7 +304,7 @@ function getOrderColumn(sortBy: string) {
     case 'caseTitle':
       return cases.title;
     default:
-      return evidence.uploadedAt;,
+      return evidence.uploadedAt;
   }
 }
 
@@ -465,7 +465,7 @@ async function generateFacets(filters: SearchFilters) {
       fileTypes: [],
       cases: [],
       tags: [],
-      dateRanges: [],
+      dateRanges: []
     };
   }
 }
@@ -508,7 +508,7 @@ async function getCaseFacets() {
     return caseCounts.map(c => ({
       id: c.id,
       title: c.title || 'Untitled',
-      count: c.count || 0,
+      count: c.count || 0
     });
   } catch (error) {
     return [];
@@ -589,7 +589,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       query,
       types: type ? [type] : undefined,
       caseIds: caseId ? [caseId] : undefined,
-      contentSearch: true,
+      contentSearch: true
     };
 
     const options: SearchOptions = {
@@ -597,7 +597,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       pageSize,
       sortBy: 'uploadedAt',
       sortOrder: 'desc',
-      includeContent: false,
+      includeContent: false
     };
 
     // Reuse POST logic;

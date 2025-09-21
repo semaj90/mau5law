@@ -125,7 +125,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       bevelEnabled: true,
       bevelSegments: 4,
       bevelSize: radius * 0.1,
-      bevelThickness: depth * 0.1,
+      bevelThickness: depth * 0.1
     };
 
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
@@ -142,7 +142,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     const textMaterial = new THREE.MeshBasicMaterial({
       color: this.style.textColor || YORHA_COLORS.primary.black,
       transparent: true,
-      side: THREE.DoubleSide,
+      side: THREE.DoubleSide
     });
 
     this.textMesh = new THREE.Mesh(textGeometry, textMaterial);
@@ -157,7 +157,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     // Create simple geometric icon based on identifier
     const iconGeometry = this.getIconGeometry(this.options.icon);
     const iconMaterial = new THREE.MeshStandardMaterial({
-      color: this.style.textColor || YORHA_COLORS.primary.black,
+      color: this.style.textColor || YORHA_COLORS.primary.black
     });
 
     this.iconMesh = new THREE.Mesh(iconGeometry, iconMaterial);
@@ -258,7 +258,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     const ringMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.accent.gold,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.8
     });
 
     const ring = new THREE.Mesh(ringGeometry, ringMaterial);
@@ -296,7 +296,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       hover: resolved.hover ? { backgroundColor: resolved.hover.backgroundColor, textColor: resolved.hover.textColor } : undefined,
       glow: resolved.glow,
       opacity: resolved.opacity,
-      borderWidth: resolved.borderWidth || (variant === 'ghost' ? 0.03 : 0.02),
+      borderWidth: resolved.borderWidth || (variant === 'ghost' ? 0.03 : 0.02)
     };
   }
 

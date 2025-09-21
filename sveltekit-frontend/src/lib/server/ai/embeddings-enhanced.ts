@@ -42,7 +42,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: model,
-          prompt: text,
+          prompt: text
         })
       });
 
@@ -74,9 +74,9 @@ async function extractDocumentStructure(text: string): Promise<any> {
   const patterns = {
     parties: /(?:party|plaintiff|defendant|client):\s*([^.\n]+)/gi,
     dates: /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/g,
-    amounts: /\$[\d,]+(?:\.\d{2})?/g,
+    amounts: /\$[\d]+(?:\.\d{2})?/g,
     caseNumbers: /(?:case|docket)\s*(?:no\.?|#)?\s*([a-z0-9\-]+)/gi,
-    sections: /(?:section|§)\s*(\d+(?:\.\d+)*)/gi,
+    sections: /(?:section|§)\s*(\d+(?:\.\d+)*)/gi
   };
 
   const extracted = {
@@ -86,7 +86,7 @@ async function extractDocumentStructure(text: string): Promise<any> {
     caseNumbers: [],
     sections: [],
     documentType: detectDocumentType(text),
-    keyPhrases: extractKeyPhrases(text),
+    keyPhrases: extractKeyPhrases(text)
   };
 
   for (const [key, pattern] of Object.entries(patterns)) {
@@ -146,7 +146,7 @@ export async function generateEnhancedEmbedding(
     maxTokens = 8000,
     legalDomain = true,
     batchSize = 10,
-    useExtraction = false,
+    useExtraction = false
   } = options;
 
   if (!text) {
@@ -261,7 +261,7 @@ export async function generateLegalEmbedding(
     provider: "nomic-embed",
     legalDomain: true,
     maxTokens: 2000,
-    useExtraction: true,
+    useExtraction: true
   })) as number[];
 
   return {
@@ -272,10 +272,10 @@ export async function generateLegalEmbedding(
       provider: "nomic-embed",
       model: "nomic-embed-text",
       documentLength: documentText.length,
-      dimensions: 384,
+      dimensions: 384
     },
     confidence: 0.85, // Default confidence for nomic-embed
-    extracted,
+    extracted
   };
 }
 
@@ -289,7 +289,7 @@ export async function calculateLegalSimilarity(
   const embeddings = (await generateEnhancedEmbedding([doc1, doc2], {
     provider: "nomic-embed",
     legalDomain: true,
-    useExtraction: true,
+    useExtraction: true
   })) as number[][];
 
   return cosineSimilarity(embeddings[0], embeddings[1]);
@@ -325,7 +325,7 @@ export async function generateEmbedding(
 ): Promise<number[]> {
   const result = await generateEnhancedEmbedding(text, {
     provider: "nomic-embed",
-    legalDomain: true,
+    legalDomain: true
   });
 
   return Array.isArray(result) && Array.isArray(result[0])
@@ -341,7 +341,7 @@ export async function generateBatchEmbeddings(
   return generateBatchEmbeddingsEnhanced(texts, {
     provider: "nomic-embed",
     legalDomain: true,
-    batchSize,
+    batchSize
   });
 }
 
@@ -370,7 +370,7 @@ export async function processDocumentWithChunking(
         chunkIndex: Math.floor(i / (chunkSize - chunkOverlap)),
         startIndex: i,
         endIndex: Math.min(i + chunkSize, document.length),
-        length: chunk.length,
+        length: chunk.length
       }
     });
   }
@@ -381,7 +381,7 @@ export async function processDocumentWithChunking(
       totalLength: document.length,
       totalChunks: chunks.length,
       extracted,
-      processedAt: new Date().toISOString(),
+      processedAt: new Date().toISOString()
     }
   };
 }

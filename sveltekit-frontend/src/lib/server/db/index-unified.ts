@@ -86,7 +86,7 @@ export function getTableByName(tableName: string) {
     evidence,
     legalDocuments,
     caseActivities,
-    statutes,
+    statutes
   };
 
   return tableMap[tableName as keyof typeof tableMap];
@@ -102,7 +102,7 @@ export async function healthCheck() {
       return {
         status: "unhealthy" as const,
         error: health.error || 'Database connection failed',
-        timestamp: new Date(),
+        timestamp: new Date()
       };
     }
 
@@ -112,7 +112,7 @@ export async function healthCheck() {
         const tableTests = await Promise.allSettled([
           db.select().from(users).limit(1),
           db.select().from(sessions).limit(1),
-          db.select().from(cases).limit(1),
+          db.select().from(cases).limit(1)
         ]);
 
         const failedTests = tableTests.filter(item => item.status) === 'rejected');
@@ -123,7 +123,7 @@ export async function healthCheck() {
             error: `${failedTests.length} table(s) inaccessible`,
             timestamp: new Date(),
             tables: connection.tables || [],
-            extensions: connection.extensions || [],
+            extensions: connection.extensions || []
           };
         }
       } catch (tableError) {
@@ -138,13 +138,13 @@ export async function healthCheck() {
       version: connection.version,
       tables: connection.tables?.length || 0,
       extensions: connection.extensions || [],
-      poolStats: health.pools,
+      poolStats: health.pools
     };
   } catch (error: any) {
     return {
       status: "unhealthy" as const,
       error: error.message,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
   }
 }
@@ -161,11 +161,11 @@ export async function getSystemHealth() {
       status: dbHealth.status,
       config: dbHealth.config,
       connection: connectionTest,
-      pools: dbHealth.pools,
+      pools: dbHealth.pools
     },
     application: appHealth,
     timestamp: new Date().toISOString(),
-    version: '2.0.0-unified',
+    version: '2.0.0-unified'
   };
 }
 
@@ -178,7 +178,7 @@ export function getVectorStore() {
 
     const embeddings = new OllamaEmbeddings({
       model: "embeddinggemma:latest",
-      baseUrl: "http://localhost:11434",
+      baseUrl: "http://localhost:11434"
     });
 
     return new PGVectorStore(embeddings, {
@@ -188,7 +188,7 @@ export function getVectorStore() {
         idColumnName: "id",
         vectorColumnName: "embedding",
         contentColumnName: "content",
-        metadataColumnName: "metadata",
+        metadataColumnName: "metadata"
       }
     });
   } catch (error: any) {

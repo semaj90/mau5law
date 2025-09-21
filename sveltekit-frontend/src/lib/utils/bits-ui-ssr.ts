@@ -31,7 +31,7 @@ export async function fetchSSRData<T>(
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: body ? JSON.stringify(body) : undefined
   });
 
   if (!response.ok) {
@@ -62,7 +62,7 @@ export function createSSRStore<T>(
 
     try {
       const response = await fetchSSRData<T>(endpoint, {
-        params: options?.params,
+        params: options?.params
       });
 
       if (response.success) {
@@ -120,7 +120,7 @@ export async function submitForm<T>(
   try {
     const response = await fetchSSRData<T>(endpoint, {
       method,
-      body: formData,
+      body: formData
     });
 
     if (response.success && onSuccess) {

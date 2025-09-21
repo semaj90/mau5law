@@ -8,7 +8,7 @@ import { createClient } from '$lib/shims/redis-shim';
 export interface ClientConnection {
   ws: WebSocket;
   userId?: string;
-  subscriptions: Set<string>;,
+  subscriptions: Set<string>;
 }
 class RealTimeServer {
   private wss: WebSocketServer;
@@ -26,10 +26,10 @@ class RealTimeServer {
     try {
       // Create Redis clients;
       this.redisClient = await createClient({
-        url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+        url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
       });
       this.redisSub = await createClient({
-        url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+        url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
       });
 
       // Connect Redis clients
@@ -54,7 +54,7 @@ class RealTimeServer {
       'report_update',
       'citation_update',
       'canvas_update',
-      'user_activity',
+      'user_activity'
     ];
 
     for (const channel of channels) {
@@ -68,7 +68,7 @@ class RealTimeServer {
       const clientId = this.generateClientId();
       const client: ClientConnection = {
         ws,
-        subscriptions: new Set(),
+        subscriptions: new Set()
       };
 
       this.clients.set(clientId, client);
@@ -94,7 +94,7 @@ class RealTimeServer {
       ws.send(JSON.stringify({
           type: 'connection',
           clientId,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         })
       );
     });
@@ -139,7 +139,7 @@ class RealTimeServer {
       type: 'update',
       channel,
       data: parsedMessage,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     this.clients.forEach((client, clientId) => {
@@ -159,7 +159,7 @@ class RealTimeServer {
     const message = JSON.stringify({
       data,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     try {
@@ -180,7 +180,7 @@ class RealTimeServer {
       {
         evidenceId,
         action, // 'created', 'updated', 'deleted'
-        data,
+        data
       },
       userId
     );
@@ -191,7 +191,7 @@ class RealTimeServer {
       {
         caseId,
         action,
-        data,
+        data
       },
       userId
     );
@@ -202,7 +202,7 @@ class RealTimeServer {
       {
         caseId,
         action,
-        data,
+        data
       },
       userId
     );
@@ -214,7 +214,7 @@ class RealTimeServer {
     return {
       connectedClients: this.clients.size,
       redisConnected: this.isInitialized,
-      uptime: process.uptime(),
+      uptime: process.uptime()
     };
   }
   // Additional methods for proper lifecycle management;

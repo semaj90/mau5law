@@ -8,9 +8,9 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Primary UI button component with multiple variants for legal AI platform',
-      },
-    },
+        component: 'Primary UI button component with multiple variants for legal AI platform'
+      }
+    }
   },
   tags: ['autodocs'],
   argTypes: {
@@ -25,21 +25,21 @@ const meta = {
         'link',
         'legal',
         'evidence',
-        'case',
-      ],
+        'case'
+      ]
     },
     size: {
       control: 'select',
-      options: ['default', 'sm', 'lg', 'icon'],
+      options: ['default', 'sm', 'lg', 'icon']
     },
     disabled: {
-      control: 'boolean',
+      control: 'boolean'
     },
     loading: {
       control: 'boolean',
-      description: 'Show loading state with spinner',
-    },
-  },
+      description: 'Show loading state with spinner'
+    }
+  }
 } satisfies Meta<Button>;
 
 export default meta;
@@ -47,19 +47,19 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    children: 'Button',
+    children: 'Button'
   }
 };
 
 export const Legal: Story = {
   args: {
     variant: 'legal',
-    children: 'Legal Action',
+    children: 'Legal Action'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Legal-themed button variant for law-related actions',
+        story: 'Legal-themed button variant for law-related actions'
       }
     }
   }
@@ -68,12 +68,12 @@ export const Legal: Story = {
 export const Evidence: Story = {
   args: {
     variant: 'evidence',
-    children: 'Add Evidence',
+    children: 'Add Evidence'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Evidence-themed button for evidence management actions',
+        story: 'Evidence-themed button for evidence management actions'
       }
     }
   }
@@ -82,12 +82,12 @@ export const Evidence: Story = {
 export const Case: Story = {
   args: {
     variant: 'case',
-    children: 'Create Case',
+    children: 'Create Case'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Case-themed button for case management actions',
+        story: 'Case-themed button for case management actions'
       }
     }
   }
@@ -96,12 +96,12 @@ export const Case: Story = {
 export const Destructive: Story = {
   args: {
     variant: 'destructive',
-    children: 'Delete',
+    children: 'Delete'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Destructive actions like deletion with warning styling',
+        story: 'Destructive actions like deletion with warning styling'
       }
     }
   }
@@ -110,12 +110,12 @@ export const Destructive: Story = {
 export const Outline: Story = {
   args: {
     variant: 'outline',
-    children: 'Cancel',
+    children: 'Cancel'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Outline variant for secondary actions',
+        story: 'Outline variant for secondary actions'
       }
     }
   }
@@ -124,33 +124,33 @@ export const Outline: Story = {
 export const Small: Story = {
   args: {
     size: 'sm',
-    children: 'Small Button',
+    children: 'Small Button'
   }
 };
 
 export const Large: Story = {
   args: {
     size: 'lg',
-    children: 'Large Button',
+    children: 'Large Button'
   }
 };
 
 export const Disabled: Story = {
   args: {
     disabled: true,
-    children: 'Disabled Button',
+    children: 'Disabled Button'
   }
 };
 
 export const Loading: Story = {
   args: {
     loading: true,
-    children: 'Loading...',
+    children: 'Loading...'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Button with loading state and spinner animation',
+        story: 'Button with loading state and spinner animation'
       }
     }
   }

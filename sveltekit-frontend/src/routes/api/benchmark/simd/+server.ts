@@ -21,23 +21,23 @@ interface BenchmarkResult {
   standardJSON: {
     totalTime: number;
     avgTime: number;
-    opsPerSecond: number;,
+    opsPerSecond: number;
   };
   simdJSON: {
     totalTime: number;
     avgTime: number;
-    opsPerSecond: number;,
+    opsPerSecond: number;
   };
   performance: {
     speedupFactor: number;
     percentImprovement: number;
-    timeSaved: number;,
+    timeSaved: number;
   };
   systemInfo: {
     nodeVersion: string;
     v8Version: string;
     platform: string;
-    cpuCores: number;,
+    cpuCores: number;
   };
 }
 
@@ -93,7 +93,7 @@ const sampleDocuments = {
       parties: new Array(10).fill(null).map((_, i) => ({
         name: `Party ${i + 1}`,
         role: i % 2 === 0 ? 'plaintiff' : 'defendant',
-        type: i % 3 === 0 ? 'corporation' : 'individual',
+        type: i % 3 === 0 ? 'corporation' : 'individual'
       })),
       practice_areas: [
         'constitutional_law', 'administrative_law', 'contract_law', 
@@ -102,12 +102,12 @@ const sampleDocuments = {
       entities: new Array(50).fill(null).map((_, i) => ({
         type: ['statute', 'regulation', 'case_citation'][i % 3],
         text: `${i + 1} U.S.C. § ${1000 + i}`,
-        confidence: 0.85 + (i % 15) / 100,
+        confidence: 0.85 + (i % 15) / 100
       })),
       citations: new Array(25).fill(null).map((_, i) => ({
         citation: `${100 + i} F.3d ${200 + i}`,
         court: ['Supreme Court', 'Federal Circuit', 'District Court'][i % 3],
-        year: 2020 + (i % 4),
+        year: 2020 + (i % 4)
       })
     }
   }
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async (event) => {
     const benchmark = await runSIMDBenchmark({
       iterations: request?.iterations || 1000,
       documentSize: request?.documentSize || 'medium',
-      testType: request?.testType || 'legal',
+      testType: request?.testType || 'legal'
     });
     
     return json(benchmark);
@@ -198,12 +198,12 @@ async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<Ben
     standardJSON: {
       totalTime: standardTotal,
       avgTime: standardAvg,
-      opsPerSecond: standardOps,
+      opsPerSecond: standardOps
     },
     simdJSON: {
       totalTime: simdTotal,
       avgTime: simdAvg,
-      opsPerSecond: simdOps,
+      opsPerSecond: simdOps
     },
     performance: {
       speedupFactor,
@@ -214,7 +214,7 @@ async function runSIMDBenchmark(params: Required<BenchmarkRequest>): Promise<Ben
       nodeVersion: process.version,
       v8Version: process.versions.v8 || 'unknown',
       platform: process.platform,
-      cpuCores: (await import('os')).cpus().length,
+      cpuCores: (await import('os')).cpus().length
     }
   };
 }
@@ -229,7 +229,7 @@ export const PUT: RequestHandler = async () => {
       bodyParser: stats,
       nodeJSON: nodeStats,
       uptime: process.uptime(),
-      memoryUsage: process.memoryUsage(),
+      memoryUsage: process.memoryUsage()
     });
     
   } catch (error) {

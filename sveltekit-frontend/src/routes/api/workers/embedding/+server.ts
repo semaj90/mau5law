@@ -24,14 +24,14 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'queues':
         return await getQueueInfo();
       default:
-        return await getWorkerStatus();,
+        return await getWorkerStatus();
     }
   } catch (error) {
     console.error('Error in embedding worker API:', error);
     return json();
       {
         error: 'Failed to get worker information',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json();
       {
         error: 'Worker operation failed',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -81,14 +81,14 @@ async function getWorkerStatus(): Promise<Response> {
     worker: {
       running: stats.isRunning,
       uptime: stats.uptime,
-      start_time: stats.startTime,
+      start_time: stats.startTime
     },
     jobs: {
       processed: stats.processedJobs,
       failed: stats.failedJobs,
-      success_rate: stats.successRate,
+      success_rate: stats.successRate
     },
-    rabbitmq: rabbitHealth,
+    rabbitmq: rabbitHealth
   });
 }
 
@@ -108,7 +108,7 @@ async function getWorkerStats(): Promise<Response> {
   return json({
     ...stats,
     rabbitmq_health: rabbitHealth,
-    uptime_formatted: stats.uptime ? formatUptime(stats.uptime) : null,
+    uptime_formatted: stats.uptime ? formatUptime(stats.uptime) : null
   });
 }
 
@@ -121,19 +121,19 @@ async function getQueueInfo(): Promise<Response> {
     for (const queueName of queueNames) {
       queueInfo[queueName] = {
         name: queueName,
-        status: 'unknown',
+        status: 'unknown'
       };
     }
 
     return json({
       queues: queueInfo,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json();
       {
         error: 'Failed to get queue information',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -146,7 +146,7 @@ async function startWorker(): Promise<Response> {
     await rabbitmqEmbeddingWorker.start();
     return json({
       message: 'Worker started successfully',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json()
@@ -162,7 +162,7 @@ async function stopWorker(): Promise<Response> {
     await rabbitmqEmbeddingWorker.stop();
     return json({
       message: 'Worker stopped successfully',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json()
@@ -180,7 +180,7 @@ async function restartWorker(): Promise<Response> {
     await rabbitmqEmbeddingWorker.start();
     return json({
       message: 'Worker restarted successfully',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     return json()
@@ -195,7 +195,7 @@ async function resetWorkerStats(): Promise<Response> {
   rabbitmqEmbeddingWorker.resetStats();
   return json({
     message: 'Worker statistics reset',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -226,8 +226,8 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
         meta: {
           priority: payload.priority || 5,
           correlationId: payload.correlationId,
-          maxRetries: payload.maxRetries || 3,
-        },
+          maxRetries: payload.maxRetries || 3
+        }
       }
     );
 
@@ -237,7 +237,7 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
         job_type: jobType,
         queue: payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING: QUEUES.DOCUMENT_EMBEDDING,
         message: 'Embedding job queued successfully',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 201 }
     );
@@ -245,7 +245,7 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
     return json();
       {
         error: 'Failed to queue embedding job',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -288,8 +288,8 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
         meta: {
           priority: payload.priority || 7,
           correlationId: payload.correlationId,
-          maxRetries: payload.maxRetries || 2,
-        },
+          maxRetries: payload.maxRetries || 2
+        }
       }
     );
 
@@ -301,7 +301,7 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
         entity_count: payload.entities.length,
         batch_size: payload.batch_size || 10,
         message: 'Bulk embedding job queued successfully',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 201 }
     );
@@ -309,7 +309,7 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
     return json();
       {
         error: 'Failed to queue bulk embedding job',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -330,7 +330,7 @@ async function testWorker(request: Request): Promise<Response> {
           entity_id: 'test-doc-' + Date.now(),
           text_content:
             'This is a test document for embedding generation. It contains legal content about contracts and agreements.',
-          embedding_type: 'content',
+          embedding_type: 'content'
         };
         break;
 
@@ -339,7 +339,7 @@ async function testWorker(request: Request): Promise<Response> {
           entity_type: 'case',
           entity_id: 'test-case-' + Date.now(),
           text_content:
-            'Smith vs. Jones - A contract dispute case involving breach of agreement terms and damages.',
+            'Smith vs. Jones - A contract dispute case involving breach of agreement terms and damages.'
         };
         break;
 
@@ -348,7 +348,7 @@ async function testWorker(request: Request): Promise<Response> {
           entity_type: 'document',
           entity_id: 'test-basic-' + Date.now(),
           text_content: 'Basic test text for embedding generation.',
-          embedding_type: 'content',
+          embedding_type: 'content'
         };
     }
 
@@ -359,7 +359,7 @@ async function testWorker(request: Request): Promise<Response> {
       {
         type: `test_${testPayload.entity_type}_embedding`,
         payload: testPayload,
-        meta: { priority: 8, correlationId: `test-${Date.now()}`, maxRetries: 1 },
+        meta: { priority: 8, correlationId: `test-${Date.now()}`, maxRetries: 1 }
       }
     );
 
@@ -370,7 +370,7 @@ async function testWorker(request: Request): Promise<Response> {
         test_payload: testPayload,
         message: 'Test embedding job queued successfully',
         note: 'This test job uses fake entity IDs and will not update database records',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 201 }
     );
@@ -378,7 +378,7 @@ async function testWorker(request: Request): Promise<Response> {
     return json();
       {
         error: 'Failed to queue test job',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );

@@ -14,7 +14,7 @@ export function prepareEmbeddingInsert(input: EmbeddingInsertInput) {
     embedding: Array.isArray(input.embedding) ? JSON.stringify(input.embedding) : input.embedding,
     metadata: input.metadata ? JSON.stringify(input.metadata) : null,
     model: input?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
-    createdAt: input.createdAt || new Date(),
+    createdAt: input.createdAt || new Date()
   } as any;
 }
 
@@ -33,6 +33,6 @@ export function prepareSearchSessionInsert(input: SearchSessionInsertInput) {
     searchType: input.searchType || 'hybrid',
     queryEmbedding: input.queryEmbedding ? JSON.stringify(input.queryEmbedding) : null,
     resultCount: input.resultCount ?? (Array.isArray(input.results) ? input.results.length: null),
-    createdAt: new Date(),
+    createdAt: new Date()
   } as any;
 }

@@ -20,17 +20,17 @@ const testConfig = {
     {
       title: 'Contract Liability Clause',
       content: 'This contract contains provisions regarding liability limitations and indemnification clauses. The contractor shall not be liable for indirect damages exceeding the contract value.',
-      caseTitle: 'Contract Dispute Case',
+      caseTitle: 'Contract Dispute Case'
     },
     {
       title: 'Criminal Evidence Report',
       content: 'Forensic analysis of digital evidence reveals metadata tampering on multiple files. Hash verification failed on documents submitted as exhibits.',
-      caseTitle: 'Digital Evidence Case',
+      caseTitle: 'Digital Evidence Case'
     },
     {
       title: 'Employment Agreement',
       content: 'Non-compete clauses and intellectual property assignments are detailed in sections 4-7. Employee acknowledges proprietary information restrictions.',
-      caseTitle: 'Employment Dispute',
+      caseTitle: 'Employment Dispute'
     }
   ],
   testQueries: [
@@ -52,7 +52,7 @@ class VectorPipelineTest {
   constructor() {
     this.embeddings = new OllamaEmbeddings({
       baseUrl: testConfig.ollamaBaseUrl,
-      model: testConfig.embeddingModel,
+      model: testConfig.embeddingModel
     });
   }
 
@@ -112,7 +112,7 @@ class VectorPipelineTest {
         dimensions: testEmbedding.length,
         model: testConfig.embeddingModel,
         baseUrl: testConfig.ollamaBaseUrl,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       console.log(`✅ Ollama connected: ${testEmbedding.length} dimensions`);
@@ -120,7 +120,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.ollama = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Connection failed',
+        error: err instanceof Error ? err.message: 'Connection failed'
       };
       throw new Error(`Ollama connection failed: ${err}`);
     }
@@ -136,7 +136,7 @@ class VectorPipelineTest {
         email: 'test@vector-pipeline.com',
         name: 'Vector Pipeline Test User',
         role: 'prosecutor',
-        passwordHash: 'test-hash-not-real',
+        passwordHash: 'test-hash-not-real'
       }).onConflictDoNothing().returning();
 
       // Create test cases
@@ -147,7 +147,7 @@ class VectorPipelineTest {
           description: `Test case for: ${doc.title}`,
           status: 'active',
           priority: 'medium',
-          createdBy: testUser.id,
+          createdBy: testUser.id
         }).returning();
         
         testCases.push(testCase);
@@ -157,7 +157,7 @@ class VectorPipelineTest {
         status: 'success',
         userId: testUser.id,
         casesCreated: testCases.length,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       this.testResults.testUserId = testUser.id;
@@ -168,7 +168,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.testData = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Test data creation failed',
+        error: err instanceof Error ? err.message: 'Test data creation failed'
       };
       throw err;
     }
@@ -191,7 +191,7 @@ class VectorPipelineTest {
           filename: `${doc.title}.txt`,
           filePath: `/test/documents/${doc.title.replace(/\s+/g, '_')}.txt`,
           extractedText: doc.content,
-          createdBy: this.testResults.testUserId,
+          createdBy: this.testResults.testUserId
         }).returning();
 
         // Generate embedding
@@ -206,14 +206,14 @@ class VectorPipelineTest {
           metadata: {
             title: doc.title,
             testDocument: true,
-            embeddingModel: testConfig.embeddingModel,
+            embeddingModel: testConfig.embeddingModel
           }
         });
 
         embeddedDocs.push({
           documentId: document.id,
           title: doc.title,
-          embeddingSize: embedding.length,
+          embeddingSize: embedding.length
         });
       }
 
@@ -221,7 +221,7 @@ class VectorPipelineTest {
         status: 'success',
         documentsProcessed: embeddedDocs.length,
         embeddingDimensions: embeddedDocs[0]?.embeddingSize || 0,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       this.testResults.embeddedDocs = embeddedDocs;
@@ -231,7 +231,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.embedding = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Embedding failed',
+        error: err instanceof Error ? err.message: 'Embedding failed'
       };
       throw err;
     }
@@ -258,7 +258,7 @@ class VectorPipelineTest {
             content: documentVectors.content,
             similarity: sql<number>`1 - (${documentVectors.embedding} <=> ${queryEmbedding})`,
             filename: documents.filename,
-            caseTitle: cases.title,
+            caseTitle: cases.title
           })
           .from(documentVectors)
           .leftJoin(documents, eq(documentVectors.documentId, documents.id)
@@ -275,7 +275,7 @@ class VectorPipelineTest {
           matches: results.map((r: any) => ({
             filename: r.filename,
             similarity: r.similarity,
-            caseTitle: r.caseTitle,
+            caseTitle: r.caseTitle
           })
         });
       }
@@ -285,7 +285,7 @@ class VectorPipelineTest {
         queriesExecuted: searchResults.length,
         avgSearchTime: searchResults.reduce((sum, r) => sum + r.searchTime, 0) / searchResults.length,
         totalResults: searchResults.reduce((sum, r) => sum + r.results, 0),
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       this.testResults.searchResults = searchResults;
@@ -295,7 +295,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.search = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Search failed',
+        error: err instanceof Error ? err.message: 'Search failed'
       };
       throw err;
     }
@@ -308,14 +308,14 @@ class VectorPipelineTest {
     try {
       // Test if MCP postgres server is working
       const mcpTest = await db
-        .select({ count: sql<number>`count(*)` ,})
+        .select({ count: sql<number>`count(*)` })
         .from(documentVectors);
 
       this.testResults.steps.mcp = {
         status: 'success',
         postgresConnected: true,
         vectorCount: mcpTest[0].count,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       console.log(`✅ MCP integration working: ${mcpTest[0].count} vectors`);
@@ -323,7 +323,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.mcp = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'MCP integration failed',
+        error: err instanceof Error ? err.message: 'MCP integration failed'
       };
       
       // Don't throw - MCP is optional
@@ -356,7 +356,7 @@ class VectorPipelineTest {
         ollamaConnected: this.testResults.steps.ollama?.status === 'success',
         searchPerformance: {
           avgQueryTime: this.testResults.steps.search?.avgSearchTime || 0,
-          totalQueries: this.testResults.searchResults?.length || 0,
+          totalQueries: this.testResults.searchResults?.length || 0
         }
       };
 
@@ -390,7 +390,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Test pipeline error:', err);
     return json({
       error: 'Pipeline test failed',
-      details: err instanceof Error ? err.message: 'Unknown error',
+      details: err instanceof Error ? err.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -400,7 +400,7 @@ export const GET: RequestHandler = async () => {
     // Quick health check;
     const embeddings = new OllamaEmbeddings({
       baseUrl: testConfig.ollamaBaseUrl,
-      model: testConfig.embeddingModel,
+      model: testConfig.embeddingModel
     });
 
     const testEmbedding = await embeddings.embedQuery('health check');
@@ -416,15 +416,15 @@ export const GET: RequestHandler = async () => {
         connected: true,
         model: testConfig.embeddingModel,
         dimensions: testEmbedding.length,
-        baseUrl: testConfig.ollamaBaseUrl,
+        baseUrl: testConfig.ollamaBaseUrl
       },
       database: {
         connected: true,
-        vectorsStored: vectorCount.count,
+        vectorsStored: vectorCount.count
       },
       testConfig: {
         documentsToTest: testConfig.testDocuments.length,
-        queriesToTest: testConfig.testQueries.length,
+        queriesToTest: testConfig.testQueries.length
       }
     });
 

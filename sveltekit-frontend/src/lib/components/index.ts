@@ -138,7 +138,7 @@ export const COMPONENT_REGISTRY = {
   ai: 8,
   legal: 15,
   realtime: 6,
-  total: 154,
+  total: 154
 } as const;
 
 export const COMPONENT_CATEGORIES = [

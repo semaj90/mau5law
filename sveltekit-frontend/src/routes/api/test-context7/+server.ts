@@ -38,7 +38,7 @@ const summarize = (r: LibraryDocResult) => {
     tokenCount: ok ? (r.metadata?.tokenCount ?? 0) : 0,
     snippets: ok ? (r.snippets?.length ?? 0) : 0,
     firstSnippet,
-    error: isErrorResult(r) ? r.error: null,
+    error: isErrorResult(r) ? r.error: null
   };
 };
 
@@ -49,16 +49,16 @@ export const GET: RequestHandler = async ({ fetch }) => {
     // Test remaining helper functions with event.fetch
     const [svelteRunes, xstateMachine]: LibraryDocResult[] = await Promise.all([;
       getSvelte5Docs('runes', fetch).catch((e: unknown) => ({
-        error: e instanceof Error ? e.message: String(e),
+        error: e instanceof Error ? e.message: String(e)
       })),
       getXStateDocs('machine', fetch).catch((e: unknown) => ({
-        error: e instanceof Error ? e.message : String(e),
-      })),
+        error: e instanceof Error ? e.message : String(e)
+      }))
     ]);
 
     const results = {
       svelteRunes: summarize(svelteRunes),
-      xstateMachine: summarize(xstateMachine),
+      xstateMachine: summarize(xstateMachine)
     };
 
     const all: LibraryDocResult[] = [svelteRunes, xstateMachine];
@@ -72,9 +72,9 @@ export const GET: RequestHandler = async ({ fetch }) => {
       summary: {
         totalTests: all.length,
         successful,
-        failed,
+        failed
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: unknown) {
     console.error('❌ Context7 test error:', error);
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       {
         success: false,
         error: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

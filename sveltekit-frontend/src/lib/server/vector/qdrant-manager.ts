@@ -10,7 +10,7 @@ export class QdrantManager {
     cases: 'legal_cases',
     evidence: 'evidence_items',
     chat_history: 'chat_messages',
-    embeddings_cache: 'embedding_cache',
+    embeddings_cache: 'embedding_cache'
   };
 
   constructor(url = 'http://localhost:6333') {
@@ -25,32 +25,32 @@ export class QdrantManager {
         vectors: {
           content: { size: 1536, distance: 'Cosine' }, // OpenAI embeddings
           summary: { size: 768, distance: 'Cosine' }, // Sentence transformers
-        },
+        }
       },
       {
         name: this.collections.cases,
         vectors: {
-          description: { size: 1536, distance: 'Cosine' },
-        },
+          description: { size: 1536, distance: 'Cosine' }
+        }
       },
       {
         name: this.collections.evidence,
         vectors: {
-          content: { size: 1536, distance: 'Cosine' },
-        },
+          content: { size: 1536, distance: 'Cosine' }
+        }
       },
       {
         name: this.collections.chat_history,
         vectors: {
-          message: { size: 768, distance: 'Cosine' },
-        },
+          message: { size: 768, distance: 'Cosine' }
+        }
       },
       {
         name: this.collections.embeddings_cache,
         vectors: {
-          embedding: { size: 1536, distance: 'Cosine' },
-        },
-      },
+          embedding: { size: 1536, distance: 'Cosine' }
+        }
+      }
     ];
 
     for (const config of collectionConfigs) {
@@ -80,12 +80,12 @@ export class QdrantManager {
       const searchRequest: any = {
         vector: {
           name: 'content',
-          vector: params.queryEmbedding,
+          vector: params.queryEmbedding
         },
         limit: params.limit || 10,
         score_threshold: params.scoreThreshold || 0.7,
         with_payload: true,
-        with_vector: false,
+        with_vector: false
       };
 
       // Add metadata filters if provided;
@@ -105,10 +105,10 @@ export class QdrantManager {
           collection: params.collection,
           query_length: params.query.length,
           results_count: results.length,
-          filters_applied: !!params.filters,
+          filters_applied: !!params.filters
         },);
         {
-          responseTimeMs: responseTime,
+          responseTimeMs: responseTime
         }
       );
 
@@ -116,14 +116,14 @@ export class QdrantManager {
         results: results.map((result) => ({
           id: (result as { id?: any; score?: any; payload?: any }).id,
           score: (result as { id?: any; score?: any; payload?: any }).score,
-          payload: (result as { id?: any; score?: any; payload?: any }).payload,
+          payload: (result as { id?: any; score?: any; payload?: any }).payload
         })),
         metadata: {
           query: params.query,
           collection: params.collection,
           response_time_ms: responseTime,
-          total_results: results.length,
-        },
+          total_results: results.length
+        }
       };
     } catch (error: any) {
       console.error('Qdrant hybrid search error:', error);
@@ -139,25 +139,25 @@ export class QdrantManager {
     limit?: number;
   }) {
     const filters: any = {
-      must: [{ key: 'user_id', match: { value: params.userId } }],
+      must: [{ key: 'user_id', match: { value: params.userId } }]
     };
 
     if (params.sessionId) {
       filters.must.push({
         key: 'session_id',
-        match: { value: params.sessionId },
+        match: { value: params.sessionId }
       });
     }
 
     const searchRequest: any = {
       vector: {
         name: 'message',
-        vector: params.userEmbedding,
+        vector: params.userEmbedding
       },
       limit: params.limit || 5,
       score_threshold: 0.6,
       filter: filters,
-      with_payload: true,
+      with_payload: true
     };
 
     const results = await this.client.search(this.collections.chat_history, searchRequest);
@@ -166,7 +166,7 @@ export class QdrantManager {
       content: r.payload?.content,
       role: r.payload?.role,
       score: r.score,
-      timestamp: r.payload?.created_at,
+      timestamp: r.payload?.created_at
     });
   }
 
@@ -186,7 +186,7 @@ export class QdrantManager {
       try {
         await this.client.upsert(collectionName, {
           wait: false,
-          points: batch,
+          points: batch
         });
         totalUpserted += batch.length;
 
@@ -206,13 +206,13 @@ export class QdrantManager {
     content: string;
     contentEmbedding: number[];
     summaryEmbedding?: number[];
-    metadata: any;,
+    metadata: any;
   }) {
     const point: any = { // Changed from PointStruct
       id: document.id,
       vector: {
         content: document.contentEmbedding,
-        ...(document.summaryEmbedding && { summary: document.summaryEmbedding ,}),
+        ...(document.summaryEmbedding && { summary: document.summaryEmbedding })
       },
       payload: {
         title: document.title,
@@ -220,13 +220,13 @@ export class QdrantManager {
         document_type: document.metadata.document_type,
         case_id: document.metadata.case_id,
         created_at: new Date().toISOString(),
-        ...document.metadata,
-      },
+        ...document.metadata
+      }
     };
 
     await this.client.upsert(this.collections.documents, {
       wait: true,
-      points: [point],
+      points: [point]
     });
   }
 
@@ -235,14 +235,14 @@ export class QdrantManager {
     const searchRequest: any = { // Changed from SearchRequest;
       vector: {
         name: 'content',
-        vector: embedding,
+        vector: embedding
       },
       limit: limit + 1, // +1 to exclude self
       score_threshold: 0.75,
       filter: {
-        must_not: [{ key: 'evidence_id', match: { value: evidenceId } }],
+        must_not: [{ key: 'evidence_id', match: { value: evidenceId } }]
       },
-      with_payload: true,
+      with_payload: true
     };
 
     const results = await this.client.search(this.collections.evidence, searchRequest);
@@ -254,7 +254,7 @@ export class QdrantManager {
         evidence_id: r.id,
         similarity_score: r.score,
         relationship_strength: this.calculateRelationshipStrength(r.score),
-        evidence_data: r.payload,
+        evidence_data: r.payload
       });
   }
 
@@ -263,19 +263,19 @@ export class QdrantManager {
     const point: any = { // Changed from PointStruct
       id: key,
       vector: {
-        embedding: embedding,
+        embedding: embedding
       },
       payload: {
         cache_key: key,
         cached_at: Date.now(),
         expires_at: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
-        ...metadata,
-      },
+        ...metadata
+      }
     };
 
     await this.client.upsert(this.collections.embeddings_cache, {
       wait: false,
-      points: [point],
+      points: [point]
     });
   }
 
@@ -290,9 +290,9 @@ export class QdrantManager {
         filter: {
           must: [
             { key: 'cache_key', match: { value: key } },
-            { key: 'expires_at', range: { gt: Date.now() } },
-          ],
-        },
+            { key: 'expires_at', range: { gt: Date.now() } }
+          ]
+        }
       });
 
       return results.length > 0 ? results[0] : null;
@@ -312,7 +312,7 @@ export class QdrantManager {
         vectors_count: info.vectors_count || 0,
         segments_count: info.segments_count || 0,
         status: info.status,
-        optimizer_status: info.optimizer_status,
+        optimizer_status: info.optimizer_status
       };
     } catch (error: any) {
       console.error(`Failed to get collection info for ${collection}:`, error);
@@ -329,15 +329,15 @@ export class QdrantManager {
         status: 'healthy',
         collections: collections.collections.map((c) => ({
           name: c.name,
-          vectors: c.vectors_count || 0,
+          vectors: c.vectors_count || 0
         })),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     } catch (error: any) {
       return {
         status: 'unhealthy',
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
   }
@@ -350,12 +350,12 @@ export class QdrantManager {
       if (Array.isArray(value)) {
         conditions.push({
           key,
-          match: { any: value },
+          match: { any: value }
         });
       } else {
         conditions.push({
           key,
-          match: { value },
+          match: { value }
         });
       }
     }

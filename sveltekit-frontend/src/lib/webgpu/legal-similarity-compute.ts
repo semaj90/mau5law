@@ -50,7 +50,7 @@ export class LegalSimilarityWebGPU {
       }
 
       this.adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
 
       if (!this.adapter) {
@@ -64,8 +64,8 @@ export class LegalSimilarityWebGPU {
           maxStorageBufferBindingSize: 1024 * 1024 * 1024, // 1GB
           maxComputeWorkgroupSizeX: 256,
           maxComputeWorkgroupSizeY: 256,
-          maxComputeWorkgroupSizeZ: 64,
-        },
+          maxComputeWorkgroupSizeZ: 64
+        }
       });
 
       await this.createShaders();
@@ -96,7 +96,7 @@ export class LegalSimilarityWebGPU {
           workgroup_size: u32,
           legal_domain_weight: f32,
           risk_assessment_factor: f32,
-          confidence_boost: f32,
+          confidence_boost: f32
         }
 
         struct SimilarityResult {
@@ -105,7 +105,7 @@ export class LegalSimilarityWebGPU {
           similarity: f32,
           confidence: f32,
           legal_score: f32,
-          risk_assessment: f32,
+          risk_assessment: f32
         }
 
         @group(0) @binding(0) var<storage, read> query_embeddings: array<f32>;
@@ -250,14 +250,14 @@ export class LegalSimilarityWebGPU {
           similarity: f32,
           confidence: f32,
           legal_score: f32,
-          risk_assessment: f32,
+          risk_assessment: f32
         }
 
         struct TopKUniforms {
           total_results: u32,
           k: u32,
           batch_size: u32,
-          padding: u32,
+          padding: u32
         }
 
         @group(0) @binding(0) var<storage, read_write> results: array<SimilarityResult>;
@@ -355,11 +355,11 @@ export class LegalSimilarityWebGPU {
     this.computePipeline = this.device.createComputePipeline({
       label: 'Legal Similarity Compute Pipeline',
       layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [this.bindGroupLayout],
+        bindGroupLayouts: [this.bindGroupLayout]
       }),
       compute: {
         module: this.cosineSimilarityShader,
-        entryPoint: 'main',
+        entryPoint: 'main'
       }
     });
 
@@ -444,7 +444,7 @@ export class LegalSimilarityWebGPU {
       const domainWeightsBuffer = this.device.createBuffer({
         label: 'Legal Domain Weights Buffer',
         size: domainWeights.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
       this.device.queue.writeBuffer(domainWeightsBuffer, 0, domainWeights);
 
@@ -463,11 +463,11 @@ export class LegalSimilarityWebGPU {
 
       // Dispatch compute shader;
       const commandEncoder = this.device.createCommandEncoder({
-        label: 'Legal Similarity Command Encoder',
+        label: 'Legal Similarity Command Encoder'
       });
 
       const computePass = commandEncoder.beginComputePass({
-        label: 'Legal Similarity Compute Pass',
+        label: 'Legal Similarity Compute Pass'
       });
 
       computePass.setPipeline(this.computePipeline);
@@ -481,7 +481,7 @@ export class LegalSimilarityWebGPU {
       const readBuffer = this.device.createBuffer({
         label: 'Results Read Buffer',
         size: this.resultsBuffer!.size,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       commandEncoder.copyBufferToBuffer(
@@ -565,7 +565,7 @@ export class LegalSimilarityWebGPU {
     this.queryBuffer = this.device.createBuffer({
       label: 'Query Embeddings Buffer',
       size: queryData.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     this.device.queue.writeBuffer(this.queryBuffer, 0, queryData);
 
@@ -573,7 +573,7 @@ export class LegalSimilarityWebGPU {
     this.documentBuffer = this.device.createBuffer({
       label: 'Document Embeddings Buffer',
       size: documentData.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
     this.device.queue.writeBuffer(this.documentBuffer, 0, documentData);
 
@@ -582,14 +582,14 @@ export class LegalSimilarityWebGPU {
     this.resultsBuffer = this.device.createBuffer({
       label: 'Similarity Results Buffer',
       size: resultsSize,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     // Uniforms buffer;
     this.uniformsBuffer = this.device.createBuffer({
       label: 'Compute Uniforms Buffer',
       size: 32, // 8 floats * 4 bytes
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
     console.log(`📊 Created WebGPU buffers: queries=${this.formatBytes(queryData.byteLength)}, docs=${this.formatBytes(documentData.byteLength)}, results=${this.formatBytes(resultsSize)}`);
@@ -608,7 +608,7 @@ export class LegalSimilarityWebGPU {
       layout: 'auto',
       compute: {
         module: this.topKShader,
-        entryPoint: 'main',
+        entryPoint: 'main'
       }
     });
 
@@ -617,7 +617,7 @@ export class LegalSimilarityWebGPU {
     const topKResultsBuffer = this.device.createBuffer({
       label: 'Top-K Results Buffer',
       size: topKResultsSize,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     // Initialize top-K buffer with invalid results
@@ -644,7 +644,7 @@ export class LegalSimilarityWebGPU {
     const topKUniformsBuffer = this.device.createBuffer({
       label: 'Top-K Uniforms Buffer',
       size: topKUniforms.byteLength,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
     this.device.queue.writeBuffer(topKUniformsBuffer, 0, topKUniforms);
 
@@ -661,11 +661,11 @@ export class LegalSimilarityWebGPU {
 
     // Execute top-K selection;
     const commandEncoder = this.device.createCommandEncoder({
-      label: 'Top-K Command Encoder',
+      label: 'Top-K Command Encoder'
     });
 
     const computePass = commandEncoder.beginComputePass({
-      label: 'Top-K Compute Pass',
+      label: 'Top-K Compute Pass'
     });
 
     computePass.setPipeline(topKPipeline);
@@ -732,12 +732,12 @@ export function prepareLegalEmbeddingsForWebGPU(
   queryEmbeddings: Float32Array[];
   documentEmbeddings: Float32Array[];
   queryMetadata: any[];
-  documentMetadata: any[];,
+  documentMetadata: any[];
 } {
   const queryEmbeddings = cases.map(c => c.embedding);
   const documentEmbeddings = evidence.map(e => e.embedding);
-  const queryMetadata = cases.map(c => ({ id: c.id, ...c.metadata ,});
-  const documentMetadata = evidence.map(e => ({ id: e.id, ...e.metadata ,});
+  const queryMetadata = cases.map(c => ({ id: c.id, ...c.metadata });
+  const documentMetadata = evidence.map(e => ({ id: e.id, ...e.metadata });
 
   return {
     queryEmbeddings,

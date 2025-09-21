@@ -20,7 +20,7 @@ export interface CacheConfig {
   ttl: number;
   maxSize: number;
   strategy: "lru" | "lfu" | "fifo";
-  syncInterval: number;,
+  syncInterval: number;
 }
 
 export interface SyncOperation {
@@ -30,7 +30,7 @@ export interface SyncOperation {
   data: any;
   timestamp: Date;
   priority: number;
-  retries: number;,
+  retries: number;
 }
 
 export interface CacheStats {
@@ -47,7 +47,7 @@ export interface CollectionStats {
   documents: number;
   memoryUsage: number;
   lastAccess: Date;
-  operations: number;,
+  operations: number;
 }
 
 export interface IndexStrategy {
@@ -83,7 +83,7 @@ class EnhancedLokiDB {
       evictions: 0,
       syncOperations: 0,
       lastSync: null,
-      collections: new Map(),
+      collections: new Map()
     };
 
     // Default cache configurations;
@@ -147,22 +147,22 @@ class EnhancedLokiDB {
           byCaseHighConfidence: [
             { type: 'find', value: { caseId: { $aeq: '[%lktxp]caseId' } } },
             { type: 'find', value: { confidence: { $gte: 0.8 } } },
-            { type: 'simplesort', property: 'confidence', desc: true },
+            { type: 'simplesort', property: 'confidence', desc: true }
           ],
           recentProcessed: [
             { type: 'find', value: { processingStatus: 'complete' } },
             { type: 'simplesort', property: 'updatedAt', desc: true },
-            { type: 'limit', value: 50 },
+            { type: 'limit', value: 50 }
           ],
           needsProcessing: [;
             {
               type: 'find',
-              value: { processingStatus: { $in: ['pending', 'error'] } },
+              value: { processingStatus: { $in: ['pending', 'error'] } }
             },)
-            { type: 'simplesort', property: 'createdAt', desc: false },
-          ],
+            { type: 'simplesort', property: 'createdAt', desc: false }
+          ]
         },
-        ttl: this.config.get('evidence')?.ttl,
+        ttl: this.config.get('evidence')?.ttl
       });
 
     // AI Analysis with vector embeddings
@@ -173,14 +173,14 @@ class EnhancedLokiDB {
         transforms: {
           highConfidenceAnalysis: [
             { type: 'find', value: { confidence: { $gte: 0.9 } } },
-            { type: 'simplesort', property: 'timestamp', desc: true },
+            { type: 'simplesort', property: 'timestamp', desc: true }
           ],
           byModel: [
             { type: 'find', value: { model: { $aeq: '[%lktxp]model' } } },)
-            { type: 'simplesort', property: 'confidence', desc: true },
-          ],
+            { type: 'simplesort', property: 'confidence', desc: true }
+          ]
         },
-        ttl: this.config.get('aiAnalysis')?.ttl,
+        ttl: this.config.get('aiAnalysis')?.ttl
       });
 
     // Vector embeddings cache
@@ -193,10 +193,10 @@ class EnhancedLokiDB {
           byModel: [{ type: 'find', value: { model: { $aeq: '[%lktxp]model' } } }],
           recentEmbeddings: [
             { type: 'simplesort', property: 'createdAt', desc: true },)
-            { type: 'limit', value: 100 },
-          ],
+            { type: 'limit', value: 100 }
+          ]
         },
-        ttl: this.config.get('embeddings')?.ttl,
+        ttl: this.config.get('embeddings')?.ttl
       });
 
     // Graph relationships cache
@@ -207,14 +207,14 @@ class EnhancedLokiDB {
         transforms: {
           strongRelationships: [
             { type: 'find', value: { strength: { $gte: 0.7 } } },
-            { type: 'simplesort', property: 'strength', desc: true },
+            { type: 'simplesort', property: 'strength', desc: true }
           ],
           byType: [
             { type: 'find', value: { type: { $aeq: '[%lktxp]type' } } },)
-            { type: 'simplesort', property: 'confidence', desc: true },
+            { type: 'simplesort', property: 'confidence', desc: true }
           ],
-          bidirectional: [{ type: 'find', value: { bidirectional: true } }],
-        },
+          bidirectional: [{ type: 'find', value: { bidirectional: true } }]
+        }
       });
 
     // Vector similarity matches cache
@@ -225,12 +225,12 @@ class EnhancedLokiDB {
         transforms: {
           highSimilarity: [
             { type: 'find', value: { similarity: { $gte: 0.8 } } },
-            { type: 'simplesort', property: 'similarity', desc: true },
+            { type: 'simplesort', property: 'similarity', desc: true }
           ],
           recentMatches: [
             { type: 'simplesort', property: 'timestamp', desc: true },)
-            { type: 'limit', value: 200 },
-          ],
+            { type: 'limit', value: 200 }
+          ]
         },
         ttl: 300000, // 5 minutes
       });
@@ -243,12 +243,12 @@ class EnhancedLokiDB {
         transforms: {
           pending: [
             { type: 'find', value: { status: 'pending' } },
-            { type: 'simplesort', property: 'priority', desc: true },
+            { type: 'simplesort', property: 'priority', desc: true }
           ],
           completed: [
             { type: 'find', value: { status: 'completed' } },)
-            { type: 'simplesort', property: 'timestamp', desc: true },
-          ],
+            { type: 'simplesort', property: 'timestamp', desc: true }
+          ]
         },
         ttl: 60000, // 1 minute
       });
@@ -282,7 +282,7 @@ class EnhancedLokiDB {
       updatedAt: new Date(),
       accessCount: 0,
       lastAccess: new Date(),
-      contentHash: await this.generateContentHash(evidence.description || evidence.title || ''),
+      contentHash: await this.generateContentHash(evidence.description || evidence.title || '')
     };
 
     const existing = col.findOne({ id: evidence.id });
@@ -292,7 +292,7 @@ class EnhancedLokiDB {
       result = col.update({
         ...existing,
         ...enhancedEvidence,
-        accessCount: existing.accessCount + 1,
+        accessCount: existing.accessCount + 1
       });
       this.queueSync('update', 'evidence', result);
     } else {
@@ -367,7 +367,7 @@ class EnhancedLokiDB {
       analysis,
       confidence: analysis.confidence || 0,
       timestamp: new Date(),
-      accessCount: 0,
+      accessCount: 0
     };
 
     const result = col.insert(cacheEntry);
@@ -427,7 +427,7 @@ class EnhancedLokiDB {
       type: metadata.type || 'text',
       createdAt: new Date(),
       accessCount: 1,
-      lastAccess: new Date(),
+      lastAccess: new Date()
     };
 
     const result = col.insert(embeddingEntry);
@@ -471,7 +471,7 @@ class EnhancedLokiDB {
       targetId: match.id,
       similarity: match.similarity,
       metadata: match.metadata || {},
-      timestamp: new Date(),
+      timestamp: new Date()
     });
 
     col.insert(cacheEntries);
@@ -485,7 +485,7 @@ class EnhancedLokiDB {
     const matches = col;
       .find({
         queryHash,
-        similarity: { $gte: minSimilarity },
+        similarity: { $gte: minSimilarity }
       })
       .sort((a: any, b: any) => b.similarity - a.similarity);
 
@@ -510,20 +510,20 @@ class EnhancedLokiDB {
       ...rel,
       id: rel.id || randomUUID(),
       createdAt: rel.createdAt || new Date(),
-      accessCount: 0,
+      accessCount: 0
     });
 
     for (const rel of enhancedRelationships) {
       const existing = col.findOne({
         fromId: rel.fromId,
         toId: rel.toId,
-        type: rel.type,
+        type: rel.type
       });
       if (existing) {
         col.update({
           ...existing,
           ...rel,
-          accessCount: existing.accessCount + 1,
+          accessCount: existing.accessCount + 1
         });
       } else {
         col.insert(rel);
@@ -546,7 +546,7 @@ class EnhancedLokiDB {
       visited.add(currentId);
 
       const query: any = {
-        $or: [{ fromId: currentId }, { toId: currentId }],
+        $or: [{ fromId: currentId }, { toId: currentId }]
       };
       if (type) query.type = type;
 
@@ -759,7 +759,7 @@ class EnhancedLokiDB {
       data,
       timestamp: new Date(),
       priority,
-      retries: 0,
+      retries: 0
     };
 
     this.syncQueue.set(syncOp.id, syncOp);
@@ -797,8 +797,8 @@ class EnhancedLokiDB {
       body: JSON.stringify({
         operation: operation.type,
         data: operation.data,
-        timestamp: operation.timestamp,
-      }),
+        timestamp: operation.timestamp
+      })
     });
 
     if (!response.ok) {
@@ -813,7 +813,7 @@ class EnhancedLokiDB {
 
       const cutoff = new Date(Date.now() - config.ttl);
       const expired = collection.find({
-        createdAt: { $lt: cutoff },
+        createdAt: { $lt: cutoff }
       });
 
       if (expired.length > 0) {
@@ -833,7 +833,7 @@ class EnhancedLokiDB {
         documents: docs.length,
         memoryUsage,
         lastAccess: new Date(),
-        operations: docs.reduce((sum: number, doc: any) => sum + (doc.accessCount || 0), 0),
+        operations: docs.reduce((sum: number, doc: any) => sum + (doc.accessCount || 0), 0)
       });
     }
   }
@@ -925,7 +925,7 @@ class EnhancedLokiDB {
       evictions: 0,
       syncOperations: 0,
       lastSync: null,
-      collections: new Map(),
+      collections: new Map()
     };
   }
 
@@ -956,8 +956,8 @@ export const enhancedLokiStore = writable({
     evictions: 0,
     syncOperations: 0,
     lastSync: null as Date | null,
-    collections: new Map(),
-  },
+    collections: new Map()
+  }
 });
 
 // Derived stores for specific data access
@@ -985,7 +985,7 @@ export const cacheHealthStore = derived(enhancedLokiStore, ($store) => {
             ? "fair"
             : "poor",
     lastSync: $store.stats.lastSync,
-    syncOperations: $store.stats.syncOperations,
+    syncOperations: $store.stats.syncOperations
   };
 });
 
@@ -1026,7 +1026,7 @@ export const enhancedLoki = {
     async search(query: string, options: any = {}) {
       // Implement full-text search if needed
       return [];
-    },
+    }
   },
 
   // AI operations;
@@ -1053,7 +1053,7 @@ export const enhancedLoki = {
 
     async getEmbeddings(contentHash: string) {
       return await enhancedLokiDB.getEmbeddings(contentHash);
-    },
+    }
   },
 
   // Vector operations;
@@ -1067,7 +1067,7 @@ export const enhancedLoki = {
         queryHash,
         minSimilarity
       );
-    },
+    }
   },
 
   // Graph operations;
@@ -1078,7 +1078,7 @@ export const enhancedLoki = {
 
     async getRelationships(nodeId: string, type?: string, maxDepth?: number) {
       return await enhancedLokiDB.getRelationships(nodeId, type, maxDepth);
-    },
+    }
   },
 
   // Utility operations;
@@ -1092,7 +1092,7 @@ export const enhancedLoki = {
 
   destroy() {
     enhancedLokiDB.destroy();
-  },
+  }
 };
 
 // Export the original API for backward compatibility

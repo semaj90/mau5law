@@ -25,7 +25,7 @@ class RedisService {
       // Standardize on port 4005 across the platform
       url: import.meta.env.REDIS_URL || 'redis://127.0.0.1:4005',
       // retryDelayOnFailover: 100, // removed - deprecated
-      maxRetriesPerRequest: 3,
+      maxRetriesPerRequest: 3
     };
 
     try {
@@ -43,7 +43,7 @@ class RedisService {
       await Promise.all([
         this.client.connect(),
         this.publisher.connect(),
-        this.subscriber.connect(),
+        this.subscriber.connect()
       ]);
 
       this.isConnected = true;
@@ -64,7 +64,7 @@ class RedisService {
       evidenceId,
       data: evidenceData,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishEvidenceUpdated(evidenceId: string, changes: any, userId?: string) {
@@ -73,7 +73,7 @@ class RedisService {
       evidenceId,
       changes,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishEvidenceDeleted(evidenceId: string, userId?: string) {
@@ -81,7 +81,7 @@ class RedisService {
       type: 'EVIDENCE_DELETED',
       evidenceId,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // Case Updates;
@@ -91,7 +91,7 @@ class RedisService {
       caseId,
       changes,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishCaseStatusChanged(
@@ -106,7 +106,7 @@ class RedisService {
       oldStatus,
       newStatus,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // Canvas Updates
@@ -122,7 +122,7 @@ class RedisService {
       nodeId,
       position,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishCanvasNodeAdded(caseId: string, nodeData: any, userId?: string) {
@@ -131,7 +131,7 @@ class RedisService {
       caseId,
       nodeData,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public async publishCanvasStateChanged(caseId: string, state: any, userId?: string) {
@@ -140,7 +140,7 @@ class RedisService {
       caseId,
       state,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // POI Updates;
@@ -150,7 +150,7 @@ class RedisService {
       poiId,
       changes,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // Report Updates;
@@ -160,7 +160,7 @@ class RedisService {
       reportId,
       changes,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // User Activity;
@@ -170,7 +170,7 @@ class RedisService {
       userId,
       activity,
       metadata,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // Generic publish method;
@@ -224,7 +224,7 @@ class RedisService {
       evidenceIds,
       action,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   // Analytics and metrics;
@@ -233,7 +233,7 @@ class RedisService {
       event,
       data,
       userId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
   public isConnectedToRedis(): boolean {
@@ -249,7 +249,7 @@ class RedisService {
   public getStats() {
     return {
       connected: this.isConnected,
-      status: this.isConnected ? 'connected' : 'disconnected',
+      status: this.isConnected ? 'connected' : 'disconnected'
     };
   }
   public async disconnect() {

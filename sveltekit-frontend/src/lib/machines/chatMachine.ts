@@ -45,15 +45,15 @@ const streamChatService = fromPromise(async ({ input }: { input: { messages: Cha
   const response = await fetch('/api/ai/chat', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       messages,
       model: settings?.model || "unknown" // @ts-ignore - Model property access,
       temperature: settings.temperature,
       max_tokens: settings.maxTokens,
-      stream: true,
-    }),
+      stream: true
+    })
   });
 
   if (!response.ok) {
@@ -67,17 +67,17 @@ export const chatMachine = createMachine({
   id: 'chat',
   types: {
     context: Record<string, any> as ChatContext,
-    events: Record<string, any> as ChatEvent,
+    events: Record<string, any> as ChatEvent
   },
   context: {
     messages: [],
     error: null,
-    status: 'idle',
+    status: 'idle'
     }); const settings = {
       model: 'gemma3-legal',
       temperature: 0.3,
-      maxTokens: 500,
-    },
+      maxTokens: 500
+    }
   },
   initial: 'idle',
   states: {
@@ -92,46 +92,46 @@ export const chatMachine = createMachine({
               { role: 'assistant', content: '', timestamp: new Date().toISOString() }, // Placeholder for streaming
             ],
             error: null,
-            status: 'loading',
-          }),
+            status: 'loading'
+          })
         },
         RESET: {
           actions: assign({
             messages: [],
             error: null,
-            status: 'idle',
-          }),
+            status: 'idle'
+          })
         },
         UPDATE_SETTINGS: {
           actions: assign({
             settings: ({ context, event }) => ({
               ...context.settings,
-              ...event.settings,
-            }),
-          }),
-        },
-      },
+              ...event.settings
+            })
+          })
+        }
+      }
     },
     loading: {
       invoke: {
         src: streamChatService,
         input: ({ context }) => ({
           messages: context.messages.slice(0, -1), // Exclude the empty assistant message
-          settings: context.settings,
+          settings: context.settings
         }),
         onDone: {
           target: 'idle',
           actions: assign({
-            status: 'idle',
-          }),
+            status: 'idle'
+          })
         },
         onError: {
           target: 'error',
           actions: assign({
             error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message: 'Unknown error'}`,
-            status: 'error',
-          }),
-        },
+            status: 'error'
+          })
+        }
       },
       on: {
         STREAM_CHUNK: {
@@ -143,16 +143,16 @@ export const chatMachine = createMachine({
                 lastMessage.content += event.chunk;
               }
               return newMessages;
-            },
-          }),
+            }
+          })
         },
         STREAM_DONE: {
           target: 'idle',
           actions: assign({
-            status: 'idle',
-          }),
-        },
-      },
+            status: 'idle'
+          })
+        }
+      }
     },
     error: {
       on: {
@@ -162,30 +162,30 @@ export const chatMachine = createMachine({
             messages: ({ context, event }) => [
               ...context.messages,
               { role: 'user', content: event.message, timestamp: new Date().toISOString() },
-              { role: 'assistant', content: '', timestamp: new Date().toISOString() },
+              { role: 'assistant', content: '', timestamp: new Date().toISOString() }
             ],
             error: null,
-            status: 'loading',
-          }),
+            status: 'loading'
+          })
         },
         RETRY: {
           target: 'loading',
           actions: assign({
             error: null,
-            status: 'loading',
-          }),
+            status: 'loading'
+          })
         },
         RESET: {
           target: 'idle',
           actions: assign({
             messages: [],
             error: null,
-            status: 'idle',
-          }),
-        },
-      },
-    },
-  },
+            status: 'idle'
+          })
+        }
+      }
+    }
+  }
 });
 
 // Export types for use in components

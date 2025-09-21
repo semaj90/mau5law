@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         isActive: users.isActive,
         avatarUrl: users.avatarUrl,
         createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
+        updatedAt: users.updatedAt
       })
       .from(users)
       .where(whereClause)
@@ -107,8 +107,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       pagination: {
         limit,
         offset,
-        total: totalCount,
-      },
+        total: totalCount
+      }
     });
   } catch (error: any) {
     console.error("Error fetching users:", error);
@@ -160,7 +160,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       lastName: data.lastName?.trim() || null,
       role: data.role || "prosecutor",
       isActive: data.isActive !== undefined ? data.isActive: true,
-      avatarUrl: data.avatarUrl?.trim() || null,
+      avatarUrl: data.avatarUrl?.trim() || null
     };
 
     const [newUser] = await db.insert(users).values(userData).returning({
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       role: users.role,
       isActive: users.isActive,
       createdAt: users.createdAt,
-      updatedAt: users.updatedAt,
+      updatedAt: users.updatedAt
     });
 
     return json(newUser, { status: 201 });

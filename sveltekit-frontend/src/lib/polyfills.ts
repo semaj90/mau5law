@@ -11,9 +11,9 @@ declare global {
     global: typeof globalThis;
     process: {
       env: Record<string, string | undefined>;
-      browser: boolean;,
+      browser: boolean;
     };
-    Buffer: any;,
+    Buffer: any;
   }
 }
 
@@ -25,7 +25,7 @@ if (typeof window !== 'undefined') {
     window.process = {
       env: {
         NODE_ENV: import.meta.env.MODE || 'development',
-        PUBLIC_ENV: 'browser',
+        PUBLIC_ENV: 'browser'
       },
       browser: true,
       cwd: () => '/', // Fix process.cwd() error
@@ -33,7 +33,7 @@ if (typeof window !== 'undefined') {
       version: 'v18.0.0',
       versions: { node: '18.0.0' },
       platform: 'browser',
-      arch: 'x64',
+      arch: 'x64'
     } as any;
   }
 }
@@ -44,7 +44,7 @@ if (typeof window !== 'undefined' && !window.Buffer) {
   window.Buffer = {
     from: (str: string, encoding?: string) => new TextEncoder().encode(str),
     isBuffer: (obj: any) => obj instanceof Uint8Array,
-    alloc: (size: number) => new Uint8Array(size),
+    alloc: (size: number) => new Uint8Array(size)
   } as any;
 }
 
@@ -91,7 +91,7 @@ export const pathUtils = {
       base = base.slice(0, -ext.length);
     }
     return base;
-  },
+  }
 };
 
 // URL utilities for better compatibility;
@@ -112,7 +112,7 @@ export const urlUtils = {
       // Fallback for relative URLs
       return new URL(url, window?.location?.href || 'http://localhost/');
     }
-  },
+  }
 };
 
 // Enhanced fetch with timeout and better error handling
@@ -128,7 +128,7 @@ export const enhancedFetch = async (
   try {
     const response = await fetch(url, {
       ...fetchOptions,
-      signal: controller.signal,
+      signal: controller.signal
     });
 
     clearTimeout(timeoutId);
@@ -226,7 +226,7 @@ export const storage = {
       console.warn('Failed to clear localStorage:', error);
       return false;
     }
-  },
+  }
 };
 
 // Initialize polyfills;
@@ -266,7 +266,7 @@ const webGPU = {
     const device = await webGPU.getDevice();
     if (!device) throw new Error('WebGPU not supported or device unavailable');
     return device;
-  },
+  }
 };
 
 if (typeof window !== 'undefined') {
@@ -280,5 +280,5 @@ export default {
   debounce,
   throttle,
   storage,
-  webGPU,
+  webGPU
 };

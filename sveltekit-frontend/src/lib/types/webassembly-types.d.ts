@@ -64,7 +64,7 @@ export interface LegalWASMBridge {
     entities: Array<any>;
     classification: string;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidence: number;,
+    confidence: number;
   }>;
 
   extractMetadata(content: string): Promise<Record<string, unknown>;
@@ -89,7 +89,7 @@ export interface WASMRabbitMQMessage {
   processingResult?: {
     success: boolean;
     data: unknown;
-    processingTime: number;,
+    processingTime: number;
   };
 }
 
@@ -120,12 +120,12 @@ export interface WASMPerformanceMetrics {
   operationCounts: {
     textProcessing: number;
     vectorOperations: number;
-    memoryAllocations: number;,
+    memoryAllocations: number;
   };
   averageOperationTime: {
     documentProcessing: number;
     embeddingNormalization: number;
-    similarityCalculation: number;,
+    similarityCalculation: number;
   };
 }
 
@@ -180,7 +180,7 @@ declare global {
 
 // Re-export commonly used types;
 export type {
-  WebAssembly,
+  WebAssembly
 };
 
 export default {};

@@ -279,7 +279,7 @@ export interface ShaderProgram {
   description: string;
   tags: string[];
   embedding?: number[];
-  averageExecutionTime: number;,
+  averageExecutionTime: number;
 }
 
 export interface ShaderCacheMetrics {
@@ -289,7 +289,7 @@ export interface ShaderCacheMetrics {
   cacheMisses: number;
   totalCompilationTime: number;
   averageCompilationTime: number;
-  memoryUsage: number;,
+  memoryUsage: number;
 }
 
 /**
@@ -442,7 +442,7 @@ export class WebGLShaderCache {
           operation: metadata.operation,
           description: metadata.description,
           tags: metadata.tags,
-          averageExecutionTime: 0,
+          averageExecutionTime: 0
         };
 
         // Cache the compiled shader
@@ -454,7 +454,7 @@ export class WebGLShaderCache {
             id,
             compilationTime,
             uniforms: Array.from(uniforms.keys()),
-            attributes: Array.from(attributes.keys(),
+            attributes: Array.from(attributes.keys()
           }, {
             ttl: 3600000, // 1 hour
             tags: ['webgl-shader', 'legal-ai'],
@@ -728,7 +728,7 @@ export class WebGLShaderCache {
       totalCompilationTime,
       averageCompilationTime: this.shaderPrograms.size > 0 ?
         totalCompilationTime / this.shaderPrograms.size: 0,
-      memoryUsage: this.estimateMemoryUsage(),
+      memoryUsage: this.estimateMemoryUsage()
     };
 
     this.metrics.set(metrics);
@@ -753,7 +753,7 @@ export class WebGLShaderCache {
       cacheMisses: 0,
       totalCompilationTime: 0,
       averageCompilationTime: 0,
-      memoryUsage: 0,
+      memoryUsage: 0
     };
   }
 
@@ -790,7 +790,7 @@ export class WebGLShaderCache {
           text: embeddingText,
           model: 'nomic-embed-text',
           tags: ['shader', 'webgl', ...metadata.tags],
-          type: 'webgl_shader',
+          type: 'webgl_shader'
         })
       });
 
@@ -848,7 +848,7 @@ export class WebGLShaderCache {
         {
           description: shaderProgram.description,
           operation: shaderProgram.operation,
-          tags: shaderProgram.tags,
+          tags: shaderProgram.tags
         }
       );
 
@@ -868,14 +868,14 @@ export class WebGLShaderCache {
           averageExecutionTime: shaderProgram.averageExecutionTime,
           description: shaderProgram.description,
           tags: shaderProgram.tags,
-          operation: shaderProgram.operation,
+          operation: shaderProgram.operation
         },
         embedding,
         config: {
           type: 'webgl' as const,
           entryPoint: 'main',
           hasVertex: true,
-          hasFragment: true,
+          hasFragment: true
         }
       };
 

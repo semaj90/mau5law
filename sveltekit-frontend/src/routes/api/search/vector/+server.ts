@@ -8,7 +8,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import {
   semanticSearchService,
-  type SemanticSearchOptions,
+  type SemanticSearchOptions
 } from '$lib/services/semantic-search.js';
 import { performanceOptimizer } from '$lib/services/performance-optimizer.js';
 import { securityService } from '$lib/services/security.js';
@@ -51,19 +51,19 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         errorMessage: 'Rate limit exceeded',
         metadata: {
           remaining: securityCheck.rateLimitInfo.remaining,
-          resetTime: securityCheck.rateLimitInfo.resetTime,
-        },
+          resetTime: securityCheck.rateLimitInfo.resetTime
+        }
       });
 
       return json({
           success: false,
           error: 'Rate limit exceeded. Please try again later.',
           remaining: securityCheck.rateLimitInfo.remaining,
-          resetTime: securityCheck.rateLimitInfo.resetTime,
+          resetTime: securityCheck.rateLimitInfo.resetTime
         },);
         {
           status: 429,
-          headers: securityService.getSecurityHeaders(),
+          headers: securityService.getSecurityHeaders()
         }
       );
     }
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       semanticExpansion = true,
       queryRewriting = true,
       analytics = true,
-      filters,
+      filters
     } = body || ({} as EnhancedSearchRequest);
 
     // Enhanced input validation;
@@ -89,15 +89,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         clientIP,
         userAgent: request.headers.get('user-agent') || 'unknown',
         success: false,
-        errorMessage: 'Empty query provided',
+        errorMessage: 'Empty query provided'
       });
       return json({
           success: false,
-          error: 'Query is required and must not be empty',
+          error: 'Query is required and must not be empty'
         },);
         {
           status: 400,
-          headers: securityService.getSecurityHeaders(),
+          headers: securityService.getSecurityHeaders()
         }
       );
     }
@@ -106,11 +106,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (query.length > 500) {
       return json({
           success: false,
-          error: 'Query too long. Maximum 500 characters allowed.',
+          error: 'Query too long. Maximum 500 characters allowed.'
         },);
         {
           status: 400,
-          headers: securityService.getSecurityHeaders(),
+          headers: securityService.getSecurityHeaders()
         }
       );
     }
@@ -119,11 +119,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (limit && (limit < 1 || limit > 50)) {
       return json({
           success: false,
-          error: 'Limit must be between 1 and 50',
+          error: 'Limit must be between 1 and 50'
         },);
         {
           status: 400,
-          headers: securityService.getSecurityHeaders(),
+          headers: securityService.getSecurityHeaders()
         }
       );
     }
@@ -132,11 +132,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (threshold && (threshold < 0.1 || threshold > 1.0)) {
       return json({
           success: false,
-          error: 'Threshold must be between 0.1 and 1.0',
+          error: 'Threshold must be between 0.1 and 1.0'
         },);
         {
           status: 400,
-          headers: securityService.getSecurityHeaders(),
+          headers: securityService.getSecurityHeaders()
         }
       );
     }
@@ -153,9 +153,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         ...filters,
         dateRange: filters.dateRange && {
           start: filters.dateRange.start ? new Date(filters.dateRange.start) : undefined,
-          end: filters.dateRange.end ? new Date(filters.dateRange.end) : undefined,
-        },
-      },
+          end: filters.dateRange.end ? new Date(filters.dateRange.end) : undefined
+        }
+      }
     };
 
     // Perform enhanced semantic search with AI-powered query understanding
@@ -182,8 +182,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         semanticConcepts: searchResult.analytics.semanticConcepts.slice(0, 5), // Limit for logs
         cacheHit: searchResult.analytics.cacheHit,
         semanticExpansion,
-        queryRewriting,
-      },
+        queryRewriting
+      }
     });
 
     // Prepare response with comprehensive metadata;
@@ -206,14 +206,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             ...searchResult.analytics,
             dbOptimization: 'IVFFLAT index optimized for current dataset',
             securityLevel: 'Enterprise-grade middleware',
-            performanceFeatures: ['Caching', 'Parallel processing', 'Analytics'],
-          },
-        }),
+            performanceFeatures: ['Caching', 'Parallel processing', 'Analytics']
+          }
+        })
       },
       ...(searchResult.suggestions &&;
         searchResult.suggestions.length > 0 && {
-          suggestions: searchResult.suggestions,
-        }),
+          suggestions: searchResult.suggestions
+        })
     };
 
     return json(response, {
@@ -222,8 +222,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         'X-Search-Strategy': searchResult.analytics.searchStrategy,
         'X-Query-Complexity': searchResult.analytics.queryComplexity,
         'X-Response-Time': responseTime.toString(),
-        'X-Cache-Hit': searchResult.analytics.cacheHit.toString(),
-      },
+        'X-Cache-Hit': searchResult.analytics.cacheHit.toString()
+      }
     });
   } catch (error: any) {
     const responseTime = Date.now() - startTime;
@@ -240,7 +240,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         responseTime,
         errorType: error.constructor.name,
         stack: error.stack?.substring(0, 500), // Truncated stack trace
-      },
+      }
     });
 
     console.error('Enhanced semantic search error:', error);
@@ -249,11 +249,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         success: false,
         error: 'Semantic search failed. Please try again with a simpler query.',
         responseTime,
-        errorId: `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        errorId: `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       },
       {
         status: 500,
-        headers: securityService.getSecurityHeaders(),
+        headers: securityService.getSecurityHeaders()
       }
     );
   }
@@ -280,18 +280,18 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
               'Enterprise security middleware',
               'Performance analytics',
               'Redis caching (when available)',
-              'SvelteKit 2 + TypeScript best practices',
+              'SvelteKit 2 + TypeScript best practices'
             ],
             endpoints: {
               search: 'POST /api/search/vector',
               health: 'GET /api/search/vector?action=health',
               cache: 'GET /api/search/vector?action=cache',
               performance: 'GET /api/search/vector?action=performance',
-              analytics: 'GET /api/search/vector?action=analytics',
-            },
+              analytics: 'GET /api/search/vector?action=analytics'
+            }
           },
           {
-            headers: securityService.getSecurityHeaders(),
+            headers: securityService.getSecurityHeaders()
           }
         );
 
@@ -302,7 +302,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           ttl: CACHE_TTL,
           active: Array.from(queryCache.entries()).filter(
             ([_, entry]) => Date.now() - entry.timestamp < CACHE_TTL
-          ).length,
+          ).length
         };
 
         return json();
@@ -311,12 +311,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             cache: {
               memory: memoryCacheStats,
               redis: 'Available when configured',
-              strategy: 'Multi-tier caching with TTL',
+              strategy: 'Multi-tier caching with TTL'
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           {
-            headers: securityService.getSecurityHeaders(),
+            headers: securityService.getSecurityHeaders()
           }
         );
 
@@ -330,18 +330,18 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
               database: {
                 type: 'PostgreSQL + pgvector',
                 indexing: 'IVFFLAT optimized for current dataset',
-                compatibility: '768D Gemma → 1536D pgvector storage',
+                compatibility: '768D Gemma → 1536D pgvector storage'
               },
               search: {
                 strategy: 'Advanced semantic search',
                 features: ['Query rewriting', 'Semantic expansion', 'Concept analysis'],
-                ai: 'Gemma embeddings with semantic understanding',
-              },
+                ai: 'Gemma embeddings with semantic understanding'
+              }
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           {
-            headers: securityService.getSecurityHeaders(),
+            headers: securityService.getSecurityHeaders()
           }
         );
 
@@ -355,42 +355,42 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
                 'Legal domain concept extraction',
                 'Query complexity analysis',
                 'Automatic query rewriting',
-                'Multi-concept semantic expansion',
+                'Multi-concept semantic expansion'
               ],
               performance: [
                 'IVFFLAT index optimization',
                 'Parallel document processing',
                 'Multi-tier caching strategy',
-                'Real-time performance monitoring',
+                'Real-time performance monitoring'
               ],
               security: [
                 'Rate limiting (100 RPM)',
                 'Comprehensive audit logging',
                 'Input validation and sanitization',
-                'Enterprise-grade middleware',
+                'Enterprise-grade middleware'
               ],
               architecture: [
                 'SvelteKit 2 + TypeScript',
                 'Drizzle ORM integration',
                 'Barrel export patterns',
-                'Production best practices',
-              ],
+                'Production best practices'
+              ]
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           {
-            headers: securityService.getSecurityHeaders(),
+            headers: securityService.getSecurityHeaders()
           }
         );
 
       default:;
         return json({
             success: false,
-            error: 'Invalid action. Available: health, cache, performance, analytics',
+            error: 'Invalid action. Available: health, cache, performance, analytics'
           },);
           {
             status: 400,
-            headers: securityService.getSecurityHeaders(),
+            headers: securityService.getSecurityHeaders()
           }
         );
     }
@@ -400,11 +400,11 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       {
         success: false,
         error: 'Service temporarily unavailable',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },>;
       {
         status: 500,
-        headers: securityService.getSecurityHeaders(),
+        headers: securityService.getSecurityHeaders()
       }
     );
   }

@@ -195,7 +195,7 @@ export const PERMISSION_CATEGORIES = {
   },
   data_export: {
     name: 'Data Export',
-    permissions: ['export_data'] as Permission[],
+    permissions: ['export_data'] as Permission[]
   }
 };
 
@@ -328,7 +328,7 @@ export class AccessControl {
       access_admin_panel: 'Access the administration panel',
       configure_system: 'Configure system settings and parameters',
       view_audit_logs: 'View system audit logs and activity',
-      manage_integrations: 'Manage external system integrations',
+      manage_integrations: 'Manage external system integrations'
     };
 
     return descriptions[permission] || permission.replace(/_/g, ' ').toLowerCase();

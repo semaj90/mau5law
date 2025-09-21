@@ -45,7 +45,7 @@ export interface LegalWebGPUContext {
   documentProcessingPipeline: GPUComputePipeline;
   embeddingNormalizationPipeline: GPUComputePipeline;
   similaritySearchPipeline: GPUComputePipeline;
-  visualizationPipeline: GPURenderPipeline;,
+  visualizationPipeline: GPURenderPipeline;
 }
 
 // Buffer management for legal documents;
@@ -54,7 +54,7 @@ export interface LegalDocumentGPUBuffers {
   metadata: GPUBuffer;
   colors: GPUBuffer;
   indices: GPUBuffer;
-  uniforms: GPUBuffer;,
+  uniforms: GPUBuffer;
 }
 
 // Shader module definitions;
@@ -64,7 +64,7 @@ export interface LegalAIShaderModules {
   embeddingCompute: GPUShaderModule;
   similarityCompute: GPUShaderModule;
   visualizationVertex: GPUShaderModule;
-  visualizationFragment: GPUShaderModule;,
+  visualizationFragment: GPUShaderModule;
 }
 
 // WebGPU compute pipeline for legal AI operations;
@@ -72,7 +72,7 @@ export interface LegalComputePipelineDescriptor {
   type: 'embedding_normalization' | 'similarity_search' | 'document_clustering' | 'risk_assessment';
   shaderModule: GPUShaderModule;
   workgroupSize: [number, number, number];
-  bufferLayout: GPUBufferBindingLayout[];,
+  bufferLayout: GPUBufferBindingLayout[];
 }
 
 // Render pipeline for legal document visualization;
@@ -80,12 +80,12 @@ export interface LegalRenderPipelineDescriptor {
   vertex: {
     module: GPUShaderModule;
     entryPoint: string;
-    buffers: GPUVertexBufferLayout[];,
+    buffers: GPUVertexBufferLayout[];
   };
   fragment: {
     module: GPUShaderModule;
     entryPoint: string;
-    targets: GPUColorTargetState[];,
+    targets: GPUColorTargetState[];
   };
   primitive: GPUPrimitiveState;
   depthStencil?: GPUDepthStencilState;
@@ -98,12 +98,12 @@ export interface WebGPUPerformanceMetrics {
   memoryUsage: {
     buffers: number;
     textures: number;
-    total: number;,
+    total: number;
   };
   pipelineStats: {
     drawCalls: number;
     computeDispatches: number;
-    bufferUpdates: number;,
+    bufferUpdates: number;
   };
 }
 
@@ -134,7 +134,7 @@ export interface LegalDocumentTexture {
     height: number;
     depth?: number;
   };
-  mipLevels: number;,
+  mipLevels: number;
 }
 
 // CHR-ROM pattern cache integration;
@@ -146,7 +146,7 @@ export interface CHRROMGPUPattern {
     bankId: number;
     tileIndex: number;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    documentType: string;,
+    documentType: string;
   };
 }
 
@@ -172,7 +172,7 @@ export interface LegalDocumentVertex {
   texCoord: [number, number];
   documentId: number;
   riskLevel: number; // 0=low, 1=medium, 2=high, 3=critical
-  confidence: number; // 0.0-1.0,
+  confidence: number; // 0.0-1.0
 }
 
 // WebGPU command encoder utilities;
@@ -195,20 +195,20 @@ export interface LegalVisualizationState {
     up: [number, number, number];
     fov: number;
     near: number;
-    far: number;,
+    far: number;
   };
   lighting: {
     ambient: [number, number, number];
     directional: {
       direction: [number, number, number];
       color: [number, number, number];
-      intensity: number;,
+      intensity: number;
     };
   };
   interaction: {
     selectedDocument: string | null;
     hoveredDocument: string | null;
-    filterLevel: 'all' | 'low' | 'medium' | 'high' | 'critical';,
+    filterLevel: 'all' | 'low' | 'medium' | 'high' | 'critical';
   };
 }
 

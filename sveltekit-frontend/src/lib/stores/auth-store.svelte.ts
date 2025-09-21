@@ -15,7 +15,7 @@ export interface AuthContext {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  redirectPath: string | null;,
+  redirectPath: string | null;
 }
 
 // Authentication events
@@ -43,7 +43,7 @@ const loginService = fromPromise(async ({ input }: { input: { email: string; pas
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
+      body: JSON.stringify(input)
     });
 
     if (!response.ok) {
@@ -59,7 +59,7 @@ const registerService = fromPromise(async ({ input }: { input: RegisterData }) =
   const response = await fetch('/api/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
+    body: JSON.stringify(input)
   });
 
   if (!response.ok) {
@@ -72,7 +72,7 @@ const registerService = fromPromise(async ({ input }: { input: RegisterData }) =
 
 const logoutService = fromPromise(async () => {
   const response = await fetch('/api/auth/logout', {
-    method: 'POST',
+    method: 'POST'
   });
 
   if (!response.ok) {
@@ -97,14 +97,14 @@ const authMachine = createMachine({
   id: 'auth',
   types: {
     context: Record<string, any> as AuthContext,
-    events: Record<string, any> as AuthEvents,
+    events: Record<string, any> as AuthEvents
   },
   context: {
     user: null,
     isAuthenticated: false,
     isLoading: false,
     error: null,
-    redirectPath: null,
+    redirectPath: null
   },
   initial: 'checking',
   states: {
@@ -119,9 +119,9 @@ const authMachine = createMachine({
               user: ({ event }) => event.output.user,
               isAuthenticated: true,
               isLoading: false,
-              error: null,
-            }),
-          ],
+              error: null
+            })
+          ]
         },
         onError: {
           target: 'unauthenticated',
@@ -129,39 +129,39 @@ const authMachine = createMachine({
             user: null,
             isAuthenticated: false,
             isLoading: false,
-            error: null,
-          }),
-        },
-      },
+            error: null
+          })
+        }
+      }
     },
 
     unauthenticated: {
       on: {
         LOGIN: {
-          target: 'loggingIn',
+          target: 'loggingIn'
         },
         REGISTER: {
-          target: 'registering',
+          target: 'registering'
         },
         SET_REDIRECT: {
           actions: assign({
-            redirectPath: ({ event }) => event.path,
-          }),
-        },
-      },
+            redirectPath: ({ event }) => event.path
+          })
+        }
+      }
     },
 
     loggingIn: {
       entry: assign({
         isLoading: true,
-        error: null,
+        error: null
       }),
       invoke: {
         src: loginService,
         // fromPromise passes original event as event in invoke meta; route it via event for LOGIN;
         input: ({ event }: { event: any }) => ({
           email: event.email,
-          password: event.password,
+          password: event.password
         }),
         onDone: {
           target: 'authenticated',
@@ -170,7 +170,7 @@ const authMachine = createMachine({
               user: ({ event }) => event.output.user,
               isAuthenticated: true,
               isLoading: false,
-              error: null,
+              error: null
             }),
             // Handle redirect after successful login;
             ({ context }) => {
@@ -179,23 +179,23 @@ const authMachine = createMachine({
               } else if (browser) {
                 goto('/dashboard');
               }
-            },
-          ],
+            }
+          ]
         },
         onError: {
           target: 'unauthenticated',
           actions: assign({
             isLoading: false,
-            error: ({ event }: { event: any }) => event.error?.message || 'Login failed',
-          }),
-        },
-      },
+            error: ({ event }: { event: any }) => event.error?.message || 'Login failed'
+          })
+        }
+      }
     },
 
     registering: {
       entry: assign({
         isLoading: true,
-        error: null,
+        error: null
       }),
       invoke: {
         src: registerService,
@@ -207,44 +207,44 @@ const authMachine = createMachine({
               user: ({ event }) => event.output.user,
               isAuthenticated: true,
               isLoading: false,
-              error: null,
+              error: null
             }),
             // Redirect to dashboard after registration;
             () => {
               if (browser) {
                 goto('/dashboard');
               }
-            },
-          ],
+            }
+          ]
         },
         onError: {
           target: 'unauthenticated',
           actions: assign({
             isLoading: false,
-            error: ({ event }: { event: any }) => event.error?.message || 'Registration failed',
-          }),
-        },
-      },
+            error: ({ event }: { event: any }) => event.error?.message || 'Registration failed'
+          })
+        }
+      }
     },
 
     authenticated: {
       entry: assign({
         isAuthenticated: true,
         isLoading: false,
-        redirectPath: null,
+        redirectPath: null
       }),
       on: {
         LOGOUT: {
-          target: 'loggingOut',
+          target: 'loggingOut'
         },
         UNAUTHENTICATED: {
           target: 'unauthenticated',
           actions: assign({
             user: null,
-            isAuthenticated: false,
-          }),
-        },
-      },
+            isAuthenticated: false
+          })
+        }
+      }
     },
 
     loggingOut: {
@@ -258,35 +258,35 @@ const authMachine = createMachine({
               user: null,
               isAuthenticated: false,
               isLoading: false,
-              error: null,
+              error: null
             }),
             // Redirect to home after logout;
             () => {
               if (browser) {
                 goto('/');
               }
-            },
-          ],
+            }
+          ]
         },
         onError: {
           target: 'authenticated',
           actions: assign({
             isLoading: false,
-            error: 'Logout failed',
-          }),
-        },
-      },
-    },
+            error: 'Logout failed'
+          })
+        }
+      }
+    }
   },
 
   on: {
     CLEAR_ERROR: {
-      actions: assign({ error: null }),
+      actions: assign({ error: null })
     },
     CHECK_AUTH: {
-      target: '.checking',
-    },
-  },
+      target: '.checking'
+    }
+  }
 });
 
 // Create global auth store using SvelteKit 2 patterns;
@@ -297,9 +297,9 @@ class AuthStore {
       isAuthenticated: false,
       isLoading: false,
       error: null,
-      redirectPath: null,
+      redirectPath: null
     },
-    value: 'checking',
+    value: 'checking'
   });
   #actor: any = $state();
 
@@ -315,7 +315,7 @@ class AuthStore {
           // Update reactive state;
           this.#machineState = {
             context: state.context,
-            value: state.value,
+            value: state.value
           };
         });
 
@@ -392,7 +392,7 @@ class AuthStore {
       admin: ['read', 'write', 'delete', 'manage_users', 'manage_cases', 'manage_evidence'],
       prosecutor: ['read', 'write', 'manage_cases', 'manage_evidence'],
       detective: ['read', 'write', 'manage_evidence'],
-      user: ['read'],
+      user: ['read']
     };
 
     return (
@@ -427,7 +427,7 @@ export function requireAuth() {
         return false;
       }
       return true;
-    },
+    }
   };
 }
 
@@ -446,7 +446,7 @@ export function requireRole(role: string) {
       }
 
       return true;
-    },
+    }
   };
 }
 
@@ -465,7 +465,7 @@ export function requirePermission(permission: string) {
       }
 
       return true;
-    },
+    }
   };
 }
 

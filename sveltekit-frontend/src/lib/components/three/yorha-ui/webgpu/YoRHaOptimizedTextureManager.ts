@@ -16,7 +16,7 @@ export interface TextureBankConfig {
   maxMemoryMB: number;
   mipmapLevels: number;
   compressionEnabled: boolean;
-  rtxOptimization: boolean;,
+  rtxOptimization: boolean;
 }
 
 export interface TextureEntry {
@@ -30,7 +30,7 @@ export interface TextureEntry {
   generationStats: {
     mipmapGenerationTime: number;
     compressionRatio: number;
-    qualityScore: number;,
+    qualityScore: number;
   };
 }
 
@@ -41,7 +41,7 @@ export interface TextureStreamingSession {
   totalChunks: number;
   completedChunks: number;
   memoryBudget: number;
-  priority: 'legal_critical' | 'evidence' | 'background';,
+  priority: 'legal_critical' | 'evidence' | 'background';
 }
 
 /**
@@ -56,7 +56,7 @@ export class YoRHaOptimizedTextureManager {
     config: TextureBankConfig;
     textures: Map<string, TextureEntry>;
     memoryUsed: number;
-    bankSwitchCount: number;,
+    bankSwitchCount: number;
   }>();
 
   // Streaming sessions for large textures
@@ -70,7 +70,7 @@ export class YoRHaOptimizedTextureManager {
     averageMipmapTime: 0,
     cacheHitRate: 0,
     bankSwitchCount: 0,
-    rtxAccelerationUsed: 0,
+    rtxAccelerationUsed: 0
   };
 
   constructor() {
@@ -115,11 +115,11 @@ export class YoRHaOptimizedTextureManager {
         maxMemoryMB: 32,
         mipmapLevels: 8,
         compressionEnabled: true,
-        rtxOptimization: true,
+        rtxOptimization: true
       },
       textures: new Map(),
       memoryUsed: 0,
-      bankSwitchCount: 0,
+      bankSwitchCount: 0
     });
 
     // PRG-ROM Bank: Large legal document textures and complex UI elements;
@@ -130,11 +130,11 @@ export class YoRHaOptimizedTextureManager {
         maxMemoryMB: 128,
         mipmapLevels: 12,
         compressionEnabled: true,
-        rtxOptimization: true,
+        rtxOptimization: true
       },
       textures: new Map(),
       memoryUsed: 0,
-      bankSwitchCount: 0,
+      bankSwitchCount: 0
     });
 
     // SAVE_RAM Bank: Persistent texture cache for frequently accessed content;
@@ -149,7 +149,7 @@ export class YoRHaOptimizedTextureManager {
       },
       textures: new Map(),
       memoryUsed: 0,
-      bankSwitchCount: 0,
+      bankSwitchCount: 0
     });
 
     // EXPANSION_ROM Bank: Streaming buffer for large texture operations;
@@ -160,11 +160,11 @@ export class YoRHaOptimizedTextureManager {
         maxMemoryMB: 64,
         mipmapLevels: 10,
         compressionEnabled: false, // No compression for streaming
-        rtxOptimization: true,
+        rtxOptimization: true
       },
       textures: new Map(),
       memoryUsed: 0,
-      bankSwitchCount: 0,
+      bankSwitchCount: 0
     });
 
     console.log('✅ NES-style texture memory banks initialized');
@@ -222,7 +222,7 @@ export class YoRHaOptimizedTextureManager {
           filterMode: 'linear',
           enableOptimizations: true,
           rtxOptimized: bank.config.rtxOptimization,
-          enableStreaming: streamingEnabled,
+          enableStreaming: streamingEnabled
         };
 
         mipmapResult = await yorhaMipmapShaders.generateMipmapChain(sourceTexture, mipmapConfig);
@@ -245,7 +245,7 @@ export class YoRHaOptimizedTextureManager {
         generationStats: {
           mipmapGenerationTime: mipmapResult ? mipmapResult.totalGenerationTime : 0,
           compressionRatio: bank.config.compressionEnabled ? this.estimateCompressionRatio(sourceTexture) : 1.0,
-          qualityScore: this.calculateQualityScore(mipmapResult),
+          qualityScore: this.calculateQualityScore(mipmapResult)
         }
       };
 
@@ -353,7 +353,7 @@ export class YoRHaOptimizedTextureManager {
         const chunkTexture = this.device.createTexture({
           size: [chunkWidth, chunkHeight, 1],
           format: 'rgba8unorm',
-          usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING,
+          usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING
         });
 
         // Copy data from source
@@ -370,7 +370,7 @@ export class YoRHaOptimizedTextureManager {
           const chunkMipmaps = await yorhaMipmapShaders.generateMipmapChain(chunkTexture, {
             maxMipLevels: 6,
             rtxOptimized: priority === 'legal_critical',
-            enableStreaming: true,
+            enableStreaming: true
           });
         }
 
@@ -530,7 +530,7 @@ export class YoRHaOptimizedTextureManager {
         textureCount: bank.textures.size,
         memoryUsedMB: parseFloat(memoryUsedMB.toFixed(2)),
         memoryLimitMB,
-        utilization: parseFloat((memoryUsedMB / memoryLimitMB * 100).toFixed(1),
+        utilization: parseFloat((memoryUsedMB / memoryLimitMB * 100).toFixed(1)
       };
     }
 
@@ -543,7 +543,7 @@ export class YoRHaOptimizedTextureManager {
     return {
       banks: bankStats,
       overall: this.stats,
-      streaming: streamingStats,
+      streaming: streamingStats
     };
   }
 
@@ -553,7 +553,7 @@ export class YoRHaOptimizedTextureManager {
       if (!navigator.gpu) return null;
       
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       if (!adapter) return null;
 
@@ -561,7 +561,7 @@ export class YoRHaOptimizedTextureManager {
         requiredFeatures: [],
         requiredLimits: {
           maxBufferSize: 256 * 1024 * 1024,
-          maxComputeWorkgroupStorageSize: 16384,
+          maxComputeWorkgroupStorageSize: 16384
         }
       });
     } catch (error) {
@@ -577,7 +577,7 @@ export class YoRHaOptimizedTextureManager {
     return this.device.createTexture({
       size: [512, 512, 1],
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING,
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.STORAGE_BINDING
     });
   }
 

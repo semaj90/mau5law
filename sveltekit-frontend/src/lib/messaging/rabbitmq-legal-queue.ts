@@ -84,7 +84,7 @@ export class RabbitMQLegalQueue {
     queueLength: 0,
     errorRate: 0,
     gpuJobsProcessed: 0,
-    nesMemoryEvents: 0,
+    nesMemoryEvents: 0
   };
 
   // Legal AI specific queues
@@ -100,7 +100,7 @@ export class RabbitMQLegalQueue {
         'x-dead-letter-exchange': 'legal_dlx'
       },
       maxRetries: 3,
-      messageTTL: 3600000,
+      messageTTL: 3600000
     }],
     ['gpu.compute', {
       name: 'legal_gpu_compute',
@@ -113,7 +113,7 @@ export class RabbitMQLegalQueue {
         'x-queue-type': 'quorum' // High availability
       },
       maxRetries: 2,
-      messageTTL: 600000,
+      messageTTL: 600000
     }],
     ['memory.allocation', {
       name: 'nes_memory_events',
@@ -125,7 +125,7 @@ export class RabbitMQLegalQueue {
         'x-max-length': 1000 // Circular buffer
       },
       maxRetries: 1,
-      messageTTL: 60000,
+      messageTTL: 60000
     }],
     ['ranking.computation', {
       name: 'legal_ranking_jobs',
@@ -137,7 +137,7 @@ export class RabbitMQLegalQueue {
         'x-max-priority': 255
       },
       maxRetries: 2,
-      messageTTL: 300000,
+      messageTTL: 300000
     }]
   ]);
 
@@ -147,7 +147,7 @@ export class RabbitMQLegalQueue {
     username: 'legal_ai',
     password: 'legal_2024',
     vhost: '/legal',
-    ssl: false,
+    ssl: false
   }) {
     this.initializeConnection();
   }
@@ -283,10 +283,10 @@ export class RabbitMQLegalQueue {
           confidenceLevel: document.confidenceLevel,
           riskLevel: document.riskLevel,
           bankPreference: options.bankPreference,
-          requiresGPU: options.requiresGPU || false,
+          requiresGPU: options.requiresGPU || false
         },
         timestamp: Date.now(),
-        retryCount: 0,
+        retryCount: 0
       };
 
       // Determine target queue based on operation
@@ -326,7 +326,7 @@ export class RabbitMQLegalQueue {
           // Store document in NES memory;
           const allocated = await nesMemory.allocateDocument(document, message.payload, {
             preferredBank: message.metadata.bankPreference,
-            compress: true,
+            compress: true
           });
           
           if (allocated) {
@@ -341,7 +341,7 @@ export class RabbitMQLegalQueue {
           result = {
             confidence: message.metadata.confidenceLevel,
             risk: message.metadata.riskLevel,
-            analysis: 'Legal document analyzed successfully',
+            analysis: 'Legal document analyzed successfully'
           };
           break;
           
@@ -388,7 +388,7 @@ export class RabbitMQLegalQueue {
         operation: message.operation,
         error: error instanceof Error ? error.message: String(error),
         processingTime: performance.now() - startTime,
-        gpuUsed: false,
+        gpuUsed: false
       });
       
       this.metrics.errorRate = (this.metrics.errorRate + 1) / this.metrics.messagesProcessed;
@@ -421,7 +421,7 @@ export class RabbitMQLegalQueue {
         operation: message.operation,
         result: computeResult,
         processingTime,
-        gpuUsed: true,
+        gpuUsed: true
       });
       
       await this.acknowledgeMessage(message.messageId);
@@ -452,7 +452,7 @@ export class RabbitMQLegalQueue {
         operation: 'rank',
         result: rankings,
         processingTime,
-        gpuUsed: true,
+        gpuUsed: true
       });
       
       await this.acknowledgeMessage(message.messageId);
@@ -509,7 +509,7 @@ export class RabbitMQLegalQueue {
       case 'retrieve':
         return 'document.processing';
       default:
-        return 'document.processing';,
+        return 'document.processing';
     }
   }
 
@@ -532,7 +532,7 @@ export class RabbitMQLegalQueue {
       metadata: {
         processingTime: 5.2,
         cacheHit: false,
-        bankId: 1,
+        bankId: 1
       }
     }];
   }
@@ -703,7 +703,7 @@ export class RabbitMQLegalQueue {
       reconnectAttempts: this.reconnectAttempts,
       queueCount: this.queueConfigs.size,
       handlerCount: this.messageHandlers.size,
-      processingQueueLength: this.processingQueue.size,
+      processingQueueLength: this.processingQueue.size
     };
   }
 

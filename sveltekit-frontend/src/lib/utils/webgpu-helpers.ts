@@ -26,13 +26,13 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
   if (info) {
     return {
       name: info.device || info.description || 'Unknown GPU',
-      vendor: info.vendor,
+      vendor: info.vendor
     };
   }
 
   return {
     name: 'Unknown GPU Device',
-    vendor: 'Unknown',
+    vendor: 'Unknown'
   };
 }
 

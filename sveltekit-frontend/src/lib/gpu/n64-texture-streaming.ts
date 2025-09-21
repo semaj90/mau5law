@@ -12,7 +12,7 @@ export interface TextureChunk {
   height: number;
   format: 'rgba' | 'rgb' | 'luminance';
   mipLevel: number;
-  isCompressed: boolean;,
+  isCompressed: boolean;
 }
 
 export interface StreamingOptions {
@@ -20,7 +20,7 @@ export interface StreamingOptions {
   enableCompression: boolean;
   adaptiveQuality: boolean;
   cacheSize: number; // MB
-  wasmAcceleration: boolean;,
+  wasmAcceleration: boolean;
 }
 
 export interface LegalDocumentTexture {
@@ -33,7 +33,7 @@ export interface LegalDocumentTexture {
     caseId?: string;
     evidenceType?: string;
     classification?: string;
-    timestamp: Date;,
+    timestamp: Date;
   };
 }
 
@@ -54,7 +54,7 @@ export class N64TextureStreamingEngine {
     cacheHits: 0,
     gpuMemoryUsed: 0,
     renderTime: 0,
-    adaptiveQualityLevel: 1.0,
+    adaptiveQualityLevel: 1.0
   };
 
   constructor(canvas: HTMLCanvasElement, options: Partial<StreamingOptions> = {}) {
@@ -81,7 +81,7 @@ export class N64TextureStreamingEngine {
       powerPreference: 'high-performance',
       antialias: false, // N64 style
       alpha: false,
-      preserveDrawingBuffer: true,
+      preserveDrawingBuffer: true
     });
 
     // Fallback to WebGL1;
@@ -90,7 +90,7 @@ export class N64TextureStreamingEngine {
         powerPreference: 'high-performance',
         antialias: false,
         alpha: false,
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: true
       });
     }
 
@@ -408,19 +408,19 @@ export class N64TextureStreamingEngine {
         return {
           internalFormat: this.gl.RGBA,
           format: this.gl.RGBA,
-          type: this.gl.UNSIGNED_BYTE,
+          type: this.gl.UNSIGNED_BYTE
         };
       case 'rgb':;
         return {
           internalFormat: this.gl.RGB,
           format: this.gl.RGB,
-          type: this.gl.UNSIGNED_BYTE,
+          type: this.gl.UNSIGNED_BYTE
         };
       case 'luminance':;
         return {
           internalFormat: this.gl.LUMINANCE,
           format: this.gl.LUMINANCE,
-          type: this.gl.UNSIGNED_BYTE,
+          type: this.gl.UNSIGNED_BYTE
         };
       default:
         throw new Error(`Unsupported format: ${format}`);
@@ -459,7 +459,7 @@ export class N64TextureStreamingEngine {
       metadata: {
         ...metadata,
         evidenceType: 'photo',
-        timestamp: new Date(),
+        timestamp: new Date()
       }
     };
   }
@@ -476,7 +476,7 @@ export class N64TextureStreamingEngine {
       metadata: {
         caseId,
         classification: 'legal_document',
-        timestamp: new Date(),
+        timestamp: new Date()
       }
     };
   }
@@ -515,7 +515,7 @@ export class N64TextureStreamingEngine {
           height: chunkSize,
           format: 'rgba',
           mipLevel: 0,
-          isCompressed: false,
+          isCompressed: false
         });
       }
     }
@@ -578,7 +578,7 @@ export class N64TextureStreamingEngine {
       cacheHitRate: this.stats.cacheHits / Math.max(1, this.stats.chunksLoaded),
       gpuMemoryUsed: this.textureCache.size * 64, // Estimated KB per texture
       hasWebGL: !!this.gl,
-      hasWASM: !!this.wasmModule,
+      hasWASM: !!this.wasmModule
     };
   }
 
@@ -655,7 +655,7 @@ export const LegalTextureUtils = {
       chunks,
       metadata: {
         evidenceType: 'relationship_map',
-        timestamp: new Date(),
+        timestamp: new Date()
       }
     };
   },
@@ -668,7 +668,7 @@ export const LegalTextureUtils = {
     const optimizedChunks = documentTexture.chunks.map(chunk => ({
       ...chunk,
       // Apply courtroom-specific filtering
-      data: LegalTextureUtils.enhanceForCourtroom(chunk.data),
+      data: LegalTextureUtils.enhanceForCourtroom(chunk.data)
     });
 
     return {
@@ -677,7 +677,7 @@ export const LegalTextureUtils = {
       chunks: optimizedChunks,
       metadata: {
         ...documentTexture.metadata,
-        classification: 'courtroom_display',
+        classification: 'courtroom_display'
       }
     };
   },

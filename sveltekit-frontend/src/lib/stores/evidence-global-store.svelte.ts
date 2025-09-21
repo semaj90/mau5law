@@ -21,7 +21,7 @@ export interface EvidenceNode {
       summary: string;
       keyTerms: string[];
       confidence: number;
-      suggestedConnections: string[];,
+      suggestedConnections: string[];
     };
   };
   status: 'pending' | 'reviewed' | 'verified' | 'flagged';
@@ -41,13 +41,13 @@ export interface LegalCase {
     toNodeId: string;
     relationship: string;
     strength: number;
-    aiGenerated: boolean;,
+    aiGenerated: boolean;
   }>;
   metadata: {
     dateCreated: number;
     lastModified: number;
     status: 'active' | 'archived' | 'completed';
-    priority: 'low' | 'medium' | 'high' | 'urgent';,
+    priority: 'low' | 'medium' | 'high' | 'urgent';
   };
 }
 
@@ -64,7 +64,7 @@ export interface UIState {
     tags?: string[];
   };
   viewMode: 'grid' | 'timeline' | 'network';
-  aiProcessing: boolean;,
+  aiProcessing: boolean;
 }
 
 // Global Evidence Store using Svelte 5 Runes;
@@ -83,7 +83,7 @@ class EvidenceGlobalStore {
     showAISuggestions: true,
     filterBy: {},
     viewMode: 'network',
-    aiProcessing: false,
+    aiProcessing: false
   });
 
   // Performance tracking;
@@ -91,7 +91,7 @@ class EvidenceGlobalStore {
     totalNodes: 0,
     totalConnections: 0,
     aiSuggestionsGenerated: 0,
-    lastSync: 0,
+    lastSync: 0
   });
 
   // Derived state using $derived
@@ -128,7 +128,7 @@ class EvidenceGlobalStore {
         dateCreated: Date.now(),
         lastModified: Date.now(),
         status: 'active',
-        priority: 'medium',
+        priority: 'medium'
       }
     };
 
@@ -156,7 +156,7 @@ class EvidenceGlobalStore {
         ...updates,
         metadata: {
           ...this.cases[caseId].metadata,
-          lastModified: Date.now(),
+          lastModified: Date.now()
         }
       };
       this.persistState();
@@ -177,7 +177,7 @@ class EvidenceGlobalStore {
       connections: [],
       metadata: {
         dateCreated: Date.now(),
-        lastModified: Date.now(),
+        lastModified: Date.now()
       }
     };
 
@@ -203,7 +203,7 @@ class EvidenceGlobalStore {
       ...updates,
       metadata: {
         ...this.currentCase.nodes[nodeIndex].metadata,
-        lastModified: Date.now(),
+        lastModified: Date.now()
       }
     };
 
@@ -385,7 +385,7 @@ class EvidenceGlobalStore {
               caseContext: {
                 title: this.currentCase.title,
                 jurisdiction: this.currentCase.jurisdiction,
-                practiceArea: this.currentCase.practiceArea,
+                practiceArea: this.currentCase.practiceArea
               }
             }
           });
@@ -413,7 +413,7 @@ class EvidenceGlobalStore {
       const suggestions = await legalLocalAI.suggestEvidenceLinks(this.currentNodes.map(node => ({
           id: node.id,
           title: node.title,
-          content: node.content,
+          content: node.content
         })
       );
 
@@ -527,7 +527,7 @@ class EvidenceGlobalStore {
       const stateToSave = {
         cases: this.cases,
         currentCaseId: this.currentCaseId,
-        stats: this.stats,
+        stats: this.stats
       };
       localStorage.setItem('evidence-global-store', JSON.stringify(stateToSave);
       this.stats.lastSync = Date.now();
@@ -579,7 +579,7 @@ class EvidenceGlobalStore {
     return JSON.stringify({
       case: caseData,
       exportedAt: new Date().toISOString(),
-      version: '1.0',
+      version: '1.0'
     }, null, 2);
   }
 
@@ -629,7 +629,7 @@ export function createEvidenceNode(
     type,
     tags: [],
     position,
-    status: 'pending',
+    status: 'pending'
   };
 }
 

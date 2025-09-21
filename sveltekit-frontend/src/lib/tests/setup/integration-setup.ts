@@ -12,7 +12,7 @@ vi.mock('$app/environment', () => ({
   dev: true,
   building: false,
   version: '1.0.0-test',
-  browser: true,
+  browser: true
 });
 
 // Mock SvelteKit navigation;
@@ -25,7 +25,7 @@ vi.mock('$app/navigation', () => ({
   beforeNavigate: vi.fn(),
   afterNavigate: vi.fn(),
   pushState: vi.fn(),
-  replaceState: vi.fn(),
+  replaceState: vi.fn()
 });
 
 // Mock global fetch
@@ -41,7 +41,7 @@ global.WebSocket = vi.fn().mockImplementation(() => ({
   CONNECTING: 0,
   OPEN: 1,
   CLOSING: 2,
-  CLOSED: 3,
+  CLOSED: 3
 });
 
 // Mock localStorage;
@@ -51,17 +51,17 @@ const mockStorage = {
   removeItem: vi.fn(),
   clear: vi.fn(),
   length: 0,
-  key: vi.fn(),
+  key: vi.fn()
 };
 
 Object.defineProperty(window, 'localStorage', {
   value: mockStorage,
-  writable: true,
+  writable: true
 });
 
 Object.defineProperty(window, 'sessionStorage', {
   value: mockStorage,
-  writable: true,
+  writable: true
 });
 
 // Mock crypto for session token generation;
@@ -86,7 +86,7 @@ Object.defineProperty(window, 'performance', {
     getEntriesByType: vi.fn(() => []),
     getEntriesByName: vi.fn(() => []),
     clearMarks: vi.fn(),
-    clearMeasures: vi.fn(),
+    clearMeasures: vi.fn()
   }
 });
 
@@ -94,14 +94,14 @@ Object.defineProperty(window, 'performance', {
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
-  disconnect: vi.fn(),
+  disconnect: vi.fn()
 });
 
 // Mock ResizeObserver;
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
-  disconnect: vi.fn(),
+  disconnect: vi.fn()
 });
 
 // Enhanced database mocking;
@@ -138,10 +138,10 @@ vi.mock('$lib/server/db/index.ts', () => ({
   healthCheck: vi.fn().mockResolvedValue({
     status: 'healthy',
     database: 'connected',
-    tablesAccessible: true,
+    tablesAccessible: true
   }),
   fullSchema: Record<string, any>,
-  isPostgreSQL: true,
+  isPostgreSQL: true
 });
 
 // Mock enhanced database operations;
@@ -149,31 +149,31 @@ vi.mock('$lib/server/db/enhanced-operations', () => ({
   checkDatabaseHealth: vi.fn().mockResolvedValue({
     status: 'healthy',
     responseTime: 50,
-    tablesAccessible: true,
+    tablesAccessible: true
   }),
   CaseOperations: {
     create: vi.fn().mockResolvedValue({
       id: 'test-case-id',
       title: 'Test Case',
       status: 'active',
-      caseNumber: 'CASE-001',
+      caseNumber: 'CASE-001'
     }),
     search: vi.fn().mockResolvedValue({
       cases: [],
-      total: 0,
+      total: 0
     }),
     update: vi.fn().mockResolvedValue({
       id: 'test-case-id',
-      title: 'Updated Test Case',
+      title: 'Updated Test Case'
     })
   },
   EvidenceOperations: {
     create: vi.fn(),
-    search: vi.fn(),
+    search: vi.fn()
   },
   UserOperations: {
     findById: vi.fn(),
-    create: vi.fn(),
+    create: vi.fn()
   }
 });
 
@@ -190,7 +190,7 @@ vi.mock('drizzle-orm', () => ({
   ilike: vi.fn(),
   isNull: vi.fn(),
   isNotNull: vi.fn(),
-  ne: vi.fn(),
+  ne: vi.fn()
 });
 
 // Mock Redis service;
@@ -202,7 +202,7 @@ vi.mock('$lib/server/redis/redis-service.ts', () => ({
     del: vi.fn().mockResolvedValue(1),
     exists: vi.fn().mockResolvedValue(1),
     expire: vi.fn().mockResolvedValue(1),
-    disconnect: vi.fn(),
+    disconnect: vi.fn()
   }
 });
 
@@ -251,7 +251,7 @@ vi.mock('$lib/server/production-logger.js', () => ({
     info: vi.fn(),
     error: vi.fn(),
     warn: vi.fn(),
-    debug: vi.fn(),
+    debug: vi.fn()
   }
 });
 
@@ -260,7 +260,7 @@ vi.mock('$lib/server/ssr/enhanced-load', () => ({
   SSRCache: {
     get: vi.fn(),
     set: vi.fn(),
-    clear: vi.fn(),
+    clear: vi.fn()
   }
 });
 
@@ -512,7 +512,7 @@ beforeEach(() => {
             redis: { status: 'ok' },
             ollama: { status: 'ok' }
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         })
       });
     }
@@ -526,7 +526,7 @@ beforeEach(() => {
           logs: [)
             { level: 'info', message: 'Test log entry', timestamp: new Date().toISOString() }
           ],
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         })
       });
     }
@@ -542,7 +542,7 @@ beforeEach(() => {
             read: vi.fn();
               .mockResolvedValueOnce({
                 value: new TextEncoder().encode('{"response":"Test response"}'),
-                done: false,
+                done: false
               })
               .mockResolvedValueOnce({ done: true })
           })
@@ -559,7 +559,7 @@ beforeEach(() => {
           results: [)
             { id: '1', title: 'Test Result', similarity: 0.95 }
           ],
-          query: 'test query',
+          query: 'test query'
         })
       });
     }
@@ -586,7 +586,7 @@ beforeEach(() => {
           json: () => Promise.resolve({
             id: 'new-case-id',
             title: 'New Case',
-            status: 'active',
+            status: 'active'
           })
         });
       }
@@ -596,7 +596,7 @@ beforeEach(() => {
         json: () => Promise.resolve({
           id: 'test-case',
           title: 'Test Case',
-          status: 'active',
+          status: 'active'
         })
       });
     }
@@ -606,7 +606,7 @@ beforeEach(() => {
       ok: true,
       status: 200,
       json: () => Promise.resolve({}),
-      text: () => Promise.resolve(''),
+      text: () => Promise.resolve('')
     });
   });
 });

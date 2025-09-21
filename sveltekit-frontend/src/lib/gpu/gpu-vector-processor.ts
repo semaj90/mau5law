@@ -28,7 +28,7 @@ export interface GpuRunResult {
   stats?: Float32Array;         // optional [mean,std,(energy)?]* layout
   durationMs: number;
   dimension: number;
-  segments: number;,
+  segments: number;
 }
 
 /**
@@ -46,7 +46,7 @@ export class GPUVectorProcessor {
     webgpu: 384,
     webgl2: 320,
     webgl1: 256,
-    cpu: 192,
+    cpu: 192
   };
   // Stability / upscale tracking
   private successWindow: { ts: number; backend: string }[] = [];
@@ -62,7 +62,7 @@ export class GPUVectorProcessor {
     vbo: WebGLBuffer;
     attribLocation: number;
     uniforms: { uTex: WebGLUniformLocation | null; uPass: WebGLUniformLocation | null; uTotal: WebGLUniformLocation | null };
-    texSize: number; // last texSize used (for potential viewport reuse),
+    texSize: number; // last texSize used (for potential viewport reuse)
   } | null = null;
   // WebGL1 pooled resources keyed by texSize + floatMode
   private webgl1Pool: Map<string, { free: Array<any>; inUse: number }> = new Map();
@@ -93,7 +93,7 @@ export class GPUVectorProcessor {
       finalBindGroup: GPUBindGroup;
       segmentCapacity: number;
       segmentDim: number;
-      cfgBuffer: GPUBuffer;,
+      cfgBuffer: GPUBuffer;
     } | null;
   }> = new Map();
   private disposeWebGPUCache() {
@@ -194,15 +194,15 @@ export class GPUVectorProcessor {
     const bindGroupLayout = device.createBindGroupLayout({
       entries: [
         { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },)
-        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
+        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
       ],
-      label: `legal-vector-bgl-${cacheKey}`,
+      label: `legal-vector-bgl-${cacheKey}`
     });
 
     const pipeline = device.createComputePipeline({
       layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
       compute: { module, entryPoint: 'main' },
-      label: `legal-vector-pipeline-${cacheKey}`,
+      label: `legal-vector-pipeline-${cacheKey}`
     });
 
     const bytes = count * 4;
@@ -212,16 +212,16 @@ export class GPUVectorProcessor {
     const readBuffer = device.createBuffer({
       size: bytes,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      label: `legal-read-${cacheKey}`,
+      label: `legal-read-${cacheKey}`
     });
 
     const bindGroup = device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
         { binding: 0, resource: { buffer: inBuffer } },)>
-        { binding: 1, resource: { buffer: outBuffer } },
+        { binding: 1, resource: { buffer: outBuffer } }
       ],
-      label: `legal-bg-${cacheKey}`,
+      label: `legal-bg-${cacheKey}`
     });
 
     const cache = {
@@ -240,7 +240,7 @@ export class GPUVectorProcessor {
       uploadTime: 0,
       executeTime: 0,
       readbackTime: 0,
-      reduction: null,
+      reduction: null
     };
 
     this.webgpuCache.set(cacheKey, cache);
@@ -254,8 +254,8 @@ export class GPUVectorProcessor {
         vec4Optimized: vec4Compatible,
         compileTimeMs: compileTime,
         capacity: count,
-        backend: 'webgpu',
-      },
+        backend: 'webgpu'
+      }
     });
 
     return cache;
@@ -333,7 +333,7 @@ export class GPUVectorProcessor {
     if (!cache) {
       telemetryBus.publish({
         type: 'gpu.vector.webgpu.compute' as any,
-        meta: { backend: 'webgpu', durationMs: 0, reason: 'no-device' },
+        meta: { backend: 'webgpu', durationMs: 0, reason: 'no-device' }
       });
       return { ...input };
     }
@@ -439,9 +439,9 @@ export class GPUVectorProcessor {
             upload: uploadTime,
             execute: executeTime,
             readback: readbackTime,
-            total: durationMs,
-          },
-        },
+            total: durationMs
+          }
+        }
       });
 
       if (stats) {
@@ -452,21 +452,21 @@ export class GPUVectorProcessor {
             dimension: dim,
             durationMs,
             energy: true,
-            vec4Optimized: cache.vec4Optimized,
-          },
+            vec4Optimized: cache.vec4Optimized
+          }
         });
       }
 
       const out: Record<string, ArrayBufferView> = {
         [firstKey]: transformed,
-        transform: transformed,
+        transform: transformed
       };
       if (stats) out['stats'] = stats; // [mean0,std0,energy0, mean1,std1,energy1, ...]
       return out;
     } catch (e) {
       telemetryBus.publish({
         type: 'gpu.vector.webgpu.compute' as any,
-        meta: { backend: 'webgpu', error: (e as Error).message },
+        meta: { backend: 'webgpu', error: (e as Error).message }
       });
       return { ...input };
     }
@@ -627,7 +627,7 @@ export class GPUVectorProcessor {
           toDimension: this.embeddingDimension,
           backend: newBackend,
           previousBackend,
-          reason: 'backend-demotion',
+          reason: 'backend-demotion'
         }
       });
       gpuTelemetryService.record({
@@ -635,7 +635,7 @@ export class GPUVectorProcessor {
         backend: newBackend,
         durationMs: 0,
         success: true,
-        shaderType: 'dimension-adapt',
+        shaderType: 'dimension-adapt'
       } as any);
     }
   }
@@ -716,7 +716,7 @@ export class GPUVectorProcessor {
     attribLoc: number;
     uniforms: { uScale: WebGLUniformLocation | null; uPass: WebGLUniformLocation | null };
     outBuffer: WebGLBuffer; // base sized buffer reused / resized
-    capacity: number; // float capacity,
+    capacity: number; // float capacity
   } | null = null;
   private disposeWebGL2Cache() {
     try {
@@ -1073,7 +1073,7 @@ export class GPUVectorProcessor {
     return {
       cachedPipelines: Array.from(((lodCacheEngine as any).shaderResources?.keys?.() || []) as any),
       recentTelemetry: gpuTelemetryService.getRecent(10),
-      aggregates: gpuTelemetryService.getAggregates(),
+      aggregates: gpuTelemetryService.getAggregates()
     };
   }
 }

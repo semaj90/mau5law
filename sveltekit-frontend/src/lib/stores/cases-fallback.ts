@@ -11,7 +11,7 @@ export const selectedCase = writable<string | null>(null);
 export const casesStore = writable({
   cases: [],
   isLoading: false,
-  error: null,
+  error: null
 });
 
 export default casesStore;

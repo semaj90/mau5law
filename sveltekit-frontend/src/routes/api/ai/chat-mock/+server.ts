@@ -60,9 +60,9 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
             context: context || {},
             sessionId,
             includeVectorSearch: true,
-            includeCitations: true,
+            includeCitations: true
           }),
-          signal: controller.signal,
+          signal: controller.signal
         });
 
         if (ragResponse.ok) {
@@ -82,12 +82,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 confidence: ragData.confidence || 0.92,
                 executionTime,
                 fromCache: ragData.fromCache || false,
-                vectorMatches: ragData.vectorMatches || 0,
+                vectorMatches: ragData.vectorMatches || 0
               }
             },
             success: true,
             production: true,
-            service: 'enhanced-rag',
+            service: 'enhanced-rag'
           });
         }
       } finally {
@@ -117,7 +117,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(ollamaPayload),
-          signal: controller.signal,
+          signal: controller.signal
         });
 
         if (ollamaResponse.ok) {
@@ -141,12 +141,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 confidence: 0.85,
                 executionTime,
                 fromCache: false,
-                tokens: (ollamaData as any)?.eval_count || 0,
+                tokens: (ollamaData as any)?.eval_count || 0
               }
             },
             success: true,
             production: true,
-            service: 'ollama',
+            service: 'ollama'
           });
         }
       } finally {
@@ -165,7 +165,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       criminal: /criminal|defendant|prosecution|arrest|charge/i,
       civil: /civil|plaintiff|contract|tort|liability/i,
       constitutional: /constitutional|amendment|rights|due process/i,
-      procedure: /procedure|motion|filing|court|hearing/i,
+      procedure: /procedure|motion|filing|court|hearing/i
     };
 
     let intelligentResponse = "I understand you're seeking legal assistance. ";
@@ -213,7 +213,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           }
         ],
         production: false,
-        fallback: true,
+        fallback: true
       });
     }
 
@@ -236,13 +236,13 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           executionTime,
           fromCache: false,
           detectedArea,
-          patternMatched: true,
+          patternMatched: true
         }
       },
       success: true,
       production: false,
       fallback: true,
-      message_note: 'AI services unavailable - using intelligent pattern matching',
+      message_note: 'AI services unavailable - using intelligent pattern matching'
   });
 });
 

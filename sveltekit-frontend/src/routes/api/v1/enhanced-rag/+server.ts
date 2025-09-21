@@ -10,7 +10,7 @@ import { ensureError } from '$lib/utils/ensure-error';
 import {
   testVectorOperations,
   hybridSearch,
-  generateSampleEmbedding,
+  generateSampleEmbedding
 } from '$lib/server/db/vector-operations.js';
 import { URL } from 'url';
 
@@ -22,8 +22,8 @@ const ENHANCED_RAG_CONFIG = {
   models: {
     primary: 'gemma3-legal',
     embedding: 'nomic-embed-text',
-    fallback: 'llama2-legal',
-  },
+    fallback: 'llama2-legal'
+  }
 };
 }
 
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Check Enhanced RAG service;
     try {
       const ragResponse = await fetch(`${ENHANCED_RAG_CONFIG.baseUrl}/health`, {
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
 
       if (ragResponse.ok) {
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Check Upload service;
     try {
       const uploadResponse = await fetch(`${ENHANCED_RAG_CONFIG.uploadServiceUrl}/health`, {
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(5000)
       });
 
       if (uploadResponse.ok) {
@@ -92,11 +92,11 @@ export const GET: RequestHandler = async ({ url }) => {
         vectorHealth = {
           pgvectorAvailable: tv.pgvectorAvailable,
           similaritySearchWorking: tv.similaritySearchWorking,
-          embeddingCacheWorking: tv.embeddingCacheWorking,
+          embeddingCacheWorking: tv.embeddingCacheWorking
         };
       } catch (vectorError) {
         vectorHealth = {
-          error: vectorError instanceof Error ? vectorError.message: 'Vector ops failed',
+          error: vectorError instanceof Error ? vectorError.message: 'Vector ops failed'
         };
       }
     }
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (includeModels && ragHealth) {
       try {
         const modelsResponse = await fetch(`${ENHANCED_RAG_CONFIG.baseUrl}/models`, {
-          signal: AbortSignal.timeout(5000),
+          signal: AbortSignal.timeout(5000)
         });
 
         if (modelsResponse.ok) {
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ url }) => {
         console.warn('Models endpoint failed:', modelsError);
         availableModels = {
           configured: Object.values(ENHANCED_RAG_CONFIG.models),
-          note: 'Dynamic model discovery failed, showing configured models',
+          note: 'Dynamic model discovery failed, showing configured models'
         };
       }
     }
@@ -128,17 +128,17 @@ export const GET: RequestHandler = async ({ url }) => {
         enhancedRAG: {
           url: ENHANCED_RAG_CONFIG.baseUrl,
           status: ragHealth ? 'healthy' : 'unhealthy',
-          health: ragHealth,
+          health: ragHealth
         },
         uploadService: {
           url: ENHANCED_RAG_CONFIG.uploadServiceUrl,
           status: uploadHealth ? 'healthy' : 'unhealthy',
-          health: uploadHealth,
+          health: uploadHealth
         },
         vectorOperations: {
           status: vectorHealth ? 'healthy' : 'not-checked',
-          health: vectorHealth,
-        },
+          health: vectorHealth
+        }
       },
       capabilities: [
         'Document Question Answering',
@@ -147,16 +147,16 @@ export const GET: RequestHandler = async ({ url }) => {
         'Context-Aware Responses',
         'Legal Document Analysis',
         'Semantic Search',
-        'Document Upload & Processing',
+        'Document Upload & Processing'
       ],
       models: availableModels || ENHANCED_RAG_CONFIG.models,
       configuration: {
         timeout: ENHANCED_RAG_CONFIG.timeout,
         retries: ENHANCED_RAG_CONFIG.retries,
         maxResults: 10,
-        defaultModel: ENHANCED_RAG_CONFIG.models.primary,
+        defaultModel: ENHANCED_RAG_CONFIG.models.primary
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Enhanced RAG integration health check failed:', err);
@@ -165,7 +165,7 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'enhanced-rag-integration',
       status: 'error',
       error: err instanceof Error ? err.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 };
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       model: ragRequest?.model || "unknown" // @ts-ignore - Model property access || ENHANCED_RAG_CONFIG.models.primary,
       temperature: ragRequest.temperature || 0.7,
       include_metadata: ragRequest.includeMetadata !== false,
-      use_vector_search: ragRequest.useVectorSearch !== false,
+      use_vector_search: ragRequest.useVectorSearch !== false
     };
 
     let ragResponse: Response;
@@ -205,10 +205,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Request-Source': 'sveltekit-frontend',
+          'X-Request-Source': 'sveltekit-frontend'
         },
         body: JSON.stringify(enhancedRequest),
-        signal: AbortSignal.timeout(ENHANCED_RAG_CONFIG.timeout),
+        signal: AbortSignal.timeout(ENHANCED_RAG_CONFIG.timeout)
       });
 
       if (!ragResponse.ok) {
@@ -236,7 +236,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             id: r.id,
             content: r.content,
             score: r.similarity,
-            metadata: r.metadata,
+            metadata: r.metadata
           });
 
           responseData = {
@@ -246,10 +246,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
               id: (result as { id?: any; content?: any; score?: any; metadata?: any }).id,
               content: (result as { id?: any; content?: any; score?: any; metadata?: any }).content,
               score: (result as { id?: any; content?: any; score?: any; metadata?: any }).score,
-              metadata: (result as { id?: any; content?: any; score?: any; metadata?: any }).metadata,
+              metadata: (result as { id?: any; content?: any; score?: any; metadata?: any }).metadata
             })),
             fallback: true,
-            executionTime: 0,
+            executionTime: 0
           };
         } catch (vectorError) {
           console.error('Vector operations fallback also failed:', vectorError);
@@ -266,7 +266,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       sources: responseData.sources || [],
       model: responseData?.model || "unknown" // @ts-ignore - Model property access || enhancedRequest?.model || "unknown" // @ts-ignore - Model property access,
       executionTime: responseData.execution_time || responseData.executionTime || 0,
-      vectorResults: vectorResults || undefined,
+      vectorResults: vectorResults || undefined
     };
 
     return json({
@@ -280,8 +280,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         executionTimeMs: enhancedResponse.executionTime,
         confidence: enhancedResponse.confidence,
         model: enhancedResponse?.model || "unknown" // @ts-ignore - Model property access,
-        fallback: !!responseData.fallback,
-      },
+        fallback: !!responseData.fallback
+      }
     });
   } catch (err: any) {
     console.error('Enhanced RAG operation failed:', err);
@@ -310,7 +310,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       JSON.stringify({
         ...metadata,
         processForRAG: true,
-        source: 'sveltekit-frontend',
+        source: 'sveltekit-frontend'
       })
     );
 
@@ -332,7 +332,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Document uploaded and queued for RAG processing',
       data: uploadResult,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Document upload for RAG failed:', err);
@@ -356,9 +356,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
       {
         method: 'DELETE',
         headers: {
-          'X-Request-Source': 'sveltekit-frontend',
+          'X-Request-Source': 'sveltekit-frontend'
         },
-        signal: AbortSignal.timeout(10000),
+        signal: AbortSignal.timeout(10000)
       }
     );
 
@@ -372,7 +372,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       message: `Document '${documentId}' removed from RAG index`,
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('Document deletion from RAG failed:', err);

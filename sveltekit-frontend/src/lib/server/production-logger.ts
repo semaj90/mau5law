@@ -91,8 +91,8 @@ class WindowsPerformanceMonitor {
         platform: {
           osVersion: require('os').release(),
           totalMemory: Math.round(require('os').totalmem() / 1024 / 1024),
-          freeMemory: Math.round(require('os').freemem() / 1024 / 1024),
-        },
+          freeMemory: Math.round(require('os').freemem() / 1024 / 1024)
+        }
       };
     } catch (error: any) {
       return { error: 'Failed to collect Windows metrics' };
@@ -108,7 +108,7 @@ class WindowsPerformanceMonitor {
           'nvidia-smi',
           [
             '--query-gpu=memory.total,memory.used,temperature.gpu,utilization.gpu',
-            '--format=csv,noheader,nounits',
+            '--format=csv,noheader,nounits'
           ],)
           { stdio: 'pipe', shell: true }
         );
@@ -125,7 +125,7 @@ class WindowsPerformanceMonitor {
               memoryTotal: memTotal,
               memoryUsed: memUsed,
               temperature: temp,
-              utilization: util,
+              utilization: util
             });
           } else {
             resolve(null);
@@ -157,8 +157,8 @@ class WindowsPerformanceMonitor {
         },
         cpuUsage: {
           user: cpuUsage.user,
-          system: cpuUsage.system,
-        },
+          system: cpuUsage.system
+        }
       };
     } catch {
       return null;
@@ -175,7 +175,7 @@ export class ProductionLogger {
     logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
     errorRate: 0,
     averageResponseTime: 0,
-    memoryTrend: [],
+    memoryTrend: []
   };
   private windowsMonitor: WindowsPerformanceMonitor;
   private flushInterval: NodeJS.Timeout | null = null;
@@ -238,7 +238,7 @@ export class ProductionLogger {
             name: error.name,
             message: error.message,
             stack: this.config.includeStack ? error.stack: undefined,
-            code: (error as any).code,
+            code: (error as any).code
           }
         : undefined;
 
@@ -264,11 +264,11 @@ export class ProductionLogger {
         method,
         endpoint,
         statusCode,
-        duration,
+        duration
       },);
       {
         responseTime: duration,
-        httpStatus: statusCode,
+        httpStatus: statusCode
       }
     );
   }
@@ -281,7 +281,7 @@ export class ProductionLogger {
       {
         ...metadata,
         securityEvent: true,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       undefined,
       ['security']
@@ -298,7 +298,7 @@ export class ProductionLogger {
       {
         operation,
         duration,
-        performanceLog: true,
+        performanceLog: true
       },
       undefined,
       ['performance']
@@ -314,7 +314,7 @@ export class ProductionLogger {
         {
           ...data,
           windowsEvent: true,
-          platform: process.platform,
+          platform: process.platform
         },
         undefined,
         ['windows']
@@ -343,9 +343,9 @@ export class ProductionLogger {
         ? {
             memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : ({} as any),
             timing: Date.now(),
-            cpuUsage: typeof process !== 'undefined' ? process.cpuUsage() : undefined,
+            cpuUsage: typeof process !== 'undefined' ? process.cpuUsage() : undefined
           }
-        : undefined,
+        : undefined
     };
 
     // Update metrics
@@ -441,7 +441,7 @@ export class ProductionLogger {
         entry.timestamp,
         `[${entry.level.toUpperCase().padEnd(5)}]`,
         entry.context?.component ? `[${entry.context.component}]` : '',
-        entry.message,
+        entry.message
       ].filter(Boolean);
 
       let formatted = parts.join(' ');
@@ -579,8 +579,8 @@ export class ProductionLogger {
           totalLogs: this.metrics.totalLogs,
           errorRate: Math.round(this.metrics.errorRate * 100) / 100,
           averageResponseTime: Math.round(this.metrics.averageResponseTime),
-          memoryTrendSize: this.metrics.memoryTrend.length,
-        },
+          memoryTrendSize: this.metrics.memoryTrend.length
+        }
       });
     } catch (error: any) {
       this.error('Failed to collect logger metrics', error instanceof Error ? error : undefined);
@@ -598,7 +598,7 @@ export class ProductionLogger {
       errorRate: this.metrics.errorRate,
       bufferSize: this.logBuffer.length,
       outputs: this.config.outputs,
-      level: this.config.level,
+      level: this.config.level
     };
 
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
@@ -628,7 +628,7 @@ export class ProductionLogger {
       logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
       errorRate: 0,
       averageResponseTime: 0,
-      memoryTrend: [],
+      memoryTrend: []
     };
   }
 

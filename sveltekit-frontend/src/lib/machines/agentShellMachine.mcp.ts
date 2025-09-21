@@ -24,7 +24,7 @@ export interface AgentShellContext {
     enhancedRAG: boolean;
     uploadService: boolean;
     kratosServer: boolean;
-    mcpDatabase: boolean;,
+    mcpDatabase: boolean;
   };
   mcpResults?: {
     cases?: MCPToolResponse<Case[]>;
@@ -65,12 +65,12 @@ export const agentShellMachineMCP = createMachine({
       enhancedRAG: false,
       uploadService: false,
       kratosServer: false,
-      mcpDatabase: false,
+      mcpDatabase: false
     }
   },
   types: Record<string, any> as {
     context: AgentShellContext;
-    events: AgentShellEvent;,
+    events: AgentShellEvent;
   },
   states: {
     idle: {
@@ -80,78 +80,78 @@ export const agentShellMachineMCP = createMachine({
           actions: assign({
             input: ({ event }) => (event as any).input || "",
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         SEMANTIC_SEARCH: {
           target: "searching",
           actions: assign({
             searchQuery: ({ event }) => (event as any).query,
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         FILE_UPLOAD: {
           target: "uploading",
           actions: assign({
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         CHECK_HEALTH: {
-          target: "checkingHealth",
+          target: "checkingHealth"
         },
         // MCP operations;
         MCP_LOAD_CASE: {
           target: "mcpLoadingCase",
           actions: assign({
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         MCP_LOAD_CASES: {
           target: "mcpLoadingCases",
           actions: assign({
-            userId: ({ event }) => (event as any).userId,
-          }),
+            userId: ({ event }) => (event as any).userId
+          })
         },
         MCP_CREATE_CASE: {
           target: "mcpCreatingCase",
           actions: assign({
-            userId: ({ event }) => (event as any).userId,
-          }),
+            userId: ({ event }) => (event as any).userId
+          })
         },
         MCP_LOAD_EVIDENCE: {
           target: "mcpLoadingEvidence",
           actions: assign({
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         MCP_CREATE_EVIDENCE: {
           target: "mcpCreatingEvidence",
           actions: assign({
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         MCP_FIND_SIMILAR_CASES: {
           target: "mcpFindingSimilarCases",
           actions: assign({
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         MCP_FIND_SIMILAR_EVIDENCE: {
           target: "mcpFindingSimilarEvidence",
           actions: assign({
-            caseId: ({ event }) => (event as any).caseId,
-          }),
+            caseId: ({ event }) => (event as any).caseId
+          })
         },
         MCP_GET_ANALYTICS: {
           target: "mcpGettingAnalytics",
           actions: assign({
             userId: ({ event }) => (event as any).userId,
-            caseId: ({ event }) => (event as any).caseId,
-          }),
-        },
-      },
+            caseId: ({ event }) => (event as any).caseId
+          })
+        }
+      }
     },
     processing: {
       invoke: {
@@ -159,29 +159,29 @@ export const agentShellMachineMCP = createMachine({
         input: ({ context }) => ({
           input: context.input,
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
-            response: (_, e) => (e && "data" in e ? (e as any).data: ""),
-          }),
+            response: (_, e) => (e && "data" in e ? (e as any).data: "")
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Processing error" : "Unknown error"),
-          }),
-        },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Processing error" : "Unknown error")
+          })
+        }
       },
       on: {
         ACCEPT_PATCH: {
-          actions: "acceptPatchAction",
+          actions: "acceptPatchAction"
         },
         RATE_SUGGESTION: {
-          actions: "rateSuggestionAction",
-        },
-      },
+          actions: "rateSuggestionAction"
+        }
+      }
     },
     searching: {
       invoke: {
@@ -189,21 +189,21 @@ export const agentShellMachineMCP = createMachine({
         input: ({ context }) => ({
           query: context.searchQuery,
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
-            searchResults: (_, e) => (e && "data" in e ? (e as any).data : null),
-          }),
+            searchResults: (_, e) => (e && "data" in e ? (e as any).data : null)
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Search error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Search error" : "Unknown error")
+          })
+        }
+      }
     },
     uploading: {
       invoke: {
@@ -211,21 +211,21 @@ export const agentShellMachineMCP = createMachine({
         input: ({ context, event }) => ({
           file: (event as any).file,
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
-            uploadResults: (_, e) => (e && "data" in e ? (e as any).data : null),
-          }),
+            uploadResults: (_, e) => (e && "data" in e ? (e as any).data : null)
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Upload error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Upload error" : "Unknown error")
+          })
+        }
+      }
     },
     checkingHealth: {
       invoke: {
@@ -233,16 +233,16 @@ export const agentShellMachineMCP = createMachine({
         onDone: {
           target: "idle",
           actions: assign({
-            serviceHealth: (_, e) => (e && "data" in e ? (e as any).data : null),
-          }),
+            serviceHealth: (_, e) => (e && "data" in e ? (e as any).data : null)
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Health check error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "Health check error" : "Unknown error")
+          })
+        }
+      }
     },
     // MCP states;
     mcpLoadingCase: {
@@ -254,18 +254,18 @@ export const agentShellMachineMCP = createMachine({
           actions: assign({
             currentCase: (_, e) => (e && "data" in e ? (e as any).data : null),
             mcpResults: ({ context, event }) => ({
-              ...(context.mcpResults || {,}),
-              cases: event && "data" in event ? (event as any).data : null,
-            }),
-          }),
+              ...(context.mcpResults || {}),
+              cases: event && "data" in event ? (event as any).data : null
+            })
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP case load error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP case load error" : "Unknown error")
+          })
+        }
+      }
     },
     mcpLoadingCases: {
       invoke: {
@@ -275,43 +275,43 @@ export const agentShellMachineMCP = createMachine({
           target: "idle",
           actions: assign({
             mcpResults: ({ context, event }) => ({
-              ...(context.mcpResults || {,}),
-              cases: event && "data" in event ? (event as any).data : null,
-            }),
-          }),
+              ...(context.mcpResults || {}),
+              cases: event && "data" in event ? (event as any).data : null
+            })
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP cases load error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP cases load error" : "Unknown error")
+          })
+        }
+      }
     },
     mcpCreatingCase: {
       invoke: {
         src: "mcpCreateCase",
         input: ({ context, event }) => ({
           caseData: (event as any).caseData,
-          userId: context.userId,
+          userId: context.userId
         }),
         onDone: {
           target: "idle",
           actions: assign({
             currentCase: (_, e) => (e && "data" in e ? (e as any).data : null),
             mcpResults: ({ context, event }) => ({
-              ...(context.mcpResults || {,}),
-              cases: event && "data" in event ? (event as any).data : null,
-            }),
-          }),
+              ...(context.mcpResults || {}),
+              cases: event && "data" in event ? (event as any).data : null
+            })
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP case creation error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP case creation error" : "Unknown error")
+          })
+        }
+      }
     },
     mcpLoadingEvidence: {
       invoke: {
@@ -323,115 +323,115 @@ export const agentShellMachineMCP = createMachine({
             currentEvidence: (_, e) => (e && "data" in e ? (e as any).data : []),
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
-              evidence: e && "data" in e ? (e as any).data : null,
-            }),
-          }),
+              evidence: e && "data" in e ? (e as any).data : null
+            })
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP evidence load error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP evidence load error" : "Unknown error")
+          })
+        }
+      }
     },
     mcpCreatingEvidence: {
       invoke: {
         src: "mcpCreateEvidence",
         input: ({ context, event }) => ({
           evidenceData: (event as any).evidenceData,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
-              evidence: e && "data" in e ? (e as any).data : null,
-            }),
-          }),
+              evidence: e && "data" in e ? (e as any).data : null
+            })
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP evidence creation error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP evidence creation error" : "Unknown error")
+          })
+        }
+      }
     },
     mcpFindingSimilarCases: {
       invoke: {
         src: "mcpFindSimilarCases",
         input: ({ context, event }) => ({
           embedding: (event as any).embedding,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
             mcpResults: ({ context, event }) => ({
-              ...(context.mcpResults || {,}),
-              cases: event && "data" in event ? (event as any).data : null,
-            }),
-          }),
+              ...(context.mcpResults || {}),
+              cases: event && "data" in event ? (event as any).data : null
+            })
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP similar cases error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP similar cases error" : "Unknown error")
+          })
+        }
+      }
     },
     mcpFindingSimilarEvidence: {
       invoke: {
         src: "mcpFindSimilarEvidence",
         input: ({ context, event }) => ({
           embedding: (event as any).embedding,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
-              evidence: e && "data" in e ? (e as any).data : null,
-            }),
-          }),
+              evidence: e && "data" in e ? (e as any).data : null
+            })
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP similar evidence error" : "Unknown error"),
-          }),
-        },
-      },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP similar evidence error" : "Unknown error")
+          })
+        }
+      }
     },
     mcpGettingAnalytics: {
       invoke: {
         src: "mcpGetAnalytics",
         input: ({ context }) => ({
           userId: context.userId,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: "idle",
           actions: assign({
             mcpResults: ({ context }, e) => ({
               ...context.mcpResults,
-              analytics: e && "data" in e ? (e as any).data : null,
-            }),
-          }),
+              analytics: e && "data" in e ? (e as any).data : null
+            })
+          })
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP analytics error" : "Unknown error"),
-          }),
-        },
-      },
-    },
-  },
+            error: (_, e) => (e && "data" in e ? (e as any).data?.message || "MCP analytics error" : "Unknown error")
+          })
+        }
+      }
+    }
+  }
 });
 
 // Enhanced service implementations with MCP integration;
@@ -486,14 +486,14 @@ export const agentShellServicesMCP = {
         promises.push(mcpTools.evidence.loadEvidence({
           caseId,
           query,
-          limit: 5,
+          limit: 5
         });
       } else {
         // Search across all user cases;
         promises.push(mcpTools.cases.loadCases({
           userId,
           query,
-          limit: 5,
+          limit: 5
         });
       }
 
@@ -505,7 +505,7 @@ export const agentShellServicesMCP = {
       return {
         ...ragResponse,
         mcpResults: searchResults,
-        enhancedContext: true,
+        enhancedContext: true
       };
     } catch (error: any) {
       console.error("Enhanced semantic search failed:", error);
@@ -526,13 +526,13 @@ export const agentShellServicesMCP = {
           title: file.name,
           description: `Uploaded file: ${file.name}`,
           evidenceType: 'document',
-          tags: ['uploaded'],
+          tags: ['uploaded']
         });
 
         return {
           ...uploadResponse,
           evidenceCreated: evidenceResult.success,
-          evidenceId: evidenceResult.data?.id,
+          evidenceId: evidenceResult.data?.id
         };
       }
 
@@ -550,13 +550,13 @@ export const agentShellServicesMCP = {
         productionServiceClient.checkAllServicesHealth(),
         goServiceClient.checkServiceHealth(),
         // Test MCP database connectivity
-        mcpTools.users.getUserAnalytics(),
+        mcpTools.users.getUserAnalytics()
       ]);
 
       return {
         production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: null,
         legacy: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : null,
-        mcpDatabase: healthChecks[2].status === 'fulfilled' ? true : false,
+        mcpDatabase: healthChecks[2].status === 'fulfilled' ? true : false
       };
     } catch (error: any) {
       console.error("Enhanced health check failed:", error);
@@ -578,7 +578,7 @@ export const agentShellServicesMCP = {
   mcpCreateCase: async ({ caseData, userId }: { caseData: any; userId: string }) => {
     const result = await mcpTools.cases.createCase({
       ...caseData,
-      userId,
+      userId
     });
     return result;
   },
@@ -591,7 +591,7 @@ export const agentShellServicesMCP = {
   mcpCreateEvidence: async ({ evidenceData, caseId }: { evidenceData: any; caseId: string }) => {
     const result = await mcpTools.evidence.createEvidence({
       ...evidenceData,
-      caseId,
+      caseId
     });
     return result;
   },
@@ -606,7 +606,7 @@ export const agentShellServicesMCP = {
       embedding,
       caseId,
       limit: 10,
-      threshold: 0.7,
+      threshold: 0.7
     });
     return result;
   },
@@ -615,7 +615,7 @@ export const agentShellServicesMCP = {
     const promises = [
       mcpTools.cases.getCaseAnalytics(userId),
       mcpTools.evidence.getEvidenceAnalytics(caseId),
-      mcpTools.users.getUserAnalytics(),
+      mcpTools.users.getUserAnalytics()
     ];
 
     const [caseAnalytics, evidenceAnalytics, userAnalytics] = await Promise.allSettled(promises);
@@ -623,7 +623,7 @@ export const agentShellServicesMCP = {
     return {
       cases: caseAnalytics.status === 'fulfilled' ? caseAnalytics.value: null,
       evidence: evidenceAnalytics.status === 'fulfilled' ? evidenceAnalytics.value : null,
-      users: userAnalytics.status === 'fulfilled' ? userAnalytics.value : null,
+      users: userAnalytics.status === 'fulfilled' ? userAnalytics.value : null
     };
   },
 
@@ -634,5 +634,5 @@ export const agentShellServicesMCP = {
 
   rateSuggestionAction: ({ context, event }: { context: AgentShellContext; event: any }) => {
     console.log("Rating suggestion:", event.rating, "for job:", event.jobId, "feedback:", event.feedback);
-  },
+  }
 };

@@ -93,64 +93,64 @@ const initialContext: AuthContext = {
   lastLoginAttempt: undefined,
   lockoutUntil: undefined,
   twoFactorRequired: false,
-  registrationData: undefined,
+  registrationData: undefined
 };
 
 export const authMachine = setup({
   types: Record<string, any> as {
     context: AuthContext;
-    events: AuthEvent;,
+    events: AuthEvent;
   },
   actions: {
     setLoading: assign({
       isLoading: () => true,
-      error: () => undefined,
+      error: () => undefined
     }),
     clearLoading: assign({
-      isLoading: () => false,
+      isLoading: () => false
     }),
     setError: assign({
       error: ({ event }) => (event as any).data?.error || 'An error occurred',
-      isLoading: () => false,
+      isLoading: () => false
     }),
     setUser: assign({
       user: ({ event }) => (event as any).data?.user || null,
       session: ({ event }) => (event as any).data?.session || null,
       isLoading: () => false,
       error: () => undefined,
-      loginAttempts: () => 0,
+      loginAttempts: () => 0
     }),
     clearUser: assign({
       user: () => null,
       session: () => null,
-      error: () => undefined,
+      error: () => undefined
     }),
     incrementLoginAttempts: assign({
       loginAttempts: ({ context }) => context.loginAttempts + 1,
-      lastLoginAttempt: () => new Date(),
+      lastLoginAttempt: () => new Date()
     }),
     resetLoginAttempts: assign({
       loginAttempts: () => 0,
-      lastLoginAttempt: () => undefined,
+      lastLoginAttempt: () => undefined
     }),
     setLockout: assign({
       lockoutUntil: () => new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
-      loginAttempts: () => 0,
+      loginAttempts: () => 0
     }),
     clearLockout: assign({
-      lockoutUntil: () => undefined,
+      lockoutUntil: () => undefined
     }),
     setTwoFactorRequired: assign({
-      twoFactorRequired: () => true,
+      twoFactorRequired: () => true
     }),
     clearTwoFactor: assign({
-      twoFactorRequired: () => false,
+      twoFactorRequired: () => false
     }),
     setRegistrationData: assign({
       registrationData: ({ event }) => (event as any).data
     }),
     clearRegistrationData: assign({
-      registrationData: () => undefined,
+      registrationData: () => undefined
     })
   },
   guards: {
@@ -181,8 +181,8 @@ export const authMachine = setup({
           session: {
             id: 'session_' + (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).id, // Generate session ID
             expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
-            fresh: true,
-          },
+            fresh: true
+          }
         };
       } catch (error: any) {
         throw new Error(error instanceof Error ? error.message: 'Authentication failed');
@@ -210,8 +210,8 @@ export const authMachine = setup({
             lastName: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).lastName,
             role: (result as { id?: any; email?: any; firstName?: any; lastName?: any; role?: any }).role,
             department: input.department,
-            permissions: [],
-          },
+            permissions: []
+          }
         };
       } catch (error: any) {
         throw new Error(error instanceof Error ? error.message: 'Registration failed');
@@ -254,7 +254,7 @@ export const authMachine = setup({
           guard: ({ context }) => !context.lockoutUntil || new Date() >= context.lockoutUntil
         },
         START_REGISTRATION: 'registering',
-        RESET_PASSWORD: 'resettingPassword',
+        RESET_PASSWORD: 'resettingPassword'
       }
     },
     authenticating: {
@@ -303,7 +303,7 @@ export const authMachine = setup({
       on: {
         LOGOUT: 'loggingOut',
         SESSION_EXPIRED: 'idle',
-        UPDATE_PROFILE: 'updatingProfile',
+        UPDATE_PROFILE: 'updatingProfile'
       }
     },
     loggingOut: {
@@ -338,10 +338,10 @@ export const authMachine = setup({
     registrationSuccess: {
       on: {
         EMAIL_VERIFIED: 'authenticated',
-        VERIFY_EMAIL: 'verifyingEmail',
+        VERIFY_EMAIL: 'verifyingEmail'
       },
       after: {
-        5000: 'authenticated' // Auto-advance after 5 seconds,
+        5000: 'authenticated' // Auto-advance after 5 seconds
       }
     },
     verifyingEmail: {
@@ -349,7 +349,7 @@ export const authMachine = setup({
       after: {
         2000: {
           target: 'authenticated',
-          actions: 'clearLoading',
+          actions: 'clearLoading'
         }
       }
     },
@@ -360,17 +360,17 @@ export const authMachine = setup({
         input: ({ event }) => ({ email: (event as any).data.email }),
         onDone: {
           target: 'passwordResetSent',
-          actions: 'clearLoading',
+          actions: 'clearLoading'
         },
         onError: {
           target: 'idle',
-          actions: 'setError',
+          actions: 'setError'
         }
       }
     },
     passwordResetSent: {
       after: {
-        3000: 'idle',
+        3000: 'idle'
       }
     },
     locked: {
@@ -393,7 +393,7 @@ export const authMachine = setup({
       after: {
         1500: {
           target: 'authenticated',
-          actions: 'clearLoading',
+          actions: 'clearLoading'
         }
       }
     }

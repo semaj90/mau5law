@@ -52,7 +52,7 @@ export interface WebLlamaResponse {
     embeddingTime: number;
     inferenceTime: number;
     cacheTime: number;
-    totalTime: number;,
+    totalTime: number;
   };
 }
 
@@ -76,7 +76,7 @@ class WebAssemblyLlamaService {
     cacheMisses: number;
     evictions: number;
     memoryUsage: number;
-    lastUpdated: number;,
+    lastUpdated: number;
   } = {
     hitRatio: 0,
     avgLatency: 0,
@@ -85,7 +85,7 @@ class WebAssemblyLlamaService {
     cacheMisses: 0,
     evictions: 0,
     memoryUsage: 0,
-    lastUpdated: Date.now(),
+    lastUpdated: Date.now()
   };
 
   constructor(config: Partial<WebLlamaConfig> = {}) {
@@ -104,7 +104,7 @@ class WebAssemblyLlamaService {
       maxCacheSize: 500,
       enableServiceWorker: true,
       quicEndpoint: '/api/cache/ranking',
-      ...config,
+      ...config
     };
 
     this.initializeWebGPU();
@@ -123,7 +123,7 @@ class WebAssemblyLlamaService {
 
     try {
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
 
       if (!adapter) {
@@ -136,7 +136,7 @@ class WebAssemblyLlamaService {
         requiredLimits: {
           maxBufferSize: 1024 * 1024 * 1024, // 1GB
           maxStorageBufferBindingSize: 512 * 1024 * 1024, // 512MB
-        },
+        }
       });
 
       console.log('[WebLlama] WebGPU initialized successfully');
@@ -173,7 +173,7 @@ class WebAssemblyLlamaService {
         maxEntries: this.config.maxCacheSize,
         ttlSeconds: 300,
         enableServiceWorker: this.config.enableServiceWorker,
-        wasmModulePath: '/webasm/ranking-cache.wasm',
+        wasmModulePath: '/webasm/ranking-cache.wasm'
       });
 
       await this.rankingCache.initialize();
@@ -213,7 +213,7 @@ class WebAssemblyLlamaService {
     try {
       // Create a module worker for parallel generation;
       this.worker = new Worker(new URL('../../workers/webllama.worker.ts', import.meta.url), {
-        type: 'module',
+        type: 'module'
       } as WorkerOptions);
       if (this.worker) {
         this.worker.onerror = (error) => {
@@ -277,7 +277,7 @@ class WebAssemblyLlamaService {
       embeddingTime: 0,
       inferenceTime: 0,
       cacheTime: 0,
-      totalTime: 0,
+      totalTime: 0
     };
 
     // Enhanced cache lookup with ranking (disabled in this build; using legacy cache below)
@@ -291,7 +291,7 @@ class WebAssemblyLlamaService {
           ...cached,
           fromCache: true,
           cacheHit: true,
-          processingPath: 'cache',
+          processingPath: 'cache'
         };
       }
     }
@@ -354,14 +354,14 @@ class WebAssemblyLlamaService {
     recommendations: string[];
     confidence: number;
     processingTime: number;
-    method: string;,
+    method: string;
   }> {
     const prompt = this.buildLegalAnalysisPrompt(title, content, analysisType);
 
     const result = await this.generate(prompt, {
       maxTokens: 2048,
       temperature: 0.1,
-      useCache: true,
+      useCache: true
     });
 
     const analysis = this.parseLegalAnalysisResponse((result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).text) as any;
@@ -374,7 +374,7 @@ class WebAssemblyLlamaService {
       recommendations: analysis?.recommendations || [],
       confidence: analysis?.confidence || 0,
       processingTime: (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingTime,
-      method: 'WebAssembly llama.cpp + Gemma 3 Legal',
+      method: 'WebAssembly llama.cpp + Gemma 3 Legal'
     };
   }
 
@@ -489,12 +489,12 @@ class WebAssemblyLlamaService {
       cacheMisses: number;
       evictions: number;
       memoryUsage: number;
-      lastUpdated: number;,
+      lastUpdated: number;
     };
     performance: {
       avgLatency: number;
       hitRatio: number;
-      throughput: number;,
+      throughput: number;
     };
   } {
     return {
@@ -512,8 +512,8 @@ class WebAssemblyLlamaService {
       performance: {
         avgLatency: this.cacheMetrics.avgLatency,
         hitRatio: this.cacheMetrics.hitRatio,
-        throughput: this.cacheMetrics.totalRequests,
-      },
+        throughput: this.cacheMetrics.totalRequests
+      }
     };
   }
 
@@ -528,13 +528,13 @@ class WebAssemblyLlamaService {
     return {
       legacy: {
         size: this.cache.size,
-        maxSize: this.maxCacheSize,
+        maxSize: this.maxCacheSize
       },
       ranking: this.rankingCache ? this.rankingCache.getMetrics() : null,
       serviceWorker: {
         registered: !!this.serviceWorkerRegistration,
-        active: !!this.serviceWorkerRegistration?.active,
-      },
+        active: !!this.serviceWorkerRegistration?.active
+      }
     };
   }
 
@@ -557,7 +557,7 @@ class WebAssemblyLlamaService {
       cacheMisses: 0,
       evictions: 0,
       memoryUsage: 0,
-      lastUpdated: Date.now(),
+      lastUpdated: Date.now()
     };
 
     console.log('[WebLlama] All caches cleared');
@@ -569,7 +569,7 @@ class WebAssemblyLlamaService {
     const memory = new WebAssembly.Memory({
       initial: 256,
       maximum: 1024,
-      shared: this.config.enableMultiCore,
+      shared: this.config.enableMultiCore
     });
 
     return {
@@ -611,7 +611,7 @@ class WebAssemblyLlamaService {
         Math_sqrt: Math.sqrt,
         Math_exp: Math.exp,
         Math_log: Math.log,
-        Math_pow: Math.pow,
+        Math_pow: Math.pow
       },
 
       wasi_snapshot_preview1: {
@@ -623,8 +623,8 @@ class WebAssemblyLlamaService {
         fd_write: (fd: number, iovs: number, iovs_len: number, nwritten: number) => {
           // File descriptor write (stdout/stderr)
           return 0;
-        },
-      },
+        }
+      }
     };
   }
 
@@ -648,7 +648,7 @@ class WebAssemblyLlamaService {
           resolve({
             ...result,
             confidence: 0.9,
-            fromCache: false,
+            fromCache: false
           });
         } else if (type === 'generation_error') {
           clearTimeout(timeout);
@@ -660,7 +660,7 @@ class WebAssemblyLlamaService {
       this.worker.addEventListener('message', messageHandler);
       this.worker.postMessage({
         type: 'generate',
-        data: { prompt, options },
+        data: { prompt, options }
       });
     });
   }
@@ -675,17 +675,17 @@ class WebAssemblyLlamaService {
       const response = await fetch('/api/ai/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           model: this.currentModel,
           prompt: prompt,
           options: {
             num_predict: maxTokens,
-            temperature: temperature,
+            temperature: temperature
           },
-          stream: false,
-        }),
+          stream: false
+        })
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any; match?: any }).ok) {
@@ -702,7 +702,7 @@ class WebAssemblyLlamaService {
         confidence: 0.85,
         fromCache: false,
         cacheHit: false,
-        processingPath: 'ollama',
+        processingPath: 'ollama'
       };
     } catch (error: any) {
       console.error('[WebLlama] Ollama API call failed:', error);
@@ -714,7 +714,7 @@ class WebAssemblyLlamaService {
     const instructions = {
       comprehensive: 'Provide detailed analysis of all legal aspects',
       quick: 'Provide concise summary of key legal points',
-      'risk-focused': 'Focus on identifying legal risks and compliance issues',
+      'risk-focused': 'Focus on identifying legal risks and compliance issues'
     };
 
     return `<|system|>You are a specialized legal AI assistant. Analyze the following legal document.
@@ -748,7 +748,7 @@ Provide analysis in structured format:
       entities: [] as Array<any>,
       risks: [] as Array<any>,
       recommendations: [] as string[],
-      confidence: 0.8,
+      confidence: 0.8
     };
 
     try {
@@ -774,7 +774,7 @@ Provide analysis in structured format:
             return {
               type: type?.trim() || 'unknown',
               value: value?.trim() || '',
-              confidence: parseFloat(confidenceStr?.trim() || '0.8'),
+              confidence: parseFloat(confidenceStr?.trim() || '0.8')
             };
           })
           .filter((e) => e.value);
@@ -790,7 +790,7 @@ Provide analysis in structured format:
             return {
               type: type?.trim() || 'general',
               severity: severity?.trim() || 'medium',
-              description: description?.trim() || '',
+              description: description?.trim() || ''
             };
           })
           .filter((r) => r.description);

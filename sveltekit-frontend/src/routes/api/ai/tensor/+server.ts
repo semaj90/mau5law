@@ -127,7 +127,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       const goResp = await fetch('/api/tensor', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(goReq),
+        body: JSON.stringify(goReq)
       });
     if (goResp.ok) {
         const goJson = await goResp.json();

@@ -22,7 +22,7 @@ export interface GlyphTexture {
     width: number;
     height: number;
     pixelDensity: number;
-    colorDepth: number;,
+    colorDepth: number;
   };
 }
 
@@ -33,7 +33,7 @@ export interface GlyphFont {
   glyphs: Map<string, GlyphTexture>;
   totalGlyphs: number;
   cacheSize: number; // In bytes
-  lastOptimized: number;,
+  lastOptimized: number;
 }
 
 export interface GlyphCacheMetrics {
@@ -42,7 +42,7 @@ export interface GlyphCacheMetrics {
   memoryUsage: number;
   renderingTime: number;
   compressionRatio: number;
-  nesPatternEfficiency: number;,
+  nesPatternEfficiency: number;
 }
 
 export interface SynthesizedGlyph {
@@ -51,7 +51,7 @@ export interface SynthesizedGlyph {
   confidence: number;
   didYouMean: string[];
   llmGenerated: boolean;
-  embeddings: Float32Array;,
+  embeddings: Float32Array;
 }
 
 export class GlyphCacheSystem {
@@ -73,7 +73,7 @@ export class GlyphCacheSystem {
     memoryUsage: 0,
     renderingTime: 0,
     compressionRatio: 0,
-    nesPatternEfficiency: 0,
+    nesPatternEfficiency: 0
   };
 
   private cacheHits = 0;
@@ -188,7 +188,7 @@ export class GlyphCacheSystem {
       glyphs: new Map(),
       totalGlyphs: 0,
       cacheSize: 0,
-      lastOptimized: Date.now(),
+      lastOptimized: Date.now()
     };
 
     this.fonts.set(fontKey, font);
@@ -227,7 +227,7 @@ export class GlyphCacheSystem {
         width: this.GLYPH_SIZE,
         height: this.GLYPH_SIZE,
         pixelDensity: 1,
-        colorDepth: 32 // RGBA,
+        colorDepth: 32 // RGBA
       }
     };
 
@@ -421,7 +421,7 @@ export class GlyphCacheSystem {
         scalingMethod: 'sigmoid',
         targetLength: 64,
         cudaThreads: 32,
-        cacheStrategy: 'aggressive',
+        cacheStrategy: 'aggressive'
       });
 
       return quantizationResult.quantizedData as Float32Array;
@@ -457,7 +457,7 @@ export class GlyphCacheSystem {
         riskLevel: 'low',
         visualStyle: 'classic',
         colorScheme: 'default',
-        animated: false,
+        animated: false
       });
 
       console.log(`🎮 Stored glyph '${glyph.char}' to CHR-ROM bank ${glyph.chrRomBankId}`);
@@ -526,7 +526,7 @@ export class GlyphCacheSystem {
             charCode: glyph.charCode,
             nesPattern: Array.from(glyph.nesPattern),
             chrRomBankId: glyph.chrRomBankId,
-            accessCount: glyph.accessCount,
+            accessCount: glyph.accessCount
           };
         });
         cacheData[key] = { ...font, glyphs: glyphData };
@@ -623,7 +623,7 @@ export class GlyphCacheSystem {
           options: {
             temperature: 0.3,
             top_p: 0.9,
-            max_tokens: 100,
+            max_tokens: 100
           }
         })
       });
@@ -660,7 +660,7 @@ export class GlyphCacheSystem {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gemma3:legal-latest',
-          prompt: text,
+          prompt: text
         })
       });
 
@@ -694,7 +694,7 @@ export class GlyphCacheSystem {
         confidence: this.calculateConfidence(combo, inputGlyphs),
         didYouMean,
         llmGenerated: true,
-        embeddings: embedding,
+        embeddings: embedding
       });
     }
 
@@ -776,7 +776,7 @@ export class GlyphCacheSystem {
         char: glyph.char,
         pattern: Array.from(glyph.nesPattern),
         quantized: Array.from(glyph.quantizedData),
-        bankId: glyph.chrRomBankId,
+        bankId: glyph.chrRomBankId
       });
 
       await enhancedCachingRevolutionaryBridge.storeTextureStream('glyph_cache', textureData);

@@ -21,5 +21,5 @@ export const shortcuts = {
   "card-base":
     "bg-white dark:bg-nier-black border border-nier-light-gray dark:border-nier-gray rounded-lg shadow-sm",
   "card-hover":
-    "transition-all duration-300 hover:shadow-lg hover:border-digital-green",
+    "transition-all duration-300 hover:shadow-lg hover:border-digital-green"
 };

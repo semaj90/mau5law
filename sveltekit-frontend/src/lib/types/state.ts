@@ -44,7 +44,7 @@ export interface AppState {
   currentPage: string;
   notifications: Notification[];
   isLoading: boolean;
-  error: string | null;,
+  error: string | null;
 }
 
 export interface ChatState {
@@ -53,7 +53,7 @@ export interface ChatState {
   isTyping: boolean;
   isConnected: boolean;
   messages: ChatMessage[];
-  draft: string;,
+  draft: string;
 }
 
 export interface FileUploadState {
@@ -62,7 +62,7 @@ export interface FileUploadState {
   progress: number;
   error: string | null;
   completed: number;
-  total: number;,
+  total: number;
 }
 
 export interface SearchState {
@@ -71,7 +71,7 @@ export interface SearchState {
   isSearching: boolean;
   filters: SearchFilters;
   facets: SearchFacets;
-  history: string[];,
+  history: string[];
 }
 
 export interface AIState {
@@ -80,7 +80,7 @@ export interface AIState {
   isProcessing: boolean;
   responses: AIResponse[];
   usage: TokenUsage;
-  availability: ModelAvailability;,
+  availability: ModelAvailability;
 }
 
 // =====================================================
@@ -93,7 +93,7 @@ export interface ComponentState {
   initialized: boolean;
   error: Error | null;
   loading: boolean;
-  data: any;,
+  data: any;
 }
 
 export interface FormState {
@@ -102,7 +102,7 @@ export interface FormState {
   touched: Record<string, boolean>;
   isValid: boolean;
   isSubmitting: boolean;
-  isDirty: boolean;,
+  isDirty: boolean;
 }
 
 export interface ModalState {
@@ -110,13 +110,13 @@ export interface ModalState {
   title: string;
   content: any;
   size: 'sm' | 'md' | 'lg' | 'xl' | 'full';
-  closable: boolean;,
+  closable: boolean;
 }
 
 export interface ToastState {
   toasts: Toast[];
   position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-  maxToasts: number;,
+  maxToasts: number;
 }
 
 // =====================================================
@@ -148,7 +148,7 @@ export interface MachineState {
   context: any;
   matches: (value: string) => boolean;
   can: (event: string) => boolean;
-  send: (event: any) => void;,
+  send: (event: any) => void;
 }
 
 export interface MachineConfig {
@@ -172,7 +172,7 @@ export interface SuperFormsState<T = Record<string, any> {
   submitting: Readable<boolean>;
   delayed: Readable<boolean>;
   timeout: Readable<boolean>;
-  posted: Readable<boolean>;,
+  posted: Readable<boolean>;
 }
 
 export interface ValidationConfig {
@@ -192,7 +192,7 @@ export interface PerformanceState {
   metrics: PerformanceMetrics;
   history: PerformanceEntry[];
   alerts: PerformanceAlert[];
-  thresholds: PerformanceThresholds;,
+  thresholds: PerformanceThresholds;
 }
 
 export interface PerformanceAlert {
@@ -202,14 +202,14 @@ export interface PerformanceAlert {
   timestamp: string;
   metric: string;
   value: number;
-  threshold: number;,
+  threshold: number;
 }
 
 export interface PerformanceThresholds {
   responseTime: number;
   memoryUsage: number;
   cpuUsage: number;
-  errorRate: number;,
+  errorRate: number;
 }
 
 // =====================================================
@@ -224,7 +224,7 @@ export interface WebSocketState {
   lastMessage: any;
   messageHistory: any[];
   reconnectAttempts: number;
-  maxReconnectAttempts: number;,
+  maxReconnectAttempts: number;
 }
 
 // =====================================================
@@ -238,7 +238,7 @@ export interface NavigationState {
   breadcrumbs: Breadcrumb[];
   canGoBack: boolean;
   canGoForward: boolean;
-  isNavigating: boolean;,
+  isNavigating: boolean;
 }
 
 export interface Breadcrumb {

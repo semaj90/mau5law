@@ -9,7 +9,7 @@ export interface SIMDVectorProcessor {
   preprocessForWebGPU(embeddings: Float32Array[], targetDimensions: number): {
     normalizedVectors: Float32Array;
     magnitudes: Float32Array;
-    metadata: VectorMetadata;,
+    metadata: VectorMetadata;
   };
 }
 
@@ -18,7 +18,7 @@ export interface VectorMetadata {
   dimensions: number;
   isNormalized: boolean;
   processingTime: number;
-  simdSupported: boolean;,
+  simdSupported: boolean;
 }
 
 class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
@@ -190,7 +190,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
   ): {
     normalizedVectors: Float32Array;
     magnitudes: Float32Array;
-    metadata: VectorMetadata;,
+    metadata: VectorMetadata;
   } {
     const startTime = performance.now();
 
@@ -231,7 +231,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
       dimensions,
       isNormalized: true,
       processingTime,
-      simdSupported: this.simdSupported,
+      simdSupported: this.simdSupported
     };
 
     return {
@@ -337,7 +337,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
       evidenceCount: number;
       dimensions: number;
       totalVectors: number;
-      processingTime: number;,
+      processingTime: number;
     };
   } {
     const startTime = performance.now();

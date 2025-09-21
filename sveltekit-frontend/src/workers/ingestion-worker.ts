@@ -38,18 +38,18 @@ export interface IngestionResult {
   embeddings?: {
     documentEmbeddings: number;
     chunkEmbeddings: number;
-    processingTime: number;,
+    processingTime: number;
   };
   somClustering?: {
     clusters: number;
     quality: number;
-    processingTime: number;,
+    processingTime: number;
   };
   rtxCompression?: {
     originalSize: number;
     compressedSize: number;
     ratio: string;
-    processingTime: number;,
+    processingTime: number;
   };
   totalProcessingTime: number;
   error?: string;
@@ -58,7 +58,7 @@ export interface IngestionResult {
 export interface WorkerMessage {
   type: 'ingestion' | 'embedding' | 'som_clustering' | 'rtx_compression' | 'health_check';
   data: any;
-  taskId: string;,
+  taskId: string;
 }
 
 export interface WorkerResponse {
@@ -112,13 +112,13 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         this.postResponse({
           taskId,
           success: true,
-          data: result,
+          data: result
         });
       } catch (error: any) {
         this.postResponse({
           taskId,
           success: false,
-          error: error instanceof Error ? error.message: 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error'
         });
       } finally {
         this.currentTask = null;
@@ -134,7 +134,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         success: true,
         progress: 10,
         stage: 'Starting file uploads',
-        data: { filesCount: files.length },
+        data: { filesCount: files.length }
       });
 
       // Step 1: Upload files to MinIO
@@ -146,7 +146,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         const uploadResult = await this.simulateMinIOUpload(file, originalName, {
           bucket: options.bucket,
           caseId: metadata.caseId,
-          uploadedBy: metadata.uploadedBy,
+          uploadedBy: metadata.uploadedBy
         });
 
         uploadResults.push(uploadResult);
@@ -156,7 +156,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           success: true,
           progress: 20 + (i / files.length) * 30,
           stage: `Uploaded ${i + 1}/${files.length} files`,
-          data: { uploaded: i + 1, total: files.length },
+          data: { uploaded: i + 1, total: files.length }
         });
       }
 
@@ -164,7 +164,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         taskId: id,
         success: true,
         uploadResults,
-        totalProcessingTime: 0,
+        totalProcessingTime: 0
       };
 
       // Step 2: Generate embeddings if requested;
@@ -174,7 +174,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           success: true,
           progress: 50,
           stage: 'Generating embeddings',
-          data: { stage: 'embeddings' },
+          data: { stage: 'embeddings' }
         });
 
         const embeddingResult = await this.generateEmbeddingsForFiles(uploadResults, options);
@@ -185,7 +185,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           success: true,
           progress: 70,
           stage: 'Embeddings generated',
-          data: embeddingResult,
+          data: embeddingResult
         });
       }
 
@@ -196,7 +196,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           success: true,
           progress: 80,
           stage: 'Performing SOM clustering',
-          data: { stage: 'som_clustering' },
+          data: { stage: 'som_clustering' }
         });
 
         const somResult = await this.performSOMClustering(uploadResults);
@@ -210,7 +210,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           success: true,
           progress: 90,
           stage: 'Applying RTX compression',
-          data: { stage: 'rtx_compression' },
+          data: { stage: 'rtx_compression' }
         });
 
         const rtxResult = await this.applyRTXCompression(uploadResults);
@@ -224,7 +224,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         success: true,
         progress: 100,
         stage: 'Ingestion completed',
-        data: { stage: 'completed', processingTime: (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).totalProcessingTime },
+        data: { stage: 'completed', processingTime: (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).totalProcessingTime }
       });
 
       return result;
@@ -257,8 +257,8 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           bucket: options.bucket || 'legal-documents',
           uploadedAt: new Date(),
           uploadedBy: options.uploadedBy,
-          caseId: options.caseId,
-        },
+          caseId: options.caseId
+        }
       };
     }
 
@@ -291,7 +291,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return {
         documentEmbeddings,
         chunkEmbeddings,
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
 
@@ -309,7 +309,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return {
         clusters,
         quality: 0.75 + Math.random() * 0.2, // Mock quality score
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
 
@@ -334,7 +334,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         originalSize,
         compressedSize,
         ratio: `${Math.floor(originalSize / compressedSize)}:1`,
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
 
@@ -350,8 +350,8 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           embedding: new Array(384).fill(0).map(() => Math.random() - 0.5),
           metadata: {
             tokenCount: Math.ceil(text.length / 4),
-            processingTime: Math.random() * 100,
-          },
+            processingTime: Math.random() * 100
+          }
         });
       }
 
@@ -368,7 +368,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         clusters: Math.floor(Math.random() * 10) + 2,
         quality: 0.8 + Math.random() * 0.15,
         convergence: true,
-        epochs: Math.floor(Math.random() * 50) + 25,
+        epochs: Math.floor(Math.random() * 50) + 25
       };
     }
 
@@ -390,7 +390,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         originalSize: totalOriginal,
         compressedSize: totalCompressed,
         ratio: `${Math.floor(totalOriginal / totalCompressed)}:1`,
-        quality: 0.98 + Math.random() * 0.02,
+        quality: 0.98 + Math.random() * 0.02
       };
     }
 
@@ -401,7 +401,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         currentTask: this.currentTask,
         cacheSize: this.cache.size,
         memoryUsage: this.getMemoryUsage(),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
 
@@ -409,7 +409,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       const templates = [
         'This is a legal document containing important case information. The document outlines various legal proceedings and evidence related to the case.',
         'Contract agreement between parties outlining terms and conditions for the legal matter at hand.',
-        'Evidence documentation providing crucial details for the legal case proceedings.',
+        'Evidence documentation providing crucial details for the legal case proceedings.'
       ];
 
       const template = templates[Math.floor(Math.random() * templates.length)];
@@ -438,7 +438,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         doc: 'application/msword',
         docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         txt: 'text/plain',
-        json: 'application/json',
+        json: 'application/json'
       };
       return mimeTypes[ext || ''] || 'application/octet-stream';
     }
@@ -459,7 +459,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         return {
           used: Math.round(memory.usedJSHeapSize / 1024 / 1024),
           total: Math.round(memory.totalJSHeapSize / 1024 / 1024),
-          limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024),
+          limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024)
         };
       }
       return null;
@@ -586,7 +586,7 @@ export class IngestionWorkerManager {
       this.worker!.postMessage({
         type,
         data,
-        taskId,
+        taskId
       } as WorkerMessage);
     });
   }

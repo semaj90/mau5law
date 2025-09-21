@@ -92,7 +92,7 @@ export const YoRHaUtils = {
       direction,
       gap,
       justify: 'start',
-      align: 'center',
+      align: 'center'
     });
   },
 
@@ -115,28 +115,28 @@ export const YoRHaThemes = {
     background: 0xd4c5a9,  // YORHA_COLORS.primary.beige
     text: 0x0a0a0a,        // YORHA_COLORS.primary.black
     border: 0x8b8680,      // YORHA_COLORS.primary.grey
-    accent: 0xd4af37       // YORHA_COLORS.accent.gold,
+    accent: 0xd4af37       // YORHA_COLORS.accent.gold
   },
 
   TERMINAL: {
     background: 0x0a0a0a,  // YORHA_COLORS.primary.black
     text: 0xd4af37,        // YORHA_COLORS.accent.gold
     border: 0xd4af37,      // YORHA_COLORS.accent.gold
-    accent: 0xffc649       // YORHA_COLORS.accent.amber,
+    accent: 0xffc649       // YORHA_COLORS.accent.amber
   },
 
   ALERT: {
     background: 0xff6b6b,  // YORHA_COLORS.status.error
     text: 0xfaf6ed,        // YORHA_COLORS.primary.white
     border: 0x8b0000,
-    accent: 0xffa500       // YORHA_COLORS.status.warning,
+    accent: 0xffa500       // YORHA_COLORS.status.warning
   },
 
   SUCCESS: {
     background: 0x90ee90,  // YORHA_COLORS.status.success
     text: 0x0a0a0a,        // YORHA_COLORS.primary.black
     border: 0x228b22,
-    accent: 0xfaf6ed       // YORHA_COLORS.primary.white,
+    accent: 0xfaf6ed       // YORHA_COLORS.primary.white
   }
 };
 
@@ -152,7 +152,7 @@ export const YoRHaQuickSetup = {
       placeholder: 'Username',
       icon: 'user',
       iconPosition: 'left',
-      width: 5,
+      width: 5
     });
 
     const passwordInput = new YoRHaInput3D({
@@ -160,13 +160,13 @@ export const YoRHaQuickSetup = {
       type: 'password',
       icon: 'lock',
       iconPosition: 'left',
-      width: 5,
+      width: 5
     });
 
     const submitButton = new YoRHaButton3D({
       text: 'Login',
       variant: 'primary',
-      size: 'large',
+      size: 'large'
     });
 
     container.addChild(usernameInput, { alignSelf: 'stretch' });
@@ -184,7 +184,7 @@ export const YoRHaQuickSetup = {
       title,
       variant: 'confirm',
       size: 'small',
-      closable: true,
+      closable: true
     });
 
     const layout = YoRHaLayoutPresets.createDialog();
@@ -192,17 +192,17 @@ export const YoRHaQuickSetup = {
     const messagePanel = new YoRHaPanel3D({
       variant: 'glass',
       width: 4,
-      height: 1,
+      height: 1
     });
 
     const yesButton = new YoRHaButton3D({
       text: 'Yes',
-      variant: 'primary',
+      variant: 'primary'
     });
 
     const noButton = new YoRHaButton3D({
       text: 'No',
-      variant: 'secondary',
+      variant: 'secondary'
     });
 
     const buttonLayout = YoRHaLayoutPresets.createFlexRow(0.3);
@@ -226,7 +226,7 @@ export const YoRHaQuickSetup = {
       variant: 'default',
       width: 6,
       height: 5,
-      scrollable: true,
+      scrollable: true
     });
 
     const layout = YoRHaLayoutPresets.createForm();
@@ -234,17 +234,17 @@ export const YoRHaQuickSetup = {
     const volumeInput = new YoRHaInput3D({
       placeholder: 'Volume Level',
       type: 'number',
-      width: 4,
+      width: 4
     });
 
     const themeInput = new YoRHaInput3D({
       placeholder: 'Theme',
-      width: 4,
+      width: 4
     });
 
     const saveButton = new YoRHaButton3D({
       text: 'Save Settings',
-      variant: 'primary',
+      variant: 'primary'
     });
 
     layout.addChild(volumeInput, { alignSelf: 'stretch' });
@@ -268,7 +268,7 @@ export const YoRHaQuickSetup = {
         text: action.text,
         icon: action.icon,
         variant: action.variant || 'secondary',
-        size: 'small',
+        size: 'small'
       });
 
       toolbar.addChild(button);

@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
       tags: Array.isArray(row.tags) ? row.tags: [],
       prosecutionScore: typeof row.prosecutionScore === 'object' 
         ? (row.prosecutionScore as any)?.prosecutionScore || 0 
-        : 0,
+        : 0
     });
 
     return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 });
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Evidence search error:', error);
     return json({ 
       error: 'Search failed', 
-      matches: [] ,
+      matches: [] 
     }, { status: 500 });
   }
 };

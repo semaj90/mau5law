@@ -11,13 +11,13 @@ import {
   submitDirectTensorJob,
   getIntegrationStatus,
   WASM_SERVICE_PORTS,
-  WASM_QUEUE_ROUTING,
+  WASM_QUEUE_ROUTING
 } from '$lib/integrations/rabbitmq-tensor-integration.js';
 import {
   readBodyFastWithMetrics,
   getSIMDStatus,
   benchmarkJSONParsing,
-  simdMetrics,
+  simdMetrics
 } from '$lib/simd/simd-json-integration.js';
 
 // GET: Get integration status and health;
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: status,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'health':
@@ -45,14 +45,14 @@ export const GET: RequestHandler = async ({ url }) => {
             details: {
               bridge: healthStatus.bridge,
               tensorWorker: healthStatus.tensorWorker,
-              activeJobs: healthStatus.activeJobs,
-            },
+              activeJobs: healthStatus.activeJobs
+            }
           },);
           {
             headers: {
               'X-Integration-Health': isHealthy ? 'healthy' : 'unhealthy',
-              'Cache-Control': 'no-cache',
-            },
+              'Cache-Control': 'no-cache'
+            }
           }
         );
 
@@ -61,8 +61,8 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             services: WASM_SERVICE_PORTS,
-            description: 'Port configuration for WebAssembly services',
-          },
+            description: 'Port configuration for WebAssembly services'
+          }
         });
 
       case 'queues':;
@@ -70,8 +70,8 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             routing: WASM_QUEUE_ROUTING,
-            description: 'Queue routing for WASM-accelerated jobs',
-          },
+            description: 'Queue routing for WASM-accelerated jobs'
+          }
         });
 
       case 'simd':
@@ -80,8 +80,8 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             simd: simdStatus,
-            description: 'SIMD JSON parsing status and performance metrics',
-          },
+            description: 'SIMD JSON parsing status and performance metrics'
+          }
         });
 
       case 'benchmark':
@@ -90,8 +90,8 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             benchmark,
-            description: 'JSON parsing performance comparison (SIMD vs standard)',
-          },
+            description: 'JSON parsing performance comparison (SIMD vs standard)'
+          }
         });
 
       default:
@@ -105,15 +105,15 @@ export const GET: RequestHandler = async ({ url }) => {
               status: '/api/workers/rabbitmq/tensor?action=status',
               health: '/api/workers/rabbitmq/tensor?action=health',
               ports: '/api/workers/rabbitmq/tensor?action=ports',
-              queues: '/api/workers/rabbitmq/tensor?action=queues',
+              queues: '/api/workers/rabbitmq/tensor?action=queues'
             },
             operations: {
               initialize: 'POST /api/workers/rabbitmq/tensor (action: initialize)',
               submit_job: 'POST /api/workers/rabbitmq/tensor (action: submit_job)',
               similarity: 'POST /api/workers/rabbitmq/tensor (action: similarity)',
-              normalize: 'POST /api/workers/rabbitmq/tensor (action: normalize)',
-            },
-          },
+              normalize: 'POST /api/workers/rabbitmq/tensor (action: normalize)'
+            }
+          }
         });
     }
   } catch (error: any) {
@@ -124,8 +124,8 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: {
           message: error.message || 'RabbitMQ-Tensor API error',
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -152,8 +152,8 @@ export const POST: RequestHandler = async ({ request }) => {
             : '❌ Integration initialization failed',
           data: {
             initialized,
-            status: getIntegrationStatus(),
-          },
+            status: getIntegrationStatus()
+          }
         });
 
       case 'submit_job':
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!submittedJobType || !data) {
           return json({
               success: false,
-              error: { message: 'jobType and data are required' },
+              error: { message: 'jobType and data are required' }
             },)
             { status: 400 }
           );
@@ -177,8 +177,8 @@ export const POST: RequestHandler = async ({ request }) => {
             jobId,
             jobType: submittedJobType,
             priority,
-            submitted_at: new Date().toISOString(),
-          },
+            submitted_at: new Date().toISOString()
+          }
         });
 
       case 'similarity':
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!queryVector || !candidateVectors) {
           return json({
               success: false,
-              error: { message: 'queryVector and candidateVectors are required' },
+              error: { message: 'queryVector and candidateVectors are required' }
             },)
             { status: 400 }
           );
@@ -199,7 +199,7 @@ export const POST: RequestHandler = async ({ request }) => {
             query: queryVector,
             vectors: candidateVectors,
             operation: 'similarity',
-            algorithm,
+            algorithm
           },
           1
         ); // High priority
@@ -211,8 +211,8 @@ export const POST: RequestHandler = async ({ request }) => {
             jobId: similarityJobId,
             algorithm,
             vectorCount: candidateVectors.length,
-            queryDimensions: queryVector.length,
-          },
+            queryDimensions: queryVector.length
+          }
         });
 
       case 'normalize':
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!vectors || !Array.isArray(vectors)) {
           return json({
               success: false,
-              error: { message: 'vectors array is required' },
+              error: { message: 'vectors array is required' }
             },)
             { status: 400 }
           );
@@ -232,7 +232,7 @@ export const POST: RequestHandler = async ({ request }) => {
           normalizeJobType,);
           {
             vectors,
-            operation: batchProcess ? 'batch_process' : 'normalize',
+            operation: batchProcess ? 'batch_process' : 'normalize'
           },
           2
         );
@@ -243,8 +243,8 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             jobId: normalizeJobId,
             vectorCount: vectors.length,
-            batchProcess,
-          },
+            batchProcess
+          }
         });
 
       case 'compress':
@@ -253,7 +253,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!embeddings) {
           return json({
               success: false,
-              error: { message: 'embeddings are required' },
+              error: { message: 'embeddings are required' }
             },)
             { status: 400 }
           );
@@ -263,7 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
           'wasm_embedding_compress',);
           {
             vectors: [embeddings],
-            operation: 'compress',
+            operation: 'compress'
           },
           1
         );
@@ -274,8 +274,8 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             jobId: compressJobId,
             originalSize: embeddings.length,
-            compressionRatio,
-          },
+            compressionRatio
+          }
         });
 
       case 'benchmark':
@@ -292,7 +292,7 @@ export const POST: RequestHandler = async ({ request }) => {
             query: benchmarkQuery,
             vectors: benchmarkVectors,
             operation: 'similarity',
-            algorithm: 'cosine',
+            algorithm: 'cosine'
           },
           1
         );
@@ -304,14 +304,14 @@ export const POST: RequestHandler = async ({ request }) => {
             jobId: benchmarkJobId,
             vectorCount: benchmarkVectors.length,
             dimensions: benchmarkQuery.length,
-            benchmarkType: 'similarity_performance',
-          },
+            benchmarkType: 'similarity_performance'
+          }
         });
 
       default:;
         return json({
             success: false,
-            error: { message: `Unknown action: ${action}` },
+            error: { message: `Unknown action: ${action}` }
           },)
           { status: 400 }
         );
@@ -324,8 +324,8 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: {
           message: error.message || 'Tensor operation failed',
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -345,8 +345,8 @@ export const PUT: RequestHandler = async ({ request }) => {
       data: {
         appliedConfig: config,
         note: 'Configuration updates will be implemented in future version',
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     console.error('❌ RabbitMQ-Tensor PUT Error:', error);
@@ -356,8 +356,8 @@ export const PUT: RequestHandler = async ({ request }) => {
         success: false,
         error: {
           message: error.message || 'Configuration update failed',
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );
@@ -377,8 +377,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
           success: true,
           message: 'RabbitMQ-Tensor Integration shutdown initiated',
           data: {
-            shutdown_at: new Date().toISOString(),
-          },
+            shutdown_at: new Date().toISOString()
+          }
         });
 
       case 'clear_cache':
@@ -387,14 +387,14 @@ export const DELETE: RequestHandler = async ({ url }) => {
           success: true,
           message: 'Tensor cache clearing initiated (simulation)',
           data: {
-            cleared_at: new Date().toISOString(),
-          },
+            cleared_at: new Date().toISOString()
+          }
         });
 
       default:;
         return json({
             success: false,
-            error: { message: 'Action required for DELETE operation' },
+            error: { message: 'Action required for DELETE operation' }
           },)
           { status: 400 }
         );
@@ -407,8 +407,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
         success: false,
         error: {
           message: error.message || 'Delete operation failed',
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       },
       { status: 500 }
     );

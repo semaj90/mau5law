@@ -30,7 +30,7 @@ export interface OptimizedSearchRequest {
 
 export interface BatchUpsertRequest {
   collection: string;
-  points: Array<any>;,
+  points: Array<any>;
 }
 
 export interface CacheManagementRequest {
@@ -48,20 +48,20 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_optimized_get:${clientIP}:${locals.user?.id || 'anonymous'}`,
       limit: isAuthenticated ? 200 : 100, // Higher limit for authenticated users
-      windowSec: 60,
+      windowSec: 60
     });
 
     if (!rateLimitResult.allowed) {
       return json({
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },);
         {
           status: 429,
           headers: {
-            'Retry-After': rateLimitResult.retryAfter.toString(),
-          },
+            'Retry-After': rateLimitResult.retryAfter.toString()
+          }
         }
       );
     }
@@ -89,17 +89,17 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                     ).toFixed(1) + '%'
                   : 'N/A',
               platform: process.platform,
-              memoryBudget: process.platform === 'win32' ? '4MB' : '2MB',
-            },
+              memoryBudget: process.platform === 'win32' ? '4MB' : '2MB'
+            }
           },
           meta: {
             endpoint: 'optimized_health',
             timestamp: new Date().toISOString(),
             rateLimit: {
               remaining: rateLimitResult.remaining,
-              resetTime: rateLimitResult.resetTime,
-            },
-          },
+              resetTime: rateLimitResult.resetTime
+            }
+          }
         });
       }
 
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                 ((memoryUsage.total / (process.platform === 'win32' ? 4096 : 2048)) * 100).toFixed(
                   1
                 ) + '%',
-              budget: process.platform === 'win32' ? '4MB' : '2MB',
+              budget: process.platform === 'win32' ? '4MB' : '2MB'
             },
             performance: {
               ...performanceMetrics,
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                       (performanceMetrics.cacheHits / performanceMetrics.totalQueries) *
                       100
                     ).toFixed(1) + '%'
-                  : 'N/A',
+                  : 'N/A'
             },
             queryHistory: {
               totalQueries: queryHistory.length,
@@ -137,24 +137,24 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                 collection: q.collection,
                 processingTime: q.processingTime,
                 cacheHit: q.cacheHit,
-                resultCount: q.resultCount,
-              })),
+                resultCount: q.resultCount
+              }))
             },
             system: {
               platform: process.platform,
               arch: process.arch,
               nodeVersion: process.version,
-              windowsOptimized: process.platform === 'win32',
-            },
+              windowsOptimized: process.platform === 'win32'
+            }
           },
           meta: {
             endpoint: 'optimized_metrics',
             timestamp: new Date().toISOString(),
             rateLimit: {
               remaining: rateLimitResult.remaining,
-              resetTime: rateLimitResult.resetTime,
-            },
-          },
+              resetTime: rateLimitResult.resetTime
+            }
+          }
         });
       }
 
@@ -169,7 +169,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         if (!query) {
           return json({
               success: false,
-              error: 'Query parameter required for search',
+              error: 'Query parameter required for search'
             },)
             { status: 400 }
           );
@@ -195,7 +195,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             limit,
             offset,
             threshold,
-            useCache,
+            useCache
           });
 
           const processingTime = Date.now() - startTime;
@@ -206,14 +206,14 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             'Optimized vector search completed',
             {
               component: 'QdrantOptimizedAPI',
-              service: 'qdrant',
+              service: 'qdrant'
             },);
             {
               collection,
               queryType: typeof queryInput,
               resultsCount: results.length,
               processingTime,
-              cacheHit: performanceMetrics.cacheHits > 0,
+              cacheHit: performanceMetrics.cacheHits > 0
             }
           );
 
@@ -226,7 +226,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                 limit,
                 offset,
                 threshold,
-                useCache,
+                useCache
               },
               results,
               optimization: {
@@ -239,17 +239,17 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                         (performanceMetrics.cacheHits / performanceMetrics.totalQueries) *
                         100
                       ).toFixed(1) + '%'
-                    : 'N/A',
-              },
+                    : 'N/A'
+              }
             },
             meta: {
               endpoint: 'optimized_search',
               timestamp: new Date().toISOString(),
               rateLimit: {
                 remaining: rateLimitResult.remaining,
-                resetTime: rateLimitResult.resetTime,
-              },
-            },
+                resetTime: rateLimitResult.resetTime
+              }
+            }
           });
         } catch (searchError) {
           logger.error(
@@ -257,12 +257,12 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             searchError instanceof Error ? searchError : undefined,
             {
               component: 'QdrantOptimizedAPI',
-              service: 'qdrant',
+              service: 'qdrant'
             },);
             {
               collection,
               queryType: typeof query,
-              processingTime: Date.now() - startTime,
+              processingTime: Date.now() - startTime
             }
           );
           throw searchError;
@@ -291,10 +291,10 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
                   (
                     (memoryUsage.total / (process.platform === 'win32' ? 4096 : 2048)) *
                     100
-                  ).toFixed(1) + '%',
-              },
-            },
-          },
+                  ).toFixed(1) + '%'
+              }
+            }
+          }
         });
       }
 
@@ -302,7 +302,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
         return json({
             success: false,
             error: 'Invalid action',
-            availableActions: ['health', 'metrics', 'search', 'cache_stats'],
+            availableActions: ['health', 'metrics', 'search', 'cache_stats']
           },)
           { status: 400 }
         );
@@ -313,11 +313,11 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       error instanceof Error ? error : undefined,
       {
         component: 'QdrantOptimizedAPI',
-        service: 'qdrant',
+        service: 'qdrant'
       },);
       {
         action,
-        clientIP,
+        clientIP
       }
     );
 
@@ -325,7 +325,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       {
         success: false,
         error: 'Internal server error',
-        details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined,
+        details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
       },
       { status: 500 }
     );
@@ -344,20 +344,20 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     const rateLimitConfig = createRateLimitConfig(locals.user?.role === 'admin' ? 'admin' : 'api');
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_optimized_post:${clientIP}:${locals.user?.id || 'anonymous'}`,
-      ...rateLimitConfig,
+      ...rateLimitConfig
     });
 
     if (!rateLimitResult.allowed) {
       return json({
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter,
+          retryAfter: rateLimitResult.retryAfter
         },);
         {
           status: 429,
           headers: {
-            'Retry-After': rateLimitResult.retryAfter.toString(),
-          },
+            'Retry-After': rateLimitResult.retryAfter.toString()
+          }
         }
       );
     }
@@ -367,7 +367,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     if (!action) {
       return json({
           success: false,
-          error: 'Action parameter required',
+          error: 'Action parameter required'
         },)
         { status: 400 }
       );
@@ -379,7 +379,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         if (!locals.user || locals.user.role !== 'admin') {
           return json({
               success: false,
-              error: 'Admin privileges required for batch operations',
+              error: 'Admin privileges required for batch operations'
             },)
             { status: 403 }
           );
@@ -390,7 +390,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         if (!collection || !points || !Array.isArray(points)) {
           return json({
               success: false,
-              error: 'Collection and points array required',
+              error: 'Collection and points array required'
             },)
             { status: 400 }
           );
@@ -408,13 +408,13 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             'Batch upsert completed',
             {
               component: 'QdrantOptimizedAPI',
-              service: 'qdrant',
+              service: 'qdrant'
             },);
             {
               collection,
               pointsCount: points.length,
               processingTime,
-              memoryUsage,
+              memoryUsage
             }
           );
 
@@ -427,13 +427,13 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
               processingTime,
               optimization: {
                 memoryUsage,
-                batchOptimized: true,
+                batchOptimized: true
               },
               rateLimit: {
                 remaining: rateLimitResult.remaining,
-                resetTime: rateLimitResult.resetTime,
-              },
-            },
+                resetTime: rateLimitResult.resetTime
+              }
+            }
           });
         } catch (upsertError) {
           logger.error(
@@ -441,11 +441,11 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             upsertError instanceof Error ? upsertError : undefined,
             {
               component: 'QdrantOptimizedAPI',
-              service: 'qdrant',
+              service: 'qdrant'
             },);
             {
               collection,
-              pointsCount: points.length,
+              pointsCount: points.length
             }
           );
           throw upsertError;
@@ -457,7 +457,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         if (!locals.user || locals.user.role !== 'admin') {
           return json({
               success: false,
-              error: 'Admin privileges required for cache operations',
+              error: 'Admin privileges required for cache operations'
             },)
             { status: 403 }
           );
@@ -475,11 +475,11 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           'Cache cleared',
           {
             component: 'QdrantOptimizedAPI',
-            service: 'qdrant',
+            service: 'qdrant'
           },);
           {
             cacheType,
-            memoryFreed: beforeMemory.total - afterMemory.total,
+            memoryFreed: beforeMemory.total - afterMemory.total
           }
         );
 
@@ -491,9 +491,9 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             memoryFreed: {
               before: beforeMemory,
               after: afterMemory,
-              freedKB: beforeMemory.total - afterMemory.total,
-            },
-          },
+              freedKB: beforeMemory.total - afterMemory.total
+            }
+          }
         });
       }
 
@@ -502,7 +502,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         if (!locals.user || locals.user.role !== 'admin') {
           return json({
               success: false,
-              error: 'Admin privileges required for memory optimization',
+              error: 'Admin privileges required for memory optimization'
             },)
             { status: 403 }
           );
@@ -523,14 +523,14 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           'Memory optimization completed',
           {
             component: 'QdrantOptimizedAPI',
-            service: 'qdrant',
+            service: 'qdrant'
           },);
           {
             memoryOptimization: {
               before: beforeMemory,
               after: afterMemory,
-              freed: beforeMemory.total - afterMemory.total,
-            },
+              freed: beforeMemory.total - afterMemory.total
+            }
           }
         );
 
@@ -547,9 +547,9 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
                   ? (((beforeMemory.total - afterMemory.total) / beforeMemory.total) * 100).toFixed(
                       1
                     ) + '%'
-                  : '0%',
-            },
-          },
+                  : '0%'
+            }
+          }
         });
       }
 
@@ -557,7 +557,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
         return json({
             success: false,
             error: 'Invalid action',
-            availableActions: ['batch_upsert', 'clear_cache', 'optimize_memory'],
+            availableActions: ['batch_upsert', 'clear_cache', 'optimize_memory']
           },)
           { status: 400 }
         );
@@ -568,11 +568,11 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       error instanceof Error ? error : undefined,
       {
         component: 'QdrantOptimizedAPI',
-        service: 'qdrant',
+        service: 'qdrant'
       },);
       {
         clientIP,
-        action: body?.action || 'unknown',
+        action: body?.action || 'unknown'
       }
     );
 
@@ -580,7 +580,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       {
         success: false,
         error: 'Internal server error',
-        details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined,
+        details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined
       },
       { status: 500 }
     );

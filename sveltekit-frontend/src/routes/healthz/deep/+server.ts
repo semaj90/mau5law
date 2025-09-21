@@ -37,6 +37,6 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
     status: overallOk ? 'ok' : 'fail',
     checks,
     durationMs,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   }, { status: overallOk ? 200 : 503 });
 };

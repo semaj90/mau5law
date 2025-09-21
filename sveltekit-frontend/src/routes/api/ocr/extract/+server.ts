@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
           page: pageNum,
           text: pageText,
           confidence: 95, // High confidence for extractable text
-          method: 'text_extraction',
+          method: 'text_extraction'
         });
         
         totalCharacters += pageText.length;
@@ -62,13 +62,13 @@ export const POST: RequestHandler = async ({ request }) => {
         await page.render({
           canvas: canvas as any,
           canvasContext: context,
-          viewport: viewport,
+          viewport: viewport
         }).promise;
         
         // Initialize Tesseract worker;
         const worker = await createWorker('eng', 1, {
           workerPath: '/tesseract-worker.js',
-          corePath: '/tesseract-core.js',
+          corePath: '/tesseract-core.js'
         });
         
         // Perform OCR using the canvas directly
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
           page: pageNum,
           text: (data as { text?: any; confidence?: any }).text,
           confidence: (data as { text?: any; confidence?: any }).confidence,
-          method: 'ocr',
+          method: 'ocr'
         });
         
         totalCharacters += (data as { text?: any; confidence?: any }).text.length;
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
       extractedAt: new Date().toISOString(),
       processingStats: {
         ocrPages: ocrResults.filter(item => item.length),
-        extractedPages: ocrResults.filter(item => item.length),
+        extractedPages: ocrResults.filter(item => item.length)
       }
     };
 

@@ -49,7 +49,7 @@ class EnhancedWebSocketManager {
       ws,
       subscriptions: new Set(["system", "processing"]), // Default subscriptions
       lastSeen: new Date(),
-      metadata,
+      metadata
     };
 
     this.clients.set(clientId, client);
@@ -61,9 +61,9 @@ class EnhancedWebSocketManager {
         message: "Connected to Enhanced Legal AI System",
         clientId,
         serverTime: new Date(),
-        connectedClients: this.clients.size,
+        connectedClients: this.clients.size
       },
-      timestamp: new Date(),
+      timestamp: new Date()
     });
 
     console.log(
@@ -134,9 +134,9 @@ class EnhancedWebSocketManager {
         type: "system_health",
         data: {
           message: "Subscriptions updated",
-          subscriptions: Array.from(client.subscriptions),
+          subscriptions: Array.from(client.subscriptions)
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       });
     }
   }
@@ -157,9 +157,9 @@ class EnhancedWebSocketManager {
           evidenceId,
           stage,
           result,
-          status: (result as { status?: any; confidence?: any }).status || "processing",
+          status: (result as { status?: any; confidence?: any }).status || "processing"
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       (client) => client.subscriptions.has("processing"),
     );
@@ -174,9 +174,9 @@ class EnhancedWebSocketManager {
           evidenceId,
           resultType, // 'embedding', 'tagging', 'analysis'
           result,
-          confidence: (result as { status?: any; confidence?: any }).confidence || 0,
+          confidence: (result as { status?: any; confidence?: any }).confidence || 0
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       (client) => client.subscriptions.has("ai_results"),
     );
@@ -194,9 +194,9 @@ class EnhancedWebSocketManager {
             similarity: match.similarity,
             content: match.content?.slice(0, 100) + "...", // Truncate for efficiency
           })),
-          totalMatches: matches.length,
+          totalMatches: matches.length
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       (client) => client.subscriptions.has("vector_search"),
     );
@@ -213,11 +213,11 @@ class EnhancedWebSocketManager {
             from: rel.from || rel.fromId,
             to: rel.to || rel.toId,
             type: rel.type,
-            strength: rel.strength || rel.confidence,
+            strength: rel.strength || rel.confidence
           })),
-          totalRelationships: relationships.length,
+          totalRelationships: relationships.length
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       (client) => client.subscriptions.has("graph_updates"),
     );
@@ -231,9 +231,9 @@ class EnhancedWebSocketManager {
         data: {
           ...healthData,
           connectedClients: this.clients.size,
-          serverUptime: process.uptime(),
+          serverUptime: process.uptime()
         },
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       (client) => client.subscriptions.has("system"),
     );
@@ -245,7 +245,7 @@ class EnhancedWebSocketManager {
       {
         type: "cache_update",
         data: cacheStats,
-        timestamp: new Date(),
+        timestamp: new Date()
       },
       (client) => client.subscriptions.has("cache_stats"),
     );
@@ -274,9 +274,9 @@ class EnhancedWebSocketManager {
         data: {
           ping: "health_check",
           serverTime: now,
-          connectedClients: this.clients.size,
+          connectedClients: this.clients.size
         },
-        timestamp: now,
+        timestamp: now
       });
     }, 60000); // Every minute
   }
@@ -308,7 +308,7 @@ class EnhancedWebSocketManager {
           return acc;
         },
         {} as Record<string, number>,
-      ),
+      )
     };
   }
 }
@@ -341,18 +341,18 @@ export const GET: RequestHandler = async ({ request, url }) => {
           "vector_match",
           "graph_update",
           "system_health",
-          "cache_update",
+          "cache_update"
         ],
         instructions: {
           connect: "ws://localhost:5173/api/websocket",
           subscribe: 'Send: {"action": "subscribe", "types": ["processing", "ai_results"]}',
-          unsubscribe: 'Send: {"action": "unsubscribe", "types": ["processing"]}',
-        },
+          unsubscribe: 'Send: {"action": "unsubscribe", "types": ["processing"]}'
+        }
       }),
       {
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       },
     );
   } catch (error: any) {
@@ -384,5 +384,5 @@ export const webSocketHelpers = {
   broadcastCacheUpdate: (cacheStats: any) =>
     wsManager.broadcastCacheUpdate(cacheStats),
 
-  getStats: () => wsManager.getStats(),
+  getStats: () => wsManager.getStats()
 };

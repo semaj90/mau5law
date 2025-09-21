@@ -68,7 +68,7 @@ export const createWebGPUBuffer = (
   
   const buffer = device.createBuffer({
     size: compatibleData.byteLength,
-    usage,
+    usage
   });
   
   device.queue.writeBuffer(buffer, 0, compatibleData);
@@ -167,7 +167,7 @@ export interface LegalDocumentBuffer {
   documentId: string;
   embeddings: Float32Array;
   metadata: Record<string, unknown>;
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';,
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export const createLegalDocumentBuffer = (
@@ -179,7 +179,7 @@ export const createLegalDocumentBuffer = (
   
   return {
     buffer,
-    byteLength: embeddingData.byteLength,
+    byteLength: embeddingData.byteLength
   };
 };
 

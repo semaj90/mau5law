@@ -49,7 +49,7 @@ export interface LegalResearchResult {
   jurisdiction?: string;
   date?: string;
   url?: string;
-  keyPoints: string[];,
+  keyPoints: string[];
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -64,7 +64,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       dateRange,
       sources = ['cases', 'statutes', 'regulations'],
       maxResults = 10,
-      includeAnalysis = true,
+      includeAnalysis = true
     } = body;
 
     if (!topic?.trim()) {
@@ -77,7 +77,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       dateRange,
       sources,
       maxResults,
-      userRole,
+      userRole
     });
 
     // Generate AI analysis if requested
@@ -104,9 +104,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         sources,
         userRole,
         confidence,
-        searchTerms: extractSearchTerms(topic),
+        searchTerms: extractSearchTerms(topic)
       },
-      summary: generateResearchSummary(results, topic),
+      summary: generateResearchSummary(results, topic)
     };
 
     return json(response);
@@ -117,7 +117,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         error: 'Research failed',
         message: error.message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -138,7 +138,7 @@ async function performLegalResearch(topic: string, options: any): Promise<LegalR
     // Rerank results by relevance;
     if (results.length > 0) {
       const reranked = await rerankSearchResults(topic, results, {
-        maxResults: options.maxResults,
+        maxResults: options.maxResults
       });
 
       // Some implementations return plain array, others an object with rerankedResults
@@ -169,8 +169,8 @@ async function searchCaseLaw(topic: string, options: any): Promise<LegalResearch
       keyPoints: [
         `Established clear standard for ${topic}`,
         'Clarified constitutional requirements',
-        'Set precedent for similar cases',
-      ],
+        'Set precedent for similar cases'
+      ]
     },
     {
       title: `${topic} - Circuit Split`,
@@ -183,9 +183,9 @@ async function searchCaseLaw(topic: string, options: any): Promise<LegalResearch
       keyPoints: [
         'Created circuit split requiring Supreme Court review',
         `Different interpretation of ${topic} standards`,
-        'Impact on future litigation strategy',
-      ],
-    },
+        'Impact on future litigation strategy'
+      ]
+    }
   ];
 
   return mockCases.filter(
@@ -206,9 +206,9 @@ async function searchStatutes(topic: string, options: any): Promise<LegalResearc
       keyPoints: [
         `Defines key elements of ${topic}`,
         'Establishes penalties and procedures',
-        'Provides enforcement mechanisms',
-      ],
-    },
+        'Provides enforcement mechanisms'
+      ]
+    }
   ];
 
   return options.sources.includes('statutes') ? mockStatutes : [];
@@ -227,9 +227,9 @@ async function searchRegulations(topic: string, options: any): Promise<LegalRese
       keyPoints: [
         `Detailed implementation of ${topic} requirements`,
         'Compliance procedures and deadlines',
-        'Enforcement and penalty provisions',
-      ],
-    },
+        'Enforcement and penalty provisions'
+      ]
+    }
   ];
 
   return options.sources.includes('regulations') ? mockRegulations : [];
@@ -246,9 +246,9 @@ function generateMockResults(topic: string, options: any): LegalResearchResult[]
       keyPoints: [
         `Overview of ${topic} legal framework`,
         'Key considerations for practitioners',
-        'Recent developments and trends',
-      ],
-    },
+        'Recent developments and trends'
+      ]
+    }
   ];
 
   return mockResults;
@@ -275,7 +275,7 @@ Provide a detailed legal analysis:`;
   try {
     return await ollamaService.generateCompletion(prompt, {
       temperature: 0.3,
-      maxTokens: 1000,
+      maxTokens: 1000
     });
   } catch (error: any) {
     console.warn('AI analysis generation failed:', error);

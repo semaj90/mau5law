@@ -49,7 +49,7 @@ export async function createUserSession(
     expires_at: expiresAt,
     ip_address: ipAddress,
     user_agent: userAgent,
-    session_context: Record<string, any>,
+    session_context: Record<string, any>
   });
   return { sessionId, expiresAt };
 }
@@ -65,10 +65,10 @@ export async function validateSession(sessionId: string): Promise<any> {
           email: true,
           first_name: true,
           last_name: true,
-          role: true,
-        },
-      },
-    },
+          role: true
+        }
+      }
+    }
   });
   if (session && session.user) {
     const { user, ...rest } = session;
@@ -79,8 +79,8 @@ export async function validateSession(sessionId: string): Promise<any> {
         email: user.email,
         firstName: user.first_name,
         lastName: user.last_name,
-        role: user.role,
-      },
+        role: user.role
+      }
     };
   }
   return { session: null, user: null };
@@ -109,7 +109,7 @@ export function setSessionCookie(
     secure: isProduction,  // HTTPS only in production, omitted for localhost
     sameSite: "lax" as const,  // Use "strict" for critical applications
     expires: expiresAt,    // Set expiration date
-    maxAge: Math.floor((expiresAt.getTime() - Date.now()) / 1000) // Seconds until expiry,
+    maxAge: Math.floor((expiresAt.getTime() - Date.now()) / 1000) // Seconds until expiry
   };
 
   // Primary cookie name (recommended for new code)
@@ -134,7 +134,7 @@ export function deleteSessionCookie(cookies: any): void {
     httpOnly: true,
     secure: isProduction,
     sameSite: "lax" as const,
-    maxAge: 0  // Immediately expire,
+    maxAge: 0  // Immediately expire
   };
 
   // Clear both primary and legacy session cookies

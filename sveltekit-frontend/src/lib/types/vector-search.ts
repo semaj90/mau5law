@@ -1,12 +1,43 @@
 // Type definitions for Enhanced Vector Search Service
-// Legal AI Platform - Vector Similarity Search Types;
+// Legal AI Platform - Vector Similarity Search Types
+
+export interface VectorSearchResult {
+  results: Array<{
+    id: string;
+    content: string;
+    metadata: Record<string, any>;
+    similarity: number;
+    score: number;
+  }>;
+  totalResults: number;
+  queryTime: number;
+  searchStrategy: string;
+  indexUsed: string;
+  threshold: number;
+  embedding: {
+    dimensions: number;
+    model: string;
+    format: string;
+  };
+}
+
+export interface VectorSearchOptions {
+  limit?: number;
+  threshold?: number;
+  includeContent?: boolean;
+  includeMetadata?: boolean;
+  filters?: {
+    documentType?: string[];
+    dateRange?: { start?: Date; end?: Date };
+    tags?: string[];
+  };
 }
 
 export interface EmbeddingVector {
   dimensions: number;
   values: number[];
   model: string;
-  createdAt: Date;,
+  createdAt: Date;
 }
 
 export interface VectorSearchOptions {
@@ -57,7 +88,7 @@ export interface VectorSearchResult {
   /** Description or summary */
   description: string;
   
-  /** Additional metadata about the result */;
+  /** Additional metadata about the result */
   metadata: {
     /** File type for evidence results */
     fileType?: string;
@@ -156,7 +187,7 @@ export interface VectorSearchStats {
       table: string;
       scans: number;
       tuplesRead: number;
-      tuplesFetched: number;,
+      tuplesFetched: number;
     };
   };
   
@@ -193,7 +224,7 @@ export interface VectorClusterResult {
   topics: string[];
   
   /** Number of documents in cluster */
-  size: number;,
+  size: number;
 }
 
 export interface VectorQueryExpansion {
@@ -210,7 +241,7 @@ export interface VectorQueryExpansion {
   relatedConcepts: string[];
   
   /** Confidence in expansion quality */
-  confidence: number;,
+  confidence: number;
 }
 
 export interface SimilaritySearchParams {
@@ -259,7 +290,7 @@ export interface VectorIndexInfo {
   effectiveness?: {
     tuplesRead: number;
     tuplesFetched: number;
-    hitRatio: number;,
+    hitRatio: number;
   };
 }
 
@@ -286,7 +317,7 @@ export interface VectorSearchPerformanceMetrics {
   resultsReturned: number;
   
   /** Whether index was used effectively */
-  indexUsed: boolean;,
+  indexUsed: boolean;
 }
 
 export interface VectorEmbeddingMetadata {
@@ -313,7 +344,7 @@ export interface VectorEmbeddingMetadata {
   quality?: {
     confidence: number;
     completeness: number;
-    relevance: number;,
+    relevance: number;
   };
 }
 
@@ -323,12 +354,12 @@ export type DistanceFunction = 'l2' | 'cosine' | 'inner_product';
 export type EntityType = 'evidence' | 'case' | 'chunk';
 export type SearchStrategy = 'vector_only' | 'hybrid' | 'text_only';
 
-// Error types for better error handling;
+// Error types for better error handling
 export class VectorSearchError extends Error {
   constructor(
     message: string,
     public code: string,
-    public details?: any;
+    public details?: any
   ) {
     super(message);
     this.name = 'VectorSearchError';
@@ -347,11 +378,11 @@ export class VectorIndexError extends VectorSearchError {
   }
 }
 
-// Type guards for runtime validation;
+// Type guards for runtime validation
 export function isValidEmbedding(value: any): value is number[] {
-  return Array.isArray(value) && 
-         value.length > 0 && 
-         value.every(v => typeof v === 'number' && !isNaN(v);
+  return Array.isArray(value) &&
+         value.length > 0 &&
+         value.every(v => typeof v === 'number' && !isNaN(v));
 }
 
 export function isValidVectorSearchResult(value: any): value is VectorSearchResult {

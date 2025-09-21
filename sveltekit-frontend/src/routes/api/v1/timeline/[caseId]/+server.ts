@@ -61,7 +61,7 @@ const CreateTimelineEventSchema = z.object({
   notes: z.string().optional(),
   importance: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   isPublic: z.boolean().default(false),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
 });
 
 const UpdateTimelineEventSchema = CreateTimelineEventSchema.partial();
@@ -72,7 +72,7 @@ const TimelineQuerySchema = z.object({
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
   sortOrder: z.enum(['asc', 'desc']).default('asc'),
-  includePrivate: z.coerce.boolean().default(true),
+  includePrivate: z.coerce.boolean().default(true)
 });
 
 /*
@@ -151,10 +151,10 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       eventTypes: [...new Set(timelineEvents.map(e => e.eventType))],
       dateRange: timelineEvents.length > 0 ? {
         start: timelineEvents[sortOrder === 'asc' ? 0 : timelineEvents.length - 1].eventDate,
-        end: timelineEvents[sortOrder === 'asc' ? timelineEvents.length - 1 : 0].eventDate,
+        end: timelineEvents[sortOrder === 'asc' ? timelineEvents.length - 1 : 0].eventDate
       } : null,
       criticalEvents: timelineEvents.filter(item => item.length),
-      publicEvents: timelineEvents.filter(item => item.length),
+      publicEvents: timelineEvents.filter(item => item.length)
     };
 
     return json({
@@ -166,14 +166,14 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         case: {
           id: caseData.id,
           title: caseData.title,
-          status: caseData.status,
-        },
+          status: caseData.status
+        }
       },
       meta: {
         userId: locals.user.id,
         filters: { eventType, importance, startDate, endDate, sortOrder, includePrivate },
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
 
   } catch (err: any) {
@@ -185,7 +185,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid query parameters',
           code: 'INVALID_QUERY',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -195,7 +195,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to fetch timeline',
         code: 'FETCH_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -242,7 +242,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       caseId,
       ...eventData,
       eventDate: new Date(eventData.eventDate),
-      createdAt: new Date(),
+      createdAt: new Date()
     };
 
     // Insert the new timeline event
@@ -257,15 +257,15 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       success: true,
       data: {
         event: insertedEvent,
-        message: 'Timeline event added successfully',
+        message: 'Timeline event added successfully'
       },
       meta: {
         userId: locals.user.id,
         caseId,
         eventId: timelineEventId,
         timestamp: new Date().toISOString(),
-        action: 'timeline_event_created',
-      },
+        action: 'timeline_event_created'
+      }
     }, { status: 201 });
 
   } catch (err: any) {
@@ -277,7 +277,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid timeline event data',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -287,7 +287,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to add timeline event',
         code: 'CREATE_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }

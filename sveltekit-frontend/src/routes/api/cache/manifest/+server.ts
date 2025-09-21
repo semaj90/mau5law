@@ -13,7 +13,7 @@ const mockCache = new Map<string, {
   ttl: number;
   version: string;
   source: string;
-  size: number;,
+  size: number;
 }>();
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
         ttl: entry.ttl,
         size: entry.size,
         source: entry.source,
-        expired: Date.now() - entry.timestamp > entry.ttl,
+        expired: Date.now() - entry.timestamp > entry.ttl
       };
     });
     
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
       expiredKeys: entries.filter(item => item.length),
       totalSize: entries.reduce((sum, e) => sum + e.size, 0),
       oldestEntry: Math.min(...entries.map(e => e.timestamp)),
-      newestEntry: Math.max(...entries.map(e => e.timestamp),
+      newestEntry: Math.max(...entries.map(e => e.timestamp)
     };
     
     return json({
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
           offset,
           limit,
           total: filteredKeys.length,
-          hasMore: offset + limit < filteredKeys.length,
+          hasMore: offset + limit < filteredKeys.length
         },
         stats,
         timestamp: Date.now(),

@@ -12,7 +12,7 @@ export interface AIState {
   history: Array<any>;
   isProcessing: boolean;
   lastResult: any;
-  error: string | null;,
+  error: string | null;
 }
 
 // Main AI store;
@@ -21,7 +21,7 @@ export const aiStore = writable<AIState>({
   history: [],
   isProcessing: false,
   lastResult: null,
-  error: null,
+  error: null
 });
 
 // Command result store for Phase 2 compatibility
@@ -50,7 +50,7 @@ export async function parseAICommand(command: string): Promise<any> {
       priority,
       type,
       timestamp: new Date().toISOString(),
-      processed: true,
+      processed: true
     };
 
     // Update stores
@@ -93,10 +93,10 @@ export const addCommand = (command: string, result: any = null) => {
       {
         command,
         result,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     ],
-    lastResult: result,
+    lastResult: result
   });
 };
 
@@ -118,7 +118,7 @@ export const clearHistory = () => {
     history: [],
     current: "",
     lastResult: null,
-    error: null,
+    error: null
   });
 };
 
@@ -139,7 +139,7 @@ export const aiCommandService = {
 
   subscribe: function (callback: (value: any) => void) {
     return this.state.subscribe(callback);
-  },
+  }
 };
 
 // Derived stores (repaired syntax)

@@ -53,7 +53,7 @@ export interface PerformanceMetrics {
     errorRate: number;
     throughput: number;
     simdEnabled: boolean;
-    quicEnabled: boolean;,
+    quicEnabled: boolean;
 }
 
 export interface DocumentAnalysisRequest {
@@ -79,29 +79,29 @@ export interface DocumentAnalysisResponse {
             organizations: string[];
             dates: string[];
             amounts: string[];
-            legal_terms: string[];,
+            legal_terms: string[];
         };
         risks: Array<{
             type: string;
             severity: 'low' | 'medium' | 'high';
             description: string;
-            recommendation: string;,
+            recommendation: string;
         }>;
         compliance_issues: Array<{
             regulation: string;
             severity: 'minor' | 'major' | 'critical';
             description: string;
-            remediation: string;,
+            remediation: string;
         }>;
         summary: string;
-        recommendations: string[];,
+        recommendations: string[];
     };
     processing_time_ms: number;
     model_info: {
         model: string;
         version: string;
         quantization: string;
-        optimization_level: string;,
+        optimization_level: string;
     };
 }
 
@@ -122,7 +122,7 @@ export interface CaseSimilarityResponse {
         legal_precedents: string[];
         metadata?: Record<string, any>;
     }>;
-    processing_time_ms: number;,
+    processing_time_ms: number;
 }
 
 export interface EmbeddingRequest {
@@ -160,7 +160,7 @@ export interface SearchResponse {
     }>;
     total_matches: number;
     processing_time_ms: number;
-    is_complete: boolean;,
+    is_complete: boolean;
 }
 
 export interface TensorRTMetrics {
@@ -169,7 +169,7 @@ export interface TensorRTMetrics {
         quantization: string;
         precision: string;
         max_batch_size: number;
-        max_sequence_length: number;,
+        max_sequence_length: number;
     };
     performance: {
         total_requests: number;
@@ -178,14 +178,14 @@ export interface TensorRTMetrics {
         max_latency_ms: number;
         throughput_tokens_per_sec: number;
         gpu_utilization: number;
-        memory_usage_mb: number;,
+        memory_usage_mb: number;
     };
     optimizations: {
         cuda_graphs_enabled: boolean;
         flash_attention_enabled: boolean;
         kv_cache_paged: boolean;
         simd_json_enabled: boolean;
-        quic_transport_enabled: boolean;,
+        quic_transport_enabled: boolean;
     };
 }
 
@@ -203,13 +203,13 @@ export interface PipelineStatus {
         simd_optimizer: ServiceHealth;
         go_microservice: ServiceHealth;
         caddy_proxy: ServiceHealth;
-        sveltekit_frontend: ServiceHealth;,
+        sveltekit_frontend: ServiceHealth;
     };
     overall_status: 'healthy' | 'degraded' | 'unhealthy';
     performance_summary: {
         avg_end_to_end_latency_ms: number;
         requests_per_second: number;
-        error_rate: number;,
+        error_rate: number;
     };
 }
 
@@ -238,25 +238,25 @@ export interface TensorRTClientConfig {
         tensorrt_llm: string;
         simd_optimizer: string;
         go_microservice: string;
-        quic_endpoint: string;,
+        quic_endpoint: string;
     };
     timeouts: {
         connection_timeout_ms: number;
         request_timeout_ms: number;
-        streaming_timeout_ms: number;,
+        streaming_timeout_ms: number;
     };
     performance: {
         use_quic: boolean;
         enable_connection_pooling: boolean;
         max_concurrent_requests: number;
         retry_attempts: number;
-        circuit_breaker_threshold: number;,
+        circuit_breaker_threshold: number;
     };
     optimization: {
         prefer_simd_json: boolean;
         enable_request_batching: boolean;
         cache_embeddings: boolean;
-        compress_requests: boolean;,
+        compress_requests: boolean;
     };
 }
 
@@ -274,14 +274,14 @@ export interface WebSocketMessage {
     type: 'request' | 'response' | 'error' | 'metrics' | 'heartbeat';
     payload: any;
     request_id?: string;
-    timestamp: number;,
+    timestamp: number;
 }
 
 export interface WebSocketConfig {
     url: string;
     reconnect_attempts: number;
     heartbeat_interval_ms: number;
-    compression: boolean;,
+    compression: boolean;
 }
 
 // Utility types
@@ -301,18 +301,18 @@ export interface PerformanceAnalytics {
         throughput_tps: number;
         error_count: number;
         memory_usage_mb: number;
-        gpu_utilization: number;,
+        gpu_utilization: number;
     }>;
     percentiles: {
         p50: number;
         p95: number;
         p99: number;
-        p99_9: number;,
+        p99_9: number;
     };
     trends: {
         latency_trend: 'improving' | 'stable' | 'degrading';
         throughput_trend: 'improving' | 'stable' | 'degrading';
-        error_trend: 'improving' | 'stable' | 'degrading';,
+        error_trend: 'improving' | 'stable' | 'degrading';
     };
 }
 
@@ -335,7 +335,7 @@ export interface LegalAnalysisContext {
     practice_areas: string[];
     regulatory_frameworks: string[];
     precedent_cases: string[];
-    compliance_requirements: string[];,
+    compliance_requirements: string[];
 }
 
 export interface ContractClause {
@@ -345,7 +345,7 @@ export interface ContractClause {
     risk_level: string;
     enforceability_score: number;
     recommendations: string[];
-    related_clauses: string[];,
+    related_clauses: string[];
 }
 
 // Export all types as a namespace for easier imports;

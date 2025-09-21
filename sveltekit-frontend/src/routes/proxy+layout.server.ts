@@ -40,7 +40,7 @@ type LayoutData = {
     errors: { message: string }[];
     startTime: number;
     initTime: number;
-    bitsUICompatible: boolean;,
+    bitsUICompatible: boolean;
   } | null;
   _cacheHit?: boolean;
   _mocked?: boolean;
@@ -60,7 +60,7 @@ export const load: LayoutServerLoad = async (event): Promise<LayoutData> => {
     return {
       startupStatus: cached,
       user: localsTyped.user,
-      session: localsTyped.session,
+      session: localsTyped.session
     };
   }
 
@@ -77,12 +77,12 @@ export const load: LayoutServerLoad = async (event): Promise<LayoutData> => {
           redis: false, // These might be causing the hang
           rabbitmq: false,
           orchestrator: false,
-          ollama: false,
+          ollama: false
         },
         errors: [] as { message: string }[],
         startTime: Date.now(),
         initTime: 0,
-        bitsUICompatible: true,
+        bitsUICompatible: true
       });
       // Store the result in cache
       setCache(cacheKey, startupStatus, STARTUP_TTL_SECONDS);
@@ -91,7 +91,7 @@ export const load: LayoutServerLoad = async (event): Promise<LayoutData> => {
         startupStatus,
         user: localsTyped.user,
         session: localsTyped.session,
-        isAuthenticated: !!localsTyped.user,
+        isAuthenticated: !!localsTyped.user
       };
       return result as unknown as import('$lib/server/api-ssr-helpers').BitsUICompatibleData;
     },
@@ -101,7 +101,7 @@ export const load: LayoutServerLoad = async (event): Promise<LayoutData> => {
       error: 'Failed to initialize startup services',
       user: null,
       session: null,
-      isAuthenticated: false,
+      isAuthenticated: false
     } as unknown as import('$lib/server/api-ssr-helpers').BitsUICompatibleData
   );
   return data as unknown as LayoutData;

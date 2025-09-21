@@ -12,7 +12,7 @@ import { minioService } from '../server/storage/minio-service.js';
 
 // Database connection;
 const pool = new Pool({
-  connectionString: import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
+  connectionString: import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
 });
 
 const db = drizzle(pool, { schema });
@@ -66,7 +66,7 @@ export async function loadCase(caseId: string): Promise<CaseData | null> {
       with: {
         evidence: {
           limit: 10,
-          orderBy: desc(schema.evidence.createdAt),
+          orderBy: desc(schema.evidence.createdAt)
         }
       }
     });
@@ -105,7 +105,7 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
       caseNumber,
       status: caseData.status || 'open',
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date()
     }).returning();
 
     // Invalidate related caches
@@ -116,7 +116,7 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
       caseId: newCase.id,
       title: newCase.title,
       userId: newCase.userId,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     console.log(`✅ Case created: ${newCase.id}`);
@@ -140,7 +140,7 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
     const [updated] = await db.update(schema.cases);
       .set({
         ...updates,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(schema.cases.id, caseId)
       .returning();
@@ -157,7 +157,7 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
     await cache.publish('case:updated', {
       caseId,
       changes: updates,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     console.log(`✅ Case ${caseId} updated`);
@@ -196,7 +196,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       createdBy: 'system', // TODO: get from context
       tags: evidence.tags ? JSON.stringify(evidence.tags) : null,
       metadata: evidence,
-      createdAt: new Date(),
+      createdAt: new Date()
     }).returning();
 
     // Invalidate case cache
@@ -207,7 +207,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       caseId,
       evidenceId: newEvidence.id,
       evidenceType: evidence.evidenceType,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     console.log(`✅ Evidence added: ${newEvidence.id}`);
@@ -263,14 +263,14 @@ export async function searchCases(query: string, userId: string, filters?: {
       with: {
         evidence: {
           limit: 3,
-          orderBy: desc(schema.evidence.createdAt),
+          orderBy: desc(schema.evidence.createdAt)
         }
       }
     });
 
     const searchResult = {
       cases: results as CaseData[],
-      totalCount: results.length,
+      totalCount: results.length
     };
 
     // Cache results using specialized search cache
@@ -315,7 +315,7 @@ export async function getUserCases(userId: string, options: {
       where: and(...conditions),
       limit,
       offset,
-      orderBy: desc(schema.cases.updatedAt),
+      orderBy: desc(schema.cases.updatedAt)
     });
 
     // Get total count
@@ -385,7 +385,7 @@ export async function healthCheck(): Promise<any> {
         timestamp: firstRow?.timestamp || new Date().toISOString(),
         poolTotalCount: pool.totalCount,
         poolIdleCount: pool.idleCount,
-        poolWaitingCount: pool.waitingCount,
+        poolWaitingCount: pool.waitingCount
       }
     };
 
@@ -393,7 +393,7 @@ export async function healthCheck(): Promise<any> {
     return {
       status: 'unhealthy',
       details: {
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       }
     };
   }

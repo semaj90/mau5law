@@ -21,7 +21,7 @@ export interface FormAuditResult {
     score: number; // 0-100
     level: 'poor' | 'basic' | 'good' | 'excellent';
     issues: FormIssue[];
-    recommendations: string[];,
+    recommendations: string[];
   };
 }
 
@@ -60,7 +60,7 @@ export interface ProgressiveEnhancementConfig {
   confirmBeforeLeaving: boolean;
   highlightRequiredFields: boolean;
   showCharacterCounts: boolean;
-  enableKeyboardShortcuts: boolean;,
+  enableKeyboardShortcuts: boolean;
 }
 
 export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
@@ -85,7 +85,7 @@ export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
   confirmBeforeLeaving: false, // Only for complex forms
   highlightRequiredFields: true,
   showCharacterCounts: false, // For text fields with limits
-  enableKeyboardShortcuts: false // For power users,
+  enableKeyboardShortcuts: false // For power users
 };
 
 // Form audit functions;
@@ -109,7 +109,7 @@ export function auditFormElement(formElement: HTMLFormElement): FormAuditResult 
       score: 0,
       level: 'poor',
       issues: [],
-      recommendations: [],
+      recommendations: []
     }
   };
 
@@ -194,7 +194,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       category: 'functionality',
       message: 'Form lacks action attribute - will not work without JavaScript',
       element: 'form',
-      fix: 'Add action="/api/form-handler" attribute to form element',
+      fix: 'Add action="/api/form-handler" attribute to form element'
     });
   }
   
@@ -206,7 +206,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       category: 'functionality', 
       message: 'Form method not explicitly set - defaults to GET',
       element: 'form',
-      fix: 'Add method="POST" attribute to form element',
+      fix: 'Add method="POST" attribute to form element'
     });
   }
   
@@ -217,7 +217,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'ux',
       message: 'Form does not use SvelteKit enhance - missing progressive enhancement',
-      fix: 'Add use:enhance action to form element',
+      fix: 'Add use:enhance action to form element'
     });
   }
 
@@ -234,7 +234,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'critical',
       category: 'accessibility',
       message: 'Form inputs missing proper labels',
-      fix: 'Ensure all inputs have associated <label> elements or aria-label attributes',
+      fix: 'Ensure all inputs have associated <label> elements or aria-label attributes'
     });
   }
   
@@ -245,7 +245,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'accessibility',
       message: 'Form lacks accessibility features like live regions or fieldsets',
-      fix: 'Add aria-live regions for error announcements and fieldsets for grouping',
+      fix: 'Add aria-live regions for error announcements and fieldsets for grouping'
     });
   }
 
@@ -257,7 +257,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'ux',
       message: 'No error handling elements detected',
-      fix: 'Add error message elements with role="alert" or aria-live="polite"',
+      fix: 'Add error message elements with role="alert" or aria-live="polite"'
     });
   }
   
@@ -268,7 +268,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'info',
       category: 'ux',
       message: 'No loading state indicators found',
-      fix: 'Add loading spinners and disable form during submission',
+      fix: 'Add loading spinners and disable form during submission'
     });
   }
 
@@ -283,7 +283,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
     score,
     level,
     issues,
-    recommendations: [],
+    recommendations: []
   };
 }
 
@@ -423,7 +423,7 @@ export function createProgressiveForm(config: Partial<ProgressiveEnhancementConf
         touched: Record<string, any> as Record<string, boolean>,
         isSubmitting: false,
         hasSubmitted: false,
-        isDirty: false,
+        isDirty: false
       };
     }
   };

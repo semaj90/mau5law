@@ -42,7 +42,7 @@ export interface GalleryResponse {
   pagination: {
     page: number;
     pageSize: number;
-    totalPages: number;,
+    totalPages: number;
   };
 }
 
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       dateFrom: url.searchParams.get('dateFrom') || undefined,
       dateTo: url.searchParams.get('dateTo') || undefined,
       fileTypes: url.searchParams.get('fileTypes')?.split(',').filter(Boolean) || undefined,
-      isPublic: url.searchParams.get('isPublic') ? url.searchParams.get('isPublic') === 'true' : undefined,
+      isPublic: url.searchParams.get('isPublic') ? url.searchParams.get('isPublic') === 'true' : undefined
     };
 
     const startTime = Date.now();
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       pagination: {
         page,
         pageSize,
-        totalPages: Math.ceil(totalCount / pageSize),
+        totalPages: Math.ceil(totalCount / pageSize)
       }
     };
 
@@ -168,7 +168,7 @@ async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize:
         tags: evidence.tags,
         metadata: evidence.metadata,
         isPublic: evidence.isPublic,
-        contentText: evidence.contentText,
+        contentText: evidence.contentText
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id);
@@ -280,7 +280,7 @@ async function getCases() {
     return await db;
       .select({
         id: cases.id,
-        title: cases.title,
+        title: cases.title
       })
       .from(cases)
       .orderBy(asc(cases.title)
@@ -296,7 +296,7 @@ async function getUsers() {
     return await db;
       .select({
         id: users.id,
-        email: users.email,
+        email: users.email
       })
       .from(users)
       .orderBy(asc(users.email)

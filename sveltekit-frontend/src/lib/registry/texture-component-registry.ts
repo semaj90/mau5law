@@ -12,7 +12,7 @@ export interface TextureSlot {
   memoryBank: MemoryBank;
   size: number; // bytes
   lastAccessed: number;
-  lockCount: number; // Reference counting,
+  lockCount: number; // Reference counting
 }
 
 export interface ComponentManifest {
@@ -32,7 +32,7 @@ export interface ComponentRegistration {
   textureSlots: Map<string, TextureSlot>;
   isActive: boolean;
   registrationTime: number;
-  lastActivity: number;,
+  lastActivity: number;
 }
 
 export interface MemoryBankStats {
@@ -43,7 +43,7 @@ export interface MemoryBankStats {
   componentCount: number;
   textureCount: number;
   fragmentationRatio: number;
-  hitRate: number;,
+  hitRate: number;
 }
 
 export interface RegistryStats {
@@ -53,7 +53,7 @@ export interface RegistryStats {
   memoryBanks: Record<MemoryBank, MemoryBankStats>;
   conflicts: number;
   evictions: number;
-  lastDefrag: number;,
+  lastDefrag: number;
 }
 
 /**
@@ -115,7 +115,7 @@ class ComponentTextureRegistry {
       textureSlots: new Map(),
       isActive: true,
       registrationTime: Date.now(),
-      lastActivity: Date.now(),
+      lastActivity: Date.now()
     };
     
     // Reserve texture slots;
@@ -126,7 +126,7 @@ class ComponentTextureRegistry {
         memoryBank: manifest.memoryBank,
         size: 0,
         lastAccessed: Date.now(),
-        lockCount: 0,
+        lockCount: 0
       };
       
       registration.textureSlots.set(slotId, textureSlot);
@@ -343,7 +343,7 @@ class ComponentTextureRegistry {
         textureCount: Array.from(this.textureSlots.values()
           .filter(item => item.length),
         fragmentationRatio: 0, // Would calculate actual fragmentation
-        hitRate: 0.9 // Placeholder for hit rate calculation,
+        hitRate: 0.9 // Placeholder for hit rate calculation
       };
     });
     
@@ -355,7 +355,7 @@ class ComponentTextureRegistry {
       memoryBanks,
       conflicts: this.conflictLog.length,
       evictions: this.evictionCount,
-      lastDefrag: this.lastDefragTime,
+      lastDefrag: this.lastDefragTime
     };
   }
   

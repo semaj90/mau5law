@@ -4,7 +4,7 @@
 import type {
   AITask as ProperAITask,
   AIResponse as ProperAIResponse,
-  WorkerStatus as ProperWorkerStatus,
+  WorkerStatus as ProperWorkerStatus
 } from '$lib/types/svelte5-patterns';
 
 // AI/LLM Types - Using proper definitions;
@@ -17,7 +17,7 @@ declare global {
     taskId: string;
     type: 'status' | 'result' | 'error';
     data: unknown;
-    timestamp: Date;,
+    timestamp: Date;
   };
   type EnhancedRAGEngine = {
     query: (input: string, options?: { limit?: number; threshold?: number }) => Promise<AIResponse>;
@@ -26,7 +26,7 @@ declare global {
   };
   type ErrorProcessingPipeline = {
     processErrors: (errors: Error[]) => Promise<Array<any>;
-    analyzeError: (error: Error) => Promise<any>;,
+    analyzeError: (error: Error) => Promise<any>;
   };
 
   // API Request/Response Types - Using proper definitions;
@@ -38,7 +38,7 @@ declare global {
     EvidenceCreateRequest as ProperEvidenceCreateRequest,
     EvidenceSearchRequest as ProperEvidenceSearchRequest,
     BulkOperationResponse as ProperBulkOperationResponse,
-    FormSubmissionResult as ProperFormSubmissionResult,
+    FormSubmissionResult as ProperFormSubmissionResult
   } from '$lib/types/svelte5-patterns';
 
   declare global {
@@ -55,7 +55,7 @@ declare global {
     };
     type CommandSearchResponse = {
       results: Array<any>;
-      total: number;,
+      total: number;
     };
     type BulkOperationResponse = ProperBulkOperationResponse;
     type FormSubmissionResult<T = any> = ProperFormSubmissionResult<T>;
@@ -66,7 +66,7 @@ declare global {
     CaseState,
     EvidenceState,
     VectorSearchResult as ProperVectorSearchResult,
-    VectorSearchOptions as ProperVectorSearchOptions,
+    VectorSearchOptions as ProperVectorSearchOptions
   } from '$lib/types/svelte5-patterns';
 
   declare module '$lib/types/database' {
@@ -102,7 +102,7 @@ declare global {
       entityType: 'case' | 'evidence' | 'document';
       tag: string;
       confidence: number;
-      createdAt: Date;,
+      createdAt: Date;
     };
     export type Case = CaseState;
     export type Evidence = EvidenceState;
@@ -153,14 +153,14 @@ declare global {
       topK: number;
       repeatPenalty: number;
       stopTokens: string[];
-      priority: any;,
+      priority: any;
     };
   }
 
   // Row/Database result types;
   declare global {
     interface RowList<T> {
-      rows: T;,
+      rows: T;
     }
   }
 

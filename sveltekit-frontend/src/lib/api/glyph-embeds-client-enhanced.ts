@@ -11,7 +11,7 @@ export interface SIMDGlyphConfig {
   compression_target: number;
   shader_format: 'webgl' | 'webgpu' | 'css' | 'svg';
   adaptive_quality: boolean;
-  performance_tier: 'nes' | 'snes' | 'n64';,
+  performance_tier: 'nes' | 'snes' | 'n64';
 }
 
 export interface GlyphEmbedRequest {
@@ -24,7 +24,7 @@ export interface GlyphEmbedRequest {
   neural_sprite_config?: {
     enable_compression: boolean;
     target_ratio: number;
-    predictive_frames: number;,
+    predictive_frames: number;
   };
   simd_config?: Partial<SIMDGlyphConfig>;
   // RAG enhancement fields;
@@ -33,7 +33,7 @@ export interface GlyphEmbedRequest {
     chunk_size: number;
     overlap_size: number;
     enable_summarization: boolean;
-    enable_vector_store: boolean;,
+    enable_vector_store: boolean;
   };
   article_urls?: string[];
   content_sources?: Array<any>;
@@ -48,7 +48,7 @@ export interface SIMDShaderData {
     tiling_time_ms: number;
     compression_time_ms: number;
     shader_generation_time_ms: number;
-    total_optimization_time_ms: number;,
+    total_optimization_time_ms: number;
   };
 }
 
@@ -82,7 +82,7 @@ export interface GlyphEmbedResponse {
     compression_ratio: number;
     shader_format?: string;
     performance_tier?: string;
-    generated_at: string;,
+    generated_at: string;
   };
 }
 
@@ -98,7 +98,7 @@ export interface GlyphHealthStatus {
     tensor_caching: boolean;
     png_embedding: boolean;
     neural_sprite_integration: boolean;
-    portable_artifacts: boolean;,
+    portable_artifacts: boolean;
   };
   supported_formats: string[];
   performance_tiers: string[];
@@ -106,7 +106,7 @@ export interface GlyphHealthStatus {
   integration_status: {
     glyph_diffusion_service: string;
     simd_gpu_tiling_engine: string;
-    png_embed_extractor: string;,
+    png_embed_extractor: string;
   };
 }
 
@@ -128,7 +128,7 @@ export class EnhancedGlyphEmbedsClient {
       const response = await fetch(`${this.baseUrl}/api/glyph/simd-embeds`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           evidence_id: request.evidence_id,
@@ -149,7 +149,7 @@ export class EnhancedGlyphEmbedsClient {
           },
           rag_config: request.rag_config,
           article_urls: request.article_urls,
-          content_sources: request.content_sources,
+          content_sources: request.content_sources
         })
       });
 
@@ -173,7 +173,7 @@ export class EnhancedGlyphEmbedsClient {
       console.error('SIMD glyph generation failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Unknown error occurred',
+        error: error instanceof Error ? error.message: 'Unknown error occurred'
       };
     }
   }
@@ -184,7 +184,7 @@ export class EnhancedGlyphEmbedsClient {
   async getHealthStatus(): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/api/glyph/simd-embeds`, {
-        method: 'GET',
+        method: 'GET'
       });
 
       if (!(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).ok) {
@@ -197,7 +197,7 @@ export class EnhancedGlyphEmbedsClient {
       console.error('Health check failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Health check failed',
+        error: error instanceof Error ? error.message: 'Health check failed'
       };
     }
   }
@@ -212,7 +212,7 @@ export class EnhancedGlyphEmbedsClient {
     const requests = variations.map(variation => ({
       ...baseRequest,
       ...variation
-    ,});
+    });
 
     const results = await Promise.allSettled(
       requests.map(request => this.generateGlyph(request)
@@ -284,7 +284,7 @@ export class EnhancedGlyphEmbedsClient {
                 body: JSON.stringify({
                   content: chunk,
                   max_tokens: 150,
-                  legal_context: true,
+                  legal_context: true
                 })
               });
               
@@ -304,7 +304,7 @@ export class EnhancedGlyphEmbedsClient {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 text: summary || chunk,
-                model: 'embeddinggemma:latest',
+                model: 'embeddinggemma:latest'
               })
             });
             
@@ -332,7 +332,7 @@ export class EnhancedGlyphEmbedsClient {
                     source_url: article.url,
                     chunk_index: i,
                     processed_at: new Date().toISOString(),
-                    content_type: 'article_chunk',
+                    content_type: 'article_chunk'
                   }
                 })
               });
@@ -349,7 +349,7 @@ export class EnhancedGlyphEmbedsClient {
             metadata: {
               ...article.metadata,
               source_url: article.url,
-              chunk_index: i,
+              chunk_index: i
             }
           });
         }
@@ -357,14 +357,14 @@ export class EnhancedGlyphEmbedsClient {
 
       return {
         success: true,
-        chunks: processedChunks,
+        chunks: processedChunks
       };
 
     } catch (error) {
       console.error('RAG processing failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'RAG processing failed',
+        error: error instanceof Error ? error.message: 'RAG processing failed'
       };
     }
   }
@@ -398,7 +398,7 @@ export class EnhancedGlyphEmbedsClient {
           synthesis_config: {
             enable_neural_blending: true,
             preserve_legal_semantics: true,
-            target_format: 'webgpu',
+            target_format: 'webgpu'
           }
         })
       });
@@ -420,7 +420,7 @@ export class EnhancedGlyphEmbedsClient {
               original_prompt: prompt,
               base_glyphs: baseGlyphIds,
               max_suggestions: max_suggestions,
-              context_type: 'legal_synthesis',
+              context_type: 'legal_synthesis'
             })
           });
           
@@ -446,7 +446,7 @@ export class EnhancedGlyphEmbedsClient {
                 base_glyphs: baseGlyphIds,
                 prompt: prompt,
                 suggestions: didYouMeanSuggestions,
-                cached_at: new Date().toISOString(),
+                cached_at: new Date().toISOString()
               }
             })
           });
@@ -458,14 +458,14 @@ export class EnhancedGlyphEmbedsClient {
       return {
         success: true,
         synthesized_glyph: synthesisResult.synthesized_glyph,
-        did_you_mean_suggestions: didYouMeanSuggestions,
+        did_you_mean_suggestions: didYouMeanSuggestions
       };
 
     } catch (error) {
       console.error('Glyph synthesis failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Synthesis failed',
+        error: error instanceof Error ? error.message: 'Synthesis failed'
       };
     }
   }
@@ -494,7 +494,7 @@ export class EnhancedGlyphEmbedsClient {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: query,
-          model: 'embeddinggemma:latest',
+          model: 'embeddinggemma:latest'
         })
       });
 
@@ -526,14 +526,14 @@ export class EnhancedGlyphEmbedsClient {
 
       return {
         success: true,
-        matches: searchResults.matches || [],
+        matches: searchResults.matches || []
       };
 
     } catch (error) {
       console.error('Semantic glyph search failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Search failed',
+        error: error instanceof Error ? error.message: 'Search failed'
       };
     }
   }
@@ -556,14 +556,14 @@ export class EnhancedGlyphEmbedsClient {
       if (shaderData.shader_code.includes('@compute') && targetFormat === 'webgpu') {
         return {
           success: true,
-          shaderCode: shaderData.shader_code,
+          shaderCode: shaderData.shader_code
         };
       }
 
       if (shaderData.shader_code.includes('precision mediump') && targetFormat === 'webgl') {
         return {
           success: true,
-          shaderCode: shaderData.shader_code,
+          shaderCode: shaderData.shader_code
         };
       }
 
@@ -571,13 +571,13 @@ export class EnhancedGlyphEmbedsClient {
       console.warn(`Shader format mismatch. Generated for different target. Using as-is.`);
       return {
         success: true,
-        shaderCode: shaderData.shader_code,
+        shaderCode: shaderData.shader_code
       };
 
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Shader creation failed',
+        error: error instanceof Error ? error.message: 'Shader creation failed'
       };
     }
   }
@@ -606,7 +606,7 @@ export class EnhancedGlyphEmbedsClient {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Download failed',
+        error: error instanceof Error ? error.message: 'Download failed'
       };
     }
   }
@@ -641,7 +641,7 @@ export const GLYPH_PRESETS = {
     simd_config: {
       performance_tier: 'n64' as const,
       shader_format: 'webgpu' as const,
-      compression_target: 50,
+      compression_target: 50
     }
   },
   legal: {
@@ -649,7 +649,7 @@ export const GLYPH_PRESETS = {
     simd_config: {
       performance_tier: 'snes' as const,
       shader_format: 'webgl' as const,
-      compression_target: 25,
+      compression_target: 25
     }
   },
   retro: {
@@ -657,7 +657,7 @@ export const GLYPH_PRESETS = {
     simd_config: {
       performance_tier: 'nes' as const,
       shader_format: 'css' as const,
-      compression_target: 100,
+      compression_target: 100
     }
   },
   modern: {
@@ -665,7 +665,7 @@ export const GLYPH_PRESETS = {
     simd_config: {
       performance_tier: 'n64' as const,
       shader_format: 'webgpu' as const,
-      compression_target: 10,
+      compression_target: 10
     }
   }
 } as const;
@@ -677,7 +677,7 @@ export const RAG_PRESETS = {
       chunk_size: 512,
       overlap_size: 50,
       enable_summarization: true,
-      enable_vector_store: true,
+      enable_vector_store: true
     }
   },
   case_law: {
@@ -686,7 +686,7 @@ export const RAG_PRESETS = {
       chunk_size: 1024,
       overlap_size: 100,
       enable_summarization: true,
-      enable_vector_store: true,
+      enable_vector_store: true
     }
   },
   contracts: {
@@ -695,7 +695,7 @@ export const RAG_PRESETS = {
       chunk_size: 256,
       overlap_size: 25,
       enable_summarization: true,
-      enable_vector_store: true,
+      enable_vector_store: true
     }
   }
 } as const;

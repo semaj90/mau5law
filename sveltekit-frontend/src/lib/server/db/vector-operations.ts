@@ -11,7 +11,7 @@ interface GRPMOConfig {
   coldCacheThreshold: number; // <5s
   reinforcementLearningRate: number;
   predictiveWindowMs: number;
-  glyphCompressionRatio: number;,
+  glyphCompressionRatio: number;
 }
 
 // Extended thinking stages;
@@ -29,7 +29,7 @@ interface PPOState {
   actionHistory: string[];
   rewardSignal: number;
   policyGradient: number[];
-  valueFunction: number;,
+  valueFunction: number;
 }
 
 const defaultGRPMOConfig: GRPMOConfig = {
@@ -38,7 +38,7 @@ const defaultGRPMOConfig: GRPMOConfig = {
   coldCacheThreshold: 5000,
   reinforcementLearningRate: 0.01,
   predictiveWindowMs: 30000,
-  glyphCompressionRatio: 50,
+  glyphCompressionRatio: 50
 };
 
 // Enhanced interface for GRPMO vector similarity search results
@@ -97,7 +97,7 @@ export async function searchSimilarDocuments(
       similarity: parseFloat(row.similarity),
       metadata: {
         keywords: row.keywords,
-        topics: row.topics,
+        topics: row.topics
       }
     });
   } catch (error) {
@@ -117,7 +117,7 @@ async function fallbackTextSearch(queryEmbedding: number[], limit: number): Prom
       title: legalDocuments.title,
       content: legalDocuments.content,
       keywords: legalDocuments.keywords,
-      topics: legalDocuments.topics,
+      topics: legalDocuments.topics
     })
     .from(legalDocuments)
     .limit(limit);
@@ -129,7 +129,7 @@ async function fallbackTextSearch(queryEmbedding: number[], limit: number): Prom
     similarity: 1 - (index * 0.1), // Fake similarity scores;
     metadata: {
       keywords: doc.keywords,
-      topics: doc.topics,
+      topics: doc.topics
     }
   });
 }
@@ -151,7 +151,7 @@ export async function storeAiQueryWithEmbedding(
       response,
       embedding: arrayToPgVector(embedding),
       metadata,
-      isSuccessful: true,
+      isSuccessful: true
     });
   } catch (error) {
     console.error('Failed to store AI query with embedding:', error);
@@ -162,7 +162,7 @@ export async function storeAiQueryWithEmbedding(
       query,
       response,
       metadata,
-      isSuccessful: true,
+      isSuccessful: true
     });
   }
 }
@@ -177,7 +177,7 @@ export async function cacheEmbedding(
     await db.insert(embeddingCache).values({
       textHash,
       embedding: arrayToPgVector(embedding),
-      model,
+      model
     });
   } catch (error) {
     console.error('Failed to cache embedding:', error);
@@ -240,14 +240,14 @@ export async function hybridSearch(
       metadata: {
         keywords: row.keywords,
         topics: row.topics,
-        searchType: 'text',
+        searchType: 'text'
       }
     });
 
     // Combine and deduplicate results
     const combinedResults = [...vectorResults, ...textSearchResults];
     const uniqueResults = Array.from(
-      new Map(combinedResults.map(item => [(item as { id?: any; similarity?: any; metadata?: any ,}).id, item])).values()
+      new Map(combinedResults.map(item => [(item as { id?: any; similarity?: any; metadata?: any }).id, item])).values()
     );
 
     // Sort by similarity and return top results
@@ -338,7 +338,7 @@ export class GRPMOOrchestrator {
         duration: Date.now() - startTime,
         cacheLayer: 'hot',
         confidence: 0.95,
-        glyphData: this.compressToGlyph(hotResult.data),
+        glyphData: this.compressToGlyph(hotResult.data)
       });
       return { result: hotResult.data, thinkingStages: stages, cachePerformance };
     }
@@ -354,7 +354,7 @@ export class GRPMOOrchestrator {
         duration: Date.now() - startTime,
         cacheLayer: 'warm',
         confidence: 0.80,
-        glyphData: this.compressToGlyph(warmResult.data),
+        glyphData: this.compressToGlyph(warmResult.data)
       });
       
       // Predictive enhancement
@@ -368,7 +368,7 @@ export class GRPMOOrchestrator {
       name: 'Deep Vector Analysis',
       duration: Date.now() - startTime,
       cacheLayer: 'cold',
-      confidence: 0.60,
+      confidence: 0.60
     });
 
     const fullResults = await this.performDeepVectorSearch(query, queryEmbedding, userId, caseId);
@@ -450,7 +450,7 @@ export class GRPMOOrchestrator {
     return (data as { map?: any }).map(item => ({
       ...item,
       predictiveScore: this.calculatePredictiveScore(item, queryEmbedding),
-      cacheLayer: 'warm',
+      cacheLayer: 'warm'
     });
   }
 
@@ -465,7 +465,7 @@ export class GRPMOOrchestrator {
       ...item,
       cacheLayer: 'cold',
       responseTime: Date.now(),
-      extendedThinkingStages: [],
+      extendedThinkingStages: []
     });
   }
 }
@@ -493,7 +493,7 @@ class PPOAgent {
         actionHistory: [stateKey],
         rewardSignal: (item as { id?: any; similarity?: any; metadata?: any }).similarity,
         policyGradient: currentPolicy,
-        valueFunction: this.valueNetwork.get(stateKey) || 0.5,
+        valueFunction: this.valueNetwork.get(stateKey) || 0.5
       }
     });
   }

@@ -74,8 +74,8 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: {
           uploadedAt: new Date().toISOString(),
           originalName: file.name,
-          size: buffer.length,
-        },
+          size: buffer.length
+        }
       };
 
       sharedWorkerPool.push(job);
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         jobId,
         queued: true,
-        warnings: warnings.length > 0 ? warnings : undefined,
+        warnings: warnings.length > 0 ? warnings : undefined
       });
     } else {
       // Handle JSON request with MinIO URL
@@ -103,8 +103,8 @@ export const POST: RequestHandler = async ({ request }) => {
         userId,
         metadata: {
           requestedAt: new Date().toISOString(),
-          ...requestData.metadata,
-        },
+          ...requestData.metadata
+        }
       };
 
       sharedWorkerPool.push(job);
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         jobId,
         queued: true,
-        warnings: warnings.length > 0 ? warnings : undefined,
+        warnings: warnings.length > 0 ? warnings : undefined
       });
     }
   } catch (err) {
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json();
       {
         success: false,
-        error: err instanceof Error ? err.message: String(err),
+        error: err instanceof Error ? err.message: String(err)
       },
       { status: 500 }
     );
@@ -141,7 +141,7 @@ export const GET: RequestHandler = async ({ url }) => {
         content: userDocuments.content,
         contentType: userDocuments.contentType,
         createdAt: userDocuments.createdAt,
-        metadata: userDocuments.metadata,
+        metadata: userDocuments.metadata
       })
       .from(userDocuments)
       .where(eq(userDocuments.userId, userId)
@@ -155,13 +155,13 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       recentDocuments,
       workerStats,
-      embeddingHealth: await checkEmbeddingEndpointHealth(),
+      embeddingHealth: await checkEmbeddingEndpointHealth()
     });
   } catch (err) {
     return json();
       {
         success: false,
-        error: err instanceof Error ? err.message: String(err),
+        error: err instanceof Error ? err.message: String(err)
       },
       { status: 500 }
     );

@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({ 
       success: false, 
       error: error?.message || 'Unknown error',
-      test: testType ,
+      test: testType 
     }, { status: 500 });
   }
 };
@@ -55,7 +55,7 @@ async function testBasicCaching() {
   await parallelCacheOrchestrator.storeParallel(testKey, testData, {
     tier: 'all',
     ttl: 60000, // 1 minute
-    priority: 'normal',
+    priority: 'normal'
   });
 
   // Retrieve from cache;
@@ -63,7 +63,7 @@ async function testBasicCaching() {
     id: 'basic-test',
     type: 'hybrid',
     priority: 'normal',
-    keys: [testKey],
+    keys: [testKey]
   });
 
   return json({
@@ -85,7 +85,7 @@ async function testParallelCaching() {
       id: i, 
       name: `Test Item ${i}`,
       legal_data: `Legal document content for item ${i}`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }
   });
 
@@ -93,7 +93,7 @@ async function testParallelCaching() {
   await Promise.all(testData.map(({ key, data }) =>;
     parallelCacheOrchestrator.storeParallel(key, data, {
       tier: 'all',
-      priority: 'high',
+      priority: 'high'
     })
   );
 
@@ -115,7 +115,7 @@ async function testParallelCaching() {
       id: `seq-${key}`,
       type: 'hybrid',
       priority: 'normal',
-      keys: [key],
+      keys: [key]
     });
     sequentialResults.push(seqResult);
   }
@@ -148,12 +148,12 @@ async function testRAGCaching() {
       {
         case: "State v. Johnson (2023)",
         relevance: 0.89,
-        summary: "Fourth Amendment search and seizure violation",
+        summary: "Fourth Amendment search and seizure violation"
       },
       {
         case: "People v. Davis (2022)", 
         relevance: 0.76,
-        summary: "Unreasonable search of vehicle",
+        summary: "Unreasonable search of vehicle"
       }
     ],
     ragContext: [
@@ -170,7 +170,7 @@ async function testRAGCaching() {
     {
       ttl: 300000, // 5 minutes
       ragContext: ragData.ragContext,
-      userId: 'rag-test-user',
+      userId: 'rag-test-user'
     }
   );
 
@@ -187,7 +187,7 @@ async function testRAGCaching() {
     cached: cached !== null,
     ragContextPresent: cached?.data?.ragContext ? true : false,
     embeddingsDimension: cached?.data?.embeddings?.length || 0,
-    precedentsFound: cached?.data?.results?.length || 0,
+    precedentsFound: cached?.data?.results?.length || 0
   });
 }
 
@@ -212,7 +212,7 @@ async function testQuantizedCaching() {
       userId: 'quantize-test',
       timestamp: new Date().toISOString(),
       processingTime: 234.56,
-      aiModel: 'gemma-3-legal',
+      aiModel: 'gemma-3-legal'
     }
   };
 
@@ -225,7 +225,7 @@ async function testQuantizedCaching() {
     largeResponse,);
     {
       quantize: true,
-      userId: 'quantize-test',
+      userId: 'quantize-test'
     }
   );
 
@@ -246,7 +246,7 @@ async function testQuantizedCaching() {
     quantizedSize: quantizedSize,
     compressionRatio: `${compressionRatio.toFixed(2)}x smaller`,
     compressionPercent: `${((1 - quantizedSize / originalSize) * 100).toFixed(1)}% reduction`,
-    dataIntact: quantized?.data?.cases?.length === 100,
+    dataIntact: quantized?.data?.cases?.length === 100
   });
 }
 
@@ -263,7 +263,7 @@ async function getCacheStats() {
     parallel: {
       metrics: parallelStats.currentMetrics,
       cacheStats: parallelStats.cacheStats,
-      systemResources: parallelStats.systemResources,
+      systemResources: parallelStats.systemResources
     }
   });
 }
@@ -288,7 +288,7 @@ async function testLegalAPIIntegration(userId: string) {
         params,
         userId,
         ragContext: endpoint.includes('recommendations'),
-        quantize: true,
+        quantize: true
       });
 
       const responseTime = performance.now() - startTime;
@@ -299,14 +299,14 @@ async function testLegalAPIIntegration(userId: string) {
         responseTime: Math.round(responseTime),
         cached: response?.meta?.cached || false,
         cacheLayer: response?.meta?.cacheLayer,
-        dataPresent: !!response?.data,
+        dataPresent: !!response?.data
       });
 
     } catch (error: any) {
       results.push({
         endpoint,
         success: false,
-        error: error?.message || 'Unknown error',
+        error: error?.message || 'Unknown error'
       });
     }
   }
@@ -338,12 +338,12 @@ export const DELETE: RequestHandler = async () => {
     
     return json({
       success: true,
-      message: 'All caches cleared successfully',
+      message: 'All caches cleared successfully'
     });
   } catch (error: any) {
     return json({
       success: false,
-      error: error?.message || 'Unknown error',
+      error: error?.message || 'Unknown error'
     }, { status: 500 });
   }
 };

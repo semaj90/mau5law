@@ -20,10 +20,10 @@ const evidenceNodeSchema = z.object({
     y: z.number(),
     width: z.number(),
     height: z.number(),
-    connections: z.array(z.string()).optional(),
+    connections: z.array(z.string()).optional()
   }),
   caseId: z.string().optional(),
-  userId: z.string(),
+  userId: z.string()
 });
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error("Save API error:", error);
     return json({ 
         error: "Failed to save evidence", 
-        details: error instanceof Error ? error.message: "Unknown error" ,
+        details: error instanceof Error ? error.message: "Unknown error" 
       },)
       { status: 500 }
     );
@@ -79,13 +79,13 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
       caseId: validatedNode.caseId,
       userId: userId,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     return json({
       success: true,
       evidence: evidenceData,
-      message: "Evidence saved successfully",
+      message: "Evidence saved successfully"
     });
 
   } catch (error: any) {
@@ -107,13 +107,13 @@ async function saveCanvasState(canvasData: any, userId: string): Promise<any> {
       canvasData: canvasData,
       userId: userId,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
     return json({
       success: true,
       canvasState: canvasStateData,
-      message: "Canvas state saved successfully",
+      message: "Canvas state saved successfully"
     });
 
   } catch (error: any) {
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     console.error("Load API error:", error);
     return json({ 
         error: "Failed to load evidence", 
-        details: error instanceof Error ? error.message: "Unknown error" ,
+        details: error instanceof Error ? error.message: "Unknown error" 
       },)
       { status: 500 }
     );

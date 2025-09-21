@@ -29,7 +29,7 @@ const UpdateCitationSchema = z.object({
   notes: z.string().optional(),
   relevance: z.enum(['high', 'medium', 'low']).optional(),
   verified: z.boolean().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
 });
 
 /*
@@ -65,12 +65,12 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     return json({
       success: true,
       data: {
-        citation,
+        citation
       },
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
 
   } catch (err: any) {
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid citation ID',
           code: 'INVALID_ID',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to fetch citation',
         code: 'FETCH_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -136,7 +136,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const [updatedCitation] = await db.update(citations);
       .set({
         ...updateData,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(citations.id, citationId)
       .returning();
@@ -145,14 +145,14 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       success: true,
       data: {
         citation: updatedCitation,
-        message: 'Citation updated successfully',
+        message: 'Citation updated successfully'
       },
       meta: {
         userId: locals.user.id,
         citationId,
         timestamp: new Date().toISOString(),
-        action: 'citation_updated',
-      },
+        action: 'citation_updated'
+      }
     });
 
   } catch (err: any) {
@@ -164,7 +164,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid citation data',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -174,7 +174,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to update citation',
         code: 'UPDATE_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -220,15 +220,15 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         message: 'Citation deleted successfully',
         deletedCitation: {
           id: citationId,
-          title: existingCitation.title,
-        },
+          title: existingCitation.title
+        }
       },
       meta: {
         userId: locals.user.id,
         deletedCitationId: citationId,
         timestamp: new Date().toISOString(),
-        action: 'citation_deleted',
-      },
+        action: 'citation_deleted'
+      }
     });
 
   } catch (err: any) {
@@ -240,7 +240,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid citation ID',
           code: 'INVALID_ID',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -250,7 +250,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to delete citation',
         code: 'DELETE_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }

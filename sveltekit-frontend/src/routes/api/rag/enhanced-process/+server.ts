@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
           chunks: chunkForVectorSearch(documentContent),
           dimensions: 384, // Using 384-dimensional embeddings
           similarity_threshold: 0.75,
-          max_results: 20,
+          max_results: 20
         },
         
         // Legal context enhancement;
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
           documentType: semanticAnalysis.documentType || 'general',
           practiceArea: inferPracticeArea(documentContent),
           complexity: calculateComplexity(documentContent),
-          precedentRelevance: assessPrecedentRelevance(documentContent),
+          precedentRelevance: assessPrecedentRelevance(documentContent)
         },
         
         // Performance metrics;
@@ -78,7 +78,7 @@ function extractDocumentContent(simdData: any): unknown {
     fullText: simdData.document?.content?.fullText || '',
     sections: simdData.document?.structure?.sections || [],
     concepts: simdData.document?.legalAnalysis?.concepts || [],
-    citations: simdData.document?.legalAnalysis?.citations || [],
+    citations: simdData.document?.legalAnalysis?.citations || []
   };
 }
 
@@ -102,7 +102,7 @@ async function generateVectorEmbeddings(content: any): Promise<any> {
     embeddings: embeddings,
     total_chunks: chunks.length,
     average_chunk_size: chunks.reduce((sum, chunk) => sum + chunk.length, 0) / chunks.length,
-    generationTime: Date.now() - startTime,
+    generationTime: Date.now() - startTime
   };
 }
 
@@ -124,7 +124,7 @@ async function performSemanticAnalysis(content: any): Promise<any> {
     // Quality metrics
     coherenceScore: calculateCoherenceScore(content.fullText),
     completenessScore: calculateCompletenessScore(content),
-    processingTime: Date.now() - startTime,
+    processingTime: Date.now() - startTime
   };
 
   return analysis;
@@ -143,7 +143,7 @@ async function generateRAGRecommendations(content: any, analysis: any): Promise<
     relevance: Math.floor(Math.random() * 30) + 70, // 70-100%
     confidence: Math.floor(Math.random() * 20) + 80, // 80-100%
     items: generateSimilarCases(analysis.keyTopics),
-    actionRequired: false,
+    actionRequired: false
   });
   
   // Legal precedent recommendations;
@@ -155,7 +155,7 @@ async function generateRAGRecommendations(content: any, analysis: any): Promise<
       relevance: Math.floor(Math.random() * 20) + 75, // 75-95%
       confidence: Math.floor(Math.random() * 15) + 85, // 85-100%
       items: analyzePrecedents(content.citations),
-      actionRequired: true,
+      actionRequired: true
     });
   }
   
@@ -168,7 +168,7 @@ async function generateRAGRecommendations(content: any, analysis: any): Promise<
       relevance: 100 - analysis.completenessScore,
       confidence: 90,
       items: generateCompletenessRecommendations(analysis),
-      actionRequired: true,
+      actionRequired: true
     });
   }
   
@@ -180,7 +180,7 @@ async function generateRAGRecommendations(content: any, analysis: any): Promise<
     relevance: Math.floor(Math.random() * 25) + 65, // 65-90%
     confidence: Math.floor(Math.random() * 20) + 75, // 75-95%
     items: generateResearchSuggestions(analysis.keyTopics, analysis.practiceArea),
-    actionRequired: false,
+    actionRequired: false
   });
 
   return recommendations.sort((a, b) => (b.relevance * b.confidence) - (a.relevance * a.confidence);
@@ -192,14 +192,14 @@ function createEnhancedMetadata(simdData: any, analysis: any): unknown {
       simd_processing_time: simdData.processingTime || 0,
       semantic_analysis_time: analysis.processingTime || 0,
       total_chunks: simdData.document?.vectorization?.chunks?.length || 0,
-      vector_dimensions: 384,
+      vector_dimensions: 384
     },
     
     quality: {
       ocr_confidence: simdData.document?.metadata?.averageConfidence || 0,
       semantic_coherence: analysis.coherenceScore || 0,
       document_completeness: analysis.completenessScore || 0,
-      legal_specificity: calculateLegalSpecificity(simdData.document?.legalAnalysis?.concepts || []),
+      legal_specificity: calculateLegalSpecificity(simdData.document?.legalAnalysis?.concepts || [])
     },
     
     legal: {
@@ -207,7 +207,7 @@ function createEnhancedMetadata(simdData: any, analysis: any): unknown {
       jurisdiction: analysis.jurisdiction || 'unknown',
       practice_area: analysis.practiceArea || 'general',
       complexity_level: calculateComplexity(simdData.document?.content?.fullText || ''),
-      citation_count: simdData.document?.legalAnalysis?.citations?.length || 0,
+      citation_count: simdData.document?.legalAnalysis?.citations?.length || 0
     }
   };
 }
@@ -308,7 +308,7 @@ function analyzeLegalSentiment(text: string): unknown {
     positive: total > 0 ? (positive / total) * 100 : 0,
     negative: total > 0 ? (negative / total) * 100 : 0,
     neutral: total > 0 ? (neutral / total) * 100 : 0,
-    tone: positive > negative ? 'cooperative' : negative > positive ? 'adversarial' : 'neutral',
+    tone: positive > negative ? 'cooperative' : negative > positive ? 'adversarial' : 'neutral'
   };
 }
 
@@ -318,7 +318,7 @@ function recognizeNamedEntities(text: string): unknown {
     organizations: extractOrganizations(text),
     locations: extractLocations(text),
     dates: extractDates(text),
-    amounts: extractMonetaryAmounts(text),
+    amounts: extractMonetaryAmounts(text)
   };
   
   return entities;
@@ -382,8 +382,8 @@ function extractDates(text: string): string[] {
 
 function extractMonetaryAmounts(text: string): string[] {
   const moneyPatterns = [
-    /\$[\d,]+(?:\.\d{2})?/g,
-    /(?:USD|dollars?)\s+[\d,]+(?:\.\d{2})?/gi
+    /\$[\d]+(?:\.\d{2})?/g,
+    /(?:USD|dollars?)\s+[\d]+(?:\.\d{2})?/gi
   ];
   
   const amounts = new Set<string>();
@@ -445,7 +445,7 @@ function generateSimilarCases(topics: string[]): unknown[] {
     case_name: `Sample Case ${index + 1} - ${topic}`,
     citation: `123 F.3d ${456 + index}`,
     similarity: Math.floor(Math.random() * 20) + 80,
-    year: 2020 + index,
+    year: 2020 + index
   });
 }
 
@@ -453,7 +453,7 @@ function analyzePrecedents(citations: string[]): unknown[] {
   return citations.slice(0, 3).map(citation => ({
     citation,
     status: 'good_law',
-    relevance: Math.floor(Math.random() * 30) + 70,
+    relevance: Math.floor(Math.random() * 30) + 70
   });
 }
 

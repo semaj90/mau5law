@@ -57,7 +57,7 @@ const authState = writable<AuthState>({
   twoFactorRequired: false,
   machineState: 'idle',
   loginAttempts: 0,
-  lockoutUntil: undefined,
+  lockoutUntil: undefined
 });
 
 // XState machine actor
@@ -79,7 +79,7 @@ if (browser) {
       error: state.context.error,
       twoFactorRequired: state.context.twoFactorRequired,
       loginAttempts: state.context.loginAttempts,
-      lockoutUntil: state.context.lockoutUntil,
+      lockoutUntil: state.context.lockoutUntil
     });
     
     // Handle side effects;
@@ -143,7 +143,7 @@ async function getDeviceFingerprint(): Promise<string> {
     doNotTrack: navigator.doNotTrack,
     hardwareConcurrency: navigator.hardwareConcurrency,
     deviceMemory: (navigator as any).deviceMemory || 0,
-    connection: (navigator as any).connection?.effectiveType || 'unknown',
+    connection: (navigator as any).connection?.effectiveType || 'unknown'
   };
   
   return btoa(JSON.stringify(fingerprint);
@@ -204,7 +204,7 @@ export const authStore = {
       platform: navigator.platform,
       language: navigator.language,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      fingerprint: await getDeviceFingerprint(),
+      fingerprint: await getDeviceFingerprint()
     };
     
     // GPU-enhanced authentication if enabled;
@@ -218,16 +218,16 @@ export const authStore = {
             email,
             timestamp: new Date().toISOString(),
             userAgent: navigator.userAgent,
-            fingerprint: deviceInfo.fingerprint,
+            fingerprint: deviceInfo.fingerprint
           },
           context: {
             action: 'login_attempt',
-            enhancedSecurity: true,
+            enhancedSecurity: true
           },
           config: {
             useGPU: true,
             model: 'gemma3-legal',
-            protocol: 'quic',
+            protocol: 'quic'
           }
         });
         
@@ -272,7 +272,7 @@ export const authStore = {
       language: navigator.language,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       fingerprint: await getDeviceFingerprint(),
-      securityScore: 100 // Default high score for new registrations,
+      securityScore: 100 // Default high score for new registrations
     };
     
     // GPU-enhanced validation for legal professionals;
@@ -292,17 +292,17 @@ export const authStore = {
             badgeNumber: data.badgeNumber,
             timestamp: new Date().toISOString(),
             userAgent: navigator.userAgent,
-            fingerprint: deviceInfo.fingerprint,
+            fingerprint: deviceInfo.fingerprint
           },
           context: {
             action: 'registration_attempt',
             enhancedValidation: true,
-            legalProfessionalCheck: true,
+            legalProfessionalCheck: true
           },
           config: {
             useGPU: true,
             model: 'gemma3-legal',
-            protocol: 'quic',
+            protocol: 'quic'
           }
         });
         
@@ -338,7 +338,7 @@ export const authStore = {
         session: null,
         isAuthenticated: false,
         error: null,
-        twoFactorRequired: false,
+        twoFactorRequired: false
       });
       if (browser) {
         localStorage.removeItem('legal_ai_session');
@@ -381,7 +381,7 @@ export const authStore = {
     try {
       const response = await fetch('/api/auth/refresh', {
         method: 'POST',
-        credentials: 'include',
+        credentials: 'include'
       });
       
       if (response.ok) {
@@ -389,7 +389,7 @@ export const authStore = {
         if (authActor) {
           authActor.send({
             type: 'SESSION_REFRESHED',
-            data: sessionData,
+            data: sessionData
           });
         }
       } else {

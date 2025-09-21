@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!body || !body.query || body.query.trim().length === 0) {
             return json({ 
                 success: false, 
-                error: 'Query is required' ,
+                error: 'Query is required' 
             }, { status: 400 });
         }
 
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            signal: AbortSignal.timeout(15000) // 15 second timeout,
+            signal: AbortSignal.timeout(15000) // 15 second timeout
         });
 
         if (!searchResponse.ok) {
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
             query: searchData.query,
             results: searchData.results || [],
             count: searchData.count || 0,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
         });
 
     } catch (error: any) {
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async () => {
     try {
         const healthResponse = await fetch(GO_SEARCH_URL.replace('/search', '/health'), {
-            signal: AbortSignal.timeout(5000),
+            signal: AbortSignal.timeout(5000)
         });
         
         const healthData = await healthResponse.json();
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async () => {
             service: 'semantic-search',
             backend_status: healthData.status,
             pgvector_enabled: true,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
         });
         
     } catch (error: any) {
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async () => {
             status: 'error',
             service: 'semantic-search',
             error: error instanceof Error ? error.message: 'Unknown error',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
         }, { status: 503 });
     }
 };

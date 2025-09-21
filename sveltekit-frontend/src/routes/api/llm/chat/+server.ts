@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
       "I understand your query about " + message.substring(0, 20) + "...",
       "Based on the information provided, I recommend reviewing relevant statutes.",
       "This appears to be related to criminal proceedings. Would you like me to suggest relevant case law?",
-      "I can help you analyze this matter. Could you provide more specific details?",
+      "I can help you analyze this matter. Could you provide more specific details?"
     ];
 
     const response = responses[Math.floor(Math.random() * responses.length)];
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       response,
       context: context || {},
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error("LLM chat error:", error);

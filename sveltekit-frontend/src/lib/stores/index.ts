@@ -42,7 +42,7 @@ export {
   applyAIClasses,
   aiCommandService,
   recentCommands,
-  isAIActive,
+  isAIActive
 } from "./ai-unified";
 
 export { aiHistory as aiHistoryStore } from "./aiHistoryStore";
@@ -74,7 +74,7 @@ export {
   evidenceStore,
   evidenceById,
   evidenceByCase,
-  type Evidence,
+  type Evidence
 } from "./evidence-unified";
 
 // Form handling stores
@@ -89,7 +89,7 @@ export { autoTaggingMachine } from "./autoTaggingMachine";
 export {
   evidenceProcessingMachine,
   evidenceProcessingStore,
-  streamingStore,
+  streamingStore
 } from "./enhancedStateMachines";
 export { aiCommandMachine } from "./ai-command-machine";
 
@@ -128,7 +128,7 @@ export {
   runPhase2Demo,
   phase2HealthCheck,
   demoEvidenceUpload,
-  demoEnhancedButton,
+  demoEnhancedButton
 } from "./phase2-demo";
 
 // Legacy compatibility aliases

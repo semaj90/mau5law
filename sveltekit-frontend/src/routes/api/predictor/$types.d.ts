@@ -7,7 +7,7 @@ export type RequestHandler = (event: RequestEvent) => Response | Promise<Respons
 
 export interface PredictionResult {
   action: string;
-  p: number;,
+  p: number;
 }
 
 export interface PredictorStats {
@@ -16,7 +16,7 @@ export interface PredictorStats {
   cacheEnabled: boolean;
   lastSync: number;
   pendingUpdates: number;
-  redisConnected: boolean;,
+  redisConnected: boolean;
 }
 
 export interface RecordActionRequest {
@@ -45,7 +45,7 @@ export interface RecordActionResponse {
   userId: string;
   context?: any;
   stats: Partial<PredictorStats>;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface PredictActionResponse {
@@ -58,9 +58,9 @@ export interface PredictActionResponse {
   performance: {
     predictionsGenerated: number;
     cacheHit: boolean;
-    simdAccelerated: boolean;,
+    simdAccelerated: boolean;
   };
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface BulkPredictResponse {
@@ -68,9 +68,9 @@ export interface BulkPredictResponse {
     action: string;
     predictions: PredictionResult[];
     context: any;
-    enhancedMode: boolean;,
+    enhancedMode: boolean;
   }>;
   totalRequests: number;
   stats: Partial<PredictorStats>;
-  timestamp: number;,
+  timestamp: number;
 }

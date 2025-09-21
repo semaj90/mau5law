@@ -13,7 +13,7 @@ export interface AuthState {
   securitySettings: {
     sessionTimeoutMinutes: number;
     requireReauth: boolean;
-    enable2FA: boolean;,
+    enable2FA: boolean;
   };
 }
 
@@ -28,7 +28,7 @@ export interface RegisterData {
   password: string;
   firstName: string;
   lastName: string;
-  acceptTerms: boolean;,
+  acceptTerms: boolean;
 }
 
 class EnhancedAuthStore {
@@ -42,7 +42,7 @@ class EnhancedAuthStore {
     securitySettings: {
       sessionTimeoutMinutes: 30,
       requireReauth: false,
-      enable2FA: false,
+      enable2FA: false
     }
   }) : {
     user: null,
@@ -53,7 +53,7 @@ class EnhancedAuthStore {
     securitySettings: {
       sessionTimeoutMinutes: 30,
       requireReauth: false,
-      enable2FA: false,
+      enable2FA: false
     }
   };
 
@@ -134,12 +134,12 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           ...credentials,
           ipAddress: await this.getClientIP(),
-          userAgent: navigator.userAgent,
+          userAgent: navigator.userAgent
         })
       });
 
@@ -179,12 +179,12 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           ...data,
           ipAddress: await this.getClientIP(),
-          userAgent: navigator.userAgent,
+          userAgent: navigator.userAgent
         })
       });
 
@@ -224,10 +224,10 @@ class EnhancedAuthStore {
         await fetch('/api/auth/logout', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            sessionId: this._state.session.id,
+            sessionId: this._state.session.id
           })
         });
       }
@@ -244,7 +244,7 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/verify-email', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ token })
       });
@@ -269,7 +269,7 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/request-password-reset', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ email })
       });
@@ -286,7 +286,7 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ token, newPassword })
       });
@@ -314,9 +314,9 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/update-profile', {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updates),
+        body: JSON.stringify(updates)
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -341,7 +341,7 @@ class EnhancedAuthStore {
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ currentPassword, newPassword })
       });
@@ -358,7 +358,7 @@ class EnhancedAuthStore {
     try {
       const response = await fetch('/api/auth/refresh', {
         method: 'POST',
-        credentials: 'include',
+        credentials: 'include'
       });
 
       if ((response as { json?: any; ok?: any }).ok) {

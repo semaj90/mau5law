@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
       topPrediction: (result as { predictions?: any; topPrediction?: any; processingTime?: any; modelUsed?: any }).topPrediction,
       processingTime: (result as { predictions?: any; topPrediction?: any; processingTime?: any; modelUsed?: any }).processingTime,
       modelUsed: (result as { predictions?: any; topPrediction?: any; processingTime?: any; modelUsed?: any }).modelUsed,
-      totalTime: Date.now() - startTime,
+      totalTime: Date.now() - startTime
     });
     
   } catch (error: any) {
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ 
         success: false, 
         error: 'Document classification failed', 
-        details: error.message ,
+        details: error.message 
       },)
       { status: 500 }
     );

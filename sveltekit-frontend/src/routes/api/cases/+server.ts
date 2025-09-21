@@ -56,9 +56,9 @@ async function triggerWorkerProcessing(caseId: string, options: {
       trigger: options.trigger,
       timestamp: new Date().toISOString(),
       ...options.metadata
-    ,}),
+    }),
     retry: '0',
-    timestamp: Date.now().toString(),
+    timestamp: Date.now().toString()
   };
 
   // Add to Redis stream for worker consumption
@@ -76,7 +76,7 @@ const createCaseSchema = z.object({
   status: z.enum(["open", "investigating", "pending", "closed", "archived"]).default("open"),
   incidentDate: z.string().datetime().optional().transform(str => str ? new Date(str) : undefined),
   location: z.string().optional(),
-  jurisdiction: z.string().optional(),
+  jurisdiction: z.string().optional()
 });
 
 const searchCasesSchema = z.object({
@@ -86,11 +86,11 @@ const searchCasesSchema = z.object({
   assignedTo: z.string().optional(),
   dateRange: z.object({
     start: z.string().datetime().transform(str => new Date(str)),
-    end: z.string().datetime().transform(str => new Date(str),
+    end: z.string().datetime().transform(str => new Date(str)
   }).optional(),
   page: z.number().min(1).default(1),
   limit: z.number().min(1).max(100).default(50),
-  useVectorSearch: z.boolean().default(true),
+  useVectorSearch: z.boolean().default(true)
 });
 
 // GET - List cases with advanced search and filtering;
@@ -115,11 +115,11 @@ export const GET: RequestHandler = async (event: any) => {
       assignedTo: url.searchParams.get('assignedTo') || undefined,
       dateRange: url.searchParams.get('dateStart') && url.searchParams.get('dateEnd') ? {
         start: new Date(url.searchParams.get('dateStart')!),
-        end: new Date(url.searchParams.get('dateEnd')!),
+        end: new Date(url.searchParams.get('dateEnd')!)
       } : undefined,
       page: parseInt(url.searchParams.get('page') || '1'),
       limit: Math.min(parseInt(url.searchParams.get('limit') || '50'), 100),
-      useVectorSearch: url.searchParams.get('useVectorSearch') !== 'false',
+      useVectorSearch: url.searchParams.get('useVectorSearch') !== 'false'
     };
 
     // Validate search parameters;
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async (event: any) => {
         search: validatedParams.query ? {
           term: validatedParams.query,
           resultsCount: caseResults.length,
-          vectorSearchUsed: validatedParams.useVectorSearch,
+          vectorSearchUsed: validatedParams.useVectorSearch
         } : null
       };
     } catch (error: any) {
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async (event: any) => {
       // Create case using enhanced operations;
       const newCase = await CaseOperations.create({
         ...caseData,
-        createdBy: user.id,
+        createdBy: user.id
       });
 
       console.log(`✅ Case created successfully: ${newCase.caseNumber} by user ${user.id}`);
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async (event: any) => {
             title: caseData.title,
             status: caseData.status,
             location: caseData.location,
-            jurisdiction: caseData.jurisdiction,
+            jurisdiction: caseData.jurisdiction
           }
         });
         console.log(`🚀 Worker processing triggered for case: ${newCase.id}`);
@@ -203,7 +203,7 @@ export const POST: RequestHandler = async (event: any) => {
         message: `Case ${newCase.caseNumber} created successfully`,
         metadata: {
           workerTriggered: true,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }
       };
     } catch (error: any) {
@@ -239,7 +239,7 @@ export const PUT: RequestHandler = async (event: any) => {
 
       return {
         case: updatedCase,
-        message: 'Case updated successfully',
+        message: 'Case updated successfully'
       };
     } catch (error: any) {
       if (error instanceof Error && error.message.includes('not found')) {
@@ -257,7 +257,7 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
   });
 };

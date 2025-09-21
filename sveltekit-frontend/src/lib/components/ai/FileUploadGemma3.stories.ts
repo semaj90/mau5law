@@ -8,7 +8,7 @@ const meta = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'AI-powered file upload component with real-time processing and vector embeddings',
+        component: 'AI-powered file upload component with real-time processing and vector embeddings'
       }
     }
   },
@@ -55,7 +55,7 @@ export const Default: Story = {
       'text/plain',
       'text/markdown'
     ],
-    enableAIProcessing: true,
+    enableAIProcessing: true
   }
 };
 
@@ -72,12 +72,12 @@ export const LargeFileSupport: Story = {
       'image/png',
       'video/mp4'
     ],
-    enableAIProcessing: true,
+    enableAIProcessing: true
   },
   parameters: {
     docs: {
       description: {
-        story: 'File upload with large file support (100MB) and multimedia types',
+        story: 'File upload with large file support (100MB) and multimedia types'
       }
     }
   }
@@ -88,12 +88,12 @@ export const SimpleUpload: Story = {
   args: {
     maxFileSize: 5242880, // 5MB
     acceptedTypes: ['text/plain', 'text/csv'],
-    enableAIProcessing: false,
+    enableAIProcessing: false
   },
   parameters: {
     docs: {
       description: {
-        story: 'Simple file upload without AI processing - faster for basic use cases',
+        story: 'Simple file upload without AI processing - faster for basic use cases'
       }
     }
   }
@@ -110,12 +110,12 @@ export const LegalDocuments: Story = {
       'application/vnd.oasis.opendocument.text',
       'text/rtf'
     ],
-    enableAIProcessing: true,
+    enableAIProcessing: true
   },
   parameters: {
     docs: {
       description: {
-        story: 'Optimized for legal document formats with enhanced AI analysis',
+        story: 'Optimized for legal document formats with enhanced AI analysis'
       }
     }
   }
@@ -135,12 +135,12 @@ export const MediaUpload: Story = {
       'video/mp4',
       'video/webm'
     ],
-    enableAIProcessing: true,
+    enableAIProcessing: true
   },
   parameters: {
     docs: {
       description: {
-        story: 'Media upload with OCR and audio transcription capabilities',
+        story: 'Media upload with OCR and audio transcription capabilities'
       }
     }
   }
@@ -151,12 +151,12 @@ export const Minimal: Story = {
   args: {
     maxFileSize: 1048576, // 1MB
     acceptedTypes: ['text/plain'],
-    enableAIProcessing: false,
+    enableAIProcessing: false
   },
   parameters: {
     docs: {
       description: {
-        story: 'Minimal upload component for simple text files only',
+        story: 'Minimal upload component for simple text files only'
       }
     }
   }
