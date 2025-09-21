@@ -33,12 +33,13 @@ https://svelte.dev/e/js_parse_error -->
   let fabricCanvas: FabricCanvas | null = null; // fabric.Canvas when Fabric.js is loaded
   let nodeElement: HTMLElement;
   let canvasState = $state( );
-  $effect(async () => {
-    // Dynamically import Fabric.js to avoid SSR issues
-    try {
-      const fabric = await import('fabric');
-      const { Canvas, Image } = fabric; // Fix: use fabric directly
-      fabricCanvas = new Canvas(canvasEl, {
+  $effect(() => {
+    // Dynamically import Fabric.js to avoid SSR issues - use async IIFE
+    (async () => {
+      try {
+        const mod = await import('fabric');
+        const fabric = mod.fabric || mod.default || mod;
+        fabricCanvas = new fabric.Canvas(canvasEl, {
         width: size.width - 20,
         height: size.height - 80,
         backgroundColor: 'white'
@@ -47,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
       // Load background image if provided
       // Fix for Fabric.js v5+ (Image.fromURL returns a Promise)
       if (fileUrl) {
-        (window as any).fabric.Image.fromURL.then((img: unknown) => {
+        fabric.Image.fromURL(evidence.url).then((img: any) => {
           // Scale image to fit canvas
           const scale = Math.min(
             (size.width - 20) / (img.width || 100),
@@ -63,13 +64,14 @@ https://svelte.dev/e/js_parse_error -->
           (fabricCanvas as any)?.setBackgroundImage?.(img, () => (fabricCanvas as any)?.renderAll?.());
         });
   }
-      // Setup event listeners for annotations
-      (fabricCanvas as any)?.on?.('object:modified', saveCanvasState);
-      (fabricCanvas as any)?.on?.('object:added', saveCanvasState);
-      (fabricCanvas as any)?.on?.('object:removed', saveCanvasState);
-    } catch (error) {
-      console.warn('Fabric.js not available, canvas features disabled:', error);
-  }
+        // Setup event listeners for annotations
+        (fabricCanvas as any)?.on?.('object:modified', saveCanvasState);
+        (fabricCanvas as any)?.on?.('object:added', saveCanvasState);
+        (fabricCanvas as any)?.on?.('object:removed', saveCanvasState);
+      } catch (error) {
+        console.warn('Fabric.js not available, canvas features disabled:', error);
+      }
+    })(); // Close the async IIFE
     // Click handling for selection
     nodeElement.addEventListener('click', () => {
       isSelected = true;
