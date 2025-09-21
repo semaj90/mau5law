@@ -136,7 +136,7 @@
       loadSystemHealth(),
       loadRecentActivity()
     ]);
-    lastUpdated = new Date());
+    lastUpdated = new Date();
   }
 
   function getHealthIcon(isHealthy: boolean) {

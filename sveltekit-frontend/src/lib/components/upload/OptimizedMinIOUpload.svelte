@@ -112,9 +112,13 @@
     }));
     if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) { /* ignore */ } return; }
     try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })); } catch(e) { /* ignore */ }
+  }
+
   function restoreSession() {
     if (!enablePersistence) return;
     try { const raw = sessionStorage.getItem(STORAGE_KEY); if (!raw) return; const data = JSON.parse(raw); if (!data?.files) return; const restored: FileState[] = []; for (const m of data.files) { const ph = new File([], m.name, { type: m.type || 'application/octet-stream' }); restored.push({ file: ph, placeholder: true, originalSize: m.size, status: 'pending', progress: 0, attempts: m.attempts || 0, nextRetryAt: m.nextRetryAt || null }); } if (restored.length) { fileStates = [...fileStates, ...restored]; files = [...files, ...restored.map(r=>r.file)]; liveMessage = `Restored ${restored.length} pending file(s)`; if (enableToastNotifications) toastService.info('Session Restored', `Recovered ${restored.length} pending file(s). Re-select originals to resume.`, { duration: 6000 }); ensureRetryTicker(); } } catch(e) { /* ignore */ }
+  }
+
   function matchPlaceholders(incoming: File[]) { for (const f of incoming) { const idx = fileStates.findIndex(ps => ps.placeholder && ps.file.name === f.name && ps.originalSize === f.size); if (idx !== -1) { const prev = fileStates[idx]; fileStates[idx] = { ...prev, file: f, placeholder: false }; } } }
 
   function isRetryable(message: string, statusCode?: number): boolean {
@@ -459,7 +463,7 @@
     fs.status = 'uploading';
     fs.progress = 0;
     fs.error = undefined;
-    fs.startTime = new Date());
+    fs.startTime = new Date();
   fs.attempts = (fs.attempts || 0) + 1;
     const controller = new AbortController();
     fs.controller = controller;
@@ -539,7 +543,7 @@
 
       if (data[0]) {
         fs.result = data[0];
-        fs.endTime = new Date());
+        fs.endTime = new Date();
 
         // Submit GPU processing tasks if enabled
         if (enableGPUProcessing && data[0].id) {
@@ -660,7 +664,7 @@
     } catch (err) {
       if ((fs.status as FileState['status']) === 'canceled') return; // already marked (possible race if abort just triggered)
 
-      fs.endTime = new Date());
+      fs.endTime = new Date();
       fs.status = controller.signal.aborted ? 'canceled' : 'error';
       fs.error = err instanceof Error ? err.message: 'Upload failed';
       errorMessage = fs.error;

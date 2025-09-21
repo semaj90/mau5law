@@ -8,6 +8,8 @@
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { websocketStore } from '$lib/stores/websocket-store';
+  import { createPubSubHelper } from '$lib/server/redisPubSub';
+  import { getRedisConfig, KEY_PATTERNS, CACHE_TTL } from '$lib/config/redis-config';
   import { fabric } from 'fabric';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
   import type { Canvas, Group, Point } from 'fabric';
@@ -79,6 +81,13 @@
   let lastSaveTime = $state<Date>(new Date());
   let saveTimeout: NodeJS.Timeout;
   let collaboratorCursors = new Map<string, any>();
+  let pubSubController: any = null;
+  let redisChannels = {
+    canvas: `legal:canvas:${caseId}`,
+    collaboration: `legal:canvas:${caseId}:collab`,
+    cursors: `legal:canvas:${caseId}:cursors`,
+    ai: `legal:canvas:${caseId}:ai`
+  };
 
   // Lifecycle
   $effect(async () => {
@@ -89,7 +98,7 @@
       await loadCanvasData();
 
       if (collaborative) {
-        setupCollaboration();
+        await setupCollaboration();
       }
 
       if (aiAssisted) {
@@ -98,13 +107,21 @@
 
       setupEventHandlers();
 
+      // Setup auto-save with Redis
+      if (autoSave) {
+        setupAutoSave();
+      }
+
     } catch (error) {
       console.error('Failed to initialize canvas:', error);
     }
   });
 
-  onDestroy(() => {
+  onDestroy(async () => {
     if (saveTimeout) clearTimeout(saveTimeout);
+    if (pubSubController) {
+      await pubSubController.stop();
+    }
     fabricCanvas?.dispose();
   });
 
@@ -214,12 +231,35 @@
 
   async function loadCanvasData() {
     try {
-      // Load existing canvas state from API
-      const response = await fetch(`/api/v1/evidence/canvas?caseId=${caseId}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.canvasData) {
-          await loadCanvasFromJSON(data.canvasData);
+      // Try Redis cache first for faster loading
+      const cachedData = await loadFromRedisCache();
+
+      if (cachedData) {
+        // Load from Redis cache
+        if (cachedData.canvasData) {
+          await loadCanvasFromJSON(JSON.stringify(cachedData.canvasData));
+        }
+
+        // Restore state from cache
+        if (cachedData.evidenceNodes) {
+          evidenceNodes = new Map(cachedData.evidenceNodes);
+        }
+        if (cachedData.connections) {
+          connections = new Map(cachedData.connections);
+        }
+        if (cachedData.annotations) {
+          annotations = new Map(cachedData.annotations);
+        }
+
+        console.log('✅ Canvas loaded from Redis cache');
+      } else {
+        // Fallback to API if no cache
+        const response = await fetch(`/api/v1/evidence/canvas?caseId=${caseId}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.canvasData) {
+            await loadCanvasFromJSON(data.canvasData);
+          }
         }
       }
 
@@ -227,7 +267,7 @@
       await addEvidenceNodes();
 
     } catch (error) {
-      console.error('Failed to load canvas data:', error);
+      console.error('❌ Failed to load canvas data:', error);
     }
   }
 
@@ -705,18 +745,64 @@
     }
   }
 
-  function setupCollaboration() {
-    // WebSocket integration for real-time collaboration
-    websocketStore.subscribeToDashboard();
+  async function setupCollaboration() {
+    try {
+      // Initialize Redis pub/sub for real-time collaboration
+      pubSubController = createPubSubHelper({
+        channels: Object.values(redisChannels),
+        onMessage: handleRedisMessage,
+        autoStart: true
+      });
 
-    // Listen for collaborative events
-    websocketStore.subscribe((event) => {
-      if (event.type === 'canvas_change' && event.caseId === caseId) {
-        handleCollaborativeChange(event.data);
-      } else if (event.type === 'cursor_move' && event.caseId === caseId) {
-        updateCollaboratorCursor(event.userId, event.data);
+      // WebSocket fallback for real-time collaboration
+      websocketStore.subscribeToDashboard();
+
+      // Listen for collaborative events
+      websocketStore.subscribe((event) => {
+        if (event.type === 'canvas_change' && event.caseId === caseId) {
+          handleCollaborativeChange(event.data);
+        } else if (event.type === 'cursor_move' && event.caseId === caseId) {
+          updateCollaboratorCursor(event.userId, event.data);
+        }
+      });
+
+      console.log('✅ Canvas collaboration setup complete with Redis');
+    } catch (error) {
+      console.error('❌ Failed to setup Redis collaboration:', error);
+      // Fallback to WebSocket only
+    }
+  }
+
+  function handleRedisMessage({ channel, message }: { channel: string; message: string }) {
+    try {
+      const data = JSON.parse(message);
+
+      switch (channel) {
+        case redisChannels.canvas:
+          handleCanvasChange(data);
+          break;
+        case redisChannels.collaboration:
+          handleCollaborativeChange(data);
+          break;
+        case redisChannels.cursors:
+          updateCollaboratorCursor(data.userId, data.cursor);
+          break;
+        case redisChannels.ai:
+          handleAISuggestion(data);
+          break;
       }
-    });
+    } catch (error) {
+      console.error('Failed to parse Redis message:', error);
+    }
+  }
+
+  function handleCanvasChange(data: any) {
+    // Handle canvas state changes from Redis
+    if (data.action === 'full_sync') {
+      loadCanvasFromRedis(data.canvasData);
+    } else if (data.action === 'object_change') {
+      applyObjectChange(data);
+    }
   }
 
   function handleCollaborativeChange(data: any) {
@@ -857,23 +943,171 @@
   async function saveCanvas() {
     try {
       const canvasData = fabricCanvas.toJSON();
+      const savePayload = {
+        caseId,
+        canvasData,
+        evidenceNodes: Array.from(evidenceNodes.entries()),
+        connections: Array.from(connections.entries()),
+        annotations: Array.from(annotations.entries()),
+        timestamp: new Date().toISOString()
+      };
+
+      // Save to database via API
       const response = await fetch('/api/v1/evidence/canvas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          caseId,
-          canvasData,
-          evidenceNodes: Array.from(evidenceNodes.keys()),
-          connections: Array.from(connections.keys()),
-          annotations: Array.from(annotations.keys())
-        })
+        body: JSON.stringify(savePayload)
       });
 
       if (response.ok) {
+        // Cache in Redis for fast retrieval
+        await saveToRedisCache(savePayload);
+
+        // Publish canvas change to collaborators
+        if (pubSubController && collaborative) {
+          await pubSubController.publish(redisChannels.canvas, {
+            action: 'canvas_saved',
+            caseId,
+            timestamp: savePayload.timestamp,
+            user: 'current_user' // Replace with actual user ID
+          });
+        }
+
         lastSaveTime = new Date();
+        console.log('✅ Canvas saved to database and Redis');
       }
     } catch (error) {
-      console.error('Failed to save canvas:', error);
+      console.error('❌ Failed to save canvas:', error);
+    }
+  }
+
+  async function saveToRedisCache(canvasPayload: any) {
+    try {
+      const response = await fetch('/api/v1/redis/cache', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: KEY_PATTERNS.DOCUMENT_CACHE(caseId),
+          value: canvasPayload,
+          ttl: CACHE_TTL.DOCUMENT_ANALYSIS
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Redis cache failed');
+      }
+    } catch (error) {
+      console.warn('⚠️ Redis cache save failed:', error);
+    }
+  }
+
+  async function loadFromRedisCache(): Promise<any | null> {
+    try {
+      const response = await fetch(`/api/v1/redis/cache/${KEY_PATTERNS.DOCUMENT_CACHE(caseId)}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Loaded canvas from Redis cache');
+        return data;
+      }
+    } catch (error) {
+      console.warn('⚠️ Redis cache load failed:', error);
+    }
+    return null;
+  }
+
+  function setupAutoSave() {
+    // Listen for canvas changes and trigger auto-save
+    fabricCanvas.on('object:modified', () => {
+      saveCanvasState();
+      publishCanvasChange('object_modified');
+    });
+
+    fabricCanvas.on('object:added', () => {
+      saveCanvasState();
+      publishCanvasChange('object_added');
+    });
+
+    fabricCanvas.on('object:removed', () => {
+      saveCanvasState();
+      publishCanvasChange('object_removed');
+    });
+
+    console.log('✅ Auto-save with Redis enabled');
+  }
+
+  async function publishCanvasChange(action: string) {
+    if (!pubSubController || !collaborative) return;
+
+    try {
+      await pubSubController.publish(redisChannels.collaboration, {
+        action,
+        caseId,
+        timestamp: new Date().toISOString(),
+        user: 'current_user' // Replace with actual user ID
+      });
+    } catch (error) {
+      console.error('Failed to publish canvas change:', error);
+    }
+  }
+
+  async function loadCanvasFromRedis(canvasData: any) {
+    try {
+      await fabricCanvas.loadFromJSON(canvasData, () => {
+        fabricCanvas.renderAll();
+        console.log('✅ Canvas synced from Redis');
+      });
+    } catch (error) {
+      console.error('❌ Failed to load canvas from Redis:', error);
+    }
+  }
+
+  function applyObjectChange(data: any) {
+    try {
+      const obj = fabricCanvas.getObjects().find(o => o.id === data.objectId);
+      if (obj) {
+        obj.set(data.properties);
+        fabricCanvas.renderAll();
+      }
+    } catch (error) {
+      console.error('❌ Failed to apply object change:', error);
+    }
+  }
+
+  function handleAISuggestion(data: any) {
+    // Handle AI suggestions from Redis
+    if (data.type === 'layout_suggestion') {
+      aiSuggestions.push(data);
+      showAISuggestions = true;
+    } else if (data.type === 'connection_suggestion') {
+      // Highlight suggested connections
+      highlightSuggestedConnection(data.suggestion);
+    }
+  }
+
+  function highlightSuggestedConnection(suggestion: any) {
+    // Visual feedback for AI suggestions
+    const fromNode = evidenceNodes.get(suggestion.fromId);
+    const toNode = evidenceNodes.get(suggestion.toId);
+
+    if (fromNode && toNode) {
+      // Add temporary highlight
+      const highlight = new fabric.Line([
+        fromNode.left, fromNode.top,
+        toNode.left, toNode.top
+      ], {
+        stroke: '#4CAF50',
+        strokeWidth: 3,
+        strokeDashArray: [10, 5],
+        selectable: false,
+        evented: false
+      });
+
+      fabricCanvas.add(highlight);
+
+      // Remove highlight after 5 seconds
+      setTimeout(() => {
+        fabricCanvas.remove(highlight);
+      }, 5000);
     }
   }
 
