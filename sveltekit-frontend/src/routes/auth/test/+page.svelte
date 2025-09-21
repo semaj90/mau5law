@@ -283,7 +283,7 @@
         <Button class="bits-btn"
           onclick={runInitialTests}
           disabled={testRunning}
-          variant="outline"
+          variant="ghost"
         >
           {#if testRunning}
             <Clock class="mr-2 h-4 w-4 animate-spin" />
@@ -323,7 +323,7 @@
           <Card.Content class="space-y-4">
             <Button class="bits-btn"
               onclick={() => populateTestData('login')}
-              variant="outline"
+              variant="ghost"
               size="sm"
             >
               Fill Test Data
@@ -350,7 +350,7 @@
           <Card.Content class="space-y-4">
             <Button class="bits-btn"
               onclick={() => populateTestData('register')}
-              variant="outline"
+              variant="ghost"
               size="sm"
             >
               Fill Test Data

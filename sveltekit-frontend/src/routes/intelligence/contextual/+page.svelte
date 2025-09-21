@@ -309,7 +309,7 @@
       </div>
       
       <div class="header-stats">
-        <Badge variant="outline" class="status-{systemStatus}">
+        <Badge variant="ghost" class="status-{systemStatus}">
           <Activity class="w-3 h-3 mr-1" />
           {systemStatus.charAt.toUpperCase() + systemStatus.slice(1)}
         </Badge>
@@ -453,7 +453,7 @@
                 
                 <div class="insight-sources">
                   {#each (item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.sources.slice(0, 3) as source}
-                    <Badge variant="outline" class="source-tag">
+                    <Badge variant="ghost" class="source-tag">
                       {source}
                     </Badge>
                   {/each}
@@ -516,7 +516,7 @@
                 
                 <div class="task-context">
                   {#each Object.entries(task.context) as [key, value]}
-                    <Badge variant="outline" class="context-tag">
+                    <Badge variant="ghost" class="context-tag">
                       {key}: {value}
                     </Badge>
                   {/each}
@@ -620,7 +620,7 @@
               <Badge variant="secondary">
                 {Math.round(selectedInsight.confidence * 100)}% confidence
               </Badge>
-              <Badge variant="outline">
+              <Badge variant="ghost">
                 {Math.round(selectedInsight.relevance * 100)}% relevance
               </Badge>
               <span class="modal-time">
@@ -639,7 +639,7 @@
             <h3 class="sources-title">Data Sources</h3>
             <div class="sources-list">
               {#each selectedInsight.sources as source}
-                <Badge variant="outline" class="source-badge">
+                <Badge variant="ghost" class="source-badge">
                   {source}
                 </Badge>
               {/each}
@@ -648,7 +648,7 @@
         </div>
         
         <div class="modal-actions">
-          <button class="nes-btn" variant="outline" onclick={closeInsightDetails}>
+          <button class="nes-btn" variant="ghost" onclick={closeInsightDetails}>
             Close
           </button>
           <button class="nes-btn is-primary">

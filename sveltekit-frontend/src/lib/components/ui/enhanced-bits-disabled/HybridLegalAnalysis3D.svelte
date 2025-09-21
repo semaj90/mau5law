@@ -610,7 +610,7 @@ https://svelte.dev/e/expected_token -->
     <!-- Action Buttons -->
     <div class="action-buttons">
       <Button
-        variant="outline"
+        variant="ghost"
         onclick={startHybridAnalysis}
         disabled={isAnalyzing || documents.length === 0}
         class="nes-btn is-primary bits-btn bits-btn"
@@ -626,7 +626,7 @@ https://svelte.dev/e/expected_token -->
         {/snippet}
 
       <Button
-        variant="outline"
+        variant="ghost"
         onclick={checkSystemHealth}
         disabled={isAnalyzing}
         class="nes-btn is-warning bits-btn bits-btn"
@@ -637,7 +637,7 @@ https://svelte.dev/e/expected_token -->
         {/snippet}
 
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         onclick={() =>
 enable3DVisualization = !enable3DVisualization}
         class="nes-btn {enable3DVisualization ? 'is-success' : 'is-normal'}"

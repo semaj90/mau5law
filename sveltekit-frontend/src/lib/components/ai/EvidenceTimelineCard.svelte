@@ -110,10 +110,10 @@
         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{timelineEvents.length} events</span>
       </h3>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="outline" size="sm">
+        <Button class="bits-btn" variant="ghost" size="sm">
 📊 Timeline Analysis
 </Button>
-        <Button class="bits-btn" variant="outline" size="sm">
+        <Button class="bits-btn" variant="ghost" size="sm">
 🗂️ Export Timeline
 </Button>
       </div>
@@ -232,10 +232,10 @@
         </div>
 
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="sm">
+          <Button class="bits-btn" variant="ghost" size="sm">
 🔍 Find Gaps
 </Button>
-          <Button class="bits-btn" variant="outline" size="sm">
+          <Button class="bits-btn" variant="ghost" size="sm">
 🕸️ Show Connections
 </Button>
           <Button class="bits-btn" size="sm">

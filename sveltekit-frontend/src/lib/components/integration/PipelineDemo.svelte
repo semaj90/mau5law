@@ -227,26 +227,26 @@ https://svelte.dev/e/unexpected_reserved_word -->
         <Button class="bits-btn" 
           onclick={autoExecutePipeline}
           disabled={isProcessing}
-          variant="outline"
+          variant="ghost"
         >
 🧠 Auto-Select Optimal
 
         <Button class="bits-btn" 
           onclick={batchProcess}
           disabled={isProcessing}
-          variant="outline"
+          variant="ghost"
         >
 📦 Batch Process
 
         <Button class="bits-btn" 
           onclick={checkSystemHealth}
-          variant="outline"
+          variant="ghost"
         >
 🏥 Health Check
 
         <Button class="bits-btn" 
           onclick={generateReport}
-          variant="outline"
+          variant="ghost"
         >
 📈 Performance Report
 

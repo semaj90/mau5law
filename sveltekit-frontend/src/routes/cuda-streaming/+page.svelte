@@ -367,7 +367,7 @@
               </button>
             {:else}
               <Button 
-                variant="outline" 
+                variant="ghost" 
                 onclick={processSingleDocument}
                 disabled={!inputText.trim()}
                 class="gap-2"
@@ -491,7 +491,7 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Memory class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.memory}%</Badge>
+            <Badge variant="ghost">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.memory}%</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Memory Usage</p>
           <p class="text-lg font-medium">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.availableMemory}</p>
@@ -504,7 +504,7 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Thermometer class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.temperatureCurrent}°C</Badge>
+            <Badge variant="ghost">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.temperatureCurrent}°C</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Temperature</p>
           <p class="text-lg font-medium">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.temperatureCurrent}°C</p>
@@ -517,7 +517,7 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Power class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.powerDraw}W</Badge>
+            <Badge variant="ghost">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.powerDraw}W</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Power Draw</p>
           <p class="text-lg font-medium">{(data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.powerDraw}W</p>
@@ -570,7 +570,7 @@
           <div class="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50">
             <div class="flex-1">
               <div class="flex items-center gap-2 mb-1">
-                <Badge variant="outline" class="text-xs">{session.operation.replace('_', ' ')}</Badge>
+                <Badge variant="ghost" class="text-xs">{session.operation.replace('_', ' ')}</Badge>
                 <Badge 
                   variant={session.gpuAccelerated ? 'default' : 'secondary'}
                   class="text-xs"

@@ -163,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
         <Button
           onclick={handleSearchRelatedEvidence}
           disabled={!user || legalCaseStore.context.searchingRelatedEvidence}
-          variant="outline"
+          variant="ghost"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
         >
           {legalCaseStore.context.searchingRelatedEvidence ? 'Searching...' : 'Semantic Search'}

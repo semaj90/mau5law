@@ -237,7 +237,7 @@
           </div>
 
           <Button 
-            variant="outline" 
+            variant="ghost" 
             onclick={loadDemoData}
             class="w-full bits-btn bits-btn"
           >

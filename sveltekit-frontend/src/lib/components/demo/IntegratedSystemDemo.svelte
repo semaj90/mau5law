@@ -363,7 +363,7 @@ Demo Login
                 <Button class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
 Test AI Assistant
 
-                <Button class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="outline">
+                <Button class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="ghost">
 Demo Logout
 
               </div>
@@ -400,7 +400,7 @@ showAuthDialog = true}>
                   <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </div>
-              <Button class="bits-btn" onclick={demoLogout} variant="outline">
+              <Button class="bits-btn" onclick={demoLogout} variant="ghost">
 Logout
 
             </div>
@@ -450,7 +450,7 @@ sessionManager.performSecurityCheck()}
                   onclick={() =>
 sessionManager.refreshSession()} 
                   size="sm" 
-                  variant="outline"
+                  variant="ghost"
                 >
                   Refresh Session
 

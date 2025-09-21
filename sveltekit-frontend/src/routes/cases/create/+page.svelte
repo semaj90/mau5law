@@ -138,7 +138,7 @@ goto('/cases')}
         {#if !data.editMode}
           <Button
             class="bits-btn flex items-center space-x-2"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 goto('/cases/templates')}
           >

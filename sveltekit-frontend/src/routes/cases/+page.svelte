@@ -432,7 +432,7 @@
 
         <div class="flex gap-2 items-center">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={performVectorSearch}
             disabled={!searchQuery.trim() || isSearching}
@@ -482,13 +482,13 @@
       <!-- Case Detail View -->
       <div class="space-y-6">
         <div class="flex items-center justify-between">
-          <Button class="bits-btn" variant="outline" onclick={() => goto('/cases')}>
+          <Button class="bits-btn" variant="ghost" onclick={() => goto('/cases')}>
             {#snippet children()}
               ← Back to Cases
             {/snippet}
 
           <div class="flex gap-2">
-            <Button class="bits-btn" variant="outline" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={(e) => { lastDialogTrigger = e.currentTarget as HTMLElement; addEvidenceDialogOpen = true; }}>
               {#snippet children()}
                 <Plus class="h-4 w-4 mr-2" />
                 Add Evidence
@@ -864,7 +864,7 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button class="bits-btn" variant="outline" type="button" onclick={() => createCaseDialogOpen = false}>
+        <Button class="bits-btn" variant="ghost" type="button" onclick={() => createCaseDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
 
         <Button class="bits-btn" type="submit" disabled={isCreatingCase || !$createFormData.title?.trim()}>
@@ -938,7 +938,7 @@
         </div>
       </div>
       <div class="flex justify-end gap-2">
-        <Button class="bits-btn" variant="outline" type="button" onclick={() => addEvidenceDialogOpen = false}>
+        <Button class="bits-btn" variant="ghost" type="button" onclick={() => addEvidenceDialogOpen = false}>
           {#snippet children()}Cancel{/snippet}
 
         <Button class="bits-btn" type="submit" disabled={isAddingEvidence || !$evidenceFormData.title?.trim()}>
@@ -962,7 +962,7 @@
       </AlertDialog.Description>
     </AlertDialog.Header>
     <AlertDialog.Footer>
-      <Button class="bits-btn" variant="outline" onclick={() => deleteEvidenceDialogOpen = false}>
+      <Button class="bits-btn" variant="ghost" onclick={() => deleteEvidenceDialogOpen = false}>
         {#snippet children()}Cancel{/snippet}
 
       <Button class="bits-btn" variant="destructive" onclick={deleteEvidence}>

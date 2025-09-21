@@ -124,7 +124,7 @@
 				<div class="flex items-center justify-between">
 					<h3 class="font-semibold text-sm">AI Chat Messages Component</h3>
 					<Button
-						variant="outline"
+						variant="ghost"
 						size="sm"
 						onclick={clearMessages}
 						class="text-xs"

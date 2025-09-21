@@ -185,7 +185,7 @@ Features: Case management, evidence upload, AI chat, vector search
             </Badge>
           {/if}
 
-          <Badge variant="outline" class="hidden sm:flex">
+          <Badge variant="ghost" class="hidden sm:flex">
             <Brain class="w-3 h-3 mr-1" />
             Gemma3Legal Active
           </Badge>
@@ -220,7 +220,7 @@ selectCase(caseItem.id)}
 
           {/each}
 
-          <Button class="bits-btn" variant="outline" size="sm">
+          <Button class="bits-btn" variant="ghost" size="sm">
 <Plus class="w-4 h-4 mr-1" />
             New Case
 
@@ -382,7 +382,7 @@ selectCase(caseItem.id)}
               </div>
             {/if}
 
-            <Button variant="outline" size="sm" class="w-full mt-3 bits-btn bits-btn">
+            <Button variant="ghost" size="sm" class="w-full mt-3 bits-btn bits-btn">
 <Plus class="w-4 h-4 mr-1" />
               Add Person of Interest
 

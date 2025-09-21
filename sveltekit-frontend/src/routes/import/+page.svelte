@@ -308,14 +308,14 @@ https://svelte.dev/e/js_parse_error -->
               </div>
               <div class="space-y-4">
                 <Tooltip content="Preview file contents">
-                  <Button class="bits-btn" variant="outline" size="sm" disabled={!filePreview}>
+                  <Button class="bits-btn" variant="ghost" size="sm" disabled={!filePreview}>
 <Eye class="space-y-4" />
                     Preview
 </Button>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
                   <Button class="bits-btn"
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
                     onclick={() =>
 clearImport()}
@@ -335,7 +335,7 @@ clearImport()}
                 </p>
                 <p class="space-y-4">or click to browse</p>
               </div>
-              <Button class="bits-btn" variant="outline" onclick={() =>
+              <Button class="bits-btn" variant="ghost" onclick={() =>
 fileInput?.click()}>
                 Select File
 </Button>
@@ -506,7 +506,7 @@ performImport()}
               {/if}
 </Button>
             <Tooltip content="Clear current import and start over">
-              <Button class="bits-btn" variant="outline" onclick={() =>
+              <Button class="bits-btn" variant="ghost" onclick={() =>
 clearImport()}>
                 <X class="space-y-4" />
                 Cancel
@@ -532,7 +532,7 @@ clearImport()}>
             <div class="space-y-4">
               <Tooltip content="Download JSON example for cases">
                 <Button class="bits-btn"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={() =>
 downloadExampleTemplate("cases", "json")}
@@ -542,7 +542,7 @@ downloadExampleTemplate("cases", "json")}
               </Tooltip>
               <Tooltip content="Download CSV example for cases">
                 <Button class="bits-btn"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={() =>
 downloadExampleTemplate("cases", "csv")}
@@ -558,7 +558,7 @@ downloadExampleTemplate("cases", "csv")}
             <div class="space-y-4">
               <Tooltip content="Download JSON example for evidence">
                 <Button class="bits-btn"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={() =>
 downloadExampleTemplate("evidence", "json")}
@@ -568,7 +568,7 @@ downloadExampleTemplate("evidence", "json")}
               </Tooltip>
               <Tooltip content="Download CSV example for evidence">
                 <Button class="bits-btn"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={() =>
 downloadExampleTemplate("evidence", "csv")}
@@ -601,19 +601,19 @@ downloadExampleTemplate("evidence", "csv")}
         <h3 class="space-y-4">Quick Actions</h3>
         <div class="space-y-4">
           <a href="/export" class="space-y-4">
-            <Button variant="outline" class="space-y-4 bits-btn bits-btn">
+            <Button variant="ghost" class="space-y-4 bits-btn bits-btn">
 <Download class="space-y-4" />
               Export Data
 </Button>
           </a>
           <a href="/cases" class="space-y-4">
-            <Button variant="outline" class="space-y-4 bits-btn bits-btn">
+            <Button variant="ghost" class="space-y-4 bits-btn bits-btn">
 <Database class="space-y-4" />
               View Cases
 </Button>
           </a>
           <a href="/evidence" class="space-y-4">
-            <Button variant="outline" class="space-y-4 bits-btn bits-btn">
+            <Button variant="ghost" class="space-y-4 bits-btn bits-btn">
 <FileText class="space-y-4" />
               View Evidence
 </Button>

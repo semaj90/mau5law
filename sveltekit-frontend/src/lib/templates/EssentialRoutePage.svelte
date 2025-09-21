@@ -57,7 +57,7 @@ Use this template for all essential routes
 					<div class="flex items-center gap-4">
 						{#if showBackButton}
 							<Button
-								variant="outline"
+								variant="ghost"
 								size="sm"
 								onclick={goBack}
 								class="nes-btn is-primary"
@@ -108,7 +108,7 @@ Use this template for all essential routes
 								<Button class="nes-btn is-primary" onclick={goBack}>
 									Go Back
 								<Button
-									variant="outline"
+									variant="ghost"
 									class="nes-btn"
 									onclick={() => window.location.href = '/'}
 								>

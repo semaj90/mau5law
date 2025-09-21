@@ -357,7 +357,7 @@ activeTab = 'settings'}
                       <div class="flex gap-1 ml-4">
                         <Button class="bits-btn"
                           size="sm"
-                          variant="outline"
+                          variant="ghost"
                           onclick={() =>
 submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).id, 1)}
                         >
@@ -365,7 +365,7 @@ submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unkno
 
                         <Button class="bits-btn"
                           size="sm"
-                          variant="outline"
+                          variant="ghost"
                           onclick={() =>
 submitFeedback((result as { metadata?: unknown; content?: unknown; score?: unknown; id?: unknown }).id, -1)}
                         >

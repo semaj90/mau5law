@@ -435,7 +435,8 @@
 
     if (!node1 || !node2) return null;
 
-    const geometry = new THREE.BufferGeometry.setFromPoints([
+    const geometry = new THREE.BufferGeometry();
+    geometry.setFromPoints([
       node1.position,
       node2.position
     ]);
@@ -456,7 +457,8 @@
       new THREE.Vector3((index - sortedEvidence.length / 2) * 5, -1, 0)
     );
 
-    const geometry = new THREE.BufferGeometry.setFromPoints(points);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setFromPoints(points);
     const material = new THREE.LineBasicMaterial({
       color: 0x2196F3,
       linewidth: 3
@@ -520,7 +522,7 @@
   function areRelated(evidence1: any, evidence2: any): boolean {
     // Simple relationship detection
     return evidence1.caseId === evidence2.caseId &&
-           Math.abs.getTime() - new Date(evidence2.createdAt).getTime()) < 86400000; // 1 day
+           Math.abs(new Date(evidence1.createdAt).getTime() - new Date(evidence2.createdAt).getTime()) < 86400000; // 1 day
   }
 
   function highlightEvidence(node: THREE.Object3D, highlight: boolean) {
@@ -684,8 +686,8 @@
     </div>
 
     <div class="action-controls">
-      <Button variant="outline" onclick={resetView} size="sm">🔄 Reset View</Button>
-      <Button variant="outline" onclick={exportVisualization} size="sm">📤 Export</Button>
+      <Button variant="ghost" onclick={resetView} size="sm">🔄 Reset View</Button>
+      <Button variant="ghost" onclick={exportVisualization} size="sm">📤 Export</Button>
     </div>
   </div>
 

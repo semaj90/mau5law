@@ -203,7 +203,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 {#each insights.similarCases.slice(0, 3) as similarCase}
                   <div class="text-xs text-gray-600 p-2 bg-gray-50 rounded flex items-center justify-between">
                     <span class="truncate">{similarCase.title}</span>
-                    <Badge variant="outline" class="text-xs">
+                    <Badge variant="ghost" class="text-xs">
                       {Math.round(similarCase.similarity * 100)}%
                     </Badge>
                   </div>
@@ -279,7 +279,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         onclick={() =>
 onOpenChange(false)}
         disabled={loading.analysis}

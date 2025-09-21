@@ -704,7 +704,7 @@
   <!-- Graph Controls -->
   <div class="graph-controls">
     <div class="view-controls">
-      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -712,11 +712,11 @@
         {Math.round(zoomLevel * 100)}%
       </span>
       
-      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleResetView} variant="outline" size="sm">
+      <LoadingButton onclick={handleResetView} variant="ghost" size="sm">
         {#snippet children()}<RotateCcw class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -734,7 +734,7 @@
         {/each}
       </select>
       
-      <Badge variant="outline" class="lod-badge">
+      <Badge variant="ghost" class="lod-badge">
         <Layers class="w-3 h-3 mr-1" />
         Recommended: LOD {recommendedLOD}
       </Badge>

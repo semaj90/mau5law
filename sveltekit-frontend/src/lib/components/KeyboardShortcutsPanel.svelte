@@ -182,7 +182,7 @@ helpModalVisible = false}>
                         />
                         <Button class="bits-btn"
                           size="sm"
-                          variant="outline"
+                          variant="ghost"
                           onclick={() =>
 executeShortcut(shortcut)}
                           disabled={!shortcut.enabled}
@@ -203,7 +203,7 @@ executeShortcut(shortcut)}
           <div class="mt-4 p-3 bg-green-900 border border-green-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-green-400">🔗 Connected to remote control</span>
-              <Button class="bits-btn" size="sm" variant="outline" onclick={() =>
+              <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
 remoteStatusVisible = true}>
                 View Status
 
@@ -213,7 +213,7 @@ remoteStatusVisible = true}>
           <div class="mt-4 p-3 bg-yellow-900 border border-yellow-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-yellow-400">⚠️ Remote control disconnected</span>
-              <Button class="bits-btn" size="sm" variant="outline" onclick={() =>
+              <Button class="bits-btn" size="sm" variant="ghost" onclick={() =>
 keyboardShortcutsService.connectRemote()}>
                 Connect
 
@@ -282,7 +282,7 @@ remoteStatusVisible = false}>
         <!-- Controls -->
         <div class="flex gap-2">
           {#if $isRemoteConnected}
-            <Button class="bits-btn" variant="outline" onclick={() =>
+            <Button class="bits-btn" variant="ghost" onclick={() =>
 keyboardShortcutsService.disconnectRemote()}>
               Disconnect
 
@@ -293,7 +293,7 @@ keyboardShortcutsService.connectRemote()}>
 
           {/if}
 
-          <Button class="bits-btn" variant="outline" onclick={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 $remoteCommands.length && remoteCommands.set([])}>
             Clear History
 

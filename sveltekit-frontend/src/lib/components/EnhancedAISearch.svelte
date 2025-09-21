@@ -449,7 +449,7 @@
           <!-- Actions -->
           <div class="mt-4 flex gap-2">
             <Button.Root
-              variant="outline"
+              variant="ghost"
               size="sm"
               class="flex items-center gap-2 bits-btn bits-btn"
             >
@@ -458,7 +458,7 @@
             </Button.Root>
 
             <Button.Root
-              variant="outline"
+              variant="ghost"
               size="sm"
               class="flex items-center gap-2 bits-btn bits-btn"
             >

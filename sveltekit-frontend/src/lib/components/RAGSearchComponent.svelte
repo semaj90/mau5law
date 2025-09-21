@@ -11,7 +11,7 @@
   import { CardBits } from '$lib/enhanced-bits';
   import { AlertCircle } from 'lucide-svelte';
 
-  let errorMessage = $state('');
+  let errorMessage = $state<string | null>('');
 
   // Additional imports
   import { ButtonBits, InputBits } from '$lib/enhanced-bits';
@@ -62,20 +62,21 @@
           limit: searchConfig.limit,
           threshold: searchConfig.threshold,
           // Optional filters can be added here
-          filters: })
+          filters: {}
+        })
       });
 
-      if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
-        throw new Error(`Search failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.statusText}`);
       }
 
-      const data = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
+      const data = await response.json();
 
-      if ((data as { success?: unknown; results?: unknown; processingTime?: unknown; error?: unknown }).success) {
-        searchResults = (data as { success?: unknown; results?: unknown; processingTime?: unknown; error?: unknown }).results;
+      if (data.success) {
+        searchResults = data.results || [];
 
         // If includeRAGResponse is enabled, generate a response using the retrieved documents
-        if (searchConfig.includeRAGResponse && (data as { success?: unknown; results?: unknown; processingTime?: unknown; error?: unknown }).results.length > 0) {
+        if (searchConfig.includeRAGResponse && Array.isArray(data.results) && data.results.length > 0) {
           try {
             const ragResponseFetch = await fetch('/api/rag/enhanced', {
               method: 'POST',
@@ -99,10 +100,12 @@
         }
 
         // Add to search history
-        searchHistory.unshift.results.length,
+        searchHistory.unshift({
+          query: searchQuery,
+          resultCount: Array.isArray(data.results) ? data.results.length : 0,
           timestamp: new Date(),
           hasRAGResponse: !!ragResponse,
-          processingTime: (data as { success?: unknown; results?: unknown; processingTime?: unknown; error?: unknown }).processingTime || 0
+          processingTime: data.processingTime || 0
         });
 
         // Keep only last 5 searches
@@ -111,14 +114,14 @@
         }
 
         // Cache the query using unified service registry
-        if ((data as { success?: unknown; results?: unknown; processingTime?: unknown; error?: unknown }).results.length > 0) {
+        if (Array.isArray(data.results) && data.results.length > 0) {
           await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300);
         }
       } else {
-        throw new Error((data as { success?: unknown; results?: unknown; processingTime?: unknown; error?: unknown }).error || 'Search request failed');
+        throw new Error(data.error || 'Search request failed');
       }
     } catch (error) {
-      errorMessage = error.message;
+      errorMessage = (error as Error).message;
       console.error('Search error:', error);
     } finally {
       isSearching = false;
@@ -150,25 +153,25 @@
           })
         });
 
-        if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
-          throw new Error(`Ingestion failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+        if (!response.ok) {
+          throw new Error(`Ingestion failed: ${response.statusText}`);
         }
 
-        const result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
+        const result = await response.json();
         // Show success notification
-        console.log.chunks.length} chunks created`);
+        console.log(`Document ingested: ${result.chunks.length} chunks created`);
       } catch (error) {
-        errorMessage = `Document ingestion failed: ${error.message}`;
+        errorMessage = `Document ingestion failed: ${(error as Error).message}`;
       }
     };
     fileInput.click();
   }
 
-  function formatTimestamp(date) {
+  function formatTimestamp(date: Date) {
     return date.toLocaleTimeString() + ' ' + date.toLocaleDateString();
   }
 
-  function highlightMatch(text, query) {
+  function highlightMatch(text: string, query: string) {
     if (!query) return text;
     const regex = new RegExp(`(${query})`, 'gi');
     return text.replace(regex, '<mark class="bg-yellow-300 px-1">$1</mark>');
@@ -245,7 +248,7 @@
         </ButtonBits>
         <ButtonBits
           onclick={ingestDocument}
-          variant="outline"
+          variant="ghost"
           size="lg"
           class="border-blue-500 text-blue-400"
         >
@@ -340,21 +343,21 @@
             <div class="flex justify-between items-start mb-3">
               <div class="flex items-center gap-3">
                 <span class="font-mono text-sm bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
-                  Similarity: {((result as { chunks?: unknown; similarity?: unknown; entityInfo?: unknown; chunk_sequence?: unknown; chunk_text?: unknown }).similarity * 100).toFixed(1)}%
+                  Similarity: {((result.similarity || 0) * 100).toFixed(1)}%
                 </span>
-                {#if (result as { chunks?: unknown; similarity?: unknown; entityInfo?: unknown; chunk_sequence?: unknown; chunk_text?: unknown }).entityInfo}
+                {#if result.entityInfo}
                   <span class="font-mono text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded">
-                    {(result as { chunks?: unknown; similarity?: unknown; entityInfo?: unknown; chunk_sequence?: unknown; chunk_text?: unknown }).entityInfo.type}: {(result as { chunks?: unknown; similarity?: unknown; entityInfo?: unknown; chunk_sequence?: unknown; chunk_text?: unknown }).entityInfo.name || (result as { chunks?: unknown; similarity?: unknown; entityInfo?: unknown; chunk_sequence?: unknown; chunk_text?: unknown }).entityInfo.id}
+                    {result.entityInfo.type}: {result.entityInfo.name || result.entityInfo.id}
                   </span>
                 {/if}
                 <span class="font-mono text-xs text-nier-text-muted">
-                  Chunk #{(result as { chunks?: unknown; similarity?: unknown; entityInfo?: unknown; chunk_sequence?: unknown; chunk_text?: unknown }).chunk_sequence + 1}
+                  Chunk #{(result.chunk_sequence || 0) + 1}
                 </span>
               </div>
             </div>
 
             <div class="text-nier-text-primary text-sm leading-relaxed">
-              {@html highlightMatch((result as { chunks?: unknown; similarity?: unknown; entityInfo?: unknown; chunk_sequence?: unknown; chunk_text?: unknown }).chunk_text, searchQuery)}
+              {@html highlightMatch(result.chunk_text || '', searchQuery)}
             </div>
           </CardBits>
         {/each}
@@ -436,15 +439,15 @@
   }
 
   /* Custom scrollbar for results */
-  .space-y-4: :-webkit-scrollbar {
+  .space-y-4 ::-webkit-scrollbar {
     width: 6px;
   }
 
-  .space-y-4: :-webkit-scrollbar-track {
+  .space-y-4 ::-webkit-scrollbar-track {
     background: var(--nier-bg-tertiary);
   }
 
-  .space-y-4: :-webkit-scrollbar-thumb {
+  .space-y-4 ::-webkit-scrollbar-thumb {
     background: var(--nier-accent-warm);
     border-radius: 3px;
   }

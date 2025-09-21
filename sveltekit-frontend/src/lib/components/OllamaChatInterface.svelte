@@ -448,7 +448,7 @@
                 {#each msg.suggestions as suggestion}
                   <Button 
                     class="bits-btn text-xs"
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
                     onclick={() =>
 selectSuggestion(suggestion)}
@@ -514,7 +514,7 @@ selectSuggestion(suggestion)}
 
     <!-- Additional Actions -->
     <Button class="bits-btn"
-      variant="outline"
+      variant="ghost"
       onclick={clearChat}
       disabled={chatHistory.length === 0}
     >
@@ -522,7 +522,7 @@ Clear
 </Button>
 
     <Button class="bits-btn"
-      variant="outline"
+      variant="ghost"
       onclick={exportChat}
       disabled={chatHistory.length === 0}
     >

@@ -304,7 +304,7 @@ Create New Case
           <div class="flex justify-end space-x-2 pt-4">
             <Button class="bits-btn" 
               type="button" 
-              variant="outline"
+              variant="ghost"
               onclick={() =>
 isCreateDialogOpen.set(false)}
             >
@@ -396,7 +396,7 @@ isCreateDialogOpen.set(false)}
             <div class="flex space-x-2">
               <Button class="bits-btn" 
                 size="sm" 
-                variant="outline"
+                variant="ghost"
                 onclick={() =>
 openEditDialog(caseData)}
               >
@@ -520,7 +520,7 @@ isCreateDialogOpen.set(true)}
         <div class="flex justify-end space-x-2 pt-4">
           <Button class="bits-btn" 
             type="button" 
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 isEditDialogOpen.set(false)}
           >

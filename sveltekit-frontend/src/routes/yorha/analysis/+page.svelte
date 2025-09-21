@@ -317,7 +317,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
                 <div class="analysis-footer">
                   <span class="analysis-timestamp">{analysis.timestamp}</span>
-                  <Button class="bits-btn" size="sm" variant="outline">View Details</Button>
+                  <Button class="bits-btn" size="sm" variant="ghost">View Details</Button>
                 </div>
               </div>
             {/each}

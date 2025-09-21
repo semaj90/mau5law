@@ -685,7 +685,7 @@ Stop Rendering
           <Button
             onclick={executeGPUWorkload}
             disabled={!isInitialized}
-            variant="outline"
+            variant="ghost"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn">
 Execute GPU Workload
 </Button>

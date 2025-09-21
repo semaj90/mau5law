@@ -255,14 +255,14 @@ generateSIMDGlyph(demoPrompts[Math.floor(Math.random() * demoPrompts.length)])}
       
       <!-- Batch Actions -->
       <div class="flex gap-2">
-        <Button class="bits-btn" onclick={generateBatchDemo} disabled={isGenerating} variant="outline">
+        <Button class="bits-btn" onclick={generateBatchDemo} disabled={isGenerating} variant="ghost">
 🚀 Batch Demo
 
-        <Button class="bits-btn" onclick={testCompressionLevels} disabled={isGenerating} variant="outline">
+        <Button class="bits-btn" onclick={testCompressionLevels} disabled={isGenerating} variant="ghost">
 📊 Test Compression
 
         <Button class="bits-btn" onclick={() =>
-results = []} variant="outline">
+results = []} variant="ghost">
           🗑️ Clear Results
 
       </div>
@@ -369,7 +369,7 @@ results = []} variant="outline">
                     onclick={() =>
 downloadShaderCode(result)}
                     size="sm"
-                    variant="outline"
+                    variant="ghost"
                     class="text-xs"
                   >
                     📄 Download

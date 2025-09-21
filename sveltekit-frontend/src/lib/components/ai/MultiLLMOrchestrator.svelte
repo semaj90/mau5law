@@ -271,7 +271,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     
     <div class="flex items-center gap-2">
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={refreshStatus}
         disabled={isProcessing}
@@ -280,7 +280,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
         Refresh
 
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={() =>
 showSettings = !showSettings}
@@ -385,7 +385,7 @@ showSettings = !showSettings}
               </div>
               
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 class="w-full mt-2 bits-btn bits-btn"
                 onclick={() =>
@@ -410,7 +410,7 @@ submitTestTask(provider.id)}
             <Activity class="h-5 w-5" />
             Active Tasks ({activeTasks.size})
           </span>
-          <Button class="bits-btn" variant="outline" size="sm" onclick={clearCompletedTasks}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearCompletedTasks}>
 Clear Completed
 
         </h3>

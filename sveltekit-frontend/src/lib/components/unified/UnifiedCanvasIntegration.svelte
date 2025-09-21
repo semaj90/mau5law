@@ -239,10 +239,10 @@ switchViewMode('hybrid')}
 				</div>
 				
 				<div class="flex gap-2">
-					<Button class="bits-btn" variant="outline" size="sm" onclick={syncCanvasToBoard}>
+					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncCanvasToBoard}>
 Sync Canvas → Board
 
-					<Button class="bits-btn" variant="outline" size="sm" onclick={syncBoardToCanvas}>
+					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncBoardToCanvas}>
 Sync Board → Canvas
 
 					<Button class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>

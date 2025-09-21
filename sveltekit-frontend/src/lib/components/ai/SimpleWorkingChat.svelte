@@ -156,7 +156,7 @@ https://svelte.dev/e/tag_invalid_name -->
     <div class="flex items-center justify-between">
       <h3 class="nes-text is-primary flex items-center gap-2">
         🤖 Legal AI Chat
-        <Badge variant="outline" class="text-xs">
+        <Badge variant="ghost" class="text-xs">
           <div class="w-2 h-2 rounded-full {getStatusColor()} mr-1"></div>
           {getStatusText()}
         </Badge>

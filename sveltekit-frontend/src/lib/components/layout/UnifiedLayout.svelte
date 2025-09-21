@@ -324,22 +324,22 @@
   }
 
   /* Custom scrollbar for content areas */
-  .main-content: :-webkit-scrollbar {
+  .main-content ::-webkit-scrollbar {
     width: 8px;
   }
 
-  .main-content: :-webkit-scrollbar-track {
+  .main-content ::-webkit-scrollbar-track {
     background: rgba(26, 26, 46, 0.3);
     border-radius: 4px;
   }
 
-  .main-content: :-webkit-scrollbar-thumb {
+  .main-content ::-webkit-scrollbar-thumb {
     background: var(--n64-primary, #4a90e2);
     border-radius: 4px;
     border: 1px solid var(--n64-secondary, #7ed321);
   }
 
-  .main-content: :-webkit-scrollbar-thumb:hover {
+  .main-content ::-webkit-scrollbar-thumb:hover {
     background: var(--n64-secondary, #7ed321);
     box-shadow: 0 0 8px var(--n64-secondary, #7ed321);
   }

@@ -490,7 +490,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex items-center justify-between pt-6 border-t">
         <div class="flex items-center space-x-4">
           {#if enableAutoSave && !editMode}
-            <Button type="button" variant="outline" onclick={() => {
+            <Button type="button" variant="ghost" onclick={() => {
               if (ondraft) ondraft({ data: $form });
             }}>
               Save as Draft
@@ -499,7 +499,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
 
         <div class="flex items-center space-x-3">
-          <Button type="button" variant="outline">
+          <Button type="button" variant="ghost">
             Cancel
           </Button>
 
@@ -529,7 +529,7 @@ https://svelte.dev/e/js_parse_error -->
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
     <Button
       onclick={() => { componentError = null; }}
-      variant="outline"
+      variant="ghost"
       class="border-red-300 text-red-700 hover:bg-red-50"
     >
       Dismiss Error

@@ -500,7 +500,7 @@
           
           <div.Footer>
             <div class="nier-bits-card-actions">
-              <button class="nes-btn" variant="outline" size="sm" onclick={() => openRecommendationDetails(recommendation)}>
+              <button class="nes-btn" variant="ghost" size="sm" onclick={() => openRecommendationDetails(recommendation)}>
                 View Details
               </button>
               <button class="nes-btn" size="sm" onclick={() => applyRecommendation(recommendation.id)}>
@@ -668,7 +668,7 @@
       </div>
       
       <div class="dialog-actions">
-        <button class="nes-btn" variant="outline" onclick={() => showRecommendationDetails = false}>
+        <button class="nes-btn" variant="ghost" onclick={() => showRecommendationDetails = false}>
           Close
         </button>
         <button class="nes-btn" onclick={() => applyRecommendation(selectedRecommendation.id)}>

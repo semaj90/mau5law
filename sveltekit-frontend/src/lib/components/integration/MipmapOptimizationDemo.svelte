@@ -444,7 +444,7 @@ processDocument(index)}
           <Button class="bits-btn" 
             onclick={generateMipmapDemo}
             disabled={!isInitialized || isProcessing}
-            variant="outline"
+            variant="ghost"
           >
 🔥 Mipmap Demo
 </Button>

@@ -246,19 +246,19 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         
         <div class="flex items-center gap-2 text-sm">
           {#if enableEnhancedRAG}
-            <Badge variant="outline">
+            <Badge variant="ghost">
               <Search class="w-3 h-3 mr-1" />
               Enhanced RAG
             </Badge>
           {/if}
           {#if enableElementalAwareness}
-            <Badge variant="outline">
+            <Badge variant="ghost">
               <Eye class="w-3 h-3 mr-1" />
               YOLO Aware
             </Badge>
           {/if}
           {#if enableSelfPrompting}
-            <Badge variant="outline">
+            <Badge variant="ghost">
               <Brain class="w-3 h-3 mr-1" />
               Self-Prompting
             </Badge>
@@ -279,7 +279,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
         <div class="flex flex-wrap gap-2">
           {#each selfPromptSuggestions as suggestion}
             <Button class="bits-btn" 
-              variant="outline" 
+              variant="ghost" 
               size="sm"
               onclick={() =>
 useSelfPrompt(suggestion)}

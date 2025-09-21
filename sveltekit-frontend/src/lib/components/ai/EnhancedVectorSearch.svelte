@@ -502,7 +502,7 @@ https://svelte.dev/e/js_parse_error -->
 
         {#if enableFilters}
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 showFilters.update((s) => !s)}
             class="filter-button"
@@ -519,7 +519,7 @@ showFilters.update((s) => !s)}
 
         {#if enableAnalytics}
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 showAnalytics.update((s) => !s)}
           >
@@ -782,7 +782,7 @@ Apply Filters
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button class="bits-btn" variant="outline" onclick={resetFilters}>
+        <Button class="bits-btn" variant="ghost" onclick={resetFilters}>
 Reset Filters
 
       </div>

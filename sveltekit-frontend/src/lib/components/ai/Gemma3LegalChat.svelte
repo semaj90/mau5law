@@ -534,11 +534,11 @@ https://svelte.dev/e/attribute_invalid_name -->
             </Alert>
             
             <div class="grid grid-cols-2 gap-4">
-              <Button variant="outline" class="justify-start bits-btn bits-btn">
+              <Button variant="ghost" class="justify-start bits-btn bits-btn">
 <FileText class="h-4 w-4 mr-2" />
                 Upload Document
 
-              <Button variant="outline" class="justify-start bits-btn bits-btn">
+              <Button variant="ghost" class="justify-start bits-btn bits-btn">
 <Search class="h-4 w-4 mr-2" />
                 Search Documents
 

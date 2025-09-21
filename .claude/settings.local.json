@@ -343,7 +343,8 @@
       "Bash(git rm:*)",
       "Bash(then echo \"Moving test route: $dir\")",
       "Bash(python3:*)",
-      "Bash(REDIS_PASSWORD=\"redis\" DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npm run dev -- --port 5173 --host 127.0.0.1)"
+      "Bash(REDIS_PASSWORD=\"redis\" DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npm run dev -- --port 5173 --host 127.0.0.1)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

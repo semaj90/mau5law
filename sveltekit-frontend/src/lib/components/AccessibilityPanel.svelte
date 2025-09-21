@@ -624,7 +624,7 @@ runAccessibilityAudit(}
               </div>
 
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
                 onclick={(event: MouseEvent) => ) =>

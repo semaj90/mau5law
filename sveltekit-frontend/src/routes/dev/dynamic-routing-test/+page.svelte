@@ -183,7 +183,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
         <Button
           onclick={calculateRouteStats}
-          variant="outline"
+          variant="ghost"
           class="border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary bits-btn bits-btn"
         >
 Refresh Stats

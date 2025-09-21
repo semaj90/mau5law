@@ -327,7 +327,7 @@ provideFeedback(message.id, 'negative'}>
                   <div class="mt-2 space-y-1">
                     {#each message.suggestions as suggestion}
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         class="text-xs h-auto py-1 px-2 bits-btn bits-btn"
                         onclick={(event: MouseEvent) => ) =>
@@ -390,7 +390,7 @@ handleSuggestionClick(suggestion}>
             <Send class="h-4 w-4" />
           {/if}
 </Button>
-        <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => clearChat}>
+        <Button class="bits-btn" variant="ghost" onclick={(event: MouseEvent) => clearChat}>
 <X class="h-4 w-4" />
 </Button>
       </div>

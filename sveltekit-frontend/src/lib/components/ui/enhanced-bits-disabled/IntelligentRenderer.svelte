@@ -134,7 +134,7 @@ Analyze
 Process
         <Button
           class="enhanced-bits-button nes-btn gaming-transition"
-          variant="outline"
+          variant="ghost"
           onclick={handleInteraction}
         >
 Details

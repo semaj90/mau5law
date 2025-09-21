@@ -186,7 +186,7 @@
           class="flex-1"
         />
         {#if searchQuery}
-          <Button class="bits-btn" onclick={clearSearch} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={clearSearch} variant="ghost" size="sm">
 Clear
 
         {/if}
@@ -259,7 +259,7 @@ Clear
 <Sparkles class="w-4 h-4 mr-2" />
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
 
-          <Button class="bits-btn" onclick={generateInsights} disabled={isProcessing} variant="outline">
+          <Button class="bits-btn" onclick={generateInsights} disabled={isProcessing} variant="ghost">
 Generate Insights
 
         </div>

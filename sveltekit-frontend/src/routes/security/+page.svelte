@@ -17,7 +17,7 @@
   <!-- Header -->
   <div class="space-y-4">
     <a href="/dashboard" class="space-y-4">
-      <Button class="bits-btn" variant="outline" size="sm">
+      <Button class="bits-btn" variant="ghost" size="sm">
 <ArrowLeft class="space-y-4" />
         Back to Dashboard
 

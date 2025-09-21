@@ -211,7 +211,7 @@ https://svelte.dev/e/expected_token -->
           <h2>📋 Persisted States ({persistedStates.length})</h2>
           
           <div class="filter-controls">
-            <button class="nes-btn" variant="outline" onclick={loadPersistedStates}>
+            <button class="nes-btn" variant="ghost" onclick={loadPersistedStates}>
               🔄 Refresh
             </button>
           </div>

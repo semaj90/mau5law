@@ -357,7 +357,7 @@ Select Files
         <!-- Training Controls -->
         <div class="flex gap-3">
           {#if currentJob.status === 'running'}
-            <Button class="bits-btn" onclick={pauseTraining} variant="outline" size="sm">
+            <Button class="bits-btn" onclick={pauseTraining} variant="ghost" size="sm">
 ⏸️ Pause
 </Button>
             <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">

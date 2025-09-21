@@ -277,7 +277,7 @@
 				<div class="flex gap-2 mb-2">
 					<Button
 						size="sm"
-						variant="outline"
+						variant="ghost"
 						onclick={analyzeSelectedEvidence}
 						disabled={selectedEvidenceIds.length === 0 || isLoading}
 						class="text-xs"
@@ -287,7 +287,7 @@
 					</Button>
 					<Button
 						size="sm"
-						variant="outline"
+						variant="ghost"
 						onclick={suggestNextSteps}
 						disabled={isLoading}
 						class="text-xs"

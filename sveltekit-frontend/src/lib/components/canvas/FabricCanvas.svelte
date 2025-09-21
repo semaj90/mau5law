@@ -508,7 +508,7 @@ let uploadProgress = $state(new Map<string, number>());
               onchange={handleFileUpload}
               disabled={isLoading}
             />
-            <Button class="bits-btn" variant="outline" disabled={isLoading}>
+            <Button class="bits-btn" variant="ghost" disabled={isLoading}>
               <Upload class="h-4 w-4 mr-2" />
               Upload Evidence
             </Button>
@@ -517,20 +517,20 @@ let uploadProgress = $state(new Map<string, number>());
 
         <!-- Add Annotation -->
         {#if !readOnly}
-          <Button class="bits-btn" variant="outline" onclick={addAnnotation}>
+          <Button class="bits-btn" variant="ghost" onclick={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
           </Button>
         {/if}
 
         <!-- Zoom Controls -->
-        <Button class="bits-btn" variant="outline" onclick={zoomIn}>
+        <Button class="bits-btn" variant="ghost" onclick={zoomIn}>
           <ZoomIn class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn" variant="outline" onclick={zoomOut}>
+        <Button class="bits-btn" variant="ghost" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn" variant="outline" onclick={resetZoom}>
+        <Button class="bits-btn" variant="ghost" onclick={resetZoom}>
           <RotateCcw class="h-4 w-4" />
         </Button>
 
@@ -550,7 +550,7 @@ let uploadProgress = $state(new Map<string, number>());
           </Button>
         {/if}
 
-        <Button class="bits-btn" variant="outline" onclick={exportCanvas}>
+        <Button class="bits-btn" variant="ghost" onclick={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
         </Button>

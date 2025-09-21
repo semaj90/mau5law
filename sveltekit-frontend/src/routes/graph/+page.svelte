@@ -219,7 +219,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <ModernButton
           onclick={loadEngineData}
           size="sm"
-          variant="outline"
+          variant="ghost"
           class="w-full border-green-500 text-green-400"
         >
           🔄 Refresh Stats
@@ -227,7 +227,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <ModernButton
           onclick={() => unifiedServiceRegistry.clearCaches()}
           size="sm"
-          variant="outline"
+          variant="ghost"
           class="w-full border-red-500 text-red-400"
         >
           🗑️ Clear Cache
@@ -266,7 +266,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         {#if queryResult?.nodes?.length > 0}
           <ModernButton
             onclick={getRecommendations}
-            variant="outline"
+            variant="ghost"
             class="border-blue-500 text-blue-400"
           >
             🧠 Get Recommendations

@@ -188,11 +188,11 @@
       <p class="text-nier-text-muted mt-1">AI-powered semantic search across legal documents</p>
     </div>
     <div class="flex items-center gap-2">
-      <Badge variant="outline" class="text-nier-accent-warm border-nier-accent-warm">
+      <Badge variant="ghost" class="text-nier-accent-warm border-nier-accent-warm">
         <Sparkles class="w-3 h-3 mr-1" />
         pgvector + AI
       </Badge>
-      <Button class="bits-btn" variant="outline" size="sm">
+      <Button class="bits-btn" variant="ghost" size="sm">
 <Settings class="w-4 h-4 mr-2" />
         Settings
 
@@ -312,7 +312,7 @@
           <div class="text-center py-8">
             <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
             <p class="text-red-600">{error}</p>
-            <Button onclick={performSearch} variant="outline" size="sm" class="mt-2 bits-btn">
+            <Button onclick={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
 Retry Search
 
           </div>

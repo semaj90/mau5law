@@ -328,7 +328,7 @@
 
 <Dialog.Root bind:open>
   <Dialog.Trigger>
-    <Button variant="outline" class="gap-2 bits-btn bits-btn">
+    <Button variant="ghost" class="gap-2 bits-btn bits-btn">
 <MessageCircle class="h-4 w-4" />
       {title}
 </Button>

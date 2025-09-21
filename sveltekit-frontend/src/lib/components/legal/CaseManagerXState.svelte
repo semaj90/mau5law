@@ -137,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="text-lg font-semibold text-red-800 mb-2">Error</h3>
         <p class="text-red-600 mb-4">{$state.context.error}</p>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="sm" onclick={handleRetry}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>
 Retry
 
           <Button class="bits-btn" variant="ghost" size="sm" onclick={handleDismissError}>
@@ -320,7 +320,7 @@ Choose Files
                             <p class="text-sm text-gray-500">{(item as { title?: unknown; type?: unknown; aiSummary?: unknown }).type}</p>
                           </div>
                           <div class="flex gap-2">
-                            <Button class="bits-btn" size="sm" variant="outline">
+                            <Button class="bits-btn" size="sm" variant="ghost">
 View
 
                             <Button class="bits-btn" size="sm" onclick={() =>
@@ -357,7 +357,7 @@ send({ type: 'SELECT_EVIDENCE', evidence: item })}>
 Start AI Analysis
 
                   <Button class="bits-btn" 
-                    variant="outline"
+                    variant="ghost"
                     onclick={handleFindSimilarCases}
                   >
 Find Similar Cases
@@ -381,7 +381,7 @@ Find Similar Cases
                             <h5 class="font-medium">{similarCase.title}</h5>
                             <p class="text-sm text-gray-500">Similarity: {similarCase.similarity}%</p>
                           </div>
-                          <Button class="bits-btn" size="sm" variant="outline">
+                          <Button class="bits-btn" size="sm" variant="ghost">
 View
 
                         </div>

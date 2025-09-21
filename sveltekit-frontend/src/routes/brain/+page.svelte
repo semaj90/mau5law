@@ -75,8 +75,9 @@ https://svelte.dev/e/js_parse_error -->
       const to = nodeMeshes[l.target];
       if (!from || !to) return;
       const pts = [from.position, to.position];
-      const geom = new THREE.BufferGeometry.setFromPoints(pts);
-  const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x334155 });
+      const geom = new THREE.BufferGeometry();
+      geom.setFromPoints(pts);
+      const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x334155 }));
       scene.add(line);
       linkLines.push(line);
     });

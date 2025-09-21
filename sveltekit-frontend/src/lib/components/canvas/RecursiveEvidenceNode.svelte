@@ -63,7 +63,7 @@
 
   let relationshipStrength = $derived(
     evidence.relationships?.length > 0
-      ? evidence.relationships.reduce((sum, rel) => sum + rel.strength, 0) / evidence.relationships.length: 0
+      ? evidence.relationships.reduce((sum, rel) => sum + rel.strength, 0) / evidence.relationships.length : 0
   );
 
   let criticalImplications = $derived(
@@ -282,7 +282,7 @@
             {#each evidence.legalImplications.slice(0, 3) as implication}
               <span class="implication-tag" title={implication}>
                 {getLegalImplicationIcon(implication)}
-                {implication.replace.toUpperCase()}
+                {implication.replace(/_/g, ' ').toUpperCase()}
               </span>
             {/each}
 
@@ -743,7 +743,7 @@
     position: relative;
   }
 
-  .evidence-children: :before {
+  .evidence-children::before {
     content: '';
     position: absolute;
     left: -1px;

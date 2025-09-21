@@ -502,7 +502,7 @@ activeTab = 'health'}
               {/if}
 </Button>
             <Button class="bits-btn"
-              variant="outline"
+              variant="ghost"
               size="sm"
               onclick={() =>
 showAdvancedOptions = !showAdvancedOptions}
@@ -522,7 +522,7 @@ showAdvancedOptions = !showAdvancedOptions}
                 <Eye class="h-5 w-5" />
                 Search Results ({searchResults.length})
               </span>
-              <Button class="bits-btn" variant="outline" size="sm">
+              <Button class="bits-btn" variant="ghost" size="sm">
 <Download class="h-4 w-4" />
 </Button>
             </h3>
@@ -649,10 +649,10 @@ showAdvancedOptions = !showAdvancedOptions}
                 Intelligent Recommendations ({recommendations.length})
               </span>
               <div class="flex items-center gap-2">
-                <Button class="bits-btn" variant="outline" size="sm">
+                <Button class="bits-btn" variant="ghost" size="sm">
 <Share class="h-4 w-4" />
 </Button>
-                <Button class="bits-btn" variant="outline" size="sm">
+                <Button class="bits-btn" variant="ghost" size="sm">
 <Download class="h-4 w-4" />
 </Button>
               </div>
@@ -907,7 +907,7 @@ showAdvancedOptions = !showAdvancedOptions}
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button class="bits-btn" variant="outline" size="sm" onclick={loadSystemHealth}>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={loadSystemHealth}>
 <RefreshCw class="h-4 w-4" />
 </Button>
           </h3>

@@ -431,7 +431,7 @@ export default ;
           <Label for="tags">Tags</Label>
           <div class="flex gap-2">
             <Input bind:value={tagInput} placeholder="Add a tag" disabled={isUploading} keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())} />
-            <Button class="bits-btn" type="button" variant="outline" onclick={addTag} disabled={isUploading}>
+            <Button class="bits-btn" type="button" variant="ghost" onclick={addTag} disabled={isUploading}>
 Add
 </Button>
           </div>
@@ -486,7 +486,7 @@ Add
       </p>
 
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="outline" onclick={() =>
+        <Button class="bits-btn" variant="ghost" onclick={() =>
 oncancel?.()} disabled={isUploading}>Cancel
 </Button>
 

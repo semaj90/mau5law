@@ -290,7 +290,7 @@ https://svelte.dev/e/js_parse_error -->
 
 					{#if !uploadedFile}
 						<Button
-							variant="outline"
+							variant="ghost"
 							class="mt-4 bits-btn"
 							onclick={() =>
 fileInput.click()}
@@ -402,7 +402,7 @@ fileInput.click()}
 									<div class="flex flex-wrap gap-1">
 										{#each activeSuggestions[field.name] as suggestion}
 											<Button
-												variant="outline"
+												variant="ghost"
 												size="sm"
 												class="text-xs h-6 px-2 bits-btn"
 												onclick={() =>
@@ -442,7 +442,7 @@ applySuggestion(field.name, suggestion)}
 
 					<div class="flex items-center space-x-3">
 						<Button class="bits-btn"
-							variant="outline"
+							variant="ghost"
 							onclick={() =>
 {
 								populatedFields = populatedFields.map(f => ({ ...f, value: '' }));

@@ -439,7 +439,7 @@ Clear
         </div>
         
         <Dialog.Footer>
-          <Button class="bits-btn" variant="outline" onclick={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 ($open = false)}>
             Close
 

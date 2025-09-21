@@ -57,7 +57,6 @@
 
   	// SVELTE 5: Converted from writable store to a rune.
   	let activeUsers = $state([]);
-  	let selectedEvidenceIds = $state<string[]>([]);
 
   	// Enhanced system status tracking
   	let systemStatus = $state({
@@ -254,13 +253,13 @@
   	}
 
   	function handleViewEvidence(item: any) {
-  		console.log.title);
+  		console.log('View evidence:', item.title);
   		// Add your logic to open a modal or navigate to a details page
-  		window.open.id}`, '_blank');
+  		window.open(`/evidence/${item.id}`, '_blank');
   	}
 
   	function handleShowMoreOptions(item: any) {
-  		console.log.title);
+  		console.log('Show more options for:', item.title);
   		// Add your logic to show a context menu
   		contextMenu.show = true;
   		contextMenu.item = item;
@@ -446,7 +445,8 @@
   		if (rect) {
   			const newX = event.clientX - rect.left;
   			const newY = event.clientY - rect.top;
-  			canvasEvidence = canvasEvidence.map.id ? { ...e, x: newX, y: newY } : e
+  			canvasEvidence = canvasEvidence.map(e =>
+  				e.id === item.id ? { ...e, x: newX, y: newY } : e
   			);
   			broadcastPositionUpdate((item as { id?: any; title?: any; x?: any; y?: any }).id, newX, newY);
   		}
@@ -499,7 +499,7 @@
 					<!-- View Mode Switcher -->
 					<div class="flex gap-2">
 						<Button
-							variant={viewMode === 'columns' ? 'default' : 'outline'}
+							variant={viewMode === 'columns' ? 'default' : 'ghost'}
 							onclick={() => switchViewMode('columns')}
 							aria-pressed={viewMode === 'columns'}
 						>
@@ -507,7 +507,7 @@
 							Columns
 						</Button>
 						<Button
-							variant={viewMode === 'canvas' ? 'default' : 'outline'}
+							variant={viewMode === 'canvas' ? 'default' : 'ghost'}
 							onclick={() => switchViewMode('canvas')}
 							aria-pressed={viewMode === 'canvas'}
 						>
@@ -515,7 +515,7 @@
 							Canvas
 						</Button>
 						<Button
-							variant={showAIAssistant ? 'default' : 'outline'}
+							variant={showAIAssistant ? 'default' : 'ghost'}
 							onclick={toggleAIAssistant}
 							aria-pressed={showAIAssistant}
 							size="sm"
@@ -544,7 +544,7 @@
 									</div>
 								{/if}
 							</div>
-							<Badge variant="outline">{activeUsers.length} online</Badge>
+							<Badge variant="secondary">{activeUsers.length} online</Badge>
 						</div>
 					{/if}
 
@@ -565,7 +565,7 @@
 			<!-- Columns Container -->
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
 				{#each columns as column (column.id)}
-					<Card.Root class="h-fit nes-container is-rounded">
+					<Card class="h-fit nes-container is-rounded">
 						<div class="yorha-panel-header pb-3">
 							<div class="flex justify-between items-center">
 								<h3 class="nes-text is-primary text-lg flex items-center gap-2">
@@ -602,8 +602,8 @@
 								{#each column.items as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 									<div
 										class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105"
-										class:highlighted={aiHighlightedEvidence.includes.id)}
-										class:selected={selectedEvidenceIds.includes.id)}
+										class:highlighted={aiHighlightedEvidence.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
+										class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 										oncontextmenu={(e) => handleRightClick(e, item)}
 										onclick={() => handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 										role="button"
@@ -618,12 +618,12 @@
 								{/each}
 							</div>
 						</div>
-					</Card.Root>
+					</Card>
 				{/each}
 			</div>
 		{:else}
 			<!-- Canvas Container -->
-			<Card.Root class="h-[calc(100vh-200px)] nes-container is-rounded">
+			<Card class="h-[calc(100vh-200px)] nes-container is-rounded">
 				<div class="yorha-panel-content p-0 h-full">
 					<div
 						bind:this={canvasContainer}
@@ -638,8 +638,8 @@
 						{#each canvasEvidence as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 							<div
 								class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move hover:shadow-xl transition-shadow"
-								class:highlighted={aiHighlightedEvidence.includes.id)}
-								class:selected={selectedEvidenceIds.includes.id)}
+								class:highlighted={aiHighlightedEvidence.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
+								class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 								style="left: {(item as { id?: any; title?: any; x?: any; y?: any }).x || 100}px; top: {(item as { id?: any; title?: any; x?: any; y?: any }).y || 100}px; min-width: 200px;"
 								draggable="true"
 								ondragstart={(e) => handleCanvasDragStart(e, item)}
@@ -684,7 +684,7 @@
 						{/if}
 					</div>
 				</div>
-			</Card.Root>
+			</Card>
 			{/if}
 		</div>
 
@@ -693,7 +693,7 @@
 			<div class="w-80 flex-shrink-0">
 				<AIAssistantPanel
 					{caseId}
-					bind:selectedEvidenceIds
+					selectedEvidenceIds={selectedEvidenceIds}
 					on:evidence-select={(e) => handleEvidenceSelect(e.detail.evidenceId)}
 					on:evidence-highlight={(e) => handleEvidenceHighlight(e.detail.evidenceIds)}
 					on:action-trigger={handleAIActionTrigger}
@@ -708,7 +708,7 @@
 	<div class="fixed z-50" style="left: {contextMenu.x}px; top: {contextMenu.y}px;">
 		<div class="bg-background border border-border rounded-md shadow-lg py-1 min-w-[200px]">
 			<Button
-				variant="ghost"
+				variant="secondary"
 				class="w-full justify-start bits-btn"
 				size="sm"
 				onclick={() => { window.open(`/evidence/${contextMenu.item?.id}`, '_blank'); closeContextMenu(); }}
@@ -716,7 +716,7 @@
 				View Details
 			</Button>
 			<Button
-				variant="ghost"
+				variant="secondary"
 				class="w-full justify-start bits-btn"
 				size="sm"
 				onclick={() => { window.location.href = `/evidence/${contextMenu.item?.id}/edit`; closeContextMenu(); }}
@@ -725,7 +725,7 @@
 			</Button>
 			<div class="border-t border-border my-1"></div>
 			<Button
-				variant="ghost"
+				variant="secondary"
 				class="w-full justify-start bits-btn"
 				size="sm"
 				onmouseenter={(e) => showMiniModal('citation', e)}
@@ -735,7 +735,7 @@
 				Add to /savedcitations
 			</Button>
 			<Button
-				variant="ghost"
+				variant="secondary"
 				class="w-full justify-start bits-btn"
 				size="sm"
 				onmouseenter={(e) => showMiniModal('mcpcontext', e)}
@@ -746,7 +746,7 @@
 			</Button>
 			<div class="border-t border-border my-1"></div>
 			<Button
-				variant="ghost"
+				variant="secondary"
 				class="w-full justify-start bits-btn"
 				size="sm"
 				onmouseenter={(e) => showMiniModal('find', e)}
@@ -756,7 +756,7 @@
 				Find Related...
 			</Button>
 			<Button
-				variant="ghost"
+				variant="secondary"
 				class="w-full justify-start bits-btn"
 				size="sm"
 				onclick={() => { analyzeSelectedEvidence(); closeContextMenu(); }}
@@ -791,10 +791,10 @@
 					}}
 				/>
 				<div class="flex gap-2">
-					<Button class="bits-btn" onclick={runFindSearch} disabled={findModal.loading}>
+					<Button onclick={runFindSearch} disabled={findModal.loading}>
 						{#if findModal.loading}Searching...{:else}Search{/if}
 					</Button>
-					<Button class="bits-btn" variant="outline" onclick={closeFindModal}>Close</Button>
+					<Button variant="secondary" onclick={closeFindModal}>Close</Button>
 				</div>
 
 				{#if findModal.error}

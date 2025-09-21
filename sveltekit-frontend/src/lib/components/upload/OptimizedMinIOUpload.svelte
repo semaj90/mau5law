@@ -108,11 +108,11 @@
       attempts: f.attempts || 0,
       nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt: null
     }));
-    if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY); } catch ; return; }
-    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })); } catch }
+    if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY); } catch(e) { /* ignore */ } return; }
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })); } catch(e) { /* ignore */ }
   function restoreSession() {
     if (!enablePersistence) return;
-    try { const raw = sessionStorage.getItem(STORAGE_KEY); if (!raw) return; const data = JSON.parse(raw); if (!data?.files) return; const restored: FileState[] = []; for (const m of data.files) { const ph = new File([], m.name, { type: m.type || 'application/octet-stream' }); restored.push({ file: ph, placeholder: true, originalSize: m.size, status: 'pending', progress: 0, attempts: m.attempts || 0, nextRetryAt: m.nextRetryAt || null }); } if (restored.length) { fileStates = [...fileStates, ...restored]; files = [...files, ...restored.map(r=>r.file)]; liveMessage = `Restored ${restored.length} pending file(s)`; if (enableToastNotifications) toastService.info('Session Restored', `Recovered ${restored.length} pending file(s). Re-select originals to resume.`, { duration: 6000 }); ensureRetryTicker(); } } catch }
+    try { const raw = sessionStorage.getItem(STORAGE_KEY); if (!raw) return; const data = JSON.parse(raw); if (!data?.files) return; const restored: FileState[] = []; for (const m of data.files) { const ph = new File([], m.name, { type: m.type || 'application/octet-stream' }); restored.push({ file: ph, placeholder: true, originalSize: m.size, status: 'pending', progress: 0, attempts: m.attempts || 0, nextRetryAt: m.nextRetryAt || null }); } if (restored.length) { fileStates = [...fileStates, ...restored]; files = [...files, ...restored.map(r=>r.file)]; liveMessage = `Restored ${restored.length} pending file(s)`; if (enableToastNotifications) toastService.info('Session Restored', `Recovered ${restored.length} pending file(s). Re-select originals to resume.`, { duration: 6000 }); ensureRetryTicker(); } } catch(e) { /* ignore */ }
   function matchPlaceholders(incoming: File[]) { for (const f of incoming) { const idx = fileStates.findIndex(ps => ps.placeholder && ps.file.name === f.name && ps.originalSize === f.size); if (idx !== -1) { const prev = fileStates[idx]; fileStates[idx] = { ...prev, file: f, placeholder: false }; } } }
 
   function isRetryable(message: string, statusCode?: number): boolean {
@@ -172,8 +172,8 @@
     // Abort active controllers
     fileStates = fileStates.map(fs => {
       if (fs.controller) {
-        try { fs.controller.abort(); } catch }
-      if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch ; fs.retryTimeoutId = null; }
+        try { fs.controller.abort(); } catch(e) { /* ignore */ }
+      if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch(e) { /* ignore */ } fs.retryTimeoutId = null; }
       if (['uploading','pending','processing'].includes(fs.status)) {
         return { ...fs, status: 'canceled', progress: fs.status === 'uploading' ? fs.progress: 0, controller: null };
       }
@@ -253,7 +253,7 @@
     if (uploading) return; // prevent removal mid-batch
     const target = fileStates[index];
     if (target && target.status === 'uploading') return; // active upload
-  if (target?.retryTimeoutId) { try { clearTimeout(target.retryTimeoutId); } catch ; }
+  if (target?.retryTimeoutId) { try { clearTimeout(target.retryTimeoutId); } catch(e) { /* ignore */ } }
     files = files.filter((_, i) => i !== index);
     fileStates = fileStates.filter((_, i) => i !== index);
   serializeSession();
@@ -262,7 +262,7 @@
   function cancelUpload(index: number) {
     const fs = fileStates[index];
     if (!fs || fs.status !== 'uploading') return;
-    try { fs.controller?.abort(); } catch if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch ; fs.retryTimeoutId = null; }
+    try { fs.controller?.abort(); } catch(e) { /* ignore */ } if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch(e) { /* ignore */ } fs.retryTimeoutId = null; }
     fs.status = 'canceled';
     fs.progress = 0;
     liveMessage = `Upload canceled for ${fs.file.name}`;
@@ -301,9 +301,9 @@
 
     // Complete batch toast
     if (enableToastNotifications && batchToastId) {
-      const completed = fileStates.filter(item => item.length);
-      const failed = fileStates.filter(item => item.length);
-      const canceled = fileStates.filter(item => item.length);
+      const completed = fileStates.filter(fs => fs.status === 'completed').length;
+      const failed = fileStates.filter(fs => fs.status === 'error').length;
+      const canceled = fileStates.filter(fs => fs.status === 'canceled').length;
 
       if (uploadStatus === 'completed' && failed === 0) {
         toastService.completeUpload(
@@ -385,7 +385,7 @@
     activeUploads = 0;
 
     // Initialize performance metrics
-  performanceMetrics.totalFiles = fileStates.filter(item => item.length);
+  performanceMetrics.totalFiles = fileStates.filter(fs => fs.status === 'pending' && !fs.placeholder).length;
   telemetry.emit('upload_batch_start', { total: performanceMetrics.totalFiles, concurrency: maxConcurrency });
     performanceMetrics.completedFiles = 0;
     performanceMetrics.totalUploadTime = 0;
@@ -417,9 +417,10 @@
       await finalizeAggregateStatus();
     }
   serializeSession();
-    telemetry.emit.length,
-      failed: fileStates.filter(item => item.length),
-      canceled: fileStates.filter(item => item.length)
+    telemetry.emit('upload_batch_complete', {
+      completed: fileStates.filter(fs => fs.status === 'completed').length,
+      failed: fileStates.filter(fs => fs.status === 'error').length,
+      canceled: fileStates.filter(fs => fs.status === 'canceled').length
     });
   }
 
@@ -440,7 +441,7 @@
 
       // Update batch toast
       if (enableToastNotifications && batchToastId) {
-        const completed = fileStates.filter(item => item.length);
+        const completed = fileStates.filter(fs => fs.status === 'completed').length;
         const total = performanceMetrics.totalFiles;
         toastService.updateUploadProgress(
           batchToastId,
@@ -607,11 +608,17 @@
         fetch('/api/v1/redis/publish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify.toISOString(),
+          body: JSON.stringify({
+            event: 'file_uploaded',
+            data: {
+              fileId: data[0].id,
+              fileName: file.name,
+              fileSize: file.size,
+              uploadedAt: new Date().toISOString(),
               gpuTaskIds: fs.gpuTaskIds
             }
           })
-        }).catch(() => );
+        }).catch((err) => { console.warn('Redis publish failed:', err); });
 
         fs.progress = 100;
         fs.status = 'completed';
@@ -776,7 +783,7 @@
               <div class="file-name">{fs.file.name}</div>
               <div class="file-size">{formatFileSize(fs.file.size)}</div>
               <div class="file-status text-xs">
-                {#if fs.status === 'pending'}Pending{#if fs.attempts && fs.attempts>1} • retry {fs.attempts - 1}{/if}
+                {#if fs.status === 'pending'}Pending{#if fs.attempts && fs.attempts>1} • retry {fs.attempts - 1}{/if}{/if}
                 {#if fs.status === 'uploading'}Uploading {fs.progress}% (attempt {fs.attempts}){/if}
                 {#if fs.status === 'processing'}Processing...{/if}
                 {#if fs.status === 'completed'}✅ Completed (attempts {fs.attempts}){/if}

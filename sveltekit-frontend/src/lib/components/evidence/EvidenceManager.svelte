@@ -309,7 +309,7 @@ export default ;
         <Button
           onclick={loadEmbeddingStats}
           disabled={loading.stats}
-          variant="outline"
+          variant="ghost"
           class="text-sm bits-btn bits-btn"
         >
 {loading.stats ? 'Refreshing...' : '🔄 Refresh Stats'}
@@ -405,7 +405,7 @@ fileInput?.click()}
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
               <button class="nes-btn"
                 onclick={() => { showSearchResults = false; searchResults = []; }}
-                variant="outline"
+                variant="ghost"
                 class="bits-btn text-sm"
               >
                 Clear Results
@@ -456,7 +456,7 @@ fileInput?.click()}
         <Button
           onclick={loadEvidenceFiles}
           disabled={loading.files}
-          variant="outline"
+          variant="ghost"
           class="text-sm bits-btn bits-btn"
         >
 {loading.files ? 'Loading...' : '🔄 Refresh'}
@@ -524,7 +524,7 @@ fileInput?.click()}
           <p class="error-message">{error}</p>
           <button class="nes-btn"
             onclick={() => { error = ''; }}
-            variant="outline"
+            variant="ghost"
             class="bits-btn mt-3 text-xs dismiss-btn"
           >
             Dismiss

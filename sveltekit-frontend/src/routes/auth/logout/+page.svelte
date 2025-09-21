@@ -71,7 +71,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 						>
 							Logout Now
 						<Button
-							variant="outline"
+							variant="ghost"
 							class="nes-btn"
 							onclick={() => window.history.back()}
 						>

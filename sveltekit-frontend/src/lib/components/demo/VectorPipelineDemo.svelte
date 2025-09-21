@@ -94,7 +94,7 @@ Submit Single Job
         <Button class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
 Submit Batch
 </Button>
-        <Button class="bits-btn" onclick={runHealthCheck} variant="outline">
+        <Button class="bits-btn" onclick={runHealthCheck} variant="ghost">
 Health Check
 </Button>
         <Button class="bits-btn" onclick={resetPipeline} variant="destructive">
@@ -293,7 +293,7 @@ Retry Failed
                 alert(`Enhanced RAG Service: Error - ${error}`);
               }
             }}
-            variant="outline"
+            variant="ghost"
           >
             Test Enhanced RAG (8094)
 </Button>
@@ -311,7 +311,7 @@ Retry Failed
                 alert(`Qdrant Service: Error - ${error}`);
               }
             }}
-            variant="outline"
+            variant="ghost"
           >
             Test Qdrant (6333)
 </Button>

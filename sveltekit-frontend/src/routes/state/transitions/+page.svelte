@@ -177,7 +177,7 @@ https://svelte.dev/e/expected_token -->
         <option value="gpu-allocation-machine">GPU Allocation Machine</option>
       </select>
       
-      <button class="nes-btn" variant="outline" onclick={loadTransitions}>
+      <button class="nes-btn" variant="ghost" onclick={loadTransitions}>
         Refresh
       </button>
     </div>
@@ -271,10 +271,10 @@ https://svelte.dev/e/expected_token -->
             <button class="nes-btn" onclick={() => triggerTransition('LOGOUT')}>
               Trigger Logout
             </button>
-            <button class="nes-btn" variant="outline" onclick={() => triggerTransition('REFRESH_TOKEN')}>
+            <button class="nes-btn" variant="ghost" onclick={() => triggerTransition('REFRESH_TOKEN')}>
               Refresh Token
             </button>
-            <button class="nes-btn" variant="outline" onclick={() => triggerTransition('VIEW_PROFILE')}>
+            <button class="nes-btn" variant="ghost" onclick={() => triggerTransition('VIEW_PROFILE')}>
               View Profile
             </button>
           </div>

@@ -107,10 +107,10 @@ import type { Case } from '$lib/types';
 
       <!-- Status and Priority Badges -->
       <div class="space-y-4">
-        <Badge variant="outline">
+        <Badge variant="ghost">
           <span class={getStatusColor(caseData.status)}>{caseData.status.replace("_", " ")}</span>
         </Badge>
-        <Badge variant="outline">
+        <Badge variant="ghost">
           <span class={getPriorityColor(caseData.priority)}>{caseData.priority}</span>
         </Badge>
       </div>

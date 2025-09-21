@@ -270,7 +270,7 @@ and AI-powered verification features.
       {/if}
       
       {#if activeCollaborators.length > 0}
-        <Badge variant="outline" class="px-3 py-1">
+        <Badge variant="ghost" class="px-3 py-1">
           <Users class="w-4 h-4 mr-2" />
           {activeCollaborators.length} Collaborator{activeCollaborators.length > 1 ? 's' : ''}
         </Badge>
@@ -346,7 +346,7 @@ Start Custody Workflow
                 Integrity Verification
               </div>
               <Button class="bits-btn" 
-                variant="outline" 
+                variant="ghost" 
                 size="sm"
                 onclick={() =>
 showIntegrityDetails = !showIntegrityDetails}
@@ -407,15 +407,15 @@ Reject Custody
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
                 <Button class="bits-btn" onclick={() =>
-showTransferDialog = true} variant="outline">
+showTransferDialog = true} variant="ghost">
                   Transfer Custody
 
                 {#if !activeCollaborators.includes(userId)}
-                  <Button class="bits-btn" onclick={joinCollaboration} variant="outline">
+                  <Button class="bits-btn" onclick={joinCollaboration} variant="ghost">
 Join Collaboration
 
                 {:else}
-                  <Button class="bits-btn" onclick={leaveCollaboration} variant="outline">
+                  <Button class="bits-btn" onclick={leaveCollaboration} variant="ghost">
 Leave Collaboration
 
                 {/if}
@@ -483,7 +483,7 @@ Transfer
           <Button class="bits-btn" 
             onclick={() =>
 showTransferDialog = false}
-            variant="outline"
+            variant="ghost"
             class="flex-1"
           >
             Cancel

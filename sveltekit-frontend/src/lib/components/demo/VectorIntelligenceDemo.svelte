@@ -169,7 +169,7 @@
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as query}
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               class="text-xs bits-btn bits-btn"
               onclick={() =>

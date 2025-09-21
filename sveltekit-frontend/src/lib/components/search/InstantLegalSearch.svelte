@@ -422,7 +422,7 @@ https://svelte.dev/e/expected_token -->
                   </Badge>
                   
                   <!-- Score Badge -->
-                  <Badge variant="outline" class="text-xs">
+                  <Badge variant="ghost" class="text-xs">
                     {formatScore((result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).combinedScore)}
                   </Badge>
                   
@@ -493,7 +493,7 @@ https://svelte.dev/e/expected_token -->
 
                 <button class="nes-btn" 
                   size="sm" 
-                  variant="outline" 
+                  variant="ghost" 
                   onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'analyze'); }}
                 >
                   AI Analysis
@@ -502,7 +502,7 @@ https://svelte.dev/e/expected_token -->
                 {#if (result as { resultType?: unknown; highlights?: unknown; document?: unknown; id?: unknown; combinedScore?: unknown; responseTime?: unknown; fuseScore?: unknown; semanticScore?: unknown }).document.type === 'evidence'}
                   <button class="nes-btn" 
                     size="sm" 
-                    variant="outline" 
+                    variant="ghost" 
                     onclick={(e) => { e.stopPropagation(); handleResultAction(result, 'canvas'); }}
                   >
                     Open in Canvas

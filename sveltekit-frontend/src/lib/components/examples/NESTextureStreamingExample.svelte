@@ -238,7 +238,7 @@
               {enableGPU}
               fallbackContent="<div class='nes-fallback'>Document Preview</div>"
             >
-              {#snippet overlay let:currentLOD let:webgpuSupported}
+              {#snippet overlay(currentLOD, webgpuSupported)}
                 <div class="texture-overlay">
                   LOD{currentLOD} | GPU:{webgpuSupported ? '✅' : '❌'}
                 </div>

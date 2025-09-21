@@ -352,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
         </p>
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="outline" onclick={() =>
+        <Button class="bits-btn" variant="ghost" onclick={() =>
 goto('/legal/documents/templates')}>
           <FileText class="h-4 w-4 mr-2" />
           Templates
@@ -590,7 +590,7 @@ showUploadDialog = true}>
               <FileText class="h-8 w-8 mx-auto text-green-600" />
               <p class="font-medium">{uploadFile.name}</p>
               <p class="text-sm nes-text is-disabled">{formatFileSize(uploadFile.size)}</p>
-              <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 uploadFile = null}>
                 Remove
 
@@ -671,7 +671,7 @@ uploadFile = null}>
     </div>
 
     <Dialog.Footer>
-      <Button class="bits-btn" variant="outline" onclick={() =>
+      <Button class="bits-btn" variant="ghost" onclick={() =>
 { showUploadDialog = false; resetUploadForm(); }}>
         Cancel
 
@@ -795,7 +795,7 @@ uploadFile = null}>
       </div>
       
       <Dialog.Footer>
-        <Button class="bits-btn" variant="outline" onclick={() =>
+        <Button class="bits-btn" variant="ghost" onclick={() =>
 showAIAnalysisDialog = false}>
           Close
 

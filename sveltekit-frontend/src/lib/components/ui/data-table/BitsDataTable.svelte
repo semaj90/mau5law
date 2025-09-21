@@ -145,13 +145,13 @@
       {/if}
 
       {#if filterable}
-        <Button class="bits-btn" variant="outline" size="sm">
+        <Button class="bits-btn" variant="ghost" size="sm">
 <Filter class="w-4 h-4" />
 
       {/if}
 
       {#if exportable}
-        <Button class="bits-btn" variant="outline" size="sm" onclick={handleExport}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={handleExport}>
 <Download class="w-4 h-4 mr-2" />
           Export
 
@@ -254,7 +254,7 @@
     {#if totalPages > 1}
       <div class="flex items-center gap-2">
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           size="sm"
           disabled={currentPage === 0}
           onclick={() =>
@@ -267,7 +267,7 @@ currentPage = Math.max(0, currentPage - 1)}
         </span>
 
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           size="sm"
           disabled={currentPage >
 = totalPages - 1}

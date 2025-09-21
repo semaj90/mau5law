@@ -372,7 +372,7 @@ https://svelte.dev/e/attribute_duplicate -->
 					<!-- Actions -->
 					<div class="flex gap-1 pl-2">
 						<Button
-							variant="outline"
+							variant="ghost"
 							size="sm"
 							onclick={saveContent}
 							disabled={readonly}
@@ -416,7 +416,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
 					<!-- Stats -->
 					<div class="flex gap-2 text-xs nes-text is-disabled">
-						<Badge variant="outline" class="px-2 py-1">
+						<Badge variant="ghost" class="px-2 py-1">
 							<FileText class="w-3 h-3 mr-1" />
 							{wordCount} words
 						</Badge>

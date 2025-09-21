@@ -178,7 +178,7 @@ https://svelte.dev/e/expected_token -->
                 
                 <div class="machine-actions">
                   <button class="nes-btn" 
-                    variant="outline" 
+                    variant="ghost" 
                     size="sm"
                     onclick={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
                   >
@@ -186,7 +186,7 @@ https://svelte.dev/e/expected_token -->
                   </button>
                   
                   <button class="nes-btn" 
-                    variant="outline" 
+                    variant="ghost" 
                     size="sm"
                     onclick={() => restartMachine(machine.id)}
                   >

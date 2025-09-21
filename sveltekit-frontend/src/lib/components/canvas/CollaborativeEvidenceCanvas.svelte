@@ -1025,7 +1025,7 @@
 
     <div class="action-group flex gap-2">
       <Button
-        variant="outline"
+        variant="ghost"
         onclick={undo}
         disabled={undoStack.length === 0}
         size="sm"
@@ -1033,7 +1033,7 @@
         ⏪ Undo
       </Button>
       <Button
-        variant="outline"
+        variant="ghost"
         onclick={redo}
         disabled={redoStack.length === 0}
         size="sm"
@@ -1041,14 +1041,14 @@
         ⏩ Redo
       </Button>
       <Button
-        variant="outline"
+        variant="ghost"
         onclick={zoomFit}
         size="sm"
       >
         🔍 Fit
       </Button>
       <Button
-        variant="outline"
+        variant="ghost"
         onclick={() => exportCanvas('png')}
         size="sm"
       >
@@ -1130,7 +1130,7 @@
     </div>
   {:else}
     <Button
-      variant="outline"
+      variant="ghost"
       size="sm"
       onclick={() => sidebarOpen = true}
       class="fixed left-4 top-4 z-30"

@@ -231,7 +231,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Action Buttons -->
     <div class="flex items-center gap-3 pt-4 border-t">
       <Button class="bits-btn" 
-        variant="outline" 
+        variant="ghost" 
         size="sm"
         onclick={() =>
 showDetails = !showDetails}
@@ -239,11 +239,11 @@ showDetails = !showDetails}
         {showDetails ? 'Hide' : 'Show'} Full Analysis
 </Button>
       
-      <Button class="bits-btn" variant="outline" size="sm">
+      <Button class="bits-btn" variant="ghost" size="sm">
 📊 View Timeline
 </Button>
       
-      <Button class="bits-btn" variant="outline" size="sm">
+      <Button class="bits-btn" variant="ghost" size="sm">
 🕸️ Relationship Graph
 </Button>
       

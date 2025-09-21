@@ -345,7 +345,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
               </div>
               <Button class="bits-btn"
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 onclick={() =>
 executeExample(example)}
                 disabled={isProcessing}
@@ -456,7 +456,7 @@ executeExample(example)}
 </Button>
 
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           onclick={executeViaAPI}
           disabled={isProcessing || !userPrompt.trim()}
         >
@@ -464,10 +464,10 @@ Via API
 </Button>
 
         {#if currentResult}
-          <Button class="bits-btn" variant="outline" onclick={downloadResult}>
+          <Button class="bits-btn" variant="ghost" onclick={downloadResult}>
 <Download class="h-4 w-4" />
 </Button>
-          <Button class="bits-btn" variant="outline" onclick={clearResults}>
+          <Button class="bits-btn" variant="ghost" onclick={clearResults}>
 <RefreshCw class="h-4 w-4" />
 </Button>
         {/if}

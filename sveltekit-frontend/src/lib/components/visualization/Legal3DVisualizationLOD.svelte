@@ -878,7 +878,7 @@
   <!-- 3D Controls -->
   <div class="visualization-controls">
     <div class="camera-controls">
-      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -886,11 +886,11 @@
         {cameraDistance.toFixed(1)}m
       </span>
       
-      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleResetCamera} variant="outline" size="sm">
+      <LoadingButton onclick={handleResetCamera} variant="ghost" size="sm">
         {#snippet children()}<RotateCcw class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -913,7 +913,7 @@
         {/each}
       </select>
       
-      <Badge variant="outline" class="lod-badge">
+      <Badge variant="ghost" class="lod-badge">
         <Layers class="w-3 h-3 mr-1" />
         Rec: LOD {recommendedLOD}
       </Badge>
@@ -956,7 +956,7 @@
     <div class="entity-details nes-container">
       <h4>{selectedEntity.label}</h4>
       <div class="entity-meta">
-        <Badge variant="outline" class="entity-type-badge">
+        <Badge variant="ghost" class="entity-type-badge">
           {selectedEntity.type}
         </Badge>
         <span class="entity-importance">

@@ -471,7 +471,7 @@
       <p class="text-gray-600">AI-powered precedent analysis and legal reasoning chain construction</p>
     </div>
     <div class="flex items-center gap-4">
-      <Badge variant="outline">Database: {legalSystem.precedentDatabase.totalCases.toLocaleString()} cases</Badge>
+      <Badge variant="ghost">Database: {legalSystem.precedentDatabase.totalCases.toLocaleString()} cases</Badge>
       <Badge class={legalSystem.status === 'ready' ? 'bg-green-600' : legalSystem.status === 'analyzing' ? 'bg-blue-600' : 'bg-gray-600'}>
         {legalSystem.status.toUpperCase()}
       </Badge>
@@ -701,7 +701,7 @@
                     <div class="text-sm font-medium text-orange-700 mb-2">Distinguishing Factors</div>
                     <div class="flex flex-wrap gap-2">
                       {#each match.distinguishingFactors as factor}
-                        <Badge variant="outline" class="text-orange-700 border-orange-300">{factor}</Badge>
+                        <Badge variant="ghost" class="text-orange-700 border-orange-300">{factor}</Badge>
                       {/each}
                     </div>
                   </div>
@@ -742,7 +742,7 @@
                     <div class="text-sm font-medium text-gray-700 mb-2">Supporting Cases</div>
                     <div class="flex flex-wrap gap-2">
                       {#each step.supportingCases as caseId}
-                        <Badge variant="outline" class="text-blue-700 border-blue-300">{caseId}</Badge>
+                        <Badge variant="ghost" class="text-blue-700 border-blue-300">{caseId}</Badge>
                       {/each}
                     </div>
                   </div>
@@ -798,10 +798,10 @@
                     <div class="max-h-40 overflow-y-auto">
                       <div class="flex flex-wrap gap-1">
                         {#each network.citingCases.slice(0, 10) as citingCase}
-                          <Badge variant="outline" class="text-xs">{citingCase}</Badge>
+                          <Badge variant="ghost" class="text-xs">{citingCase}</Badge>
                         {/each}
                         {#if network.citingCases.length > 10}
-                          <Badge variant="outline" class="text-xs">+{network.citingCases.length - 10} more</Badge>
+                          <Badge variant="ghost" class="text-xs">+{network.citingCases.length - 10} more</Badge>
                         {/if}
                       </div>
                     </div>
@@ -814,10 +814,10 @@
                     <div class="max-h-40 overflow-y-auto">
                       <div class="flex flex-wrap gap-1">
                         {#each network.citedCases.slice(0, 10) as citedCase}
-                          <Badge variant="outline" class="text-xs">{citedCase}</Badge>
+                          <Badge variant="ghost" class="text-xs">{citedCase}</Badge>
                         {/each}
                         {#if network.citedCases.length > 10}
-                          <Badge variant="outline" class="text-xs">+{network.citedCases.length - 10} more</Badge>
+                          <Badge variant="ghost" class="text-xs">+{network.citedCases.length - 10} more</Badge>
                         {/if}
                       </div>
                     </div>

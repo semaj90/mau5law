@@ -335,7 +335,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <Button 
             class="bits-btn justify-start"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
@@ -344,7 +344,7 @@ handleQuickQuery('Explain contract formation requirements')}
 </Button>
           <Button 
             class="bits-btn justify-start"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
@@ -353,7 +353,7 @@ handleQuickQuery('What is the chain of custody for evidence?')}
 </Button>
           <Button 
             class="bits-btn justify-start"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
@@ -362,7 +362,7 @@ handleQuickQuery('Explain liability limitations in contracts')}
 </Button>
           <Button 
             class="bits-btn justify-start"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
@@ -385,7 +385,7 @@ handleQuickQuery('What are the elements of negligence?')}
                 <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
                   {isStreaming ? 'Streaming...' : 'Ready'}
                 </span>
-                <Button variant="outline" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
+                <Button variant="ghost" size="sm" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={clearChat} disabled={isStreaming}>
 {#snippet children()}Clear{/snippet}
 </Button>
               </div>
@@ -475,7 +475,7 @@ handleQuickQuery('What are the elements of negligence?')}
                   Persons of Interest Timeline
                 </h2>
                 <button class="nes-btn"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={() => showTimeline = false}
                   class="bits-btn"
@@ -504,7 +504,7 @@ handleQuickQuery('What are the elements of negligence?')}
                         </div>
                       </div>
                       <button class="nes-btn"
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         onclick={() => selectPOI(poi)}
                         class="bits-btn"
@@ -652,7 +652,7 @@ handleQuickQuery('What are the elements of negligence?')}
               <h3 class="font-semibold mb-3">System Actions</h3>
               <div class="space-y-2">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={checkSystemStatus}
                   class="w-full justify-start bits-btn bits-btn"
@@ -667,7 +667,7 @@ handleQuickQuery('What are the elements of negligence?')}
 </Button>
                 <Button 
                   class="bits-btn w-full justify-start"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={() =>
 window.open('/api/v1/cluster/health', '_blank')}
@@ -711,7 +711,7 @@ window.open('/api/v1/cluster/health', '_blank')}
                   {/snippet}
 </Button>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={generateUserActivityTimeline}
                   disabled={activityLoading}
@@ -791,7 +791,7 @@ window.open('/api/v1/cluster/health', '_blank')}
             </div>
           </div>
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={closePOIDetails}
             class="bits-btn"
@@ -900,7 +900,7 @@ window.open('/api/v1/cluster/health', '_blank')}
         <!-- Actions -->
         <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
           <Button
-            variant="outline"
+            variant="ghost"
             onclick={closePOIDetails}
             class="bits-btn"
           >

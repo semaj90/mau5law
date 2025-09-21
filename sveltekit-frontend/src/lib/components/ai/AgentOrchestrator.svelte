@@ -436,7 +436,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       </Badge>
 
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         size="sm"
   onclick={(event: MouseEvent) => checkServiceStatus}
       >
@@ -543,16 +543,16 @@ Manages AutoGen and CrewAI multi-agent workflows
 </Button>
 
         {#if isProcessing}
-          <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => cancelExecution}>
+          <Button class="bits-btn" variant="ghost" onclick={(event: MouseEvent) => cancelExecution}>
 <Square class="h-4 w-4" />
 </Button>
         {/if}
 
         {#if conversationMessages.length > 0 || executionResults.length > 0}
-          <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => clearResults}>
+          <Button class="bits-btn" variant="ghost" onclick={(event: MouseEvent) => clearResults}>
 Clear
 </Button>
-          <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => downloadResults}>
+          <Button class="bits-btn" variant="ghost" onclick={(event: MouseEvent) => downloadResults}>
 <Download class="h-4 w-4" />
 </Button>
         {/if}
@@ -688,7 +688,7 @@ Clear
       <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Button
-            variant="outline"
+            variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
             onclick={(event: MouseEvent) => ) =>
 {
@@ -704,7 +704,7 @@ Clear
 </Button>
 
           <Button
-            variant="outline"
+            variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
             onclick={(event: MouseEvent) => ) =>
 {
@@ -720,7 +720,7 @@ Clear
 </Button>
 
           <Button
-            variant="outline"
+            variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
             onclick={(event: MouseEvent) => ) =>
 {
@@ -736,7 +736,7 @@ Clear
 </Button>
 
           <Button
-            variant="outline"
+            variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
             onclick={(event: MouseEvent) => ) =>
 {

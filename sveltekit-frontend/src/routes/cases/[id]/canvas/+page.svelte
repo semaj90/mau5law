@@ -179,7 +179,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 							Retry Loading
 
 						<Button
-							variant="outline"
+							variant="ghost"
 							class="nes-btn"
 							onclick={() => window.history.back()}
 						>
@@ -206,13 +206,13 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 								<Button class="nes-btn w-full text-xs" size="sm">
 									<� Select Mode
 
-								<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
+								<Button class="nes-btn w-full text-xs" size="sm" variant="ghost">
 									 Draw Connections
 
-								<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
+								<Button class="nes-btn w-full text-xs" size="sm" variant="ghost">
 									=� Take Screenshot
 
-								<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
+								<Button class="nes-btn w-full text-xs" size="sm" variant="ghost">
 									=� Save Layout
 
 							</div>
