@@ -734,3 +734,23 @@ build_gemma3_trt.sh
 quic-nats-bridge-test
 ubuntu-tensorrt/*.deb
 *.deb
+
+########################################
+# Additional Large Files
+########################################
+# TensorRT cache and wheels
+trt_cache/
+trt_wheels/
+pytorch_cache.json
+
+# Docker image exports
+*.tar
+
+# Language model files
+*.gguf
+*.ggml
+*.model
+
+# Cache directories
+.go-cache/
+__pycache__/
