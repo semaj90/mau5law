@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
   function handleFileUpload(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.files) {
-      uploadedFiles = [...uploadedFiles, ...Array.from(target.files)];
+      uploadedFiles = [...uploadedFiles, ...Array.from(target.files)];)
     }
   }
 

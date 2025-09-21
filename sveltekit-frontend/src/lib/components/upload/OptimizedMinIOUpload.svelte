@@ -459,7 +459,7 @@
     fs.status = 'uploading';
     fs.progress = 0;
     fs.error = undefined;
-    fs.startTime = new Date();
+    fs.startTime = new Date());
   fs.attempts = (fs.attempts || 0) + 1;
     const controller = new AbortController();
     fs.controller = controller;
@@ -539,7 +539,7 @@
 
       if (data[0]) {
         fs.result = data[0];
-        fs.endTime = new Date();
+        fs.endTime = new Date());
 
         // Submit GPU processing tasks if enabled
         if (enableGPUProcessing && data[0].id) {
@@ -660,7 +660,7 @@
     } catch (err) {
       if ((fs.status as FileState['status']) === 'canceled') return; // already marked (possible race if abort just triggered)
 
-      fs.endTime = new Date();
+      fs.endTime = new Date());
       fs.status = controller.signal.aborted ? 'canceled' : 'error';
       fs.error = err instanceof Error ? err.message: 'Upload failed';
       errorMessage = fs.error;

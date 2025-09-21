@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
   		if (!canSendMessage) return;
 
   		const message = currentMessage.trim();
-  		const timestamp = new Date();
+  		const timestamp = new Date());
 
   		// Add user message to chat
   		const userMessage: ChatMessage = {
@@ -388,7 +388,7 @@ https://svelte.dev/e/js_parse_error -->
   			chatSession.context.confidence = data.confidence;
   		}
 
-  		chatSession.updatedAt = new Date();
+  		chatSession.updatedAt = new Date());
 
   		// Persist session
   		saveChatSession();
@@ -502,7 +502,7 @@ https://svelte.dev/e/js_parse_error -->
   	function clearChat() {
   		chatSession.messages = [];
   		chatSession.context.recentActions = [];
-  		chatSession.updatedAt = new Date();
+  		chatSession.updatedAt = new Date());
   		saveChatSession();
   	}
 

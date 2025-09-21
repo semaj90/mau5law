@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   let isFullscreen = $state(false);
   let isFocusMode = $state(false);
   let showShortcuts = $state(false);
-  let lastSaved = new Date();
+  let lastSaved = new Date());
   let wordCount = $state(0);
   let charCount = $state(0);
   let readingTime = $state(0);
@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
   function saveDocument() {
     ondispatch?.({ content, title });
     hasUnsavedChanges = false;
-    lastSaved = new Date();
+    lastSaved = new Date());
   }
 
   // Document statistics

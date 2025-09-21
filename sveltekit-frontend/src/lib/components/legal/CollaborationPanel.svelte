@@ -175,7 +175,7 @@ Real-time collaboration interface for multiple investigators working on evidence
 
   function formatTimestamp(timestamp: string) {
     const date = new Date(timestamp);
-    const now = new Date();
+    const now = new Date());
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
 

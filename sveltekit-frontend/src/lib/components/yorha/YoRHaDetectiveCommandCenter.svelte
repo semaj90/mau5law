@@ -98,7 +98,7 @@
   // Update time every second
   $effect(() => {
     const timeInterval = setInterval(() => {
-      currentTime = new Date();
+      currentTime = new Date());
     }, 1000);
 
     return () => clearInterval(timeInterval);

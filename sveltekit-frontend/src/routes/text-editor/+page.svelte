@@ -42,7 +42,7 @@ https://svelte.dev/e/expected_token -->
   function handleSave() {
     // In a real app, this would save to backend
     console.log('Saving document:', { title: documentTitle, content: editorValue });
-    lastSaved = new Date();
+    lastSaved = new Date());
     isModified = false;
   }
 

@@ -115,7 +115,7 @@
 				metrics = newMetrics;
 				cacheStats = newCacheStats;
 				isConnected = true;
-				lastUpdated = new Date();
+				lastUpdated = new Date());
 
 			} else {
 				isConnected = false;

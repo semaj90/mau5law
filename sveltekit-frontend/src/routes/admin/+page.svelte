@@ -136,7 +136,7 @@
       loadSystemHealth(),
       loadRecentActivity()
     ]);
-    lastUpdated = new Date();
+    lastUpdated = new Date());
   }
 
   function getHealthIcon(isHealthy: boolean) {
@@ -158,7 +158,7 @@
 
   function formatTimeAgo(timestamp: string) {
     const date = new Date(timestamp);
-    const now = new Date();
+    const now = new Date());
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
 

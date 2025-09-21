@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   let activeUpdatesList = $derived(() => {
-    return Array.from(activeUpdates.values()) as UpdateNotification[];
+    return Array.from(activeUpdates.values()) as UpdateNotification[];)
   });
 
   let connectionStatusIcon = $derived(() => {

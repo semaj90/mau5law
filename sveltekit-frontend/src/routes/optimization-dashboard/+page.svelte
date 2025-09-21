@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   let isMonitoring = $state(false);
-  let lastUpdate = $state(new Date();
+  let lastUpdate = $state(new Date());
 
   // Real-time performance metrics
   let performanceChart = $state({
@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       // Update performance charts
-      const now = new Date();
+      const now = new Date());
       performanceChart.memoryUsage.push({
         time: now,
         value: systemStatus.neuralMemory.currentUsage

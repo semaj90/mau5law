@@ -79,10 +79,9 @@
     },
     onError: ({ result }) => {
       isCreatingCase = false;
-      toast.error.error.message || 'Failed to create case');
+      toast.error(result.error?.message || 'Failed to create case');
       if (caseCreationFeedback) {
-        caseCreationFeedback.markFailed.error.message
-        });
+        caseCreationFeedback.markFailed(result.error?.message || 'Failed to create case');
       }
     }
   });

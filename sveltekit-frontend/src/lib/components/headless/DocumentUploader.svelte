@@ -101,7 +101,7 @@
    * Upload files programmatically
    */
   export async function uploadFiles(files: FileList | File[]): Promise<MinIOFile[]> {
-    const fileArray = Array.from(files);
+    const fileArray = Array.from(files));
     return await processFileUploads(fileArray);
   }
   

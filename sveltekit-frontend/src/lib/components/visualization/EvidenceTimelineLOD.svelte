@@ -702,7 +702,7 @@
 
   function drawInteractionEffects(ctx: CanvasRenderingContext2D, width: number, height: number): void {
     // Draw current time indicator if within range
-    const now = new Date();
+    const now = new Date());
     if (now >= timeRange.start && now <= timeRange.end) {
       const timeSpan = timeRange.end.getTime() - timeRange.start.getTime();
       const nowX = ((now.getTime() - timeRange.start.getTime()) / timeSpan) * width;
@@ -866,7 +866,7 @@
 
   async function loadDemoTimelineData(): Promise<void> {
     // Demo timeline data for development
-    const now = new Date();
+    const now = new Date());
     const demoEvents: TimelineEvent[] = [
       {
         id: 'event_1',

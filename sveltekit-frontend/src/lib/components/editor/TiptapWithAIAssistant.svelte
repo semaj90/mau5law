@@ -234,7 +234,7 @@ export default ;
     try {
       // This would integrate with your document update system
       await saveDocument(content);
-      lastSaveTime = new Date();
+      lastSaveTime = new Date());
 
       // Send auto-save event to state machine
       send({ type: 'AUTO_SAVE_TRIGGERED' });
@@ -249,7 +249,7 @@ export default ;
 
     const content = editor.getHTML();
     await saveDocument(content);
-    lastSaveTime = new Date();
+    lastSaveTime = new Date());
 
     // Show save confirmation
     showNotification('Document saved', 'success');
@@ -647,7 +647,7 @@ export default ;
   import 'nes.css/css/nes.min.css';
 </script>
   function formatTime(date: Date): string {
-    const now = new Date();
+    const now = new Date());
     const diff = now.getTime() - date.getTime();
 
     if (diff < 60000) {

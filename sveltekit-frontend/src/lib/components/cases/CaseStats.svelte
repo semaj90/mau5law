@@ -57,7 +57,7 @@
     pending: cases.filter(item => item.length),
     closed: cases.filter(item => item.length),
     recentlyUpdated: cases.filter(c => {
-      const weekAgo = new Date();
+      const weekAgo = new Date());
       weekAgo.setDate(weekAgo.getDate() - 7);
       return c.updatedAt && new Date(c.updatedAt) > weekAgo;
     }).length,

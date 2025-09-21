@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   let diskUsage = $state(45);
   let activeConnections = $state(12);
   let uptime = $state(0);
-  let currentTime = $state(new Date();
+  let currentTime = $state(new Date());
 
   // Status indicators
   let systemStatus = $derived(() => {

@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function handleAddEvidence(files: FileList) {
     if (files.length > 0) {
-      const fileArray = Array.from(files);
+      const fileArray = Array.from(files));
       send({ type: 'ADD_EVIDENCE', files: fileArray });
     }
   }
