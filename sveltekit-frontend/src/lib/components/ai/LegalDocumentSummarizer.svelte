@@ -405,7 +405,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
             {/if}
           </div>
           {#if currentSummary}
-            <Button variant="outline" size="sm" onclick={copySummary}>
+            <Button variant="ghost" size="sm" onclick={copySummary}>
               📋 Copy
             </Button>
           {/if}

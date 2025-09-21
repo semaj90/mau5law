@@ -140,7 +140,7 @@
   </div>
 
   <Button
-    variant="outline"
+    variant="ghost"
     size="sm"
     class="bits-btn"
     onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}

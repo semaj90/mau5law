@@ -335,11 +335,11 @@ showNewPersonModal = true}>
           </div>
 
           <div.Footer class="person-actions nes-container">
-            <Button class="bits-btn" size="sm" variant="outline">
+            <Button class="bits-btn" size="sm" variant="ghost">
 <Eye class="w-4 h-4" />
               View
 </Button>
-            <Button class="bits-btn" size="sm" variant="outline">
+            <Button class="bits-btn" size="sm" variant="ghost">
 <Edit class="w-4 h-4" />
               Edit
 </Button>
@@ -412,7 +412,7 @@ showNewPersonModal = true}>
     </div>
 
     <Dialog.Footer>
-      <Button class="bits-btn" variant="outline" onclick={() =>
+      <Button class="bits-btn" variant="ghost" onclick={() =>
 showNewPersonModal = false}>
         CANCEL
 </Button>

@@ -298,7 +298,7 @@
 
       {#if searchResults.length > 0}
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           onclick={clearResults}
         >
 Clear
@@ -422,7 +422,7 @@ Clear
                 </div>
 
                 <div class="flex gap-2">
-                  <Button class="bits-btn" size="sm" variant="outline">
+                  <Button class="bits-btn" size="sm" variant="ghost">
 View Full
 </Button>
                   <Button class="bits-btn" size="sm" variant="primary">
@@ -447,7 +447,7 @@ Add to Case
       </p>
       <div class="flex justify-center gap-2">
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           onclick={() =>
 searchQuery = 'contract breach non-disclosure agreement'}
         >

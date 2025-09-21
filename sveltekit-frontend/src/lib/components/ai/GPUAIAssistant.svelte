@@ -470,7 +470,7 @@
     <div class="flex flex-wrap gap-2 mb-3">
       <Button
         size="sm"
-        variant="outline"
+        variant="ghost"
         onclick={analyzeSelectedEvidence}
         disabled={selectedEvidenceIds.length === 0 || isStreaming}
         class="text-xs"
@@ -481,7 +481,7 @@
 
       <Button
         size="sm"
-        variant="outline"
+        variant="ghost"
         onclick={suggestInvestigationSteps}
         disabled={isStreaming}
         class="text-xs"
@@ -492,7 +492,7 @@
 
       <Button
         size="sm"
-        variant="outline"
+        variant="ghost"
         onclick={identifyEvidenceGaps}
         disabled={isStreaming}
         class="text-xs"

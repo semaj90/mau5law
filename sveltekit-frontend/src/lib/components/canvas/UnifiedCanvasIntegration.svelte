@@ -199,7 +199,7 @@
       </button>
       
       <Button
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={syncCanvasBoards}
         disabled={syncInProgress}
@@ -208,7 +208,7 @@
 {syncInProgress ? '🔄 Syncing...' : '🔄 Sync'}
 
       <Button
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={clearAllCanvases}
         class="clear-btn bits-btn"

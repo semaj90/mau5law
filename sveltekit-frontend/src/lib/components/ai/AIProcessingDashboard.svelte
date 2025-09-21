@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
 				{#each demoTasks as task}
 <!-- TODO: Consider virtual scrolling for large lists (demoTasks) -->
 					<button aria-label="Action button" class="nes-btn" 
-						variant="outline"
+						variant="ghost"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
 						onclick={(event: MouseEvent) => ) => processTask(task}
 						class="bits-btn h-auto p-3 flex flex-col items-start space-y-1"

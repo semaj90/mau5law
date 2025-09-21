@@ -175,12 +175,12 @@
             <LinkButton href="/settings" variant="ghost" size="sm">
               ⚙️ Settings
             </LinkButton>
-            <LinkButton href="/auth/logout" variant="outline" size="sm">
+            <LinkButton href="/auth/logout" variant="ghost" size="sm">
               Logout
             </LinkButton>
           </div>
         {:else}
-          <LinkButton href="/auth/login" variant="outline" size="sm">
+          <LinkButton href="/auth/login" variant="ghost" size="sm">
             Login
           </LinkButton>
           <LinkButton href="/auth/register" variant="primary" size="sm">
@@ -375,7 +375,7 @@
       scrollbar-width: none;
     }
 
-    .navbar-center: :-webkit-scrollbar {
+    .navbar-center ::-webkit-scrollbar {
       display: none;
     }
   }

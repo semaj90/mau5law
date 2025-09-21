@@ -305,7 +305,7 @@ dismissError(error.id)}>
 {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
 
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             onclick={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
           >
@@ -362,7 +362,7 @@ removeFromBatch(doc.id)}
 {$processingStatus === 'batch_processing' ? 'Processing Batch...' : `🔥 Process ${$batchDocuments.length} Documents`}
 
             <Button class="bits-btn"
-              variant="outline"
+              variant="ghost"
               onclick={() =>
 batchDocuments.set([])}
               disabled={$isProcessing}

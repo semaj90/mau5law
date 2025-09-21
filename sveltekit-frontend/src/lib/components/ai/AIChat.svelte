@@ -68,7 +68,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         {/if}
       </p>
     </div>
-  <Button class="bits-btn" variant="outline" size="sm" onclick={(event: MouseEvent) => handleClear}>
+  <Button class="bits-btn" variant="ghost" size="sm" onclick={(event: MouseEvent) => handleClear}>
 Clear Chat
 
   </div>

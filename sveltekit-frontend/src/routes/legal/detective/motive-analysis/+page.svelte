@@ -430,7 +430,7 @@
       <p class="text-gray-600">Advanced AI-powered criminal motive analysis and risk assessment</p>
     </div>
     <div class="flex items-center gap-4">
-      <Badge variant="outline">Case: {caseId}</Badge>
+      <Badge variant="ghost">Case: {caseId}</Badge>
       <Badge class={detectiveSystem.status === 'ready' ? 'bg-green-600' : detectiveSystem.status === 'analyzing' ? 'bg-blue-600' : 'bg-gray-600'}>
         {detectiveSystem.status.toUpperCase()}
       </Badge>
@@ -514,14 +514,14 @@
     >
 {analysisInProgress ? 'Analyzing...' : 'Start Motive Analysis'}
 
-    <button class="nes-btn" variant="outline" onclick={() => activeTab = 'profile'}>
+    <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'profile'}>
       View Suspect Profile
 
-    <button class="nes-btn" variant="outline" onclick={() => activeTab = 'motives'}>
+    <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'motives'}>
       Motive Matrix
     </button>
     
-    <button class="nes-btn" variant="outline" onclick={() => activeTab = 'risk'}>
+    <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'risk'}>
       Risk Assessment
     </button>
   </div>
@@ -575,7 +575,7 @@
               <div class="text-sm text-gray-600 mb-2">Psychological Markers</div>
               <div class="flex flex-wrap gap-2">
                 {#each suspectProfile.psychologicalMarkers as marker}
-                  <Badge variant="outline">{marker}</Badge>
+                  <Badge variant="ghost">{marker}</Badge>
                 {/each}
               </div>
             </div>
@@ -671,7 +671,7 @@
                 <div class="text-sm font-medium text-purple-700 mb-2">Trigger Events</div>
                 <div class="flex flex-wrap gap-2">
                   {#each motive.triggerEvents as trigger}
-                    <Badge variant="outline" class="text-purple-700 border-purple-300">{trigger}</Badge>
+                    <Badge variant="ghost" class="text-purple-700 border-purple-300">{trigger}</Badge>
                   {/each}
                 </div>
               </div>
@@ -794,7 +794,7 @@
                   <div class="text-sm font-medium text-gray-700">Required Resources</div>
                   <div class="flex flex-wrap gap-2 mt-1">
                     {#each rec.resources as resource}
-                      <Badge variant="outline">{resource}</Badge>
+                      <Badge variant="ghost">{resource}</Badge>
                     {/each}
                   </div>
                 </div>

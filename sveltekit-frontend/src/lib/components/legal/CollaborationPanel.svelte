@@ -343,7 +343,7 @@ Real-time collaboration interface for multiple investigators working on evidence
             Annotations ({collaborationSession.annotations.length})
           </div>
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 showAnnotationInput = !showAnnotationInput}
@@ -365,7 +365,7 @@ showAnnotationInput = !showAnnotationInput}
 Add Annotation
 </Button>
               <Button class="bits-btn" onclick={() =>
-showAnnotationInput = false} variant="outline" size="sm">
+showAnnotationInput = false} variant="ghost" size="sm">
                 Cancel
 </Button>
             </div>

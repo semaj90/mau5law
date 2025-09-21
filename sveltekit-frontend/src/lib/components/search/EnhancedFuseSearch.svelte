@@ -235,7 +235,7 @@
             {#if (result as { item?: unknown; matches?: unknown; score?: unknown }).item.sections && (result as { item?: unknown; matches?: unknown; score?: unknown }).item.sections.length > 0}
               <div class="flex flex-wrap gap-1 mb-3">
                 {#each (result as { item?: unknown; matches?: unknown; score?: unknown }).item.sections.slice(0, 3) as section}
-                  <Badge variant="outline" class="text-xs">
+                  <Badge variant="ghost" class="text-xs">
                     <FileText class="h-2 w-2 mr-1" />
                     {section}
                   </Badge>
@@ -247,16 +247,16 @@
             {/if}
 
             <div class="flex gap-2">
-              <Button class="bits-btn" size="sm" variant="outline">
+              <Button class="bits-btn" size="sm" variant="ghost">
 <FileText class="h-3 w-3 mr-1" />
                 AI Summary
 
-              <Button class="bits-btn" size="sm" variant="outline">
+              <Button class="bits-btn" size="sm" variant="ghost">
 <Sparkles class="h-3 w-3 mr-1" />
                 AI Analysis
 
               {#if (result as { item?: unknown; matches?: unknown; score?: unknown }).item.url}
-                <Button class="bits-btn" size="sm" variant="outline">
+                <Button class="bits-btn" size="sm" variant="ghost">
 <a
                     href={(result as { item?: unknown; matches?: unknown; score?: unknown }).item.url}
                     target="_blank"
@@ -298,7 +298,7 @@
         <div class="flex flex-wrap gap-2">
           {#each ['murder', 'contract liability', 'evidence rules', 'robbery', 'constitutional rights', 'family law'] as suggestion}
               <Button class="bits-btn"
-              variant="outline"
+              variant="ghost"
               size="sm"
                 onclick={() =>
 {

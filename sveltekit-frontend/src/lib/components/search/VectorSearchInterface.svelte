@@ -149,7 +149,7 @@
     <div class="flex items-end">
       <ModernButton
         onclick={() => showFilters = !showFilters}
-        variant="outline"
+        variant="ghost"
         class="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10"
       >
         {showFilters ? '🔽 Hide Filters' : '🔽 Show Filters'}
@@ -304,14 +304,14 @@
             </div>
             <div class="flex gap-2">
               <ModernButton
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 class="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10 text-xs"
               >
                 📄 View Document
               </ModernButton>
               <ModernButton
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 class="border-blue-400/30 text-blue-400 hover:bg-blue-400/10 text-xs"
               >

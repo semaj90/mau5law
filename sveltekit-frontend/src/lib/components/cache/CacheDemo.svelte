@@ -442,7 +442,7 @@
               
               <Button 
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn"
-                variant="outline" 
+                variant="ghost" 
                 onclick={getCacheValue} 
                 disabled={$isLoading}
                 aria-label={$isLoading ? 'Retrieving cache value, please wait' : 'Retrieve value from multi-layer cache'}
@@ -770,7 +770,7 @@ testResults.set([])}
 
             <div class="space-y-2">
               <Button 
-                variant="outline"
+                variant="ghost"
                 onclick={testCacheHitMiss} 
                 disabled={$isLoading}
                 class="w-full enhanced-bits-btn nes-performance-test n64-enhanced lod-optimized retro-test-btn"
@@ -796,7 +796,7 @@ testResults.set([])}
 
             <div class="space-y-2">
               <Button 
-                variant="outline"
+                variant="ghost"
                 onclick={refreshStats} 
                 disabled={$isLoading}
                 class="w-full enhanced-bits-btn nes-performance-test n64-enhanced lod-optimized retro-test-btn"

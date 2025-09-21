@@ -308,7 +308,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           class="hidden"
           id="file-input"
         />
-        <Button class="bits-btn" variant="outline" onclick={() =>
+        <Button class="bits-btn" variant="ghost" onclick={() =>
 document.getElementById('file-input')?.click()}>
           Select Files
 </Button>
@@ -356,7 +356,7 @@ removeFile(index)}
               id="add-more-files"
             />
             <Button class="bits-btn" 
-              variant="outline" 
+              variant="ghost" 
               onclick={() =>
 document.getElementById('add-more-files')?.click()}
               disabled={selectedFiles.length >= maxFiles}
@@ -431,7 +431,7 @@ document.getElementById('add-more-files')?.click()}
 
         <div class="flex justify-center mt-4">
           <Button class="bits-btn" 
-            variant="outline" 
+            variant="ghost" 
             onclick={() =>
 {
               uploadResults = [];

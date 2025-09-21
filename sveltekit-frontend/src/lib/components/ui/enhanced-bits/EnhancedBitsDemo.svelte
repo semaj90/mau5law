@@ -159,7 +159,7 @@ Primary Action
               <Button class="bits-btn" variant="yorha" legal>
 YoRHa Legal
 </Button>
-              <Button class="bits-btn" variant="outline">
+              <Button class="bits-btn" variant="ghost">
 Outline Style
 </Button>
             </div>
@@ -178,7 +178,7 @@ Case Analysis
               <Button class="bits-btn" variant="primary" confidence="low" legal>
 Review Required
 </Button>
-              <Button class="bits-btn" variant="outline" loading legal>
+              <Button class="bits-btn" variant="ghost" loading legal>
 Processing...
 </Button>
             </div>
@@ -192,7 +192,7 @@ Processing...
 <AlertTriangle class="w-4 h-4 mr-2" />
                 Critical Alert
 </Button>
-              <Button class="bits-btn" priority="high" variant="outline">
+              <Button class="bits-btn" priority="high" variant="ghost">
 High Priority
 </Button>
               <Button class="bits-btn" priority="medium" variant="secondary">
@@ -307,7 +307,7 @@ evidenceDialogOpen = true}>
             Evidence Upload
 </Button>
 
-          <Button class="bits-btn" variant="outline" legal onclick={runAIAnalysis} loading={aiAnalysisLoading}>
+          <Button class="bits-btn" variant="ghost" legal onclick={runAIAnalysis} loading={aiAnalysisLoading}>
 {#if aiAnalysisLoading}
               Running AI Analysis...
             {:else}
@@ -372,7 +372,7 @@ evidenceDialogOpen = true}>
               </div>
 
               <div class="bits-dialog-footer">
-                <Button class="bits-btn" variant="outline" onclick={() =>
+                <Button class="bits-btn" variant="ghost" onclick={() =>
 dialogOpen = false}>
                   Cancel
 </Button>
@@ -430,7 +430,7 @@ Create Case
               </div>
 
               <div class="bits-dialog-footer">
-                <Button class="bits-btn" variant="outline" onclick={() =>
+                <Button class="bits-btn" variant="ghost" onclick={() =>
 evidenceDialogOpen = false}>
                   Cancel
 </Button>
@@ -486,7 +486,7 @@ evidenceDialogOpen = false}>
                 {#if selectedEvidenceCard === item.id}
                   <div class="border-t border-nier-border-secondary pt-3 mt-3">
                     <div class="flex gap-2">
-                      <Button size="sm" variant="outline" class="flex-1 bits-btn bits-btn">
+                      <Button size="sm" variant="ghost" class="flex-1 bits-btn bits-btn">
 Review
 </Button>
                       <Button size="sm" variant="primary" class="flex-1 bits-btn bits-btn">
@@ -529,7 +529,7 @@ Analyze
                 <Button class="bits-btn" size="sm" variant="primary">
 Accept Analysis
 </Button>
-                <Button class="bits-btn" size="sm" variant="outline">
+                <Button class="bits-btn" size="sm" variant="ghost">
 Request Review
 </Button>
                 <Button class="bits-btn" size="sm" variant="ghost">

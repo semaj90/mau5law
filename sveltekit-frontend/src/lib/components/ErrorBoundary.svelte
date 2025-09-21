@@ -221,7 +221,7 @@ copyErrorDetails()}
         {#if currentError.canRetry}
           <Button
             size="sm"
-            variant="outline"
+            variant="ghost"
             class={getButtonClass(currentError.severity)}
             onclick={() =>
 retryAction()}
@@ -321,7 +321,7 @@ copyErrorDetails()}
         <div class="mx-auto px-4 max-w-7xl">
           {#if currentError.severity === "critical" || currentError.severity === "error"}
             <Button class="bits-btn"
-              variant="outline"
+              variant="ghost"
               size="sm"
               onclick={() =>
 reportError()}
@@ -334,7 +334,7 @@ reportError()}
 
           {#if currentError.showDetails}
             <Button class="bits-btn"
-              variant="outline"
+              variant="ghost"
               size="sm"
               onclick={() =>
 (showDetails = !showDetails)}

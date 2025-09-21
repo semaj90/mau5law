@@ -171,7 +171,7 @@
           <div.Description class="nes-container">Documents available for RAG analysis</div.Description>
         </div>
         <button class="nes-btn"
-          variant="outline"
+          variant="ghost"
           onclick={() => showDocuments = !showDocuments}
         >
           {showDocuments ? 'Hide' : 'Show'} Documents

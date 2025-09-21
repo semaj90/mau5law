@@ -386,7 +386,7 @@ https://svelte.dev/e/js_parse_error -->
 
         {#if caseId}
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={quickAnalyzeEvidence}
             disabled={$isLoading}

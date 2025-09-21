@@ -343,7 +343,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
     <div class="flex gap-2">
-  <Button class="bits-btn" variant="outline" onclick={resetForm} disabled={analyzing}>
+  <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>
 Reset
 </Button>
   <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
@@ -479,7 +479,7 @@ Reset
 									</pre>
                 </div>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   class="mt-2 bits-btn bits-btn"
                   onclick={() =>
@@ -492,7 +492,7 @@ viewDetailedResults(data)}>
         </div>
 
         <DialogFooter>
-          <Button class="bits-btn" variant="outline" onclick={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 (showResults = false)}>Close
 </Button>
           <Button class="bits-btn" onclick={() =>

@@ -263,7 +263,7 @@ Showcases the service worker-based AI orchestration system
                 {/each}
               </div>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 class="w-full bits-btn bits-btn"
                 onclick={() =>
@@ -327,7 +327,7 @@ runDemoScenario(scenario)}
                 Submit Task
               {/if}
 
-            <Button class="bits-btn" variant="outline" onclick={clearResults}>
+            <Button class="bits-btn" variant="ghost" onclick={clearResults}>
 <RotateCcw class="h-4 w-4" />
 
           </div>

@@ -1,26 +1,21 @@
 <script lang="ts" context="module">
-  import {
-    TabsRoot,
-    TabsList,
-    TabsTrigger,
-    TabsContent
-  } from "bits-ui";
-
-  // Re-export components for compatibility
-  export const Root = TabsRoot;
-  export const List = TabsList;
-  export const Trigger = TabsTrigger;
-  export const Content = TabsContent;
+  // Re-export bits-ui components for compound component usage
+  export {
+    Root,
+    List,
+    Trigger,
+    Content
+  } from "bits-ui/tabs";
 </script>
 
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import {
-    TabsRoot,
-    TabsList,
-    TabsTrigger,
-    TabsContent
-  } from "bits-ui";
+    Root as TabsRoot,
+    List as TabsList,
+    Trigger as TabsTrigger,
+    Content as TabsContent
+  } from "bits-ui/tabs";
   // Simple classname utility fallback in case $lib/utils doesn't export `cn`
   function cn(...classes: Array<string | false | null | undefined>) {
     return classes.filter(Boolean).join(' ');
@@ -43,17 +38,21 @@
     // children is a render function (used with {@render children()})
     children?: () => any;
   }
-  }
 
   let {
     tabs = [],
-    value = $bindable(tabs[0]?.value || ''),
+    value = $bindable(),
     onValueChange,
     variant = 'default',
     size = 'md',
     class: className = '',
     children
   }: Props = $props();
+
+  // Set default value if not provided
+  if (!value && tabs.length > 0) {
+    value = tabs[0].value;
+  }
 
   const sizeClasses = {
     sm: "text-sm px-3 py-2",

@@ -93,7 +93,7 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <Badge variant="outline" class="{currentStatus.class}">
+        <Badge variant="ghost" class="{currentStatus.class}">
           {#key currentStatus.icon}
             <currentStatus.icon class="w-3 h-3 mr-1" />
           {/key}
@@ -216,7 +216,7 @@
       </Button>
       <Button
         onclick={() => onEdit(caseData.id)}
-        variant="outline"
+        variant="ghost"
         class="bits-btn"
         size="sm"
       >

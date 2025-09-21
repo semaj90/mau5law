@@ -378,7 +378,7 @@ scaleCluster(targetWorkers)}
             <Button class="bits-btn px-3"
               onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
-              variant="outline">
+              variant="ghost">
               +1
 </Button>
 
@@ -386,7 +386,7 @@ scaleCluster(targetWorkers)}
               onclick={() =>
 scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
-              variant="outline">
+              variant="ghost">
               -1
 </Button>
           </div>
@@ -414,7 +414,7 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
             {/if}
 </Button>
 
-          <Button onclick={fetchClusterStatus} variant="outline" class="w-full bits-btn bits-btn">
+          <Button onclick={fetchClusterStatus} variant="ghost" class="w-full bits-btn bits-btn">
 <RefreshCw class="h-4 w-4 mr-2" />
             Refresh Status
 </Button>

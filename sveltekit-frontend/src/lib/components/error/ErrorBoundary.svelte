@@ -128,17 +128,17 @@
           </button>
         {/if}
         
-        <button class="nes-btn" variant="outline" onclick={goHome}>
+        <button class="nes-btn" variant="ghost" onclick={goHome}>
           Go Home
         </button>
         
         {#if showReportButton}
-          <button class="nes-btn" variant="outline" onclick={reportError}>
+          <button class="nes-btn" variant="ghost" onclick={reportError}>
             Report Issue
           </button>
         {/if}
         
-        <button class="nes-btn" variant="outline" size="sm" onclick={reset}>
+        <button class="nes-btn" variant="ghost" size="sm" onclick={reset}>
           Reset
         </button>
       </div>

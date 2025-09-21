@@ -460,7 +460,7 @@
 
     <div class="flex items-center gap-2">
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={() =>
 useAdvancedRAG = !useAdvancedRAG}
@@ -479,7 +479,7 @@ useAdvancedRAG = !useAdvancedRAG}
 
       {#if showDocumentAnalysis}
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           size="sm"
           onclick={analyzeDocuments}
           disabled={isLoading || availableDocuments.length === 0}
@@ -492,7 +492,7 @@ useAdvancedRAG = !useAdvancedRAG}
       {/if}
 
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={checkServiceHealth}
         disabled={isLoading}
@@ -508,7 +508,7 @@ useAdvancedRAG = !useAdvancedRAG}
 </Button>
 
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={queueEmbeddingJobs}
         disabled={isLoading || availableDocuments.length === 0}
@@ -529,7 +529,7 @@ useAdvancedRAG = !useAdvancedRAG}
           RAG Context: {selectedDocuments.length > 0 ? selectedDocuments.length: availableDocuments.length} of {availableDocuments.length} documents
         </span>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="outline" size="xs" onclick={addDocument}>
+          <Button class="bits-btn" variant="ghost" size="xs" onclick={addDocument}>
 {#snippet children()}
               <FileText class="w-3 h-3 mr-1" />
               Add Doc

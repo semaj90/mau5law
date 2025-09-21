@@ -254,7 +254,7 @@
               </label>
               <div class="space-y-4">
                 <Button class="bits-btn"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={() =>
 selectAllCases()}
@@ -262,7 +262,7 @@ selectAllCases()}
                   Select All
 </Button>
                 <Button class="bits-btn"
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onclick={() =>
 clearCaseSelection()}

@@ -393,7 +393,7 @@
           
           <div.Footer>
             <div class="nier-bits-card-actions">
-              <button class="nes-btn" variant="outline" size="sm" onclick={() => openPatternDetails(pattern)}>
+              <button class="nes-btn" variant="ghost" size="sm" onclick={() => openPatternDetails(pattern)}>
                 View Details
               </button>
               <button class="nes-btn" size="sm">
@@ -520,7 +520,7 @@
       </div>
       
       <div class="dialog-actions">
-        <button class="nes-btn" variant="outline" onclick={() => showPatternDetails = false}>
+        <button class="nes-btn" variant="ghost" onclick={() => showPatternDetails = false}>
           Close
         </button>
         <button class="nes-btn">

@@ -209,7 +209,7 @@
         <span class="text-sm nes-text is-disabled">Try:</span>
         {#each ["property ownership transfer", "contract liability clauses", "employment agreements", "intellectual property rights"] as example}
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 { query = example; }}
@@ -348,7 +348,7 @@
         </div>
         <div class="flex justify-center">
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 { results = demoResults; metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 }; }}
           >

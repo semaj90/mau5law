@@ -469,7 +469,7 @@ https://svelte.dev/e/js_parse_error -->
         to {maxFiles} files
       </p>
 
-      <Button variant="outline" class="mt-4 bits-btn bits-btn" disabled={$isProcessing}>
+      <Button variant="ghost" class="mt-4 bits-btn bits-btn" disabled={$isProcessing}>
 <Upload class="mr-2" size={16} />
         Choose Files
 </Button>
@@ -614,7 +614,7 @@ f.status !== "pending")}
 </Button>
 
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         onclick={() =>
 files.set([])}
         disabled={$isProcessing}
@@ -695,7 +695,7 @@ files.set([])}
           </div>
 
           <div class="dialog-actions">
-            <Button class="bits-btn" variant="outline" onclick={() =>
+            <Button class="bits-btn" variant="ghost" onclick={() =>
 showMetadata.set(false)}>
               Cancel
 </Button>

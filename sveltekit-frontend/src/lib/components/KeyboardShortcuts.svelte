@@ -230,7 +230,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   <!-- Accessibility Panel Toggle -->
   <Tooltip content="Accessibility panel (Ctrl+Alt+A)" placement="left">
     <Button
-      variant="outline"
+      variant="ghost"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
       onclick={() =>
@@ -244,7 +244,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   <!-- Keyboard Shortcuts Toggle -->
   <Tooltip content="Keyboard shortcuts (Ctrl+H)" placement="left">
     <Button
-      variant="outline"
+      variant="ghost"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
       onclick={() =>
@@ -261,7 +261,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     placement="left"
   >
     <Button
-      variant="outline"
+      variant="ghost"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
       onclick={() =>

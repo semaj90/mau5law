@@ -350,7 +350,7 @@
             <p class="drop-zone-description">
               Supports PDF, DOCX, TXT, and image files up to 50MB
             </p>
-            <Button class="bits-btn" variant="outline" disabled={$isSubmitting}>
+            <Button class="bits-btn" variant="ghost" disabled={$isSubmitting}>
 <Upload class="mr-2" size={16} />
               Browse Files
 </Button>
@@ -541,7 +541,7 @@
           {#if stateValue === "uploadError" || stateValue === "processingError"}
             <div class="mt-2">
               <Button class="bits-btn"
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onclick={() =>
 actor.send({ type: "RETRY" })}
@@ -597,7 +597,7 @@ actor.send({ type: "SKIP_PROCESSING" })}
 
       <div class="flex gap-3">
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           onclick={handleReset}
           disabled={$isSubmitting}
         >

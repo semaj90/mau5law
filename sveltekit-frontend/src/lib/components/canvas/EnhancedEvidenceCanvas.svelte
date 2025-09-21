@@ -485,7 +485,7 @@ selectTool("text")}
           class="space-y-4"
         >
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 addShape("rectangle")}
@@ -493,7 +493,7 @@ addShape("rectangle")}
             <Square class="space-y-4" />
 </Button>
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 addShape("circle")}
@@ -508,7 +508,7 @@ addShape("circle")}
         class="space-y-4"
       >
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           size="sm"
           onclick={() =>
 undo()}
@@ -517,7 +517,7 @@ undo()}
           <Undo class="space-y-4" />
 </Button>
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           size="sm"
           onclick={() =>
 redo()}
@@ -529,18 +529,18 @@ redo()}
 
       <!-- Zoom -->
       <div class="space-y-4">
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 zoomOut()}>
           <ZoomOut class="space-y-4" />
 </Button>
         <span class="space-y-4"
           >{Math.round(zoom * 100)}%</span
         >
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 zoomIn()}>
           <ZoomIn class="space-y-4" />
 </Button>
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 resetZoom()}
           >Reset</Button
         >
@@ -550,16 +550,16 @@ resetZoom()}
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() => deleteSelected()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => deleteSelected()}>
           <Trash2 class="space-y-4" />
 </Button>
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 saveCanvas()}>
           <Save class="space-y-4" />
           Save
 </Button>
       {/if}
-      <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 exportCanvas()}>
         <Download class="space-y-4" />
         Export

@@ -413,14 +413,14 @@
                 
                 <!-- Enhanced Mode Status -->
                 {#if enableEnhancedMode && enhancedModeActive}
-                  <Badge.Root class="enhanced-badge" variant="outline">
+                  <Badge.Root class="enhanced-badge" variant="ghost">
                     QLoRA
                   </Badge.Root>
                 {/if}
                 
                 <!-- Loading Indicator -->
                 {#if loadingEnhancedRecommendations}
-                  <Badge.Root class="loading-badge" variant="outline">
+                  <Badge.Root class="loading-badge" variant="ghost">
                     ⚡ Processing
                   </Badge.Root>
                 {/if}
@@ -464,7 +464,7 @@
                 <div class="nier-bits-nes-text is-primary">
                   <span class="type-icon">{categoryIcons[type]}</span>
                   <span class="type-name">{type.charAt.toUpperCase() + type.slice(1)}</span>
-                  <Badge.Root variant="outline" class="count-badge">
+                  <Badge.Root variant="ghost" class="count-badge">
                     {recs.length}
                   </Badge.Root>
                 </div>

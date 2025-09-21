@@ -536,7 +536,7 @@
         {#if allowGuestMode && mode === 'login'}
           <Button 
             type="button"
-            variant="outline"
+            variant="ghost"
             class="w-full bits-btn bits-btn"
             onclick={handleGuestLogin}
             disabled={formState.loading}

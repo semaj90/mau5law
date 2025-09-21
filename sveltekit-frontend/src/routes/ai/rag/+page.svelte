@@ -194,9 +194,9 @@ TODO: Implement RAG functionality, vector search, document context
 						<div class="space-y-2">
 							<Button class="nes-btn w-full text-xs" size="sm">
 								Search Similar Cases
-							<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
+							<Button class="nes-btn w-full text-xs" size="sm" variant="ghost">
 								Browse Legal Database
-							<Button class="nes-btn w-full text-xs" size="sm" variant="outline">
+							<Button class="nes-btn w-full text-xs" size="sm" variant="ghost">
 								View Search History
 						</div>
 					</div.Content>

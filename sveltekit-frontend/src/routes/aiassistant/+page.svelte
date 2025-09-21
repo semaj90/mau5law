@@ -475,11 +475,11 @@ https://svelte.dev/e/js_parse_error -->
       </div>
 
       <div class="flex items-center space-x-2">
-  <Button class="bits-btn" variant="outline" size="sm" onclick={exportChatHistory}>
+  <Button class="bits-btn" variant="ghost" size="sm" onclick={exportChatHistory}>
 <Download class="h-4 w-4 mr-1" />
           Export
 </Button>
-        <Button class="bits-btn" variant="outline" size="sm">
+        <Button class="bits-btn" variant="ghost" size="sm">
 <Settings class="h-4 w-4" />
 </Button>
       </div>
@@ -732,7 +732,7 @@ togglePanel('chat')}>
 
             {#if voiceEnabled}
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onclick={startVoiceInput}
                 disabled={isListening || isProcessing}

@@ -341,7 +341,7 @@ https://svelte.dev/e/attribute_duplicate -->
 					{#if !readonly}
 						<Button 
 							class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
-							variant="outline" 
+							variant="ghost" 
 							size="sm" 
 							onclick={showAddCitationForm}
 							aria-label="Open dialog to add a new legal citation"
@@ -360,7 +360,7 @@ https://svelte.dev/e/attribute_duplicate -->
 					{/if}
 					<Button 
 						class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-export-btn"
-						variant="outline" 
+						variant="ghost" 
 						size="sm" 
 						onclick={exportCitations}
 						aria-label="Export citations to downloadable file"
@@ -546,7 +546,7 @@ changeSortBy('relevance')}
 									
 									<div class="flex flex-wrap gap-1">
 										{#each citation.tags as tag}
-											<Badge variant="outline" class="text-xs">
+											<Badge variant="ghost" class="text-xs">
 												<Tags class="w-2 h-2 mr-1" />
 												{tag}
 											</Badge>
@@ -670,7 +670,7 @@ deleteCitation(citation.id)}
 				<div class="flex justify-end gap-2 pt-4">
 					<Button 
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
-						variant="outline" 
+						variant="ghost" 
 						onclick={hideAddCitationForm}
 						aria-label="Cancel adding citation and close dialog"
 						role="button"
@@ -755,7 +755,7 @@ Save Citation
 						{#if selectedCitation.url}
 							<Button 
 								class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-external-btn"
-								variant="outline" 
+								variant="ghost" 
 								onclick={() =>
 window.open(selectedCitation.url, '_blank')}
 								aria-label="Open citation source link in new tab"

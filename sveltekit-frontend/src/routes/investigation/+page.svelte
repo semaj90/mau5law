@@ -357,7 +357,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       </div>
 
       <div class="workspace-actions">
-  <Button class="bits-btn" onclick={saveInvestigation} variant="outline" size="sm">
+  <Button class="bits-btn" onclick={saveInvestigation} variant="ghost" size="sm">
 <Save class="w-4 h-4 mr-2" />
           Save Progress
 </Button>

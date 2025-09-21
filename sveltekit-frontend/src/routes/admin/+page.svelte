@@ -191,7 +191,7 @@
       </Badge>
 
       <Button
-        variant="outline"
+        variant="ghost"
         onclick={refreshData}
         disabled={isLoading}
         class="gap-2"
@@ -207,7 +207,7 @@
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/users')}
-      variant="outline"
+      variant="ghost"
     >
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
@@ -215,7 +215,7 @@
 
     <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/cluster')}
-      variant="outline"
+      variant="ghost"
     >
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
@@ -223,7 +223,7 @@
 
     <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/gpu-demo')}
-      variant="outline"
+      variant="ghost"
     >
       <Cpu class="w-6 h-6" />
       <span>GPU Monitor</span>
@@ -231,7 +231,7 @@
 
     <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/system-status')}
-      variant="outline"
+      variant="ghost"
     >
       <Monitor class="w-6 h-6" />
       <span>System Status</span>

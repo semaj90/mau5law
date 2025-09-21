@@ -351,7 +351,7 @@ export default ;
         </div>
         
         <div class="flex items-end">
-          <Button onclick={toggleSIMD} variant="outline" class="w-full text-sm bits-btn bits-btn">
+          <Button onclick={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
 {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
 
         </div>
@@ -383,7 +383,7 @@ export default ;
             <Button class="bits-btn"
               onclick={() =>
 loadSampleQuery(index)}
-              variant="outline"
+              variant="ghost"
               size="sm"
               disabled={isProcessing}
               class="text-xs"
@@ -391,7 +391,7 @@ loadSampleQuery(index)}
               Sample {index + 1}
 
           {/each}
-          <Button class="bits-btn" onclick={clearConversation} variant="outline" size="sm">
+          <Button class="bits-btn" onclick={clearConversation} variant="ghost" size="sm">
 Clear All
 
         </div>
@@ -561,7 +561,7 @@ Clear All
         <h3 class="nes-text is-primary flex justify-between items-center">
           📝 System Logs
           <Button class="bits-btn" onclick={() =>
-processingLogs = []} variant="outline" size="sm">
+processingLogs = []} variant="ghost" size="sm">
             Clear Logs
 
         </h3>

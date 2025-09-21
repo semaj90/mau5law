@@ -383,13 +383,13 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
 
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2">
-        <Button class="bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="outline" size="sm">
+        <Button class="bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="ghost" size="sm">
 📦 Batch Process ({sampleTexts.length})
 
-        <Button class="bits-btn" onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="outline" size="sm">
+        <Button class="bits-btn" onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="ghost" size="sm">
 🧪 Compression Benchmark
 
-        <Button class="bits-btn" onclick={clearAll} variant="outline" size="sm">
+        <Button class="bits-btn" onclick={clearAll} variant="ghost" size="sm">
 🗑️ Clear All
 
       </div>
@@ -575,7 +575,7 @@ processSingleText(0)}
         <h3 class="nes-text is-primary flex justify-between items-center">
           📝 Processing Logs
           <Button class="bits-btn" onclick={() =>
-processingLogs = []} variant="outline" size="sm">
+processingLogs = []} variant="ghost" size="sm">
             Clear Logs
 
         </h3>

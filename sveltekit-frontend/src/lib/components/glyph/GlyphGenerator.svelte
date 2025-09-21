@@ -304,7 +304,7 @@
       {/if}
       
       <Button
-        variant="outline"
+        variant="ghost"
         onclick={addConditioningTensor}
         disabled={generating}
         class="text-sm bits-btn bits-btn"

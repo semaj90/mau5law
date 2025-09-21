@@ -298,15 +298,15 @@
           </Alert>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button class="bits-btn" onclick={demonstrateAI} variant="outline">
+            <Button class="bits-btn" onclick={demonstrateAI} variant="ghost">
 <Brain class="h-4 w-4 mr-2" />
               Test AI Assistant
 
-            <Button class="bits-btn" onclick={demonstrateUpload} variant="outline">
+            <Button class="bits-btn" onclick={demonstrateUpload} variant="ghost">
 <Zap class="h-4 w-4 mr-2" />
               Demo File Upload
 
-            <Button class="bits-btn" onclick={demonstrateSessionActivity} variant="outline">
+            <Button class="bits-btn" onclick={demonstrateSessionActivity} variant="ghost">
 <Settings class="h-4 w-4 mr-2" />
               Record Activity
 
@@ -362,7 +362,7 @@
 
             <div class="flex gap-2">
               <Button class="bits-btn" onclick={() =>
-demoStep = 'dashboard'} variant="outline">
+demoStep = 'dashboard'} variant="ghost">
                 Back to Dashboard
 
               <Button class="bits-btn" onclick={demonstrateLogout} variant="destructive">

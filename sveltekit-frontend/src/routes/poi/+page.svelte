@@ -63,7 +63,7 @@
 
     <div class="flex flex-wrap gap-2 items-center">
     <Button class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
-        variant="outline"
+        variant="ghost"
         size="sm"
   onclick={() =>
 (showFilters = !showFilters)}
@@ -72,7 +72,7 @@
         Filters
 
     <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         size="sm"
   onclick={() =>
 (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
@@ -129,7 +129,7 @@
         </div>
 
         <div class="flex items-end">
-          <Button variant="outline" size="sm" class="w-full bits-btn bits-btn">
+          <Button variant="ghost" size="sm" class="w-full bits-btn bits-btn">
 Clear Filters
 
         </div>
@@ -197,7 +197,7 @@ Clear Filters
 <Eye class="w-3 h-3 mr-1" />
               View
 
-            <Button variant="outline" size="sm" class="flex-1 bits-btn bits-btn">
+            <Button variant="ghost" size="sm" class="flex-1 bits-btn bits-btn">
 <Edit class="w-3 h-3 mr-1" />
               Edit
 
@@ -230,7 +230,7 @@ Clear Filters
 <Eye class="w-3 h-3 mr-1" />
                 View
 
-              <Button class="bits-btn" variant="outline" size="sm">
+              <Button class="bits-btn" variant="ghost" size="sm">
 <Edit class="w-3 h-3 mr-1" />
                 Edit
 

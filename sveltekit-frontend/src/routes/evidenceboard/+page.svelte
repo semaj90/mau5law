@@ -47,7 +47,7 @@
         </div>
         <div class="nier-bits-yorha-panel-content">
         <button class="nes-btn"
-          variant="outline"
+          variant="ghost"
           size="sm"
           onclick={() => showWelcome = false}
         >

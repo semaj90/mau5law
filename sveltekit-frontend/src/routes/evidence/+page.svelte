@@ -667,7 +667,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <Tooltip content="Refresh evidence list">
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 refreshEvidence()}
@@ -682,7 +682,7 @@ refreshEvidence()}
 
         <Tooltip content="Toggle filters">
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 (showFilters = !showFilters)}
@@ -697,7 +697,7 @@ refreshEvidence()}
 
         <Tooltip content="Toggle view mode">
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 (viewMode = viewMode === "grid" ? "list" : "grid")}
@@ -714,7 +714,7 @@ refreshEvidence()}
 
         <Tooltip content="Advanced file upload">
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 handleAdvancedUpload()}
@@ -765,7 +765,7 @@ openUploadModal()}
         </select>
 
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           size="sm"
           onclick={() =>
 (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
@@ -804,7 +804,7 @@ openUploadModal()}
 
         <div class="mx-auto px-4 max-w-7xl">
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 bulkOperation("analyze")}
@@ -821,7 +821,7 @@ bulkOperation("analyze")}
 </Button>
 
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 bulkOperation("verify")}
@@ -833,7 +833,7 @@ bulkOperation("verify")}
 </Button>
 
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 bulkOperation("archive")}
@@ -845,7 +845,7 @@ bulkOperation("archive")}
 </Button>
 
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 bulkOperation("export")}
@@ -857,7 +857,7 @@ bulkOperation("export")}
 </Button>
 
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 bulkOperation("delete")}
@@ -869,7 +869,7 @@ bulkOperation("delete")}
 </Button>
 
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onclick={() =>
 {
@@ -899,7 +899,7 @@ bulkOperation("delete")}
         <h3 class="mx-auto px-4 max-w-7xl">Error Loading Evidence</h3>
         <div class="mx-auto px-4 max-w-7xl">{error}</div>
       </div>
-  <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+  <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 refreshEvidence()}>
         <RefreshCw class="mx-auto px-4 max-w-7xl" />
         Retry
@@ -936,7 +936,7 @@ openUploadModal()} class="mx-auto px-4 max-w-7xl">
             Upload Evidence
 </Button>
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 handleAdvancedUpload()}
             class="mx-auto px-4 max-w-7xl"
@@ -1188,7 +1188,7 @@ analyzeEvidence(evidence)}
                 <div class="mx-auto px-4 max-w-7xl">
                   <Button class="bits-btn"
                     size="sm"
-                    variant="outline"
+                    variant="ghost"
                     onclick={() =>
 analyzeEvidence(evidence)}
                     disabled={analysisInProgress.has(evidence.id)}
@@ -1207,7 +1207,7 @@ analyzeEvidence(evidence)}
 </Button>
 
                   <a href="/evidence/{evidence.id}" class="mx-auto px-4 max-w-7xl">
-                    <Button class="bits-btn" size="sm" variant="outline">
+                    <Button class="bits-btn" size="sm" variant="ghost">
 <Eye class="mx-auto px-4 max-w-7xl" />
                       View
 </Button>
@@ -1264,7 +1264,7 @@ analyzeEvidence(evidence)}
       <div class="mx-auto px-4 max-w-7xl">
         <div class="mx-auto px-4 max-w-7xl">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
             disabled={currentPage === 1}
@@ -1293,7 +1293,7 @@ analyzeEvidence(evidence)}
           {/each}
 
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
             disabled={currentPage === totalPages}
@@ -1356,7 +1356,7 @@ analyzeEvidence(evidence)}
       </div>
 
       <div class="mx-auto px-4 max-w-7xl">
-  <Button class="bits-btn" variant="outline" onclick={closeAnalysisModal}>
+  <Button class="bits-btn" variant="ghost" onclick={closeAnalysisModal}>
 Close
 </Button>
   <Button class="bits-btn" onclick={() =>

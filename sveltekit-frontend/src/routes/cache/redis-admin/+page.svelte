@@ -171,7 +171,7 @@
       
       <!-- Auto Refresh Toggle -->
       <Button 
-        variant="outline" 
+        variant="ghost" 
         size="sm"
         onclick={toggleAutoRefresh}
         class="gap-2"
@@ -181,7 +181,7 @@
 
       <!-- Manual Refresh -->
       <OrchestratedButton.Enhanced
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={refreshData}
         disabled={isLoading}
@@ -233,7 +233,7 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Server class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">{data.redisInfo.version}</Badge>
+            <Badge variant="ghost">{data.redisInfo.version}</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Redis Server</p>
           <p class="text-lg font-medium capitalize">{data.redisInfo.mode}</p>
@@ -246,7 +246,7 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Memory class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">{data.redisInfo.used_memory}</Badge>
+            <Badge variant="ghost">{data.redisInfo.used_memory}</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Memory Usage</p>
           <p class="text-lg font-medium">{data.redisInfo.used_memory}</p>
@@ -259,7 +259,7 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Zap class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">{data.redisInfo.instantaneous_ops_per_sec}/s</Badge>
+            <Badge variant="ghost">{data.redisInfo.instantaneous_ops_per_sec}/s</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Operations</p>
           <p class="text-lg font-medium">{data.redisInfo.total_commands_processed.toLocaleString()}</p>
@@ -272,7 +272,7 @@
         <div.Content class="p-6 nes-container">
           <div class="flex items-center justify-between mb-4">
             <Clock class="w-8 h-8 text-primary/60" />
-            <Badge variant="outline">Active</Badge>
+            <Badge variant="ghost">Active</Badge>
           </div>
           <p class="text-sm nes-text is-disabled mb-1">Uptime</p>
           <p class="text-lg font-medium">{formatUptime(data.redisInfo.uptime_in_seconds)}</p>
@@ -350,7 +350,7 @@
                 </div>
                 <div class="flex gap-1">
                   <Button class="nes-btn"
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
                     onclick={() => viewKeyDetails(key.key)}
                   >
@@ -360,7 +360,7 @@
                     <input type="hidden" name="key" value={key.key} />
                     <Button
                       type="submit"
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
                       class="text-red-600 hover:bg-red-50"
                     >

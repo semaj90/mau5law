@@ -369,7 +369,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 					<Button
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
-						variant="outline"
+						variant="ghost"
 						onclick={() =>
 send({ type: 'RETRY' })}
 					>
@@ -389,7 +389,7 @@ send({ type: 'CLEAR_ERROR' })}
 					<Button
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
-						variant="outline"
+						variant="ghost"
 						onclick={() =>
 send({ type: 'RETRY' })}
 					>

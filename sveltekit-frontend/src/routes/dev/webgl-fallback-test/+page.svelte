@@ -105,7 +105,7 @@
         <Button
           onclick={() => log = ''}
           disabled={isRunning}
-          variant="outline"
+          variant="ghost"
         >
           🗑️ Clear Log
         </Button>

@@ -201,7 +201,7 @@ startDemoMode()}>
 
           {/if}
 
-          <Button class="bits-btn" variant="outline" onclick={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
@@ -387,7 +387,7 @@ clearAllEvidence()}>
             <div class="space-y-4">
               <Button
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
                 onclick={() =>
 (selectedTypes = ["video", "image"])}
@@ -396,7 +396,7 @@ clearAllEvidence()}>
 
               <Button
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
                 onclick={() =>
 (selectedTypes = ["testimony", "document"])}
@@ -405,7 +405,7 @@ clearAllEvidence()}>
 
               <Button
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
                 onclick={() =>
 {

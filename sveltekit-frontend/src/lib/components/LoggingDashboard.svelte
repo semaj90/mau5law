@@ -165,10 +165,10 @@ https://svelte.dev/e/element_unclosed -->
         </h2>
 
         <div class="flex items-center gap-2">
-          <Button class="bits-btn" size="sm" variant="outline" onclick={exportLogs}>
+          <Button class="bits-btn" size="sm" variant="ghost" onclick={exportLogs}>
 📤 Export
 
-          <Button class="bits-btn" size="sm" variant="outline" onclick={clearLogs}>
+          <Button class="bits-btn" size="sm" variant="ghost" onclick={clearLogs}>
 🗑️ Clear
 
         </div>
@@ -450,13 +450,13 @@ showDetails = false}>
         <!-- Actions -->
         <div class="flex gap-2 mt-6">
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
           >
             📋 Copy JSON
 
-          <Button class="bits-btn" variant="outline" onclick={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 showDetails = false}>
             Close
 

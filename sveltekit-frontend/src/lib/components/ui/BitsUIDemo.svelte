@@ -165,7 +165,7 @@ showDialog = true}
 
       {#snippet footer()}
         <Button class="bits-btn"
-          variant="outline"
+          variant="ghost"
           onclick={() =>
 showDialog = false}
         >
@@ -201,10 +201,10 @@ Create Case
               </p>
             </div>
             <div class="flex gap-2">
-              <Button class="bits-btn" variant="outline" size="sm">
+              <Button class="bits-btn" variant="ghost" size="sm">
 <Eye class="w-4 h-4" />
 
-              <Button class="bits-btn" variant="outline" size="sm">
+              <Button class="bits-btn" variant="ghost" size="sm">
 <Edit class="w-4 h-4" />
 
             </div>

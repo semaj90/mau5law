@@ -101,7 +101,7 @@ closeModal()}>
           <p id="evidence-dropzone-instructions" class="container mx-auto px-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button class="bits-btn" variant="outline" onclick={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 fileInput?.click()}>
             Choose Files
 </Button>
@@ -207,7 +207,7 @@ removeFile(file.id)}
         </div>
 
         <div class="container mx-auto px-4">
-          <Button class="bits-btn" variant="outline" onclick={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 closeModal()}>
             {activeUploads.length > 0 ? "Continue in Background" : "Close"}
 </Button>

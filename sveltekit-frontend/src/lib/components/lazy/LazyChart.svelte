@@ -12,9 +12,9 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     // Chart data and config
     data = [] as any[],
     chartType = 'line' as 'line' | 'bar' | 'pie' | 'scatter' | 'area',
-    config = as Record<string, any>,
+    config = {} as Record<string, any>,
     // Lazy loading options
-    lazyOptions = ,
+    lazyOptions = {},
     // Visual props
     height = '400px',
     width = '100%',
@@ -104,16 +104,16 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
         <!-- <svelte:component this={chartComponent.component} {...chartComponent.props} /> -->
         <div class="mock-chart" style="height: {height};">
           <div class="chart-title">
-            {chartType.charAt.toUpperCase() + chartType.slice(1)} Chart
+            {chartType.charAt(0).toUpperCase() + chartType.slice(1)} Chart
           </div>
           <div class="chart-data-info">
             {data.length} data points
           </div>
         </div>
-      {:else}
-        <!-- This shouldn't render as the placeholder is handled by LazyLoader -->
-        <div class="chart-loading">Loading chart component...</div>
-      {/if}
+    {:else}
+      <!-- This shouldn't render as the placeholder is handled by LazyLoader -->
+      <div class="chart-loading">Loading chart component...</div>
+    {/if}
   </div>
 
   <!-- Custom placeholder content in the slot -->

@@ -461,7 +461,7 @@
         loading={isLoading}
         onclick={() => changePage(currentPage - 1)}
         disabled={currentPage <= 1 || isLoading}
-        variant="outline"
+        variant="ghost"
         size="sm"
       >
         {#snippet children()}← Prev{/snippet}
@@ -475,7 +475,7 @@
         loading={isLoading}
         onclick={() => changePage(currentPage + 1)}
         disabled={currentPage >= totalPages || isLoading}
-        variant="outline"
+        variant="ghost"
         size="sm"
       >
         {#snippet children()}Next →{/snippet}
@@ -483,7 +483,7 @@
     </div>
     
     <div class="view-controls">
-      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
@@ -491,11 +491,11 @@
         {Math.round(zoomLevel * 100)}%
       </span>
       
-      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleRotate} variant="outline" size="sm">
+      <LoadingButton onclick={handleRotate} variant="ghost" size="sm">
         {#snippet children()}<RotateCw class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -516,7 +516,7 @@
         {/each}
       </select>
       
-      <Badge variant="outline" class="lod-badge">
+      <Badge variant="ghost" class="lod-badge">
         <Layers class="w-3 h-3 mr-1" />
         Auto: LOD {recommendedLOD}
       </Badge>

@@ -379,7 +379,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <Button 
         onclick={clearChat}
-        variant="outline"
+        variant="ghost"
         size="sm"
         class="clear-button bits-btn bits-btn"
       >

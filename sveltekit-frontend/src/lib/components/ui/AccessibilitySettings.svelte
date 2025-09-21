@@ -248,7 +248,7 @@ isOpen = false}
 
       <!-- Footer -->
       <div class="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
-        <Button variant="outline" onclick={() => isOpen = false}>
+        <Button variant="ghost" onclick={() => isOpen = false}>
           Close
                     </div>
       </div>

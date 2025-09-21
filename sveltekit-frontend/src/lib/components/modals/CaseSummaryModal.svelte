@@ -174,7 +174,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="space-y-4">
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-semibold">Overview</h3>
-              <Button class="bits-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="outline">
+              <Button class="bits-btn" onclick={generateSummary} disabled={isGeneratingSummary} size="sm" variant="ghost">
 <Sparkles class="w-4 h-4 mr-2" /> Regenerate
 
             </div>

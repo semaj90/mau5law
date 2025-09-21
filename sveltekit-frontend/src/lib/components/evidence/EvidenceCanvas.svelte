@@ -336,7 +336,7 @@
           <!-- Controls -->
           <Button
             size="sm"
-            variant="outline"
+            variant="ghost"
             onclick={() => showConnections = !showConnections}
           >
             <Zap class="w-4 h-4 mr-1" />
@@ -358,7 +358,7 @@
 
           <Button
             size="sm"
-            variant="outline"
+            variant="ghost"
             onclick={exportCanvasData}
           >
             <Download class="w-4 h-4 mr-1" />

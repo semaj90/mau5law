@@ -361,7 +361,7 @@
     <div class="header-actions">
       {#if currentDocument}
         <button class="nes-btn" onclick={saveDocument}>Save Draft</button>
-        <button class="nes-btn" variant="outline" onclick={() => showPreview = true}>Preview</button>
+        <button class="nes-btn" variant="ghost" onclick={() => showPreview = true}>Preview</button>
       {:else}
         <button class="nes-btn" onclick={disabled}>
           {isDrafting ? 'Creating...' : 'Start New Document'}
@@ -523,7 +523,7 @@
                     <button class="nes-btn" size="sm" onclick={() => applySuggestion(suggestion)}>
                       Apply
                     </button>
-                    <button class="nes-btn" variant="outline" size="sm">
+                    <button class="nes-btn" variant="ghost" size="sm">
                       Dismiss
                     </button>
                   </div>
@@ -538,28 +538,28 @@
           <h3>Quick Actions</h3>
           <div class="quick-actions">
             <button class="nes-btn" 
-              variant="outline" 
+              variant="ghost" 
               size="sm" 
               onclick={disabled}
             >
               Add Introduction
             </button>
             <button class="nes-btn" 
-              variant="outline" 
+              variant="ghost" 
               size="sm" 
               onclick={disabled}
             >
               Add Conclusion
             </button>
             <button class="nes-btn" 
-              variant="outline" 
+              variant="ghost" 
               size="sm" 
               onclick={disabled}
             >
               Improve Language
             </button>
             <button class="nes-btn" 
-              variant="outline" 
+              variant="ghost" 
               size="sm" 
               onclick={disabled}
             >
@@ -615,7 +615,7 @@
             </div>
             <div class="toolbar-right">
               <span class="word-count">{wordCount} words</span>
-              <button class="nes-btn" variant="outline" size="sm" disabled={isGenerating}>
+              <button class="nes-btn" variant="ghost" size="sm" disabled={isGenerating}>
                 {isGenerating ? 'Generating...' : 'AI Assist'}
               </button>
             </div>
@@ -678,7 +678,7 @@
             </div>
             <div class="card-footer">
               <div class="draft-actions">
-                <button class="nes-btn" variant="outline" size="sm">Continue</button>
+                <button class="nes-btn" variant="ghost" size="sm">Continue</button>
                 <button class="nes-btn" size="sm">Duplicate</button>
               </div>
             </div>
@@ -718,7 +718,7 @@
       </div>
       
       <div class="dialog-actions">
-        <button class="nes-btn" variant="outline" onclick={() => showPreview = false}>
+        <button class="nes-btn" variant="ghost" onclick={() => showPreview = false}>
           Close Preview
         </button>
         <button class="nes-btn">

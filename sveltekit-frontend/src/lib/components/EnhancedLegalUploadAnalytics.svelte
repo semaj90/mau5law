@@ -556,7 +556,7 @@
             <p class="prompt-content">{prompt.content}</p>
             <div class="prompt-actions">
               <button class="nes-btn"
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 legal
                 confidence="high"
@@ -701,7 +701,7 @@
                 </button>
 
                 <button class="nes-btn"
-                  variant="outline"
+                  variant="ghost"
                   onclick={() => { selectedFiles = []; aiAnalysisResults = []; }}
                 >
                   Clear Files
@@ -965,7 +965,7 @@
                 Let's Do It
               </button>
               <button class="nes-btn"
-                variant="outline"
+                variant="ghost"
                 onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 Maybe Later
@@ -1031,7 +1031,7 @@
             Retry Upload
           </button>
           <button class="nes-btn"
-            variant="outline"
+            variant="ghost"
             onclick={resetUpload}
           >
             Start Over
@@ -1055,7 +1055,7 @@
 
       {#if enableAIPrompts}
         <button class="nes-btn"
-          variant="outline"
+          variant="ghost"
           onclick={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
         >
           Get More AI Insights

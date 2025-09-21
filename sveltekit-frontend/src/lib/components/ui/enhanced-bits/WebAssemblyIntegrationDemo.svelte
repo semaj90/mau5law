@@ -180,7 +180,7 @@
           onclick={checkAllIntegrations}
           disabled={isLoading}
           size="sm"
-          variant="outline"
+          variant="ghost"
         >
           {isLoading ? 'Checking...' : 'Refresh Status'}
         </Button>

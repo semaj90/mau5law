@@ -482,7 +482,7 @@ https://svelte.dev/e/js_parse_error -->
 
       <!-- Selection Actions -->
       {#if selectedEvidence.size > 0}
-        <Button class="bits-btn" variant="outline" size="sm" onclick={() => clearSelection()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => clearSelection()}>
           Clear ({selectedEvidence.size})
         </Button>
 
@@ -793,7 +793,7 @@ https://svelte.dev/e/js_parse_error -->
 
         <div class="mx-auto px-4 max-w-7xl">
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             disabled={currentPage === 0}
             onclick={() => currentPage--}
@@ -806,7 +806,7 @@ https://svelte.dev/e/js_parse_error -->
           </span>
 
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             size="sm"
             disabled={currentPage >= totalPages - 1}
             onclick={() => currentPage++}

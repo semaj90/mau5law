@@ -166,7 +166,7 @@
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Database Health</h3>
-        <Button class="bits-btn" variant="outline" size="sm" onclick={refreshHealth}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={refreshHealth}>
 Refresh
 
       </div>
@@ -196,7 +196,7 @@ Refresh
     <div>
       <divHeader class="flex flex-row items-center justify-between">
         <divTitle>Cache Metrics</h3>
-        <Button class="bits-btn" variant="outline" size="sm" onclick={refreshMetrics}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={refreshMetrics}>
 Refresh
 
       </div>
@@ -344,7 +344,7 @@ Refresh
         
         <div class="flex flex-wrap gap-2">
           <Button class="bits-btn" 
-            variant="outline" 
+            variant="ghost" 
             onclick={() =>
 loadCase('demo-case-001')}
             disabled={isLoading}
@@ -352,7 +352,7 @@ loadCase('demo-case-001')}
             Load Case (Standard)
 
           <Button class="bits-btn" 
-            variant="outline" 
+            variant="ghost" 
             onclick={() =>
 loadCase('demo-case-002', true)}
             disabled={isLoading}
@@ -360,7 +360,7 @@ loadCase('demo-case-002', true)}
             Load Case (With Prediction)
 
           <Button class="bits-btn" 
-            variant="outline" 
+            variant="ghost" 
             onclick={() =>
 loadCase('demo-case-003')}
             disabled={isLoading}

@@ -555,11 +555,11 @@
 						</Badge>
 					</div>
 					
-					<Button class="bits-btn" variant="outline" size="sm" onclick={exportConversation}>
+					<Button class="bits-btn" variant="ghost" size="sm" onclick={exportConversation}>
 <Download class="w-4 h-4 mr-1" />
 						Export
 </Button>
-					<Button class="bits-btn" variant="outline" size="sm" onclick={clearConversation}>
+					<Button class="bits-btn" variant="ghost" size="sm" onclick={clearConversation}>
 <Square class="w-4 h-4 mr-1" />
 						Clear
 </Button>
@@ -716,19 +716,19 @@
 			
 			<!-- Quick Actions -->
 			<div class="flex gap-2 mt-3 flex-wrap">
-				<Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+				<Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 currentMessage = 'Analyze the evidence in this case'}>
 					🔍 Analyze Evidence
 </Button>
-				<Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+				<Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 currentMessage = 'What are the key legal issues?'}>
 					⚖️ Legal Issues
 </Button>
-				<Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+				<Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 currentMessage = 'Generate a case summary'}>
 					📋 Case Summary
 </Button>
-				<Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+				<Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 currentMessage = 'Find relevant precedents'}>
 					📚 Find Precedents
 </Button>

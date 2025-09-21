@@ -145,10 +145,10 @@
             >
               <RefreshCw class="w-4 h-4 {isRetrying ? 'animate-spin' : ''}" />
               {isRetrying ? 'Retrying...' : 'Try Again'}
-            <Button variant="outline" onclick={goHome} class="flex items-center gap-2">
+            <Button variant="ghost" onclick={goHome} class="flex items-center gap-2">
               <Home class="w-4 h-4" />
               Go Home
-            <Button variant="outline" onclick={reportError} class="flex items-center gap-2">
+            <Button variant="ghost" onclick={reportError} class="flex items-center gap-2">
               <Bug class="w-4 h-4" />
               Report Issue
           </div>

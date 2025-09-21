@@ -336,7 +336,7 @@ showExportDialog = true}
           <div class="text-sm text-red-800 font-medium">Error</div>
           <div class="text-sm text-red-600 mt-1">{aiError()}</div>
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
             class="mt-2 bits-btn bits-btn"
             onclick={(event: MouseEvent) => retryLast}
@@ -414,7 +414,7 @@ Retry
           
           {#if isProcessing()}
             <Button class="bits-btn" 
-              variant="outline"
+              variant="ghost"
               size="sm"
               onclick={(event: MouseEvent) => stopGeneration}
             >
@@ -496,7 +496,7 @@ Retry
             </div>
           </div>
           <Button class="bits-btn" 
-            variant="outline" 
+            variant="ghost" 
             size="sm"
             onclick={(event: MouseEvent) => ) =>
 aiAssistantManager.checkClusterHealth(}
@@ -550,7 +550,7 @@ showSettingsDialog = false}>
 
       <div class="flex justify-end gap-2">
         <Button class="bits-btn" 
-          variant="outline"
+          variant="ghost"
           onclick={(event: MouseEvent) => ) =>
 showExportDialog = false}
         >

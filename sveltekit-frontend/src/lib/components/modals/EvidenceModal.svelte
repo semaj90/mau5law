@@ -104,7 +104,7 @@ Edit
           <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">
 Save
 
-          <Button class="bits-btn" variant="outline" onclick={handleCancel}>
+          <Button class="bits-btn" variant="ghost" onclick={handleCancel}>
 Cancel
 
         </div>

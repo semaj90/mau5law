@@ -209,13 +209,13 @@ handleAIAction(law, 'summary')}>
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
 
-                <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+                <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 handleAIAction(law, 'chat')}>
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI
 
                 {#if law.fullTextUrl}
-                  <Button class="bits-btn" variant="outline" size="sm" asChild>
+                  <Button class="bits-btn" variant="ghost" size="sm" asChild>
 <a href={law.fullTextUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink class="h-3 w-3 mr-1" />
                       Full Text

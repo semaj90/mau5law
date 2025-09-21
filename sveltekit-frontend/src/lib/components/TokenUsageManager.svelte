@@ -362,7 +362,7 @@
     <div class="flex gap-2 flex-wrap">
       <Button
         size="sm"
-        variant="outline"
+        variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
         onclick={() =>
 showHistory = !showHistory}
@@ -376,7 +376,7 @@ showHistory = !showHistory}
 
       <Button
         size="sm"
-        variant="outline"
+        variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
         onclick={optimizeTokenUsage}
         disabled={!autoOptimize}
@@ -389,7 +389,7 @@ showHistory = !showHistory}
 
       <Button
         size="sm"
-        variant="outline"
+        variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
         onclick={resetSession}
       >
@@ -398,7 +398,7 @@ Reset
 
       <Button
         size="sm"
-        variant="outline"
+        variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
         onclick={exportUsageData}
       >

@@ -915,29 +915,29 @@
   <!-- Timeline Controls -->
   <div class="timeline-controls">
     <div class="navigation-controls">
-      <LoadingButton onclick={() => handleTimeNavigation('prev')} variant="outline" size="sm">
+      <LoadingButton onclick={() => handleTimeNavigation('prev')} variant="ghost" size="sm">
         {#snippet children()}<SkipBack class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleZoomIn} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={handleZoomOut} variant="outline" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
       
-      <LoadingButton onclick={() => handleTimeNavigation('next')} variant="outline" size="sm">
+      <LoadingButton onclick={() => handleTimeNavigation('next')} variant="ghost" size="sm">
         {#snippet children()}<SkipForward class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
     
     <div class="time-info">
-      <Badge variant="outline">
+      <Badge variant="ghost">
         <Calendar class="w-3 h-3 mr-1" />
         {timeRange.start.toLocaleDateString()} - {timeRange.end.toLocaleDateString()}
       </Badge>
-      <Badge variant="outline">
+      <Badge variant="ghost">
         <Clock class="w-3 h-3 mr-1" />
         {timelineStats.timeSpan}
       </Badge>
@@ -956,7 +956,7 @@
         {/each}
       </select>
       
-      <Badge variant="outline" class="lod-badge">
+      <Badge variant="ghost" class="lod-badge">
         <Layers class="w-3 h-3 mr-1" />
         Rec: LOD {recommendedLOD}
       </Badge>
@@ -1033,7 +1033,7 @@
     <div class="event-details nes-container">
       <h4>{selectedEvent.title}</h4>
       <div class="event-meta">
-        <Badge variant="outline" class="event-type-badge">
+        <Badge variant="ghost" class="event-type-badge">
           {selectedEvent.type}
         </Badge>
         <span class="event-time">
@@ -1063,7 +1063,7 @@
           <div class="evidence-items">
             {#each selectedEvent.evidence.slice(0, 3) as evidence}
               <div class="evidence-item">
-                <Badge variant="outline" class="evidence-type">
+                <Badge variant="ghost" class="evidence-type">
                   {evidence.type}
                 </Badge>
                 <span class="evidence-filename">{evidence.filename}</span>

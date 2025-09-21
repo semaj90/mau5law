@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
 </Button>
 
           <Button class="bits-btn"
-            variant="outline"
+            variant="ghost"
             onclick={() =>
 showAdvancedOptions = !showAdvancedOptions}
           >
@@ -331,7 +331,7 @@ selectSuggestion(suggestion)}
                 <span class="text-sm">Auto Optimization</span>
               </label>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onclick={handleOptimization}
                 class="mt-2 w-full bits-btn bits-btn"

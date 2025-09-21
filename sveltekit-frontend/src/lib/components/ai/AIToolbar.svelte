@@ -393,7 +393,7 @@
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <Button class="bits-btn" variant="outline" onclick={(event: MouseEvent) => clearResults} size="sm">
+      <Button class="bits-btn" variant="ghost" onclick={(event: MouseEvent) => clearResults} size="sm">
 Clear All Results
 </Button>
     </div>
@@ -402,7 +402,7 @@ Clear All Results
   <!-- Quick Actions -->
   <div class="flex flex-wrap gap-2 justify-center">
     <Button class="bits-btn"
-      variant="outline"
+      variant="ghost"
       size="sm"
       onclick={(event: MouseEvent) => ) =>
 {
@@ -414,7 +414,7 @@ Clear All Results
       Murder Laws
 </Button>
     <Button class="bits-btn"
-      variant="outline"
+      variant="ghost"
       size="sm"
       onclick={(event: MouseEvent) => ) =>
 {
@@ -426,7 +426,7 @@ Clear All Results
       Contract Elements
 </Button>
     <Button class="bits-btn"
-      variant="outline"
+      variant="ghost"
       size="sm"
       onclick={(event: MouseEvent) => ) =>
 {

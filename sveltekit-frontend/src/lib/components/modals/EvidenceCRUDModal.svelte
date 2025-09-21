@@ -497,7 +497,7 @@
                     />
                     <Button
                       size="sm"
-                      variant="outline"
+                      variant="ghost"
                       onclick={addTag}
                       disabled={mode === 'view' || !tagInput.trim()}
                     >
@@ -581,7 +581,7 @@
                   {#if mode !== 'view'}
                     <Button
                       size="sm"
-                      variant="outline"
+                      variant="ghost"
                       onclick={analyzeEvidence}
                       disabled={isAnalyzing}
                     >
@@ -667,7 +667,7 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <Button variant="outline" onclick={handleClose}>
+            <Button variant="ghost" onclick={handleClose}>
               Cancel
             </Button>
 

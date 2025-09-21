@@ -241,7 +241,7 @@
 
       {#if snapshot.matches('error')}
         <EnhancedButton
-          variant="outline"
+          variant="ghost"
           onclick={handleRetry}
           useMelt={true}
         >

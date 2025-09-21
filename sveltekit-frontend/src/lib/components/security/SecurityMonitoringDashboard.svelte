@@ -225,7 +225,7 @@
 
     <div class="container mx-auto px-4">
       <Button class="bits-btn"
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={() =>
 loadSecurityEvents()}
@@ -234,14 +234,14 @@ loadSecurityEvents()}
         <RefreshCw class={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
         Refresh
 </Button>
-      <Button class="bits-btn" variant="outline" size="sm" onclick={() =>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 exportEvents()}>
         <Download class="h-4 w-4" />
         Export
 </Button>
       <Button 
         class="bits-btn container mx-auto px-4"
-        variant="outline"
+        variant="ghost"
         size="sm"
         onclick={() =>
 clearAllEvents()}

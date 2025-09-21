@@ -138,7 +138,7 @@
           
           <ModernButton 
             onclick={reloadPage}
-            variant="outline"
+            variant="ghost"
             class="border-nier-accent-cool text-nier-accent-cool hover:bg-nier-accent-cool hover:text-nier-bg-primary"
           >
             Reload Page
