@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
 
   const startProcessing = () => {
     if (selectedFile && evidenceId && caseId) {
-      processingStartTime = new Date();
+      processingStartTime = new Date());
       processEvidence(selectedFile, evidenceId, caseId);
     }
   };

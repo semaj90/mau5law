@@ -69,7 +69,7 @@ https://svelte.dev/e/expected_token -->
   // Check if date is a legal deadline (within 30 days)
   let isUpcomingDeadline = $derived(() => {
     if (!value || variant !== 'deadline') return false;
-    const now = new Date();
+    const now = new Date());
     const diffTime = value.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays <= 30 && diffDays >= 0;

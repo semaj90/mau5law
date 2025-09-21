@@ -270,7 +270,7 @@ https://svelte.dev/e/props_duplicate -->
         const savedReport = await response.json();
         report = savedReport;
         isDirty = false;
-        lastSaved = new Date();
+        lastSaved = new Date());
         await onSave(savedReport);
       } else {
         throw new Error("Failed to save report");

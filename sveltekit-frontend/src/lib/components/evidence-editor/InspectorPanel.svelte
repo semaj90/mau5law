@@ -344,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         hasUnsavedChanges = false;
-        lastSavedAt = new Date();
+        lastSavedAt = new Date());
         ondispatch?.(updatedNode);
   }
     } catch (error) {
@@ -384,7 +384,7 @@ https://svelte.dev/e/js_parse_error -->
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown }).json();
         hasUnsavedChanges = false;
-        lastSavedAt = new Date();
+        lastSavedAt = new Date());
         ondispatch?.((result as { evidence?: unknown }).evidence);
         ondispatch?.({
           type: 'success',

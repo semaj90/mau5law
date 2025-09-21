@@ -258,7 +258,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         }));
 
         messages.set(loadedMessages);
-        lastSyncTime = new Date();
+        lastSyncTime = new Date());
       }
     } catch (error) {
       console.warn('Failed to load chat history:', error);
@@ -293,7 +293,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       });
 
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
-        lastSyncTime = new Date();
+        lastSyncTime = new Date());
       }
     } catch (error) {
       console.warn('Failed to save message to database:', error);

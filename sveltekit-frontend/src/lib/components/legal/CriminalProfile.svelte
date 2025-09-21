@@ -116,7 +116,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 
   // Calculate age
   let age = $derived(() => {
-    const today = new Date();
+    const today = new Date());
     const birthDate = profile.personalInfo.dateOfBirth;
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();

@@ -142,8 +142,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    environment:
-      - REDIS_ARGS="--appendonly yes --save 900 1"
 
   # RabbitMQ message broker
   rabbitmq:

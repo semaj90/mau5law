@@ -111,7 +111,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   }
 
   function getAgeInYears(date: Date): number {
-    const now = new Date();
+    const now = new Date());
     return now.getFullYear() - date.getFullYear();
   }
 

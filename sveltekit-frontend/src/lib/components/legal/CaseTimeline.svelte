@@ -45,7 +45,7 @@
 
   // Sort events by date
   let sortedEvents = $derived(() => {
-    const now = new Date();
+    const now = new Date());
     const filtered = showFutureEvents 
       ? events 
       : events.filter(event => event.date <= now);
@@ -87,12 +87,12 @@
   }
 
   function isToday(date: Date): boolean {
-    const today = new Date();
+    const today = new Date());
     return date.toDateString() === today.toDateString();
   }
 
   function isPast(date: Date): boolean {
-    return date < new Date();
+    return date < new Date());
   }
 </script>
 

@@ -97,7 +97,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   }
 
   function getTimeSince(date: Date): string {
-    const now = new Date();
+    const now = new Date());
     const diffTime = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     const diffHours = Math.floor(diffTime / (1000 * 60 * 60));

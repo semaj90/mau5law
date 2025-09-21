@@ -222,7 +222,7 @@
       const recIndex = recommendations.findIndex(r => r.id === recommendationId);
       if (recIndex !== -1) {
         recommendations[recIndex].feedback = feedback;
-        recommendations[recIndex].feedbackTimestamp = new Date();
+        recommendations[recIndex].feedbackTimestamp = new Date());
       }
 
       let result;

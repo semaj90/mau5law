@@ -392,7 +392,7 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       realTimeStats.averageLatency = Math.round(((realTimeStats.averageLatency * (realTimeStats.totalRequests - 1)) + (data as { success?: unknown; latency?: unknown; responseSize?: unknown }).latency) / realTimeStats.totalRequests);
-      realTimeStats.lastUpdate = new Date();
+      realTimeStats.lastUpdate = new Date());
       realTimeStats.dataTransferred += ((data as { success?: unknown; latency?: unknown; responseSize?: unknown }).responseSize || 0);
 
       updateRealTimeStats();
@@ -522,7 +522,7 @@ https://svelte.dev/e/js_parse_error -->
 
       // Update test result
       testResult.status = (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).ok ? 'success' : 'error';
-      testResult.endTime = new Date();
+      testResult.endTime = new Date());
       testResult.latency = latency;
       testResult.response = responseData;
       testResult.statusCode = (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).status;
@@ -547,7 +547,7 @@ https://svelte.dev/e/js_parse_error -->
       const latency = Math.round(endTime - startTime);
 
       testResult.status = 'error';
-      testResult.endTime = new Date();
+      testResult.endTime = new Date());
       testResult.latency = latency;
       testResult.error = error.message;
       testResult.validation.errors.push(error.message);
@@ -647,7 +647,7 @@ https://svelte.dev/e/js_parse_error -->
 
       testSuites[suiteIndex].status = successCount === totalCount ? 'success' : 'partial';
       testSuites[suiteIndex].results = suiteTestResults;
-      testSuites[suiteIndex].lastRun = new Date();
+      testSuites[suiteIndex].lastRun = new Date());
       testSuites[suiteIndex].duration = Date.now() - suiteStartTime;
 
     } catch (error) {

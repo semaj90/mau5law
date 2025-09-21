@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
     overallHealth: 'unknown' as 'healthy' | 'partial' | 'down' | 'unknown'
   });
   let serviceMetrics = $state({
-    lastUpdate: new Date();,
+    lastUpdate: new Date());,
     authUptime: 0,
     sessionUptime: 0,
     aiResponseTime: 0,
@@ -138,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Update system metrics
   function updateMetrics() {
-    const now = new Date();
+    const now = new Date());
     serviceMetrics.lastUpdate = now;
     serviceMetrics.authUptime = authenticatedUser ? 
       Math.floor((now.getTime() - (sessionAnalytics().loginTime?.getTime() || now.getTime())) / 1000) : 0;

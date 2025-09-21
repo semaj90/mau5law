@@ -95,7 +95,7 @@ Compact AI recommendations component for sidebar/dashboard use
       });
 
       recommendations = (result as { slice?: unknown }).slice(0, maxRecommendations);
-      lastUpdated = new Date();
+      lastUpdated = new Date());
     } catch (error) {
       console.error('Failed to load recommendations:', error);
     } finally {
@@ -150,7 +150,7 @@ Compact AI recommendations component for sidebar/dashboard use
   }
 
   function formatTimeAgo(date: Date) {
-    const now = new Date();
+    const now = new Date());
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / 60000);
 

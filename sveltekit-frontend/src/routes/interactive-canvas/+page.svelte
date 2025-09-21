@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   		event.preventDefault();
   		const files = event.dataTransfer?.files;
   		if (files && files.length > 0) {
-  			await processFileUploads(Array.from(files);
+  			await processFileUploads(Array.from(files));
   }}
   	function handleDragOver(event: DragEvent) {
   		event.preventDefault();

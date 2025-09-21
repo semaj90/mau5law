@@ -36,7 +36,7 @@
   	$effect(() => {
   		// Update time every second
   		const timeInterval = setInterval(() => {
-  			const now = new Date();
+  			const now = new Date());
   			currentTime = now.toLocaleTimeString();
   		}, 1000);
   		// Glow effect animation

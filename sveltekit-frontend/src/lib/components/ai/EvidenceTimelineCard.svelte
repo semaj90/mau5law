@@ -83,7 +83,7 @@
   function formatTime(timeStr?: string): string {
     if (!timeStr) return '';
     const [hours, minutes] = timeStr.split(':');
-    const date = new Date();
+    const date = new Date());
     date.setHours(parseInt(hours), parseInt(minutes));
     return date.toLocaleTimeString('en-US', {
       hour: 'numeric',

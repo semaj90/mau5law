@@ -149,7 +149,7 @@ https://svelte.dev/e/expected_token -->
 
 	// Generate timestamp
 	function updateTimestamp() {
-		const now = new Date();
+		const now = new Date());
 		timestamp = now.toLocaleString('en-US', {
 			weekday: 'short',
 			year: 'numeric',

@@ -51,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;
-    const files = input?.files ? Array.from(input.files) : [];
+    const files = input?.files ? Array.from(input.files) : [];)
     selectedFiles = files.filter(
       (file) =>
         file &&

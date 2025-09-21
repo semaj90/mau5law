@@ -131,7 +131,7 @@
   // Update time every second
   $effect(() => {
     const timer = setInterval(() => {
-      currentTime = new Date();
+      currentTime = new Date());
     }, 1000);
 
     // Check system status periodically
