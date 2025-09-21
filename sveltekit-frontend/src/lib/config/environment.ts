@@ -8,22 +8,22 @@ export interface EnvironmentConfig {
   ollama: {
     baseUrl: string;
     port: number;
-    isDetected: boolean;,
+    isDetected: boolean;
   };
   redis: {
     url: string;
     host: string;
-    port: number;,
+    port: number;
   };
   postgres: {
     url: string;
     host: string;
-    port: number;,
+    port: number;
   };
   development: {
     isDev: boolean;
     debug: boolean;
-    verbose: boolean;,
+    verbose: boolean;
   };
 }
 
@@ -54,7 +54,7 @@ async function detectOllamaConfig(): Promise<any> {
       if (typeof fetch !== 'undefined') {
         const response = await fetch(`${baseUrl}/api/tags`, {
           method: 'GET',
-          signal: AbortSignal.timeout(1000),
+          signal: AbortSignal.timeout(1000)
         });
         
         if (response.ok) {
@@ -70,7 +70,7 @@ async function detectOllamaConfig(): Promise<any> {
   return { 
     baseUrl: 'http://localhost:11434', 
     port: 11434, 
-    isDetected: false ,
+    isDetected: false 
   };
 }
 
@@ -85,17 +85,17 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
     redis: {
       url: process.env.REDIS_URL || 'redis://:redis@localhost:6379',
       host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT || '6379'),
+      port: parseInt(process.env.REDIS_PORT || '6379')
     },
     postgres: {
       url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
       host: process.env.POSTGRES_HOST || 'localhost',
-      port: parseInt(process.env.POSTGRES_PORT || '5433'),
+      port: parseInt(process.env.POSTGRES_PORT || '5433')
     },
     development: {
       isDev: process.env.NODE_ENV === 'development',
       debug: process.env.DEBUG === 'true' || process.env.VITE_DEBUG === 'true',
-      verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true',
+      verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true'
     }
   };
 }
@@ -111,7 +111,7 @@ export function getOllamaConfig(): { baseUrl: string; port: number } {
       const url = new URL(envUrl.startsWith('http') ? envUrl : `http://${envUrl}`);
       return {
         baseUrl: envUrl,
-        port: parseInt(url.port) || 11434,
+        port: parseInt(url.port) || 11434
       };
     } catch (error) {
       console.warn('Invalid OLLAMA_URL format:', envUrl);
@@ -121,7 +121,7 @@ export function getOllamaConfig(): { baseUrl: string; port: number } {
   // Return default;
   return {
     baseUrl: 'http://localhost:11434',
-    port: 11434,
+    port: 11434
   };
 }
 

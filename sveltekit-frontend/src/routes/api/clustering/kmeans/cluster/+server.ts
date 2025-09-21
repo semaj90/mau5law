@@ -22,12 +22,12 @@ try { redis = createRedisInstance(); } catch {
   const RedisCtor = (require('ioredis') as any).default || (require('ioredis') as any);
   redis = new RedisCtor({
     host: import.meta.env.REDIS_HOST || 'localhost',
-    port: parseInt(import.meta.env.REDIS_PORT || '6379'),
+    port: parseInt(import.meta.env.REDIS_PORT || '6379')
   });
 }
 
 const qdrant = new QdrantClient({
-  url: import.meta.env.QDRANT_URL || "http://localhost:6333",
+  url: import.meta.env.QDRANT_URL || "http://localhost:6333"
 });
 
 let rabbitConnection: any | null = null;
@@ -58,8 +58,8 @@ export const POST: RequestHandler = async ({ request }) => {
           error: "Document IDs array is required",
           metadata: {
             timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 400 },
       );
@@ -75,8 +75,8 @@ export const POST: RequestHandler = async ({ request }) => {
           error: `Invalid cluster count: ${clusterCount}. Must be between 2 and ${documentIds.length}`,
           metadata: {
             timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 400 },
       );
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
           id: legalDocuments.id,
           embedding: legalDocuments.embedding,
           metadata: legalDocuments.keywords, // Use keywords as metadata
-          extractedText: legalDocuments.content,
+          extractedText: legalDocuments.content
         })
         .from(legalDocuments)
         .where(inArray(legalDocuments.id, documentIds);
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const qdrantResponse = await qdrant.retrieve("legal_documents", {
           ids: documentIds,
           with_payload: true,
-          with_vector: true,
+          with_vector: true
         });
         qdrantResults = (qdrantResponse as any).points || qdrantResponse || [];
       } catch (qdrantError) {
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
             id: doc.id,
             embedding: doc.embedding,
             metadata: doc.metadata || {},
-            source: "postgresql",
+            source: "postgresql"
           });
         }
       }
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
             id: (result as { id?: any; vector?: any; payload?: any }).id,
             embedding: (result as { id?: any; vector?: any; payload?: any }).vector,
             metadata: (result as { id?: any; vector?: any; payload?: any }).payload || {},
-            source: "qdrant",
+            source: "qdrant"
           });
         }
       }
@@ -148,7 +148,7 @@ export const POST: RequestHandler = async ({ request }) => {
       documentMetadata = Array.from(mergedDocuments.values()).map((doc) => ({
         id: doc.id,
         type: doc.metadata.type || "unknown",
-        keywords: doc.metadata.keywords || [],
+        keywords: doc.metadata.keywords || []
       });
     } catch (dbError) {
       console.error("Database retrieval error:", dbError);
@@ -158,8 +158,8 @@ export const POST: RequestHandler = async ({ request }) => {
           error: "Failed to retrieve document embeddings",
           metadata: {
             timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 500 },
       );
@@ -172,8 +172,8 @@ export const POST: RequestHandler = async ({ request }) => {
           error: "No valid embeddings found",
           metadata: {
             timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 404 },
       );
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request }) => {
       documentCount: embeddings.length,
       clusterCount,
       startedAt: Date.now(),
-      config: JSON.stringify(kmeansConfig),
+      config: JSON.stringify(kmeansConfig)
     });
 
     // Queue clustering job in RabbitMQ for monitoring
@@ -215,10 +215,10 @@ export const POST: RequestHandler = async ({ request }) => {
       payload: {
         documentIds,
         embeddings: embeddings.slice(0, 10), // Sample for messaging
-        config: kmeansConfig,
+        config: kmeansConfig
       },
       priority: "high",
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     await channel.publish(
@@ -263,9 +263,9 @@ export const POST: RequestHandler = async ({ request }) => {
           silhouetteScore,
           documentCount: embeddings.length,
           clusterCount,
-          convergenceTime: Date.now() - startTime,
+          convergenceTime: Date.now() - startTime
         },
-        centroids,
+        centroids
       };
 
       await redis.setex(
@@ -278,7 +278,7 @@ export const POST: RequestHandler = async ({ request }) => {
       await redis.hset(`kmeans:job:${clusterJobId}`, {
         status: "completed",
         completedAt: Date.now(),
-        silhouetteScore: silhouetteScore.toString(),
+        silhouetteScore: silhouetteScore.toString()
       });
 
       // Store centroids in Qdrant for future similarity searches;
@@ -290,13 +290,13 @@ export const POST: RequestHandler = async ({ request }) => {
             type: "centroid",
             clusterId: `cluster_${index}`,
             jobId: clusterJobId,
-            createdAt: new Date().toISOString(),
-          },
+            createdAt: new Date().toISOString()
+          }
         });
 
         await qdrant.upsert("legal_centroids", {
           wait: true,
-          points: centroidPoints,
+          points: centroidPoints
         });
       } catch (qdrantError) {
         console.warn("Failed to store centroids in Qdrant:", qdrantError);
@@ -309,7 +309,7 @@ export const POST: RequestHandler = async ({ request }) => {
         Buffer.from(JSON.stringify({
             jobId: clusterJobId,
             status: "completed",
-            metrics: results.metrics,
+            metrics: results.metrics
           }),
         ),
       );
@@ -322,14 +322,14 @@ export const POST: RequestHandler = async ({ request }) => {
           jobId: clusterJobId,
           clusters: results.clusters,
           analysis: results.analysis,
-          metrics: results.metrics,
+          metrics: results.metrics
         },
         metadata: {
           timestamp: new Date().toISOString(),
           processingTime: Date.now() - startTime,
           clusterId: clusterJobId,
-          confidence: silhouetteScore,
-        },
+          confidence: silhouetteScore
+        }
       });
     } catch (clusteringError) {
       console.error("K-Means clustering error:", clusteringError);
@@ -340,7 +340,7 @@ export const POST: RequestHandler = async ({ request }) => {
         error:
           clusteringError instanceof Error
             ? clusteringError.message: "Unknown error",
-        failedAt: Date.now(),
+        failedAt: Date.now()
       });
 
       // Publish failure event
@@ -352,7 +352,7 @@ export const POST: RequestHandler = async ({ request }) => {
             status: "failed",
             error:
               clusteringError instanceof Error
-                ? clusteringError.message: "Unknown error",
+                ? clusteringError.message: "Unknown error"
           }),
         ),
       );
@@ -367,8 +367,8 @@ export const POST: RequestHandler = async ({ request }) => {
               ? clusteringError.message: "Clustering failed",
           metadata: {
             timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-          },
+            processingTime: Date.now() - startTime
+          }
         },
         { status: 500 },
       );
@@ -382,8 +382,8 @@ export const POST: RequestHandler = async ({ request }) => {
         error: error instanceof Error ? error.message: "Internal server error",
         metadata: {
           timestamp: new Date().toISOString(),
-          processingTime: Date.now() - startTime,
-        },
+          processingTime: Date.now() - startTime
+        }
       },
       { status: 500 },
     );
@@ -402,8 +402,8 @@ export const GET: RequestHandler = async ({ url }) => {
         error: "Job ID and embedding are required",
         metadata: {
           timestamp: new Date().toISOString(),
-          processingTime: 0,
-        },
+          processingTime: 0
+        }
       },
       { status: 400 },
     );
@@ -422,8 +422,8 @@ export const GET: RequestHandler = async ({ url }) => {
           error: "No trained K-Means model found",
           metadata: {
             timestamp: new Date().toISOString(),
-            processingTime: 0,
-          },
+            processingTime: 0
+          }
         },
         { status: 404 },
       );
@@ -436,12 +436,12 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       data: {
         clusterId,
-        jobId,
+        jobId
       },
       metadata: {
         timestamp: new Date().toISOString(),
-        processingTime: 10,
-      },
+        processingTime: 10
+      }
     });
   } catch (error: any) {
     console.error("K-Means prediction error:", error);
@@ -452,8 +452,8 @@ export const GET: RequestHandler = async ({ url }) => {
         error: error instanceof Error ? error.message: "Prediction failed",
         metadata: {
           timestamp: new Date().toISOString(),
-          processingTime: 0,
-        },
+          processingTime: 0
+        }
       },
       { status: 500 },
     );

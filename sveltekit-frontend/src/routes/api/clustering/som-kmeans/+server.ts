@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
         clusters: kmeansClusters,
         clusterCount: kmeansClusters.length,
         silhouetteScore: qualityMetrics.silhouetteScore,
-        inertia: qualityMetrics.inertia,
+        inertia: qualityMetrics.inertia
       },
       
       // SOM results;
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
         gridSize: `${somResults.width}x${somResults.height}`,
         neurons: somResults.neurons,
         trainingEpochs: somResults.trainingEpochs,
-        quantizationError: somResults.quantizationError,
+        quantizationError: somResults.quantizationError
       },
       
       // Combined clustering insights;
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
       recommendations: {
         suggestions: suggestions,
         confidence: calculateSuggestionConfidence(suggestions),
-        categories: categorizeSuggestions(suggestions),
+        categories: categorizeSuggestions(suggestions)
       },
       
       // Quality and performance metrics;
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
         recall: qualityMetrics.recall,
         processingTime: qualityMetrics.processingTime,
         featureCount: features.vectors.length,
-        dimensionality: features.dimensions,
+        dimensionality: features.dimensions
       }
     };
 
@@ -99,7 +99,7 @@ function extractFeaturesForClustering(ragData: any): unknown {
     metadata: {
       documentId: document.documentId || 'unknown',
       processingTime: document.performance?.processingTime || 0,
-      confidence: document.performance?.confidence || 0,
+      confidence: document.performance?.confidence || 0
     }
   };
 }
@@ -334,7 +334,7 @@ function assignPointsToClusters(vectors: number[][], centroids: number[][], labe
   const clusters = centroids.map((centroid, index) => ({
     centroid: [...centroid],
     points: [],
-    labels: [],
+    labels: []
   });
   
   vectors.forEach((vector, index) => {
@@ -463,7 +463,7 @@ function calculateClusteringQuality(kmeansClusters: any[], somResults: any): unk
     accuracy: 85 + Math.random() * 10, // Simulated
     precision: 80 + Math.random() * 15, // Simulated
     recall: 78 + Math.random() * 17, // Simulated
-    processingTime: Date.now() % 1000 + 1000 // Simulated,
+    processingTime: Date.now() % 1000 + 1000 // Simulated
   };
 }
 
@@ -472,7 +472,7 @@ function analyzeClusterContent(points: number[][], labels: string[]): unknown {
     dominantTerms: labels.slice(0, 3),
     averageVector: points[0] || [],
     variance: Math.random() * 10,
-    density: points.length / 10,
+    density: points.length / 10
   };
 }
 
@@ -481,7 +481,7 @@ function analyzeClusterCharacteristics(clusters: any[]): unknown[] {
     id: cluster.id,
     size: cluster.size,
     density: cluster.quality,
-    dominantFeatures: cluster.characteristics.dominantTerms || [],
+    dominantFeatures: cluster.characteristics.dominantTerms || []
   });
 }
 
@@ -508,7 +508,7 @@ function categorizeSuggestions(suggestions: string[]): unknown {
     legal_terms: suggestions.filter(s => s.includes('law') || s.includes('legal')),
     procedural: suggestions.filter(s => s.includes('process') || s.includes('procedure')),
     contractual: suggestions.filter(s => s.includes('contract') || s.includes('agreement')),
-    general: suggestions.filter(s => !s.includes('law') && !s.includes('process') && !s.includes('contract'),
+    general: suggestions.filter(s => !s.includes('law') && !s.includes('process') && !s.includes('contract')
   };
 }
 
@@ -526,7 +526,7 @@ function generateSOMTopology(neurons: number[][][], width: number, height: numbe
     gridSize: `${width}x${height}`,
     totalNeurons: width * height,
     topology: 'rectangular',
-    neighborhoodFunction: 'gaussian',
+    neighborhoodFunction: 'gaussian'
   };
 }
 

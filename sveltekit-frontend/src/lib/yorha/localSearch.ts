@@ -27,7 +27,7 @@ const options: any = {
   threshold: 0.38,
   ignoreLocation: true,
   minMatchCharLength: 3,
-  useExtendedSearch: true,
+  useExtendedSearch: true
 };
 
 export function isLocalIndexReady() {
@@ -60,7 +60,7 @@ export async function ensureLocalIndex(fetcher: typeof fetch = fetch, limit = 75
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
         status: d.status || 'active',
-        metadata: d,
+        metadata: d
       });
       fuse = new Fuse(documents, options);
       // Persist

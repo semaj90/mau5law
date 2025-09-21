@@ -25,14 +25,14 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
     const clientIp = getClientAddress();
     const rateLimitResult = await rateLimiter.check(clientIp, 'rag-query', {
       window: 60000, // 1 minute window
-      max: 20 // 20 requests per minute,
+      max: 20 // 20 requests per minute
     });
 
     if (!rateLimitResult.allowed) {
       return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter,
+        retryAfter: rateLimitResult.retryAfter
       }, { status: 429 });
     }
 
@@ -58,14 +58,14 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
       return json({
         success: false,
-        error: 'Query is required and must be a non-empty string',
+        error: 'Query is required and must be a non-empty string'
       }, { status: 400 });
     }
 
     if (query.length > 1000) {
       return json({
         success: false,
-        error: 'Query too long. Maximum 1000 characters allowed.',
+        error: 'Query too long. Maximum 1000 characters allowed.'
       }, { status: 400 });
     }
 
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
       documentsUsed: ragResponse.metadata.documentsUsed,
       confidence: ragResponse.confidence,
       cacheHit: ragResponse.metadata.cacheHit,
-      reranked: ragResponse.metadata.reranked,
+      reranked: ragResponse.metadata.reranked
     });
 
     // Format response;
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
           citation: source.citation,
           relevanceScore: source.relevanceScore,
           content: source.content.substring(0, 500) + (source.content.length > 500 ? '...' : '') // Truncate for API response
-        ,})),
+        })),
         confidence: ragResponse.confidence,
         metadata: {
           queryId: ragResponse.metadata.queryId,
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
           cacheHit: ragResponse.metadata.cacheHit,
           model: ragResponse.metadata?.model || "unknown" // @ts-ignore - Model property access,
           reranked: ragResponse.metadata.reranked,
-          apiProcessingTime: Date.now() - startTime,
+          apiProcessingTime: Date.now() - startTime
         }
       }
     };
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
       error: errorMessage,
       metadata: {
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: statusCode });
   }
@@ -187,14 +187,14 @@ export const GET: RequestHandler = async () => {
         chunksIndexed: stats.chunksIndexed,
         averageRetrievalTime: stats.averageRetrievalTime,
         recentQueriesCount: stats.recentQueriesCount,
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       }
     });
   } catch (error: any) {
     return json({
       success: false,
       status: 'unhealthy',
-      error: error.message,
+      error: error.message
     }, { status: 503 });
   }
 };

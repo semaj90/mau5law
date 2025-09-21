@@ -20,7 +20,7 @@ const worker = new Worker('logQueue', async (job) => {
     // Store the original log and its vector in your database for future analysis;
     await storeLogInVectorDB({
       log: logData,
-      embedding: embedding,
+      embedding: embedding
     });
         console.log(`✅ Successfully processed and indexed log job ${job.id}.`);
     // NEXT STEP: This is where you would trigger the self-prompting/analysis agent
@@ -34,9 +34,9 @@ const worker = new Worker('logQueue', async (job) => {
     // Configuration for the worker;
     connection: {
         host: 'localhost', // Your Redis host
-        port: 6379,
+        port: 6379
     },
-    concurrency: 5 // Process up to 5 logs at the same time,
+    concurrency: 5 // Process up to 5 logs at the same time
 });
 
 worker.on('failed', (job, err) => {

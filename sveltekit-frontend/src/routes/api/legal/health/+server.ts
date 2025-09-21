@@ -35,7 +35,7 @@ export const GET: RequestHandler = async () => {
 						queuedJobs: systemHealth.orchestrator.queuedJobs,
 						completedToday: systemHealth.orchestrator.completedToday,
 						averageProcessingTime: `${systemHealth.orchestrator.averageProcessingTime}ms`,
-						successRate: systemHealth.orchestrator.isHealthy ? '>95%' : '<95%',
+						successRate: systemHealth.orchestrator.isHealthy ? '>95%' : '<95%'
 					}
 				},
 				queueManager: {
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async () => {
 					metrics: {
 						attachedQueues: systemHealth.queueManager.attachedQueues,
 						optimizationScore: `${systemHealth.queueManager.optimizationScore}%`,
-						autoScaling: systemHealth.queueManager.autoScalingActive ? 'active' : 'inactive',
+						autoScaling: systemHealth.queueManager.autoScalingActive ? 'active' : 'inactive'
 					}
 				},
 				stateManager: {
@@ -70,11 +70,11 @@ export const GET: RequestHandler = async () => {
 					},
 					database: {
 						status: 'connected',
-						type: 'PostgreSQL with pgvector',
+						type: 'PostgreSQL with pgvector'
 					},
 					gpu: {
 						status: 'available',
-						type: 'CUDA acceleration',
+						type: 'CUDA acceleration'
 					}
 				}
 			},
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async () => {
 				evidenceCanvas: '/api/legal/evidence-canvas',
 				batch: '/api/legal/batch',
 				status: '/api/legal/status/{jobId}',
-				health: '/api/legal/health',
+				health: '/api/legal/health'
 			}
 		};
 

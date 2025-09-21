@@ -11,7 +11,7 @@ declare global {
 // Drizzle ORM result augmentations;
 declare global {
   interface RowList<T> {
-    rows: T;,
+    rows: T;
   }
 }
 

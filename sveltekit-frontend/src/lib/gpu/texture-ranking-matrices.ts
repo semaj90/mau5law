@@ -89,7 +89,7 @@ export class TextureRankingMatrices {
     rankingOperations: 0,
     cacheHitRate: 0.0,
     averageLatency: 0,
-    gpuMemoryUsed: 0,
+    gpuMemoryUsed: 0
   };
 
   // Result cache with NES-style priority eviction
@@ -103,7 +103,7 @@ export class TextureRankingMatrices {
   private async initializeGPUCompute(): Promise<void> {
     try {
       const adapter = await navigator.gpu?.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
       
       if (!adapter) {
@@ -117,7 +117,7 @@ export class TextureRankingMatrices {
           maxTextureDimension2D: 2048,
           maxComputeWorkgroupStorageSize: 16384,
           maxComputeInvocationsPerWorkgroup: 256,
-          maxStorageBufferBindingSize: 128 * 1024 * 1024 // 128MB,
+          maxStorageBufferBindingSize: 128 * 1024 * 1024 // 128MB
         }
       });
 
@@ -127,7 +127,7 @@ export class TextureRankingMatrices {
       console.log('🎯 GPU Texture Ranking Matrices initialized with', {
         dimensions: this.rankingDimensions.length,
         maxTextureSize: '2048x2048',
-        computeShaders: this.computePipelines.size,
+        computeShaders: this.computePipelines.size
       });
 
     } catch (error: any) {
@@ -144,7 +144,7 @@ export class TextureRankingMatrices {
       try {
         // Create shader module;
         const shaderModule = this.device.createShaderModule({
-          code: dimension.computeShader,
+          code: dimension.computeShader
         });
 
         // Create bind group layout;
@@ -155,7 +155,7 @@ export class TextureRankingMatrices {
               visibility: GPUShaderStage.COMPUTE,
               texture: {
                 sampleType: 'float',
-                viewDimension: '2d',
+                viewDimension: '2d'
               }
             },
             {
@@ -164,14 +164,14 @@ export class TextureRankingMatrices {
               storageTexture: {
                 access: 'write-only',
                 format: dimension.textureFormat,
-                viewDimension: '2d',
+                viewDimension: '2d'
               }
             },);
             {
               binding: 2,
               visibility: GPUShaderStage.COMPUTE,
               buffer: {
-                type: 'storage',
+                type: 'storage'
               }
             }
           ]
@@ -180,11 +180,11 @@ export class TextureRankingMatrices {
         // Create compute pipeline;
         const nativePipeline = this.device.createComputePipeline({
           layout: this.device.createPipelineLayout({
-            bindGroupLayouts: [bindGroupLayout],
+            bindGroupLayouts: [bindGroupLayout]
           }),
           compute: {
             module: shaderModule,
-            entryPoint: 'main',
+            entryPoint: 'main'
           }
         });
 
@@ -193,9 +193,9 @@ export class TextureRankingMatrices {
           bindGroupLayout,
           bindGroup: this.device.createBindGroup({
             layout: bindGroupLayout,
-            entries: [],
+            entries: []
           }),
-          workgroupCount: dimension.workgroupSize,
+          workgroupCount: dimension.workgroupSize
         };
 
         this.computePipelines.set(dimension.name, pipelineWrapper);
@@ -332,14 +332,14 @@ export class TextureRankingMatrices {
       const outputTexture = this.device.createTexture({
         size: { width: paddedSize, height: paddedSize },
         format: dimension.textureFormat,
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC,
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
       });
 
       // Create query buffer;
       const queryBuffer = this.device.createBuffer({
         size: queryEmbedding.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true,
+        mappedAtCreation: true
       });
 
       new Float32Array(queryBuffer.getMappedRange()).set(queryEmbedding);
@@ -372,7 +372,7 @@ export class TextureRankingMatrices {
       // Copy result to staging buffer;
       const stagingBuffer = this.device.createBuffer({
         size: paddedSize * paddedSize * 4, // R32F = 4 bytes
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       commandEncoder.copyTextureToBuffer(
@@ -420,7 +420,7 @@ export class TextureRankingMatrices {
     const texture = this.device.createTexture({
       size: { width: textureSize, height: textureSize },
       format: 'rgba32float',
-      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
     });
 
     // Pack embeddings into RGBA32F texture (4 values per pixel)
@@ -483,7 +483,7 @@ export class TextureRankingMatrices {
         metadata: {
           processingTime: this.performanceMetrics.averageLatency,
           cacheHit: false,
-          bankId: node.bankId,
+          bankId: node.bankId
         }
       });
     }
@@ -532,7 +532,7 @@ export class TextureRankingMatrices {
         metadata: {
           processingTime: 0,
           cacheHit: false,
-          bankId: node.bankId,
+          bankId: node.bankId
         }
       });
     }
@@ -710,7 +710,7 @@ export class TextureRankingMatrices {
       ...this.performanceMetrics,
       cacheSize: this.rankingCache.size,
       pipelinesCreated: this.computePipelines.size,
-      texturesActive: this.rankingTextures.size,
+      texturesActive: this.rankingTextures.size
     };
   }
 
@@ -906,13 +906,13 @@ export class NESSGPUBinaryRankingPipeline {
       embedding: doc.embedding || new Float32Array(384),
       priority: doc.priority || 128,
       bankId: this.getBankIdForDocument(doc),
-      metadata: doc,
+      metadata: doc
     });
 
     return {
       nodes,
       edges: [], // Could add citation relationships
-      checksum: this.calculateChecksum(documents),
+      checksum: this.calculateChecksum(documents)
     };
   }
 
@@ -992,7 +992,7 @@ export class NESSGPUBinaryRankingPipeline {
         metadata: {
           processingTime: 0,
           cacheHit: false,
-          bankId: this.getBankIdForDocument(doc),
+          bankId: this.getBankIdForDocument(doc)
         }
       });
     }
@@ -1011,7 +1011,7 @@ export class NESSGPUBinaryRankingPipeline {
       const adapter = await navigator.gpu?.requestAdapter({ powerPreference: 'high-performance' });
       if (adapter) {
         this.gpuDevice = await adapter.requestDevice({
-          requiredFeatures: [] as GPUFeatureName[],
+          requiredFeatures: [] as GPUFeatureName[]
         });
         console.log('🎯 GPU device initialized for NES-GPU binary pipeline');
         return true;
@@ -1030,7 +1030,7 @@ export class NESSGPUBinaryRankingPipeline {
       pipeline: 'NES-GPU Binary Ranking',
       textureRanking: this.textureRanking.getPerformanceMetrics(),
       nesMemory: (this.nesMemory as any).getStats?.() || {},
-      gpuAvailable: !!this.gpuDevice,
+      gpuAvailable: !!this.gpuDevice
     };
   }
 

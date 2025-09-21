@@ -49,7 +49,7 @@ export interface CaseAIContext {
     description: string;
     confidence: number;
     evidenceIds: string[];
-    timestamp: number;,
+    timestamp: number;
   }>;
 }
 
@@ -63,14 +63,14 @@ export interface AIAssistantState {
     type: 'trend' | 'pattern' | 'recommendation';
     description: string;
     affectedCases: string[];
-    timestamp: number;,
+    timestamp: number;
   }>;
 }
 
 const initialState: AIAssistantState = {
   cases: {},
   isLoading: false,
-  globalInsights: [],
+  globalInsights: []
 };
 
 function createAIAssistantStore() {
@@ -92,9 +92,9 @@ function createAIAssistantStore() {
             evidenceMap: {},
             currentSession: {
               isActive: false,
-              lastActivity: Date.now(),
+              lastActivity: Date.now()
             },
-            insights: [],
+            insights: []
           };
         }
         return state;
@@ -124,16 +124,16 @@ function createAIAssistantStore() {
             evidenceMap: {},
             currentSession: {
               isActive: true,
-              lastActivity: Date.now(),
+              lastActivity: Date.now()
             },
-            insights: [],
+            insights: []
           };
         }
 
         const newMessage: AIMessage = {
           ...message,
           id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         };
 
         state.cases[caseId].messages.push(newMessage);
@@ -157,7 +157,7 @@ function createAIAssistantStore() {
         state.cases[caseId].evidenceMap[evidence.id] = {
           ...evidence,
           annotations: evidence.annotations || [],
-          connections: evidence.connections || [],
+          connections: evidence.connections || []
         };
 
         return state;
@@ -172,7 +172,7 @@ function createAIAssistantStore() {
         const newInsight = {
           ...insight,
           id: `insight-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         };
 
         state.cases[caseId].insights.push(newInsight);

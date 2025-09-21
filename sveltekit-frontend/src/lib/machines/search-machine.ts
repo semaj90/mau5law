@@ -21,11 +21,11 @@ export interface SearchContext {
   analytics: {
     totalResults: number;
     searchTime: number;
-    relevanceScore: number;,
+    relevanceScore: number;
   };
   validationErrors: Record<string, string[]>;
   error: string | null;
-  isLoading: boolean;,
+  isLoading: boolean;
 }
 
 export const searchMachine = createMachine({
@@ -50,11 +50,11 @@ export const searchMachine = createMachine({
     analytics: {
       totalResults: 0,
       searchTime: 0,
-      relevanceScore: 0,
+      relevanceScore: 0
     },
     validationErrors: Record<string, any>,
     error: null,
-    isLoading: false,
+    isLoading: false
   },
   states: {
     idle: {
@@ -63,7 +63,7 @@ export const searchMachine = createMachine({
         UPDATE_QUERY: {
           actions: assign({
             query: ({ event }) => event.query,
-            error: null,
+            error: null
           })
         },
         UPDATE_FILTERS: {
@@ -71,11 +71,11 @@ export const searchMachine = createMachine({
             filters: ({ context, event }) => ({
               ...context.filters,
               ...event.filters
-            ,})
+            })
           })
         },
         SEARCH: 'validating',
-        LOAD_HISTORY: 'loadingHistory',
+        LOAD_HISTORY: 'loadingHistory'
       }
     },
     loadingHistory: {
@@ -99,7 +99,7 @@ export const searchMachine = createMachine({
         onError: {
           target: 'idle',
           actions: assign({
-            error: 'Failed to load search history',
+            error: 'Failed to load search history'
           })
         }
       }
@@ -139,14 +139,14 @@ export const searchMachine = createMachine({
           target: 'searching',
           actions: assign({
             validationErrors: Record<string, any>,
-            error: null,
+            error: null
           })
         },
         onError: {
           target: 'idle',
           actions: assign({
             validationErrors: ({ event }) => (event as any).error?.validationErrors || {},
-            error: 'Search validation failed',
+            error: 'Search validation failed'
           })
         }
       }
@@ -198,7 +198,7 @@ export const searchMachine = createMachine({
             analytics: {
               totalResults: data.total || 0,
               searchTime,
-              relevanceScore: data.averageRelevance || 0,
+              relevanceScore: data.averageRelevance || 0
             }
           };
         }),
@@ -210,7 +210,7 @@ export const searchMachine = createMachine({
               results: ({ event }) => event.output.results,
               analytics: ({ event }) => event.output.analytics,
               error: null,
-              isLoading: false,
+              isLoading: false
             }),
             // Save to search history;
             ({ context }) => {
@@ -229,7 +229,7 @@ export const searchMachine = createMachine({
           target: 'error',
           actions: assign({
             error: ({ event }) => (event as any).error?.message || 'Search failed',
-            isLoading: false,
+            isLoading: false
           })
         }
       }
@@ -250,7 +250,7 @@ export const searchMachine = createMachine({
             filters: ({ context, event }) => ({
               ...context.filters,
               ...event.filters
-            ,})
+            })
           })
         },
         CLEAR_RESULTS: {
@@ -262,7 +262,7 @@ export const searchMachine = createMachine({
             analytics: {
               totalResults: 0,
               searchTime: 0,
-              relevanceScore: 0,
+              relevanceScore: 0
             }
           })
         }
@@ -276,7 +276,7 @@ export const searchMachine = createMachine({
           target: 'idle',
           actions: assign({
             error: null,
-            results: [],
+            results: []
           })
         }
       }

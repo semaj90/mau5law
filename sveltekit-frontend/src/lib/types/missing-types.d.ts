@@ -42,7 +42,7 @@ declare interface RAGDocument {
 // Store types;
 declare const enhancedRAGStore: {
   search: (query: string) => Promise<RAGSearchResult[]>;
-  add: (doc: RAGDocument) => Promise<void>;,
+  add: (doc: RAGDocument) => Promise<void>;
 };
 
 declare const documentVectors: any;
@@ -56,7 +56,7 @@ declare interface DynamicRouteConfig {
 
 declare interface GeneratedRoute {
   path: string;
-  handler: any;,
+  handler: any;
 }
 
 declare function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute;
@@ -196,7 +196,7 @@ export interface LegalEmbeddingResult {
   embedding: number[];
   model: string;
   dimensions: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export interface MetricData {

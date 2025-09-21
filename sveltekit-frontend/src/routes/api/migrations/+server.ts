@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const status = await migrator.getStatus();
         return json({
           success: true,
-          data: status,
+          data: status
         });
       }
 
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const validation = await migrator.validateIntegrity();
         return json({
           success: true,
-          data: validation,
+          data: validation
         });
       }
 
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
           version: migration.version,
           name: migration.name,
           applied: appliedMigrations.includes(migration.version),
-          hasRollback: !!migration.down,
+          hasRollback: !!migration.down
         });
 
         return json({
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
             migrations: migrationList,
             total: allMigrations.length,
             applied: appliedMigrations.length,
-            pending: allMigrations.length - appliedMigrations.length,
+            pending: allMigrations.length - appliedMigrations.length
           }
         });
       }
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Migration API error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!force) {
           return json({
             success: false,
-            error: 'Rollback requires force=true parameter for safety',
+            error: 'Rollback requires force=true parameter for safety'
           }, { status: 400 });
         }
 
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         return json({
           success: result.success,
-          data: result,
+          data: result
         });
       }
 
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!name || typeof name !== 'string') {
           return json({
             success: false,
-            error: 'Migration name is required',
+            error: 'Migration name is required'
           }, { status: 400 });
         }
 
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           data: {
-            message: 'Migration system initialized successfully',
+            message: 'Migration system initialized successfully'
           }
         });
       }
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Migration API POST error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

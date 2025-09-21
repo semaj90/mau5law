@@ -7,7 +7,7 @@ import {
   timelineEventsTable,
   analyticsEvents,
   vectorSimilarityView,
-  queryCache as queryCacheTable,
+  queryCache as queryCacheTable
 } from './schema.js';
 
 // Enhanced PostgreSQL connection with pgvector support
@@ -31,9 +31,9 @@ export const db = drizzle(client, {
     evidence: evidenceTable,
     timelineEvents: timelineEventsTable,
     analytics: analyticsEvents,
-    vectorSimilarity: vectorSimilarityView,
+    vectorSimilarity: vectorSimilarityView
   },
-  logger: process.env.NODE_ENV === 'development',
+  logger: process.env.NODE_ENV === 'development'
 });
 
 // Vector similarity search utilities;
@@ -81,7 +81,7 @@ export class VectorSearchManager {
         target_id: targetId,
         similarity_score: score,
         similarity_type: type,
-        expires_at: expiresAt,
+        expires_at: expiresAt
       })
       .onConflictDoNothing();
   }
@@ -118,7 +118,7 @@ export class QueryCacheManager {
         .update(queryCacheTable);
         .set({
           access_count: sql`access_count + 1`,
-          last_accessed: new Date(),
+          last_accessed: new Date()
         })
         .where(sql`cache_key = ${cacheKey}`);
 
@@ -138,15 +138,15 @@ export class QueryCacheManager {
         cache_key: cacheKey,
         query_type: queryType,
         result_data: data,
-        expires_at: expiresAt,
+        expires_at: expiresAt
       });
       .onConflictDoUpdate({
         target: [queryCacheTable.cache_key],
         set: {
           result_data: data,
           expires_at: expiresAt,
-          access_count: 0,
-        },
+          access_count: 0
+        }
       });
   }
 
@@ -172,7 +172,7 @@ export class AnalyticsManager {
       event_data: eventData,
       response_time_ms: performanceMetrics.responseTimeMs,
       cache_hit: performanceMetrics.cacheHit,
-      cache_layer: performanceMetrics.cacheLayer,
+      cache_layer: performanceMetrics.cacheLayer
     });
   }
 
@@ -214,13 +214,13 @@ export async function checkDatabaseHealth() {
     return {
       connected: true,
       pgvector: extensions.length > 0,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (error: any) {
     return {
       connected: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 }

@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         benchmark: benchmarkResults,
         connection: engine.getConnectionInfo(),
-        message: 'QUIC Neo4j Recommendation Engine benchmark completed',
+        message: 'QUIC Neo4j Recommendation Engine benchmark completed'
       });
     }
 
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
       maxResults: Math.min(maxResults, 50), // Cap at 50
       threshold: Math.max(0.1, Math.min(threshold, 1.0)), // Clamp 0.1-1.0
       useGPU,
-      useTensorCores,
+      useTensorCores
     });
 
     const totalTime = performance.now() - startTime;
@@ -80,9 +80,9 @@ export const GET: RequestHandler = async ({ url }) => {
         engineProcessingTime: recommendations.processingTime,
         overhead: totalTime - recommendations.processingTime,
         targetMet: recommendations.processingTime <= 15,
-        protocolUsed: recommendations.protocol,
+        protocolUsed: recommendations.protocol
       },
-      connection: engine.getConnectionInfo(),
+      connection: engine.getConnectionInfo()
     });
 
     // Performance monitoring headers
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: err instanceof Error ? err.message: 'QUIC recommendation failed',
         fallback: 'Consider using /api/search for HTTP fallback',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },>
       { status: 500 }
     );
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
       threshold = 0.7,
       useGPU = true,
       useTensorCores = true,
-      batchQueries,
+      batchQueries
     } = body;
 
     if (!query && !batchQueries) {
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
             maxResults: Math.min(batchQuery.maxResults || maxResults, 20),
             threshold: batchQuery.threshold || threshold,
             useGPU,
-            useTensorCores,
+            useTensorCores
           })
         )
       );
@@ -171,8 +171,8 @@ export const POST: RequestHandler = async ({ request }) => {
         performance: {
           totalBatchTime: totalTime,
           averagePerQuery: totalTime / batchQueries.length,
-          successRate: successful.length / batchQueries.length,
-        },
+          successRate: successful.length / batchQueries.length
+        }
       });
     }
 
@@ -185,7 +185,7 @@ export const POST: RequestHandler = async ({ request }) => {
       maxResults: Math.min(maxResults, 50),
       threshold: Math.max(0.1, Math.min(threshold, 1.0)),
       useGPU,
-      useTensorCores,
+      useTensorCores
     });
 
     const totalTime = performance.now() - startTime;
@@ -198,8 +198,8 @@ export const POST: RequestHandler = async ({ request }) => {
         totalApiTime: totalTime,
         engineProcessingTime: recommendations.processingTime,
         overhead: totalTime - recommendations.processingTime,
-        targetMet: recommendations.processingTime <= 15,
-      },
+        targetMet: recommendations.processingTime <= 15
+      }
     });
   } catch (err) {
     console.error('QUIC recommendations POST error:', err);
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: err instanceof Error ? err.message: 'QUIC recommendation failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },>
       { status: 500 }
     );

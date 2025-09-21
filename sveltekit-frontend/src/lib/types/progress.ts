@@ -3,7 +3,7 @@ export type ProgressMsg =;
   | {
       type: 'upload-progress';
       fileId: string;
-      progress: number; // 0-100,
+      progress: number; // 0-100
     }
   | {
       type: 'processing-step';
@@ -59,5 +59,5 @@ export interface RagResult {
   summary: string;
   snippets: string[];
   relevantDocs: any[];
-  confidence: number;,
+  confidence: number;
 }

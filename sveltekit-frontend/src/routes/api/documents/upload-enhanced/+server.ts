@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!file) {
       return json({
         success: false,
-        error: 'No file provided',
+        error: 'No file provided'
       }, { status: 400 });
     }
 
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (file.size > maxSize) {
       return json({
         success: false,
-        error: 'File size exceeds 50MB limit',
+        error: 'File size exceeds 50MB limit'
       }, { status: 400 });
     }
 
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
         userAgent: request.headers.get('user-agent'),
         uploadedAt: new Date().toISOString(),
         apiVersion: '2.0',
-        enhancedProcessing: true,
+        enhancedProcessing: true
       }
     });
 
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
           textExtraction: true,
           semanticIndexing: true,
           legalClassification: true,
-          enhancedSearch: true,
+          enhancedSearch: true
         }
       });
     } else {
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown upload error',
-      details: 'An error occurred during document processing',
+      details: 'An error occurred during document processing'
     }, { status: 500 });
   }
 };
@@ -134,9 +134,9 @@ export const GET: RequestHandler = async () => {
       documentClassification: 'Legal-specific ML classification',
       semanticIndexing: 'Vector-based semantic chunking',
       searchIntegration: 'Real-time enhanced search integration',
-      confidenceScoring: 'AI-powered quality assessment',
+      confidenceScoring: 'AI-powered quality assessment'
     },
     apiVersion: '2.0',
-    processingEngine: 'LangChain RAG + Enhanced Semantic Search',
+    processingEngine: 'LangChain RAG + Enhanced Semantic Search'
   });
 };

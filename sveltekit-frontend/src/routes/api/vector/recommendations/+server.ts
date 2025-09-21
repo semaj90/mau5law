@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       maxRecommendations: body.maxRecommendations || 10,
       scoreThreshold: body.scoreThreshold || 0.7,
       includeContext7Docs: body.includeContext7Docs || false,
-      useEnhancedReranking: body.useEnhancedReranking !== false // Default true,
+      useEnhancedReranking: body.useEnhancedReranking !== false // Default true
     };
 
     if (!enhancedRequest.context) {
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         userProfile: enhancedRequest.userProfile,
         currentCase: enhancedRequest.currentCase,
         maxRecommendations: enhancedRequest.maxRecommendations,
-        scoreThreshold: enhancedRequest.scoreThreshold,
+        scoreThreshold: enhancedRequest.scoreThreshold
       });
 
       const cachedResults = await legalAIResultCache.getCachedLegalResults(cacheKey);
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         context: enhancedRequest.context,
         userProfile: enhancedRequest.userProfile,
         currentCase: enhancedRequest.currentCase,
-        preferences: enhancedRequest.preferences,
+        preferences: enhancedRequest.preferences
       });
 
       // === 4. GPU-Enhanced RAG Integration ===
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               caseId: enhancedRequest.currentCase?.id,
               documentTypes: ['legal_document', 'case_precedent', 'evidence', 'regulation'],
               maxResults: enhancedRequest.maxRecommendations * 2,
-              scoreThreshold: enhancedRequest.scoreThreshold * 0.8,
+              scoreThreshold: enhancedRequest.scoreThreshold * 0.8
             }
           );
 
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 documentId: source.documentId,
                 processingTime: ragResult.metadata.processingTimeMs,
                 gpuUtilized: ragResult.metadata.gpuUtilized,
-                embeddingModel: ragResult.metadata.embeddingModel,
+                embeddingModel: ragResult.metadata.embeddingModel
               }
             });
 
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               .filter(Boolean)
               .slice(0, 10),
             collaborators: [],
-            timeSpentByNode: Record<string, any>,
+            timeSpentByNode: Record<string, any>
           };
 
           const rerankedResults = await enhancedSearchWithNeo4j(
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                   metadata: {
                     ...rec.metadata,
                     rerankScore: reranked.rerankScore,
-                    neo4jEnhanced: true,
+                    neo4jEnhanced: true
                   }
                 };
               }
@@ -245,7 +245,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                   library,
                   topic,
                   tokenCount: docs.metadata?.tokenCount || 0,
-                  version: docs.metadata?.version,
+                  version: docs.metadata?.version
                 }
               });
 
@@ -266,7 +266,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           userProfile: enhancedRequest.userProfile,
           currentCase: enhancedRequest.currentCase,
           maxRecommendations: enhancedRequest.maxRecommendations,
-          scoreThreshold: enhancedRequest.scoreThreshold,
+          scoreThreshold: enhancedRequest.scoreThreshold
         });
 
         await legalAIResultCache.cacheLegalResults(cacheKey, {
@@ -303,26 +303,26 @@ export const POST: RequestHandler = async ({ request, url }) => {
       processingTime: totalProcessingTime,
       systemHealth: {
         status: systemHealth.systemHealth,
-        confidence: systemHealth.modelConfidence,
+        confidence: systemHealth.modelConfidence
       },
       personalization: {
         userRole: enhancedRequest.userProfile?.role || "unknown",
         hasPreferences: !!enhancedRequest.preferences,
-        hasCurrentCase: !!enhancedRequest.currentCase,
+        hasCurrentCase: !!enhancedRequest.currentCase
       },
       // Enhanced performance metrics;
       cachePerformance: {
         status: cacheStatus,
         hitRatio: cacheStats.overall.hitRate,
         totalRequests: cacheStats.overall.operations,
-        averageRetrievalTime: cacheStats.overall.averageRetrievalMs,
+        averageRetrievalTime: cacheStats.overall.averageRetrievalMs
       },
       gpuPerformance: {
         utilized: gpuUtilized,
         averageProcessingTime: gpuStats.averageProcessingTimeMs || 0,
         activeJobs: gpuStats.activeJobs || 0,
         queueLength: gpuStats.queueLength || 0,
-        memoryUsage: gpuStats.gpuMemoryUsedMB || 0,
+        memoryUsage: gpuStats.gpuMemoryUsedMB || 0
       },
       rlOptimization: rlOptimization,
       qualityMetrics: {
@@ -333,7 +333,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           gpuRAGEnhancement: gpuUtilized,
           neo4jReranking: enhancedRequest.useEnhancedReranking,
           context7Docs: enhancedRequest.includeContext7Docs,
-          rlCacheOptimization: rlOptimizationApplied,
+          rlCacheOptimization: rlOptimizationApplied
         }
       }
     };
@@ -342,7 +342,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       success: true,
       context: enhancedRequest.context,
       recommendations,
-      metadata: enhancedMetadata,
+      metadata: enhancedMetadata
     });
 
   } catch (err: any) {
@@ -361,8 +361,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
           processingTime: Date.now() - startTime,
           cacheStatus,
           gpuUtilized,
-          rlOptimizationApplied,
-        },
+          rlOptimizationApplied
+        }
       },
       { status: statusCode }
     );
@@ -404,7 +404,7 @@ export const GET: RequestHandler = async ({ url }) => {
             role: "User role for personalization (optional)",
             caseId: "Current case ID for context (optional)",
             gpu: "Enable GPU acceleration (default: true)",
-            cache: "Enable intelligent caching (default: true)",
+            cache: "Enable intelligent caching (default: true)"
           }
         }
       },
@@ -423,13 +423,13 @@ export const GET: RequestHandler = async ({ url }) => {
         gpuRAGEnhancement: "GPU-accelerated retrieval augmented generation",
         neo4jReranking: "Graph database enhanced result ranking",
         context7Docs: "Dynamic documentation integration",
-        rlCacheOptimization: "Reinforcement learning cache optimization",
+        rlCacheOptimization: "Reinforcement learning cache optimization"
       },
       performance: {
         averageLatency: "< 50ms (with cache hit)",
         gpuAcceleration: "10-100x speedup for complex queries",
         cacheHitRatio: "> 85% for repeated queries",
-        qualityImprovement: "+40% relevance with multi-layer enhancement",
+        qualityImprovement: "+40% relevance with multi-layer enhancement"
       }
     });
   }
@@ -443,7 +443,7 @@ export const GET: RequestHandler = async ({ url }) => {
             id: `user_${role}_${Date.now()}`,
             role,
             experience: 'senior' as const, // literal type
-            specialization: [],
+            specialization: []
           }
         : undefined,
       currentCase: caseId;
@@ -451,7 +451,7 @@ export const GET: RequestHandler = async ({ url }) => {
             id: caseId,
             type: 'general',
             priority: 'medium',
-            status: 'active',
+            status: 'active'
           }
         : undefined,
       preferences: { preferredActions: [] as string[], workflowStyle: 'systematic' as const },
@@ -463,7 +463,7 @@ export const GET: RequestHandler = async ({ url }) => {
       scoreThreshold: 0.6,
       includeContext7Docs:
         context.toLowerCase().includes('svelte') || context.toLowerCase().includes('component'),
-      useEnhancedReranking: true,
+      useEnhancedReranking: true
     };
 
     // Use the same enhanced logic as POST endpoint
@@ -478,7 +478,7 @@ export const GET: RequestHandler = async ({ url }) => {
         context: enhancedRequest.context,
         role,
         caseId,
-        maxRecommendations: enhancedRequest.maxRecommendations,
+        maxRecommendations: enhancedRequest.maxRecommendations
       });
 
       const cachedResults = await legalAIResultCache.getCachedLegalResults(cacheKey);
@@ -497,7 +497,7 @@ export const GET: RequestHandler = async ({ url }) => {
         context: enhancedRequest.context,
         userProfile: enhancedRequest.userProfile,
         currentCase: enhancedRequest.currentCase,
-        preferences: enhancedRequest.preferences,
+        preferences: enhancedRequest.preferences
       });
 
       recommendations = baseRecommendations;
@@ -512,7 +512,7 @@ export const GET: RequestHandler = async ({ url }) => {
               userId: enhancedRequest.userProfile?.id,
               caseId: enhancedRequest.currentCase?.id,
               maxResults: 3, // Fewer for GET endpoint
-              scoreThreshold: 0.7,
+              scoreThreshold: 0.7
             }
           );
 
@@ -528,7 +528,7 @@ export const GET: RequestHandler = async ({ url }) => {
               reasoning: `Vector analysis (${source.score.toFixed(3)} confidence)`,
               metadata: {
                 source: 'gpu_enhanced_rag',
-                processingTime: ragResult.metadata.processingTimeMs,
+                processingTime: ragResult.metadata.processingTimeMs
               }
             });
 
@@ -545,7 +545,7 @@ export const GET: RequestHandler = async ({ url }) => {
           context: enhancedRequest.context,
           role,
           caseId,
-          maxRecommendations: enhancedRequest.maxRecommendations,
+          maxRecommendations: enhancedRequest.maxRecommendations
         });
 
         await legalAIResultCache.cacheLegalResults(cacheKey, {
@@ -578,10 +578,10 @@ export const GET: RequestHandler = async ({ url }) => {
           enhancementLayers: {
             baseRecommendations: true,
             gpuRAGEnhancement: gpuUtilized,
-            caching: enhancedRequest.enableCaching,
+            caching: enhancedRequest.enableCaching
           }
         }
-      },
+      }
     });
 
   } catch (err: any) {
@@ -617,7 +617,7 @@ async function getCurrentCacheState(): Promise<any> {
       seasonality: Math.sin((Date.now() / (1000 * 60 * 60 * 24 * 365)) * 2 * Math.PI) * 0.5 + 0.5,
       compressionRatio: 0.3 + Math.random() * 0.4, // 0.3 to 0.7
       vectorDimensionality: 384 / 4096, // Normalized to 0-1
-      tagDensity: 0.6 + Math.random() * 0.3 // 0.6 to 0.9,
+      tagDensity: 0.6 + Math.random() * 0.3 // 0.6 to 0.9
     };
   } catch (error: any) {
     console.warn('Failed to get cache state, using defaults:', error);
@@ -638,7 +638,7 @@ async function getCurrentCacheState(): Promise<any> {
       seasonality: 0.5,
       compressionRatio: 0.4,
       vectorDimensionality: 0.1,
-      tagDensity: 0.7,
+      tagDensity: 0.7
     };
   }
 }
@@ -672,20 +672,20 @@ async function getRecentUserActivity(userId?: string): Promise<any[]> {
       query: 'contract liability analysis',
       timestamp: Date.now() - 3600000,
       caseId: 'case_123',
-      confidence: 0.85,
+      confidence: 0.85
     },
     {
       type: 'document_view',
       documentId: 'doc_456',
       timestamp: Date.now() - 1800000,
       caseId: 'case_123',
-      viewDuration: 240,
+      viewDuration: 240
     },
     {
       type: 'recommendation_interaction',
       recommendationId: 'rec_789',
       action: 'accepted',
-      timestamp: Date.now() - 900000,
+      timestamp: Date.now() - 900000
     }
   ];
 }
@@ -699,21 +699,21 @@ async function getCaseRelationships(caseId: string): Promise<any[]> {
       relationship: 'similar_facts',
       strength: 0.82,
       sharedEntities: ['defendant_name', 'contract_type'],
-      jurisdiction: 'federal',
+      jurisdiction: 'federal'
     },
     {
       relatedCaseId: 'case_789',
       relationship: 'legal_precedent',
       strength: 0.91,
       citationCount: 15,
-      jurisdiction: 'state',
+      jurisdiction: 'state'
     },
     {
       relatedCaseId: 'case_101',
       relationship: 'temporal_sequence',
       strength: 0.67,
       timelineConnection: 'subsequent_filing',
-      jurisdiction: 'federal',
+      jurisdiction: 'federal'
     }
   ];
 }

@@ -9,7 +9,7 @@ export class DrizzleQueryBuilder {
   static async getCases(query: any) {
     let caseQuery = db;
       .select({
-        case: cases,
+        case: cases
       })
       .from(cases);
 
@@ -27,7 +27,7 @@ export class DrizzleQueryBuilder {
   static async getEvidence(query: any) {
     let evidenceQuery = db;
       .select({
-        evidence: evidence,
+        evidence: evidence
       })
       .from(evidence);
 
@@ -49,7 +49,7 @@ export class DrizzleQueryBuilder {
   static async getReports(query: any) {
     let reportQuery = db;
       .select({
-        report: reports,
+        report: reports
       })
       .from(reports);
 

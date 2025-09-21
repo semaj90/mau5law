@@ -72,7 +72,7 @@ async function lexicalCandidates(query: string, limit: number) {
   return (rows as any[]).map((r) => ({
     term: r.term as string,
     score: Number(r.score),
-    source: 'lexical' as const,
+    source: 'lexical' as const
   });
 }
 
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
     userId,
     context,
     includeTaskSuggestions = true,
-    includeAI = true,
+    includeAI = true
   } = await request.json();
   if (!query || typeof query !== 'string') {
     return new Response(JSON.stringify({ error: 'query required' }), { status: 400 });
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
         taskSuggestions: cached.taskSuggestions,
         userProfile: cached.userProfile,
         cached: true,
-        took_ms: Math.round(performance.now() - started),
+        took_ms: Math.round(performance.now() - started)
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
   // Run traditional lexical/semantic suggestions in parallel with AI suggestions
   const promises: Promise<any>[] = [
     lexicalCandidates(query, limit * 2),
-    semanticCandidates(query, limit * 2),
+    semanticCandidates(query, limit * 2)
   ];
 
   // Add AI-enhanced suggestions if requested
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
     promises[1], // semantic
     aiSuggestionsPromise,
     taskSuggestionsPromise,
-    userInsightsPromise,
+    userInsightsPromise
   ]);
 
   const [lex, sem, aiSuggestions, taskSuggestions, userInsights] = results;
@@ -185,7 +185,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const aiEnhanced = aiSuggestions.didYouMean.map((suggestion: any) => ({
       ...suggestion,
       source: 'ai',
-      enhanced: true,
+      enhanced: true
     });
 
     // Merge and deduplicate
@@ -213,11 +213,11 @@ export const POST: RequestHandler = async ({ request }) => {
       ? {
           confidenceLevel: userInsights.confidenceLevel,
           learningPhase: userInsights.learningPhase,
-          preferredIntents: userInsights.topIntents?.slice(0, 3) || [],
+          preferredIntents: userInsights.topIntents?.slice(0, 3) || []
         }
       : null,
     cached: false,
-    took_ms: Math.round(performance.now() - started),
+    took_ms: Math.round(performance.now() - started)
   };
 
   // Cache the combined results
@@ -227,12 +227,12 @@ export const POST: RequestHandler = async ({ request }) => {
       suggestions: combinedSuggestions,
       aiSuggestions: aiSuggestions || null,
       taskSuggestions: taskSuggestions || [],
-      userProfile: responseData.userProfile,
+      userProfile: responseData.userProfile
     },
     REDIS_TTL_SECONDS
   );
 
   return new Response(JSON.stringify(responseData), {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' }
   });
 };

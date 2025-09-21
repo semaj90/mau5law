@@ -20,7 +20,7 @@ export const GET: RequestHandler = async () => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
 
     // Check bucket existence and connectivity

@@ -81,7 +81,7 @@ export const POST: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Database tables created and configured successfully',
-      userCount: userCount,
+      userCount: userCount
     });
 
   } catch (error) {
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async () => {
     return json({ 
         success: false, 
         error: 'Database setup failed',
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );

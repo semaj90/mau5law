@@ -47,7 +47,7 @@ export interface EnhancedAIContext {
 
   // System state
   systemHealth: 'healthy' | 'degraded' | 'critical';
-  lastSync: Date | null;,
+  lastSync: Date | null;
 }
 
 export interface ProcessingResult {
@@ -58,7 +58,7 @@ export interface ProcessingResult {
   result: any;
   confidence: number;
   processingTime: number;
-  timestamp: Date;,
+  timestamp: Date;
 }
 
 export interface VectorMatch {
@@ -67,7 +67,7 @@ export interface VectorMatch {
   similarity: number;
   content: string;
   metadata: Record<string, any>;
-  rank: number;,
+  rank: number;
 }
 
 export interface AIAnalysis {
@@ -76,7 +76,7 @@ export interface AIAnalysis {
   legalRelevance: number;
   suggestedActions: string[];
   confidenceScore: number;
-  processingModel: string;,
+  processingModel: string;
 }
 
 export interface GraphNode {
@@ -84,7 +84,7 @@ export interface GraphNode {
   type: 'evidence' | 'person' | 'location' | 'event' | 'concept';
   label: string;
   properties: Record<string, any>;
-  connections: GraphConnection[];,
+  connections: GraphConnection[];
 }
 
 export interface GraphConnection {
@@ -100,7 +100,7 @@ export interface StreamingUpdate {
   type: 'evidence_added' | 'analysis_complete' | 'relationship_found';
   data: any;
   timestamp: Date;
-  source: string;,
+  source: string;
 }
 
 export interface ProcessingError {
@@ -111,7 +111,7 @@ export interface ProcessingError {
   details: any;
   timestamp: Date;
   resolved: boolean;
-  retryable: boolean;,
+  retryable: boolean;
 }
 
 type EvidenceEvent =
@@ -135,7 +135,7 @@ type EvidenceEvent =
 export const evidenceProcessingMachine = setup({
   types: {
     context: Record<string, any> as EnhancedAIContext,
-    events: Record<string, any> as EvidenceEvent,
+    events: Record<string, any> as EvidenceEvent
   },
 
   actors: {
@@ -152,8 +152,8 @@ export const evidenceProcessingMachine = setup({
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               content: input.evidence.description || input.evidence.title,
-              model: 'nomic-embed-text',
-            }),
+              model: 'nomic-embed-text'
+            })
           }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Embedding failed')))),
 
           // AI tagging with enhanced context;
@@ -163,8 +163,8 @@ export const evidenceProcessingMachine = setup({
             body: JSON.stringify({
               evidence: input.evidence,
               context: 'legal_investigation',
-              enhance_tags: true,
-            }),
+              enhance_tags: true
+            })
           }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Tagging failed')))),
 
           // Deep AI analysis using local LLM;
@@ -174,9 +174,9 @@ export const evidenceProcessingMachine = setup({
             body: JSON.stringify({
               evidence: input.evidence,
               analysis_type: 'comprehensive',
-              model: 'gemma3-legal',
-            }),
-          }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Analysis failed')))),
+              model: 'gemma3-legal'
+            })
+          }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Analysis failed'))))
         ]);
 
         // Extract results, handling potential failures
@@ -203,7 +203,7 @@ export const evidenceProcessingMachine = setup({
             tags.confidence || 0,
             analysis.confidence || 0
           ),
-          timestamp: new Date(),
+          timestamp: new Date()
         };
       } catch (error: any) {
         throw new Error(`AI processing failed: ${(error as Error).message}`);
@@ -219,8 +219,8 @@ export const evidenceProcessingMachine = setup({
             body: JSON.stringify({
               vector: input.embeddings,
               limit: input.limit || 10,
-              threshold: 0.7,
-            }),
+              threshold: 0.7
+            })
           });
 
           if (!(response as { ok?: any; json?: any }).ok) throw new Error('Vector search failed');
@@ -240,8 +240,8 @@ export const evidenceProcessingMachine = setup({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             depth: 3,
-            relationship_types: ['references', 'involves', 'located_at', 'connected_to'],
-          }),
+            relationship_types: ['references', 'involves', 'located_at', 'connected_to']
+          })
         });
 
         if (!(response as { ok?: any; json?: any }).ok) throw new Error('Relationship discovery failed');
@@ -267,7 +267,7 @@ export const evidenceProcessingMachine = setup({
             .catch(() => ({ status: 'down' })),
           fetch('/api/cache/health')
             .then((r) => r.json()
-            .catch(() => ({ status: 'down' })),
+            .catch(() => ({ status: 'down' }))
         ]);
 
         const healthStatus = checks.every(
@@ -293,7 +293,7 @@ export const evidenceProcessingMachine = setup({
       } catch (error: any) {
         return { cacheOperations: 0, error: (error as Error).message };
       }
-    }),
+    })
   },
 
   guards: {
@@ -308,8 +308,8 @@ export const evidenceProcessingMachine = setup({
       if (!context.lastSync) return true;
       const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
       return context.lastSync < fiveMinutesAgo;
-    },
-  },
+    }
+  }
 }).createMachine({
   id: 'evidenceProcessing',
   initial: 'idle',
@@ -332,7 +332,7 @@ export const evidenceProcessingMachine = setup({
     retryAttempts: 0,
     retryQueue: [],
     systemHealth: 'healthy',
-    lastSync: null,
+    lastSync: null
   },
 
   states: {
@@ -342,21 +342,21 @@ export const evidenceProcessingMachine = setup({
           target: 'queueing',
           actions: assign({
             evidenceQueue: ({ context, event }) => [...context.evidenceQueue, event.evidence],
-            selectedEvidence: ({ event }) => event.evidence,
-          }),
+            selectedEvidence: ({ event }) => event.evidence
+          })
         },
         HEALTH_CHECK: {
-          target: 'monitoring',
+          target: 'monitoring'
         },
         SYNC_CACHE: {
           target: 'syncing',
-          guard: 'needsCacheSync',
-        },
-      },
+          guard: 'needsCacheSync'
+        }
+      }
     },
 
     queueing: {
-      always: [{ target: 'processing', guard: 'hasQueuedEvidence' }, { target: 'idle' }],
+      always: [{ target: 'processing', guard: 'hasQueuedEvidence' }, { target: 'idle' }]
     },
 
     processing: {
@@ -381,7 +381,7 @@ export const evidenceProcessingMachine = setup({
                     result: event.output,
                     confidence: event.output.confidence,
                     processingTime: event.output.processingTime,
-                    timestamp: new Date(),
+                    timestamp: new Date()
                   });
                   return newResults;
                 },
@@ -404,8 +404,8 @@ export const evidenceProcessingMachine = setup({
                   const newTimes = new Map(context.processingTime);
                   newTimes.set(event.output.evidenceId, event.output.processingTime);
                   return newTimes;
-                },
-              }),
+                }
+              })
             },
 
             onError: {
@@ -421,12 +421,12 @@ export const evidenceProcessingMachine = setup({
                     details: event.error,
                     timestamp: new Date(),
                     resolved: false,
-                    retryable: true,
-                  },
-                ],
-              }),
-            },
-          },
+                    retryable: true
+                  }
+                ]
+              })
+            }
+          }
         },
 
         vectorSearch: {
@@ -436,7 +436,7 @@ export const evidenceProcessingMachine = setup({
               const currentEvidence = context.evidenceQueue[0];
               return {
                 embeddings: context.embeddings.get(currentEvidence.id) || [],
-                limit: 15,
+                limit: 15
               };
             },
 
@@ -446,9 +446,9 @@ export const evidenceProcessingMachine = setup({
                 vectorMatches: ({ event }) =>;
                   (event.output.matches || []).map((match: any, index: number) => ({
                     ...match,
-                    rank: index + 1,
-                  })),
-              }),
+                    rank: index + 1
+                  }))
+              })
             },
 
             onError: {
@@ -464,19 +464,19 @@ export const evidenceProcessingMachine = setup({
                     details: event.error,
                     timestamp: new Date(),
                     resolved: false,
-                    retryable: true,
-                  },
-                ],
-              }),
-            },
-          },
+                    retryable: true
+                  }
+                ]
+              })
+            }
+          }
         },
 
         relationshipDiscovery: {
           invoke: {
             src: 'discoverRelationships',
             input: ({ context }) => ({
-              evidenceId: context.evidenceQueue[0].id,
+              evidenceId: context.evidenceQueue[0].id
             }),
 
             onDone: {
@@ -489,8 +489,8 @@ export const evidenceProcessingMachine = setup({
                     strengthMap.set(`${conn.from}-${conn.to}`, conn.strength);
                   });
                   return strengthMap;
-                },
-              }),
+                }
+              })
             },
 
             onError: {
@@ -506,12 +506,12 @@ export const evidenceProcessingMachine = setup({
                     details: event.error,
                     timestamp: new Date(),
                     resolved: false,
-                    retryable: true,
-                  },
-                ],
-              }),
-            },
-          },
+                    retryable: true
+                  }
+                ]
+              })
+            }
+          }
         },
 
         complete: {
@@ -520,10 +520,10 @@ export const evidenceProcessingMachine = setup({
               target: '#evidenceProcessing.queueing',
               actions: assign({
                 evidenceQueue: ({ context }) => context.evidenceQueue.slice(1),
-                retryAttempts: 0,
-              }),
-            },
-          ],
+                retryAttempts: 0
+              })
+            }
+          ]
         },
 
         error: {
@@ -532,19 +532,19 @@ export const evidenceProcessingMachine = setup({
               target: 'aiProcessing',
               guard: 'canRetry',
               actions: assign({
-                retryAttempts: ({ context }) => context.retryAttempts + 1,
-              }),
+                retryAttempts: ({ context }) => context.retryAttempts + 1
+              })
             },
             PROCESS_NEXT: {
               target: 'complete',
               actions: assign({
                 evidenceQueue: ({ context }) => context.evidenceQueue.slice(1),
-                retryAttempts: 0,
-              }),
-            },
-          },
-        },
-      },
+                retryAttempts: 0
+              })
+            }
+          }
+        }
+      }
     },
 
     monitoring: {
@@ -554,8 +554,8 @@ export const evidenceProcessingMachine = setup({
         onDone: {
           target: 'idle',
           actions: assign({
-            systemHealth: ({ event }) => event.output.health as 'healthy' | 'degraded' | 'critical',
-          }),
+            systemHealth: ({ event }) => event.output.health as 'healthy' | 'degraded' | 'critical'
+          })
         },
 
         onError: {
@@ -571,12 +571,12 @@ export const evidenceProcessingMachine = setup({
                 details: event.error,
                 timestamp: new Date(),
                 resolved: false,
-                retryable: true,
-              },
-            ],
-          }),
-        },
-      },
+                retryable: true
+              }
+            ]
+          })
+        }
+      }
     },
 
     syncing: {
@@ -588,8 +588,8 @@ export const evidenceProcessingMachine = setup({
           actions: assign({
             lastSync: new Date(),
             cacheHits: ({ context, event }) =>
-              context.cacheHits + (event.output.cacheOperations || 0),
-          }),
+              context.cacheHits + (event.output.cacheOperations || 0)
+          })
         },
 
         onError: {
@@ -604,29 +604,29 @@ export const evidenceProcessingMachine = setup({
                 details: event.error,
                 timestamp: new Date(),
                 resolved: false,
-                retryable: true,
-              },
-            ],
-          }),
-        },
-      },
-    },
+                retryable: true
+              }
+            ]
+          })
+        }
+      }
+    }
   },
 
   on: {
     CLEAR_ERRORS: {
       actions: assign({
-        errors: ({ context }) => context.errors.map((error) => ({ ...error, resolved: true })),
-      }),
+        errors: ({ context }) => context.errors.map((error) => ({ ...error, resolved: true }))
+      })
     },
 
     STREAM_RESULTS: {
       actions: assign({
         liveUpdates: ({ context, event }) => [...context.liveUpdates, ...event.updates],
-        streamingActive: true,
-      }),
-    },
-  },
+        streamingActive: true
+      })
+    }
+  }
 });
 
 // ======================================================================
@@ -636,7 +636,7 @@ export const evidenceProcessingMachine = setup({
 export const evidenceProcessingStore = writable({
   machine: null as any,
   state: 'idle',
-  context: null as EnhancedAIContext | null,
+  context: null as EnhancedAIContext | null
 });
 
 // Derived stores for easy component access
@@ -659,7 +659,7 @@ export const aiRecommendationsStore = derived(evidenceProcessingStore, ($store) 
         type: 'suggested_action',
         content: action,
         confidence: a.confidenceScore,
-        source: a.processingModel,
+        source: a.processingModel
       })) || []
   );
 });
@@ -678,7 +678,7 @@ export const systemHealthStore = derived(evidenceProcessingStore, ($store) => ({
   health: $store.context?.systemHealth || 'unknown',
   errors: $store.context?.errors?.filter((e: any) => !e.resolved) || [],
   cacheHits: $store.context?.cacheHits || 0,
-  lastSync: $store.context?.lastSync,
+  lastSync: $store.context?.lastSync
 });
 
 // Streaming store for real-time updates;
@@ -687,7 +687,7 @@ export const streamingStore = writable({
   streamType: null as string | null,
   progress: 0,
   data: null as any,
-  error: null as string | null,
+  error: null as string | null
 });
 
 // ======================================================================
@@ -706,7 +706,7 @@ export async function initializeEnhancedMachines(): Promise<any> {
       evidenceProcessingStore.set({
         machine: evidenceActor,
         state: (state as any).value as string,
-        context: (state as any).context,
+        context: (state as any).context
       });
     });
 
@@ -714,7 +714,7 @@ export async function initializeEnhancedMachines(): Promise<any> {
     evidenceActor.start();
 
     return {
-      evidenceActor,
+      evidenceActor
     };
   } catch (error: any) {
     console.error('Failed to initialize enhanced machines:', error);

@@ -64,7 +64,7 @@ export const webAssemblyGPUUtils = {
       recommendations: [],
       confidence: 0,
       processingTime: 0,
-      method: 'error',
+      method: 'error'
     };
   }
 };

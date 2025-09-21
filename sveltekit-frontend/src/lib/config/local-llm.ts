@@ -20,14 +20,14 @@ export const LOCAL_LLM_PATHS = {
     app: join(projectRoot, 'Ollama', 'ollama app.exe'),
     baseUrl: 'http://localhost:11434',
     modelsPath:
-      import.meta.env.OLLAMA_MODELS || join(import.meta.env.USERPROFILE || '', '.ollama', 'models'),
+      import.meta.env.OLLAMA_MODELS || join(import.meta.env.USERPROFILE || '', '.ollama', 'models')
   },
 
   // llama.cpp installation;
   llamaCpp: {
     basePath: join(projectRoot, 'llama.cpp'),
     executable: join(projectRoot, 'llama.cpp', 'llama-server.exe'),
-    baseUrl: 'http://localhost:8080',
+    baseUrl: 'http://localhost:8080'
   },
 
   // Local Gemma3 Q4_K_M model;
@@ -39,7 +39,7 @@ export const LOCAL_LLM_PATHS = {
     format: 'gguf',
     size: 'B', // Updated from filename mohf16-Q4_K_M.gguf
     quantization: 'Q4_K_M', // Explicit quantization level
-  },
+  }
 };
 
 // Model configurations for different use cases;
@@ -52,7 +52,7 @@ export const MODEL_CONFIGS = {
     topK: 40,
     repeatPenalty: 1.05,
     systemPrompt: `You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance. Always cite relevant statutes, case law, and legal precedents. Maintain professional standards and clearly state when information is insufficient for definitive legal advice.`,
-    contextWindow: 8192,
+    contextWindow: 8192
   },
 
   // Fast response configuration;
@@ -63,7 +63,7 @@ export const MODEL_CONFIGS = {
     topK: 20,
     repeatPenalty: 1.05,
     systemPrompt: `You are a helpful legal AI assistant. Provide concise, accurate responses to legal questions.`,
-    contextWindow: 2048,
+    contextWindow: 2048
   },
 
   // Detailed analysis configuration;
@@ -74,8 +74,8 @@ export const MODEL_CONFIGS = {
     topK: 50,
     repeatPenalty: 1.15,
     systemPrompt: `You are an expert legal AI assistant specializing in comprehensive legal analysis. Provide detailed, thorough responses with multiple perspectives and considerations. Always cite relevant legal principles and precedents when available.`,
-    contextWindow: 8192,
-  },
+    contextWindow: 8192
+  }
 };
 
 // Check if local installations are available;
@@ -83,16 +83,16 @@ export function checkLocalInstallations() {
   const status = {
     ollama: {
       available: existsSync(LOCAL_LLM_PATHS.ollama.executable),
-      path: LOCAL_LLM_PATHS.ollama.executable,
+      path: LOCAL_LLM_PATHS.ollama.executable
     },
     llamaCpp: {
       available: existsSync(LOCAL_LLM_PATHS.llamaCpp.basePath),
-      path: LOCAL_LLM_PATHS.llamaCpp.basePath,
+      path: LOCAL_LLM_PATHS.llamaCpp.basePath
     },
     gemmaModel: {
       available: existsSync(LOCAL_LLM_PATHS.gemmaModel.path),
-      path: LOCAL_LLM_PATHS.gemmaModel.path,
-    },
+      path: LOCAL_LLM_PATHS.gemmaModel.path
+    }
   };
 
   return status;
@@ -133,7 +133,7 @@ export const ENV_CONFIG = {
 
   // Development settings
   DEBUG_LLM: import.meta.env.DEBUG_LLM === "true",
-  LOG_LLM_REQUESTS: import.meta.env.LOG_LLM_REQUESTS === "true",
+  LOG_LLM_REQUESTS: import.meta.env.LOG_LLM_REQUESTS === "true"
 };
 
 // Helper function to start local services;
@@ -152,14 +152,14 @@ export async function startLocalServices(): Promise<any> {
         ["serve"],);
         {
           detached: true,
-          stdio: "pipe",
+          stdio: "pipe"
         },
       );
 
       services.push({
         name: "Ollama",
         pid: ollamaProcess.pid,
-        url: LOCAL_LLM_PATHS.ollama.baseUrl,
+        url: LOCAL_LLM_PATHS.ollama.baseUrl
       });
 
       // Wait a moment for startup
@@ -209,7 +209,7 @@ SYSTEM """You are a specialized Legal AI Assistant powered by Gemma 3. You excel
       "create",
       LOCAL_LLM_PATHS.gemmaModel.name,
       "-f",
-      modelfilePath,
+      modelfilePath
     ]);
 
     return new Promise((resolve, reject) => {
@@ -238,5 +238,5 @@ export default {
   checkLocalInstallations,
   getPreferredProvider,
   startLocalServices,
-  loadGemmaModel,
+  loadGemmaModel
 };

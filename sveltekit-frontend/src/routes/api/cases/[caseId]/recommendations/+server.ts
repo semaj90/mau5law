@@ -10,7 +10,7 @@ import type { RequestHandler } from './$types.js';
 const env = process.env || {};
 
 const qdrantClient = new QdrantClient({
-  url: env.QDRANT_URL || "http://localhost:6333",
+  url: env.QDRANT_URL || "http://localhost:6333"
 });
 const NLP_SERVICE_URL = env.LLM_SERVICE_URL || "http://localhost:8000";
 
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         description:
           "A more detailed description will improve AI analysis and case clarity.",
         confidence: 0.9,
-        actionData: { field: "description" },
+        actionData: { field: "description" }
       });
     }
     // Check for missing evidence
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         description:
           "This case has no evidence attached. Upload relevant documents, images, or other files.",
         confidence: 0.95,
-        actionData: { relation: "evidence" },
+        actionData: { relation: "evidence" }
       });
     }
     // Check for activities
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         description:
           "This case is open but has no activities. Consider scheduling an initial review or evidence collection.",
         confidence: 0.8,
-        actionData: { activityType: "initial_review" },
+        actionData: { activityType: "initial_review" }
       });
     }
     // 3. Recommendation: Find similar cases via Qdrant (simplified);
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: textToEmbed }),
+          body: JSON.stringify({ text: textToEmbed })
         }
       );
 
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
           vector: caseEmbedding,
           limit: 5,
           filter: { must_not: [{ key: "id", match: { value: caseId } }] }, // Exclude self
-          with_payload: true,
+          with_payload: true
         });
 
         for (const hit of searchResult) {
@@ -131,8 +131,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
             actionData: {
               caseId: hit.id,
               title: hit.payload?.title,
-              summary: hit.payload?.aiSummary,
-            },
+              summary: hit.payload?.aiSummary
+            }
           });
         }
       }
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
           title: `Review Statute: ${statute.title} (${statute.code})`,
           description: `This statute may be relevant to the fraud aspects of this case.`,
           confidence: 0.75,
-          actionData: { statuteId: statute.id, title: statute.title },
+          actionData: { statuteId: statute.id, title: statute.title }
         });
       });
     }
@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       success: true,
       recommendations: recommendations
         .sort((a, b) => b.confidence - a.confidence)
-        .slice(0, 10),
+        .slice(0, 10)
     });
   } catch (error: any) {
     console.error("Error generating recommendations:", error);

@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!text || text.trim().length === 0) {
       return json({
           success: false,
-          error: "Text is required",
+          error: "Text is required"
         },)
         { status: 400 },
       );
@@ -79,15 +79,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       data: {
         embedding,
         dimensions: embedding.length,
-        text: text.substring(0, 100) + (text.length > 100 ? "..." : ""),
-      },
+        text: text.substring(0, 100) + (text.length > 100 ? "..." : "")
+      }
     });
   } catch (error: any) {
     console.error("Embedding generation error:", error);
     return json({
         success: false,
         error: "Failed to generate embedding",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -103,7 +103,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     if (!texts || !Array.isArray(texts) || texts.length === 0) {
       return json({
           success: false,
-          error: "Texts array is required",
+          error: "Texts array is required"
         },)
         { status: 400 },
       );
@@ -111,13 +111,13 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     if (texts.length > 100) {
       return json({
           success: false,
-          error: "Maximum 100 texts per batch",
+          error: "Maximum 100 texts per batch"
         },)
         { status: 400 },
       );
     }
     const embeddings = await generateBatchEmbeddings(texts, {
-      model: model as "local" | "openai",
+      model: model as "local" | "openai"
     });
 
     return json({
@@ -125,15 +125,15 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       data: {
         embeddings,
         count: embeddings.length,
-        dimensions: embeddings[0]?.length || 0,
-      },
+        dimensions: embeddings[0]?.length || 0
+      }
     });
   } catch (error: any) {
     console.error("Batch embedding generation error:", error);
     return json({
         success: false,
         error: "Failed to generate batch embeddings",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -150,7 +150,7 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
     if (!locals.user || locals.user.role !== "admin") {
       return json({
           success: false,
-          error: "Admin privileges required for bulk operations",
+          error: "Admin privileges required for bulk operations"
         },)
         { status: 403 },
       );
@@ -209,14 +209,14 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
           details: {
             cases: casesResult,
             evidence: evidenceResult,
-            documents: documentsResult,
-          },
+            documents: documentsResult
+          }
         };
         break;
       default:;
         return json({
             success: false,
-            error: "Invalid sync type. Use: cases, evidence, documents, or all",
+            error: "Invalid sync type. Use: cases, evidence, documents, or all"
           },)
           { status: 400 },
         );
@@ -226,15 +226,15 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       data: {
         ...syncResult,
         executionTime: Date.now() - startTime,
-        type,
-      },
+        type
+      }
     });
   } catch (error: any) {
     console.error("Embedding sync error:", error);
     return json({
         success: false,
         error: "Failed to sync embeddings",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -254,19 +254,19 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           "POST /api/embeddings": "Generate single embedding",
           "PUT /api/embeddings": "Generate batch embeddings",
           "PATCH /api/embeddings": "Sync database embeddings (admin only)",
-          "GET /api/embeddings": "Get API status",
+          "GET /api/embeddings": "Get API status"
         },
         limits: {
           maxBatchSize: 100,
-          maxTextLength: 8000,
-        },
-      },
+          maxTextLength: 8000
+        }
+      }
     });
   } catch (error: any) {
     console.error("Embeddings status error:", error);
     return json({
         success: false,
-        error: "Failed to get embeddings status",
+        error: "Failed to get embeddings status"
       },)
       { status: 500 },
     );

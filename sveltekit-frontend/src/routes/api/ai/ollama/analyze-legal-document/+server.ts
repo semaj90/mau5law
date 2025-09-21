@@ -111,7 +111,7 @@ Respond in JSON format with the following structure:;
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: model,
@@ -121,7 +121,7 @@ Respond in JSON format with the following structure:;
         options: {
           temperature: 0.3, // Lower temperature for more consistent legal analysis
           top_p: 0.9,
-          num_ctx: 4096,
+          num_ctx: 4096
         }
       })
     });
@@ -147,7 +147,7 @@ Respond in JSON format with the following structure:;
         relevanceScore: 0.5,
         riskFactors: [],
         suggestedTags: ['legal_document'],
-        confidence: 0.6,
+        confidence: 0.6
       };
     }
 
@@ -182,7 +182,7 @@ Respond in JSON format with the following structure:;
         const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             model: 'mxbai-embed-large', // Use a good embedding model
@@ -200,7 +200,7 @@ Respond in JSON format with the following structure:;
             content: textContent.slice(0, 2000),
             metadata: {
               model: 'mxbai-embed-large',
-              createdAt: new Date().toISOString(),
+              createdAt: new Date().toISOString()
             }
           });
         }
@@ -221,7 +221,7 @@ Respond in JSON format with the following structure:;
       relevanceScore: analysisResult.relevanceScore,
       riskFactors: analysisResult.riskFactors,
       tags: analysisResult.suggestedTags,
-      confidence: analysisResult.confidence,
+      confidence: analysisResult.confidence
     });
 
   } catch (error) {

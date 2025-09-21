@@ -34,12 +34,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       caseId,
       documentType = "legal-document",
       generateSummary = true,
-      extractKeywords = true,
+      extractKeywords = true
     } = await request.json();
 
     if (!documentId || !content) {
       return json({
-          error: "documentId and content are required",
+          error: "documentId and content are required"
         },)
         { status: 400 }
       );
@@ -54,7 +54,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     if (existingDocument.length === 0) {
       return json({
-          error: "Document not found",
+          error: "Document not found"
         },)
         { status: 404 }
       );
@@ -82,7 +82,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       caseId,
       documentType,
       summary,
-      keywords,
+      keywords
     });
 
     return json({
@@ -98,14 +98,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           summary?.substring(0, 100) +
           (summary && summary.length > 100 ? "..." : ""),
         keywordCount: keywords?.length || 0,
-        indexedAt: new Date().toISOString(),
-      },
+        indexedAt: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     console.error("Document indexing error:", error);
     return json({
         error: "Document indexing failed",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 }
     );
@@ -119,7 +119,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 
     if (!Array.isArray(documentIds) || documentIds.length === 0) {
       return json({
-          error: "documentIds array is required",
+          error: "documentIds array is required"
         },)
         { status: 400 }
       );
@@ -142,7 +142,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
           results.push({
             documentId,
             status: "error",
-            error: "Document not found",
+            error: "Document not found"
           });
           errorCount++;
           continue;
@@ -155,7 +155,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
           results.push({
             documentId,
             status: "skipped",
-            message: "Already indexed (use forceReindex=true to reindex)",
+            message: "Already indexed (use forceReindex=true to reindex)"
           });
           continue;
         }
@@ -177,21 +177,21 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
           caseId: doc.caseId,
           documentType: doc.documentType,
           summary: analysis.summary,
-          keywords: analysis.keywords,
+          keywords: analysis.keywords
         });
 
         results.push({
           documentId,
           status: "success",
           title: documentTitle,
-          summary: analysis.summary?.substring(0, 100) + "...",
+          summary: analysis.summary?.substring(0, 100) + "..."
         });
         successCount++;
       } catch (error: any) {
         results.push({
           documentId,
           status: "error",
-          error: error instanceof Error ? error.message: "Unknown error",
+          error: error instanceof Error ? error.message: "Unknown error"
         });
         errorCount++;
       }
@@ -203,16 +203,16 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
         total: documentIds.length,
         successful: successCount,
         errors: errorCount,
-        skipped: documentIds.length - successCount - errorCount,
+        skipped: documentIds.length - successCount - errorCount
       },
       results,
-      indexedAt: new Date().toISOString(),
+      indexedAt: new Date().toISOString()
     });
   } catch (error: any) {
     console.error("Batch indexing error:", error);
     return json({
         error: "Batch indexing failed",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 }
     );
@@ -258,9 +258,9 @@ Respond in JSON format:;
         stream: false,
         options: {
           temperature: 0.3,
-          top_p: 0.9,
-        },
-      }),
+          top_p: 0.9
+        }
+      })
     });
 
     if (!response.ok) {
@@ -271,7 +271,7 @@ Respond in JSON format:;
           : undefined,
         keywords: extractKeywords
           ? ["legal-document", "case-material"]
-          : undefined,
+          : undefined
       };
     }
 
@@ -284,7 +284,7 @@ Respond in JSON format:;
         const analysis = JSON.parse(analysisMatch[0]);
         return {
           summary: generateSummary ? analysis.summary: undefined,
-          keywords: extractKeywords ? analysis.keywords : undefined,
+          keywords: extractKeywords ? analysis.keywords : undefined
         };
       }
     } catch (parseError) {
@@ -298,13 +298,13 @@ Respond in JSON format:;
         : undefined,
       keywords: extractKeywords
         ? ["legal-document", "case-evidence"]
-        : undefined,
+        : undefined
     };
   } catch (error: any) {
     console.error("Document analysis error:", error);
     return {
       summary: generateSummary ? `Document: ${filename}` : undefined,
-      keywords: extractKeywords ? ["legal-document"] : undefined,
+      keywords: extractKeywords ? ["legal-document"] : undefined
     };
   }
 }

@@ -22,13 +22,13 @@ export interface EvidenceItem {
     denoised?: Blob;
     sharpened?: Blob;
     textExtracted?: string;
-    confidence: number;,
+    confidence: number;
   };
   ocrResults: {
     text: string;
     confidence: number;
     boundingBoxes: Array<any>;
-    handwritingDetected: boolean;,
+    handwritingDetected: boolean;
   };
   embeddings: {
     textEmbedding?: Float32Array;
@@ -40,14 +40,14 @@ export interface EvidenceItem {
     legalRelevance: 'high' | 'medium' | 'low';
     conflictIndicators: string[];
     contextualClues: string[];
-    suggestedActions: string[];,
+    suggestedActions: string[];
   };
   metadata: {
     timestamp: number;
     caseId?: string;
     userId: string;
     processingTime: number;
-    memoryFootprint: number;,
+    memoryFootprint: number;
   };
 }
 
@@ -62,7 +62,7 @@ export interface ConflictAnalysis {
   llmResponse: {
     summary: string;
     reasoning: string;
-    recommendations: string[];,
+    recommendations: string[];
   };
 }
 
@@ -70,7 +70,7 @@ export interface SearchSuggestion {
   query: string;
   score: number;
   type: 'spelling' | 'semantic' | 'contextual' | 'pattern';
-  explanation: string;,
+  explanation: string;
 }
 
 export class DetectiveAnalysisEngine {
@@ -114,7 +114,7 @@ export class DetectiveAnalysisEngine {
   async analyzeEvidence(evidenceData: Blob | File | string, metadata: {
     type: EvidenceItem['type'];
     caseId?: string;
-    userId: string;,
+    userId: string;
   }): Promise<EvidenceItem> {
     const startTime = performance.now();
     const evidenceId = `evidence_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -164,7 +164,7 @@ export class DetectiveAnalysisEngine {
         originalData: evidenceData,
         enhancedData: enhanced ? {
           upscaled: enhanced,
-          confidence: 0.85,
+          confidence: 0.85
         } : undefined,
         ocrResults,
         embeddings,
@@ -262,7 +262,7 @@ export class DetectiveAnalysisEngine {
       const sourceTexture = this.webGPUDevice.createTexture({
         size: [canvas.width, canvas.height],
         format: 'rgba8unorm',
-        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING,
+        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING
       });
 
       // Upload canvas data to GPU
@@ -280,7 +280,7 @@ export class DetectiveAnalysisEngine {
       const outputTexture = this.webGPUDevice.createTexture({
         size: [canvas.width, canvas.height],
         format: 'rgba8unorm',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC,
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
       });
 
       // Execute enhancement shader
@@ -429,7 +429,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           evidenceType: evidenceType as any,
           enableCompression: true,
           priority: 'high',
-          generateEmbeddings: true,
+          generateEmbeddings: true
         }
       );
       
@@ -442,7 +442,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         gpuTime: tilingResults.simdMetrics.totalGPUTime.toFixed(2) + 'ms',
         throughput: tilingResults.simdMetrics.throughputMBps.toFixed(2) + ' MB/s',
         compression: tilingResults.tensorCompressionRatio.toFixed(2) + 'x',
-        memoryUsage: tilingResults.memoryUsage,
+        memoryUsage: tilingResults.memoryUsage
       });
       
       // Store tiling metadata for use in other analysis steps
@@ -461,7 +461,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
               id: chunk.id,
               position: { x: chunk.tileX, y: chunk.tileY },
               confidence: chunk.metadata.confidence,
-              evidenceType: chunk.metadata.evidenceType,
+              evidenceType: chunk.metadata.evidenceType
             })
         }),
         3600 // 1 hour TTL
@@ -503,7 +503,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           text: enhancedText.text || ocrResult.text,
           confidence: enhancedText.confidence || ocrResult.confidence || 0,
           boundingBoxes: enhancedText.boundingBoxes || [],
-          handwritingDetected: true,
+          handwritingDetected: true
         };
       }
 
@@ -511,7 +511,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         text: ocrResult.text,
         confidence: ocrResult.confidence || 0,
         boundingBoxes: [], // Would be populated by actual OCR engine
-        handwritingDetected: false,
+        handwritingDetected: false
       };
 
     } catch (error) {
@@ -520,7 +520,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         text: '',
         confidence: 0,
         boundingBoxes: [],
-        handwritingDetected: false,
+        handwritingDetected: false
       };
     }
   }
@@ -571,7 +571,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         {
           text: "Meeting at 3pm tomorrow",
           bbox: { x: 10, y: 20, width: 200, height: 30 },
-          confidence: 0.75,
+          confidence: 0.75
         }
       ]
     };
@@ -603,7 +603,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
             body: JSON.stringify({
               text,
               model: 'nomic-text',
-              source: 'evidence_analysis',
+              source: 'evidence_analysis'
             })
           });
           
@@ -668,10 +668,10 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         dates: /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/g,
         times: /\b\d{1,2}:\d{2}(?::\d{2})?\s*(?:am|pm)?\b/gi,
         phones: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g,
-        emails: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+        emails: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2}\b/g,
         addresses: /\b\d+\s+[A-Za-z0-9\s]+(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|way|court|ct)\b/gi,
         amounts: /\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?\b/g,
-        legal_terms: /\b(?:contract|agreement|plaintiff|defendant|witness|testimony|evidence|exhibit|court|judge|jury|verdict|settlement)\b/gi,
+        legal_terms: /\b(?:contract|agreement|plaintiff|defendant|witness|testimony|evidence|exhibit|court|judge|jury|verdict|settlement)\b/gi
       };
 
       for (const [patternName, regex] of Object.entries(patterns)) {
@@ -764,7 +764,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         legalRelevance: 'low',
         conflictIndicators: [],
         contextualClues: [],
-        suggestedActions: [],
+        suggestedActions: []
       };
     }
   }
@@ -814,7 +814,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         text,
         embedding: embeddings.semanticEmbedding,
         evidenceId: `evidence_${Date.now()}`,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
       this.reinforcementCache.set(rlCacheKey, existingPatterns);
 
@@ -1042,7 +1042,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         query: query + 's',
         score: 0.9,
         type: 'spelling',
-        explanation: 'Plural form',
+        explanation: 'Plural form'
       }
     ];
   }
@@ -1054,7 +1054,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         query: 'related term',
         score: 0.8,
         type: 'semantic',
-        explanation: 'Semantically related',
+        explanation: 'Semantically related'
       }
     ];
   }
@@ -1066,7 +1066,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         query: 'contextual match',
         score: 0.7,
         type: 'contextual',
-        explanation: 'Related to current case context',
+        explanation: 'Related to current case context'
       }
     ];
   }
@@ -1078,7 +1078,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         query: 'pattern match',
         score: 0.6,
         type: 'pattern',
-        explanation: 'Similar pattern detected',
+        explanation: 'Similar pattern detected'
       }
     ];
   }

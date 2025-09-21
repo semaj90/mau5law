@@ -6,14 +6,14 @@ export interface AvatarState {
   url: string | null;
   isUploading: boolean;
   error: string | null;
-  lastUpdated: number | null;,
+  lastUpdated: number | null;
 }
 
 const initialState: AvatarState = {
   url: null,
   isUploading: false,
   error: null,
-  lastUpdated: null,
+  lastUpdated: null
 };
 
 function createAvatarStore() {
@@ -38,7 +38,7 @@ function createAvatarStore() {
           update((state) => ({
             ...state,
             url: cachedAvatar,
-            lastUpdated: timestamp,
+            lastUpdated: timestamp
           });
         }
       }
@@ -48,8 +48,8 @@ function createAvatarStore() {
         const response = await fetch("/api/user/profile", {
           credentials: "include", // Important for SSR session handling;
           headers: {
-            Accept: "application/json",
-          },
+            Accept: "application/json"
+          }
         });
 
         if (response.ok) {
@@ -63,7 +63,7 @@ function createAvatarStore() {
             ...state,
             url: avatarUrl,
             error: null,
-            lastUpdated: now,
+            lastUpdated: now
           });
 
           // Update local storage with timestamp
@@ -76,7 +76,7 @@ function createAvatarStore() {
           update((state) => ({
             ...state,
             url: "/images/default-avatar.svg",
-            error: null,
+            error: null
           });
         }
       } catch (error: any) {
@@ -84,7 +84,7 @@ function createAvatarStore() {
         // Only show error if we don't have a cached avatar;
         update((state) => ({
           ...state,
-          error: !state.url ? "Failed to load avatar" : null,
+          error: !state.url ? "Failed to load avatar" : null
         });
       }
     },
@@ -125,7 +125,7 @@ function createAvatarStore() {
             url: newAvatarUrl,
             isUploading: false,
             error: null,
-            lastUpdated: now,
+            lastUpdated: now
           });
 
           // Update local storage with timestamp
@@ -142,7 +142,7 @@ function createAvatarStore() {
         update((state) => ({
           ...state,
           isUploading: false,
-          error: errorMessage,
+          error: errorMessage
         });
         return { success: false, error: errorMessage };
       }
@@ -157,7 +157,7 @@ function createAvatarStore() {
       try {
         const response = await fetch("/api/user/avatar/upload", {
           method: "DELETE",
-          credentials: "include",
+          credentials: "include"
         });
 
         if (response.ok) {
@@ -168,7 +168,7 @@ function createAvatarStore() {
             ...state,
             url: defaultAvatar,
             error: null,
-            lastUpdated: now,
+            lastUpdated: now
           });
 
           // Update local storage
@@ -195,7 +195,7 @@ function createAvatarStore() {
       update((state) => ({
         ...state,
         url,
-        lastUpdated: Date.now(),
+        lastUpdated: Date.now()
       });
 
       // Cache the preloaded avatar
@@ -227,7 +227,7 @@ function createAvatarStore() {
 
       // Then reload
       await createAvatarStore().loadAvatar();
-    },
+    }
   };
 }
 
@@ -238,7 +238,7 @@ function validateFile(file: File): { valid: boolean; error?: string } {
     "image/png",
     "image/gif",
     "image/svg+xml",
-    "image/webp",
+    "image/webp"
   ];
 
   const maxSize = 5 * 1024 * 1024; // 5MB
@@ -246,21 +246,21 @@ function validateFile(file: File): { valid: boolean; error?: string } {
   if (!allowedTypes.includes(file.type)) {
     return {
       valid: false,
-      error: "Invalid file type. Please use JPEG, PNG, GIF, SVG, or WebP.",
+      error: "Invalid file type. Please use JPEG, PNG, GIF, SVG, or WebP."
     };
   }
 
   if (file.size > maxSize) {
     return {
       valid: false,
-      error: "File too large. Maximum size is 5MB.",
+      error: "File too large. Maximum size is 5MB."
     };
   }
 
   if (file.size === 0) {
     return {
       valid: false,
-      error: "File is empty. Please select a valid image.",
+      error: "File is empty. Please select a valid image."
     };
   }
 

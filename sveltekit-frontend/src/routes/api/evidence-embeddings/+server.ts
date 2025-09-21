@@ -29,20 +29,20 @@ export const POST: RequestHandler = async ({ request }) => {
         // TODO: Process a single file by ID;
         return json({
           success: false,
-          error: 'Single file processing not yet implemented',
+          error: 'Single file processing not yet implemented'
         }, { status: 501 });
 
       default:;
         return json({
           success: false,
-          error: 'Invalid action. Use "backfill" or "process-single"',
+          error: 'Invalid action. Use "backfill" or "process-single"'
         }, { status: 400 });
     }
   } catch (error) {
     console.error('Embedding backfill error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error occurred',
+      error: error instanceof Error ? error.message: 'Unknown error occurred'
     }, { status: 500 });
   }
 };
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
       endpoints: {
         backfill: 'POST /api/evidence-embeddings with { "action": "backfill" }',
         search: 'GET /api/evidence-embeddings?search=query&limit=10&case_id=uuid',
-        stats: 'GET /api/evidence-embeddings',
+        stats: 'GET /api/evidence-embeddings'
       }
     });
 
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Evidence embeddings API error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error occurred',
+      error: error instanceof Error ? error.message: 'Unknown error occurred'
     }, { status: 500 });
   }
 };
@@ -95,7 +95,7 @@ async function performSemanticSearch(
       body: JSON.stringify({
         text: searchQuery,
         model: 'mock', // Use mock for testing
-        dimensions: 768,
+        dimensions: 768
       })
     });
 
@@ -152,7 +152,7 @@ async function performSemanticSearch(
       uploadedAt: row.uploaded_at,
       caseId: row.case_id,
       similarity: Math.max(0, Math.min(1, row.similarity_score)), // Clamp between 0-1
-      similarityDistance: row.similarity_distance,
+      similarityDistance: row.similarity_distance
     });
 
     return json({
@@ -162,7 +162,7 @@ async function performSemanticSearch(
       count: results.length,
       searchStats: {
         queryEmbeddingDimensions: queryEmbedding.length,
-        totalCandidates: rows.length,
+        totalCandidates: rows.length
       }
     });
 
@@ -170,7 +170,7 @@ async function performSemanticSearch(
     console.error('Semantic search error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Semantic search failed',
+      error: error instanceof Error ? error.message: 'Semantic search failed'
     }, { status: 500 });
   }
 }

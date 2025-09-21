@@ -13,5 +13,5 @@ export const ContextMenu = {
   Trigger,
   Content,
   Item,
-  Separator,
+  Separator
 };

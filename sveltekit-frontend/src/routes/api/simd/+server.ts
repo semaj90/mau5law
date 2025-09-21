@@ -10,7 +10,7 @@ const SIMDProcessSchema = z.object({
   data: z.any(),
   operation: z.enum(['parse', 'cache', 'benchmark']).default('parse'),
   cache_key: z.string().optional(),
-  iterations: z.number().min(1).max(10000).default(100).optional(),
+  iterations: z.number().min(1).max(10000).default(100).optional()
 });
 
 // SIMD JSON Processing;
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
           error: 'SIMD service unavailable', 
           message: 'Go microservice not running on localhost:8080',
           fallback: 'Using standard JSON processing',
-          details: String(healthError),
+          details: String(healthError)
         },
         { status: 503 }
       );
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
           result,
           metadata: {
             service: 'go-simd-microservice',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
       }
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: {
             service: 'go-simd-microservice',
             key: cache_key,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
       }
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: {
             service: 'go-simd-microservice',
             iterations: iterations || 100,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
       }
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
       { 
         error: 'SIMD processing failed',
         message: String(error),
-        fallback_available: true,
+        fallback_available: true
       },
       { status: 500 }
     );
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async () => {
         'Goroutine worker pools',
         'Automatic fallback handling'
       ],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async () => {
         service: 'simd-redis-microservice',
         status: 'unavailable',
         error: String(error),
-        message: 'Go microservice not running. Start with: cd go-microservice && go run simd-server.go',
+        message: 'Go microservice not running. Start with: cd go-microservice && go run simd-server.go'
       },
       { status: 503 }
     );

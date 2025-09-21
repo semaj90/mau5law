@@ -161,7 +161,7 @@ export class FastJSON {
   static getCacheStats() {
     return {
       size: FastJSON.cache.size,
-      maxSize: FastJSON.maxCacheSize,
+      maxSize: FastJSON.maxCacheSize
     };
   }
 }

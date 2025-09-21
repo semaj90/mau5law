@@ -37,7 +37,7 @@ export interface WorkerResult {
     id: string;
     type: string;
     version: string;
-    capabilities: string[];,
+    capabilities: string[];
   };
 }
 
@@ -49,7 +49,7 @@ export interface WorkerStats {
   queuedJobs: number;
   activeWorkers: number;
   systemHealth: 'healthy' | 'degraded' | 'critical';
-  lastUpdate: Date;,
+  lastUpdate: Date;
 }
 
 /**
@@ -70,7 +70,7 @@ export class JobOrchestrator extends EventEmitter {
     queuedJobs: 0,
     activeWorkers: 0,
     systemHealth: 'healthy',
-    lastUpdate: new Date(),
+    lastUpdate: new Date()
   };
 
   constructor(private rabbitmqUrl: string = 'amqp://localhost') {
@@ -112,7 +112,7 @@ export class JobOrchestrator extends EventEmitter {
     const fullJob: SpecializedJob = {
       ...job,
       id: jobId,
-      createdAt: new Date(),
+      createdAt: new Date()
     };
 
     this.jobQueue.set(jobId, fullJob);
@@ -127,7 +127,7 @@ export class JobOrchestrator extends EventEmitter {
         Buffer.from(JSON.stringify(fullJob)),
         {
           persistent: true,
-          priority: this.getPriorityNumber(job.priority),
+          priority: this.getPriorityNumber(job.priority)
         }
       );
 
@@ -316,7 +316,7 @@ export abstract class SpecializedWorker extends EventEmitter {
               id: this.workerId,
               type: this.workerType,
               version: this.version,
-              capabilities: this.capabilities,
+              capabilities: this.capabilities
             }
           };
 
@@ -343,7 +343,7 @@ export abstract class SpecializedWorker extends EventEmitter {
               id: this.workerId,
               type: this.workerType,
               version: this.version,
-              capabilities: this.capabilities,
+              capabilities: this.capabilities
             }
           };
 
@@ -410,7 +410,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
       metadata: {
         originalLength: document.content.length,
         summaryLength: summary.length,
-        compressionRatio: summary.length / document.content.length,
+        compressionRatio: summary.length / document.content.length
       }
     };
   }
@@ -455,7 +455,7 @@ export class CaseLawWorker extends SpecializedWorker {
         jurisdiction,
         dateRange,
         searchTime: new Date(),
-        relevanceThreshold: 0.7,
+        relevanceThreshold: 0.7
       }
     };
   }
@@ -479,7 +479,7 @@ export class CaseLawWorker extends SpecializedWorker {
         relevanceScore,
         summary: `A sample legal case generated for query "${q}". This is placeholder data for testing.`,
         keyHoldings: ['Sample holding 1', 'Sample holding 2'],
-        precedentialValue: 'binding',
+        precedentialValue: 'binding'
       }
     ];
   }
@@ -509,7 +509,7 @@ export class EmbeddingWorker extends SpecializedWorker {
       dimensions: embedding.length,
       model,
       metadata: {
-        textLength: text.length,
+        textLength: text.length
       }
     };
   }

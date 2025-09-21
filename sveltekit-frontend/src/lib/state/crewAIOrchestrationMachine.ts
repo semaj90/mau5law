@@ -46,7 +46,7 @@ export interface CrewAIContext {
   // Performance metrics
   startTime: number;
   processingTime: number;
-  qualityScore: number;,
+  qualityScore: number;
 }
 
 export type CrewAIEvents = 
@@ -71,7 +71,7 @@ export type CrewAIEvents =
 export const crewAIOrchestrationMachine = setup({
   types: {
     context: Record<string, any> as CrewAIContext,
-    events: Record<string, any> as CrewAIEvents,
+    events: Record<string, any> as CrewAIEvents
   },
   
   actors: {
@@ -143,7 +143,7 @@ export const crewAIOrchestrationMachine = setup({
       agentResponses: [],
       failedAgents: [],
       completedTasks: [],
-      taskQueue: [],
+      taskQueue: []
     }),
     
     // Set current task;
@@ -219,12 +219,12 @@ export const crewAIOrchestrationMachine = setup({
     // Set user to idle;
     setUserIdle: assign({
       userIntent: 'idle',
-      focusSchema: 'idle_mode',
+      focusSchema: 'idle_mode'
     }),
     
     // Set user to away;
     setUserAway: assign({
-      userIntent: 'away',
+      userIntent: 'away'
     }),
     
     // Change focus schema;
@@ -252,7 +252,7 @@ export const crewAIOrchestrationMachine = setup({
     
     // Update last saved timestamp;
     updateLastSaved: assign({
-      lastSaved: () => new Date().toISOString(),
+      lastSaved: () => new Date().toISOString()
     }),
     
     // Increment retry count;
@@ -309,7 +309,7 @@ export const crewAIOrchestrationMachine = setup({
     lastError: null,
     startTime: Date.now(),
     processingTime: 0,
-    qualityScore: 0,
+    qualityScore: 0
   },
   
   states: {
@@ -319,11 +319,11 @@ export const crewAIOrchestrationMachine = setup({
       on: {
         START_REVIEW: {
           target: 'orchestrating',
-          actions: 'setCurrentTask',
+          actions: 'setCurrentTask'
         },
         
         USER_ACTIVITY: {
-          actions: 'updateActivity',
+          actions: 'updateActivity'
         }
       },
       
@@ -343,28 +343,28 @@ export const crewAIOrchestrationMachine = setup({
       // Monitor user activity during orchestration;
       on: {
         USER_ACTIVITY: {
-          actions: 'updateActivity',
+          actions: 'updateActivity'
         },
         
         USER_IDLE: {
-          actions: 'setUserIdle',
+          actions: 'setUserIdle'
         },
         
         USER_AWAY: {
-          actions: 'setUserAway',
+          actions: 'setUserAway'
         },
         
         FOCUS_CHANGED: {
-          actions: 'changeFocusSchema',
+          actions: 'changeFocusSchema'
         },
         
         ACCEPT_RECOMMENDATION: {
-          actions: 'acceptRecommendation',
+          actions: 'acceptRecommendation'
         },
         
         CANCEL_REVIEW: {
           target: 'idle',
-          actions: 'resetForNewTask',
+          actions: 'resetForNewTask'
         }
       },
       
@@ -375,7 +375,7 @@ export const crewAIOrchestrationMachine = setup({
             input: ({ context }) => ({ task: context.currentTask! }),
             
             onDone: {
-              target: 'agents_running',
+              target: 'agents_running'
             },
             
             onError: {
@@ -391,12 +391,12 @@ export const crewAIOrchestrationMachine = setup({
           on: {
             AGENT_COMPLETED: {
               actions: 'recordAgentCompletion',
-              target: 'checking_completion',
+              target: 'checking_completion'
             },
             
             AGENT_FAILED: {
               actions: 'recordAgentFailure',
-              target: 'checking_completion',
+              target: 'checking_completion'
             }
           },
           
@@ -415,14 +415,14 @@ export const crewAIOrchestrationMachine = setup({
           always: [;
             {
               guard: 'allAgentsCompleted',
-              target: 'synthesizing_results',
+              target: 'synthesizing_results'
             },
             {
               guard: 'shouldRetryAgents',
-              target: 'retrying_failed',
+              target: 'retrying_failed'
             },
             {
-              target: 'agents_running',
+              target: 'agents_running'
             }
           ]
         },
@@ -433,7 +433,7 @@ export const crewAIOrchestrationMachine = setup({
           // Retry failed agents;
           after: {
             2000: {
-              target: 'agents_running',
+              target: 'agents_running'
             }
           }
         },
@@ -451,7 +451,7 @@ export const crewAIOrchestrationMachine = setup({
             },
             
             onError: {
-              target: 'completed' // Continue even if self-prompting fails,
+              target: 'completed' // Continue even if self-prompting fails
             }
           }
         },
@@ -466,11 +466,11 @@ export const crewAIOrchestrationMachine = setup({
             }),
             
             onDone: {
-              target: 'completed',
+              target: 'completed'
             },
             
             onError: {
-              target: 'completed',
+              target: 'completed'
             }
           }
         },
@@ -483,18 +483,18 @@ export const crewAIOrchestrationMachine = setup({
             src: 'autoSaveDocument',
             input: ({ context }) => ({
               documentId: context.currentTask?.documentId || '',
-              content: 'updated_content' // This would come from the recommendations,
+              content: 'updated_content' // This would come from the recommendations
             }),
             
             onDone: {
-              actions: 'updateLastSaved',
+              actions: 'updateLastSaved'
             }
           },
           
           on: {
             QUEUE_NEXT_TASK: {
               target: '#crewAIOrchestration.idle',
-              actions: 'resetForNewTask',
+              actions: 'resetForNewTask'
             }
           },
           
@@ -502,7 +502,7 @@ export const crewAIOrchestrationMachine = setup({
           after: {
             5000: {
               target: '#crewAIOrchestration.idle',
-              actions: 'resetForNewTask',
+              actions: 'resetForNewTask'
             }
           }
         },
@@ -511,12 +511,12 @@ export const crewAIOrchestrationMachine = setup({
           on: {
             RETRY_FAILED_AGENTS: {
               target: 'starting_agents',
-              guard: 'shouldRetryAgents',
+              guard: 'shouldRetryAgents'
             },
             
             CANCEL_REVIEW: {
               target: '#crewAIOrchestration.idle',
-              actions: 'resetForNewTask',
+              actions: 'resetForNewTask'
             }
           },
           
@@ -525,7 +525,7 @@ export const crewAIOrchestrationMachine = setup({
             10000: {
               target: 'starting_agents',
               guard: 'shouldRetryAgents',
-              actions: 'incrementRetryCount',
+              actions: 'incrementRetryCount'
             }
           }
         }
@@ -548,7 +548,7 @@ async function generateContextualRecommendations(context: CrewAIContext): Promis
       id: 'auto_save_suggest',
       type: 'edit',
       text: 'Auto-save your progress and summarize changes?',
-      confidence: 0.8,
+      confidence: 0.8
     });
   }
   
@@ -557,7 +557,7 @@ async function generateContextualRecommendations(context: CrewAIContext): Promis
       id: 'review_suggestions',
       type: 'review',
       text: 'Review agent suggestions and apply recommended changes',
-      confidence: 0.9,
+      confidence: 0.9
     });
   }
   
@@ -570,22 +570,22 @@ async function generateSchemaFocusConfig(schema: string, context: CrewAIContext)
     document_edit: {
       showInlineEdits: true,
       highlightRecommendations: true,
-      autoComplete: true,
+      autoComplete: true
     },
     review_mode: {
       showAnalysis: true,
       highlightRisks: true,
-      compactView: false,
+      compactView: false
     },
     analysis_mode: {
       showMetrics: true,
       showAgentBreakdown: true,
-      detailedView: true,
+      detailedView: true
     },
     idle_mode: {
       showSummary: true,
       autoSavePrompt: true,
-      minimizeUI: true,
+      minimizeUI: true
     }
   };
   

@@ -49,14 +49,14 @@ export const POST: RequestHandler = async ({ request }) => {
 			jobStatuses,
 			aggregateStatusEndpoint: `/api/legal/status/aggregate/${(result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).jobIds.join(',')}`,
 			processingMetrics: (result as { statusStores?: any; jobIds?: any; processingMetrics?: any }).processingMetrics,
-			evidenceCount: evidenceItems.length,
+			evidenceCount: evidenceItems.length
 		});
 
 	} catch (error) {
 		console.error('Evidence canvas processing error:', error);
 		return json({
 			success: false,
-			error: error instanceof Error ? error.message: 'Unknown error',
+			error: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };

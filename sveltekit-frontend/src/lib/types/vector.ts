@@ -38,7 +38,7 @@ export interface QdrantSearchResult {
 export interface QdrantResponse {
   result: QdrantSearchResult[];
   status: string;
-  time: number;,
+  time: number;
 }
 // AI service types;
 export interface AIResponse {

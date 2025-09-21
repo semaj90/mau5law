@@ -43,7 +43,7 @@ export const soraMoogleIntegration: SoraMoogleIntegration = {
       id: doc.id,
       processed: true,
       analysis: 'Mock analysis result',
-      confidence: 0.85,
+      confidence: 0.85
     };
   },
 
@@ -82,5 +82,5 @@ export const soraGraphTraversal: SoraGraphTraversal = {
 
 export default {
   soraMoogleIntegration,
-  soraGraphTraversal,
+  soraGraphTraversal
 };

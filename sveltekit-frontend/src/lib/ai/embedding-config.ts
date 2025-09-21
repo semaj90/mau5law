@@ -14,7 +14,7 @@ export interface EmbeddingModelConfig {
   latency: number;
   accuracy: number;
   specialized: boolean;
-  capabilities: string[];,
+  capabilities: string[];
 }
 
 export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {

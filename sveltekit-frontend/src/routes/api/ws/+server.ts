@@ -19,7 +19,7 @@ const metrics = {
   progressMessages: 0,
   resultMessages: 0,
   errorMessages: 0,
-  lastMessageAt: null as string | null,
+  lastMessageAt: null as string | null
 };
 
 // Initialize WebSocket server and Redis subscriber;
@@ -30,9 +30,9 @@ function initializeWebSocket() {
   io = new Server({
     cors: {
       origin: dev ? 'http://localhost:5173' : false,
-      methods: ['GET', 'POST'],
+      methods: ['GET', 'POST']
     },
-    transports: ['websocket', 'polling'],
+    transports: ['websocket', 'polling']
   });
 
   // Initialize Redis subscriber for job progress
@@ -45,7 +45,7 @@ function initializeWebSocket() {
       host: import.meta.env.REDIS_HOST || 'localhost',
       port: parseInt(import.meta.env.REDIS_PORT || '6379'),
       password: import.meta.env.REDIS_PASSWORD,
-      lazyConnect: true,
+      lazyConnect: true
     });
   }
 
@@ -103,7 +103,7 @@ function initializeWebSocket() {
       socket.to(`doc-${data.documentId}`).emit('document-change', {
         change: data.change,
         userId: data.userId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     });
 
@@ -137,13 +137,13 @@ function setupRedisSubscriptions() {
           (io as Server)?.to(`upload-${uploadId}`).emit('upload-progress', {
             uploadId,
             ...data,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
           if ((data as any).caseId) {
             (io as Server)?.to(`case-${(data as any).caseId}`).emit('case-progress', {
               uploadId,
               ...data,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             });
           }
         } else if (channel.startsWith('result:')) {
@@ -152,7 +152,7 @@ function setupRedisSubscriptions() {
           (io as Server)?.to(`tensor-${jobId}`).emit('tensor-result', {
             jobId,
             result: data,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         } else if (channel.startsWith('error:')) {
           metrics.errorMessages++;
@@ -160,13 +160,13 @@ function setupRedisSubscriptions() {
           (io as Server)?.to(`upload-${uploadId}`).emit('upload-error', {
             uploadId,
             error: data,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         }
       } catch (e) {
         console.error('❌ Failed to parse Redis message:', e);
       }
-    },
+    }
   });
 }
 
@@ -177,7 +177,7 @@ async function trackUserAttention(socketId: string, data: any): Promise<void> {
   const attentionEvent = {
     socketId,
     ...data,
-    serverTimestamp: new Date().toISOString(),
+    serverTimestamp: new Date().toISOString()
   };
 
   // Store in Redis with expiration (1 hour)
@@ -203,8 +203,8 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
       body: JSON.stringify({
         query,
         socketId,
-        timestamp: new Date().toISOString(),
-      }),
+        timestamp: new Date().toISOString()
+      })
     });
 
     if (contextResponse.ok) {
@@ -215,7 +215,7 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
         query,
         suggestions: context.suggestions,
         relevantDocuments: context.documents,
-        confidence: context.confidence,
+        confidence: context.confidence
       });
     }
   } catch (error: any) {
@@ -244,7 +244,7 @@ export function _broadcastProgress(uploadId: string, caseId: string, progress: a
     uploadId,
     caseId,
     ...progress,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 
   // Emit to upload-specific room
@@ -261,7 +261,7 @@ export function _broadcastTensorResult(jobId: string, result: any) {
   io.to(`tensor-${jobId}`).emit('tensor-result', {
     jobId,
     result,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -272,7 +272,7 @@ export function _broadcastSearchResults(searchId: string, results: any) {
   io.to(`search-${searchId}`).emit('search-results', {
     searchId,
     results,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -289,11 +289,11 @@ export const GET: RequestHandler = async ({ url }) => {
         'Tensor processing updates',
         'AI context switching',
         'Document collaboration',
-        'Search result streaming',
-      ],
+        'Search result streaming'
+      ]
     }),
     {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     }
   );
 };

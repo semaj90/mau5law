@@ -18,7 +18,7 @@ const sessions = new Map<string, Session>();
 export interface Session {
   id: string;
   userId: string;
-  expiresAt: Date;,
+  expiresAt: Date;
 }
 
 export interface User {
@@ -39,14 +39,14 @@ export async function validateSessionToken(
         const session: Session = {
           id: token,
           userId: user.id,
-          expiresAt: new Date(payload.exp * 1000),
+          expiresAt: new Date(payload.exp * 1000)
         };
         return {
           session,
           user: {
             ...user,
-            name: user.name || user.firstName || user.email || 'Unknown User',
-          } as User,
+            name: user.name || user.firstName || user.email || 'Unknown User'
+          } as User
         };
       }
     }
@@ -69,7 +69,7 @@ export function setSessionTokenCookie(
     expires: expiresAt,
     httpOnly: true,
     secure: import.meta.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "lax"
   });
 }
 export function deleteSessionTokenCookie(event: RequestEvent): void {
@@ -77,7 +77,7 @@ export function deleteSessionTokenCookie(event: RequestEvent): void {
     path: "/",
     httpOnly: true,
     secure: import.meta.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "lax"
   });
 }
 export function generateSessionToken(userId: string): string {

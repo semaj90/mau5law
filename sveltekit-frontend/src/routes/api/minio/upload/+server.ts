@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
 
     // Generate unique object path
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'x-amz-meta-case-id': caseId || 'general',
         'x-amz-meta-document-type': documentType || 'unknown',
         'x-amz-meta-priority': priority.toString(),
-        'x-amz-meta-uploaded-at': new Date().toISOString(),
+        'x-amz-meta-uploaded-at': new Date().toISOString()
       }
     );
 
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
       size: file.size,
       content_type: file.type,
       uploaded_at: new Date().toISOString(),
-      etag: uploadInfo.etag,
+      etag: uploadInfo.etag
     };
 
     console.log(`📁 MinIO Upload Success: ${objectPath} (${file.size} bytes) ETag: ${uploadInfo.etag}`);

@@ -17,11 +17,11 @@ export interface APIResponse<T> {
     data?: T;
     error?: {
         code: string;
-        message: string;,
+        message: string;
     };
     metadata?: {
         timestamp: string;
-        processingTimeMs: number;,
+        processingTimeMs: number;
     };
 }
 
@@ -54,9 +54,9 @@ export interface WorkerStatus {
   errors: number;
   performance: {
     avgTaskTime: number;
-    tasksPerMinute: number;,
+    tasksPerMinute: number;
   };
-  lastActivity: Date;,
+  lastActivity: Date;
 }
 
 export interface WorkerMessage {
@@ -86,7 +86,7 @@ export interface CopilotIndexEntry {
   lastModified: Date;
   fileSize: number;
   language: string;
-  tags: string[];,
+  tags: string[];
 }
 
 export interface SimilarityResult {
@@ -95,7 +95,7 @@ export interface SimilarityResult {
     documentType: string;
     chunkIndex: number;
     content: string;
-    score: number;,
+    score: number;
 }
 
 // --- Database & Document Types ---;
@@ -129,21 +129,21 @@ export interface CanvasState {
 export interface CanvasAnimation {
     name: string;
     frames: CanvasState[];
-    loop: boolean;,
+    loop: boolean;
 }
 
 export interface UserActivityLog {
     timestamp: number;
     action: string; // e.g., 'canvas_click', 'animation_changed'
     context: Record<string, any>;
-    sessionId: string;,
+    sessionId: string;
 }
 
 // --- XState & Machine Types ---;
 export interface GlobalAppContext {
     user: { id: string; email: string; } | null;
     activeCaseId: string | null;
-    theme: 'light' | 'dark';,
+    theme: 'light' | 'dark';
 }
 
 export type GlobalAppEvent =
@@ -211,7 +211,7 @@ export interface FormState<T> {
   data: T;
   errors: FormValidationError[];
   isValid: boolean;
-  isSubmitting: boolean;,
+  isSubmitting: boolean;
 }
 
 // --- Notification & Alert Types ---
@@ -289,7 +289,7 @@ export interface FileUploadResponse {
   fileSize: number;
   mimeType: string;
   url: string;
-  uploadedAt: string;,
+  uploadedAt: string;
 }
 
 // --- WebSocket & Real-time Types ---
@@ -354,5 +354,5 @@ export type {
   APIErrorResponse,
   ProtocolRouter,
   EnhancedAPIHandler,
-  MultiProtocolRequestOptions,
+  MultiProtocolRequestOptions
 } from './api.ts';

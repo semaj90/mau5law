@@ -54,7 +54,7 @@ export const statusFormatters = {
     caseStatus: (status: string) => status?.toUpperCase() || 'UNKNOWN',
     priority: (p: string) => p?.toUpperCase() || 'NORMAL',
     evidenceType: (t: string) => t?.toUpperCase() || 'OTHER',
-    userRole: (r: string) => r?.toUpperCase() || 'USER',
+    userRole: (r: string) => r?.toUpperCase() || 'USER'
   };
 
 // Import stores used in convenience object;

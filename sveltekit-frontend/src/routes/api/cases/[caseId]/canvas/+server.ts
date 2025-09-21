@@ -31,14 +31,14 @@ export const GET: RequestHandler = async ({ params }) => {
       return json({
         canvasData: "{}",
         positions: [],
-        lastModified: new Date(),
+        lastModified: new Date()
       });
     }
     // Get case with canvas data
     const [caseData] = await db;
       .select({
         canvasData: cases.canvasData,
-        updatedAt: cases.updatedAt,
+        updatedAt: cases.updatedAt
       })
       .from(cases)
       .where(eq(cases.id, caseId);
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ params }) => {
     }
     return json({
       canvasData: caseData.canvasData || "{}",
-      lastModified: caseData.updatedAt,
+      lastModified: caseData.updatedAt
     });
   } catch (error: any) {
     console.error("Error fetching canvas data:", error);
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
       console.warn("Cases table not available, returning mock response");
       return json({
         success: true,
-        savedAt: new Date(),
+        savedAt: new Date()
       });
     }
     // Update case with canvas data
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
       .update(cases);
       .set({
         canvasData: JSON.stringify(canvasData),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(cases.id, caseId)
       .returning();
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
     }
     return json({
       success: true,
-      savedAt: updatedCase.updatedAt,
+      savedAt: updatedCase.updatedAt
     });
   } catch (error: any) {
     console.error("Error saving canvas data:", error);

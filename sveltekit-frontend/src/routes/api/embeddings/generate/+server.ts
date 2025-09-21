@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'nomic-embed-text',
-        prompt: text,
+        prompt: text
       })
     });
 
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
         model: "nomic-embed-text",
         dimensions: 384,
         timestamp: new Date().toISOString(),
-        warning: "Used mock embedding due to dimension mismatch",
+        warning: "Used mock embedding due to dimension mismatch"
       });
     }
 
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: metadata || {},
       model: "nomic-embed-text",
       dimensions: embedding.length,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error("Embedding generation error:", err);
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async () => {
     methods: ["POST"],
     example: {
       text: "Legal document content to embed",
-      metadata: { type: "case", id: "case-123" },
-    },
+      metadata: { type: "case", id: "case-123" }
+    }
   });
 };

@@ -140,7 +140,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
         vectorSearch: useVectorSearch,
         ollamaAI: useOllamaAI,
         enhancedRAG: useEnhancedRAG,
-        protobufGRPC: useProtobuf,
+        protobufGRPC: useProtobuf
       },
       timestamp: new Date().toISOString(),
       metadata: {
@@ -154,7 +154,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
     console.error('Error generating AI suggestions:', error);
     return json({ 
       error: 'Failed to generate suggestions',
-      details: error instanceof Error ? error.message: 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 }
@@ -205,7 +205,7 @@ async function generateComprehensiveSuggestions({
             context: {
               case_id: context.caseId,
               user_id: userId,
-              document_ids: context.evidenceIds,
+              document_ids: context.evidenceIds
             }
           });
 
@@ -223,7 +223,7 @@ async function generateComprehensiveSuggestions({
                 keywords: suggestion.metadata?.source_documents || [],
                 supportingContext: suggestion.supporting_evidence || [],
                 citations: suggestion.case_citations || [],
-                processingTimeMs: Date.now() - grpcStartTime,
+                processingTimeMs: Date.now() - grpcStartTime
               }
             });
           });
@@ -263,7 +263,7 @@ async function generateComprehensiveSuggestions({
                 keywords: suggestion.metadata.contextDocuments || [],
                 supportingContext: suggestion.supportingContext,
                 citations: suggestion.relevantCitations,
-                processingTimeMs: Date.now() - ragStartTime,
+                processingTimeMs: Date.now() - ragStartTime
               }
             });
           });
@@ -298,7 +298,7 @@ async function generateComprehensiveSuggestions({
                 category: suggestion.metadata.category,
                 keywords: suggestion.metadata.keywords || [],
                 urgency: suggestion.metadata.urgency,
-                processingTimeMs: Date.now() - ollamaStartTime,
+                processingTimeMs: Date.now() - ollamaStartTime
               }
             });
           });
@@ -333,7 +333,7 @@ async function generateComprehensiveSuggestions({
                 category: suggestion.metadata.category,
                 keywords: suggestion.metadata.keywords || [],
                 supportingContext: suggestion.metadata.sourceDocumentId ? [suggestion.metadata.sourceDocumentId] : [],
-                processingTimeMs: Date.now() - vectorStartTime,
+                processingTimeMs: Date.now() - vectorStartTime
               }
             });
           });
@@ -360,7 +360,7 @@ async function generateComprehensiveSuggestions({
             source: 'rule_based',
             category: suggestion.metadata.category,
             keywords: suggestion.metadata.keywords || [],
-            processingTimeMs: Date.now() - ruleStartTime,
+            processingTimeMs: Date.now() - ruleStartTime
           }
         });
       });
@@ -495,7 +495,7 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true,
+      cache: true
     }) as number[];
 
     // Search for similar chat messages and their recommendations
@@ -504,7 +504,7 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
         content: chatMessages.content,
         recommendations: chatRecommendations.content,
         confidence: chatRecommendations.confidence,
-        type: chatRecommendations.recommendationType,
+        type: chatRecommendations.recommendationType
       })
       .from(chatMessages)
       .leftJoin(chatRecommendations, eq(chatMessages.id, chatRecommendations.messageId)
@@ -638,14 +638,14 @@ async function storeRecommendations({
   content: string;
   suggestions: UnifiedSuggestion[];
   recommendationId: string;
-  reportType: string;,
+  reportType: string;
 }): Promise<any> {
   try {
     // Generate embedding for the content;
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true,
+      cache: true
     }) as number[];
 
     // Store the message;
@@ -660,7 +660,7 @@ async function storeRecommendations({
         suggestionRequestId: recommendationId,
         servicesUsed: suggestions.map(s => s.metadata.source),
         totalSuggestions: suggestions.length,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }).returning({ id: chatMessages.id });
 
@@ -688,7 +688,7 @@ async function storeRecommendations({
             urgency: suggestion.metadata.urgency,
             processingTimeMs: suggestion.metadata.processingTimeMs,
             rank: i + 1,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
       }

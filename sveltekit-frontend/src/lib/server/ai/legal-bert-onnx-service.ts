@@ -18,7 +18,7 @@ interface ONNXModelConfig {
     enableMemPattern: boolean;
     enableCpuMemArena: boolean;
     executionMode: 'sequential' | 'parallel';
-    logSeverityLevel: number;,
+    logSeverityLevel: number;
   };
   inputSpec: {
     inputIds: { name: string; type: string; shape: number[] };
@@ -35,24 +35,24 @@ interface ONNXModelConfig {
 interface LegalEntityExtractionResult {
   entities: Array<any>;
   processingTime: number;
-  modelUsed: string;,
+  modelUsed: string;
 }
 
 interface LegalClassificationResult {
   predictions: Array<any>;
   topPrediction: {
     label: string;
-    confidence: number;,
+    confidence: number;
   };
   processingTime: number;
-  modelUsed: string;,
+  modelUsed: string;
 }
 
 interface LegalEmbeddingResult {
   embeddings: number[];
   dimensions: number;
   processingTime: number;
-  modelUsed: string;,
+  modelUsed: string;
 }
 
 export class LegalBertONNXService extends EventEmitter {
@@ -64,7 +64,7 @@ export class LegalBertONNXService extends EventEmitter {
     totalInferences: 0,
     averageLatency: 0,
     successRate: 1.0,
-    lastUsed: new Date(),
+    lastUsed: new Date()
   };
 
   constructor() {
@@ -81,14 +81,14 @@ export class LegalBertONNXService extends EventEmitter {
       providerOptions: [;
         {
           name: 'CPUExecutionProvider',
-          deviceType: 'CPU',
+          deviceType: 'CPU'
         },
         // GPU provider as fallback if available;
         {
           name: 'CUDAExecutionProvider',
           deviceType: 'GPU',
-          deviceId: 0,
-        },
+          deviceId: 0
+        }
       ],
       sessionOptions: {
         graphOptimizationLevel: 'all',
@@ -106,13 +106,13 @@ export class LegalBertONNXService extends EventEmitter {
         attentionMask: {
           name: 'attention_mask',
           type: 'int64',
-          shape: [-1, -1],
+          shape: [-1, -1]
         },
         tokenTypeIds: {
           name: 'token_type_ids',
           type: 'int64',
-          shape: [-1, -1],
-        },
+          shape: [-1, -1]
+        }
       },
       outputSpec: {
         lastHiddenState: {
@@ -124,8 +124,8 @@ export class LegalBertONNXService extends EventEmitter {
           name: 'pooler_output',
           type: 'float32',
           shape: [-1, 768], // [batch, hidden_size]
-        },
-      },
+        }
+      }
     };
   }
 
@@ -142,7 +142,7 @@ export class LegalBertONNXService extends EventEmitter {
         this.modelConfig.modelPath,);
         {
           executionProviders: this.modelConfig.providerOptions.map(p => p.name),
-          ...this.modelConfig.sessionOptions,
+          ...this.modelConfig.sessionOptions
         }
       );
 
@@ -192,7 +192,7 @@ export class LegalBertONNXService extends EventEmitter {
       encode: (text: string) => this.mockTokenize(text),
       decode: (tokens: number[]) => this.mockDetokenize(tokens),
       vocab_size: 30522, // Standard BERT vocab size
-      max_length: 512,
+      max_length: 512
     };
   }
 
@@ -245,7 +245,7 @@ export class LegalBertONNXService extends EventEmitter {
       const result: LegalEntityExtractionResult = {
         entities,
         processingTime,
-        modelUsed: 'legal-bert-onnx',
+        modelUsed: 'legal-bert-onnx'
       };
       
       this.emit('entity-extraction-complete', result);
@@ -291,7 +291,7 @@ export class LegalBertONNXService extends EventEmitter {
         predictions,
         topPrediction: predictions[0],
         processingTime,
-        modelUsed: 'legal-bert-onnx',
+        modelUsed: 'legal-bert-onnx'
       };
       
       this.emit('classification-complete', result);
@@ -337,7 +337,7 @@ export class LegalBertONNXService extends EventEmitter {
         embeddings,
         dimensions: embeddings.length,
         processingTime,
-        modelUsed: 'legal-bert-onnx',
+        modelUsed: 'legal-bert-onnx'
       };
       
       this.emit('embedding-complete', result);
@@ -379,7 +379,7 @@ export class LegalBertONNXService extends EventEmitter {
     return {
       input_ids: new ort.Tensor('int64', new BigInt64Array(paddedInputIds.map(id => BigInt(id))), [batchSize, paddedLength]),
       attention_mask: new ort.Tensor('int64', new BigInt64Array(paddedAttentionMask.map(mask => BigInt(mask))), [batchSize, paddedLength]),
-      token_type_ids: new ort.Tensor('int64', new BigInt64Array(paddedTokenTypeIds.map(type => BigInt(type))), [batchSize, paddedLength]),
+      token_type_ids: new ort.Tensor('int64', new BigInt64Array(paddedTokenTypeIds.map(type => BigInt(type))), [batchSize, paddedLength])
     };
   }
 
@@ -396,7 +396,7 @@ export class LegalBertONNXService extends EventEmitter {
     const mockEntities = [
       { text: 'Contract', label: 'LEGAL_DOCUMENT', confidence: 0.95, start: 0, end: 8 },
       { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 },>
-      { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 },
+      { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 }
     ];
     
     return mockEntities.filter(item => item.includes(entity.text.toLowerCase());
@@ -410,7 +410,7 @@ export class LegalBertONNXService extends EventEmitter {
     const legalDocTypes = [
       { label: 'contract', confidence: 0.85 },
       { label: 'court_decision', confidence: 0.12 },>
-      { label: 'legal_brief', confidence: 0.03 },
+      { label: 'legal_brief', confidence: 0.03 }
     ];
     
     return legalDocTypes.sort((a, b) => b.confidence - a.confidence);
@@ -487,7 +487,7 @@ export type {
   LegalEntityExtractionResult,
   LegalClassificationResult,
   LegalEmbeddingResult,
-  ONNXModelConfig,
+  ONNXModelConfig
 };
 
 // Export class for testing and extension

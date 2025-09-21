@@ -125,7 +125,7 @@ export interface EnhancedEnv {
   // Development
   DEBUG: string;
   LOG_LEVEL: string;
-  ENABLE_LOGGING: string;,
+  ENABLE_LOGGING: string;
 }
 
 // Environment helper functions;

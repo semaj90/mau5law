@@ -29,7 +29,7 @@ export interface UserIntent {
     role: "prosecutor" | "detective" | "admin" | "user";
     recentActions: string[];
     preferences: Record<string, any>;
-    workflowPatterns: string[];,
+    workflowPatterns: string[];
   };
 }
 
@@ -40,7 +40,7 @@ export interface PrefetchItem {
   size: number;
   cacheStrategy: "aggressive" | "conservative" | "lazy";
   dependencies: string[];
-  aiReasoning: string;,
+  aiReasoning: string;
 }
 
 export interface LegalWorkflowPattern {
@@ -49,7 +49,7 @@ export interface LegalWorkflowPattern {
   triggerConditions: Record<string, any>;
   successProbability: number;
   typicalAssets: string[];
-  preloadTiming: "immediate" | "on-hover" | "predictive";,
+  preloadTiming: "immediate" | "on-hover" | "predictive";
 }
 
 export interface PrefetchStrategy {
@@ -114,15 +114,15 @@ export class PredictivePrefetcher {
         body: JSON.stringify({
           model: "gemma3-legal:latest", // Lightweight model for fast inference
           prompt: "Initialize legal workflow intent prediction model",
-          stream: false,
-        }),
+          stream: false
+        })
       });
 
       if (modelResponse.ok) {
         this.intentModel = {
           initialized: true,
           endpoint: "http://localhost:11434/api/generate",
-          model: "gemma3-legal:latest",
+          model: "gemma3-legal:latest"
         };
         console.log("🧠 Local LLM initialized for intent prediction");
       } else {
@@ -151,7 +151,7 @@ export class PredictivePrefetcher {
       if (Date.now() - this.lastPrediction > 2000) {
         this.predictUserIntentEnhanced({
           mouseEvents: this.mouseEvents,
-          keyboardEvents: this.keyboardEvents,
+          keyboardEvents: this.keyboardEvents
         }).then((intent: any) => {
           if (intent) {
             this.intentHistory.push(intent);
@@ -180,19 +180,19 @@ export class PredictivePrefetcher {
       routes: [
         "/api/ai/analyze",
         "/api/documents/metadata",
-        "/api/ui/buffers/analysis-panel",
+        "/api/ui/buffers/analysis-panel"
       ],
       assets: [
         "/assets/css/analysis.css",
         "/assets/wasm/pdf-parser.wasm",
-        "/assets/models/legal-classifier.onnx",
+        "/assets/models/legal-classifier.onnx"
       ],
       uiBuffers: ["analysis-panel", "document-viewer"],
       priority: "high",
       conditions: {
         viewport: "desktop",
-        connection: "fast",
-      },
+        connection: "fast"
+      }
     });
 
     // Case management;
@@ -200,12 +200,12 @@ export class PredictivePrefetcher {
       routes: [
         "/api/cases/templates",
         "/api/ui/buffers/case-form",
-        "/api/legal/precedents",
+        "/api/legal/precedents"
       ],
       assets: ["/assets/css/forms.css", "/assets/js/case-validator.js"],
       uiBuffers: ["case-form", "precedent-search"],
       priority: "medium",
-      conditions: Record<string, any>,
+      conditions: Record<string, any>
     });
 
     // Evidence search;
@@ -213,17 +213,17 @@ export class PredictivePrefetcher {
       routes: [
         "/api/search/semantic",
         "/api/ui/buffers/search-results",
-        "/api/evidence/filters",
+        "/api/evidence/filters"
       ],
       assets: [
         "/assets/css/search.css",
-        "/assets/models/search-embeddings.bin",
+        "/assets/models/search-embeddings.bin"
       ],
       uiBuffers: ["search-results", "filter-panel"],
       priority: "high",
       conditions: {
-        connection: "fast",
-      },
+        connection: "fast"
+      }
     });
 
     // Settings and configuration;
@@ -231,7 +231,7 @@ export class PredictivePrefetcher {
       routes: [
         "/api/ui/buffers/settings",
         "/api/user/preferences",
-        "/api/system/config",
+        "/api/system/config"
       ],
       assets: ["/assets/css/settings.css"],
       uiBuffers: ["/api/ui/buffers/settings"],
@@ -239,8 +239,8 @@ export class PredictivePrefetcher {
       conditions: Record<string, any>,
       llmIntegration: {
         useLocalLLM: true,
-        intentThreshold: 0.7,
-      },
+        intentThreshold: 0.7
+      }
     });
 
     // Evidence viewing (Phase 8 enhanced);
@@ -248,24 +248,24 @@ export class PredictivePrefetcher {
       routes: [
         "/evidence/viewer",
         "/api/evidence/recent",
-        "/api/ui/buffers/evidence-panel",
+        "/api/ui/buffers/evidence-panel"
       ],
       assets: [
         "/assets/css/evidence.css",
-        "/assets/models/evidence-classifier.onnx",
+        "/assets/models/evidence-classifier.onnx"
       ],
       uiBuffers: [
         "/api/ui/buffers/evidence-viewer",
-        "/api/ui/buffers/timeline",
+        "/api/ui/buffers/timeline"
       ],
       priority: "critical",
       conditions: {
-        userRole: ["prosecutor", "detective"],
+        userRole: ["prosecutor", "detective"]
       },
       llmIntegration: {
         useLocalLLM: true,
-        intentThreshold: 0.8,
-      },
+        intentThreshold: 0.8
+      }
     });
 
     // Document search (Phase 8 enhanced);
@@ -273,24 +273,24 @@ export class PredictivePrefetcher {
       routes: [
         "/api/documents/search",
         "/api/ui/buffers/search-results",
-        "/api/semantic-search",
+        "/api/semantic-search"
       ],
       assets: [
         "/assets/css/search.css",
-        "/assets/models/search-embeddings.bin",
+        "/assets/models/search-embeddings.bin"
       ],
       uiBuffers: [
         "/api/ui/buffers/search-interface",
-        "/api/ui/buffers/filters",
+        "/api/ui/buffers/filters"
       ],
       priority: "high",
       conditions: {
-        connection: "fast",
+        connection: "fast"
       },
       llmIntegration: {
         useLocalLLM: true,
-        intentThreshold: 0.75,
-      },
+        intentThreshold: 0.75
+      }
     });
   }
 
@@ -305,15 +305,15 @@ export class PredictivePrefetcher {
         triggerConditions: {
           userRole: "prosecutor",
           timeOfDay: "morning",
-          recentAction: "case_assigned",
+          recentAction: "case_assigned"
         },
         successProbability: 0.85,
         typicalAssets: [
           "/api/evidence/recent",
           "/api/analysis/summary",
-          "/api/ui/buffers/evidence-panel",
+          "/api/ui/buffers/evidence-panel"
         ],
-        preloadTiming: "predictive",
+        preloadTiming: "predictive"
       },
       {
         name: "Case Creation Workflow",
@@ -321,15 +321,15 @@ export class PredictivePrefetcher {
         triggerConditions: {
           userRole: "detective",
           recentAction: "investigation_complete",
-          workflowState: "case_prep",
+          workflowState: "case_prep"
         },
         successProbability: 0.78,
         typicalAssets: [
           "/api/templates/case",
           "/api/users/assignments",
-          "/api/ui/buffers/case-form",
+          "/api/ui/buffers/case-form"
         ],
-        preloadTiming: "on-hover",
+        preloadTiming: "on-hover"
       },
       {
         name: "Document Search Workflow",
@@ -337,15 +337,15 @@ export class PredictivePrefetcher {
         triggerConditions: {
           activity: "research",
           keyboardIntensive: true,
-          mouseVelocity: "low",
+          mouseVelocity: "low"
         },
         successProbability: 0.82,
         typicalAssets: [
           "/api/documents/search",
           "/api/citations/generate",
-          "/api/ui/buffers/search-results",
+          "/api/ui/buffers/search-results"
         ],
-        preloadTiming: "immediate",
+        preloadTiming: "immediate"
       },
       {
         name: "AI Analysis Workflow",
@@ -353,21 +353,21 @@ export class PredictivePrefetcher {
           "/upload",
           "/ai/analyze",
           "/ai/summary",
-          "/ai/recommendations",
+          "/ai/recommendations"
         ],
         triggerConditions: {
           fileUpload: true,
           aiConfidence: "high",
-          documentType: "legal",
+          documentType: "legal"
         },
         successProbability: 0.88,
         typicalAssets: [
           "/api/ai/analyze",
           "/api/ui/buffers/analysis-panel",
-          "/assets/models/legal-classifier.onnx",
+          "/assets/models/legal-classifier.onnx"
         ],
-        preloadTiming: "immediate",
-      },
+        preloadTiming: "immediate"
+      }
     ];
   }
 
@@ -432,7 +432,7 @@ export class PredictivePrefetcher {
           role: "user",
           recentActions: this.intentHistory.slice(-5).map((intent: any) => intent.action),
           preferences: Record<string, any>,
-          workflowPatterns: [],
+          workflowPatterns: []
         }
       };
     }
@@ -450,7 +450,7 @@ export class PredictivePrefetcher {
       timeOnPage: Date.now() - this.startTime,
       scrollPosition: window.scrollY || 0,
       mouseActivity: context.mouseEvents,
-      keyboardActivity: context.keyboardEvents,
+      keyboardActivity: context.keyboardEvents
     };
     return await this.predictIntent(currentContext);
   }
@@ -565,8 +565,8 @@ export class PredictivePrefetcher {
       const response = await fetch(route, {
         method: "GET",
         headers: {
-          "X-Prefetch": "true",
-        },
+          "X-Prefetch": "true"
+        }
       });
 
       if (response.ok) {

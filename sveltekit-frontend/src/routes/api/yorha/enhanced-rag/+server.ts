@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTime: Date.now(), // This would be calculated properly
         aiModelUsed: 'enhanced-rag-yorha',
         legalComplexity: assessLegalComplexity(analysisResults),
-        riskLevel: assessRiskLevel(analysisResults),
+        riskLevel: assessRiskLevel(analysisResults)
       },
 
       // Enhanced features
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
         legalAreas: extractLegalAreas(analysisResults),
         precedents: findRelevantPrecedents(analysisResults),
         keyTerms: extractKeyTerms(analysisResults),
-        citations: extractCitations(analysisResults),
+        citations: extractCitations(analysisResults)
       },
 
       // YoRHa-specific formatting
@@ -140,13 +140,13 @@ export const POST: RequestHandler = async ({ request }) => {
             analysisMode: 'ENHANCED',
             dataIntegrity: 'VERIFIED',
             processingNode: 'YORHA-LEGAL-AI-001',
-            classification: 'CONFIDENTIAL',
+            classification: 'CONFIDENTIAL'
           }
         : null,
 
       // Service information
       service: 'yorha-enhanced-rag-api',
-      version: '4.0.0',
+      version: '4.0.0'
     };
 
     return json(yorhaResponse);
@@ -164,8 +164,8 @@ export const POST: RequestHandler = async ({ request }) => {
         yorhaMetadata: {
           systemStatus: 'ERROR',
           errorCode: 'ERR_ANALYSIS_FAILED',
-          processingNode: 'YORHA-LEGAL-AI-001',
-        },
+          processingNode: 'YORHA-LEGAL-AI-001'
+        }
       },
       { status: 500 }
     );
@@ -185,15 +185,15 @@ async function performYoRHaAnalysis(
       ...r,
       source: 'enhanced-rag',
       yorha_type: 'AI_ANALYSIS',
-      yorha_confidence: r.rerankScore || r.score || 0.5,
+      yorha_confidence: r.rerankScore || r.score || 0.5
     })),
     ...dbResults.map((r) => ({
       ...r,
       source: 'database',
       yorha_type: 'DATABASE_RECORD',
       yorha_confidence: r.confidenceScore || 0.7,
-      content: r.content || r.description || r.title,
-    })),
+      content: r.content || r.description || r.title
+    }))
   ];
 
   // Apply YoRHa-specific scoring and analysis
@@ -208,8 +208,8 @@ async function performYoRHaAnalysis(
         legalWeight: calculateLegalWeight(result),
         riskFactor: calculateRiskFactor(result),
         actionRequired: determineActionRequired(result),
-        classification: classifyResult(result),
-      },
+        classification: classifyResult(result)
+      }
     })
     .sort((a, b) => b.yorha_confidence - a.yorha_confidence);
 }
@@ -231,10 +231,10 @@ async function generateYoRHaRecommendations(
       actionItems: [
         'Review similar cases in jurisdiction',
         'Examine legal precedents',
-        'Consult relevant statutes',
+        'Consult relevant statutes'
       ],
       estimatedTime: '2-4 hours',
-      yorha_confidence: 0.85,
+      yorha_confidence: 0.85
     },
     {
       id: `REC-${Date.now()}-2`,
@@ -244,8 +244,8 @@ async function generateYoRHaRecommendations(
       description: 'Several documents require detailed legal analysis',
       actionItems: ['Perform contract review', 'Identify key clauses', 'Assess legal risks'],
       estimatedTime: '1-2 hours',
-      yorha_confidence: 0.75,
-    },
+      yorha_confidence: 0.75
+    }
   ];
 
   return recommendations;

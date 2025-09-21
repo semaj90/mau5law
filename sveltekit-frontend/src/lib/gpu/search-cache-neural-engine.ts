@@ -18,7 +18,7 @@ class MockDrizzleDB {
     return [
       { action: 'open_document', docId: 'xyz' },
       { action: 'search', query: 'contract' },
-      { action: 'open_document', docId: 'abc' },
+      { action: 'open_document', docId: 'abc' }
     ];
   }
 }
@@ -31,7 +31,7 @@ class MockQdrantClient {
     await sleep(30);
     return [
       { id: 'glyph-001', score: 0.9 - (hash % 0.05) },
-      { id: 'glyph-002', score: 0.82 - (hash % 0.03) },
+      { id: 'glyph-002', score: 0.82 - (hash % 0.03) }
     ];
   }
 }
@@ -42,7 +42,7 @@ class MockNeo4jDriver {
     await sleep(40);
     return [
       { recommendedDocId: 'rec-abc', reason: 'collaborative_filtering' },
-      { recommendedDocId: 'rec-def', reason: 'similar_users' },
+      { recommendedDocId: 'rec-def', reason: 'similar_users' }
     ];
   }
 }
@@ -133,7 +133,7 @@ class UserAnalyticsEngine {
 
     return {
       personalizationVector: pv,
-      recommendedDocIds: graphRecs.map((r) => r.recommendedDocId).filter(Boolean),
+      recommendedDocIds: graphRecs.map((r) => r.recommendedDocId).filter(Boolean)
     };
   }
 }
@@ -161,7 +161,7 @@ const lokiRedisCache = {
   async set(key: string, value: string, ttl: number): Promise<void> {
     console.log(`Loki/Redis Cache: SET key=${key} ttl=${ttl}s`);
     await sleep(5);
-  },
+  }
 };
 
 // --- Core Types ---;
@@ -173,7 +173,7 @@ export interface ShaderVariant {
   expectedPerformance: number;
   targetHardware: 'rtx' | 'gtx' | 'integrated' | 'mobile';
   shaderCode: string;
-  uniformBindings: string[];,
+  uniformBindings: string[];
 }
 
 export interface LODLevel {
@@ -183,7 +183,7 @@ export interface LODLevel {
   textureSize: number;
   shaderQuality: ShaderVariant['quality'];
   chrRomPattern?: string;
-  estimatedLoad: number;,
+  estimatedLoad: number;
 }
 
 export interface RenderContext {
@@ -195,18 +195,18 @@ export interface RenderContext {
     gpuTier: number;
     memoryAvailable: number;
     computeUnits: number;
-    bandwidth: number;,
+    bandwidth: number;
   };
   performanceMetrics: {
     currentFPS: number;
     frameTime: number;
     gpuUtilization: number;
-    memoryPressure: number;,
+    memoryPressure: number;
   };
   cacheStatus: {
     chrRomHitRate: number;
     texturesCached: number;
-    shadersCompiled: number;,
+    shadersCompiled: number;
   };
 }
 
@@ -219,7 +219,7 @@ export interface NeuralOptimizationResult {
   adaptationReasons: string[];
   visualContext?: {
     optimizationPlanSVG: string;
-    semanticHeatmapSVG: string;,
+    semanticHeatmapSVG: string;
   };
 }
 
@@ -231,7 +231,7 @@ class NeuralOptimizer {
     inputSize: number;
     hiddenSize: number;
     outputSize: number;
-    learningRate: number;,
+    learningRate: number;
   };
   private accuracy = 0;
 
@@ -239,17 +239,17 @@ class NeuralOptimizer {
     inputSize: number;
     hiddenSize: number;
     outputSize: number;
-    learningRate: number;,
+    learningRate: number;
   }) {
     this.config = config;
     this.weights = {
       input: new Float32Array(config.inputSize * config.hiddenSize),
       hidden: new Float32Array(config.hiddenSize * config.hiddenSize),
-      output: new Float32Array(config.hiddenSize * config.outputSize),
+      output: new Float32Array(config.hiddenSize * config.outputSize)
     };
     this.biases = {
       hidden: new Float32Array(config.hiddenSize),
-      output: new Float32Array(config.outputSize),
+      output: new Float32Array(config.outputSize)
     };
     this.init();
   }
@@ -367,7 +367,7 @@ export class SearchCacheNeuralEngine {
       inputSize: 48,
       hiddenSize: 64,
       outputSize: 16,
-      learningRate: opts.learningRate ?? 0.01,
+      learningRate: opts.learningRate ?? 0.01
     });
     this.userAnalytics = new UserAnalyticsEngine();
     this.initShaderVariants();
@@ -402,8 +402,8 @@ export class SearchCacheNeuralEngine {
       adaptationReasons: reasons,
       visualContext: {
         optimizationPlanSVG: this.makePlanSVG(shader, lod, cacheStrategy),
-        semanticHeatmapSVG: this.makeHeatmap(features),
-      },
+        semanticHeatmapSVG: this.makeHeatmap(features)
+      }
     };
     await this.persist(document.id, result);
     console.log(
@@ -424,7 +424,7 @@ export class SearchCacheNeuralEngine {
           expectedPerformance: 30,
           targetHardware: 'rtx',
           shaderCode: `// ultra shader ${dt}`,
-          uniformBindings: ['view', 'proj', 'light', 'material', 'shadow'],
+          uniformBindings: ['view', 'proj', 'light', 'material', 'shadow']
         },
         {
           id: `${dt}_high`,
@@ -434,7 +434,7 @@ export class SearchCacheNeuralEngine {
           expectedPerformance: 45,
           targetHardware: 'gtx',
           shaderCode: `// high shader ${dt}`,
-          uniformBindings: ['view', 'proj', 'light', 'material'],
+          uniformBindings: ['view', 'proj', 'light', 'material']
         },
         {
           id: `${dt}_medium`,
@@ -444,7 +444,7 @@ export class SearchCacheNeuralEngine {
           expectedPerformance: 60,
           targetHardware: 'integrated',
           shaderCode: `// medium shader ${dt}`,
-          uniformBindings: ['view', 'proj', 'light'],
+          uniformBindings: ['view', 'proj', 'light']
         },
         {
           id: `${dt}_low`,
@@ -454,7 +454,7 @@ export class SearchCacheNeuralEngine {
           expectedPerformance: 60,
           targetHardware: 'integrated',
           shaderCode: `// low shader ${dt}`,
-          uniformBindings: ['view', 'proj'],
+          uniformBindings: ['view', 'proj']
         },);
         {
           id: `${dt}_potato`,
@@ -464,8 +464,8 @@ export class SearchCacheNeuralEngine {
           expectedPerformance: 60,
           targetHardware: 'mobile',
           shaderCode: `// potato shader ${dt}`,
-          uniformBindings: ['view'],
-        },
+          uniformBindings: ['view']
+        }
       ]);
     });
   }
@@ -479,7 +479,7 @@ export class SearchCacheNeuralEngine {
       textureSize: Math.max(64, 512 / Math.pow(2, level)),
       shaderQuality: this.levelToQuality(level),
       estimatedLoad: (8 - level) / 8,
-      chrRomPattern: `base_lod_${level}`,
+      chrRomPattern: `base_lod_${level}`
     });
     docTypes.forEach((dt) => this.lodLevels.set(dt, [...base]);
   } // --- Feature Extraction ---
@@ -619,7 +619,7 @@ export class SearchCacheNeuralEngine {
         t: Date.now(),
         q: (result as { recommendedShaderVariant?: any; optimalLODLevel?: any; confidenceScore?: any }).recommendedShaderVariant.quality,
         lod: (result as { recommendedShaderVariant?: any; optimalLODLevel?: any; confidenceScore?: any }).optimalLODLevel.level,
-        conf: (result as { recommendedShaderVariant?: any; optimalLODLevel?: any; confidenceScore?: any }).confidenceScore,
+        conf: (result as { recommendedShaderVariant?: any; optimalLODLevel?: any; confidenceScore?: any }).confidenceScore
       }),
       3600
     );
@@ -631,7 +631,7 @@ export class SearchCacheNeuralEngine {
       high: '#8a2be2',
       medium: '#00BFFF',
       low: '#32cd32',
-      potato: '#f0e68c',
+      potato: '#f0e68c'
     }[shader.quality];
     return `<svg width="220" height="54" xmlns="http://www.w3.org/2000/svg"><rect width="220" height="54" rx="6" fill="#1f2937"/><text x="10" y="20" fill="#fff" font-size="12">Shader: <tspan fill="${color}" font-weight="bold">${shader.quality}</tspan></text><text x="10" y="38" fill="#fff" font-size="12">LOD ${lod.level} • Cache ${strategy}</text></svg>`;
   }
@@ -668,5 +668,5 @@ export class SearchCacheNeuralEngine {
 export const searchCacheNeuralEngine = new SearchCacheNeuralEngine({
   maxCacheSize: 10000,
   learningRate: 0.01,
-  adaptationThreshold: 0.1,
+  adaptationThreshold: 0.1
 });

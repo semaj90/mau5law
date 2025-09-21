@@ -2,7 +2,7 @@
 const getNeo4jService = () => ({
   async getHealthStatus() {
     return { connected: false, mode: 'stub' };
-  },
+  }
 });
 import type { RequestHandler } from './$types.js';
 
@@ -13,10 +13,10 @@ export const GET: RequestHandler = async () => {
 
     return new Response(JSON.stringify({
         neo4j: health,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }),
       {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   } catch (error) {
@@ -25,12 +25,12 @@ export const GET: RequestHandler = async () => {
           connected: false,
           mode: 'error',
           error: error instanceof Error ? error.message: 'Unknown error',
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   }

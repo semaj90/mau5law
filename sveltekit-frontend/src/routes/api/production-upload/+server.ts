@@ -50,7 +50,7 @@ export interface UploadResult {
   embeddings?: number[];
   ocrResult?: unknown;
   error?: string;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           words: (data as any)?.words?.length || 0,
           lines: (data as any)?.lines?.length || 0,
           paragraphs: (data as any)?.paragraphs?.length || 0,
-          text: (data as any)?.text || '',
+          text: (data as any)?.text || ''
         };
         await worker.terminate();
         logger.info('OCR processing completed successfully');
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return json({
         success: false,
         error: 'Text extraction failed',
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       }, { status: 500 });
     }
 
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         caseId,
         createdBy: userId,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       }).returning();
 
       savedDocument = newDocument;
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         confidenceScore: String(legalAnalysis?.sentiment?.confidence || 0.5),
         createdBy: userId || 'system',
         createdAt: new Date(),
-        processingStatus: 'completed',
+        processingStatus: 'completed'
       }).returning();
 
       savedEvidence = newEvidence;
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return json({
         success: false,
         error: 'Database insertion failed',
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       }, { status: 500 });
     }
 
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             title: title || file.name,
             type: 'legal_document',
             date: new Date().toISOString(),
-            confidence_score: legalAnalysis?.sentiment?.confidence || 0.5,
+            confidence_score: legalAnalysis?.sentiment?.confidence || 0.5
           },
           tags: [],
           timestamp: Date.now(),
@@ -253,12 +253,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
             monetary: legalAnalysis?.entities?.monetary || [],
             clauses: legalAnalysis?.entities?.clauses || [],
             jurisdictions: legalAnalysis?.entities?.jurisdictions || [],
-            caseTypes: legalAnalysis?.entities?.caseTypes || [],
+            caseTypes: legalAnalysis?.entities?.caseTypes || []
           },
           riskScore: Math.round((legalAnalysis?.sentiment?.confidence || 0.5) * 100),
           confidenceScore: legalAnalysis?.sentiment?.confidence || 0.5,
           legalPrecedent: false,
-          processingStatus: 'completed',
+          processingStatus: 'completed'
         });
         logger.info('Embeddings stored in Qdrant successfully');
       }
@@ -275,7 +275,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         `Provide a concise professional summary of this legal document:\n\n${extractedText.substring(0, 2000)}\n\nSummary:`,
         {
           temperature: 0.3,
-          maxTokens: 500,
+          maxTokens: 500
         }
       );
       aiSummary = summaryResponse || 'Summary generation failed';
@@ -301,7 +301,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         extractedText: extractedText.substring(0, 500) + '...', // Truncated for response
         confidence: legalAnalysis?.sentiment?.confidence || 0.5,
         entities: legalAnalysis?.entities?.length || 0,
-        concepts: legalAnalysis?.concepts?.length || 0,
+        concepts: legalAnalysis?.concepts?.length || 0
       },
       embeddings: embeddings.length > 0 ? embeddings.slice(0, 10) : [], // First 10 dims for response
       ocrResult,
@@ -347,14 +347,14 @@ export const GET: RequestHandler = async () => {
         database: { status: 'connected', tables: dbTest ? 'accessible' : 'error' },
         qdrant: qdrantHealth,
         ollama: ollamaHealth,
-        legalBert: legalBertHealth,
+        legalBert: legalBertHealth
       },
       capabilities: {
         pdfProcessing: true,
         ocrProcessing: true,
         vectorSearch: true,
         aiAnalysis: true,
-        legalEntityExtraction: true,
+        legalEntityExtraction: true
       }
     };
 
@@ -366,7 +366,7 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'unhealthy',
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

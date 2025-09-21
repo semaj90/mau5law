@@ -21,7 +21,7 @@ async function runGpuTile(embedding: number[]) {
     const result = await __gpuAccelerator.calculateVectorSimilarityWithSIMDTiling(v, v, {
       enableTiling: true,
       tileSize: 256,
-      useEvidenceAnalysis: false,
+      useEvidenceAnalysis: false
     });
     
     const t1 = performance.now();

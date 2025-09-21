@@ -32,7 +32,7 @@ class HiddenMarkovModel {
     stateCount: number;
     observationCount: number;
     transitionSmoothness: number;
-    emissionSmoothness: number;,
+    emissionSmoothness: number;
   }) {
     this.stateCount = options.stateCount;
     this.observationCount = options.observationCount;
@@ -177,7 +177,7 @@ export interface QLoRATopologyState {
   contextEmbedding: Float32Array; // 1536-dim semantic context
   temporalFeatures: TemporalFeatures;
   currentConfig: QLoRAConfig;
-  performanceHistory: PerformanceSnapshot[];,
+  performanceHistory: PerformanceSnapshot[];
 }
 
 export interface UserBehaviorPattern {
@@ -186,7 +186,7 @@ export interface UserBehaviorPattern {
   documentFlow: string[];       // Sequence of document types accessed
   interactionVelocity: number;  // Documents per minute
   qualityExpectation: number;   // 0-1 (user's quality requirements)
-  timeConstraints: number;      // 0-1 (how urgent is the task),
+  timeConstraints: number;      // 0-1 (how urgent is the task)
 }
 
 export interface TemporalFeatures {
@@ -194,7 +194,7 @@ export interface TemporalFeatures {
   dayOfWeek: number;           // 0-6
   seasonality: number;         // 0-1 (cyclic patterns)
   workloadPressure: number;    // 0-1 (current system load)
-  recentPerformance: number;   // 0-1 (recent model performance),
+  recentPerformance: number;   // 0-1 (recent model performance)
 }
 
 export interface QLoRAConfig {
@@ -205,7 +205,7 @@ export interface QLoRAConfig {
   learningRate: number;        // Training learning rate
   batchSize: number;           // Training batch size
   epochs: number;              // Training epochs
-  quantizationBits: 4 | 8;    // Quantization precision,
+  quantizationBits: 4 | 8;    // Quantization precision
 }
 
 export interface PerformanceSnapshot {
@@ -215,7 +215,7 @@ export interface PerformanceSnapshot {
   throughput: number;          // Tokens per second
   memoryUsage: number;         // MB used
   userSatisfaction: number;    // User feedback score (0-1)
-  convergenceSpeed: number;    // Epochs to convergence,
+  convergenceSpeed: number;    // Epochs to convergence
 }
 
 export interface TopologyPrediction {
@@ -224,11 +224,11 @@ export interface TopologyPrediction {
   expectedPerformance: {
     accuracy: number;
     throughput: number;
-    convergenceEpochs: number;,
+    convergenceEpochs: number;
   };
   adaptationReason: string;
   alternativeConfigs: QLoRAConfig[]; // Backup options
-  cacheStrategy: 'precompute' | 'lazy' | 'hybrid';,
+  cacheStrategy: 'precompute' | 'lazy' | 'hybrid';
 }
 
 /**
@@ -254,7 +254,7 @@ export class QLoRATopologyPredictor {
       stateCount: 25,           // 25 hidden states for topology patterns
       observationCount: 64,     // 64 observable features
       transitionSmoothness: 0.1,
-      emissionSmoothness: 0.05,
+      emissionSmoothness: 0.05
     });
 
     // Enhanced SOM for pattern clustering
@@ -283,7 +283,7 @@ export class QLoRATopologyPredictor {
     performanceRequirements: {
       maxLatency: number;      // Milliseconds
       minAccuracy: number;     // 0-1
-      memoryBudget: number;    // MB,
+      memoryBudget: number;    // MB
     }
   ): Promise<TopologyPrediction> {
     console.log(`🔮 TOPOLOGY PREDICTION: Analyzing ${document.id}`);
@@ -377,7 +377,7 @@ export class QLoRATopologyPredictor {
     documentTypeAccuracy: Map<string, number>;
     modelConfidence: number;
     totalPredictions: number;
-    cacheHitRate: number;,
+    cacheHitRate: number;
   } {
     const stats = this.som.getStats();
 
@@ -386,7 +386,7 @@ export class QLoRATopologyPredictor {
       documentTypeAccuracy: this.calculateDocumentTypeAccuracy(),
       modelConfidence: this.calculateModelConfidence(),
       totalPredictions: stats.totalQueries || 0,
-      cacheHitRate: stats.cacheHitRate || 0.0,
+      cacheHitRate: stats.cacheHitRate || 0.0
     };
   }
 
@@ -396,7 +396,7 @@ export class QLoRATopologyPredictor {
   async preloadTopologyPredictions(anticipatedDocuments: {
       type: string;
       complexity: number;
-      urgency: number;,
+      urgency: number;
     }[];
   ): Promise<void> {
     console.log(`🚀 TOPOLOGY PRELOAD: Preparing ${anticipatedDocuments.length} predictions`);
@@ -409,7 +409,7 @@ export class QLoRATopologyPredictor {
         documentFlow: [doc.type],
         interactionVelocity: 0.5 + (doc.urgency * 0.5),
         qualityExpectation: Math.min(0.9, 0.7 + doc.complexity * 0.2),
-        timeConstraints: doc.urgency,
+        timeConstraints: doc.urgency
       };
 
       // Create synthetic document;
@@ -432,7 +432,7 @@ export class QLoRATopologyPredictor {
         {
           maxLatency: 1000,
           minAccuracy: 0.85,
-          memoryBudget: 512,
+          memoryBudget: 512
         }
       );
 
@@ -480,7 +480,7 @@ export class QLoRATopologyPredictor {
       dayOfWeek: new Date().getDay(),
       seasonality: Math.sin(2 * Math.PI * Date.now() / (365 * 24 * 60 * 60 * 1000)), // Yearly cycle
       workloadPressure: await this.calculateWorkloadPressure(),
-      recentPerformance: this.predictionAccuracy,
+      recentPerformance: this.predictionAccuracy
     };
 
     // Get current baseline config for this document type
@@ -494,7 +494,7 @@ export class QLoRATopologyPredictor {
       contextEmbedding,
       temporalFeatures,
       currentConfig: baselineConfig,
-      performanceHistory: this.getPerformanceHistory(document.type),
+      performanceHistory: this.getPerformanceHistory(document.type)
     };
 
     // Store state in history
@@ -535,7 +535,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
     return {
       semanticInsights: this.extractInsights(llmResponse),
       configRecommendations: this.extractConfigRecommendations(llmResponse),
-      confidenceBoost: 0.1 // LLM adds 10% confidence,
+      confidenceBoost: 0.1 // LLM adds 10% confidence
     };
   }
 
@@ -554,7 +554,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
       learningRate: gpuOptimization.optimalLearningRate || baseConfig.learningRate,
       batchSize: gpuOptimization.optimalBatchSize || baseConfig.batchSize,
       epochs: gpuOptimization.optimalEpochs || baseConfig.epochs,
-      quantizationBits: gpuOptimization.optimalQuantization || baseConfig.quantizationBits,
+      quantizationBits: gpuOptimization.optimalQuantization || baseConfig.quantizationBits
     };
 
     // Calculate prediction confidence
@@ -596,7 +596,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
       {
         confidence: prediction.confidence,
         documentType: state.documentType,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       }
     );
 
@@ -806,7 +806,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
       documentType,
       config,
       performance,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     const cacheKey = `rag_${documentType}_${performance.accuracy.toFixed(2)}`;
@@ -894,17 +894,17 @@ class WebGPUTopologyAccelerator {
   private async runOptimizationShader(inputData: Float32Array): Promise<Float32Array> {
     const inputBuffer = this.device!.createBuffer({
       size: inputData.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const outputBuffer = this.device!.createBuffer({
       size: 32 * Float32Array.BYTES_PER_ELEMENT, // 8 outputs * 4 bytes
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const readBuffer = this.device!.createBuffer({
       size: outputBuffer.size,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
     // Upload input data
@@ -978,7 +978,7 @@ class WebGPUTopologyAccelerator {
       optimalEpochs: Math.floor(3 * complexity + 2),
       optimalQuantization: complexity > 0.7 ? 8 : 4 as 4 | 8,
       confidence: 0.8 + complexity * 0.15,
-      reason: 'CPU-optimized configuration based on document complexity',
+      reason: 'CPU-optimized configuration based on document complexity'
     };
   }
 
@@ -1016,7 +1016,7 @@ class WebGPUTopologyAccelerator {
       optimalEpochs: Math.max(2, Math.min(10, Math.floor(result[4]))),
       optimalQuantization: result[5] > 6 ? 8 : 4 as 4 | 8,
       confidence: Math.max(0.5, Math.min(1.0, result[7] + (llmEnhancement.confidenceBoost || 0))),
-      reason: 'WebGPU-accelerated optimization with HMM and SOM integration',
+      reason: 'WebGPU-accelerated optimization with HMM and SOM integration'
     };
   }
 }
@@ -1044,7 +1044,7 @@ class LocalLLMConnector {
         headers: { 'Content-Type': 'application/json' },
         body: fastStringify({
           model: 'nomic-embed-text',
-          prompt: text,
+          prompt: text
         })
       });
 
@@ -1068,7 +1068,7 @@ class LocalLLMConnector {
           options: {
             temperature: 0.1,
             top_p: 0.9,
-            max_tokens: 200,
+            max_tokens: 200
           }
         })
       });
@@ -1107,7 +1107,7 @@ class LocalLLMConnector {
 export const qloraTopologyPredictor = new QLoRATopologyPredictor({
   maxHistoryLength: 100,
   learningRate: 0.03,
-  cacheSize: 15000,
+  cacheSize: 15000
 });
 
 console.log('🎯 QLoRA Topology Predictor with enhanced HMM loaded - ready for topology prediction');

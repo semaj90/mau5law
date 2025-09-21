@@ -23,7 +23,7 @@ export interface PrefetchContext {
     hits: number;
     misses: number;
     avgPredictionTime: number;
-    lastPredictionAccuracy: number;,
+    lastPredictionAccuracy: number;
   };
   
   // Current session data
@@ -32,7 +32,7 @@ export interface PrefetchContext {
   viewportData: {
     width: number;
     height: number;
-    scrollY: number;,
+    scrollY: number;
   };
 }
 
@@ -51,7 +51,7 @@ type PrefetchEvent =
 export const prefetchMachine = createMachine({
   types: Record<string, any> as {
     context: PrefetchContext;
-    events: PrefetchEvent;,
+    events: PrefetchEvent;
   },
   id: "prefetch",
   initial: "initializing",
@@ -66,14 +66,14 @@ export const prefetchMachine = createMachine({
       hits: 0,
       misses: 0,
       avgPredictionTime: 0,
-      lastPredictionAccuracy: 0,
+      lastPredictionAccuracy: 0
     },
     docId: null,
     currentRoute: '',
     viewportData: {
       width: (typeof window !== 'undefined' && window?.innerWidth) || 1920,
       height: (typeof window !== 'undefined' && window?.innerHeight) || 1080,
-      scrollY: 0,
+      scrollY: 0
     }
   },
   states: {
@@ -83,10 +83,10 @@ export const prefetchMachine = createMachine({
         onDone: {
           target: 'idle',
           actions: assign({
-            modelWeights: ({ event }) => event.type === 'xstate.done.actor.initializePredictionModel' ? (event as any).output?.weights: null,
+            modelWeights: ({ event }) => event.type === 'xstate.done.actor.initializePredictionModel' ? (event as any).output?.weights: null
           })
         },
-        onError: 'idle',
+        onError: 'idle'
       }
     },
     
@@ -132,7 +132,7 @@ export const prefetchMachine = createMachine({
           actions: assign({
             metrics: ({ context }) => ({
               ...context.metrics,
-              hits: context.metrics.hits + 1,
+              hits: context.metrics.hits + 1
             })
           })
         },
@@ -141,12 +141,12 @@ export const prefetchMachine = createMachine({
           actions: assign({
             metrics: ({ context }) => ({
               ...context.metrics,
-              misses: context.metrics.misses + 1,
+              misses: context.metrics.misses + 1
             })
           })
         },
         
-        TRAIN_MODEL: 'training',
+        TRAIN_MODEL: 'training'
       }
     },
     
@@ -165,13 +165,13 @@ export const prefetchMachine = createMachine({
             sendParent(({ event }) => ({
               type: 'INTENT_PREDICTED',
               intent: (event as any).output?.intent,
-              confidence: (event as any).output?.confidence,
+              confidence: (event as any).output?.confidence
             })
           ]
         },
         onError: {
           target: 'idle',
-          actions: 'logPredictionError',
+          actions: 'logPredictionError'
         }
       }
     },
@@ -181,11 +181,11 @@ export const prefetchMachine = createMachine({
         src: 'prefetchResources',
         onDone: {
           target: 'idle',
-          actions: 'logPrefetchSuccess',
+          actions: 'logPrefetchSuccess'
         },
         onError: {
           target: 'idle', 
-          actions: 'logPrefetchError',
+          actions: 'logPrefetchError'
         }
       }
     },
@@ -200,7 +200,7 @@ export const prefetchMachine = createMachine({
               modelWeights: ({ event }) => (event as any).output?.weights || null,
               metrics: ({ context, event }) => ({
                 ...context.metrics,
-                lastPredictionAccuracy: (event as any).output?.accuracy || 0,
+                lastPredictionAccuracy: (event as any).output?.accuracy || 0
               })
             }),
             'logTrainingComplete'
@@ -208,7 +208,7 @@ export const prefetchMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: 'logTrainingError',
+          actions: 'logTrainingError'
         }
       }
     }
@@ -227,7 +227,7 @@ export const prefetchMachine = createMachine({
         const predictionTime = (event as any).output?.processingTime || 0;
         return {
           ...context.metrics,
-          avgPredictionTime: (context.metrics.avgPredictionTime + predictionTime) / 2,
+          avgPredictionTime: (context.metrics.avgPredictionTime + predictionTime) / 2
         };
       }
     }),
@@ -321,7 +321,7 @@ export const prefetchMachine = createMachine({
           case 'route':
             return prefetchRoute((item as { type?: any; resource?: any }).resource);
           default:
-            return Promise.resolve();,
+            return Promise.resolve();
         }
       });
       
@@ -397,7 +397,7 @@ async function prefetchEmbedding(resource: string): Promise<any> {
     body: JSON.stringify({
       docId: `prefetch-${resource}`,
       chunks: [`Prefetch request for ${resource}`],
-      model: 'nomic-embed-text',
+      model: 'nomic-embed-text'
     })
   });
   

@@ -35,14 +35,14 @@ try {
 // --- Agent Orchestration Types ---;
 export interface AgentResult {
   agent: string;
-  result: any;,
+  result: any;
 }
 
 export interface MCPContextAnalysis {
   query: string;
   context: any;
   suggestions: string[];
-  confidence: number;,
+  confidence: number;
 }
 
 export interface AutoMCPSuggestion {
@@ -50,7 +50,7 @@ export interface AutoMCPSuggestion {
   original: string;
   suggested: string;
   reasoning: string;
-  confidence: number;,
+  confidence: number;
 }
 
 export interface OrchestrationOptions {
@@ -81,18 +81,18 @@ const agentRegistry: Record<
             "legal_research",
             prompt,
             context || {}
-          ),
+          )
         };
       } else {
         return {
           agent: "autogen",
-          result: `AutoGen agent (mock): Analyzed "${prompt}" - would provide legal research workflow results`,
+          result: `AutoGen agent (mock): Analyzed "${prompt}" - would provide legal research workflow results`
         };
       }
     } catch (error: any) {
       return {
         agent: "autogen",
-        result: `AutoGen agent error: ${error}`,
+        result: `AutoGen agent error: ${error}`
       };
     }
   },
@@ -104,8 +104,8 @@ const agentRegistry: Record<
           result: await legalTeam.analyzeCase({
             query: prompt,
             analysisType: "legal_research",
-            priority: "medium",
-          }),
+            priority: "medium"
+          })
         };
       } else {
         throw new Error(`CrewAI legal team not available for prompt: ${prompt}`);
@@ -113,7 +113,7 @@ const agentRegistry: Record<
     } catch (error: any) {
       return {
         agent: "crewai",
-        result: `CrewAI agent error: ${error}`,
+        result: `CrewAI agent error: ${error}`
       };
     }
   },
@@ -132,15 +132,15 @@ const agentRegistry: Record<
         body: JSON.stringify({
           model: "gemma3-legal:latest",
           prompt: `As a coding assistant, analyze and provide suggestions for: ${prompt}`,
-          stream: false,
-        }),
+          stream: false
+        })
       });
 
       if ((response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).json();
         return {
           agent: "copilot",
-          result: (data as { response?: any; result?: any; results?: any }).response || `Copilot analysis for: ${prompt}`,
+          result: (data as { response?: any; result?: any; results?: any }).response || `Copilot analysis for: ${prompt}`
         };
       } else {
         throw new Error("Ollama request failed");
@@ -148,7 +148,7 @@ const agentRegistry: Record<
     } catch (error: any) {
       return {
         agent: "copilot",
-        result: `Copilot agent (mock): Code analysis for "${prompt}" - would provide coding suggestions and optimizations`,
+        result: `Copilot agent (mock): Code analysis for "${prompt}" - would provide coding suggestions and optimizations`
       };
     }
   },
@@ -166,15 +166,15 @@ const agentRegistry: Record<
         body: JSON.stringify({
           model: "gemma3-legal:latest",
           prompt: `As a legal AI assistant, provide detailed analysis for: ${prompt}`,
-          stream: false,
-        }),
+          stream: false
+        })
       });
 
       if ((response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).json();
         return {
           agent: "claude",
-          result: (data as { response?: any; result?: any; results?: any }).response || `Claude legal analysis for: ${prompt}`,
+          result: (data as { response?: any; result?: any; results?: any }).response || `Claude legal analysis for: ${prompt}`
         };
       } else {
         throw new Error("Legal model request failed");
@@ -182,7 +182,7 @@ const agentRegistry: Record<
     } catch (error: any) {
       return {
         agent: "claude",
-        result: `Claude agent (mock): Legal analysis for "${prompt}" - would provide detailed legal insights and case analysis`,
+        result: `Claude agent (mock): Legal analysis for "${prompt}" - would provide detailed legal insights and case analysis`
       };
     }
   },
@@ -200,15 +200,15 @@ const agentRegistry: Record<
         body: JSON.stringify({
           action: "query",
           query: prompt,
-          context: context,
-        }),
+          context: context
+        })
       });
 
       if ((response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).ok) {
         const data = await (response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).json();
         return {
           agent: "rag",
-          result: (data as { response?: any; result?: any; results?: any }).result || `RAG analysis for: ${prompt}`,
+          result: (data as { response?: any; result?: any; results?: any }).result || `RAG analysis for: ${prompt}`
         };
       } else {
         throw new Error("RAG request failed");
@@ -216,10 +216,10 @@ const agentRegistry: Record<
     } catch (error: any) {
       return {
         agent: "rag",
-        result: `RAG agent (mock): Enhanced retrieval for "${prompt}" - would provide context-aware document analysis`,
+        result: `RAG agent (mock): Enhanced retrieval for "${prompt}" - would provide context-aware document analysis`
       };
     }
-  },
+  }
 };
 
 /**
@@ -373,7 +373,7 @@ export function generateMCPPrompt(request: MCPToolRequest): string {
     documentType,
     title,
     documentId,
-    integrationType,
+    integrationType
   } = request;
 
   switch (tool) {
@@ -437,7 +437,7 @@ export function generateMCPPrompt(request: MCPToolRequest): string {
  */;
 export function validateMCPRequest(request: MCPToolRequest): {
   valid: boolean;
-  errors: string[];,
+  errors: string[];
 } {
   const errors: string[] = [];
 
@@ -522,7 +522,7 @@ export function validateMCPRequest(request: MCPToolRequest): {
           "api-integration",
           "component-integration",
           "search-ui",
-          "document-upload",
+          "document-upload"
         ].includes(request.integrationType);
       ) {
         errors.push(
@@ -534,7 +534,7 @@ export function validateMCPRequest(request: MCPToolRequest): {
 
   return {
     valid: errors.length === 0,
-    errors,
+    errors
   };
 }
 
@@ -546,82 +546,82 @@ export const commonMCPQueries = {
   analyzeSvelteKit: (): MCPToolRequest => ({
     tool: "analyze-stack",
     component: "sveltekit",
-    context: "legal-ai",
+    context: "legal-ai"
   }),
 
   analyzeDrizzle: (): MCPToolRequest => ({
     tool: "analyze-stack",
     component: "drizzle",
-    context: "legal-ai",
+    context: "legal-ai"
   }),
 
   analyzeUnoCSS: (): MCPToolRequest => ({
     tool: "analyze-stack",
     component: "unocss",
-    context: "performance",
+    context: "performance"
   }),
 
   // Best Practices;
   performanceBestPractices: (): MCPToolRequest => ({
     tool: "generate-best-practices",
-    area: "performance",
+    area: "performance"
   }),
 
   securityBestPractices: (): MCPToolRequest => ({
     tool: "generate-best-practices",
-    area: "security",
+    area: "security"
   }),
 
   uiUxBestPractices: (): MCPToolRequest => ({
     tool: "generate-best-practices",
-    area: "ui-ux",
+    area: "ui-ux"
   }),
 
   unslothBestPractices: (): MCPToolRequest => ({
-    tool: "unsloth-best-practices",
+    tool: "unsloth-best-practices"
   }),
 
   // Integration Suggestions;
   aiChatIntegration: (): MCPToolRequest => ({
     tool: "suggest-integration",
     feature: "AI chat component",
-    requirements: "legal compliance and audit trails",
+    requirements: "legal compliance and audit trails"
   }),
 
   documentUploadIntegration: (): MCPToolRequest => ({
     tool: "suggest-integration",
     feature: "document upload system",
-    requirements: "security and virus scanning",
+    requirements: "security and virus scanning"
   }),
 
   gamingUIIntegration: (): MCPToolRequest => ({
     tool: "suggest-integration",
     feature: "gaming-style UI components",
-    requirements: "professional legal interface",
+    requirements: "professional legal interface"
   }),
 
   // Library Documentation;
   svelteKitRouting: (): MCPToolRequest => ({
     tool: "get-library-docs",
     library: "sveltekit",
-    topic: "routing",
+    topic: "routing"
   }),
 
   bitsUIDialog: (): MCPToolRequest => ({
     tool: "get-library-docs",
     library: "bits-ui",
-    topic: "dialog",
+    topic: "dialog"
   }),
 
   drizzleSchema: (): MCPToolRequest => ({
     tool: "get-library-docs",
     library: "drizzle",
-    topic: "schema",
+    topic: "schema"
   }),
 
   // RAG System Queries;
   ragStats: (): MCPToolRequest => ({
-    tool: "rag-get-stats",
+    tool: "rag-get-stats"
   }),
 
   ragLegalQuery: (query: string, caseId?: string): MCPToolRequest => ({
@@ -630,7 +630,7 @@ export const commonMCPQueries = {
     caseId,
     maxResults: 10,
     confidenceThreshold: 0.7,
-    documentTypes: ["contract", "case_law", "statute", "evidence"],
+    documentTypes: ["contract", "case_law", "statute", "evidence"]
   }),
 
   ragContractAnalysis: (query: string): MCPToolRequest => ({
@@ -638,7 +638,7 @@ export const commonMCPQueries = {
     query,
     maxResults: 5,
     confidenceThreshold: 0.8,
-    documentTypes: ["contract", "agreement"],
+    documentTypes: ["contract", "agreement"]
   }),
 
   ragCaseLawSearch: (query: string): MCPToolRequest => ({
@@ -646,7 +646,7 @@ export const commonMCPQueries = {
     query,
     maxResults: 15,
     confidenceThreshold: 0.75,
-    documentTypes: ["case_law", "judgment", "precedent"],
+    documentTypes: ["case_law", "judgment", "precedent"]
   }),
 
   ragEvidenceSearch: (query: string, caseId: string): MCPToolRequest => ({
@@ -655,28 +655,28 @@ export const commonMCPQueries = {
     caseId,
     maxResults: 20,
     confidenceThreshold: 0.6,
-    documentTypes: ["evidence", "exhibit", "testimony"],
+    documentTypes: ["evidence", "exhibit", "testimony"]
   }),
 
   ragApiIntegration: (): MCPToolRequest => ({
     tool: "rag-integration-guide",
-    integrationType: "api-integration",
+    integrationType: "api-integration"
   }),
 
   ragComponentIntegration: (): MCPToolRequest => ({
     tool: "rag-integration-guide",
-    integrationType: "component-integration",
+    integrationType: "component-integration"
   }),
 
   ragSearchUI: (): MCPToolRequest => ({
     tool: "rag-integration-guide",
-    integrationType: "search-ui",
+    integrationType: "search-ui"
   }),
 
   ragDocumentUpload: (): MCPToolRequest => ({
     tool: "rag-integration-guide",
-    integrationType: "document-upload",
-  }),
+    integrationType: "document-upload"
+  })
 };
 
 /**
@@ -705,7 +705,7 @@ export function formatMCPResponse(response: any): string {
 export const mcpResources = {
   stackOverview: "context7://stack-overview",
   integrationGuide: "context7://integration-guide",
-  performanceTips: "context7://performance-tips",
+  performanceTips: "context7://performance-tips"
 } as const;
 
 /**
@@ -734,7 +734,7 @@ export async function semanticSearch(query: string): Promise<any> {
     const response = await fetch("http://localhost:3000/api/semantic-search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query })
     });
 
     if (!(response as { ok?: any; json?: any; content?: any; status?: any; statusText?: any }).ok) {
@@ -758,8 +758,8 @@ export async function mcpMemoryReadGraph(): Promise<any> {
       {
         node: "legal-workflow-memory",
         relations: ["case-evidence", "document-analysis"],
-        value: "Context7 memory graph integration ready",
-      },
+        value: "Context7 memory graph integration ready"
+      }
     ];
   } catch (error: any) {
     return [{ error: String(error) }];
@@ -780,9 +780,9 @@ export async function mcpCodebaseAnalyze(prompt: string): Promise<any> {
         recommendations: [
           "Use SvelteKit file-based routing for legal document workflows",
           "Implement API routes for AI agent integration",
-          "Consider server-side rendering for legal compliance",
-        ],
-      },
+          "Consider server-side rendering for legal compliance"
+        ]
+      }
     ];
   } catch (error: any) {
     return [{ error: String(error) }];
@@ -814,7 +814,7 @@ const autogenServiceFallback = {
   async runAgents(prompt: string, context?: unknown) {
     // TODO: Replace with real Autogen API call
     return { agent: "autogen", result: `AutoGen agent result for: ${prompt}` };
-  },
+  }
 };
 
 // Production: CrewAI agent orchestration (stub, replace with real API integration if available);
@@ -822,7 +822,7 @@ const crewAIService = {
   async analyzeLegalCaseWithCrew(prompt: string) {
     // TODO: Replace with real CrewAI API call
     return { agent: "crewai", result: `CrewAI agent result for: ${prompt}` };
-  },
+  }
 };
 
 // Production: Read error log from MCP and append to MCP_TODO_LOG.md
@@ -870,7 +870,7 @@ export async function mcpSuggestBestPractices(results: any): Promise<any> {
     // TODO: Implement MCP SDK integration when available
     return [
       "Best practice: Always use Drizzle ORM",
-      "Best practice: Use SSR for sensitive data",
+      "Best practice: Use SSR for sensitive data"
     ];
   } catch (error: any) {
     return [{ error: String(error) }];

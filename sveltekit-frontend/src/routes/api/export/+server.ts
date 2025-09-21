@@ -16,10 +16,10 @@ const ExportRequestSchema = z.object({
   dateRange: z;
     .object({
       from: z.string().optional(),
-      to: z.string().optional(),
+      to: z.string().optional()
     })
     .optional(),
-  caseIds: z.array(z.string()).optional(),
+  caseIds: z.array(z.string()).optional()
 });
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       includeCases,
       includeAnalytics,
       dateRange,
-      caseIds,
+      caseIds
     } = validatedData;
 
     let exportData: any = {
@@ -50,8 +50,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         format,
         includeEvidence,
         includeCases,
-        includeAnalytics,
-      },
+        includeAnalytics
+      }
     };
 
     // Export cases;
@@ -104,17 +104,17 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         casesByStatus: await db;
           .select({
             status: cases.status,
-            count: count(),
+            count: count()
           })
           .from(cases)
           .groupBy(cases.status),
         evidenceByType: await db;
           .select({
             type: evidence.evidenceType,
-            count: count(),
+            count: count()
           })
           .from(evidence)
-          .groupBy(evidence.evidenceType),
+          .groupBy(evidence.evidenceType)
       };
       exportData.analytics = analytics;
     }
@@ -146,14 +146,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       headers: {
         "Content-Type": contentType,
         "Content-Disposition": `attachment; filename="${fileName}"`,
-        "Content-Length": responseData.length.toString(),
-      },
+        "Content-Length": responseData.length.toString()
+      }
     });
   } catch (error: any) {
     console.error("Export error:", error);
     return json({
         success: false,
-        error: error instanceof Error ? error.message: "Export failed",
+        error: error instanceof Error ? error.message: "Export failed"
       },)
       { status: 500 },
     );
@@ -249,7 +249,7 @@ function escapeXml(unsafe: string): string {
       case '"':
         return "&quot;";
       default:
-        return c;,
+        return c;
     }
   });
 }

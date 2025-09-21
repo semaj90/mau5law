@@ -20,11 +20,11 @@ export interface ImageCacheEntry {
   compressionData?: {
     original: EncodedGraphPattern;
     som: SOMDecomposition;
-    compressed: ArrayBuffer;,
+    compressed: ArrayBuffer;
   };
   gpuTexture?: GPUTextureMatrix;
   cacheStats: CacheStats;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface ImageMetadata {
@@ -39,7 +39,7 @@ export interface ImageMetadata {
     citationDensity: number;
     jurisdictionalSpread: number;
     temporalRange: number;
-    complexityIndex: number;,
+    complexityIndex: number;
   };
 }
 
@@ -49,7 +49,7 @@ export interface CacheStats {
   size: number;
   lastAccessed: number;
   generationCost: number;
-  compressionEfficiency: number;,
+  compressionEfficiency: number;
 }
 
 export interface CacheDimensions {
@@ -57,7 +57,7 @@ export interface CacheDimensions {
   spatial: 'local' | 'regional' | 'global';
   semantic: 'simple' | 'complex' | 'expert';
   visual: 'thumbnail' | 'standard' | 'hires';
-  algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';,
+  algorithm: 'dfs' | 'bfs' | 'som' | 'autoencoder' | 'hybrid';
 }
 
 export interface CacheLayer {
@@ -66,7 +66,7 @@ export interface CacheLayer {
   ttl: number;
   priority: number;
   evictionPolicy: 'lru' | 'lfu' | 'rl' | 'som_guided';
-  compression: boolean;,
+  compression: boolean;
 }
 
 export interface MultiDimensionalQuery {
@@ -74,7 +74,7 @@ export interface MultiDimensionalQuery {
   graphSignature: string;
   requiredQuality: number;
   acceptableAge: number;
-  preferredAlgorithms: string[];,
+  preferredAlgorithms: string[];
 }
 
 export class MultiDimensionalImageCache {
@@ -96,7 +96,7 @@ export class MultiDimensionalImageCache {
       ttl: 30000, // 30 seconds
       priority: 10,
       evictionPolicy: 'lru',
-      compression: false,
+      compression: false
     },
     {
       name: 'memory_compressed',
@@ -104,7 +104,7 @@ export class MultiDimensionalImageCache {
       ttl: 300000, // 5 minutes
       priority: 8,
       evictionPolicy: 'som_guided',
-      compression: true,
+      compression: true
     },
     {
       name: 'lokijs_persistent',
@@ -112,7 +112,7 @@ export class MultiDimensionalImageCache {
       ttl: 1800000, // 30 minutes
       priority: 6,
       evictionPolicy: 'rl',
-      compression: true,
+      compression: true
     },
     {
       name: 'redis_shared',
@@ -120,7 +120,7 @@ export class MultiDimensionalImageCache {
       ttl: 7200000, // 2 hours
       priority: 4,
       evictionPolicy: 'lfu',
-      compression: true,
+      compression: true
     },
     {
       name: 'disk_archive',
@@ -128,8 +128,8 @@ export class MultiDimensionalImageCache {
       ttl: 86400000, // 24 hours
       priority: 2,
       evictionPolicy: 'lru',
-      compression: true,
-    },
+      compression: true
+    }
   ];
 
   // Performance metrics;
@@ -142,7 +142,7 @@ export class MultiDimensionalImageCache {
     retrieval_time: 0,
     gpu_operations: 0,
     som_operations: 0,
-    autoencoder_operations: 0,
+    autoencoder_operations: 0
   };
 
   constructor() {
@@ -171,7 +171,7 @@ export class MultiDimensionalImageCache {
         batchSize: 16,
         epochs: 50,
         enableGPU: true,
-        compressionTarget: 0.1,
+        compressionTarget: 0.1
       });
       await this.autoencoder.initialize();
 
@@ -238,8 +238,8 @@ export class MultiDimensionalImageCache {
           citationDensity: this.calculateCitationDensity(graphData),
           jurisdictionalSpread: this.calculateJurisdictionalSpread(graphData),
           temporalRange: this.calculateTemporalRange(graphData),
-          complexityIndex: this.calculateComplexityIndex(graphData),
-        },
+          complexityIndex: this.calculateComplexityIndex(graphData)
+        }
       };
 
       // Compress image data using auto-encoder and SOM
@@ -251,7 +251,7 @@ export class MultiDimensionalImageCache {
       if (dimensions.visual === 'hires' || dimensions.algorithm === 'som') {
         gpuTexture = await this.createGPUTexture(cacheKey, imageData, {
           width: parseInt(imageData.split(',')[0].split(';')[1]?.split('=')[1]) || 800,
-          height: 600,
+          height: 600
         });
       }
 
@@ -262,7 +262,7 @@ export class MultiDimensionalImageCache {
         imageData,
         dimensions: {
           width: parseInt(imageData.split(',')[0].split(';')[1]?.split('=')[1]) || 800,
-          height: 600,
+          height: 600
         },
         metadata,
         compressionData,
@@ -273,9 +273,9 @@ export class MultiDimensionalImageCache {
           size: imageData.length,
           lastAccessed: Date.now(),
           generationCost: processingMetrics.processingTime || 100,
-          compressionEfficiency: compressionData.compressionRatio,
+          compressionEfficiency: compressionData.compressionRatio
         },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
 
       // Store in appropriate cache layers
@@ -309,7 +309,7 @@ export class MultiDimensionalImageCache {
     try {
       // Generate primary cache key;
       const primaryKey = this.generateMultiDimensionalKey(query.dimensions as CacheDimensions, {
-        signature: query.graphSignature,
+        signature: query.graphSignature
       });
 
       // Try exact match first
@@ -377,8 +377,8 @@ export class MultiDimensionalImageCache {
           density: graphData.metadata?.density || 0,
           averageDegree: graphData.metadata?.averageDegree || 0,
           legalDomain: graphData.metadata?.legalDomain || 'general',
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       };
 
       // Encode with auto-encoder
@@ -401,8 +401,8 @@ export class MultiDimensionalImageCache {
         metadata: {
           imageData,
           originalSize: imageData.length,
-          vectorEmbedding: original.encodedFeatures,
-        },
+          vectorEmbedding: original.encodedFeatures
+        }
       };
 
       const compressed = await nesGPUBridge.createFlatBufferFromDocument(mockDocument);
@@ -412,7 +412,7 @@ export class MultiDimensionalImageCache {
         original,
         som,
         compressed,
-        compressionRatio,
+        compressionRatio
       };
     } catch (error) {
       console.error('Failed to compress image data:', error);
@@ -421,7 +421,7 @@ export class MultiDimensionalImageCache {
         original: Record<string, any> as EncodedGraphPattern,
         som: Record<string, any> as SOMDecomposition,
         compressed: new ArrayBuffer(imageData.length),
-        compressionRatio: 1.0,
+        compressionRatio: 1.0
       };
     }
   }
@@ -662,8 +662,8 @@ export class MultiDimensionalImageCache {
             citationDensity: 0,
             jurisdictionalSpread: 0,
             temporalRange: 0,
-            complexityIndex: 0,
-          },
+            complexityIndex: 0
+          }
         },
         cacheStats: {
           hitCount: 0,
@@ -671,9 +671,9 @@ export class MultiDimensionalImageCache {
           size: metadata.imageData.length,
           lastAccessed: Date.now(),
           generationCost: 100,
-          compressionEfficiency: data.byteLength / metadata.imageData.length,
+          compressionEfficiency: data.byteLength / metadata.imageData.length
         },
-        timestamp: document?.lastAccessed || Date.now(),
+        timestamp: document?.lastAccessed || Date.now()
       };
 
       return entry;
@@ -691,7 +691,7 @@ export class MultiDimensionalImageCache {
       dimensions.semantic || 'simple',
       dimensions.visual || 'standard',
       dimensions.algorithm || 'dfs',
-      graphData.signature || this.generateGraphSignature(graphData),
+      graphData.signature || this.generateGraphSignature(graphData)
     ];
 
     return `md_${parts.join('_')}`.replace(/[^a-zA-Z0-9_]/g, '_').substring(0, 64);
@@ -787,8 +787,8 @@ export class MultiDimensionalImageCache {
         name: layer.name,
         capacity: layer.capacity,
         priority: layer.priority,
-        ttl: layer.ttl,
-      })),
+        ttl: layer.ttl
+      }))
     };
   }
 

@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       activeStreams.set(streamId, {
         query,
         startTime,
-        status: 'initializing',
+        status: 'initializing'
       });
 
       // Start async processing
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         success: true,
         streamId,
         message: 'Streaming synthesis initiated',
-        streamUrl: `/api/ai-synthesizer/stream/${streamId}`,
+        streamUrl: `/api/ai-synthesizer/stream/${streamId}`
       });
     }
 
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const result = await aiOrchestrator.process(query, {
       ...options,
       context,
-      requestId,
+      requestId
     });
 
     // Track metrics
@@ -79,9 +79,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         metadata: {
           ...result.metadata,
           requestId,
-          processingTime,
-        },
-      },
+          processingTime
+        }
+      }
     });
   } catch (err: any) {
     // Log error
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         success: false,
         error: err.message || 'An error occurred during synthesis',
         requestId,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: err.status || 500 }
     );
@@ -127,18 +127,18 @@ export const GET: RequestHandler = async ({ url }) => {
         ollama: health.services.ollama || 'unknown',
         enhancedRAG: health.services.enhancedRAG || 'unknown',
         gpuOrchestrator: health.services.gpuOrchestrator || 'unknown',
-        context7: health.services.context7 || 'unknown',
+        context7: health.services.context7 || 'unknown'
       },
       models: {
         primary: 'gemma3-legal:latest',
         embeddings: 'nomic-embed-text',
-        fallback: 'gemma2:2b',
+        fallback: 'gemma2:2b'
       },
       cache: {
         hits: cacheStats.hits,
         misses: cacheStats.misses,
         hitRate: cacheStats.hitRate,
-        memoryUsage: cacheStats.memoryUsage,
+        memoryUsage: cacheStats.memoryUsage
       },
       monitoring: {
         totalRequests:
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async ({ url }) => {
         totalErrors: (metrics.find((m: any) => m?.name === 'api_errors_total') as any)?.value ?? 0,
         avgResponseTime:
           (metrics.find((m: any) => m?.name === 'api_request_duration_avg') as any)?.value ?? 0,
-        uptime: process.uptime(),
+        uptime: process.uptime()
       },
       features: {
         neo4j: health.services.neo4j === 'healthy',
@@ -160,8 +160,8 @@ export const GET: RequestHandler = async ({ url }) => {
         autosolve: true,
         streaming: true,
         caching: true,
-        monitoring: true,
-      },
+        monitoring: true
+      }
     };
 
     // Determine overall health
@@ -184,7 +184,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         status: 'error',
         error: err.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );
@@ -201,16 +201,16 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
       const testQueries = [;
         {
           query: 'What are the elements of negligence in tort law?',
-          expectedSources: ['neo4j', 'pgvector', 'context7'],
+          expectedSources: ['neo4j', 'pgvector', 'context7']
         },
         {
           query: 'Explain the difference between void and voidable contracts',
-          expectedSources: ['rag', 'ollama'],
+          expectedSources: ['rag', 'ollama']
         },
         {
           query: 'What is the statute of limitations for breach of contract?',
-          expectedSources: ['neo4j', 'context7', 'ollama'],
-        },
+          expectedSources: ['neo4j', 'context7', 'ollama']
+        }
       ];
 
       const results = [];
@@ -221,7 +221,7 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
         try {
           const result = await aiOrchestrator.process(test.query, {
             test: true,
-            timeout: 10000,
+            timeout: 10000
           });
 
           results.push({
@@ -230,14 +230,14 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
             processingTime: Date.now() - startTime,
             confidence: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).confidence,
             sourcesUsed: ((result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).metadata as any)?.sourcesUsed || [],
-            expectedSources: test.expectedSources,
+            expectedSources: test.expectedSources
           });
         } catch (err: any) {
           results.push({
             query: test.query,
             success: false,
             error: err.message,
-            processingTime: Date.now() - startTime,
+            processingTime: Date.now() - startTime
           });
         }
       }
@@ -254,7 +254,7 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
         avgProcessingTime: Math.round(avgProcessingTime),
         results,
         services: await aiOrchestrator.health(),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (err: any) {
       logger.error('[API] Test error:', err);
@@ -263,7 +263,7 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
         {
           success: false,
           error: err.message,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 500 }
       );
@@ -293,7 +293,7 @@ async function processStreamingRequest(
     const generator = aiOrchestrator.processStream(query, {
       ...options,
       context,
-      streamId,
+      streamId
     });
 
     // Collect stream updates

@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
       return new Response(JSON.stringify({
         sessionId,
         messages,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }), {
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
           const message = `data: ${JSON.stringify({
             type: 'connection-established',
             sessionId,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\n\n`;
           
           controller.enqueue(encoder.encode(message);

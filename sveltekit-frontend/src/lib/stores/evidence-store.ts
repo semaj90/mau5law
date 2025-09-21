@@ -45,7 +45,7 @@ export interface Evidence {
     relevance: number;
     admissibility: "admissible" | "questionable" | "inadmissible";
     reasoning: string;
-    suggestedTags: string[];,
+    suggestedTags: string[];
   };
 }
 
@@ -92,7 +92,7 @@ export const evidenceGrid: Writable<EvidenceGridState> = writable({
   sortOrder: "desc",
   selectedItems: new Set(),
   viewMode: "grid",
-  isLoading: false,
+  isLoading: false
 });
 
 // Upload Modal Store;
@@ -100,7 +100,7 @@ export const uploadModal: Writable<UploadModalState> = writable({
   isOpen: false,
   files: [],
   step: "select",
-  isProcessing: false,
+  isProcessing: false
 });
 
 // === FUSE.JS SEARCH ===
@@ -115,11 +115,11 @@ const fuseOptions = {
     { name: "tags", weight: 0.2 },
     { name: "evidenceType", weight: 0.1 },
     { name: "fileName", weight: 0.1 },
-    { name: "aiSummary", weight: 0.1 },
+    { name: "aiSummary", weight: 0.1 }
   ],
   threshold: 0.3,
   includeScore: true,
-  includeMatches: true,
+  includeMatches: true
 };
 
 // Derived store for filtered evidence;
@@ -179,7 +179,7 @@ export const evidenceActions = {
       items,
       filteredItems: items,
       isLoading: false,
-      error: undefined,
+      error: undefined
     });
   },
 
@@ -188,7 +188,7 @@ export const evidenceActions = {
     evidenceGrid.update((state) => ({
       ...state,
       isLoading: true,
-      error: undefined,
+      error: undefined
     });
 
     try {
@@ -204,14 +204,14 @@ export const evidenceActions = {
         ...state,
         items,
         filteredItems: items,
-        isLoading: false,
+        isLoading: false
       });
     } catch (error: any) {
       evidenceGrid.update((state) => ({
         ...state,
         isLoading: false,
         error:
-          error instanceof Error ? error.message: "Failed to load evidence",
+          error instanceof Error ? error.message: "Failed to load evidence"
       });
     }
   },
@@ -256,7 +256,7 @@ export const evidenceActions = {
   async deleteEvidence(evidenceId: string) {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: "DELETE",
+        method: "DELETE"
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -267,13 +267,13 @@ export const evidenceActions = {
         items: state.items.filter((item) => (item as { id?: any }).id !== evidenceId),
         selectedItems: new Set(
           [...state.selectedItems].filter((id) => id !== evidenceId)
-        ),
+        )
       });
     } catch (error: any) {
       console.error("Delete evidence error:", error);
       throw error;
     }
-  },
+  }
 };
 
 export const uploadActions = {
@@ -286,7 +286,7 @@ export const uploadActions = {
       files: [],
       step: "select",
       isProcessing: false,
-      error: undefined,
+      error: undefined
     });
   },
 
@@ -298,7 +298,7 @@ export const uploadActions = {
       files: [],
       step: "select",
       isProcessing: false,
-      error: undefined,
+      error: undefined
     });
   },
 
@@ -309,13 +309,13 @@ export const uploadActions = {
       id: crypto.randomUUID(),
       file,
       progress: 0,
-      status: "pending",
+      status: "pending"
     });
 
     uploadModal.update((state) => ({
       ...state,
       files: [...state.files, ...uploadFiles],
-      step: "preview",
+      step: "preview"
     });
 
     // Generate previews for supported file types;
@@ -329,7 +329,7 @@ export const uploadActions = {
               f.id === uploadFile.id
                 ? { ...f, preview: e.target?.result as string }
                 : f
-            ),
+            )
           });
         };
         reader.readAsDataURL(uploadFile.file);
@@ -341,7 +341,7 @@ export const uploadActions = {
   removeFile(fileId: string) {
     uploadModal.update((state) => ({
       ...state,
-      files: state.files.filter((f) => f.id !== fileId),
+      files: state.files.filter((f) => f.id !== fileId)
     });
   },
 
@@ -355,7 +355,7 @@ export const uploadActions = {
     uploadModal.update((state) => ({
       ...state,
       isProcessing: true,
-      error: undefined,
+      error: undefined
     });
 
     try {
@@ -371,7 +371,7 @@ export const uploadActions = {
           ...modalState,
           files: modalState.files.map((f) =>
             f.id === uploadFile.id ? { ...f, status: "uploading" as const } : f
-          ),
+          )
         });
 
         const formData = new FormData();
@@ -388,7 +388,7 @@ export const uploadActions = {
               ...modalState,
               files: modalState.files.map((f) =>
                 f.id === uploadFile.id ? { ...f, progress } : f
-              ),
+              )
             });
           }
         });
@@ -407,10 +407,10 @@ export const uploadActions = {
                         status: "completed" as const,
                         progress: 100,
                         aiAnalysis: (result as { item?: any; aiAnalysis?: any; extractedText?: any }).aiAnalysis,
-                        extractedText: (result as { item?: any; aiAnalysis?: any; extractedText?: any }).extractedText,
+                        extractedText: (result as { item?: any; aiAnalysis?: any; extractedText?: any }).extractedText
                       }
                     : f
-                ),
+                )
               });
               resolve();
             } else {
@@ -421,7 +421,7 @@ export const uploadActions = {
                   f.id === uploadFile.id
                     ? { ...f, status: "error" as const, error }
                     : f
-                ),
+                )
               });
               reject(new Error(error);
             }
@@ -435,7 +435,7 @@ export const uploadActions = {
                 f.id === uploadFile.id
                   ? { ...f, status: "error" as const, error }
                   : f
-              ),
+              )
             });
             reject(new Error(error);
           };
@@ -450,16 +450,16 @@ export const uploadActions = {
 
       uploadModal.update((modalState) => ({
         ...modalState,
-        isProcessing: false,
+        isProcessing: false
       });
     } catch (error: any) {
       uploadModal.update((state) => ({
         ...state,
         isProcessing: false,
-        error: error instanceof Error ? error.message: "Upload failed",
+        error: error instanceof Error ? error.message: "Upload failed"
       });
     }
-  },
+  }
 };
 
 export default evidenceActions;

@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         maxConcurrentStreams: 8,
         maxBatchSize: 1000,
         avgLatency: 45, // milliseconds
-        throughput: 850 // documents per second,
+        throughput: 850 // documents per second
       }
     };
   } catch (err) {
@@ -56,14 +56,14 @@ export const actions: Actions = {
         operationType,
         inputData,
         batchSize,
-        userId: locals.user?.id,
+        userId: locals.user?.id
       });
 
       return json({
         success: true,
         sessionId,
         stream: streamingResult,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (err) {
       console.error('Failed to start CUDA stream:', err);
@@ -109,7 +109,7 @@ export const actions: Actions = {
       const processingResult = await processCudaDocument(documentData, {
         processingType,
         useGpu,
-        userId: locals.user?.id,
+        userId: locals.user?.id
       });
 
       const processingTime = Date.now() - startTime;
@@ -119,7 +119,7 @@ export const actions: Actions = {
         result: processingResult,
         processingTime,
         gpuAccelerated: useGpu,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (err) {
       console.error('CUDA document processing failed:', err);
@@ -160,7 +160,7 @@ async function getStreamingStats() {
     errorRate: 0.02, // percentage
     uptime: 23847, // seconds
     queueSize: 12,
-    memoryUsage: 8.4 // GB,
+    memoryUsage: 8.4 // GB
   };
 }
 
@@ -174,7 +174,7 @@ async function getRecentProcessingResults() {
       gpuAccelerated: true,
       throughput: 667, // docs/sec
       timestamp: new Date(Date.now() - 300000).toISOString(), // 5 min ago
-      status: "completed",
+      status: "completed"
     },
     {
       sessionId: "stream_1234567891", 
@@ -184,7 +184,7 @@ async function getRecentProcessingResults() {
       gpuAccelerated: true,
       throughput: 471,
       timestamp: new Date(Date.now() - 900000).toISOString(), // 15 min ago
-      status: "completed",
+      status: "completed"
     },
     {
       sessionId: "stream_1234567892",
@@ -194,7 +194,7 @@ async function getRecentProcessingResults() {
       gpuAccelerated: false, // Fallback to CPU
       throughput: 225,
       timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
-      status: "completed",
+      status: "completed"
     }
   ];
 }
@@ -206,7 +206,7 @@ async function initializeCudaStream(sessionId: string, options: any) {
     status: 'initialized',
     processingQueue: [],
     estimatedThroughput: 750,
-    queuePosition: 1,
+    queuePosition: 1
   };
 }
 
@@ -234,7 +234,7 @@ async function processCudaDocument(documentData: string, options: any) {
     performance_metrics: {
       gpu_utilization: options.useGpu ? Math.random() * 80 + 10 : 0,
       memory_used: Math.random() * 2 + 0.5, // GB
-      tokens_per_second: options.useGpu ? Math.random() * 2000 + 1000 : Math.random() * 500 + 200,
+      tokens_per_second: options.useGpu ? Math.random() * 2000 + 1000 : Math.random() * 500 + 200
     }
   };
 }
@@ -246,13 +246,13 @@ function getDefaultGPUData() {
       gpuName: "No GPU Detected",
       cudaVersion: "N/A",
       totalMemory: "0GB",
-      availableMemory: "0GB",
+      availableMemory: "0GB"
     },
     sessionStats: {
       activeSessions: 0,
       totalSessionsToday: 0,
       avgProcessingTime: 0,
-      throughputCurrent: 0,
+      throughputCurrent: 0
     },
     recentProcessing: [],
     supportedOperations: [],
@@ -260,7 +260,7 @@ function getDefaultGPUData() {
       maxConcurrentStreams: 0,
       maxBatchSize: 0,
       avgLatency: 0,
-      throughput: 0,
+      throughput: 0
     }
   };
 }

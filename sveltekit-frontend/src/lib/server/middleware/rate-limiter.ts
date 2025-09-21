@@ -9,7 +9,7 @@ interface RateLimitConfig {
 
 interface RateLimitEntry {
   count: number;
-  resetTime: number;,
+  resetTime: number;
 }
 
 class RateLimiter {
@@ -58,7 +58,7 @@ class RateLimiter {
       return {
         allowed: true,
         resetTime,
-        remaining: this.config.maxRequests - 1,
+        remaining: this.config.maxRequests - 1
       };
     }
 
@@ -67,7 +67,7 @@ class RateLimiter {
       return {
         allowed: false,
         resetTime: entry.resetTime,
-        remaining: 0,
+        remaining: 0
       };
     }
 
@@ -76,7 +76,7 @@ class RateLimiter {
     return {
       allowed: true,
       resetTime: entry.resetTime,
-      remaining: this.config.maxRequests - entry.count,
+      remaining: this.config.maxRequests - entry.count
     };
   }
 }

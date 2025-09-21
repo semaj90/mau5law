@@ -7,7 +7,7 @@ export interface EmbeddingAdapterOptions {
 export interface EmbeddingResult {
   vector: Float32Array;
   model: string;
-  input: string;,
+  input: string;
 }
 
 export class EmbeddingAdapter {

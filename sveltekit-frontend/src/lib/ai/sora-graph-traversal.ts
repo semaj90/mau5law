@@ -22,7 +22,7 @@ type TensorSlice = {
     size: number;
     compressed: boolean;
     accessCount: number;
-    lastAccessed: number;,
+    lastAccessed: number;
   };
 };
 type UserContext = { 
@@ -64,7 +64,7 @@ export interface SoraTraversalPath {
   edges: SoraGraphEdge[];
   totalScore: number;
   pathLength: number;
-  semanticCoherence: number;,
+  semanticCoherence: number;
 }
 
 export interface SoraTraversalOptions {
@@ -78,7 +78,7 @@ export interface SoraTraversalOptions {
     enabled: boolean;
     explorationRate: number;
     learningRate: number;
-    discountFactor: number;,
+    discountFactor: number;
   };
 }
 
@@ -135,7 +135,7 @@ export class SoraGraphTraversal {
         enabled: true,
         explorationRate: 0.1,
         learningRate: 0.01,
-        discountFactor: 0.95,
+        discountFactor: 0.95
       },
       ...options
     };
@@ -156,7 +156,7 @@ export class SoraGraphTraversal {
       visitedNodes: new Set(),
       pathHistory: [startNodeId],
       cumulativeReward: 0,
-      actionValues: new Map(),
+      actionValues: new Map()
     };
 
     let paths: SoraTraversalPath[] = [];
@@ -246,7 +246,7 @@ export class SoraGraphTraversal {
       edges: [],
       totalScore: 0,
       pathLength: 0,
-      semanticCoherence: 0,
+      semanticCoherence: 0
     };
 
     let currentNode = startNode;
@@ -475,7 +475,7 @@ export class SoraGraphTraversal {
             edges: current.edges,
             totalScore: current.score,
             pathLength: current.path.length,
-            semanticCoherence: 0,
+            semanticCoherence: 0
           },
           queryEmbedding
         );
@@ -485,7 +485,7 @@ export class SoraGraphTraversal {
           edges: current.edges,
           totalScore: current.score,
           pathLength: current.path.length,
-          semanticCoherence: pathCoherence,
+          semanticCoherence: pathCoherence
         });
       }
 
@@ -502,7 +502,7 @@ export class SoraGraphTraversal {
               node: neighbor.target,
               path: [...current.path, neighbor.target],
               edges: [...current.edges, neighbor.edge],
-              score: pathScore,
+              score: pathScore
             });
           }
         }
@@ -590,7 +590,7 @@ export class SoraGraphTraversal {
           coordinates: node.properties.coordinates ? {
             x: node.properties.coordinates.x,
             y: node.properties.coordinates.y,
-            z: node.properties.coordinates.z || 0,
+            z: node.properties.coordinates.z || 0
           } : undefined
         };
       } finally {
@@ -639,7 +639,7 @@ export class SoraGraphTraversal {
             target: target.id,
             type: this.mapRelationshipType(relType),
             weight: relationship.properties.weight || 1,
-            properties: relationship.properties,
+            properties: relationship.properties
           };
 
           neighbors.push({ target, edge });
@@ -811,7 +811,7 @@ export class SoraGraphTraversal {
       edges: [],
       totalScore: this.calculateNodeScore(startNode, queryEmbedding),
       pathLength: 1,
-      semanticCoherence: 1.0,
+      semanticCoherence: 1.0
     }];
   }
 
@@ -832,7 +832,7 @@ export class SoraGraphTraversal {
       edges: [],
       totalScore: this.calculateNodeScore(startNode, queryEmbedding),
       pathLength: 1,
-      semanticCoherence: 1.0,
+      semanticCoherence: 1.0
     }];
   }
 
@@ -861,11 +861,11 @@ export class SoraGraphTraversal {
           pathLength: path.pathLength,
           semanticCoherence: path.semanticCoherence,
           nodeTypes: path.nodes.map(n => n.type),
-          totalScore: path.totalScore,
+          totalScore: path.totalScore
         },
         originalScore: path.totalScore,
         rerankScore: 0,
-        confidence: path.semanticCoherence,
+        confidence: path.semanticCoherence
       });
 
       // Infer user context from query and config;
@@ -875,7 +875,7 @@ export class SoraGraphTraversal {
         userRole: 'user', // Could be enhanced with actual user context
         workflowState: 'draft',
         recentActions: [],
-        currentCase: undefined,
+        currentCase: undefined
       };
 
       // Apply reranking
@@ -946,7 +946,7 @@ export class SoraGraphTraversal {
               size: pathEmbedding.byteLength,
               compressed: false,
               accessCount: 1,
-              lastAccessed: Date.now(),
+              lastAccessed: Date.now()
             }
           };
 
@@ -970,7 +970,7 @@ export class SoraGraphTraversal {
             size: queryEmbedding.byteLength,
             compressed: false,
             accessCount: 1,
-            lastAccessed: Date.now(),
+            lastAccessed: Date.now()
           }
         };
 

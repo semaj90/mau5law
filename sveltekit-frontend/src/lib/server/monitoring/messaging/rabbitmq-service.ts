@@ -12,7 +12,7 @@ const RABBITMQ_CONFIG = {
   username: import.meta.env.RABBITMQ_USERNAME || 'guest',
   password: import.meta.env.RABBITMQ_PASSWORD || 'guest',
   vhost: import.meta.env.RABBITMQ_VHOST || '/',
-  heartbeat: 60,
+  heartbeat: 60
 };
 
 // Queue configurations;
@@ -24,7 +24,7 @@ const QUEUES = {
   EMAIL_NOTIFICATIONS: 'email.notifications',
   SEARCH_INDEXING: 'search.indexing',
   CASE_UPDATES: 'case.updates',
-  EVIDENCE_ANALYSIS: 'evidence.analysis',
+  EVIDENCE_ANALYSIS: 'evidence.analysis'
 } as const;
 }
 

@@ -45,13 +45,13 @@ export interface ComprehensiveAgentResponse {
     output: string;
     score: number;
     agent: string;
-    metadata: any;,
+    metadata: any;
   };
   allResults: Array<any>;
   multicoreAnalysis?: {
     recommendations: string[];
     errorPatterns?: unknown;
-    performanceMetrics: any;,
+    performanceMetrics: any;
   };
   systemStatus: {
     agentsExecuted: number;
@@ -71,7 +71,7 @@ export class ComprehensiveAgentOrchestrator {
       enableLegalBert: true,
       enableGoLlama: true,
       maxConcurrentTasks: 25,
-      enableGPU: true,
+      enableGPU: true
     });
   }
 
@@ -170,7 +170,7 @@ export class ComprehensiveAgentOrchestrator {
       multicoreAnalysis: multicoreAnalysis ? {
         recommendations: multicoreAnalysis.recommendations,
         errorPatterns: multicoreAnalysis.errorPatterns,
-        performanceMetrics: multicoreAnalysis.performanceMetrics,
+        performanceMetrics: multicoreAnalysis.performanceMetrics
       } : undefined,
       systemStatus: {
         agentsExecuted: agentsToUse.length,
@@ -207,7 +207,7 @@ export class ComprehensiveAgentOrchestrator {
       context: `Legal AI analysis request: ${request.prompt}`,
       errorType: request.options?.analysisType,
       codeSnippet: (request.context as any)?.codeSnippet,
-      priority: request.options?.priority || 'medium',
+      priority: request.options?.priority || 'medium'
     };
 
     const recommendationTask = await this.multicoreService.generateRecommendations(
@@ -248,7 +248,7 @@ export class ComprehensiveAgentOrchestrator {
       ],
       errorPatterns,
       performanceMetrics,
-      tasksCompleted: results.filter(item => item.length),
+      tasksCompleted: results.filter(item => item.length)
     };
   }
 
@@ -270,7 +270,7 @@ export class ComprehensiveAgentOrchestrator {
         ...enhancedContext,
         multicoreAnalysis: {
           recommendations: multicoreAnalysis.recommendations,
-          performanceMetrics: multicoreAnalysis.performanceMetrics,
+          performanceMetrics: multicoreAnalysis.performanceMetrics
         }
       };
     }
@@ -280,7 +280,7 @@ export class ComprehensiveAgentOrchestrator {
         const claudeRequest: ClaudeAgentRequest = {
           prompt: request.prompt,
           context: enhancedContext,
-          options: baseOptions,
+          options: baseOptions
         };
         return await this.simulateClaudeAgent(claudeRequest);
 
@@ -290,7 +290,7 @@ export class ComprehensiveAgentOrchestrator {
           context: enhancedContext,
           options: {
             ...baseOptions,
-            crewType: this.mapAnalysisTypeToCrewType(request.options?.analysisType),
+            crewType: this.mapAnalysisTypeToCrewType(request.options?.analysisType)
           }
         };
         return await this.simulateCrewAIAgent(crewRequest);
@@ -303,7 +303,7 @@ export class ComprehensiveAgentOrchestrator {
             ...baseOptions,
             analysisType: request.options?.analysisType,
             caseId: request.options?.caseId,
-            evidenceIds: request.options?.evidenceIds,
+            evidenceIds: request.options?.evidenceIds
           }
         };
         return await this.simulateAutoGenAgent(autogenRequest);
@@ -322,7 +322,7 @@ export class ComprehensiveAgentOrchestrator {
       case 'document_processing':
         return 'document_review';
       default:
-        return 'legal_research';,
+        return 'legal_research';
     }
   }
 
@@ -363,7 +363,7 @@ export class ComprehensiveAgentOrchestrator {
       context: 'TypeScript/Svelte error analysis',
       errorType: 'compilation_errors',
       codeSnippet: JSON.stringify(errorData).substring(0, 1000),
-      priority: 'high',
+      priority: 'high'
     });
 
     const result = await this.multicoreService.waitForTask(errorAnalysisTask.id, 30000);
@@ -387,7 +387,7 @@ export class ComprehensiveAgentOrchestrator {
     return {
       analysis: null,
       recommendations: ['Error analysis failed - check multicore service'],
-      fixSuggestions: ['Restart Context7 multicore service'],
+      fixSuggestions: ['Restart Context7 multicore service']
     };
   }
 
@@ -402,7 +402,7 @@ export class ComprehensiveAgentOrchestrator {
         success: true,
         agent: 'claude-simulated',
         reasoning: 'Simulated Claude reasoning based on prompt analysis',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     };
   }
@@ -418,7 +418,7 @@ export class ComprehensiveAgentOrchestrator {
         success: true,
         agent: 'crewai-simulated',
         crewType: 'legal-analysis',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     };
   }
@@ -434,7 +434,7 @@ export class ComprehensiveAgentOrchestrator {
         success: true,
         agent: 'autogen-simulated',
         analysisType: 'automated-review',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     };
   }
@@ -469,7 +469,7 @@ export async function analyzeAndFixErrors(errorData: any): Promise<any> {
         priority: 'high',
         useMulticoreAnalysis: true,
         errorAnalysis: true,
-        autoFix: true,
+        autoFix: true
       }
     }),
     comprehensiveOrchestrator.analyzeErrors(errorData)

@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
   return new Response(audio, {
     headers: {
       "Content-Type": "audio/wav",
-      "Cache-Control": "no-store",
-    },
+      "Cache-Control": "no-store"
+    }
   });
 };

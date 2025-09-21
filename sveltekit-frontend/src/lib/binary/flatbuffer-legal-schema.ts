@@ -101,7 +101,7 @@ export interface LegalDocumentBinaryLayout {
   padding6: ArrayBuffer;      // 12 bytes padding
   
   // Reserved for Future Use (128 bytes)
-  reserved: ArrayBuffer;      // 128 bytes for schema evolution,
+  reserved: ArrayBuffer;      // 128 bytes for schema evolution
 }
 
 // Binary serialization utilities;
@@ -298,7 +298,7 @@ export class LegalDocumentBinarySerializer {
         rankingMatrix,
         version,
         flags,
-        timestamp: Number(timestamp),
+        timestamp: Number(timestamp)
       }
     };
   }

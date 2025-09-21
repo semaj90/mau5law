@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       includeCanvas: data.includeCanvas || false,
       watermark: data.watermark || "",
       orientation: data.orientation || "portrait",
-      margins: data.margins || { top: 1, right: 1, bottom: 1, left: 1 },
+      margins: data.margins || { top: 1, right: 1, bottom: 1, left: 1 }
     };
 
     // For now, return a success response indicating PDF would be generated
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       success: true,
       message: "PDF export initiated successfully",
       metadata: pdfMetadata,
-      note: "This is a mock response. In production, actual PDF generation would occur here.",
+      note: "This is a mock response. In production, actual PDF generation would occur here."
     });
   } catch (error: any) {
     console.error("Error initiating PDF export:", error);

@@ -16,7 +16,7 @@ const sql = postgres({
   max: 20,
   idle_timeout: 30,
   connect_timeout: 10,
-  debug: dev,
+  debug: dev
 });
 }
 
@@ -71,7 +71,7 @@ export const threadSafePostgres: ThreadSafePostgres = {
   },
   healthCheck: async () => {
     return threadSafePostgres.health();
-  },
+  }
 };
 
 // Export for compatibility

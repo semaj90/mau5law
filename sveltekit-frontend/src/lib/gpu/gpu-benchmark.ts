@@ -22,7 +22,7 @@ export interface EmbeddingBenchmarkResultEntry {
   dimension: number;
   segments: number;
   backend: string;
-  statsUsed: boolean;      // whether GPU stats were applied (for gpu mode),
+  statsUsed: boolean;      // whether GPU stats were applied (for gpu mode)
 }
 
 export interface EmbeddingBenchmarkSummary {
@@ -30,7 +30,7 @@ export interface EmbeddingBenchmarkSummary {
   dimension: number;
   segments: number;
   entries: EmbeddingBenchmarkResultEntry[];
-  timestamp: number;,
+  timestamp: number;
 }
 
 function downloadText(filename: string, text: string) {
@@ -107,7 +107,7 @@ export async function runEmbeddingBenchmark(
       ? {
           jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
           totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-          usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
+          usedJSHeapSize: (performance as any).memory.usedJSHeapSize
         }
       : null;
     for (let i = 0; i < warmup + runs; i++) {
@@ -126,7 +126,7 @@ export async function runEmbeddingBenchmark(
       ? {
           jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
           totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-          usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
+          usedJSHeapSize: (performance as any).memory.usedJSHeapSize
         }
       : null;
 
@@ -145,7 +145,7 @@ export async function runEmbeddingBenchmark(
       dimension: dim,
       segments,
       backend,
-      statsUsed,
+      statsUsed
     };
     // Attach memory delta info as optional fields for telemetry consumers
     (entry as any).memoryBefore = beforeMem;
@@ -164,7 +164,7 @@ export async function runEmbeddingBenchmark(
     dimension: dim,
     segments,
     entries,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
   telemetryBus.publish({ type: 'gpu.benchmark.summary' as any, meta: summary as any });
   // Expose last summary for quick inspection

@@ -16,6 +16,6 @@ export interface CaseFilterOptions {
   assignedTo?: string;
   dateRange?: {
     start: Date;
-    end: Date;,
+    end: Date;
   };
 }

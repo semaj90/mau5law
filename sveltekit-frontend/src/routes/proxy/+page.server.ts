@@ -7,6 +7,6 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
     message: 'Proxy route ready',
     targetExample: '/api/status',
     now: new Date().toISOString(),
-    path: url.pathname,
+    path: url.pathname
   };
 };

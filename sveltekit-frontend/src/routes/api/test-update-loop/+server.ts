@@ -21,7 +21,7 @@ const testScenarios = {
       'This contract establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
     modifiedContent:
       'This agreement establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
-    expectedPriority: 'low',
+    expectedPriority: 'low'
   },
 
   major_revision: {
@@ -31,7 +31,7 @@ const testScenarios = {
       'This contract establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
     modifiedContent:
       'This employment agreement defines the relationship between the company and employee. The employee shall perform software development duties and maintain confidentiality of proprietary information.',
-    expectedPriority: 'high',
+    expectedPriority: 'high'
   },
 
   content_addition: {
@@ -40,7 +40,7 @@ const testScenarios = {
     originalContent: 'This contract establishes the terms and conditions for legal services.',
     modifiedContent:
       'This contract establishes the terms and conditions for legal services. Additional clauses include liability limitations, intellectual property provisions, and termination procedures. The contractor agrees to maintain professional standards.',
-    expectedPriority: 'medium',
+    expectedPriority: 'medium'
   },
 
   complete_rewrite: {
@@ -50,8 +50,8 @@ const testScenarios = {
       'This contract establishes the terms and conditions for legal services. The contractor shall provide legal representation and advice.',
     modifiedContent:
       'CONFIDENTIAL SETTLEMENT AGREEMENT - This settlement resolves all claims between parties regarding patent infringement allegations. Payment terms are $500,000 over 12 months with mutual non-disclosure requirements.',
-    expectedPriority: 'critical',
-  },
+    expectedPriority: 'critical'
+  }
 };
 
 // ============================================================================
@@ -73,7 +73,7 @@ class UpdateLoopTester {
         status: 'running',
         steps: Record<string, any>,
         performance: Record<string, any>,
-        errors: [],
+        errors: []
       };
 
       // Step 1: Setup test environment
@@ -123,11 +123,11 @@ class UpdateLoopTester {
           email: 'test@update-loop.com',
           name: 'Update Loop Test User',
           role: 'prosecutor',
-          passwordHash: 'test-hash',
+          passwordHash: 'test-hash'
         });
         .onConflictDoUpdate({
           target: users.email,
-          set: { name: 'Update Loop Test User (Updated)' },
+          set: { name: 'Update Loop Test User (Updated)' }
         })
         .returning();
 
@@ -139,7 +139,7 @@ class UpdateLoopTester {
           description: 'Test case for document update loop validation',
           status: 'active',
           priority: 'medium',
-          createdBy: testUser.id,
+          createdBy: testUser.id
         })
         .returning();
 
@@ -147,7 +147,7 @@ class UpdateLoopTester {
         status: 'success',
         userId: testUser.id,
         caseId: testCase.id,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       this.testResults.testUserId = testUser.id;
@@ -157,7 +157,7 @@ class UpdateLoopTester {
     } catch (err: any) {
       this.testResults.steps.setup = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Setup failed',
+        error: err instanceof Error ? err.message: 'Setup failed'
       };
       throw err;
     }
@@ -178,7 +178,7 @@ class UpdateLoopTester {
           filename: `${scenarioName}_test.txt`,
           filePath: `/test/${scenarioName}_test.txt`,
           extractedText: scenario.originalContent,
-          createdBy: this.testResults.testUserId,
+          createdBy: this.testResults.testUserId
         })
         .returning();
 
@@ -197,7 +197,7 @@ class UpdateLoopTester {
         query: testQuery,
         embedding: queryEmbedding,
         resultCount: 1,
-        clickedResults: [{ id: document.id, score: 0.8 }],
+        clickedResults: [{ id: document.id, score: 0.8 }]
       });
 
       // NOW TEST THE UPDATE LOOP
@@ -225,7 +225,7 @@ class UpdateLoopTester {
         updateResult: updateResult;
           ? {
               chunksUpdated: updateResult.chunksUpdated,
-              processingTime: updateResult.processingTime,
+              processingTime: updateResult.processingTime
             }
           : null,
         rerankingResult: rerankingResult;
@@ -233,17 +233,17 @@ class UpdateLoopTester {
               queriesAffected: rerankingResult.length,
               avgImprovement:
                 rerankingResult.reduce((sum, job) => sum + job.improvement, 0) /
-                rerankingResult.length,
+                rerankingResult.length
             }
           : null,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       console.log(`✅ Scenario ${scenario.name} completed`);
     } catch (err: any) {
       this.testResults.steps[scenarioName] = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Scenario failed',
+        error: err instanceof Error ? err.message: 'Scenario failed'
       };
 
       console.error(`❌ Scenario ${scenario.name} failed:`, err);
@@ -288,7 +288,7 @@ class UpdateLoopTester {
         const searchResults = await db;
           .select({
             documentId: documentVectors.documentId,
-            similarity: sql<number>`1 - (${documentVectors.embedding} <=> ${queryEmbedding})`,
+            similarity: sql<number>`1 - (${documentVectors.embedding} <=> ${queryEmbedding})`
           })
           .from(documentVectors)
           .where(sql`1 - (${documentVectors.embedding} <=> ${queryEmbedding}) > 0.3`)
@@ -304,7 +304,7 @@ class UpdateLoopTester {
           similarity: relevantResult?.similarity || 0,
           rank: relevantResult
             ? searchResults.findIndex((r: any) => r.documentId === documentId) + 1
-            : -1,
+            : -1
         });
       }
 
@@ -313,14 +313,14 @@ class UpdateLoopTester {
         searchTests,
         documentsFound: searchTests.filter((t: any) => t.found).length,
         avgSimilarity: searchTests.reduce((sum, t) => sum + t.similarity, 0) / searchTests.length,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       console.log('✅ Search impact testing completed');
     } catch (err: any) {
       this.testResults.steps.searchImpact = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Search testing failed',
+        error: err instanceof Error ? err.message: 'Search testing failed'
       };
     }
   }
@@ -356,13 +356,13 @@ class UpdateLoopTester {
             acc[step.detectedPriority] = (acc[step.detectedPriority] || 0) + 1;
             return acc;
           }, {}),
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       console.log('✅ Performance analysis completed');
     } catch (err: any) {
       this.testResults.performance = {
-        error: err instanceof Error ? err.message: 'Performance analysis failed',
+        error: err instanceof Error ? err.message: 'Performance analysis failed'
       };
     }
   }
@@ -384,14 +384,14 @@ class UpdateLoopTester {
       this.testResults.steps.cleanup = {
         status: 'success',
         documentsDeleted: this.testDocumentIds.length,
-        time: Date.now() - stepStart,
+        time: Date.now() - stepStart
       };
 
       console.log('✅ Cleanup completed');
     } catch (err: any) {
       this.testResults.steps.cleanup = {
         status: 'failed',
-        error: err instanceof Error ? err.message: 'Cleanup failed',
+        error: err instanceof Error ? err.message: 'Cleanup failed'
       };
     }
   }
@@ -411,7 +411,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const results = await tester.runFullTest(scenario);
       return json({
         success: true,
-        data: results,
+        data: results
       });
     }
 
@@ -421,7 +421,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Update loop test error:', err);
     return json({
       success: false,
-      error: err instanceof Error ? err.message: 'Test failed',
+      error: err instanceof Error ? err.message: 'Test failed'
     }, { status: 500 });
   }
 };
@@ -453,7 +453,7 @@ export const GET: RequestHandler = async ({ url }) => {
             key,
             name: scenario.name,
             description: scenario.description,
-            expectedPriority: scenario.expectedPriority,
+            expectedPriority: scenario.expectedPriority
           })
         }
       });
@@ -464,7 +464,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     return json({
       success: false,
-      error: err instanceof Error ? err.message: 'Request failed',
+      error: err instanceof Error ? err.message: 'Request failed'
     }, { status: 500 });
   }
 };

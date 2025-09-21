@@ -12,7 +12,7 @@ const createMockPool = () =>;
       Promise.reject(new Error("Database not available during build")),
     end: () => Promise.resolve(),
     query: () =>
-      Promise.reject(new Error("Database not available during build")),
+      Promise.reject(new Error("Database not available during build"))
   }) as any;
 
 // Database configuration
@@ -31,13 +31,13 @@ export const pool = isBuilding
       connectionString,
       max: 20,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
+      connectionTimeoutMillis: 2000
     });
 
 // Properly typed database instance;
 export const db: NodePgDatabase<typeof schema> = drizzle(pool, {
   schema,
-  logger: false,
+  logger: false
 });
 
 export { sql } from "drizzle-orm";

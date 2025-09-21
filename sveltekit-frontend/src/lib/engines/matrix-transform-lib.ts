@@ -9,7 +9,7 @@
 export interface MatrixTransformConfig {
   enableGPUAcceleration: boolean;
   optimizeForCSS: boolean;
-  cacheTransforms: boolean;,
+  cacheTransforms: boolean;
 }
 
 export interface Transform2D {
@@ -19,7 +19,7 @@ export interface Transform2D {
   scaleY: number;
   rotation: number; // radians
   skewX: number;
-  skewY: number;,
+  skewY: number;
 }
 
 export interface TransformResult {
@@ -86,7 +86,7 @@ export class MatrixTransformLib {
       scaleY,
       rotation,
       skewX,
-      skewY,
+      skewY
     };
     return this.computeTransforms(transform);
   }
@@ -186,7 +186,7 @@ export class MatrixTransformLib {
       scaleY: this.lerp(from.scaleY, to.scaleY, t),
       rotation: this.lerpAngle(from.rotation, to.rotation, t),
       skewX: this.lerp(from.skewX, to.skewX, t),
-      skewY: this.lerp(from.skewY, to.skewY, t),
+      skewY: this.lerp(from.skewY, to.skewY, t)
     };
 
     return this.computeTransforms(interpolated);
@@ -204,7 +204,7 @@ export class MatrixTransformLib {
         scaleY: 1,
         rotation: 0,
         skewX: 0,
-        skewY: 0,
+        skewY: 0
       };
     }
 
@@ -218,14 +218,14 @@ export class MatrixTransformLib {
       scaleY: primaryObject.scaleY || 1,
       rotation: (primaryObject.angle || 0) * MatrixTransformLib.DEG_TO_RAD,
       skewX: primaryObject.skewX || 0,
-      skewY: primaryObject.skewY || 0,
+      skewY: primaryObject.skewY || 0
     };
   }
 
   private computeTransforms(transform: Transform2D): TransformResult {
     const matrix = this.transformTo2DMatrix(transform);
     const result: TransformResult = {
-      matrix2d: matrix,
+      matrix2d: matrix
     };
 
     if (this.config.optimizeForCSS) {
@@ -251,7 +251,7 @@ export class MatrixTransformLib {
       0,
       Math.sin(rotation),
       Math.cos(rotation),
-      0,
+      0
     ];
     const skewMatrix = [1, Math.tan(skewY), 0, Math.tan(skewX), 1, 0];
 
@@ -348,13 +348,13 @@ export class MatrixTransformLib {
     cacheSize: number;
     cacheEnabled: boolean;
     gpuAcceleration: boolean;
-    cssOptimization: boolean;,
+    cssOptimization: boolean;
   } {
     return {
       cacheSize: this.transformCache.size,
       cacheEnabled: this.config.cacheTransforms,
       gpuAcceleration: this.config.enableGPUAcceleration,
-      cssOptimization: this.config.optimizeForCSS,
+      cssOptimization: this.config.optimizeForCSS
     };
   }
 

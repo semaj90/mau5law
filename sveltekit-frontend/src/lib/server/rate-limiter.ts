@@ -3,7 +3,7 @@
 
 interface RateLimitOptions {
   window: number; // time window in ms
-  max: number; // max requests per window,
+  max: number; // max requests per window
 }
 
 interface RateLimitResult {

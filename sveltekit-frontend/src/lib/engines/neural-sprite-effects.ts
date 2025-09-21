@@ -39,7 +39,7 @@ export class NeuralSpriteEffects {
         fill: `rgba(0, 0, 0, ${intensity})`,
         selectable: false,
         evented: false,
-        excludeFromExport: true,
+        excludeFromExport: true
       });
 
       this.canvas.add(scanline);
@@ -51,7 +51,7 @@ export class NeuralSpriteEffects {
   // NES-style pixelation effect;
   async applyPixelation(pixelSize: number = 8): Promise<void> {
     const filter = new (fabric as any).Image.filters.Pixelate({
-      blocksize: pixelSize,
+      blocksize: pixelSize
     });
 
     // Apply to all image objects;
@@ -89,7 +89,7 @@ export class NeuralSpriteEffects {
         fill: color,
         opacity: Math.random() * 0.8 + 0.2,
         selectable: false,
-        evented: false,
+        evented: false
       });
 
       rainDrops.push(raindrop);
@@ -113,7 +113,7 @@ export class NeuralSpriteEffects {
     const rainInterval = setInterval(animateRain, 100);
     this.activeEffects.set("matrix-rain", {
       interval: rainInterval,
-      drops: rainDrops,
+      drops: rainDrops
     });
   }
 
@@ -132,7 +132,7 @@ export class NeuralSpriteEffects {
         obj.set({
           left: originalLeft + (Math.random() - 0.5) * 20,
           top: originalTop + (Math.random() - 0.5) * 20,
-          opacity: originalOpacity * (0.5 + Math.random() * 0.5),
+          opacity: originalOpacity * (0.5 + Math.random() * 0.5)
         });
 
         // Restore after brief moment;
@@ -140,7 +140,7 @@ export class NeuralSpriteEffects {
             obj.set({
               left: originalLeft,
               top: originalTop,
-              opacity: originalOpacity,
+              opacity: originalOpacity
             });
             this.canvas.renderAll();
           },
@@ -166,7 +166,7 @@ export class NeuralSpriteEffects {
         fill: "#00ff88",
         opacity: 0.7,
         selectable: false,
-        evented: false,
+        evented: false
       });
 
       nodes.push(node);
@@ -193,7 +193,7 @@ export class NeuralSpriteEffects {
               strokeWidth: 2,
               opacity: 0.3,
               selectable: false,
-              evented: false,
+              evented: false
             },
           );
 
@@ -222,7 +222,7 @@ export class NeuralSpriteEffects {
     this.activeEffects.set("neural-network", {
       interval: neuralInterval,
       nodes,
-      connections,
+      connections
     });
   }
 
@@ -245,7 +245,7 @@ export class NeuralSpriteEffects {
         strokeWidth: 3,
         opacity: 0,
         selectable: false,
-        evented: false,
+        evented: false
       });
 
       this.canvas.add(glow);
@@ -254,11 +254,11 @@ export class NeuralSpriteEffects {
       const animateHighlight = () => {
         const targetOpacity = glow.opacity === 0 ? 0.8 : 0;
         (glow as any).animate({
-          opacity: targetOpacity,
+          opacity: targetOpacity
         }, {
           duration: 1000,
           onChange: () => this.canvas.renderAll(),
-          onComplete: animateHighlight,
+          onComplete: animateHighlight
         });
       };
 
@@ -281,21 +281,21 @@ export class NeuralSpriteEffects {
         case "circle":;
           shape = new (fabric as any).Circle({
             radius: 5 + Math.random() * 10,
-            fill: `hsl(${Math.random() * 360}, 70%, 60%)`,
+            fill: `hsl(${Math.random() * 360}, 70%, 60%)`
           });
           break;
         case "rect":;
           shape = new (fabric as any).Rect({
             width: 10 + Math.random() * 20,
             height: 10 + Math.random() * 20,
-            fill: `hsl(${Math.random() * 360}, 70%, 60%)`,
+            fill: `hsl(${Math.random() * 360}, 70%, 60%)`
           });
           break;
         case "triangle":;
           shape = new (fabric as any).Triangle({
             width: 10 + Math.random() * 20,
             height: 10 + Math.random() * 20,
-            fill: `hsl(${Math.random() * 360}, 70%, 60%)`,
+            fill: `hsl(${Math.random() * 360}, 70%, 60%)`
           });
           break;
       }
@@ -304,7 +304,7 @@ export class NeuralSpriteEffects {
         left: Math.random() * this.canvas.getWidth(),
         top: Math.random() * this.canvas.getHeight(),
         selectable: false,
-        evented: false,
+        evented: false
       });
 
       stressObjects.push(shape);
@@ -317,7 +317,7 @@ export class NeuralSpriteEffects {
         obj.set({
           left: obj.left + (Math.random() - 0.5) * 10,
           top: obj.top + (Math.random() - 0.5) * 10,
-          angle: obj.angle + (Math.random() - 0.5) * 20,
+          angle: obj.angle + (Math.random() - 0.5) * 20
         });
 
         // Keep objects on canvas;
@@ -335,7 +335,7 @@ export class NeuralSpriteEffects {
     const stressInterval = setInterval(animateStress, 16); // ~60 FPS;
     this.activeEffects.set("stress-test", {
       interval: stressInterval,
-      objects: stressObjects,
+      objects: stressObjects
     });
   }
 
@@ -353,7 +353,7 @@ export class NeuralSpriteEffects {
         fill: `hsl(${120 + Math.random() * 120}, 80%, 60%)`,
         opacity: 0.8,
         selectable: false,
-        evented: false,
+        evented: false
       });
 
       // Add velocity properties
@@ -384,7 +384,7 @@ export class NeuralSpriteEffects {
           particle.set({
             left: this.canvas.getWidth() / 2,
             top: this.canvas.getHeight() / 2,
-            opacity: 0.8,
+            opacity: 0.8
           });
           (particle as any).vx = (Math.random() - 0.5) * 10;
           (particle as any).vy = (Math.random() - 0.5) * 10;
@@ -398,7 +398,7 @@ export class NeuralSpriteEffects {
     const particleInterval = setInterval(animateParticles, 33); // ~30 FPS;
     this.activeEffects.set("particles", {
       interval: particleInterval,
-      particles,
+      particles
     });
   }
 
@@ -447,7 +447,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyCRTScanlines(options?.intensity || 0.3);
-    },
+    }
   },
   {
     id: "matrix-rain",
@@ -459,7 +459,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
         options?.speed || 50,
         options?.color || "#00ff41",
       );
-    },
+    }
   },
   {
     id: "neural-network",
@@ -468,7 +468,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyNeuralNetworkEffect();
-    },
+    }
   },
   {
     id: "glitch",
@@ -477,7 +477,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyGlitchEffect();
-    },
+    }
   },
   {
     id: "particles",
@@ -486,7 +486,7 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyParticleSystemEffect();
-    },
+    }
   },
   {
     id: "stress-test",
@@ -495,6 +495,6 @@ export const NEURAL_SPRITE_EFFECTS: SpriteEffect[] = [;
     apply: async (canvas, options) => {
       const effects = new NeuralSpriteEffects(canvas);
       await effects.applyStressTestEffect();
-    },
-  },
+    }
+  }
 ];

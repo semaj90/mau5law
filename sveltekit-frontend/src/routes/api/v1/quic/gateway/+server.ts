@@ -17,7 +17,7 @@ const QUIC_GATEWAY_CONFIG = {
   baseUrl: 'http://localhost:8443',
   fallbackUrl: 'http://localhost:8444',
   timeout: 10000,
-  retryAttempts: 2,
+  retryAttempts: 2
 };
 
 /*
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     // Check gateway health;
     const healthResponse = await fetch(`${QUIC_GATEWAY_CONFIG.baseUrl}/health`, {
-      signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout),
+      signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout)
     });
 
     let gatewayStatus = 'healthy';
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } else {
       // Try fallback HTTP/2;
       const fallbackResponse = await fetch(`${QUIC_GATEWAY_CONFIG.fallbackUrl}/health`, {
-        signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout),
+        signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout)
       });
 
       if (fallbackResponse.ok) {
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
       protocol: gatewayStatus === 'healthy' ? 'HTTP/3' : gatewayStatus === 'fallback' ? 'HTTP/2' : 'N/A',
       ports: {
         quic: QUIC_GATEWAY_CONFIG.primaryPort,
-        fallback: QUIC_GATEWAY_CONFIG.fallbackPort,
+        fallback: QUIC_GATEWAY_CONFIG.fallbackPort
       },
       backend: responseData.backend || 'http://localhost:5173',
       features: [
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'Health Monitoring'
       ],
       metrics: responseData.metrics || null,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (err: any) {
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'quic-gateway',
       status: 'error',
       error: err instanceof Error ? err.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 };
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             'X-QUIC-Request': 'true'
           },
           body: JSON.stringify(body),
-          signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout),
+          signal: AbortSignal.timeout(QUIC_GATEWAY_CONFIG.timeout)
         });
 
         if (!response.ok) {
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2',
           gateway: 'quic-gateway',
           attempt: attempt + 1,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       } catch (attemptError) {
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('QUIC Gateway proxy error:', err);
     error(500, ensureError({
       message: 'Gateway proxy failed',
-      error: err instanceof Error ? err.message: 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error'
     });
   }
 };
@@ -170,20 +170,20 @@ export const PUT: RequestHandler = async ({ request }) => {
     const updatedConfig = {
       ...QUIC_GATEWAY_CONFIG,
       ...config,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     };
 
     return json({
       success: true,
       message: 'Gateway configuration updated',
-      config: updatedConfig,
+      config: updatedConfig
     });
 
   } catch (err: any) {
     console.error('Gateway configuration update failed:', err);
     error(500, ensureError({
       message: 'Configuration update failed',
-      error: err instanceof Error ? err.message: 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error'
     });
   }
 };

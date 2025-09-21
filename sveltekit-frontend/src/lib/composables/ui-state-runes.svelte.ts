@@ -55,7 +55,7 @@ interface Toast {
   title: string;
   message?: string;
   duration?: number;
-  createdAt: number;,
+  createdAt: number;
 }
 
 export function useToast() {
@@ -75,7 +75,7 @@ export function useToast() {
       title,
       message,
       duration: duration || 5000,
-      createdAt: Date.now(),
+      createdAt: Date.now()
     };
 
     toasts = [...toasts, toast];
@@ -124,7 +124,7 @@ export function useToast() {
 
 // Form state management;
 export function useForm<T extends Record<string, any>(initialValues: T) {
-  let values = $state<T>({ ...initialValues ,});
+  let values = $state<T>({ ...initialValues });
   let errors = $state<Partial<Record<keyof T, string>({});
   let touched = $state<Partial<Record<keyof T, boolean>({});
   let isSubmitting = $state(false);

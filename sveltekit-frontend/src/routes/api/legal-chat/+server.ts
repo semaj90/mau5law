@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
         confidence: cachedResponse.confidence,
         processing_time: performance.now() - startTime,
         cache_stats: { cache_hit: true, cached_at: cachedResponse.timestamp },
-        conversation_context: undefined,
+        conversation_context: undefined
       });
     }
     
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         caseId,
         legalCategory,
-        sources: [],
+        sources: []
       }
     };
     
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
       caseId,
       legalCategory,
       practiceArea,
-      priority: 150 // Medium priority for chat,
+      priority: 150 // Medium priority for chat
     };
     
     await legalChatMemory.addMessageToHistory(sessionId, userMessage, conversationContext);
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             maxResults: 5,
             similarityThreshold: 0.7,
-            includeCHRRomPatterns: true,
+            includeCHRRomPatterns: true
           }
         );
         
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
       { role: 'system', content: systemPrompt },
       ...chatHistory.slice(-8).map(msg => ({ // Last 8 messages for context
         role: msg.role,
-        content: msg.content,
+        content: msg.content
       })
     ];
     
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
         temperature: 0.7,
         top_p: 0.9,
         max_tokens: 1000,
-        num_ctx: 4096 // Larger context for legal conversations,
+        num_ctx: 4096 // Larger context for legal conversations
       }
     });
     
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
         caseId,
         legalCategory,
         confidence,
-        sources: ragSources.map(s => s.documentId),
+        sources: ragSources.map(s => s.documentId)
       }
     };
     
@@ -232,26 +232,26 @@ export const POST: RequestHandler = async ({ request }) => {
         chat_memory: {
           hit_rate: chatStats.cacheHitRate,
           total_messages: chatStats.totalMessages,
-          avg_response_time: chatStats.avgResponseTime,
+          avg_response_time: chatStats.avgResponseTime
         },
         vector_search: {
           hit_rate: vectorSearchStats.hitRate,
           total_queries: vectorSearchStats.totalQueries,
-          cache_hits: vectorSearchStats.cacheHits,
+          cache_hits: vectorSearchStats.cacheHits
         },
         embeddings: {
           hit_rate: embeddingStats.hitRate,
           total_requests: embeddingStats.totalRequests,
-          model_usage: embeddingStats.modelUsage,
+          model_usage: embeddingStats.modelUsage
         },
         redis_orchestrator: {
           llm_cache: redisStats.llm_cache,
           agent_memory: redisStats.agent_memory,
           task_queue: redisStats.task_queue,
-          memory_usage: redisStats.redis_memory,
+          memory_usage: redisStats.redis_memory
         }
       },
-      conversation_context: updatedContext || undefined,
+      conversation_context: updatedContext || undefined
     };
     
     return json(response);
@@ -303,7 +303,7 @@ export const GET: RequestHandler = async ({ url }) => {
       summary: summary ? JSON.parse(summary) : null,
       message_count: messages.length,
       processing_time: processingTime,
-      stats: legalChatMemory.getStats(),
+      stats: legalChatMemory.getStats()
     });
     
   } catch (err) {

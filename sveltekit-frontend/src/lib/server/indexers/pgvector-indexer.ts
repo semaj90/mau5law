@@ -13,7 +13,7 @@ export async function indexPgVector(doc: { id: string; text: string; embedding: 
       id: doc.id,
       content: doc.text,
       embedding: doc.embedding as any,
-      createdAt: new Date(),
+      createdAt: new Date()
     } as any;
     await db.insert(table).values(row);
     return { ok: true };

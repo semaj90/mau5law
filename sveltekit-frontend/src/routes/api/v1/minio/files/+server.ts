@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const initialized = await minioService.initialize();
     if (!initialized) {
       return new Response(JSON.stringify({
-        error: 'MinIO service unavailable',
+        error: 'MinIO service unavailable'
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
@@ -37,10 +37,10 @@ export const GET: RequestHandler = async ({ url }) => {
         size: file.size,
         lastModified: file.lastModified,
         contentType: file.contentType,
-        url: file.url,
+        url: file.url
       })),
       total: files.length,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('File listing error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to list files',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
@@ -64,7 +64,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
 
     if (!bucket || !fileName) {
       return new Response(JSON.stringify({
-        error: 'Bucket and fileName are required',
+        error: 'Bucket and fileName are required'
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -75,7 +75,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     const initialized = await minioService.initialize();
     if (!initialized) {
       return new Response(JSON.stringify({
-        error: 'MinIO service unavailable',
+        error: 'MinIO service unavailable'
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
@@ -87,7 +87,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
 
     if (!deleted) {
       return new Response(JSON.stringify({
-        error: 'Failed to delete file',
+        error: 'Failed to delete file'
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
@@ -97,7 +97,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return new Response(JSON.stringify({
       success: true,
       message: `File ${fileName} deleted from ${bucket}`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -107,7 +107,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     console.error('File deletion error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to delete file',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

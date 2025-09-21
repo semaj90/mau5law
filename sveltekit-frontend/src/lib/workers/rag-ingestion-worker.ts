@@ -8,7 +8,7 @@
 interface WorkerMessage {
   id: string;
   type: 'process_document' | 'generate_embeddings' | 'simd_parse' | 'index_vectors' | 'search_similarity';
-  payload: any;,
+  payload: any;
 }
 
 interface DocumentProcessingPayload {
@@ -21,7 +21,7 @@ interface DocumentProcessingPayload {
     generateEmbeddings: boolean;
     performAnalysis: boolean;
     cacheResults: boolean;
-    priority: 'low' | 'medium' | 'high' | 'critical';,
+    priority: 'low' | 'medium' | 'high' | 'critical';
   };
 }
 
@@ -31,7 +31,7 @@ interface EmbeddingPayload {
   options: {
     dimensions: number;
     normalize: boolean;
-    quantization: 'FP32' | 'FP16' | 'INT8';,
+    quantization: 'FP32' | 'FP16' | 'INT8';
   };
 }
 
@@ -41,7 +41,7 @@ interface SIMDParsePayload {
   options: {
     useSimd: boolean;
     extractMetadata: boolean;
-    performOCR: boolean;,
+    performOCR: boolean;
   };
 }
 
@@ -52,9 +52,9 @@ interface VectorIndexPayload {
     documentType: string;
     riskLevel: string;
     keywords: string[];
-    entities: any[];,
+    entities: any[];
   };
-  nesBank: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';,
+  nesBank: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
 }
 
 // WebAssembly SIMD text processor;
@@ -108,7 +108,7 @@ class SIMDTextProcessor {
       text: 'SIMD-extracted text content...',
       metadata: { pages: 1, creator: 'SIMD Parser' },
       pages: 1,
-      extractionTime: 0,
+      extractionTime: 0
     };
   }
   
@@ -119,7 +119,7 @@ class SIMDTextProcessor {
       text: 'Fallback extracted text content...',
       metadata: { pages: 1, creator: 'Fallback Parser' },
       pages: 1,
-      extractionTime: 0,
+      extractionTime: 0
     };
   }
   
@@ -141,7 +141,7 @@ class SIMDTextProcessor {
     return {
       tokens,
       entities,
-      processingTime: performance.now(),
+      processingTime: performance.now()
     };
   }
   
@@ -152,7 +152,7 @@ class SIMDTextProcessor {
     return {
       tokens,
       entities,
-      processingTime: performance.now(),
+      processingTime: performance.now()
     };
   }
   
@@ -176,7 +176,7 @@ class SIMDTextProcessor {
           type: pattern.type,
           start: match.index,
           end: match.index + match[0].length,
-          confidence: 0.9,
+          confidence: 0.9
         });
       }
     }
@@ -296,7 +296,7 @@ class VectorEmbeddingCache {
   getStats(): {
     cacheSize: number;
     memoryUsage: number;
-    hitRate: number;,
+    hitRate: number;
   } {
     let memoryUsage = 0;
     for (const embedding of this.cache.values()) {
@@ -306,7 +306,7 @@ class VectorEmbeddingCache {
     return {
       cacheSize: this.cache.size,
       memoryUsage,
-      hitRate: 0.85 // Placeholder - would track actual hit rate,
+      hitRate: 0.85 // Placeholder - would track actual hit rate
     };
   }
 }
@@ -387,7 +387,7 @@ class RAGIngestionWorker {
         if (payload.options.cacheResults) {
           await this.vectorCache.store(payload.documentId, embeddings, {
             quantization: this.selectQuantizationLevel(payload.options.priority),
-            nesBank: this.assignNESBank(payload.options.priority),
+            nesBank: this.assignNESBank(payload.options.priority)
           });
         }
       }
@@ -413,7 +413,7 @@ class RAGIngestionWorker {
       return {
         success: false,
         documentId: payload.documentId,
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
   }
@@ -433,7 +433,7 @@ class RAGIngestionWorker {
     
     // Cache with appropriate quantization;
     await this.vectorCache.store(cacheKey, embedding, {
-      quantization: payload.options.quantization,
+      quantization: payload.options.quantization
     });
     
     return embedding;
@@ -446,7 +446,7 @@ class RAGIngestionWorker {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model,
-          prompt: text,
+          prompt: text
         })
       });
       
@@ -478,7 +478,7 @@ class RAGIngestionWorker {
   
   private async indexVectors(payload: VectorIndexPayload): Promise<void> {
     await this.vectorCache.store(payload.documentId, payload.embedding, {
-      nesBank: payload.nesBank,
+      nesBank: payload.nesBank
     });
   }
   
@@ -486,7 +486,7 @@ class RAGIngestionWorker {
     return await this.vectorCache.search(payload.queryEmbedding, {
       limit: payload.limit || 20,
       threshold: payload.threshold || 0.7,
-      filters: payload.filters,
+      filters: payload.filters
     });
   }
   
@@ -494,7 +494,7 @@ class RAGIngestionWorker {
     switch (priority) {
       case 'critical': return 'FP32';
       case 'high': return 'FP16';
-      default: return 'INT8';,
+      default: return 'INT8';
     }
   }
   
@@ -503,7 +503,7 @@ class RAGIngestionWorker {
       case 'critical': return 'INTERNAL_RAM';
       case 'high': return 'CHR_ROM';
       case 'medium': return 'PRG_ROM';
-      default: return 'SAVE_RAM';,
+      default: return 'SAVE_RAM';
     }
   }
   
@@ -521,7 +521,7 @@ class RAGIngestionWorker {
     return {
       initialized: this.isInitialized,
       vectorCache: this.vectorCache.getStats(),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
 }
@@ -546,7 +546,7 @@ self.addEventListener('message', async (event) => {
     self.postMessage({
       id: message.id,
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
 });
@@ -555,7 +555,7 @@ self.addEventListener('message', async (event) => {
 ragWorker.initialize().then(() => {
   self.postMessage({
     type: 'worker_ready',
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 });
 

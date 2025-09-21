@@ -10,7 +10,7 @@ const QuerySchema = z.object({
     maxResults: z.number().min(1).max(50).optional().default(10),
     includeGraph: z.boolean().optional().default(true),
     streamResponse: z.boolean().optional().default(false),
-    confidenceThreshold: z.number().min(0).max(1).optional().default(0.7),
+    confidenceThreshold: z.number().min(0).max(1).optional().default(0.7)
   }).optional().default({})
 });
 
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         timestamp: new Date().toISOString(),
         queryId: response.queryId,
-        systemVersion: '2.0.0-enhanced-rag',
+        systemVersion: '2.0.0-enhanced-rag'
       }
     });
 
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message || 'Enhanced RAG processing failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

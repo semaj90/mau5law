@@ -34,7 +34,7 @@ class ONNXWorkerPool {
           busy: false,
           totalTasks: 0,
           errors: 0,
-          averageLatency: 0,
+          averageLatency: 0
         });
         
         // Initialize worker
@@ -144,7 +144,7 @@ class ONNXWorkerPool {
         id: taskId,
         resolve,
         reject,
-        timeout: timeoutHandle,
+        timeout: timeoutHandle
       });
       
       // Mark worker as busy
@@ -181,13 +181,13 @@ class ONNXWorkerPool {
           clearTimeout(timeoutHandle);
           reject(error);
         },
-        timeout: timeoutHandle,
+        timeout: timeoutHandle
       });
       
       this.workers[workerId].postMessage({
         type: 'BATCH_PROCESS',
         payload: { tasks },
-        taskId: batchId,
+        taskId: batchId
       });
     });
   }
@@ -197,7 +197,7 @@ class ONNXWorkerPool {
       totalWorkers: this.workers.length,
       workerStats: Array.from(this.workerStats.values()),
       queueLength: this.taskQueue.length,
-      isInitialized: this.isInitialized,
+      isInitialized: this.isInitialized
     };
   }
 }
@@ -326,7 +326,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           results: results.map(r => r.status === 'fulfilled' ? r.value:  { error: r.reason }),
           totalRequests: requests.length,
           processingTime: totalTime,
-          parallelExecution: true,
+          parallelExecution: true
         });
       }
       
@@ -356,7 +356,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         workerPool: stats,
         timestamp: new Date().toISOString(),
-        uptime: process.uptime ? process.uptime() * 1000 : 0,
+        uptime: process.uptime ? process.uptime() * 1000 : 0
       });
     } catch (error: any) {
       return json(

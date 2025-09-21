@@ -38,7 +38,7 @@ export interface AIContext {
   connections: Array<{
     fromId: string;
     toId: string;
-    type: string;,
+    type: string;
   }>;
 }
 
@@ -60,7 +60,7 @@ export interface AIInsight {
   confidence: number;
   priority: 'low' | 'medium' | 'high' | 'critical';
   timestamp: number;
-  acknowledged: boolean;,
+  acknowledged: boolean;
 }
 
 // Store for AI contexts per case
@@ -101,10 +101,10 @@ export function initializeCaseAI(caseId: string, caseInfo: AIContext['caseInfo']
     context: {
       evidenceItems: [],
       caseInfo,
-      connections: [],
+      connections: []
     },
     insights: [],
-    isProcessing: false,
+    isProcessing: false
   };
 
   aiAssistantContexts.update(contexts => ({
@@ -210,7 +210,7 @@ export async function sendToAI(
       timestamp: Date.now(),
       evidenceIds: aiResponse.referencedEvidence || [],
       suggestions: aiResponse.suggestions || [],
-      confidence: aiResponse.confidence || 0.8,
+      confidence: aiResponse.confidence || 0.8
     };
 
     addMessage(caseId, assistantMessage);
@@ -232,7 +232,7 @@ export async function sendToAI(
       text: `I'm sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`,
       type: 'assistant',
       timestamp: Date.now(),
-      confidence: 0,
+      confidence: 0
     };
 
     addMessage(caseId, errorMessage);
@@ -270,7 +270,7 @@ export function addInsight(caseId: string, insight: Omit<AIInsight, 'id' | 'time
     ...insight,
     id: crypto.randomUUID(),
     timestamp: Date.now(),
-    acknowledged: false,
+    acknowledged: false
   };
 
   aiAssistantContexts.update(contexts => {
@@ -327,7 +327,7 @@ export function clearMessages(caseId: string) {
 
     const updatedContext = {
       ...context,
-      messages: [],
+      messages: []
     };
 
     // Update current context if active
@@ -357,7 +357,7 @@ function buildAIPrompt(userMessage: string, context: AIContext, evidenceIds: str
     prompt += `\nRelevant Evidence:\n`;
     relevantEvidence.forEach(evidence => {
       prompt += `- ${evidence.title} (${evidence.type}): ${evidence.content.substring(0, 200)}...\n`;
-    ,});
+    });
   }
 
   if (context.connections.length > 0) {

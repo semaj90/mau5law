@@ -18,7 +18,7 @@ interface FullTextSearchQuery {
     caseId?: string;
     dateRange?: {
       start: string;
-      end: string;,
+      end: string;
     };
   };
   searchMode?: 'simple' | 'advanced' | 'fuzzy';
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
         searchMode,
         sources: {
           postgresql: postgresResults.status === 'fulfilled' ? postgresResults.value.length: 0,
-          loki: lokiResults.status === 'fulfilled' ? lokiResults.value.length : 0,
+          loki: lokiResults.status === 'fulfilled' ? lokiResults.value.length : 0
         }
       }
     });
@@ -277,7 +277,7 @@ async function searchPostgreSQL(
           uploadDate: new Date().toISOString(),
           source: 'postgresql',
           matchType: searchMode,
-          highlights: [query],
+          highlights: [query]
         }
       }
     ];
@@ -305,12 +305,12 @@ async function searchLokiLogs(
         labels: {
           job: 'legal-platform',
           service: 'document-processor',
-          case_id: filters?.caseId || 'case_log_001',
+          case_id: filters?.caseId || 'case_log_001'
         },
         metadata: {
           processing_time: '2.3s',
           document_count: 1,
-          query_matched: true,
+          query_matched: true
         }
       },
       {
@@ -320,12 +320,12 @@ async function searchLokiLogs(
         labels: {
           job: 'legal-platform',
           service: 'search-engine',
-          case_id: filters?.caseId || 'case_log_002',
+          case_id: filters?.caseId || 'case_log_002'
         },
         metadata: {
           search_time: '5.7s',
           result_count: 0,
-          performance_warning: true,
+          performance_warning: true
         }
       }
     ];

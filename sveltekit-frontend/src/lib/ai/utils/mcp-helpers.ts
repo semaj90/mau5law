@@ -42,7 +42,7 @@ export async function copilotOrchestrator(
   return {
     success: true,
     result: null,
-    selfPrompt: typeof request === 'string' ? request : undefined,
+    selfPrompt: typeof request === 'string' ? request : undefined
   };
 }
 
@@ -73,7 +73,7 @@ export const commonMCPQueries = {
   analyzeSvelteKit: () => 'analyze-sveltekit',
   analyzeDrizzle: () => 'analyze-drizzle',
   performanceBestPractices: () => 'performance-best-practices',
-  securityBestPractices: () => 'security-best-practices',
+  securityBestPractices: () => 'security-best-practices'
 };
 
 export default {
@@ -82,5 +82,5 @@ export default {
   mcpMemoryReadGraph,
   mcpCodebaseAnalyze,
   generateMCPPrompt,
-  commonMCPQueries,
+  commonMCPQueries
 };

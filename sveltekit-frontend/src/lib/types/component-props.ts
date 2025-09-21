@@ -209,7 +209,7 @@ export interface SearchResult {
 export interface SearchFilters {
   dateRange?: {
     start: Date;
-    end: Date;,
+    end: Date;
   };
   jurisdiction?: string;
   documentType?: string[];
@@ -223,7 +223,7 @@ export interface CaseData {
   priority: 'low' | 'medium' | 'high' | 'critical';
   assignedTo?: string;
   createdAt: Date;
-  lastActivity: Date;,
+  lastActivity: Date;
 }
 
 export interface AnalysisResult {
@@ -306,5 +306,5 @@ export interface DocumentFormData {
   content: string;
   tags: string[];
   confidentiality: 'public' | 'internal' | 'confidential' | 'restricted';
-  attachments: UploadedFile[];,
+  attachments: UploadedFile[];
 }

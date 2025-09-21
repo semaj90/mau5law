@@ -39,7 +39,7 @@ export interface LegalRAGConfig {
   ollamaEmbeddingUrl: string;
   apiKey: string;
   collectionName: string;
-  embeddingDimensions: number;,
+  embeddingDimensions: number;
 }
 
 export interface RAGQueryOptions {
@@ -151,7 +151,7 @@ Generate 3 different search queries that would help find relevant legal informat
 2. A query focusing on specific legal terms and definitions
 3. A query focusing on practical applications and implications
 
-Only return the queries, one per line.`),
+Only return the queries, one per line.`)
   };
 
   constructor(config: LegalRAGConfig) {
@@ -163,7 +163,7 @@ Only return the queries, one per line.`),
       // Note: baseURL may not be supported in this version
       temperature: 0.1, // Low temperature for legal accuracy
       maxTokens: 4096,
-      timeout: 120000,
+      timeout: 120000
     } as any);
 
     // Initialize embeddings;
@@ -171,7 +171,7 @@ Only return the queries, one per line.`),
       model: 'nomic-embed-legal',
       apiKey: config.apiKey,
       // Note: baseURL may not be supported in this version
-      dimensions: config.embeddingDimensions,
+      dimensions: config.embeddingDimensions
     } as any);
 
     // Initialize Qdrant client (mocked for now);
@@ -190,7 +190,7 @@ Only return the queries, one per line.`),
         '. ', // Sentence endings
         ', ', // Clause separators
         ' ', // Word breaks
-      ],
+      ]
     });
 
     this.initializeVectorStore();
@@ -214,7 +214,7 @@ Only return the queries, one per line.`),
         metadataPayloadKey: 'metadata',
         // Mock methods
         similaritySearch: async (query: string, k: number) => [],
-        addDocuments: async (docs: LangChainDocumentType[]) => {},
+        addDocuments: async (docs: LangChainDocumentType[]) => {}
       } as QdrantVectorStore;
       console.log('✅ Legal RAG vector store initialized');
     } catch (error: any) {
@@ -258,7 +258,7 @@ Only return the queries, one per line.`),
           const semanticResponse = await fetch('/api/rag/semantic-search', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
               query: question,
@@ -267,9 +267,9 @@ Only return the queries, one per line.`),
               filters: {
                 category: documentType,
                 jurisdiction: jurisdiction,
-                practice_area: practiceArea,
-              },
-            }),
+                practice_area: practiceArea
+              }
+            })
           });
 
           if (semanticResponse.ok) {
@@ -286,8 +286,8 @@ Only return the queries, one per line.`),
                   title: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).title,
                   score: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).semantic_score || 1 - (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).distance,
                   document_type: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).document_type,
-                  source: 'enhanced_semantic_search',
-                },
+                  source: 'enhanced_semantic_search'
+                }
               });
 
               // Generate answer using enhanced RAG with semantic context
@@ -304,7 +304,7 @@ Only return the queries, one per line.`),
               // Generate answer using LLM with semantic context;
               const formattedPrompt = await promptTemplate.format({
                 context: contextText,
-                question: question,
+                question: question
               });
 
               const llmResponse = await this.llm.invoke(formattedPrompt);
@@ -339,8 +339,8 @@ Only return the queries, one per line.`),
                   usedThinkingMode: thinkingMode,
                   usedCompression: useCompression,
                   enhancedSemanticSearch: true,
-                  semanticProcessingTime: semanticData.processingTime || 0,
-                },
+                  semanticProcessingTime: semanticData.processingTime || 0
+                }
               };
             }
           }
@@ -355,7 +355,7 @@ Only return the queries, one per line.`),
       // Create retriever with legal-specific filtering;
       let retriever: any = this.vectorStore.asRetriever({
         k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
-        filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
+        filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea)
       });
 
       // Use MultiQueryRetriever for thinking mode
@@ -394,17 +394,17 @@ Only return the queries, one per line.`),
       // Build RAG chain with proper type handling
       const contextRetriever = RunnableSequence.from([
         (input: string) => retriever.getRelevantDocuments(input),
-        formatDocumentsAsString,
+        formatDocumentsAsString
       ]);
 
       const ragChain = RunnableSequence.from([;
         RunnableMap.from({
           context: contextRetriever,
-          question: new RunnablePassthrough(),
+          question: new RunnablePassthrough()
         }),
         promptTemplate,
         this.llm,
-        new StringOutputParser(),
+        new StringOutputParser()
       ]);
 
       // Execute RAG query with proper error handling
@@ -416,7 +416,7 @@ Only return the queries, one per line.`),
         retriever.getRelevantDocuments(question).catch((error: any) => {
           console.warn('Document retrieval error:', error);
           return [];
-        }),
+        })
       ]);
 
       // Calculate confidence based on document relevance scores
@@ -435,8 +435,8 @@ Only return the queries, one per line.`),
           retrievedChunks: retrievedDocs.length,
           processingTime,
           usedThinkingMode: thinkingMode,
-          usedCompression: useCompression,
-        },
+          usedCompression: useCompression
+        }
       };
     } catch (error: any) {
       console.error('Error in RAG query:', error);
@@ -450,7 +450,7 @@ Only return the queries, one per line.`),
           usedThinkingMode: thinkingMode,
           usedCompression: useCompression,
           // Note: error property not included in interface
-        },
+        }
       };
     }
   }
@@ -476,8 +476,8 @@ Only return the queries, one per line.`),
           ...metadata,
           chunkIndex: index,
           totalChunks: chunks.length,
-          chunkSize: chunk.length,
-        },
+          chunkSize: chunk.length
+        }
       });
 
       // Add to vector store
@@ -543,7 +543,7 @@ Only return the queries, one per line.`),
 
     return await this.query(entityQuery, {
       ...options,
-      documentType,
+      documentType
     });
   }
 
@@ -568,7 +568,7 @@ Only return the queries, one per line.`),
     if (practiceArea) {
       must.push({
         key: 'classification.practiceArea',
-        match: { value: practiceArea },
+        match: { value: practiceArea }
       });
     }
 
@@ -607,13 +607,13 @@ Only return the queries, one per line.`),
         status: 'healthy',
         vectorStoreConnected: !!this.vectorStore,
         collectionExists,
-        documentsCount: (info as any)?.result?.points_count || 0,
+        documentsCount: (info as any)?.result?.points_count || 0
       };
     } catch (error: any) {
       return {
         status: 'unhealthy',
         vectorStoreConnected: !!this.vectorStore,
-        collectionExists: false,
+        collectionExists: false
       };
     }
   }
@@ -696,24 +696,24 @@ Only return the queries, one per line.`),
           size: fileSize,
           mimeType: this.getMimeType(fileName),
           wordCount: documentContent.split(/\s+/).length,
-          language: 'en',
+          language: 'en'
         },
         classification: {
           documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
           practiceArea: this.inferPracticeArea(documentContent),
           jurisdiction: this.inferJurisdiction(documentContent),
           confidentialityLevel: 'public',
-          tags: [],
+          tags: []
         },
         extraction: {
           extractedAt: new Date().toISOString(),
           extractedLength: documentContent.length,
-          confidence: this.calculateExtractionConfidence(documentContent, fileName),
+          confidence: this.calculateExtractionConfidence(documentContent, fileName)
         },
         ...options?.metadata,
         filePath,
         caseId: options?.caseId,
-        title: options?.title || this.generateDocumentTitle(documentContent, fileName),
+        title: options?.title || this.generateDocumentTitle(documentContent, fileName)
       };
 
       // Index the document using enhanced processing
@@ -728,7 +728,7 @@ Only return the queries, one per line.`),
             title: metadata.title,
             content: documentContent.substring(0, 1000), // Preview for API
             metadata: metadata,
-            chunks: chunkIds.length,
+            chunks: chunkIds.length
           });
         } catch (error) {
           console.warn('Failed to notify semantic search API:', error);
@@ -743,8 +743,8 @@ Only return the queries, one per line.`),
           fileSize,
           extractedLength: documentContent.length,
           processingTime,
-          chunksCreated: chunkIds.length,
-        },
+          chunksCreated: chunkIds.length
+        }
       };
     } catch (error: any) {
       return {
@@ -754,8 +754,8 @@ Only return the queries, one per line.`),
           fileSize: 0,
           extractedLength: 0,
           processingTime: Date.now() - startTime,
-          chunksCreated: 0,
-        },
+          chunksCreated: 0
+        }
       };
     }
   }
@@ -976,7 +976,7 @@ Only return the queries, one per line.`),
       case 'docx':
         return 'legal-document';
       default:
-        return 'general';,
+        return 'general';
     }
   }
 
@@ -1059,7 +1059,7 @@ Only return the queries, one per line.`),
       'ohio',
       'georgia',
       'north carolina',
-      'michigan',
+      'michigan'
     ];
 
     for (const state of states) {
@@ -1130,7 +1130,7 @@ Only return the queries, one per line.`),
       md: 'text/markdown',
       html: 'text/html',
       htm: 'text/html',
-      rtf: 'application/rtf',
+      rtf: 'application/rtf'
     };
 
     return mimeTypes[extension || ''] || 'application/octet-stream';
@@ -1148,8 +1148,8 @@ Only return the queries, one per line.`),
           body: JSON.stringify({
             documentId,
             action: 'indexed',
-            ...documentInfo,
-          }),
+            ...documentInfo
+          })
         });
       }
     } catch (error) {
@@ -1168,7 +1168,7 @@ Only return the queries, one per line.`),
         averageQueryTime: 150, // Would calculate from query logs
         averageResponseTime: 200, // Would track response times
         indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
-        uptime: Date.now() - process.uptime() * 1000,
+        uptime: Date.now() - process.uptime() * 1000
       };
     } catch (error: any) {
       console.error('Failed to get system stats:', error);
@@ -1179,7 +1179,7 @@ Only return the queries, one per line.`),
         averageQueryTime: 0,
         averageResponseTime: 0,
         indexStatus: 'error',
-        uptime: 0,
+        uptime: 0
       };
     }
   }
@@ -1194,5 +1194,5 @@ export const legalRAG = new LegalRAGService({
     import.meta.env.OLLAMA_EMBEDDING_URL || "http://localhost:11434/v1",
   apiKey: import.meta.env.OLLAMA_API_KEY || "EMPTY",
   collectionName: "legal_documents",
-  embeddingDimensions: 768,
+  embeddingDimensions: 768
 });

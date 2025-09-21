@@ -17,7 +17,7 @@ export interface FormState {
   isSubmitting: boolean;
   isValid: boolean;
   isDirty: boolean;
-  submitCount: number;,
+  submitCount: number;
 }
 export interface FormOptions {
   initialValues?: Record<string, any>;
@@ -30,7 +30,7 @@ function createFormStore(options: FormOptions = {}) {
     initialValues = {},
     validators = {},
     requiredFields = [],
-    onSubmit,
+    onSubmit
   } = options;
 
   // Initialize fields
@@ -41,7 +41,7 @@ function createFormStore(options: FormOptions = {}) {
       value: initialValues[name],
       touched: false,
       required: requiredFields.includes(name),
-      validator: validators[name],
+      validator: validators[name]
     };
   });
 
@@ -52,7 +52,7 @@ function createFormStore(options: FormOptions = {}) {
     isSubmitting: false,
     isValid: true,
     isDirty: false,
-    submitCount: 0,
+    submitCount: 0
   };
 
   const { subscribe, set, update } = writable<FormState>(initialState);
@@ -116,13 +116,13 @@ function createFormStore(options: FormOptions = {}) {
           value: "",
           touched: false,
           required: requiredFields.includes(name),
-          validator: validators[name],
+          validator: validators[name]
         };
 
         const updatedField = {
           ...field,
           value,
-          touched: true,
+          touched: true
         };
 
         // Validate field
@@ -133,9 +133,9 @@ function createFormStore(options: FormOptions = {}) {
           ...state,
           fields: {
             ...state.fields,
-            [name]: updatedField,
+            [name]: updatedField
           },
-          isDirty: true,
+          isDirty: true
         };
 
         // Recalculate form validity
@@ -163,9 +163,9 @@ function createFormStore(options: FormOptions = {}) {
           ...state.fields,
           [name]: {
             ...state.fields[name],
-            touched: true,
-          },
-        },
+            touched: true
+          }
+        }
       });
     },
 
@@ -188,7 +188,7 @@ function createFormStore(options: FormOptions = {}) {
         const newState = {
           ...state,
           isSubmitting: true,
-          submitCount: state.submitCount + 1,
+          submitCount: state.submitCount + 1
         };
 
         // Touch all fields and validate;
@@ -207,7 +207,7 @@ function createFormStore(options: FormOptions = {}) {
           const currentValues = Object.fromEntries(
             Object.values(initialFields).map((field) => [
               field.name,
-              field.value,
+              field.value
             ])
           );
           await onSubmit(currentValues);
@@ -239,9 +239,9 @@ function createFormStore(options: FormOptions = {}) {
             value: initialValue,
             touched: false,
             required: isRequired,
-            validator: validators[name],
-          },
-        },
+            validator: validators[name]
+          }
+        }
       });
     },
 
@@ -251,10 +251,10 @@ function createFormStore(options: FormOptions = {}) {
         const { [name]: removed, ...remainingFields } = state.fields;
         return {
           ...state,
-          fields: remainingFields,
+          fields: remainingFields
         };
       });
-    },
+    }
   };
 }
 export { createFormStore };

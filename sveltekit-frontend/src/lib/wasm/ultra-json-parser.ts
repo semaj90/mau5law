@@ -18,7 +18,7 @@ interface BrowserSIMDCapabilities {
   sharedArrayBuffer: boolean;
   atomics: boolean;
   bigInt64Array: boolean;
-  supportLevel: 'none' | 'basic' | 'advanced' | 'optimal';,
+  supportLevel: 'none' | 'basic' | 'advanced' | 'optimal';
 }
 
 // Ultra JSON parsing configuration;
@@ -34,7 +34,7 @@ export interface UltraJSONConfig {
   legalDocumentOptimization: boolean;
   entityExtractionMode: boolean;
   citationPatternMatching: boolean;
-  bulkProcessingMode: boolean;,
+  bulkProcessingMode: boolean;
 }
 
 // Ultra JSON performance metrics;
@@ -46,7 +46,7 @@ export interface UltraJSONMetrics {
   webgpuAcceleration: number;
   throughputMBps: number;
   operationsPerSecond: number;
-  memoryEfficiency: number;,
+  memoryEfficiency: number;
 }
 
 export class UltraJSONParser {
@@ -80,7 +80,7 @@ export class UltraJSONParser {
       sharedArrayBuffer: false,
       atomics: false,
       bigInt64Array: false,
-      supportLevel: 'none',
+      supportLevel: 'none'
     };
 
     if (browser) {
@@ -102,7 +102,7 @@ export class UltraJSONParser {
       this.wasmGpuService = createWasmGpuService({
         documentProcessingMode: this.config.legalDocumentOptimization,
         vectorSearchOptimization: true,
-        embeddingCacheSize: 512,
+        embeddingCacheSize: 512
       });
     }
 
@@ -117,7 +117,7 @@ export class UltraJSONParser {
       supportLevel: this.capabilities.supportLevel,
       webgpu: this.capabilities.webgpuCompute,
       simd: this.capabilities.wasmSIMD,
-      config: this.config,
+      config: this.config
     });
   }
 
@@ -246,7 +246,7 @@ export class UltraJSONParser {
           break;
           
         default:
-          result = JSON.parse(jsonString);,
+          result = JSON.parse(jsonString);
       }
 
       // Record performance metrics
@@ -259,7 +259,7 @@ export class UltraJSONParser {
         webgpuAcceleration: strategy.includes('webgpu') ? 3.0 : 1.0,
         throughputMBps: (jsonString.length / 1024 / 1024) / (parseTime / 1000),
         operationsPerSecond: 1000 / parseTime,
-        memoryEfficiency: 0.85 // Would calculate actual memory efficiency,
+        memoryEfficiency: 0.85 // Would calculate actual memory efficiency
       };
 
       if (opts.cacheKey) {
@@ -640,7 +640,7 @@ export class UltraJSONParser {
     cacheSize: number;
     averageParseTime: number;
     totalOperations: number;
-    recommendedSettings: Partial<UltraJSONConfig>;,
+    recommendedSettings: Partial<UltraJSONConfig>;
   } {
     const cachedMetrics = Array.from(this.performanceCache.values();
     const avgParseTime = cachedMetrics.length > 0 
@@ -654,7 +654,7 @@ export class UltraJSONParser {
       recommendedSettings: {
         enableBrowserSIMD: this.capabilities.wasmSIMD,
         enableWebGPUAcceleration: this.capabilities.webgpuCompute,
-        bulkProcessingMode: this.capabilities.supportLevel === 'optimal',
+        bulkProcessingMode: this.capabilities.supportLevel === 'optimal'
       }
     };
   }
@@ -672,7 +672,7 @@ export class UltraJSONParser {
 export const ultraJSONParser = new UltraJSONParser({
   legalDocumentOptimization: true,
   entityExtractionMode: true,
-  citationPatternMatching: true,
+  citationPatternMatching: true
 });
 
 // Convenience functions

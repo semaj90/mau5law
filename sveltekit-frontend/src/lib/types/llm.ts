@@ -37,7 +37,7 @@ export interface LLMProviderConfig {
 	customHeaders?: Record<string, string>;
 	rateLimit?: {
 		requestsPerMinute: number;
-		tokensPerMinute: number;,
+		tokensPerMinute: number;
 	};
 }
 
@@ -50,7 +50,7 @@ export interface PerformanceMetrics {
 	latency?: {
 		p50: number;
 		p95: number;
-		p99: number;,
+		p99: number;
 	};
 	errorRate?: number;
 }
@@ -110,7 +110,7 @@ export interface AgentDefinition {
   tools: AgentTool[];
   collaborators: string[];
   capabilities: AgentCapability[];
-  config: AgentConfig;,
+  config: AgentConfig;
 }
 // Temporary AgentConfig type to satisfy references;
 export interface AgentConfig extends LLMAgentConfig {
@@ -122,7 +122,7 @@ export interface AgentTool {
   name: string;
   description: string;
   parameters: ToolParameter[];
-  required: boolean;,
+  required: boolean;
 }
 
 export interface ToolParameter {
@@ -183,30 +183,30 @@ export interface WorkflowInput {
   name: string;
   type: string;
   source: 'user' | 'previous_step' | 'external';
-  required: boolean;,
+  required: boolean;
 }
 
 export interface WorkflowOutput {
   name: string;
   type: string;
-  destination: 'next_step' | 'user' | 'storage';,
+  destination: 'next_step' | 'user' | 'storage';
 }
 
 export interface WorkflowCondition {
   type: 'if' | 'unless' | 'switch';
   expression: string;
-  branches: WorkflowBranch[];,
+  branches: WorkflowBranch[];
 }
 
 export interface WorkflowBranch {
   condition: string;
-  nextStep: string;,
+  nextStep: string;
 }
 
 export interface RetryConfig {
   maxAttempts: number;
   backoffStrategy: 'linear' | 'exponential';
-  backoffBase: number;,
+  backoffBase: number;
 }
 
 export type TeamStatus = 'idle' | 'active' | 'paused' | 'completed' | 'error';
@@ -216,7 +216,7 @@ export interface TeamMetrics {
   tasksCompleted: number;
   averageTaskTime: number;
   successRate: number;
-  collaborationEfficiency: number;,
+  collaborationEfficiency: number;
 }
 
 // Task and Execution Types;
@@ -302,7 +302,7 @@ export interface SystemHealth {
 	workers: WorkerHealth[];
 	queue: QueueHealth;
 	resources: ResourceHealth;
-	timestamp: number;,
+	timestamp: number;
 }
 
 export interface ProviderHealth {
@@ -311,7 +311,7 @@ export interface ProviderHealth {
 	responseTime: number;
 	errorRate: number;
 	availability: number;
-	load: number;,
+	load: number;
 }
 
 export interface WorkerHealth {
@@ -321,7 +321,7 @@ export interface WorkerHealth {
 	tasksCompleted: number;
 	averageTaskTime: number;
 	load: number;
-	memoryUsage: string;,
+	memoryUsage: string;
 }
 
 export interface QueueHealth {
@@ -329,14 +329,14 @@ export interface QueueHealth {
 	pendingTasks: number;
 	processingTasks: number;
 	averageWaitTime: number;
-	throughput: number;,
+	throughput: number;
 }
 
 export interface ResourceHealth {
 	cpuUsage: number;
 	memoryUsage: number;
 	diskUsage: number;
-	networkLatency: number;,
+	networkLatency: number;
 }
 
 export type HealthStatus = 'healthy' | 'warning' | 'critical' | 'down';
@@ -347,84 +347,84 @@ export interface AISystemConfig {
 	workers: WorkerConfig;
 	queue: QueueConfig;
 	monitoring: MonitoringConfig;
-	security: SecurityConfig;,
+	security: SecurityConfig;
 }
 
 export interface WorkerConfig {
 	maxWorkers: number;
 	workerTypes: WorkerTypeConfig[];
-	loadBalancing: LoadBalancingConfig;,
+	loadBalancing: LoadBalancingConfig;
 }
 
 export interface WorkerTypeConfig {
 	type: string;
 	count: number;
 	capabilities: string[];
-	maxConcurrentTasks: number;,
+	maxConcurrentTasks: number;
 }
 
 export interface LoadBalancingConfig {
 	strategy: 'round-robin' | 'least-loaded' | 'capability-based';
 	healthCheckInterval: number;
-	failoverEnabled: boolean;,
+	failoverEnabled: boolean;
 }
 
 export interface QueueConfig {
 	maxSize: number;
 	priorityLevels: number;
 	retentionTime: number;
-	batchProcessing: boolean;,
+	batchProcessing: boolean;
 }
 
 export interface MonitoringConfig {
 	metricsInterval: number;
 	logLevel: 'debug' | 'info' | 'warn' | 'error';
-	alerting: AlertingConfig;,
+	alerting: AlertingConfig;
 }
 
 export interface AlertingConfig {
 	enabled: boolean;
 	thresholds: AlertThreshold[];
-	channels: AlertChannel[];,
+	channels: AlertChannel[];
 }
 
 export interface AlertThreshold {
 	metric: string;
 	operator: '>' | '<' | '=' | '>=' | '<=';
 	value: number;
-	severity: 'low' | 'medium' | 'high' | 'critical';,
+	severity: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export interface AlertChannel {
 	type: 'email' | 'slack' | 'webhook' | 'sms';
 	endpoint: string;
-	enabled: boolean;,
+	enabled: boolean;
 }
 
 export interface SecurityConfig {
 	apiKeyValidation: boolean;
 	rateLimiting: RateLimitConfig;
 	encryption: EncryptionConfig;
-	audit: AuditConfig;,
+	audit: AuditConfig;
 }
 
 export interface RateLimitConfig {
 	enabled: boolean;
 	requestsPerMinute: number;
 	tokensPerMinute: number;
-	burstLimit: number;,
+	burstLimit: number;
 }
 
 export interface EncryptionConfig {
 	inTransit: boolean;
 	atRest: boolean;
 	keyRotation: boolean;
-	algorithm: string;,
+	algorithm: string;
 }
 
 export interface AuditConfig {
 	enabled: boolean;
 	logRequests: boolean;
 	logResponses: boolean;
-	retentionDays: number;,
+	retentionDays: number;
 }

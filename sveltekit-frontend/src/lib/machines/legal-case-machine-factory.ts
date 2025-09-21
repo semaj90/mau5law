@@ -56,7 +56,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
 
         return {
           case: caseData.case || caseData,
-          evidence: caseData.evidence || [],
+          evidence: caseData.evidence || []
         };
       }),
 
@@ -76,7 +76,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
               limit: 8,
               model: 'gemma3-legal',
               maxTokens: 800,
-              temperature: 0.1,
+              temperature: 0.1
             }
           })
         });
@@ -100,7 +100,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
             options: {
               limit: 10,
               model: 'gemma3-legal',
-              analysisType: 'similarity',
+              analysisType: 'similarity'
             }
           })
         });
@@ -114,7 +114,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
           id: source.document_id,
           title: source.title,
           similarity_score: 1 - source.similarity, // Convert distance to similarity
-          document_type: source.document_type,
+          document_type: source.document_type
         })) || [];
       })
     }
@@ -148,7 +148,7 @@ export function createLegalCaseMachineForRoute(page: any, options: Partial<CaseM
     enableRAG: true,
     autoLoadEvidence: true,
     ...options
-  ,});
+  });
 }
 
 /**
@@ -160,14 +160,14 @@ export const LegalCaseMachinePresets = {
     caseId,
     userId,
     enableRAG: true,
-    autoLoadEvidence: true,
+    autoLoadEvidence: true
   }),
 
   // Lightweight machine for read-only access;
   readonly: (caseId: string) => createLegalCaseMachine({
     caseId,
     enableRAG: true,
-    autoLoadEvidence: false,
+    autoLoadEvidence: false
   }),
 
   // RAG-focused machine for AI analysis;
@@ -175,7 +175,7 @@ export const LegalCaseMachinePresets = {
     caseId,
     enableRAG: true,
     autoLoadEvidence: false,
-    ragEndpoint: '/api/v1/rag',
+    ragEndpoint: '/api/v1/rag'
   })
 };
 

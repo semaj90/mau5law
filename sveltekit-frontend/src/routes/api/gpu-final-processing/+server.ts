@@ -15,7 +15,7 @@ export const GET: RequestHandler = async () => {
       pipeline: result,
       statusReport,
       timestamp: new Date().toISOString(),
-      message: 'Complete GPU error processing pipeline executed successfully',
+      message: 'Complete GPU error processing pipeline executed successfully'
     });
   } catch (error: any) {
     console.error('❌ GPU error processing failed:', error);
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async () => {
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
       pipeline: completeErrorPipeline.getPipelineStatus(),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

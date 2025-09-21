@@ -24,7 +24,7 @@ export async function buildUserContextPrompt(userId?: string, opts: ContextOptio
     const p: any = rows[0].user_profiles;
 
     const lines: string[] = [
-      'You are assisting a legal professional. Personalize responses as appropriate.',
+      'You are assisting a legal professional. Personalize responses as appropriate.'
     ];
 
     if (opts.jurisdictionHint && u?.jurisdiction) {

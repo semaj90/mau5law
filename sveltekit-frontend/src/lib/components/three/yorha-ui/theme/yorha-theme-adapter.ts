@@ -15,7 +15,7 @@ export const NES_PALETTE = {
   orange: '#f59e0b',
   grey: '#7c7c7c',
   black: '#000000',
-  white: '#ffffff',
+  white: '#ffffff'
 } as const;
 
 // Bits UI v2 style semantic roles we want to map (simplified)
@@ -132,7 +132,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
   const glow = options?.enableGlow ? {
     enabled: true,
     color: backgroundColor,
-    intensity: 0.35,
+    intensity: 0.35
   } : undefined;
 
   // Derive simple hover (lighten by adding small value) – naive approach

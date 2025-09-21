@@ -13,7 +13,7 @@ function collectMetrics() {
     memMB: Math.round(process.memoryUsage().rss / 1024 / 1024),
     vectorQueriesPerMin: Math.floor(Math.random() * 20),
     gpuQueueDepth: Math.floor(Math.random() * 4),
-    timestamp: Date.now(),
+    timestamp: Date.now()
   };
 }
 

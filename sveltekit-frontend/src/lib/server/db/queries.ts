@@ -14,7 +14,7 @@ export interface User {
   isActive: boolean;
   avatarUrl: string | null;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 export async function getUserById(id: string): Promise<User | null> {
   try {
@@ -59,7 +59,7 @@ export async function createUser(userData: {
         name: userData.name,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        role: userData.role || "prosecutor",
+        role: userData.role || "prosecutor"
       })
       .returning();
 

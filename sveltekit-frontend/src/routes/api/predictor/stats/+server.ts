@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     try {
       const cudaResponse = await fetch('http://localhost:8097/api/v1/simd/capabilities', {
-        signal: AbortSignal.timeout(2000) // 2 second timeout,
+        signal: AbortSignal.timeout(2000) // 2 second timeout
       });
 
       if (cudaResponse.ok) {
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const estimatedMemoryUsage = {
       localTransitions: stats.uniqueActions * 50, // bytes per transition estimate
       redisKeys: stats.uniqueActions * 100, // bytes per Redis key estimate
-      totalEstimated: (stats.uniqueActions * 150) / 1024 // KB,
+      totalEstimated: (stats.uniqueActions * 150) / 1024 // KB
     };
 
     const detailedStats = {
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
         performance: {
           transitionsPerMinute: Math.round(transitionsPerMinute * 100) / 100,
           uptimeMs: uptime,
-          memoryEstimateKB: Math.round(estimatedMemoryUsage.totalEstimated),
+          memoryEstimateKB: Math.round(estimatedMemoryUsage.totalEstimated)
         }
       },
 
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
         lastSync: stats.lastSync,
         syncAge: Date.now() - stats.lastSync,
         password: 'redis', // From env
-        url: 'localhost:6379',
+        url: 'localhost:6379'
       },
 
       // CUDA/SIMD acceleration;
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
         cudaAvailable,
         simdCapabilities: cudaStats?.simd_capabilities || null,
         gpuCapabilities: cudaStats?.gpu_capabilities || null,
-        estimatedOpsPerSecond: cudaStats?.performance_metrics?.estimated_ops_per_second || 0,
+        estimatedOpsPerSecond: cudaStats?.performance_metrics?.estimated_ops_per_second || 0
       },
 
       // System health;
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
         status: determineHealthStatus(stats, cudaAvailable),
         redisLatency: stats.redisConnected ? 'low' : 'n/a',
         predictionAccuracy: 'high', // Would need training data to calculate
-        cacheHitRate: stats.redisConnected ? 'high' : 'n/a',
+        cacheHitRate: stats.redisConnected ? 'high' : 'n/a'
       },
 
       // Integration status;
@@ -83,10 +83,10 @@ export const GET: RequestHandler = async ({ url }) => {
         postgresqlReady: true, // Assume ready if service is running
         pgvectorEnabled: true,
         embeddinggemmaReady: cudaAvailable,
-        simdAcceleration: cudaStats?.simd_capabilities?.avx2_enabled || false,
+        simdAcceleration: cudaStats?.simd_capabilities?.avx2_enabled || false
       },
 
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     // Add debug info if requested
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
       detailedStats.debug = {
         memoryBreakdown: estimatedMemoryUsage,
         cudaFullStats: cudaStats,
-        rawPredictorStats: stats,
+        rawPredictorStats: stats
       };
     }
 
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: Date.now(),
         fallback: {
           status: 'error',
-          message: error instanceof Error ? error.message: 'Unknown error',
+          message: error instanceof Error ? error.message: 'Unknown error'
         }
       },
       { status: 500 }
@@ -131,7 +131,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
         success: true,
         message: 'Hard reset completed - all data cleared',
         resetType: 'hard',
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
 
     } else {
@@ -145,9 +145,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
         stats: {
           totalTransitions: stats.totalTransitions,
           uniqueActions: stats.uniqueActions,
-          redisConnected: stats.redisConnected,
+          redisConnected: stats.redisConnected
         },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }
 

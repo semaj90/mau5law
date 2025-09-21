@@ -15,7 +15,7 @@ export interface AIChat {
   temperature?: number;
   maxTokens?: number;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface AIStreamResponse {

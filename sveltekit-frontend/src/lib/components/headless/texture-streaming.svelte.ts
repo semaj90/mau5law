@@ -11,7 +11,7 @@ export interface TextureStreamingConfig {
 	maxChunkSize: number;
 	cacheSize: number;
 	adaptiveQuality: boolean;
-	compressionEnabled: boolean;,
+	compressionEnabled: boolean;
 }
 
 export interface StreamingStats {
@@ -20,7 +20,7 @@ export interface StreamingStats {
 	renderTime: number;
 	qualityLevel: number;
 	hasWebGL: boolean;
-	hasWASM: boolean;,
+	hasWASM: boolean;
 }
 
 /**
@@ -49,7 +49,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 		renderTime: 0,
 		qualityLevel: 1.0,
 		hasWebGL: false,
-		hasWASM: false,
+		hasWASM: false
 	});
 
 	// Configuration state;
@@ -60,7 +60,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 		adaptiveQuality: true,
 		compressionEnabled: true,
 		...config
-	,});
+	});
 
 	/**
 	 * Initialize the texture streaming pipeline
@@ -230,7 +230,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 				renderTime: pipelineStats.renderTime,
 				qualityLevel: pipelineStats.adaptiveQualityLevel,
 				hasWebGL: pipelineStats.hasWebGL,
-				hasWASM: pipelineStats.hasWASM,
+				hasWASM: pipelineStats.hasWASM
 			};
 		}
 	}

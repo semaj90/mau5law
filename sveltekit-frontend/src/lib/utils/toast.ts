@@ -52,7 +52,7 @@ function getToastStyles(type: string): string {
     success: 'bg-green-500 text-white',
     error: 'bg-red-500 text-white',
     warning: 'bg-yellow-500 text-black',
-    info: 'bg-blue-500 text-white',
+    info: 'bg-blue-500 text-white'
   };
   return styles[type as keyof typeof styles] || styles.info;
 }

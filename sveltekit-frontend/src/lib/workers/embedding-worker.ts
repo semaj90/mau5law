@@ -32,7 +32,7 @@ export interface EmbeddingTask {
   texts: string[];
   batchSize: number;
   model: string;
-  dimensions: number;,
+  dimensions: number;
 }
 
 export interface ChunkingTask {
@@ -46,7 +46,7 @@ export interface SimilarityTask {
   queryEmbedding: number[];
   targetEmbeddings: number[][];
   threshold: number;
-  maxResults: number;,
+  maxResults: number;
 }
 
 // Worker implementation;
@@ -88,13 +88,13 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         this.postResponse({
           id,
           success: true,
-          data: result,
+          data: result
         });
       } catch (error: any) {
         this.postResponse({
           id,
           success: false,
-          error: error instanceof Error ? error.message: 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error'
         });
       }
     }
@@ -133,7 +133,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
             errors.push({
               index: i + index,
               content: text.substring(0, 100) + '...',
-              error: error instanceof Error ? error.message: 'Unknown error',
+              error: error instanceof Error ? error.message: 'Unknown error'
             });
           });
         }
@@ -150,7 +150,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           tokenCount: this.estimateTokenCount(texts),
           embeddingDimensions: dimensions,
           cacheHits: 0,
-          cacheMisses: texts.length,
+          cacheMisses: texts.length
         }
       };
     }
@@ -171,7 +171,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
             chunkIndex: index,
             totalChunks: chunks.length,
             startIndex: content.indexOf(chunk),
-            endIndex: content.indexOf(chunk) + chunk.length,
+            endIndex: content.indexOf(chunk) + chunk.length
           }
         });
         
@@ -242,9 +242,9 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         content: text,
         metadata: {
           tokenCount: Math.ceil(text.length / 4),
-          processingTime: Math.random() * 100,
+          processingTime: Math.random() * 100
         },
-        processingTime: Math.random() * 100,
+        processingTime: Math.random() * 100
       });
     }
     
@@ -309,7 +309,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         avgSentencesPerParagraph: sentences.length / paragraphs.length,
         readabilityScore: this.calculateReadabilityScore(words, sentences),
         keyPhrases: this.extractKeyPhrases(text),
-        sentiment: this.analyzeSentiment(text),
+        sentiment: this.analyzeSentiment(text)
       };
     }
     

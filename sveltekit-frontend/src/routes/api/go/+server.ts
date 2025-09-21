@@ -140,9 +140,9 @@ async function makeServiceRequest(
     headers: {
       'Content-Type': 'application/json',
       'User-Agent': 'SvelteKit-Proxy/1.0.0',
-      ...headers,
+      ...headers
     },
-    signal: AbortSignal.timeout(timeout),
+    signal: AbortSignal.timeout(timeout)
   };
 
   if (data && ['POST', 'PUT', 'PATCH'].includes(method)) {
@@ -161,7 +161,7 @@ async function makeServiceRequest(
       success: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).ok,
       status: (response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).status,
       data: responseData,
-      headers: Object.fromEntries((response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.entries()),
+      headers: Object.fromEntries((response as { headers?: any; json?: any; text?: any; ok?: any; status?: any }).headers.entries())
     };
   } catch (err: any) {
     console.error(`Go service request failed for ${url}:`, err);
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (!service || !GO_SERVICES[service]) {
       throw error(400, ensureError({
         message: `Invalid service: ${service}. Available services: ${Object.keys(GO_SERVICES).join(', ')}`,
-        code: 'INVALID_SERVICE',
+        code: 'INVALID_SERVICE'
       });
     }
 
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (!endpoint) {
       throw error(400, ensureError({
         message: 'Endpoint is required',
-        code: 'MISSING_ENDPOINT',
+        code: 'MISSING_ENDPOINT'
       });
     }
 
@@ -205,7 +205,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (!serviceConfig.protocols.includes(protocol)) {
       throw error(400, ensureError({
         message: `Service ${service} doesn't support protocol ${protocol}. Supported: ${serviceConfig.protocols.join(', ')}`,
-        code: 'UNSUPPORTED_PROTOCOL',
+        code: 'UNSUPPORTED_PROTOCOL'
       });
     }
 
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const clientHeaders = {
       'X-Client-IP': getClientAddress(),
       'X-Forwarded-By': 'SvelteKit-Proxy',
-      ...headers,
+      ...headers
     };
 
     // Route request to appropriate Go service
@@ -238,15 +238,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         protocol,
         status: (result as { success?: any; data?: any; status?: any; headers?: any }).status,
         timestamp: new Date().toISOString(),
-        version: '1.0.0',
+        version: '1.0.0'
       }
     }, {
       status: (result as { success?: any; data?: any; status?: any; headers?: any }).success ? 200 : (result as { success?: any; data?: any; status?: any; headers?: any }).status || 500,
       headers: {
         'Content-Type': 'application/json',
-        ...(dev && { 'Access-Control-Allow-Origin': '*' ,}),
+        ...(dev && { 'Access-Control-Allow-Origin': '*' }),
         // Forward relevant headers from Go service
-        ...((result as { success?: any; data?: any; status?: any; headers?: any ,}).headers['content-encoding'] && { 'Content-Encoding': (result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] }),
+        ...((result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] && { 'Content-Encoding': (result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] })
       }
     });
 
@@ -262,7 +262,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       code: err.body?.code || 'GO_SERVICE_ERROR',
       meta: {
         timestamp: new Date().toISOString(),
-        version: '1.0.0',
+        version: '1.0.0'
       }
     }, { 
       status: statusCode,
@@ -284,9 +284,9 @@ export const GET: RequestHandler = async () => {
             config: {
               baseUrl: config.baseUrl,
               protocols: config.protocols,
-              capabilities: config.capabilities,
+              capabilities: config.capabilities
             },
-            response: healthCheck.data,
+            response: healthCheck.data
           };
         } catch (err: any) {
           return {
@@ -295,9 +295,9 @@ export const GET: RequestHandler = async () => {
             config: {
               baseUrl: config.baseUrl,
               protocols: config.protocols,
-              capabilities: config.capabilities,
+              capabilities: config.capabilities
             },
-            error: err.message,
+            error: err.message
           };
         }
       })
@@ -314,25 +314,25 @@ export const GET: RequestHandler = async () => {
           status: healthyServices === totalServices ? 'healthy' : 'degraded',
           services: {
             healthy: healthyServices,
-            total: totalServices,
+            total: totalServices
           }
         },
         services: serviceStatus,
         capabilities: {
           routing: ['json', 'protobuffer'],
           protocols: ['http', 'quic', 'grpc'],
-          features: ['ai', 'rag', 'gpu', 'file-upload', 'legal-grpc'],
+          features: ['ai', 'rag', 'gpu', 'file-upload', 'legal-grpc']
         }
       },
       meta: {
         timestamp: new Date().toISOString(),
-        version: '1.0.0',
+        version: '1.0.0'
       }
     }, {
       status: healthyServices > 0 ? 200 : 503,
       headers: {
         'Content-Type': 'application/json',
-        ...(dev && { 'Access-Control-Allow-Origin': '*' ,}),
+        ...(dev && { 'Access-Control-Allow-Origin': '*' })
       }
     });
 
@@ -345,7 +345,7 @@ export const GET: RequestHandler = async () => {
       code: 'STATUS_CHECK_FAILED',
       meta: {
         timestamp: new Date().toISOString(),
-        version: '1.0.0',
+        version: '1.0.0'
       }
     }, { 
       status: 500,

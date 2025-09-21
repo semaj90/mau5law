@@ -37,13 +37,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		// Validate request;
 		if (!body.service || !body.operation) {
 			throw error(400, ensureError({
-				message: 'Invalid GPU request: service and operation are required',
+				message: 'Invalid GPU request: service and operation are required'
 			});
 		}
 
 		if (!body.data || !Array.isArray(body.data) || body.data.length === 0) {
 			throw error(400, ensureError({
-				message: 'Invalid GPU request: data array is required and cannot be empty',
+				message: 'Invalid GPU request: data array is required and cannot be empty'
 			});
 		}
 
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				...body,
 				gpu_acceleration: true,
 				frontend_request: true,
-				timestamp: Date.now(),
+				timestamp: Date.now()
 			})
 		});
 
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			...result,
 			api_version: '1.0.0',
 			proxy_processed: true,
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		});
 
 	} catch (err: any) {
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			error: 'GPU processing service unavailable',
 			details: err instanceof Error ? err.message: 'Unknown error',
 			fallback_available: true,
-			gpu_utilized: false,
+			gpu_utilized: false
 		}, { status: 503 });
 	}
 };
@@ -143,15 +143,15 @@ export const GET: RequestHandler = async () => {
 				services_supported: ['legal', 'rag', 'upload', 'indexer', 'typescript', 'embedding'],
 				operations_supported: ['embedding', 'similarity', 'clustering', 'som_train', 'autoindex'],
 				gpu_model: status?.gpu_model || 'Unknown',
-				cuda_available: status?.gpu_available || false,
+				cuda_available: status?.gpu_available || false
 			},
 			performance: {
 				expected_latency: '5-25ms',
 				throughput: '500+ operations/second', 
 				speedup_vs_cpu: '3-10x faster',
-				concurrent_requests: '4-8 parallel',
+				concurrent_requests: '4-8 parallel'
 			},
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		});
 
 	} catch (err: any) {
@@ -163,7 +163,7 @@ export const GET: RequestHandler = async () => {
 			health: { status: 'error', message: 'GPU service unavailable' },
 			gpu_status: { gpu_available: false },
 			error: err instanceof Error ? err.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 503 });
 	}
 };

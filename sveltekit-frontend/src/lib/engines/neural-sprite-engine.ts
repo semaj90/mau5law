@@ -39,7 +39,7 @@ export interface UserActivity {
   context: Record<string, any>;
   timestamp: number;
   canvasState?: string; // Current canvas state when action occurred
-  sequence: number; // Position in user's action sequence,
+  sequence: number; // Position in user's action sequence
 }
 
 export interface AnimationSequence {
@@ -49,7 +49,7 @@ export interface AnimationSequence {
   loop: boolean;
   fps: number;
   triggers: string[];
-  confidence: number; // AI confidence this sequence will be used,
+  confidence: number; // AI confidence this sequence will be used
 }
 
 // Self-Organizing Map Node;
@@ -60,7 +60,7 @@ export interface SOMNode {
   activationHistory: number[];
   connectedSprites: string[];
   learningRate: number;
-  neighborhoodRadius: number;,
+  neighborhoodRadius: number;
 }
 
 // Multi-core Processing Task;
@@ -84,7 +84,7 @@ export interface PerformanceMetrics {
   memoryUsage: number;
   cpuUsage: number;
   predictiveAccuracy: number;
-  selfOrganizationEfficiency: number;,
+  selfOrganizationEfficiency: number;
 }
 
 // Main Self-Organizing Neural Sprite Engine class;
@@ -100,7 +100,7 @@ export class NeuralSpriteEngine {
   private somNodes: Map<string, SOMNode> = new Map();
   private somGridSize: { width: number; height: number } = {
     width: 10,
-    height: 10,
+    height: 10
   };
   private globalLearningRate = 0.1;
   private neighborhoodDecay = 0.95;
@@ -139,14 +139,14 @@ export class NeuralSpriteEngine {
     queueDepth: 0,
     tasksPerSecond: 0,
     averageTaskTime: 0,
-    cpuUtilization: 0,
+    cpuUtilization: 0
   });
 
   public selfOrganizationStats = writable({
     convergenceRate: 0,
     adaptationSpeed: 0,
     clusterFormation: 0,
-    neuralEfficiency: 0,
+    neuralEfficiency: 0
   });
 
 
@@ -160,7 +160,7 @@ export class NeuralSpriteEngine {
     this.shaderCache = new ShaderCache(context, {
       enableNVIDIAOptimizations: false,
       cacheSize: 50,
-      persistToDisk: false,
+      persistToDisk: false
     });
     
     // Initialize browser cache with defaults;
@@ -168,14 +168,14 @@ export class NeuralSpriteEngine {
       cachePrefix: "neural-sprite-",
       maxCacheSize: 100 * 1024 * 1024,
       enableCompression: true,
-      enableServiceWorkerIntegration: false,
+      enableServiceWorkerIntegration: false
     });
     
     // Initialize matrix lib with defaults;
     this.matrixLib = new MatrixTransformLib({
       enableGPUAcceleration: false,
       optimizeForCSS: true,
-      cacheTransforms: true,
+      cacheTransforms: true
     });
 
     this.initializeDatabase();
@@ -191,7 +191,7 @@ export class NeuralSpriteEngine {
       autoload: true,
       autoloadCallback: this.databaseInitialize.bind(this),
       autosave: true,
-      autosaveInterval: 4000,
+      autosaveInterval: 4000
     } as any);
   }
 
@@ -246,7 +246,7 @@ export class NeuralSpriteEngine {
         preserveDrawingBuffer: true,
         powerPreference: "high-performance",
         antialias: false,
-        alpha: false,
+        alpha: false
       }) as WebGL2RenderingContext || undefined;
 
       // Update shader cache with actual context;
@@ -254,7 +254,7 @@ export class NeuralSpriteEngine {
         this.shaderCache = new ShaderCache(this.webglContext, {
           enableNVIDIAOptimizations: true,
           cacheSize: 50,
-          persistToDisk: true,
+          persistToDisk: true
         });
       }
     } catch (error) {
@@ -281,7 +281,7 @@ export class NeuralSpriteEngine {
           connectedSprites: [],
           learningRate: this.globalLearningRate,
           neighborhoodRadius:
-            Math.min(this.somGridSize.width, this.somGridSize.height) / 2,
+            Math.min(this.somGridSize.width, this.somGridSize.height) / 2
         };
 
         // Initialize weights randomly;
@@ -399,7 +399,7 @@ export class NeuralSpriteEngine {
                 spriteId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.id,
                 features: processSprite((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite),
                 complexity: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.metadata.complexity,
-                timestamp: Date.now(),
+                timestamp: Date.now()
               };
               break;
 
@@ -419,7 +419,7 @@ export class NeuralSpriteEngine {
               result = {
                 spriteId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.id,
                 predictedStates: predictNextStates((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite, (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).recentActivities),
-                confidence: 0.7 + Math.random() * 0.2,
+                confidence: 0.7 + Math.random() * 0.2
               };
               break;
 
@@ -432,7 +432,7 @@ export class NeuralSpriteEngine {
               break;
 
             default:
-              throw new Error('Unknown task type: ' + type);,
+              throw new Error('Unknown task type: ' + type);
           }
 
           self.postMessage({ id, result, error: null });
@@ -444,7 +444,7 @@ export class NeuralSpriteEngine {
     `;
 
     const workerBlob = new Blob([workerCode], {
-      type: "application/javascript",
+      type: "application/javascript"
     });
     const workerUrl = URL.createObjectURL(workerBlob);
 
@@ -512,7 +512,7 @@ export class NeuralSpriteEngine {
     worker.postMessage({
       id: task.id,
       type: task.type,
-      data: task.data,
+      data: task.data
     });
 
     this.updateMultiCoreMetrics();
@@ -625,8 +625,8 @@ export class NeuralSpriteEngine {
           node: bestNode,
           inputVector: features,
           learningRate: this.globalLearningRate,
-          neighborhoodRadius: bestNode.neighborhoodRadius,
-        },
+          neighborhoodRadius: bestNode.neighborhoodRadius
+        }
       });
     }
   }
@@ -678,7 +678,7 @@ export class NeuralSpriteEngine {
       queueDepth,
       tasksPerSecond: completedTasksInLastSecond,
       averageTaskTime: avgTaskTime,
-      cpuUtilization: (this.activeWorkers / this.maxWorkers) * 100,
+      cpuUtilization: (this.activeWorkers / this.maxWorkers) * 100
     });
   }
 
@@ -693,7 +693,7 @@ export class NeuralSpriteEngine {
         node.activationHistory.length > 0
           ? node.activationHistory[node.activationHistory.length - 1]
           : 0,
-      sprites: node.connectedSprites.length,
+      sprites: node.connectedSprites.length
     });
 
     // Generate connections between nearby nodes
@@ -713,7 +713,7 @@ export class NeuralSpriteEngine {
             connections.push({
               from: nodeA.id,
               to: nodeB.id,
-              strength,
+              strength
             });
           }
         }
@@ -763,7 +763,7 @@ export class NeuralSpriteEngine {
       convergenceRate,
       adaptationSpeed,
       clusterFormation,
-      neuralEfficiency,
+      neuralEfficiency
     });
   }
 
@@ -792,10 +792,10 @@ export class NeuralSpriteEngine {
       metadata: {
         objects: this.canvas.getObjects().length,
         complexity,
-        triggers,
+        triggers
       },
       createdAt: Date.now(),
-      usageCount: 0,
+      usageCount: 0
     };
 
     this.sprites.insert(sprite);
@@ -805,7 +805,7 @@ export class NeuralSpriteEngine {
       id: `sprite_analysis_${sprite.id}`,
       type: "sprite_analysis",
       priority: "medium",
-      data: { sprite },
+      data: { sprite }
     });
 
     // Submit prediction task for AI analysis
@@ -814,14 +814,14 @@ export class NeuralSpriteEngine {
       id: `prediction_${sprite.id}`,
       type: "prediction",
       priority: "low",
-      data: { sprite, recentActivities },
+      data: { sprite, recentActivities }
     });
 
     // Send to AI worker for embedding generation (legacy support);
     if (this.aiWorker) {
       this.aiWorker.postMessage({
         type: "GENERATE_EMBEDDING",
-        sprite,
+        sprite
       });
     }
 
@@ -863,8 +863,8 @@ export class NeuralSpriteEngine {
       priority: "low",
       data: {
         sprites: this.sprites.find().slice(0, 20), // Top 20 sprites for analysis
-        currentSprite: sprite,
-      },
+        currentSprite: sprite
+      }
     });
 
     // 3. Enhanced loading with GPU acceleration and multi-core processing;
@@ -908,7 +908,7 @@ export class NeuralSpriteEngine {
               this.shaderCache.applyTransforms({
                 matrix: transforms.webgl,
                 opacity: 1.0,
-                blend: "normal",
+                blend: "normal"
               });
             }
 
@@ -971,8 +971,8 @@ export class NeuralSpriteEngine {
           .map((frameId: string) => this.sprites.findOne({ id: frameId })
           .filter(Boolean),
         animationType: "sequence",
-        expectedFps: sequence.fps,
-      },
+        expectedFps: sequence.fps
+      }
     });
 
     let frameIndex = 0;
@@ -1040,7 +1040,7 @@ export class NeuralSpriteEngine {
       context,
       timestamp: Date.now(),
       canvasState: currentCanvasState,
-      sequence: this.activities.count(),
+      sequence: this.activities.count()
     };
 
     this.activities.insert(activity);
@@ -1058,9 +1058,9 @@ export class NeuralSpriteEngine {
         contextInfo: {
           totalActivities: this.activities.count(),
           sessionDuration: Date.now() - this.startTime,
-          averageComplexity: this.calculateAverageComplexity(),
-        },
-      },
+          averageComplexity: this.calculateAverageComplexity()
+        }
+      }
     });
 
     // Send to AI worker for pattern analysis (legacy support);
@@ -1068,7 +1068,7 @@ export class NeuralSpriteEngine {
       this.aiWorker.postMessage({
         type: "ANALYZE_PATTERN",
         activity,
-        recentActivities,
+        recentActivities
       });
     }
 
@@ -1109,7 +1109,7 @@ export class NeuralSpriteEngine {
       loop: sequenceData.loop || false,
       fps: sequenceData.fps || 24,
       triggers: sequenceData.triggers || [],
-      confidence: sequenceData.confidence || 0.7,
+      confidence: sequenceData.confidence || 0.7
     };
 
     this.sequences.insert(sequence);
@@ -1197,10 +1197,10 @@ export class NeuralSpriteEngine {
       metadata: {
         objects: 0,
         complexity: 1,
-        triggers: ["init", "reset"],
+        triggers: ["init", "reset"]
       },
       createdAt: Date.now(),
-      usageCount: 0,
+      usageCount: 0
     });
   }
 
@@ -1220,7 +1220,7 @@ export class NeuralSpriteEngine {
     return {
       hits: this.cacheHits,
       misses: this.cacheMisses,
-      hitRate: isNaN(hitRate) ? 1.0 : hitRate,
+      hitRate: isNaN(hitRate) ? 1.0 : hitRate
     };
   }
 
@@ -1345,7 +1345,7 @@ export function createPerformanceStores(engine: NeuralSpriteEngine) {
         overall:
           $multiCore.cpuUtilization < 80 && $somStats.neuralEfficiency > 60
             ? "healthy"
-            : "degraded",
+            : "degraded"
       })
     ),
 
@@ -1353,7 +1353,7 @@ export function createPerformanceStores(engine: NeuralSpriteEngine) {
       [
         engine.cacheHitRate,
         engine.multiCoreMetrics,
-        engine.selfOrganizationStats,
+        engine.selfOrganizationStats
       ],
       ([$hitRate, $multiCore, $somStats]) => ({
         efficiency: Math.round(
@@ -1371,8 +1371,8 @@ export function createPerformanceStores(engine: NeuralSpriteEngine) {
         resourceUtilization: Math.round(
           (100 - $multiCore.cpuUtilization) * 0.6 +
             $somStats.neuralEfficiency * 0.4
-        ),
+        )
       })
-    ),
+    )
   };
 }

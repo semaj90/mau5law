@@ -17,7 +17,7 @@ export interface CacheConfig {
 }
 
 export interface ResponseWithCacheHeaders extends Response {
-  headers: Headers;,
+  headers: Headers;
 }
 
 /**
@@ -29,7 +29,7 @@ export const CACHE_STRATEGIES = {
     maxAge: 3600,
     staleWhileRevalidate: 86400, // 1 day
     staleIfError: 604800, // 1 week
-    private: false,
+    private: false
   },
   
   // Vector search results - 30 minutes with background refresh;
@@ -37,21 +37,21 @@ export const CACHE_STRATEGIES = {
     maxAge: 1800,
     staleWhileRevalidate: 3600,
     staleIfError: 7200,
-    private: false,
+    private: false
   },
   
   // AI responses - 15 minutes, private cache;
   AI_RESPONSES: {
     maxAge: 900,
     staleWhileRevalidate: 1800,
-    private: true,
+    private: true
   },
   
   // Legal document summaries - 1 hour;
   DOCUMENT_SUMMARIES: {
     maxAge: 3600,
     staleWhileRevalidate: 7200,
-    private: false,
+    private: false
   },
   
   // User-specific data - short cache, private;
@@ -59,20 +59,20 @@ export const CACHE_STRATEGIES = {
     maxAge: 300,
     staleWhileRevalidate: 600,
     private: true,
-    mustRevalidate: true,
+    mustRevalidate: true
   },
   
   // Real-time data - minimal caching;
   REALTIME: {
     maxAge: 60,
     mustRevalidate: true,
-    private: true,
+    private: true
   },
   
   // Immutable content (with versioned URLs);
   IMMUTABLE: {
     maxAge: 31536000, // 1 year
-    private: false,
+    private: false
   }
 } as const;
 
@@ -187,7 +187,7 @@ export function cachedJson(
   return applyCacheHeaders(response, strategy, {
     content: data,
     generateETag: options.generateETag ?? true,
-    lastModified: options.lastModified,
+    lastModified: options.lastModified
   });
 }
 
@@ -222,7 +222,7 @@ export function checkConditionalHeaders(
   
   return {
     isNotModified,
-    shouldSend304: isNotModified,
+    shouldSend304: isNotModified
   };
 }
 
@@ -295,7 +295,7 @@ export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>
     return cachedJson(data, strategy, {
       status: response.status,
       generateETag: options.generateETag,
-      lastModified: options.getLastModified?.(...args),
+      lastModified: options.getLastModified?.(...args)
     });
   }) as T;
 }

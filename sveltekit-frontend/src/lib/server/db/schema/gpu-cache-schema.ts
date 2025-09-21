@@ -69,7 +69,7 @@ export const shaderCacheEntries = pgTable("shader_cache_entries", {
   // Audit fields
   createdBy: uuid("created_by"), // references users.id
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
 }, (table) => ({
   // Indexes for performance
   cacheKeyIdx: index("shader_cache_key_idx").on(table.cacheKey),
@@ -83,7 +83,7 @@ export const shaderCacheEntries = pgTable("shader_cache_entries", {
   // pgvector index for semantic similarity;
   embeddingIdx: index("shader_embedding_hnsw_idx").using("hnsw", table.embedding).with({ 
     m: 16, 
-    ef_construction: 64 ,
+    ef_construction: 64 
   })
 });
 
@@ -152,7 +152,7 @@ export const shaderDependencies = pgTable("shader_dependencies", {
   parentIdx: index("parent_shader_idx").on(table.parentShaderCacheId),
   dependentIdx: index("dependent_shader_idx").on(table.dependentShaderCacheId),
   dependencyTypeIdx: index("dependency_type_idx").on(table.dependencyType),
-  priorityIdx: index("load_order_priority_idx").on(table.loadOrderPriority),
+  priorityIdx: index("load_order_priority_idx").on(table.loadOrderPriority)
 });
 
 // Predictive preload cache for reinforcement learning;
@@ -244,13 +244,13 @@ export const shaderCacheEntriesRelations = relations(shaderCacheEntries, ({ many
   dependencies: many(shaderDependencies, { relationName: "parent_dependencies" }),
   dependents: many(shaderDependencies, { relationName: "dependent_shaders" }),
   preloadQueue: many(shaderPreloadQueue),
-  performanceMetrics: many(shaderPerformanceMetrics),
+  performanceMetrics: many(shaderPerformanceMetrics)
 });
 
 export const shaderUserPatternsRelations = relations(shaderUserPatterns, ({ one }) => ({
   shaderCache: one(shaderCacheEntries, {
     fields: [shaderUserPatterns.shaderCacheId],
-    references: [shaderCacheEntries.id],
+    references: [shaderCacheEntries.id]
   })
 });
 
@@ -258,26 +258,26 @@ export const shaderDependenciesRelations = relations(shaderDependencies, ({ one 
   parentShader: one(shaderCacheEntries, {
     fields: [shaderDependencies.parentShaderCacheId],
     references: [shaderCacheEntries.id],
-    relationName: "parent_dependencies",
+    relationName: "parent_dependencies"
   }),
   dependentShader: one(shaderCacheEntries, {
     fields: [shaderDependencies.dependentShaderCacheId],
     references: [shaderCacheEntries.id],
-    relationName: "dependent_shaders",
+    relationName: "dependent_shaders"
   })
 });
 
 export const shaderPreloadQueueRelations = relations(shaderPreloadQueue, ({ one }) => ({
   shaderCache: one(shaderCacheEntries, {
     fields: [shaderPreloadQueue.shaderCacheId],
-    references: [shaderCacheEntries.id],
+    references: [shaderCacheEntries.id]
   })
 });
 
 export const shaderPerformanceMetricsRelations = relations(shaderPerformanceMetrics, ({ one }) => ({
   shaderCache: one(shaderCacheEntries, {
     fields: [shaderPerformanceMetrics.shaderCacheId],
-    references: [shaderCacheEntries.id],
+    references: [shaderCacheEntries.id]
   })
 });
 
@@ -301,7 +301,7 @@ export interface ShaderCacheConfig {
   maxCacheSize: number;
   preloadThreshold: number;
   reinforcementLearningEnabled: boolean;
-  predictivePreloadEnabled: boolean;,
+  predictivePreloadEnabled: boolean;
 }
 
 export interface ShaderPredictionContext {
@@ -317,7 +317,7 @@ export interface ReinforcementReward {
   reward: number;
   context: string;
   performanceBonus: number;
-  userSatisfactionScore: number;,
+  userSatisfactionScore: number;
 }
 
 export interface PredictionResult {
@@ -325,5 +325,5 @@ export interface PredictionResult {
   confidence: number;
   model: string;
   features: Record<string, any>;
-  priority: number;,
+  priority: number;
 }

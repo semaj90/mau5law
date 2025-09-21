@@ -20,7 +20,7 @@ export interface LegalWorkflowStage {
   nextStages: Array<{
     stage: string;
     probability: number;
-    timeEstimate: number;,
+    timeEstimate: number;
   }>;
 }
 
@@ -31,7 +31,7 @@ export interface LegalDocumentProfile {
   complexity: 'simple' | 'moderate' | 'complex' | 'highly_complex';
   urgency: 'routine' | 'priority' | 'urgent' | 'emergency';
   requiredAssets: string[];
-  recommendedActions: string[];,
+  recommendedActions: string[];
 }
 
 // Asset preloading strategies for different legal contexts;
@@ -39,7 +39,7 @@ export interface AssetPreloadingStrategy {
   immediate: string[];     // Load instantly (< 100ms)
   background: string[];    // Load in background (< 2s)
   predictive: string[];    // Predict and cache (< 5s)
-  ondemand: string[];      // Load when explicitly requested,
+  ondemand: string[];      // Load when explicitly requested
 }
 
 export class LegalWorkflowOrchestrator {
@@ -65,7 +65,7 @@ export class LegalWorkflowOrchestrator {
     prediction: HybridPredictionResult;
     workflowGuidance: WorkflowGuidance;
     preloadingStrategy: AssetPreloadingStrategy;
-    nextSteps: NextStepRecommendation[];,
+    nextSteps: NextStepRecommendation[];
   }> {
     // Get hybrid prediction combining semantic + behavioral intelligence
     const prediction = userQuery
@@ -140,7 +140,7 @@ export class LegalWorkflowOrchestrator {
       immediate: [],
       background: [],
       predictive: [],
-      ondemand: [],
+      ondemand: []
     };
 
     // Categorize assets based on prediction confidence and system performance;
@@ -183,7 +183,7 @@ export class LegalWorkflowOrchestrator {
           priority: Math.round(nextStage.probability * 100),
           timeEstimate: nextStage.timeEstimate,
           reasoning: `${(nextStage.probability * 100).toFixed(1)}% chance of progressing to ${nextStage.stage}`,
-          assets: this.getStageAssets(nextStage.stage),
+          assets: this.getStageAssets(nextStage.stage)
         });
       }
     }
@@ -486,7 +486,7 @@ export class LegalWorkflowOrchestrator {
 
     return {
       essential: stage.expectedAssets.slice(0, 2),
-      recommended: stage.expectedAssets.slice(2),
+      recommended: stage.expectedAssets.slice(2)
     };
   }
 
@@ -501,7 +501,7 @@ export class LegalWorkflowOrchestrator {
       assetType,
       sessionId: context.sessionId,
       generatedAt: new Date().toISOString(),
-      workflowStage: context.workflowStage,
+      workflowStage: context.workflowStage
     };
 
     // Add specific data based on asset type;
@@ -513,7 +513,7 @@ export class LegalWorkflowOrchestrator {
       case 'legal_database':
         return { ...baseData, searchConfig: { domain: context.documentContext?.domain } };
       default:
-        return baseData;,
+        return baseData;
     }
   }
 
@@ -525,7 +525,7 @@ export class LegalWorkflowOrchestrator {
       fromStage: context.workflowStage,
       timestamp: new Date().toISOString(),
       predictionConfidence: prediction.fusedInsights.confidenceScore,
-      sessionId: context.sessionId,
+      sessionId: context.sessionId
     };
 
     await this.redis.lpush('workflow:transitions', JSON.stringify(transitionData);
@@ -543,7 +543,7 @@ interface WorkflowGuidance {
   documentSpecificGuidance: string;
   efficiencyTips: string[];
   riskAlerts: string[];
-  qualityChecklist: string[];,
+  qualityChecklist: string[];
 }
 
 interface NextStepRecommendation {
@@ -552,7 +552,7 @@ interface NextStepRecommendation {
   priority: number;
   timeEstimate: number;
   reasoning: string;
-  assets: string[];,
+  assets: string[];
 }
 
 export { WorkflowGuidance, NextStepRecommendation, AssetPreloadingStrategy };

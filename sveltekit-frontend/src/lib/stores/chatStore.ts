@@ -52,7 +52,7 @@ export interface ServiceStatus {
   ollama: "unknown" | "loading" | "connected" | "error";
   qdrant: "unknown" | "loading" | "connected" | "error";
   database: "unknown" | "loading" | "connected" | "error";
-  gemma3: "unknown" | "loading" | "ready" | "error";,
+  gemma3: "unknown" | "loading" | "ready" | "error";
 }
 
 // === CHAT STATE INTERFACE ===;
@@ -84,7 +84,7 @@ const initialState: ChatContext = {
   isLoading: false,
   isTyping: false,
   isStreaming: false,
-  modelStatus: "unknown",
+  modelStatus: "unknown"
   }); const settings = {
     model: "gemma3-legal",
     temperature: 0.1,
@@ -94,15 +94,15 @@ const initialState: ChatContext = {
     proactiveMode: true,
     emotionalMode: false,
     legalMode: true,
-    citationMode: true,
+    citationMode: true
   },
   contextInjection: {
     enabled: false,
     documents: [],
     vectorResults: [],
     precedents: [],
-    caseContext: null,
-  },
+    caseContext: null
+  }
 };
 
 // === MAIN STORE ===
@@ -113,7 +113,7 @@ export const serviceStatus = writable<ServiceStatus>({
   ollama: "unknown",
   qdrant: "unknown",
   database: "unknown",
-  gemma3: "unknown",
+  gemma3: "unknown"
 });
 
 // === DERIVED STORES ===
@@ -145,15 +145,15 @@ export const chatActions = {
       metadata: {
         caseType: caseType || "general",
         jurisdiction: "federal",
-        precedents: [],
-      },
+        precedents: []
+      }
     };
 
     chatStore.update((state) => ({
       ...state,
       currentConversation: conversation,
       conversations: [conversation, ...state.conversations],
-      messages: [],
+      messages: []
     });
 
     return conversation.id;
@@ -168,7 +168,7 @@ export const chatActions = {
       return {
         ...state,
         currentConversation: conversation || null,
-        messages: conversation?.messages || [],
+        messages: conversation?.messages || []
       };
     });
   },
@@ -187,8 +187,8 @@ export const chatActions = {
           metadata: {
             caseType: "general",
             jurisdiction: "federal",
-            precedents: [],
-          },
+            precedents: []
+          }
         };
         state.currentConversation = conversation;
         state.conversations = [conversation, ...state.conversations];
@@ -200,7 +200,7 @@ export const chatActions = {
         role,
         timestamp: new Date(),
         conversationId: state.currentConversation.id,
-        metadata,
+        metadata
       };
 
       const updatedMessages = [...state.messages, message];
@@ -218,7 +218,7 @@ export const chatActions = {
 
       return {
         ...state,
-        messages: updatedMessages,
+        messages: updatedMessages
       };
     });
   },
@@ -231,7 +231,7 @@ export const chatActions = {
       ...state,
       isLoading: true,
       isTyping: true,
-      error: null,
+      error: null
     });
 
     try {
@@ -242,8 +242,8 @@ export const chatActions = {
           message: content,
           conversationId: getCurrentConversationId(),
           settings: getSettings(),
-          contextInjection: getContextInjection(),
-        }),
+          contextInjection: getContextInjection()
+        })
       });
 
       if (!response.ok) {
@@ -260,7 +260,7 @@ export const chatActions = {
           tokensUsed: data.tokensUsed,
           references: data.references,
           confidence: data.confidence,
-          legalContext: data.legalContext,
+          legalContext: data.legalContext
         });
       }
     } catch (error: any) {
@@ -268,14 +268,14 @@ export const chatActions = {
       chatStore.update((state) => ({
         ...state,
         error:
-          error instanceof Error ? error : new Error("Failed to send message"),
+          error instanceof Error ? error : new Error("Failed to send message")
       });
     } finally {
       chatStore.update((state) => ({
         ...state,
         isLoading: false,
         isTyping: false,
-        isStreaming: false,
+        isStreaming: false
       });
     }
   },
@@ -295,7 +295,7 @@ export const chatActions = {
         ...state,
         conversations,
         currentConversation,
-        messages: currentConversation?.messages || [],
+        messages: currentConversation?.messages || []
       };
     });
   },
@@ -303,8 +303,8 @@ export const chatActions = {
   // Update settings;
   updateSettings: (newSettings: Partial<ChatSettings>) => {
     chatStore.update((state) => ({
-      ...state,
-      }); const settings = { ...state.settings, ...newSettings },
+      ...state
+      }); const settings = { ...state.settings, ...newSettings }
     });
   },
 
@@ -317,8 +317,8 @@ export const chatActions = {
         enabled: true,
         documents,
         precedents: precedents || [],
-        caseContext: caseContext || null,
-      },
+        caseContext: caseContext || null
+      }
     });
   },
 
@@ -329,8 +329,8 @@ export const chatActions = {
       contextInjection: {
         ...state.contextInjection,
         enabled: true,
-        documents,
-      },
+        documents
+      }
     });
   },
 
@@ -342,8 +342,8 @@ export const chatActions = {
         documents: [],
         vectorResults: [],
         precedents: [],
-        caseContext: null,
-      },
+        caseContext: null
+      }
     });
   },
 
@@ -357,7 +357,7 @@ export const chatActions = {
         const data = await response.json();
         chatStore.update((state) => ({
           ...state,
-          modelStatus: data.status || "ready",
+          modelStatus: data.status || "ready"
         });
       } else {
         chatStore.update((state) => ({ ...state, modelStatus: "error" });
@@ -381,7 +381,7 @@ export const chatActions = {
       error: null,
       isLoading: false,
       isTyping: false,
-      isStreaming: false,
+      isStreaming: false
     });
   },
 
@@ -396,7 +396,7 @@ export const chatActions = {
 
   setStreaming: (streaming: boolean) => {
     chatStore.update((state) => ({ ...state, isStreaming: streaming });
-  },
+  }
 };
 
 // === SERVICE ACTIONS ===;
@@ -454,7 +454,7 @@ export const serviceActions = {
     } catch {
       serviceActions.updateStatus("qdrant", "error");
     }
-  },
+  }
 };
 
 // === HELPER FUNCTIONS ===;
@@ -511,7 +511,7 @@ async function handleStreamingResponse(response: Response): Promise<any> {
         if (lastMessage && lastMessage.role === "assistant") {
           messages[messages.length - 1] = {
             ...lastMessage,
-            content: assistantMessage,
+            content: assistantMessage
           };
         } else {
           messages.push({
@@ -519,7 +519,7 @@ async function handleStreamingResponse(response: Response): Promise<any> {
             content: assistantMessage,
             role: "assistant",
             timestamp: new Date(),
-            conversationId: state.currentConversation?.id,
+            conversationId: state.currentConversation?.id
           });
         }
 
@@ -530,7 +530,7 @@ async function handleStreamingResponse(response: Response): Promise<any> {
     console.error("Streaming error:", error);
     chatStore.update((state) => ({
       ...state,
-      error: error instanceof Error ? error : new Error("Streaming failed"),
+      error: error instanceof Error ? error : new Error("Streaming failed")
     });
   }
 }
@@ -538,7 +538,7 @@ async function handleStreamingResponse(response: Response): Promise<any> {
 // === XSTATE-LIKE COMPATIBILITY ===;
 export interface XStateCompatibleState {
   context: ChatContext;
-  matches: (state: string) => boolean;,
+  matches: (state: string) => boolean;
 }
 
 export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateCompatibleState => ({
@@ -554,14 +554,14 @@ export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateComp
       case "idle":
         return !$chatStore.isLoading && !$chatStore.error;
       default:
-        return false;,
+        return false;
     }
-  },
+  }
 });
 
 export function useChatActor() {
   return {
-    state: readonly(xstateCompatibleStore),
+    state: readonly(xstateCompatibleStore)
   };
 }
 
@@ -573,7 +573,7 @@ export const legalActions = {
       const response = await fetch("/api/legal/precedents/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, jurisdiction }),
+        body: JSON.stringify({ query, jurisdiction })
       });
 
       if (response.ok) {
@@ -582,8 +582,8 @@ export const legalActions = {
           ...state,
           contextInjection: {
             ...state.contextInjection,
-            precedents: precedents.results || [],
-          },
+            precedents: precedents.results || []
+          }
         });
         return precedents;
       }
@@ -599,7 +599,7 @@ export const legalActions = {
       const response = await fetch("/api/legal/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: documentText }),
+        body: JSON.stringify({ text: documentText })
       });
 
       if (response.ok) {
@@ -618,7 +618,7 @@ export const legalActions = {
       const response = await fetch("/api/legal/entities", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text })
       });
 
       if (response.ok) {
@@ -628,7 +628,7 @@ export const legalActions = {
       console.error("Error extracting entities:", error);
     }
     return null;
-  },
+  }
 };
 
 // === PERSISTENCE ===;
@@ -667,18 +667,18 @@ export const persistenceHelpers = {
               updated: new Date(c.updated),
               messages: c.messages.map((m: any) => ({
                 ...m,
-                timestamp: new Date(m.timestamp),
-              })),
+                timestamp: new Date(m.timestamp)
+              }))
             })
           : state.conversations,
         settings: settings
           ? { ...state.settings, ...JSON.parse(settings) }
-          : state.settings,
+          : state.settings
       });
     } catch (error: any) {
       console.warn("Failed to load chat data from localStorage:", error);
     }
-  },
+  }
 };
 
 // Initialize persistence on client-side;

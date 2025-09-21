@@ -22,7 +22,7 @@ export interface TodoEntry {
   memoryUsage?: {
     heapUsed: number;
     heapTotal: number;
-    external: number;,
+    external: number;
   };
 }
 
@@ -81,7 +81,7 @@ class TodoAutogen {
       context: {
         ...data,
         timestamp: Date.now(),
-        memoryUsage: this.getMemoryUsage(),
+        memoryUsage: this.getMemoryUsage()
       }
     };
 
@@ -111,7 +111,7 @@ class TodoAutogen {
       context: {
         file,
         lineNumber,
-        memoryUsage: this.getMemoryUsage(),
+        memoryUsage: this.getMemoryUsage()
       }
     };
 
@@ -135,7 +135,7 @@ class TodoAutogen {
       stackTrace: error.stack,
       context: {
         ...context,
-        memoryUsage: this.getMemoryUsage(),
+        memoryUsage: this.getMemoryUsage()
       }
     };
 
@@ -159,7 +159,7 @@ class TodoAutogen {
       context: {
         type,
         details,
-        memoryUsage: this.getMemoryUsage(),
+        memoryUsage: this.getMemoryUsage()
       }
     };
 
@@ -192,7 +192,7 @@ class TodoAutogen {
       todoId: todo.id,
       priority: todo.severity,
       timestamp: new Date().toISOString(),
-      instructions: this.generateReviewInstructions(todo),
+      instructions: this.generateReviewInstructions(todo)
     };
 
     try {
@@ -221,7 +221,7 @@ class TodoAutogen {
         return `Analyze performance bottleneck and recommend optimizations using worker threads, WASM, or caching strategies.`;
       
       default:
-        return `General review and resolution suggestions for this development issue.`;,
+        return `General review and resolution suggestions for this development issue.`;
     }
   }
 
@@ -264,7 +264,7 @@ export async function retryLLMCall<T>(
           model,
           prompt: prompt.substring(0, 500) + '...', // Truncate for logging
           error: error.message,
-          retryCount: attempt,
+          retryCount: attempt
         });
       }
       
@@ -280,7 +280,7 @@ export async function retryLLMCall<T>(
     model,
     prompt: prompt.substring(0, 500) + '...',
     error: lastError.message,
-    retryCount: maxRetries,
+    retryCount: maxRetries
   });
   
   throw lastError;
@@ -302,7 +302,7 @@ export function startMemoryMonitoring() {
         heapUsedMB,
         heapTotalMB: usage.heapTotal / 1024 / 1024,
         externalMB: usage.external / 1024 / 1024,
-        threshold: 2048,
+        threshold: 2048
       });
     }
   }, 30000); // Check every 30 seconds

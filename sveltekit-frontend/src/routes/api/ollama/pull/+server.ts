@@ -10,7 +10,7 @@ export const GET: RequestHandler = async () => {
     version: "0.11.10",
     url: OLLAMA_BASE,
     model: "gemma3-legal",
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };
 

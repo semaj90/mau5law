@@ -45,7 +45,7 @@ async function ocrWithTesseract(filePath: string): Promise<string> {
     const worker: any = await createWorker({
       logger: (m: any) => {
         if (import.meta.env.MCP_DEBUG === 'true') console.log('TESSERACT:', m);
-      },
+      }
     });
 
     // Standard worker lifecycle
@@ -111,7 +111,7 @@ async function saveDocument(docData: {
   metadata: any;
   confidence?: number;
   legalAnalysis?: unknown;
-  filePath: string;,
+  filePath: string;
 }): Promise<any> {
   try {
     const [result] = await db.insert(documents).values({
@@ -120,7 +120,7 @@ async function saveDocument(docData: {
       originalContent: docData.content,
       metadata: docData.metadata,
       confidence: docData.confidence,
-      legalAnalysis: docData.legalAnalysis,
+      legalAnalysis: docData.legalAnalysis
     }).returning();
 
     return result;
@@ -166,9 +166,9 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
         model: 'nomic-embed-text',
         contentLength: content.length,
         generatedAt: new Date().toISOString(),
-        embeddingDim: TARGET_DB_DIM,
+        embeddingDim: TARGET_DB_DIM
       },
-      model: 'nomic-embed-text',
+      model: 'nomic-embed-text'
     });
 
     // Prepare vector for Qdrant (slice/pad if different dimension)
@@ -185,7 +185,7 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
         documentId: documentId,
         model: 'nomic-embed-text',
         dbEmbeddingDim: TARGET_DB_DIM,
-        qdrantEmbeddingDim: TARGET_QDRANT_DIM,
+        qdrantEmbeddingDim: TARGET_QDRANT_DIM
       }
     }]);
 
@@ -213,7 +213,7 @@ async function performLegalAnalysis(content: string): Promise<any> {
 
 Document content:
 ${content.substring(0, 4000)}`,
-        stream: false,
+        stream: false
       })
     });
 
@@ -222,7 +222,7 @@ ${content.substring(0, 4000)}`,
       return {
         documentType: 'Unknown',
         confidence: 0.5,
-        analysis: 'Basic analysis - legal model not available',
+        analysis: 'Basic analysis - legal model not available'
       };
     }
 
@@ -231,7 +231,7 @@ ${content.substring(0, 4000)}`,
       analysis: (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).response,
       confidence: 0.8,
       model: 'gemma3-legal',
-      analyzedAt: new Date().toISOString(),
+      analyzedAt: new Date().toISOString()
     };
   } catch (error: any) {
     console.error('Legal analysis failed:', error);
@@ -301,7 +301,7 @@ export const POST: RequestHandler = async ({ request }) => {
             enableRAG,
             localPath: filePath,
             ocrProcessed: enableOCR,
-            contentLength: content.length,
+            contentLength: content.length
           },
           confidence: legalAnalysis?.confidence || 0.7,
           legalAnalysis,
@@ -332,7 +332,7 @@ export const POST: RequestHandler = async ({ request }) => {
           contentLength: content.length,
           confidence: legalAnalysis?.confidence || 0.7,
           size: file.size,
-          processedAt: new Date().toISOString(),
+          processedAt: new Date().toISOString()
         });
 
       } catch (error: any) {
@@ -341,7 +341,7 @@ export const POST: RequestHandler = async ({ request }) => {
           filename: file.name,
           status: 'error',
           error: error.message,
-          size: file.size,
+          size: file.size
         });
       }
     }
@@ -357,7 +357,7 @@ export const POST: RequestHandler = async ({ request }) => {
         vectorSearch: 'Qdrant',
         embeddings: 'Ollama (nomic-embed-text)',
         legalAnalysis: 'Gemma3-legal model',
-        ocr: 'Native PDF parsing + image processing',
+        ocr: 'Native PDF parsing + image processing'
       }
     });
 
@@ -380,12 +380,12 @@ export const GET: RequestHandler = async () => {
       vectorSearch: 'Qdrant',
       embeddings: 'Ollama (nomic-embed-text)',
       legalAnalysis: 'Gemma3-legal model',
-      ocr: 'Native PDF parsing + image processing',
+      ocr: 'Native PDF parsing + image processing'
     },
     endpoints: {
       process: 'POST /api/rag/process',
       status: 'GET /api/rag/status',
-      search: 'POST /api/rag/search',
+      search: 'POST /api/rag/search'
     },
     features: [
       'OCR text extraction (PDF, images)',

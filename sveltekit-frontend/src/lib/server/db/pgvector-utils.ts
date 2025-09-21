@@ -182,7 +182,7 @@ export async function searchSimilarMessages(
       content: row.content,
       similarity: row.similarity,
       metadata: includeMetadata ? row.metadata: undefined,
-      documentType: 'chat_message',
+      documentType: 'chat_message'
     });
   } catch (error: any) {
     console.error('Vector search for messages failed:', error);
@@ -227,7 +227,7 @@ export async function searchSimilarEvidence(
         caseId: row.case_id,
         ...row.metadata
       } : undefined,
-      documentType: 'evidence',
+      documentType: 'evidence'
     });
   } catch (error: any) {
     console.error('Vector search for evidence failed:', error);
@@ -401,7 +401,7 @@ export async function pgvectorHealthCheck(): Promise<any> {
       return {
         available: false,
         functions: [],
-        error: 'pgvector extension not installed',
+        error: 'pgvector extension not installed'
       };
     }
 
@@ -422,13 +422,13 @@ export async function pgvectorHealthCheck(): Promise<any> {
     return {
       available: true,
       version: (extensionCheck[0]?.version as string) || 'unknown',
-      functions: availableFunctions,
+      functions: availableFunctions
     };
   } catch (error: any) {
     return {
       available: false,
       functions: [],
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }

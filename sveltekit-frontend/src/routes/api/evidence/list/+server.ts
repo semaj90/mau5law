@@ -18,7 +18,7 @@ export const GET: RequestHandler = async () => {
       summary: r.summary || r.aiSummary || null,
       prosecutionScore: (r.aiAnalysis as any)?.prosecutionScore ?? null,
       tags: Array.isArray(r.tags) ? r.tags: [],
-      summaryType: (r as any).summaryType || null,
+      summaryType: (r as any).summaryType || null
     });
     return new Response(JSON.stringify({ evidence: mapped }), { status: 200 });
   } catch (err: any) {

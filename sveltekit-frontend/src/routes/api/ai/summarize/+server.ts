@@ -52,7 +52,7 @@ export interface SummarizeResponseMeta {
   promptTokens: number;
   tokensPerSecond: number | string;
   modelUsed: string;
-  fallbackUsed: boolean;,
+  fallbackUsed: boolean;
 }
 
 export interface OllamaResponse {
@@ -72,7 +72,7 @@ export interface StructuredSummary {
   overview: string;
   keyPoints: string[];
   risks: string[];
-  actions: string[];,
+  actions: string[];
 }
 
 export interface SummarizeResponse {
@@ -92,7 +92,7 @@ export interface SummarizeResponse {
   timestamp: string;
   clientCacheHint?: {
     key: string;
-    ttlMs: number;,
+    ttlMs: number;
   };
   suggestions?: string[];
   error?: string;
@@ -141,7 +141,7 @@ const originalGETHandler: RequestHandler = async () => {
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
       primaryModel: PRIMARY_MODEL,
       fallbackModel: FALLBACK_MODEL,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json({
@@ -151,7 +151,7 @@ const originalGETHandler: RequestHandler = async () => {
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
       primaryModel: PRIMARY_MODEL,
       fallbackModel: FALLBACK_MODEL,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 503 });
   }
 };

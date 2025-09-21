@@ -23,7 +23,7 @@ async function fakeSearch(filters: AdvancedSearchFilters): Promise<any> {
     total: 0,
     queryTime: 0,
     items: [],
-    applied: filters,
+    applied: filters
   };
 }
 
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!locals.user) return json({ error: 'Unauthorized' }, { status: 401 });
     const body = await request.json();
     const { query, filters: customFilters } = body || {};
-    const filters: AdvancedSearchFilters = { query, ...(customFilters || {,}) };
+    const filters: AdvancedSearchFilters = { query, ...(customFilters || {}) };
     const results = await fakeSearch(filters);
     return json({ success: true, data: results, timestamp: new Date().toISOString() });
   } catch (error: any) {

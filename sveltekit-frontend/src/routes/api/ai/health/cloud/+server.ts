@@ -18,14 +18,14 @@ export const GET: RequestHandler = async () => {
       return json({
         success: false,
         available: false,
-        error: "Cloud AI service not available",
+        error: "Cloud AI service not available"
       });
     }
     if (!aiService || typeof aiService.generateResponse !== "function") {
       return json({
         success: false,
         available: false,
-        error: "Cloud AI service not properly configured",
+        error: "Cloud AI service not properly configured"
       });
     }
     // Try a simple test request;
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async () => {
       const testResponse = await aiService.generateResponse("Hello", {
         provider: "auto",
         temperature: 0.1,
-        maxTokens: 10,
+        maxTokens: 10
       });
 
       return json({
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async () => {
           typeof testResponse === "string"
             ? testResponse.substring(0, 50)
             : "Cloud AI responded successfully",
-        lastCheck: new Date().toISOString(),
+        lastCheck: new Date().toISOString()
       });
     } catch (testError) {
       console.error("Cloud AI test failed:", testError);
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async () => {
         available: false,
         error:
           "Cloud AI test failed: " +
-          (testError instanceof Error ? testError.message: "Unknown error"),
+          (testError instanceof Error ? testError.message: "Unknown error")
       });
     }
   } catch (error: any) {
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async () => {
     return json({
         success: false,
         available: false,
-        error: error instanceof Error ? error.message: "Health check failed",
+        error: error instanceof Error ? error.message: "Health check failed"
       },)
       { status: 500 },
     );

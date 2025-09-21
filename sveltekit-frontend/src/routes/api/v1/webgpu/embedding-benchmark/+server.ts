@@ -31,11 +31,11 @@ interface BenchmarkResult {
   compressionRatio: number;
   memoryUsage: {
     peak: number;
-    average: number;,
+    average: number;
   };
   qualityMetrics?: {
     avgSimilarity: number;
-    coherenceScore: number;,
+    coherenceScore: number;
   };
 }
 
@@ -44,17 +44,17 @@ const SAMPLE_LEGAL_DOCUMENTS = {
   contracts: [
     "This Employment Agreement is entered into between Company X and Employee Y, effective January 1, 2024. Employee shall perform duties as Software Engineer with annual compensation of $120,000. Agreement includes non-disclosure and non-compete clauses valid for 18 months post-termination.",
     "Software License Agreement grants licensee non-exclusive rights to use proprietary software. License fee is $50,000 annually with maintenance support included. Licensee prohibited from reverse engineering, redistribution, or sublicensing without written consent.",
-    "Real Estate Purchase Agreement for property located at 123 Main Street. Purchase price $500,000 with 20% down payment. Closing date scheduled for March 15, 2024. Property sold as-is with standard title insurance requirements.",
+    "Real Estate Purchase Agreement for property located at 123 Main Street. Purchase price $500,000 with 20% down payment. Closing date scheduled for March 15, 2024. Property sold as-is with standard title insurance requirements."
   ],
   cases: [
     "Plaintiff v. Defendant, Case No. 2024-CV-001. Motion for summary judgment filed regarding breach of contract claims. Court finds material facts in dispute precluding summary judgment. Discovery period extended to allow additional depositions and document production.",
     "In re: Corporate Merger Litigation, Consolidated Case No. 2024-BUS-045. Shareholders challenge merger terms as inadequate. Delaware Chancery Court applies enhanced scrutiny due to potential conflicts of interest among board members during negotiation process.",
-    "Criminal Appeal Case No. 2024-CRIM-123. Defendant appeals conviction for securities fraud. Fourth Amendment violation claimed regarding search and seizure of electronic devices. Appellate court reviews trial court's denial of motion to suppress evidence.",
+    "Criminal Appeal Case No. 2024-CRIM-123. Defendant appeals conviction for securities fraud. Fourth Amendment violation claimed regarding search and seizure of electronic devices. Appellate court reviews trial court's denial of motion to suppress evidence."
   ],
   statutes: [
     "Section 1983 Civil Rights Act provides cause of action against state actors who deprive citizens of constitutional rights under color of state law. Plaintiff must demonstrate defendant acted under color of state law and violated clearly established constitutional right.",
     "Securities Exchange Act Rule 10b-5 prohibits material misstatements or omissions in connection with purchase or sale of securities. Plaintiff must prove scienter, materiality, reliance, and damages to establish private right of action for securities fraud.",
-    "Americans with Disabilities Act Title III requires places of public accommodation to provide reasonable modifications to policies and procedures. Covered entities must ensure equal access unless modifications would fundamentally alter nature of goods or services.",
+    "Americans with Disabilities Act Title III requires places of public accommodation to provide reasonable modifications to policies and procedures. Covered entities must ensure equal access unless modifications would fundamentally alter nature of goods or services."
   ]
 };
 
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async () => {
           contracts: SAMPLE_LEGAL_DOCUMENTS.contracts.length,
           cases: SAMPLE_LEGAL_DOCUMENTS.cases.length,
           statutes: SAMPLE_LEGAL_DOCUMENTS.statutes.length,
-          total: Object.values(SAMPLE_LEGAL_DOCUMENTS).flat().length,
+          total: Object.values(SAMPLE_LEGAL_DOCUMENTS).flat().length
         }
       },
       availableBenchmarks: [
@@ -83,13 +83,13 @@ export const GET: RequestHandler = async () => {
         'stress - High-load concurrent processing test',
         'comparison - WebGPU vs standard cache comparison'
       ],
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to get benchmark system status',
-      details: error instanceof Error ? error.message: String(error),
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         systemConfig: {
           webgpuEnabled: config.useWebGPU !== false,
           batchSize: config.batchSize || 128,
-          practiceAreas: config.practiceAreas || ['general'],
+          practiceAreas: config.practiceAreas || ['general']
         }
       }
     });
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json({
       success: false,
       error: 'Benchmark execution failed',
-      details: error instanceof Error ? error.message: String(error),
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -173,7 +173,7 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
     const legalQuery = {
       text: doc.text,
       documentType: doc.type as any,
-      practiceArea: config.practiceAreas?.[0] || 'general',
+      practiceArea: config.practiceAreas?.[0] || 'general'
     };
     
     const embeddingResult = await getLegalEmbedding(legalQuery);
@@ -183,7 +183,7 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
       text: doc.text.substring(0, 100) + '...',
       processingTime: docProcessTime,
       embeddingDimensions: embeddingResult.embedding.length,
-      wasCached: embeddingResult.metadata.cacheHit,
+      wasCached: embeddingResult.metadata.cacheHit
     });
     
     if (embeddingResult.metadata.cacheHit) cacheHits++;
@@ -214,11 +214,11 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
     compressionRatio: 4.2,
     memoryUsage: {
       peak: memoryPeak,
-      average: (memoryStart + memoryPeak) / 2,
+      average: (memoryStart + memoryPeak) / 2
     },
     qualityMetrics: {
       avgSimilarity: totalSimilarity / Math.max(1, results.length - 1),
-      coherenceScore: 0.85 // Simulated coherence score,
+      coherenceScore: 0.85 // Simulated coherence score
     }
   };
 }
@@ -241,7 +241,7 @@ async function runBatchProcessingBenchmark(config: any): Promise<BenchmarkResult
     const batch = documents.slice(0, batchSize).map(doc => ({
       text: doc.text,
       documentType: doc.type as any,
-      practiceArea: config.practiceAreas?.[i % (config.practiceAreas?.length || 1)] || 'general',
+      practiceArea: config.practiceAreas?.[i % (config.practiceAreas?.length || 1)] || 'general'
     });
     
     // Use WebGPU-optimized batch processing
@@ -266,7 +266,7 @@ async function runBatchProcessingBenchmark(config: any): Promise<BenchmarkResult
     compressionRatio: 4.5,
     memoryUsage: {
       peak: memoryPeak,
-      average: (memoryStart + memoryPeak) / 2,
+      average: (memoryStart + memoryPeak) / 2
     }
   };
 }
@@ -291,7 +291,7 @@ async function runStressTestBenchmark(config: any): Promise<BenchmarkResult> {
         const legalQuery = {
           text: doc.text,
           documentType: doc.type as any,
-          practiceArea: config.practiceAreas?.[workerId % (config.practiceAreas?.length || 1)] || 'general',
+          practiceArea: config.practiceAreas?.[workerId % (config.practiceAreas?.length || 1)] || 'general'
         };
         
         await getLegalEmbedding(legalQuery);
@@ -322,7 +322,7 @@ async function runStressTestBenchmark(config: any): Promise<BenchmarkResult> {
     compressionRatio: 4.0,
     memoryUsage: {
       peak: process.memoryUsage().heapUsed,
-      average: process.memoryUsage().heapUsed * 0.8,
+      average: process.memoryUsage().heapUsed * 0.8
     }
   };
 }
@@ -339,7 +339,7 @@ async function runComparisonBenchmark(config: any): Promise<BenchmarkResult> {
     const legalQuery = {
       text: doc.text,
       documentType: doc.type as any,
-      practiceArea: 'comparison-webgpu',
+      practiceArea: 'comparison-webgpu'
     };
     await getLegalEmbedding(legalQuery);
   }
@@ -359,11 +359,11 @@ async function runComparisonBenchmark(config: any): Promise<BenchmarkResult> {
     compressionRatio: 4.3,
     memoryUsage: {
       peak: process.memoryUsage().heapUsed,
-      average: process.memoryUsage().heapUsed * 0.7,
+      average: process.memoryUsage().heapUsed * 0.7
     },
     qualityMetrics: {
       avgSimilarity: 0.82,
-      coherenceScore: 0.88,
+      coherenceScore: 0.88
     }
   };
 }
@@ -403,13 +403,13 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Legal embedding benchmark cache cleared',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to clear benchmark cache',
-      details: error instanceof Error ? error.message: String(error),
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };

@@ -35,8 +35,8 @@ export class NomicEmbeddingsService {
         embedding,
         model: "nomic-embed-text-v1",
         metadata: {
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       };
     } catch (error: any) {
       // Fallback to mock embedding if real API fails
@@ -45,8 +45,8 @@ export class NomicEmbeddingsService {
         embedding: new Array(768).fill(0).map(() => Math.random()),
         model: "nomic-embed-text-v1",
         metadata: {
-          timestamp: new Date().toISOString(),
-        },
+          timestamp: new Date().toISOString()
+        }
       };
     }
   }
@@ -99,10 +99,10 @@ export class NomicEmbeddingsService {
               mimeType: document.metadata?.mimeType || "text/plain",
               pageCount: document.metadata?.pageCount,
               wordCount: document.metadata?.wordCount,
-              language: document.metadata?.language,
-            },
-          },
-        },
+              language: document.metadata?.language
+            }
+          }
+        }
       ]);
     } catch (error: any) {
       console.warn("Failed to upsert to Qdrant:", error);

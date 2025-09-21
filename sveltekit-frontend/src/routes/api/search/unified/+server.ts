@@ -22,7 +22,7 @@ const unifiedSearchSchema = z.object({
   aiSuggestions: z.boolean().default(true),
   maxResults: z.number().min(1).max(100).default(20),
   similarityThreshold: z.number().min(0).max(1).default(0.7),
-  includeMetadata: z.boolean().default(true),
+  includeMetadata: z.boolean().default(true)
 });
 
 /*
@@ -47,7 +47,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
         source: 'legal_database',
         caseNumber: 'LGL-2024-001',
         jurisdiction: 'Federal',
-        dateCreated: new Date().toISOString(),
+        dateCreated: new Date().toISOString()
       }
     },
     {
@@ -59,7 +59,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
       metadata: {
         source: 'evidence_vault',
         evidenceType: 'documentary',
-        secured: true,
+        secured: true
       }
     },
     {
@@ -71,7 +71,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
       metadata: {
         source: 'precedent_database',
         court: 'Supreme Court',
-        year: '2023',
+        year: '2023'
       }
     }
   ];
@@ -90,7 +90,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
         metadata: {
           source: 'vector_database',
           embedding_model: 'gemma-legal',
-          similarity_threshold: similarityThreshold,
+          similarity_threshold: similarityThreshold
         }
       }
     ];
@@ -102,7 +102,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
   // 4. Filter by categories if specified;
   if (categories && categories.length > 0) {
     results = results.filter(item => item.type) as any) ||
-      categories.some(cat => (result as { type?: any; metadata?: any ,}).metadata?.category?.includes(cat)
+      categories.some(cat => (result as { type?: any; metadata?: any }).metadata?.category?.includes(cat)
     );
   }
 
@@ -122,7 +122,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
     aiEnhanced: searchParams.aiSuggestions,
     sourceBreakdown: {
       legal: mockLegalResults.length,
-      vector: vectorResults.length,
+      vector: vectorResults.length
     }
   };
 
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({
           success: false,
           error: 'Invalid search parameters',
-          details: error.errors,
+          details: error.errors
         },)
         { status: 400 }
       );
@@ -160,7 +160,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
         success: false,
         error: 'Search failed',
-        message: error instanceof Error ? error.message: 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -187,7 +187,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       maxResults: limit,
       similarityThreshold: threshold,
       aiSuggestions: true,
-      includeMetadata: true,
+      includeMetadata: true
     };
 
     const searchParams = unifiedSearchSchema.parse(body);
@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json({
           success: false,
           error: 'Invalid search parameters',
-          details: error.errors,
+          details: error.errors
         },)
         { status: 400 }
       );

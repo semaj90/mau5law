@@ -39,10 +39,10 @@ class WebGPUComputeService {
         data: {
           message: 'WebGPU compute request processed',
           requestType: request.type,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         performance: {
-          executionTime: performance.now() - startTime,
+          executionTime: performance.now() - startTime
         }
       };
       
@@ -52,7 +52,7 @@ class WebGPUComputeService {
         success: false,
         error: error instanceof Error ? error.message: 'Unknown WebGPU error',
         performance: {
-          executionTime: performance.now() - startTime,
+          executionTime: performance.now() - startTime
         }
       };
     }

@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ url }) => {
         performance_metrics: {
           cache_efficiency: llmCacheStats.hit_rate_estimate,
           memory_optimization: stats.redis_memory,
-          async_task_throughput: queueStats.completed_tasks_count,
+          async_task_throughput: queueStats.completed_tasks_count
         }
       };
     }
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString(),
       redis_stats: stats,
       ...detailedStats,
-      recommendations: generatePerformanceRecommendations(stats),
+      recommendations: generatePerformanceRecommendations(stats)
     });
     
   } catch (err) {
@@ -100,10 +100,10 @@ export const POST: RequestHandler = async ({ request }) => {
           response: cached.response,
           source: 'cache',
           processing_time: 0,
-          cached: true,
+          cached: true
         } : null,
         orchestrated: false,
-        processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS',
+        processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS'
       });
     }
     
@@ -168,7 +168,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         message: `Cache pattern "${pattern}" clear not implemented - use full clear`,
-        cleared_keys: 0,
+        cleared_keys: 0
       });
     } else {
       // Clear all LLM cache
@@ -177,7 +177,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         message: 'Cache clear initiated',
-        note: 'Full cache clear method needs implementation in RedisLLMCache',
+        note: 'Full cache clear method needs implementation in RedisLLMCache'
       });
     }
     
@@ -203,7 +203,7 @@ async function handleTaskQuery(url: URL) {
       return json({
         taskId,
         result,
-        found: !!result,
+        found: !!result
       });
     }
     
@@ -211,7 +211,7 @@ async function handleTaskQuery(url: URL) {
       queue_stats: queueStats,
       queue_health: queueStats.queued_tasks < 100 ? 'healthy' : 'overloaded',
       processing_capacity: queueStats.processing_tasks,
-      recommendations: generateTaskQueueRecommendations(queueStats),
+      recommendations: generateTaskQueueRecommendations(queueStats)
     });
     
   } catch (err) {

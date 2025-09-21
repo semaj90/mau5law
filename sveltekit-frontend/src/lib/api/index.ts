@@ -14,7 +14,7 @@ export interface ApiResponse<T = any> {
   error?: string;
   status: "success" | "error" | "loading";
   timestamp: string;
-  requestId: string;,
+  requestId: string;
 }
 
 export interface PaginatedResponse<T> extends ApiResponse<T[]> {
@@ -22,7 +22,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
     page: number;
     limit: number;
     total: number;
-    hasMore: boolean;,
+    hasMore: boolean;
   };
 }
 
@@ -81,7 +81,7 @@ export interface AuthUser {
   role: "admin" | "prosecutor" | "detective" | "user";
   permissions: string[];
   lastLogin?: string;
-  preferences: UserPreferences;,
+  preferences: UserPreferences;
 }
 
 export interface UserPreferences {
@@ -90,11 +90,11 @@ export interface UserPreferences {
   notifications: {
     email: boolean;
     browser: boolean;
-    mobile: boolean;,
+    mobile: boolean;
   };
   dashboard: {
     layout: "grid" | "list";
-    widgets: string[];,
+    widgets: string[];
   };
 }
 
@@ -135,7 +135,7 @@ export interface DocumentProcessingResult {
   embeddings?: {
     model: string;
     dimensions: number;
-    vectors: number[];,
+    vectors: number[];
   };
   analysis?: {
     entities: Array<any>;
@@ -180,7 +180,7 @@ export interface EmbeddingResponse {
   model: string;
   dimensions: number;
   tokensUsed: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 // =====================================
@@ -208,7 +208,7 @@ export interface StreamingChatResponse {
     ragContext?: Array<any>;
     error?: string;
   };
-  done: boolean;,
+  done: boolean;
 }
 
 // =====================================
@@ -247,7 +247,7 @@ export interface Evidence {
   analysis?: {
     findings: string[];
     confidence: number;
-    methodology: string;,
+    methodology: string;
   };
   files: Array<any>;
 }
@@ -262,7 +262,7 @@ export interface CaseNote {
   private: boolean;
   createdAt: string;
   updatedAt: string;
-  tags: string[];,
+  tags: string[];
 }
 
 export interface CaseTimelineEntry {
@@ -314,7 +314,7 @@ export interface ServiceEndpoints {
   sveltekit: {
     baseUrl: string;
     port: number;
-    healthCheck: string;,
+    healthCheck: string;
   };
   goMicroservice: {
     baseUrl: string;
@@ -325,7 +325,7 @@ export interface ServiceEndpoints {
       documents: string;
       search: string;
       embeddings: string;
-      chat: string;,
+      chat: string;
     };
   };
   ollama: {
@@ -336,7 +336,7 @@ export interface ServiceEndpoints {
       generate: string;
       chat: string;
       embeddings: string;
-      models: string;,
+      models: string;
     };
   };
   redis: {
@@ -360,7 +360,7 @@ export interface ServiceEndpoints {
     collections: {
       documents: string;
       cases: string;
-      precedents: string;,
+      precedents: string;
     };
   };
 }
@@ -415,7 +415,7 @@ export const API_ROUTES = {
     REGISTER: "/api/auth/register",
     REFRESH: "/api/auth/refresh",
     PROFILE: "/api/auth/profile",
-    CHANGE_PASSWORD: "/api/auth/change-password",
+    CHANGE_PASSWORD: "/api/auth/change-password"
   },
 
   // Document Management;
@@ -427,7 +427,7 @@ export const API_ROUTES = {
     DELETE: "/api/documents/:id",
     DOWNLOAD: "/api/documents/:id/download",
     PROCESS: "/api/documents/:id/process",
-    EXTRACT_TEXT: "/api/documents/extract-text",
+    EXTRACT_TEXT: "/api/documents/extract-text"
   },
 
   // Search & AI;
@@ -435,14 +435,14 @@ export const API_ROUTES = {
     SEMANTIC: "/api/search/semantic",
     FULLTEXT: "/api/search/fulltext",
     HYBRID: "/api/search/hybrid",
-    SUGGESTIONS: "/api/search/suggestions",
+    SUGGESTIONS: "/api/search/suggestions"
   },
 
   CHAT: {
     SESSIONS: "/api/chat/sessions",
     STREAM: "/api/chat/stream",
     HISTORY: "/api/chat/sessions/:id/history",
-    CLEAR: "/api/chat/sessions/:id/clear",
+    CLEAR: "/api/chat/sessions/:id/clear"
   },
 
   // Vector Operations;
@@ -451,7 +451,7 @@ export const API_ROUTES = {
     SEARCH: "/api/vectors/search",
     COLLECTIONS: "/api/vectors/collections",
     UPSERT: "/api/vectors/upsert",
-    DELETE: "/api/vectors/delete",
+    DELETE: "/api/vectors/delete"
   },
 
   // Case Management;
@@ -465,7 +465,7 @@ export const API_ROUTES = {
     EVIDENCE: "/api/cases/:id/evidence",
     NOTES: "/api/cases/:id/notes",
     TIMELINE: "/api/cases/:id/timeline",
-    EXPORT: "/api/cases/:id/export",
+    EXPORT: "/api/cases/:id/export"
   },
 
   // Evidence;
@@ -476,7 +476,7 @@ export const API_ROUTES = {
     UPDATE: "/api/evidence/:id",
     DELETE: "/api/evidence/:id",
     CHAIN_OF_CUSTODY: "/api/evidence/:id/custody",
-    ANALYSIS: "/api/evidence/:id/analysis",
+    ANALYSIS: "/api/evidence/:id/analysis"
   },
 
   // System & Health;
@@ -485,7 +485,7 @@ export const API_ROUTES = {
     METRICS: "/api/metrics",
     STATUS: "/api/status",
     CONFIG: "/api/config",
-    LOGS: "/api/logs",
+    LOGS: "/api/logs"
   },
 
   // External Services;
@@ -493,8 +493,8 @@ export const API_ROUTES = {
     OLLAMA_HEALTH: "http://localhost:8086/api/version",
     GO_SERVICE_HEALTH: "http://localhost:8080/health",
     REDIS_PING: "redis://localhost:6379/ping",
-    POSTGRES_HEALTH: "postgresql://localhost:5432/health",
-  },
+    POSTGRES_HEALTH: "postgresql://localhost:5432/health"
+  }
 } as const;
 
 // =====================================
@@ -513,7 +513,7 @@ export const HTTP_STATUS = {
   UNPROCESSABLE_ENTITY: 422,
   RATE_LIMITED: 429,
   INTERNAL_SERVER_ERROR: 500,
-  SERVICE_UNAVAILABLE: 503,
+  SERVICE_UNAVAILABLE: 503
 } as const;
 
 // =====================================
@@ -524,7 +524,7 @@ export const DEFAULT_CONFIG: ServiceEndpoints = {
   sveltekit: {
     baseUrl: "http://localhost:3000",
     port: 3000,
-    healthCheck: "/health",
+    healthCheck: "/health"
   },
   goMicroservice: {
     baseUrl: "http://localhost:8080",
@@ -535,8 +535,8 @@ export const DEFAULT_CONFIG: ServiceEndpoints = {
       documents: "/api/v1/documents",
       search: "/api/v1/search",
       embeddings: "/api/v1/embeddings",
-      chat: "/api/v1/chat",
-    },
+      chat: "/api/v1/chat"
+    }
   },
   ollama: {
     baseUrl: "http://localhost:8086",
@@ -546,20 +546,20 @@ export const DEFAULT_CONFIG: ServiceEndpoints = {
       generate: "/api/generate",
       chat: "/api/chat",
       embeddings: "/api/embeddings",
-      models: "/api/tags",
-    },
+      models: "/api/tags"
+    }
   },
   redis: {
     host: "localhost",
     port: 6379,
-    db: 0,
+    db: 0
   },
   postgresql: {
     host: "localhost",
     port: 5432,
     database: "legal_ai_db",
     username: "legal_admin",
-    password: "123456",
+    password: "123456"
   },
   qdrant: {
     baseUrl: "http://localhost:6333",
@@ -567,9 +567,9 @@ export const DEFAULT_CONFIG: ServiceEndpoints = {
     collections: {
       documents: "legal_documents",
       cases: "legal_cases",
-      precedents: "legal_precedents",
-    },
-  },
+      precedents: "legal_precedents"
+    }
+  }
 };
 
 // =====================================
@@ -581,12 +581,12 @@ export const RUNTIME_ENV = {
   isProduction: import.meta.env.NODE_ENV === "production",
   isBrowser: typeof window !== "undefined",
   isServer: typeof window === "undefined",
-  isTest: import.meta.env.NODE_ENV === "test",
+  isTest: import.meta.env.NODE_ENV === "test"
 } as const;
 
 export default {
   API_ROUTES,
   HTTP_STATUS,
   DEFAULT_CONFIG,
-  RUNTIME_ENV,
+  RUNTIME_ENV
 };

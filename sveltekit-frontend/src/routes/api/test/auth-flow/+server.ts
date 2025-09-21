@@ -25,7 +25,7 @@ export interface TestSuite {
     sessionManagement: boolean;
     aiAssistant: boolean;
     productionServices: boolean;
-    gpuAcceleration: boolean;,
+    gpuAcceleration: boolean;
   };
 }
 
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       sessionManagement: false,
       aiAssistant: false,
       productionServices: false,
-      gpuAcceleration: false,
+      gpuAcceleration: false
     }
   };
 
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         passed: testSuite.results.filter(item => item.length),
         failed: testSuite.results.filter(item => item.length),
         total: testSuite.results.length,
-        duration: testSuite.totalDuration,
+        duration: testSuite.totalDuration
       }
     });
 
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       step: 'test_execution',
       success: false,
       duration: testSuite.totalDuration,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
 
     return json({
@@ -140,7 +140,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: testUser,
-        password: 'password',
+        password: 'password'
       })
     });
 
@@ -162,7 +162,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       duration: Date.now() - stepStart,
       data: {
         user: loginData.user,
-        sessionCookie: loginResponse.headers.get('set-cookie'),
+        sessionCookie: loginResponse.headers.get('set-cookie')
       }
     };
   } catch (error: any) {
@@ -172,7 +172,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       step: 'authentication_system',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -196,7 +196,7 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
     const sessionHealth = {
       isValid: true,
       warningCount: 0,
-      lastCheck: new Date(),
+      lastCheck: new Date()
     };
 
     console.log('✅ Session management test passed');
@@ -207,7 +207,7 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
       duration: Date.now() - stepStart,
       data: {
         validation: sessionValidation,
-        health: sessionHealth,
+        health: sessionHealth
       }
     };
   } catch (error: any) {
@@ -217,7 +217,7 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
       step: 'session_management',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -235,7 +235,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
     // Test enhanced RAG service;
     const ragResponse = await services.queryRAG('Test legal query for authentication flow', {
       userId: 'test_user',
-      testMode: true,
+      testMode: true
     });
 
     const healthyServices = Object.values(serviceHealth).filter(item => item.length);
@@ -255,7 +255,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
         serviceHealth,
         ragResponse: ragResponse ? 'Success' : 'No response',
         healthyCount: healthyServices,
-        totalCount: totalServices,
+        totalCount: totalServices
       }
     };
   } catch (error: any) {
@@ -265,7 +265,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
       step: 'production_services',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -296,7 +296,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
     const aiResponse = await services.queryRAG(aiQuery, {
       model: 'gemma3-legal',
       temperature: 0.7,
-      testMode: true,
+      testMode: true
     });
 
     console.log(`✅ AI assistant test passed (${healthyOllama}/3 Ollama instances healthy)`);
@@ -309,10 +309,10 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
         ollamaHealth: {
           primary: ollamaHealthChecks[0].status === 'fulfilled',
           secondary: ollamaHealthChecks[1].status === 'fulfilled',
-          embeddings: ollamaHealthChecks[2].status === 'fulfilled',
+          embeddings: ollamaHealthChecks[2].status === 'fulfilled'
         },
         aiResponse: aiResponse ? 'Success' : 'No response',
-        healthyInstances: healthyOllama,
+        healthyInstances: healthyOllama
       }
     };
   } catch (error: any) {
@@ -322,7 +322,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
       step: 'ai_assistant',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -339,14 +339,14 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       available: true,
       model: 'RTX 3060 Ti',
       memory: '8GB VRAM',
-      utilization: '45%',
+      utilization: '45%'
     };
 
     // Test GPU-accelerated query;
     const gpuQuery = await services.queryRAG('GPU-accelerated legal document analysis test', {
       useGPU: true,
       model: 'gemma3-legal',
-      testMode: true,
+      testMode: true
     });
 
     console.log('✅ GPU acceleration test passed');
@@ -358,7 +358,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       data: {
         gpuInfo,
         gpuQuery: gpuQuery ? 'Success' : 'No response',
-        accelerationEnabled: true,
+        accelerationEnabled: true
       }
     };
   } catch (error: any) {
@@ -368,7 +368,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       step: 'gpu_acceleration',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -387,7 +387,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
       aiQueryExecuted: true,
       servicesAccessed: true,
       gpuAccelerated: true,
-      securityValidated: true,
+      securityValidated: true
     };
 
     // Test workflow completion
@@ -408,7 +408,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
         workflow,
         completedSteps: workflowSteps,
         totalSteps,
-        integrationScore: '100%',
+        integrationScore: '100%'
       }
     };
   } catch (error: any) {
@@ -418,7 +418,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
       step: 'end_to_end_integration',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }

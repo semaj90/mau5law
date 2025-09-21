@@ -22,35 +22,35 @@ const GO_SERVICES = {
       gpu_compute: '/api/gpu/compute',
       som_train: '/api/som/train',
       xstate_event: '/api/xstate/event',
-      websocket: '/ws',
-    },
+      websocket: '/ws'
+    }
   },
   upload_service: {
     url: 'http://localhost:8093',
     endpoints: {
       upload: '/upload',
       status: '/status',
-      health: '/health',
-    },
+      health: '/health'
+    }
   },
   vector_service: {
     url: 'http://localhost:8095',
     endpoints: {
       search: '/api/vector/search',
-      similarity: '/api/vector/similarity',
-    },
+      similarity: '/api/vector/similarity'
+    }
   },
   grpc_server: {
     url: 'http://localhost:50051',
-    protocols: ['grpc', 'http'],
+    protocols: ['grpc', 'http']
   },
   load_balancer: {
     url: 'http://localhost:8224',
     endpoints: {
       health: '/health',
-      metrics: '/metrics',
-    },
-  },
+      metrics: '/metrics'
+    }
+  }
 };
 
 // Request Types;
@@ -76,9 +76,9 @@ async function callGoService(
     const response = await fetch(url, {
       method,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: data ? JSON.stringify(data) : undefined,
+      body: data ? JSON.stringify(data) : undefined
     });
 
     if (!response.ok) {
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     if (req.action === ('health' as any)) {
       const healthChecks = await Promise.allSettled([
         callGoService('enhanced_rag', '/api/health'),
-        callGoService('upload_service', '/health'),
+        callGoService('upload_service', '/health')
       ]);
 
       const services = {
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         success: true,
         data: { services },
         timestamp: new Date().toISOString(),
-        message: 'Health check completed',
+        message: 'Health check completed'
       });
     }
 
@@ -154,12 +154,12 @@ export const GET: RequestHandler = async ({ url }) => {
   const req: LegalPlatformRequest = {
     action: action as any,
     entity: entity as any,
-    id: id || undefined,
+    id: id || undefined
   };
 
   return await POST({
     request: new Request('', { method: 'POST', body: JSON.stringify(req) }),
-    url,
+    url
   } as any);
 };
 
@@ -182,14 +182,14 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
           userId: req.data.userId,
           createdBy: req.data.userId,
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .returning();
 
       return json({
         success: true,
         data: newCase[0],
-        message: 'Case created successfully',
+        message: 'Case created successfully'
       });
 
     case 'read':;
@@ -211,7 +211,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
         .update(cases);
         .set({
           ...req.data,
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(cases.id, req.id)
         .returning();
@@ -219,7 +219,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
       return json({
         success: true,
         data: updatedCase[0],
-        message: 'Case updated successfully',
+        message: 'Case updated successfully'
       });
 
     case 'delete':
@@ -229,7 +229,7 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<any> {
 
       return json({
         success: true,
-        message: 'Case deleted successfully',
+        message: 'Case deleted successfully'
       });
 
     case 'search':
@@ -271,14 +271,14 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
           tags: req.data.tags || [],
           uploadedBy: req.data.userId,
           uploadedAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .returning();
 
       return json({
         success: true,
         data: newEvidence[0],
-        message: 'Evidence created successfully',
+        message: 'Evidence created successfully'
       });
 
     case 'read':;
@@ -308,13 +308,13 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<any>
       const analysisResult = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
         type: 'evidence_analysis',
         evidenceId: req.id,
-        data: req.data,
+        data: req.data
       });
 
       return json({
         success: true,
         data: analysisResult,
-        message: 'Evidence analysis completed',
+        message: 'Evidence analysis completed'
       });
 
     default:
@@ -341,14 +341,14 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<any>
           hairColor: req.data.hairColor,
           createdBy: req.data.userId,
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .returning();
 
       return json({
         success: true,
         data: newCriminal[0],
-        message: 'Criminal record created successfully',
+        message: 'Criminal record created successfully'
       });
 
     case 'read':;
@@ -389,14 +389,14 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<any>
           version: 1,
           wordCount: req.data.content ? req.data.content.split(' ').length: 0,
           createdAt: new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .returning();
 
       return json({
         success: true,
         data: newDocument[0],
-        message: 'Document created successfully',
+        message: 'Document created successfully'
       });
 
     case 'read':;
@@ -445,7 +445,7 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<any> {
     return json({
       success: true,
       data: searchResults,
-      message: 'Search completed successfully',
+      message: 'Search completed successfully'
     });
   } catch (err: any) {
     // Fallback to traditional database search
@@ -461,7 +461,7 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<any> {
       success: true,
       data: fallbackResults,
       message: 'Search completed (database fallback)',
-      fallback: true,
+      fallback: true
     });
   }
 }
@@ -474,7 +474,7 @@ async function handleUploadOperations(req: LegalPlatformRequest): Promise<any> {
     return json({
       success: true,
       data: uploadResult,
-      message: 'Upload processed successfully',
+      message: 'Upload processed successfully'
     });
   } catch (err: any) {
     throw error(500, `Upload service error: ${err instanceof Error ? err.message: 'Unknown error'}`);
@@ -495,7 +495,7 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<any> {
         result = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
           type: operation,
           ...data
-        ,});
+        });
         break;
 
       case 'train_som':
@@ -524,19 +524,19 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<any> {
 export const OPTIONS: RequestHandler = async () => {
   const healthChecks = await Promise.allSettled([
     callGoService('enhanced_rag', '/api/health'),
-    callGoService('upload_service', '/health'),
+    callGoService('upload_service', '/health')
   ]);
 
   const services = {
     enhanced_rag: healthChecks[0].status === 'fulfilled',
     upload_service: healthChecks[1].status === 'fulfilled',
-    database: true // Assume database is healthy if we got this far,
+    database: true // Assume database is healthy if we got this far
   };
 
   return json({
     success: true,
     services,
     timestamp: new Date().toISOString(),
-    message: 'Health check completed',
+    message: 'Health check completed'
   });
 };

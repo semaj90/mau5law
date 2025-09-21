@@ -37,14 +37,14 @@ export const POST: RequestHandler = async ({ request }) => {
         const rankingResults = await vectorRankingService.rankedSearch(query, {
           limit: 5,
           documentType: 'document',
-          includeExplanation: true,
+          includeExplanation: true
         });
 
         results.tests.vectorRanking = {
           success: true,
           resultsCount: rankingResults.length,
           firstResult: rankingResults[0] || null,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         };
         logger.info(`Vector ranking: ${rankingResults.length} results found`);
 
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Vector ranking test failed', error);
         results.tests.vectorRanking = {
           success: false,
-          error: error instanceof Error ? error.message: 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
           entities: analysis.entities.length,
           concepts: analysis.concepts.length,
           sentiment: analysis.sentiment.classification,
-          confidence: analysis.sentiment.confidence,
+          confidence: analysis.sentiment.confidence
         };
         logger.info(`Legal analysis: ${analysis.entities.length} entities, ${analysis.concepts.length} concepts`);
 
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Legal analysis test failed', error);
         results.tests.legalAnalysis = {
           success: false,
-          error: error instanceof Error ? error.message: 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
           useMemoryGraph: true,
           useMultiAgent: true,
           maxSources: 5,
-          minConfidence: 0.7,
+          minConfidence: 0.7
         });
 
         results.tests.enhancedRAG = {
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
           response: (ragResult as any)?.response ? String((ragResult as any).response).substring(0,200) + '...' : '',
           sources: ragResult.sources?.length || 0,
           confidence: ragResult.confidence,
-          reasoning: ragResult.reasoning,
+          reasoning: ragResult.reasoning
         };
         logger.info(`Enhanced RAG: ${ragResult.sources?.length || 0} sources, confidence ${ragResult.confidence}`);
 
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Enhanced RAG test failed', error);
         results.tests.enhancedRAG = {
           success: false,
-          error: error instanceof Error ? error.message: 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const langchainResult = await legalRAG.query(query, {
           thinkingMode: true,
           maxRetrievedDocs: 5,
-          useCompression: true,
+          useCompression: true
         });
 
         results.tests.langchainRAG = {
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
           answer: langchainResult.answer?.substring(0, 200) + '...',
           sourceDocuments: langchainResult.sourceDocuments.length,
           confidence: langchainResult.confidence,
-          processingTime: langchainResult.metadata.processingTime,
+          processingTime: langchainResult.metadata.processingTime
         };
         logger.info(`LangChain RAG: ${langchainResult.sourceDocuments.length} sources, confidence ${langchainResult.confidence}`);
 
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('LangChain RAG test failed', error);
         results.tests.langchainRAG = {
           success: false,
-          error: error instanceof Error ? error.message: 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.info('Testing Qdrant direct search');
         const embeddingResult = await legalBERT.generateLegalEmbedding(query);
         const qdrantResultsRaw = await qdrantService.searchSimilar(embeddingResult.embedding, {
-          topK: 5,
+          topK: 5
         });
         // Normalize qdrant results to expected shape
         const qdrantResults = (qdrantResultsRaw as any[] || []).map(r => ({ id: r.id, score: r.score || 0, payload: r.payload || {} });
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request }) => {
           resultsCount: qdrantResults.length,
           averageScore: qdrantResults.length > 0 ?
             qdrantResults.reduce((sum, r) => sum + (r.score || 0), 0) / qdrantResults.length: 0,
-          embeddingDimensions: embeddingResult.dimensions,
+          embeddingDimensions: embeddingResult.dimensions
         };
         logger.info(`Qdrant search: ${qdrantResults.length} results found`);
 
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Qdrant search test failed', error);
         results.tests.qdrantSearch = {
           success: false,
-          error: error instanceof Error ? error.message: 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
       passedTests: successCount,
       totalTests,
       overallProcessingTime: Date.now() - startTime,
-      status: successCount === totalTests ? 'all_passed' : successCount > 0 ? 'partial_success' : 'all_failed',
+      status: successCount === totalTests ? 'all_passed' : successCount > 0 ? 'partial_success' : 'all_failed'
     };
 
     logger.info(`Vector search tests completed: ${successCount}/${totalTests} passed`);
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     }, { status: 500 });
   }
 };
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async () => {
     logger.error('Health check failed', error);
     return json({
       status: 'error',
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

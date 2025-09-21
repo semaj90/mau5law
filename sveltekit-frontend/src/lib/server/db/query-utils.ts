@@ -23,7 +23,7 @@ export interface QueryFilters {
 export interface PaginationParams {
   page: number;
   limit: number;
-  offset: number;,
+  offset: number;
 }
 
 export class QueryBuilder {
@@ -181,7 +181,7 @@ export const {
   applyFilters,
   applySorting,
   getPaginationParams,
-  executeQuery,
+  executeQuery
 } = QueryBuilder;
 
 export default QueryBuilder;

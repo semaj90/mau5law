@@ -28,7 +28,7 @@ const PrecedentSearchSchema = z.object({
   factPattern: z.string(),
   dateRange: z.object({
     start: z.string(),
-    end: z.string(),
+    end: z.string()
   }).optional(),
   courtLevel: z.enum(['trial', 'appellate', 'supreme', 'all']).default('all')
 });
@@ -38,9 +38,9 @@ const RiskAssessmentSchema = z.object({
   scenarios: z.array(z.object({
     name: z.string(),
     likelihood: z.number().min(0).max(1),
-    description: z.string(),
+    description: z.string()
   })),
-  mitigationStrategies: z.array(z.string()).optional(),
+  mitigationStrategies: z.array(z.string()).optional()
 });
 
 // Types;
@@ -53,17 +53,17 @@ interface StrategyRecommendation {
   expectedOutcome: {
     probability: number;
     description: string;
-    timeframe: string;,
+    timeframe: string;
   };
   requiredResources: {
     evidence: string[];
     expertise: string[];
     estimatedCost: string;
-    timeline: string;,
+    timeline: string;
   };
   risks: string[];
   alternatives: string[];
-  precedents: LegalPrecedent[];,
+  precedents: LegalPrecedent[];
 }
 
 interface LegalPrecedent {
@@ -76,7 +76,7 @@ interface LegalPrecedent {
   keyHoldings: string[];
   factSimilarity: number;
   jurisdiction: string;
-  citation: string;,
+  citation: string;
 }
 
 interface RiskFactor {
@@ -84,7 +84,7 @@ interface RiskFactor {
   likelihood: number;
   impact: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  mitigation: string[];,
+  mitigation: string[];
 }
 
 interface CaseOutcomeProjection {
@@ -96,7 +96,7 @@ interface CaseOutcomeProjection {
   costEstimate: {
     min: number;
     max: number;
-    currency: string;,
+    currency: string;
   };
 }
 
@@ -122,13 +122,13 @@ class LegalStrategyEngine {
       expectedOutcome: {
         probability: 0.75,
         description: 'Strong factual foundation leading to favorable settlement or trial outcome',
-        timeframe: '3-6 months',
+        timeframe: '3-6 months'
       },
       requiredResources: {
         evidence: evidence.map(e => e.filename || e.id),
         expertise: ['Document Analysis Expert', 'Forensic Accountant'],
         estimatedCost: '$25,000 - $75,000',
-        timeline: '12-18 weeks',
+        timeline: '12-18 weeks'
       },
       risks: [
         'Evidence authenticity challenges',
@@ -153,13 +153,13 @@ class LegalStrategyEngine {
         expectedOutcome: {
           probability: 0.80,
           description: 'Mutually acceptable settlement within 60-75% of damages sought',
-          timeframe: '6-12 weeks',
+          timeframe: '6-12 weeks'
         },
         requiredResources: {
           evidence: evidence.slice(0, 3).map(e => e.filename || e.id), // Top evidence only
           expertise: ['Experienced Negotiator', 'Mediator'],
           estimatedCost: '$10,000 - $30,000',
-          timeline: '6-10 weeks',
+          timeline: '6-10 weeks'
         },
         risks: [
           'Lower monetary recovery',
@@ -170,7 +170,7 @@ class LegalStrategyEngine {
           'Mediation with neutral third party',
           'Arbitration proceedings'
         ],
-        precedents: [],
+        precedents: []
       });
     }
 
@@ -185,13 +185,13 @@ class LegalStrategyEngine {
         expectedOutcome: {
           probability: 0.60,
           description: 'Full damages award plus attorney fees and punitive damages',
-          timeframe: '12-24 months',
+          timeframe: '12-24 months'
         },
         requiredResources: {
           evidence: evidence.map(e => e.filename || e.id),
           expertise: ['Senior Litigation Counsel', 'Expert Witnesses', 'Discovery Specialist'],
           estimatedCost: '$100,000 - $250,000',
-          timeline: '52-104 weeks',
+          timeline: '52-104 weeks'
         },
         risks: [
           'High litigation costs',
@@ -203,7 +203,7 @@ class LegalStrategyEngine {
           'Phased litigation approach',
           'Strategic motion practice'
         ],
-        precedents: await this.findAggressivePrecedents(caseType),
+        precedents: await this.findAggressivePrecedents(caseType)
       });
     }
 
@@ -249,7 +249,7 @@ class LegalStrategyEngine {
         ],
         factSimilarity: 0.82,
         jurisdiction: 'Federal',
-        citation: '2023 WL 1234567',
+        citation: '2023 WL 1234567'
       },
       {
         caseId: 'case_2022_045',
@@ -265,7 +265,7 @@ class LegalStrategyEngine {
         ],
         factSimilarity: 0.71,
         jurisdiction: 'State',
-        citation: '2022 State Rep. 891',
+        citation: '2022 State Rep. 891'
       }
     ];
 
@@ -289,7 +289,7 @@ class LegalStrategyEngine {
         ],
         factSimilarity: 0.78,
         jurisdiction: 'Federal Appeals',
-        citation: '2023 F.3d 1234',
+        citation: '2023 F.3d 1234'
       }
     ];
   }
@@ -366,7 +366,7 @@ class LegalStrategyEngine {
       costEstimate: {
         min: 150000,
         max: 300000,
-        currency: 'USD',
+        currency: 'USD'
       }
     });
 
@@ -384,7 +384,7 @@ class LegalStrategyEngine {
       costEstimate: {
         min: 75000,
         max: 150000,
-        currency: 'USD',
+        currency: 'USD'
       }
     });
 
@@ -402,7 +402,7 @@ class LegalStrategyEngine {
       costEstimate: {
         min: 200000,
         max: 500000,
-        currency: 'USD',
+        currency: 'USD'
       }
     });
 
@@ -420,7 +420,7 @@ class LegalStrategyEngine {
       costEstimate: {
         min: 25000,
         max: 75000,
-        currency: 'USD',
+        currency: 'USD'
       }
     });
 
@@ -458,7 +458,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         id,
         filename: `evidence_${id}.pdf`,
         type: 'document',
-        analysisScore: Math.random(),
+        analysisScore: Math.random()
       });
 
       // Generate strategies
@@ -500,7 +500,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
             confidence: strategies.reduce((sum, s) => sum + s.confidence, 0) / strategies.length,
             recommendedStrategy: strategies[0]?.id,
             timeline: timeline || 'normal',
-            lastUpdated: new Date().toISOString(),
+            lastUpdated: new Date().toISOString()
           }
         }
       });
@@ -511,13 +511,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid analysis parameters',
-          details: error.errors,
+          details: error.errors
         }, { status: 400 });
       }
 
       return json({
         message: 'Strategy analysis failed',
-        details: error.message,
+        details: error.message
       }, { status: 500 });
     }
   }
@@ -564,7 +564,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
             dateRange
           },
           totalFound: precedents.length,
-          highRelevanceCount: precedents.filter(item => item.length),
+          highRelevanceCount: precedents.filter(item => item.length)
         }
       });
 
@@ -574,13 +574,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid search parameters',
-          details: error.errors,
+          details: error.errors
         }, { status: 400 });
       }
 
       return json({
         message: 'Precedent search failed',
-        details: error.message,
+        details: error.message
       }, { status: 500 });
     }
   }
@@ -624,7 +624,7 @@ Keep response under 200 words and focus on actionable insights.`;
         stream: false,
         options: {
           temperature: 0.2,
-          num_predict: 200,
+          num_predict: 200
         }
       })
     });
@@ -662,7 +662,7 @@ async function searchLegalPrecedents(
       ],
       factSimilarity: 0.85,
       jurisdiction: jurisdiction,
-      citation: '2023 U.S. Dist. LEXIS 45678',
+      citation: '2023 U.S. Dist. LEXIS 45678'
     },
     {
       caseId: 'precedent_002',
@@ -678,7 +678,7 @@ async function searchLegalPrecedents(
       ],
       factSimilarity: 0.71,
       jurisdiction: jurisdiction,
-      citation: '2022 State App. 234',
+      citation: '2022 State App. 234'
     }
   ];
 

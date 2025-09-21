@@ -40,8 +40,8 @@ async function forwardToRAGBackend(
       signal: controller.signal,
       headers: {
         "User-Agent": "SvelteKit-Frontend/1.0.0",
-        ...options.headers,
-      },
+        ...options.headers
+      }
     });
 
     clearTimeout(timeoutId);
@@ -54,7 +54,7 @@ async function forwardToRAGBackend(
       console.error(`RAG Backend API call failed [${duration}ms]:`, {
         endpoint,
         status: (response as { ok?: any; text?: any; status?: any; json?: any }).status,
-        error: errorText,
+        error: errorText
       });
 
       throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`);
@@ -65,7 +65,7 @@ async function forwardToRAGBackend(
     // Log successful API call;
     console.log(`RAG Backend API call succeeded [${duration}ms]:`, {
       endpoint,
-      resultKeys: Object.keys(result),
+      resultKeys: Object.keys(result)
     });
 
     return result;
@@ -76,7 +76,7 @@ async function forwardToRAGBackend(
     // Log error;
     console.error(`RAG Backend API call error [${duration}ms]:`, {
       endpoint,
-      error: err.message,
+      error: err.message
     });
 
     if (err.name === "AbortError") {
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       {
         error: err.message || "Unknown error",
         action,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -157,7 +157,7 @@ async function handleSearch(request: Request): Promise<any> {
       dateRange,
       confidenceMin,
       model,
-      includeMetadata = true,
+      includeMetadata = true
     } = await request.json();
 
     if (!query) {
@@ -181,8 +181,8 @@ async function handleSearch(request: Request): Promise<any> {
           dateRange,
           confidenceMin,
           model,
-          includeMetadata,
-        }),
+          includeMetadata
+        })
       });
 
       return json({
@@ -192,7 +192,7 @@ async function handleSearch(request: Request): Promise<any> {
         results: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results,
         metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata,
         total: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).total || (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results?.length || 0,
-        source: 'rag-backend',
+        source: 'rag-backend'
       });
     } catch (backendError: any) {
       console.warn('RAG Backend search failed, falling back to local search:', backendError.message);
@@ -231,7 +231,7 @@ async function handleSearch(request: Request): Promise<any> {
         total: localResult.analytics?.totalResults || 0,
         source: 'local-search',
         fallback: true,
-        warning: 'Used local search due to backend unavailability',
+        warning: 'Used local search due to backend unavailability'
       });
     }
   } catch (err: any) {
@@ -248,7 +248,7 @@ async function handleAnalyze(request: Request): Promise<any> {
     const {
       text,
       analysisType = "general",
-      options = {},
+      options = {}
     } = await request.json();
 
     if (!text) {
@@ -261,14 +261,14 @@ async function handleAnalyze(request: Request): Promise<any> {
       body: JSON.stringify({
         text,
         analysisType,
-        options,
-      }),
+        options
+      })
     });
 
     return json({
       success: true,
       analysis: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).analysis,
-      metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata,
+      metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata
     });
   } catch (err: any) {
     console.error("Analysis error:", err);
@@ -293,14 +293,14 @@ async function handleSummarize(request: Request): Promise<any> {
       body: JSON.stringify({
         text,
         length,
-        options,
-      }),
+        options
+      })
     });
 
     return json({
       success: true,
       summary: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).summary,
-      metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata,
+      metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata
     });
   } catch (err: any) {
     console.error("Summarization error:", err);
@@ -327,7 +327,7 @@ async function handleStatus(): Promise<any> {
       [
         forwardToRAGBackend("/health"),
         forwardToRAGBackend("/health/detailed"),
-        forwardToRAGBackend("/api/v1/rag/stats"),
+        forwardToRAGBackend("/api/v1/rag/stats")
       ]
     );
 
@@ -344,13 +344,13 @@ async function handleStatus(): Promise<any> {
       backend: {
         url: RAG_BACKEND_URL,
         healthy: isHealthy,
-        status: health?.status || "unknown",
+        status: health?.status || "unknown"
       },
       services: metrics?.health?.components || {},
       ragStats: stats?.stats || {},
       systemMetrics: metrics?.health?.components?.system?.details || {},
       timestamp: new Date().toISOString(),
-      responseTime: metrics?.responseTime || null,
+      responseTime: metrics?.responseTime || null
     });
   } catch (err: any) {
     console.error("Status check error:", err);
@@ -359,10 +359,10 @@ async function handleStatus(): Promise<any> {
       backend: {
         url: RAG_BACKEND_URL,
         healthy: false,
-        status: "unreachable",
+        status: "unreachable"
       },
       error: err.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 }
@@ -414,8 +414,8 @@ export const GET: RequestHandler = async ({ url }) => {
               searchType,
               limit,
               threshold,
-              includeContent: true,
-            }),
+              includeContent: true
+            })
           });
 
           return json({
@@ -423,7 +423,7 @@ export const GET: RequestHandler = async ({ url }) => {
             query,
             results: searchResult.results,
             total: searchResult.total,
-            source: 'rag-backend',
+            source: 'rag-backend'
           });
         } catch (backendError: any) {
           console.warn('RAG Backend GET search failed, using local search:', backendError.message);
@@ -449,7 +449,7 @@ export const GET: RequestHandler = async ({ url }) => {
             results: localResult.results,
             total: localResult.results?.length || 0,
             source: 'local-search',
-            fallback: true,
+            fallback: true
           });
         }
       }
@@ -478,7 +478,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
         const refreshResult = await forwardToRAGBackend("/api/v1/rag/cache", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "refresh" }),
+          body: JSON.stringify({ action: "refresh" })
         });
         return json({ success: true, result: refreshResult });
       }
@@ -509,13 +509,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const cacheUrl = `/api/v1/rag/cache${pattern ? `?pattern=${encodeURIComponent(pattern)}` : ""}`;
 
     const result = await forwardToRAGBackend(cacheUrl, {
-      method: "DELETE",
+      method: "DELETE"
     });
 
     return json({
       success: true,
       message: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).message || "Cache cleared successfully",
-      pattern: pattern || "all",
+      pattern: pattern || "all"
     });
   } catch (err: any) {
     console.error("Cache clear error:", err);

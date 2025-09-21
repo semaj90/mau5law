@@ -31,21 +31,21 @@ export const GET: RequestHandler = async ({ url }) => {
           enableBatching: true,
           enableSOMClustering: true,
           enableNESCache: true,
-          memoryLimit: '32MB',
+          memoryLimit: '32MB'
         };
 
         results.push({
           test: 'qdrant_config',
           status: 'success',
           data: config,
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'qdrant_config',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -77,16 +77,16 @@ export const GET: RequestHandler = async ({ url }) => {
             vector_dimensions: normalizedVector.length,
             is_normalized: Math.abs(magnitude - 1) < 0.001,
             mock_search_results: mockResults.length,
-            sample_scores: mockResults.map(r => Math.round(r.score * 1000) / 1000),
+            sample_scores: mockResults.map(r => Math.round(r.score * 1000) / 1000)
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'vector_operations',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -101,21 +101,21 @@ export const GET: RequestHandler = async ({ url }) => {
           usage_percentage: 26.5,
           cache_entries: 1247,
           som_clusters: 12,
-          status: 'optimal',
+          status: 'optimal'
         };
 
         results.push({
           test: 'memory_efficiency',
           status: 'success',
           data: memoryStats,
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'memory_efficiency',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
         embedding_model: 'nomic-embed-text',
         memory_efficient: true,
         clustering_enabled: true,
-        caching_enabled: true,
+        caching_enabled: true
       }
     });
 
@@ -147,7 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

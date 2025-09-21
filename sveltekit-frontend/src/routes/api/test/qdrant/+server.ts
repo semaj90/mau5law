@@ -30,14 +30,14 @@ export const GET: RequestHandler = async ({ url }) => {
           test: 'qdrant_health_check',
           status: health.status === 'healthy' ? 'success' : 'warning',
           data: health,
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'qdrant_health_check',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -51,14 +51,14 @@ export const GET: RequestHandler = async ({ url }) => {
           test: 'collection_setup',
           status: 'success',
           data: { message: 'Collection ensured with 768-dimensional nomic-embed vectors' },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'collection_setup',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
           limit: 5,
           threshold: 0.1,
           useCache: true,
-          enableSOM: true,
+          enableSOM: true
         });
 
         results.push({
@@ -83,16 +83,16 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             results_count: searchResult.results.length,
             stats: searchResult.stats,
-            sample_vector_dim: sampleVector.length,
+            sample_vector_dim: sampleVector.length
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'vector_search',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
               type: 'test',
               title: 'Test Document 1',
               content: 'Sample legal document for testing vector operations',
-              created_at: new Date().toISOString(),
+              created_at: new Date().toISOString()
             }
           },
           {
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({ url }) => {
               type: 'test',
               title: 'Test Document 2', 
               content: 'Another sample legal document for testing',
-              created_at: new Date().toISOString(),
+              created_at: new Date().toISOString()
             }
           }
         ];
@@ -132,16 +132,16 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             vectors_inserted: sampleVectors.length,
             upsert_result: upsertResult,
-            vector_dimensions: sampleVectors[0].vector.length,
+            vector_dimensions: sampleVectors[0].vector.length
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'vector_upsert',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -160,16 +160,16 @@ export const GET: RequestHandler = async ({ url }) => {
             message: 'Sync service initialized and ready',
             qdrant_status: health.status,
             memory_usage: health.memoryUsage,
-            note: 'Use POST /api/test/qdrant?action=sync for full PostgreSQL sync',
+            note: 'Use POST /api/test/qdrant?action=sync for full PostgreSQL sync'
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'postgresql_sync_test',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return await optimizedQdrantService.searchVectors(vector, {
             limit: 3,
             useCache: true,
-            enableSOM: true,
+            enableSOM: true
           });
         });
 
@@ -203,16 +203,16 @@ export const GET: RequestHandler = async ({ url }) => {
             avg_search_time: Math.round(
               searchResults.reduce((sum, r) => sum + r.stats.searchTimeMs, 0) / searchResults.length
             ),
-            som_clusters_used: searchResults.filter(item => item.length),
+            som_clusters_used: searchResults.filter(item => item.length)
           },
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       } catch (error: any) {
         results.push({
           test: 'performance_test',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime,
+          duration: Date.now() - startTime
         });
       }
     }
@@ -237,7 +237,7 @@ export const GET: RequestHandler = async ({ url }) => {
         som_clustering: 'enabled',
         nes_cache: 'enabled',
         batching: 'enabled',
-        memory_limit_mb: 32,
+        memory_limit_mb: 32
       }
     });
 
@@ -245,7 +245,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -259,7 +259,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const options = {
         fullSync: body.fullSync || false,
         batchSize: body.batchSize || 50,
-        sinceTimestamp: body.sinceTimestamp ? new Date(body.sinceTimestamp) : undefined,
+        sinceTimestamp: body.sinceTimestamp ? new Date(body.sinceTimestamp) : undefined
       };
 
       const syncResult = await optimizedQdrantService.syncFromPostgreSQL(options);
@@ -268,14 +268,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         success: true,
         action: 'postgresql_sync',
         result: syncResult,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (error: any) {
       return json({
         success: false,
         action: 'postgresql_sync',
         error: error instanceof Error ? error.message: String(error),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }, { status: 500 });
     }
   }
@@ -283,6 +283,6 @@ export const POST: RequestHandler = async ({ request, url }) => {
   return json({
     success: false,
     error: 'Invalid action. Supported actions: sync',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   }, { status: 400 });
 };

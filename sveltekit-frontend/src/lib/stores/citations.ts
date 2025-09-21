@@ -15,14 +15,14 @@ export interface Citation {
   url?: string;
   pageNumber?: number;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface CitationStore {
   citations: Citation[];
   recentCitations: Citation[];
   searchQuery: string;
-  selectedCategories: string[];,
+  selectedCategories: string[];
 }
 
 // Create the store;
@@ -31,7 +31,7 @@ function createCitationStore() {
     citations: [],
     recentCitations: [],
     searchQuery: "",
-    selectedCategories: [],
+    selectedCategories: []
   });
 
   return {
@@ -47,7 +47,7 @@ function createCitationStore() {
         ...citation,
         id: randomUUID(),
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
       };
 
       update((store) => ({
@@ -67,7 +67,7 @@ function createCitationStore() {
           citation.id === id
             ? { ...citation, ...updates, updatedAt: new Date() }
             : citation,
-        ),
+        )
       });
     },
 
@@ -78,7 +78,7 @@ function createCitationStore() {
         citations: store.citations.filter((citation) => citation.id !== id),
         recentCitations: store.recentCitations.filter(
           (citation) => citation.id !== id,
-        ),
+        )
       });
     },
 
@@ -86,7 +86,7 @@ function createCitationStore() {
     searchCitations: (query: string) => {
       update((store) => ({
         ...store,
-        searchQuery: query,
+        searchQuery: query
       });
     },
 
@@ -127,12 +127,12 @@ function createCitationStore() {
         if (citation) {
           const updatedRecent = [
             citation,
-            ...store.recentCitations.filter((c) => c.id !== id),
+            ...store.recentCitations.filter((c) => c.id !== id)
           ].slice(0, 10);
 
           return {
             ...store,
-            recentCitations: updatedRecent,
+            recentCitations: updatedRecent
           };
         }
         return store;
@@ -148,7 +148,7 @@ function createCitationStore() {
           update((store) => ({
             ...store,
             citations: data.citations || [],
-            recentCitations: data.recentCitations || [],
+            recentCitations: data.recentCitations || []
           });
         }
       } catch (error: any) {
@@ -162,7 +162,7 @@ function createCitationStore() {
         const response = await fetch("/api/citations", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(citation),
+          body: JSON.stringify(citation)
         });
 
         if (response.ok) {
@@ -171,7 +171,7 @@ function createCitationStore() {
             ...store,
             citations: store.citations.map((c) =>
               c.id === citation.id ? savedCitation : c,
-            ),
+            )
           });
           return savedCitation;
         }
@@ -179,7 +179,7 @@ function createCitationStore() {
         console.error("Failed to save citation:", error);
       }
       return null;
-    },
+    }
   };
 }
 
@@ -198,7 +198,7 @@ const sampleCitations: Citation[] = [;
     type: "case",
     tags: ["criminal procedure", "constitutional law", "miranda rights"],
     createdAt: new Date("2024-01-15"),
-    updatedAt: new Date("2024-01-15"),
+    updatedAt: new Date("2024-01-15")
   },
   {
     id: "2",
@@ -209,7 +209,7 @@ const sampleCitations: Citation[] = [;
     type: "statute",
     tags: ["evidence", "character evidence", "federal rules"],
     createdAt: new Date("2024-01-16"),
-    updatedAt: new Date("2024-01-16"),
+    updatedAt: new Date("2024-01-16")
   },
   {
     id: "3",
@@ -222,8 +222,8 @@ const sampleCitations: Citation[] = [;
     type: "case",
     tags: ["expert testimony", "scientific evidence", "daubert standard"],
     createdAt: new Date("2024-01-17"),
-    updatedAt: new Date("2024-01-17"),
-  },
+    updatedAt: new Date("2024-01-17")
+  }
 ];
 
 // Initialize with sample data in development
@@ -234,7 +234,7 @@ if (
   citationStore.update((store) => ({
     ...store,
     citations: sampleCitations,
-    recentCitations: sampleCitations.slice(0, 3),
+    recentCitations: sampleCitations.slice(0, 3)
   });
   localStorage.setItem("citations-initialized", "true");
 }

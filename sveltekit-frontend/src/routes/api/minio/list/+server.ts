@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ url }) => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
 
     // Check if bucket exists
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
         etag: obj.etag,
         size: obj.size,
         lastModified: obj.lastModified,
-        prefix: obj.prefix,
+        prefix: obj.prefix
       });
     }
 
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ url }) => {
       totalObjects: objectsList.length,
       maxKeys,
       truncated: objectsList.length >= maxKeys,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {

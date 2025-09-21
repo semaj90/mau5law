@@ -24,7 +24,7 @@ export interface IdleDetectionContext {
     jobsCompleted: number;
     averageProcessingTime: number;
     successRate: number;
-    lastJobTimestamp: number;,
+    lastJobTimestamp: number;
   };
 }
 
@@ -52,7 +52,7 @@ export interface SelfPrompt {
   timestamp: number;
   triggerReason: 'idle_detected' | 'pattern_recognition' | 'scheduled' | 'user_behavior';
   processedByNeo4j: boolean;
-  minioArtifacts: string[]; // File paths stored in MinIO,
+  minioArtifacts: string[]; // File paths stored in MinIO
 }
 
 // XState Events
@@ -124,12 +124,12 @@ const idleDetectionServices = {
             payload: job.payload,
             sessionId: context.sessionId,
             userId: context.userId,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           },
           headers: {
             messageType: 'background_job',
             priority: job.priority,
-            retryCount: job.retryCount.toString(),
+            retryCount: job.retryCount.toString()
           }
         })
       });
@@ -162,7 +162,7 @@ const idleDetectionServices = {
         availableServices: {
           neo4j: context.neo4jConnected,
           minio: context.minioConnected,
-          rabbitmq: context.rabbitmqConnected,
+          rabbitmq: context.rabbitmqConnected
         }
       };
 
@@ -182,7 +182,7 @@ const idleDetectionServices = {
             metadata: {
               type: 'self_prompt',
               sessionId: context.sessionId,
-              timestamp: selectedPrompt.timestamp.toString(),
+              timestamp: selectedPrompt.timestamp.toString()
             }
           })
         });
@@ -214,7 +214,7 @@ const idleDetectionServices = {
     return {
       neo4j: serviceChecks[0].status === 'fulfilled' && serviceChecks[0].value,
       minio: serviceChecks[1].status === 'fulfilled' && serviceChecks[1].value,
-      rabbitmq: serviceChecks[2].status === 'fulfilled' && serviceChecks[2].value,
+      rabbitmq: serviceChecks[2].status === 'fulfilled' && serviceChecks[2].value
     };
   }
 };
@@ -237,7 +237,7 @@ const idleDetectionActions = {
         id: crypto.randomUUID(),
         createdAt: Date.now(),
         status: 'pending',
-        retryCount: 0,
+        retryCount: 0
       };
 
       return [...context.jobQueue, newJob].sort((a, b) => {
@@ -251,7 +251,7 @@ const idleDetectionActions = {
   // Start processing the next job;
   startJobProcessing: assign({
     currentJob: (context) => context.jobQueue[0] || null,
-    jobQueue: (context) => context.jobQueue.slice(1),
+    jobQueue: (context) => context.jobQueue.slice(1)
   }),
 
   // Mark job as completed;
@@ -268,7 +268,7 @@ const idleDetectionActions = {
         jobsCompleted: totalJobs,
         averageProcessingTime: avgTime,
         successRate: totalJobs > 0 ? (totalJobs / (totalJobs + 1)) * 100 : 100, // Simplified success rate
-        lastJobTimestamp: Date.now(),
+        lastJobTimestamp: Date.now()
       };
     }
   }),
@@ -287,7 +287,7 @@ const idleDetectionActions = {
         timestamp: Date.now(),
         triggerReason: 'idle_detected',
         processedByNeo4j: true,
-        minioArtifacts: event.artifacts,
+        minioArtifacts: event.artifacts
       };
 
       return [prompt, ...context.selfPromptingHistory].slice(0, 100); // Keep last 100 prompts
@@ -349,7 +349,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
       jobsCompleted: 0,
       averageProcessingTime: 0,
       successRate: 100,
-      lastJobTimestamp: 0,
+      lastJobTimestamp: 0
     }
   },
 
@@ -379,7 +379,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
     monitoring: {
       invoke: {
         id: 'activityMonitor',
-        src: 'monitorActivity',
+        src: 'monitorActivity'
       },
 
       initial: 'active',
@@ -388,16 +388,16 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
         active: {
           invoke: {
             id: 'idleTimer',
-            src: 'idleTimer',
+            src: 'idleTimer'
           },
 
           on: {
             USER_ACTIVITY: {
-              actions: ['updateActivity'],
+              actions: ['updateActivity']
             },
             IDLE_TIMEOUT: {
               target: 'idle',
-              cond: 'hasBackgroundJobsEnabled',
+              cond: 'hasBackgroundJobsEnabled'
             }
           }
         },
@@ -412,27 +412,27 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
               always: [;
                 {
                   target: 'generating_prompts',
-                  cond: 'allServicesConnected',
+                  cond: 'allServicesConnected'
                 },
                 {
-                  target: 'waiting_for_services',
+                  target: 'waiting_for_services'
                 }
               ]
             },
 
             waiting_for_services: {
               after: {
-                10000: 'generating_prompts' // Wait 10 seconds then proceed anyway,
+                10000: 'generating_prompts' // Wait 10 seconds then proceed anyway
               },
               on: {
                 NEO4J_CONNECTED: {
-                  actions: ['updateServiceConnections'],
+                  actions: ['updateServiceConnections']
                 },
                 MINIO_CONNECTED: {
-                  actions: ['updateServiceConnections'],
+                  actions: ['updateServiceConnections']
                 },
                 RABBITMQ_CONNECTED: {
-                  actions: ['updateServiceConnections'],
+                  actions: ['updateServiceConnections']
                 }
               }
             },
@@ -456,7 +456,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                           status: 'pending',
                           retryCount: 0,
                           maxRetries: 3,
-                          estimatedDuration: 30000 // 30 seconds,
+                          estimatedDuration: 30000 // 30 seconds
                         };
                         return [selfPromptJob, ...context.jobQueue];
                       }
@@ -474,10 +474,10 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
               always: [;
                 {
                   target: 'job_execution',
-                  cond: 'hasQueuedJobs',
+                  cond: 'hasQueuedJobs'
                 },
                 {
-                  target: '../active' // Return to active monitoring,
+                  target: '../active' // Return to active monitoring
                 }
               ]
             },
@@ -489,7 +489,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
                 src: 'processBackgroundJobs',
                 onDone: {
                   target: 'processing_jobs',
-                  actions: ['completeJob'],
+                  actions: ['completeJob']
                 },
                 onError: {
                   target: 'processing_jobs',
@@ -505,7 +505,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
           on: {
             USER_ACTIVITY: {
               target: 'active',
-              actions: ['updateActivity'],
+              actions: ['updateActivity']
             }
           }
         }
@@ -515,7 +515,7 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
         START_IDLE_DETECTION: '.active',
         STOP_IDLE_DETECTION: 'stopped',
         QUEUE_BACKGROUND_JOB: {
-          actions: ['queueBackgroundJob'],
+          actions: ['queueBackgroundJob']
         },
         ENABLE_SELF_PROMPTING: {
           actions: assign({ backgroundJobsEnabled: true })
@@ -524,16 +524,16 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
           actions: assign({ backgroundJobsEnabled: false })
         },
         NEO4J_CONNECTED: {
-          actions: ['updateServiceConnections'],
+          actions: ['updateServiceConnections']
         },
         MINIO_CONNECTED: {
-          actions: ['updateServiceConnections'],
+          actions: ['updateServiceConnections']
         },
         RABBITMQ_CONNECTED: {
-          actions: ['updateServiceConnections'],
+          actions: ['updateServiceConnections']
         },
         SELF_PROMPT_COMPLETED: {
-          actions: ['storeSelfPrompt'],
+          actions: ['storeSelfPrompt']
         }
       }
     },
@@ -541,14 +541,14 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
     stopped: {
       entry: [() => console.log('🛑 Idle detection stopped')],
       on: {
-        START_IDLE_DETECTION: 'monitoring',
+        START_IDLE_DETECTION: 'monitoring'
       }
     }
   }
 }, {
   services: idleDetectionServices,
   actions: idleDetectionActions,
-  guards: idleDetectionGuards,
+  guards: idleDetectionGuards
 });
 
 // Helper functions for self-prompting;
@@ -565,7 +565,7 @@ async function generateContextualPrompts(systemContext: any): Promise<SelfPrompt
       timestamp: Date.now(),
       triggerReason: 'idle_detected',
       processedByNeo4j: false,
-      minioArtifacts: [],
+      minioArtifacts: []
     });
   }
 
@@ -578,7 +578,7 @@ async function generateContextualPrompts(systemContext: any): Promise<SelfPrompt
       timestamp: Date.now(),
       triggerReason: 'pattern_recognition',
       processedByNeo4j: false,
-      minioArtifacts: [],
+      minioArtifacts: []
     });
   }
 
@@ -647,7 +647,7 @@ export function createIdleDetectionService(config?: Partial<IdleDetectionContext
   const machine = idleDetectionMachine.withContext({
     ...idleDetectionMachine.context,
     ...config
-  ,});
+  });
 
   const service = interpret(machine);
   service.start();

@@ -19,13 +19,13 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!isValid) {
         const errorResponse = legal.api.AuthResponse.create({
           success: false,
-          errorMessage: 'Invalid credentials',
+          errorMessage: 'Invalid credentials'
         });
 
         const encoded = legal.api.AuthResponse.encode(errorResponse).finish();
         return new Response(Buffer.from(encoded), {
           status: 401,
-          headers: { 'Content-Type': 'application/x-protobuf' },
+          headers: { 'Content-Type': 'application/x-protobuf' }
         });
       }
 
@@ -41,8 +41,8 @@ export const POST: RequestHandler = async ({ request }) => {
           theme: 'nier',
           language: 'en',
           notificationsEnabled: true,
-          analyticsOptIn: false,
-        },
+          analyticsOptIn: false
+        }
       });
 
       const authResponse = legal.api.AuthResponse.create({
@@ -58,8 +58,8 @@ export const POST: RequestHandler = async ({ request }) => {
         headers: {
           'Content-Type': 'application/x-protobuf',
           'X-Protocol-Version': '1.0',
-          'X-Performance-Mode': 'protobuf',
-        },
+          'X-Performance-Mode': 'protobuf'
+        }
       });
     } else {
       // JSON fallback for compatibility
@@ -83,10 +83,10 @@ export const POST: RequestHandler = async ({ request }) => {
             theme: 'nier',
             language: 'en',
             notifications_enabled: true,
-            analytics_opt_in: false,
+            analytics_opt_in: false
           }
         },
-        expires_at: Date.now() + (24 * 60 * 60 * 1000),
+        expires_at: Date.now() + (24 * 60 * 60 * 1000)
       });
     }
   } catch (err) {
@@ -102,6 +102,6 @@ export const GET: RequestHandler = async () => {
     protobuf_support: true,
     fallback_json: true,
     version: '1.0.0',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };

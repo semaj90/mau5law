@@ -34,7 +34,7 @@ export interface DidYouMeanSuggestion {
   expectedImprovement: {
     clarityGain: number; // 0-1
     specificityGain: number; // 0-1
-    completenessGain: number; // 0-1,
+    completenessGain: number; // 0-1
   };
 }
 
@@ -44,7 +44,7 @@ export interface TaskCompletionPrediction {
   totalEstimatedTime: number;
   successProbability: number;
   potentialChallenges: string[];
-  recommendedApproach: string;,
+  recommendedApproach: string;
 }
 
 export interface UserLearningInsights {
@@ -53,7 +53,7 @@ export interface UserLearningInsights {
   expertiseDomains: Map<string, number>; // domain -> proficiency (0-1)
   commonMistakePatterns: Array<any>;
   personalizedShortcuts: Map<string, string>; // user_term -> system_understanding
-  adaptationRecommendations: string[];,
+  adaptationRecommendations: string[];
 }
 
 class UserIntentPredictionSystem {
@@ -148,7 +148,7 @@ class UserIntentPredictionSystem {
         didYouMeanSuggestions: [],
         taskCompletion: this.createFallbackTaskPrediction(),
         userInsights: this.createFallbackUserInsights(),
-        processingTime: performance.now() - startTime,
+        processingTime: performance.now() - startTime
       };
     }
   }
@@ -160,7 +160,7 @@ class UserIntentPredictionSystem {
     quickActions: Array<any>;
     contextualHelp: Array<any>;
     personalizedSuggestions: string[];
-    nextStepPrediction: string;,
+    nextStepPrediction: string;
   }> {
     try {
       // Use cached insights for ultra-fast response
@@ -191,7 +191,7 @@ class UserIntentPredictionSystem {
         quickActions: [{ action: 'help', description: 'Get general help', oneClickExecute: true, estimatedTime: '< 1 min' }],
         contextualHelp: [],
         personalizedSuggestions: [],
-        nextStepPrediction: 'Continue with your query for more assistance',
+        nextStepPrediction: 'Continue with your query for more assistance'
       };
     }
   }
@@ -249,7 +249,7 @@ class UserIntentPredictionSystem {
           expectedImprovement: {
             clarityGain: 0.8,
             specificityGain: 0.3,
-            completenessGain: 0.2,
+            completenessGain: 0.2
           }
         });
       });
@@ -266,7 +266,7 @@ class UserIntentPredictionSystem {
           expectedImprovement: {
             clarityGain: 0.6,
             specificityGain: 0.9,
-            completenessGain: 0.4,
+            completenessGain: 0.4
           }
         });
       });
@@ -283,7 +283,7 @@ class UserIntentPredictionSystem {
           expectedImprovement: {
             clarityGain: 0.4,
             specificityGain: 0.7,
-            completenessGain: 0.9,
+            completenessGain: 0.9
           }
         });
       });
@@ -301,7 +301,7 @@ class UserIntentPredictionSystem {
             expectedImprovement: {
               clarityGain: 0.9,
               specificityGain: 0.8,
-              completenessGain: 0.6,
+              completenessGain: 0.6
             }
           });
         });
@@ -320,7 +320,7 @@ class UserIntentPredictionSystem {
             expectedImprovement: {
               clarityGain: 0.5,
               specificityGain: 0.6,
-              completenessGain: 0.8,
+              completenessGain: 0.8
             }
           });
         });
@@ -339,7 +339,7 @@ class UserIntentPredictionSystem {
             expectedImprovement: {
               clarityGain: 0.8,
               specificityGain: 0.4,
-              completenessGain: 0.3,
+              completenessGain: 0.3
             }
           });
         });
@@ -425,7 +425,7 @@ class UserIntentPredictionSystem {
         action: 'analyze_contract',
         description: 'Analyze contract terms and conditions',
         oneClickExecute: true,
-        estimatedTime: '2-3 minutes',
+        estimatedTime: '2-3 minutes'
       });
     }
 
@@ -434,7 +434,7 @@ class UserIntentPredictionSystem {
         action: 'smart_search',
         description: 'Perform enhanced legal search',
         oneClickExecute: true,
-        estimatedTime: '1-2 minutes',
+        estimatedTime: '1-2 minutes'
       });
     }
 
@@ -451,7 +451,7 @@ class UserIntentPredictionSystem {
       help.push({
         helpType: 'explanation',
         content: 'Legal terms can be complex. I can break down terminology for better understanding.',
-        relevanceScore: 0.9,
+        relevanceScore: 0.9
       });
     }
 
@@ -497,7 +497,7 @@ class UserIntentPredictionSystem {
   }
 
   private countComplexTerms(query: string): number {
-    const complexPatterns = [/\b\w{12,}\b/g, /[;:(){}[\]]/g, /\b(pursuant|heretofore|whereas|notwithstanding)\b/gi];
+    const complexPatterns = [/\b\w{12}\b/g, /[;:(){}[\]]/g, /\b(pursuant|heretofore|whereas|notwithstanding)\b/gi];
     return complexPatterns.reduce((count, pattern) => count + (query.match(pattern) || []).length, 0);
   }
 
@@ -514,7 +514,7 @@ class UserIntentPredictionSystem {
         urgencyIndicators: [],
         domainSpecialization: [],
         sessionPattern: 'exploration',
-        lastUpdated: Date.now(),
+        lastUpdated: Date.now()
       }
     };
   }
@@ -526,7 +526,7 @@ class UserIntentPredictionSystem {
       totalEstimatedTime: 60,
       successProbability: 0.7,
       potentialChallenges: ['unclear_requirements'],
-      recommendedApproach: 'step_by_step_clarification',
+      recommendedApproach: 'step_by_step_clarification'
     };
   }
 
@@ -537,7 +537,7 @@ class UserIntentPredictionSystem {
       expertiseDomains: new Map([['general', 0.5]]),
       commonMistakePatterns: [],
       personalizedShortcuts: new Map(),
-      adaptationRecommendations: ['provide_more_context'],
+      adaptationRecommendations: ['provide_more_context']
     };
   }
 
@@ -547,7 +547,7 @@ class UserIntentPredictionSystem {
       didYouMeanSuggestions: this.suggestionCache.get(this.generateCacheKey(query, userContext.userId)) || [],
       taskCompletion: this.createFallbackTaskPrediction(),
       userInsights: this.userInsightCache.get(userContext.userId) || this.createFallbackUserInsights(),
-      processingTime: performance.now() - startTime,
+      processingTime: performance.now() - startTime
     };
   }
 
@@ -562,7 +562,7 @@ class UserIntentPredictionSystem {
       urgencyIndicators: [],
       domainSpecialization: [],
       sessionPattern: 'exploration',
-      lastUpdated: Date.now(),
+      lastUpdated: Date.now()
     };
   }
   private async predictTaskCompletion(query: string, intent: any, context: any): Promise<any> { return this.createFallbackTaskPrediction(); }
@@ -599,7 +599,7 @@ class UserIntentPredictionSystem {
       cacheHitRate,
       avgProcessingTime: totalProcessingTime / Math.max(totalPredictions, 1),
       intentAccuracy: totalPredictions > 0 ? correctPredictions / totalPredictions : 0,
-      suggestionAcceptanceRate: 0.65 // Estimated based on user interaction,
+      suggestionAcceptanceRate: 0.65 // Estimated based on user interaction
     };
   }
 }
@@ -637,7 +637,7 @@ class SpellingCorrectionEngine {
           correctedText: query.replace(word, replacement),
             originalWord: cleanWord,
             correctedWord: replacement,
-            confidence: 0.9,
+            confidence: 0.9
         });
       }
     });
@@ -663,7 +663,7 @@ class SynonymExpansionEngine {
           expandedText: query.replace(new RegExp(original, 'gi'), legal),
           originalTerm: original,
           legalTerm: legal,
-          confidence: 0.8,
+          confidence: 0.8
         });
       }
     });

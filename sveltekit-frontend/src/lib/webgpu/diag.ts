@@ -19,7 +19,7 @@ export type WebGPUDiagResult = {
     isFallbackAdapter?: boolean;
   };
   deviceLimits?: Record<string, number>;
-  recommendedActions: string[];,
+  recommendedActions: string[];
 };
 
 async function tryRequestAdapter(powerPreference: 'high-performance' | 'low-power' | 'default') {
@@ -43,7 +43,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       warnings,
       powerPreferenceTried: tried,
       timings: Record<string, any>,
-      recommendedActions: ['Run diagnostics in a browser context (client-side).'],
+      recommendedActions: ['Run diagnostics in a browser context (client-side).']
     };
   }
 
@@ -63,7 +63,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
       warnings,
       powerPreferenceTried: tried,
       timings: Record<string, any>,
-      recommendedActions: recommended,
+      recommendedActions: recommended
     };
   }
 
@@ -95,18 +95,18 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
             powerPreferenceUsed: usedPref,
             timings: {
               requestAdapterMs: t1 - t0,
-              requestDeviceMs: t2 - t1,
+              requestDeviceMs: t2 - t1
             },
             adapter: {
               label: (adapter as any).label ?? undefined,
               features: Array.from(adapter.features ?? [] as any),
               limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
-              isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined,
+              isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
             },
             deviceLimits: Object.fromEntries(
               Object.entries((device.limits as any) || {}).map(([k, v]) => [k, Number(v as any)])
             ),
-            recommendedActions: recommended,
+            recommendedActions: recommended
           };
 
           // Heuristics and suggestions;
@@ -152,9 +152,9 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
           label: (adapter as any).label ?? undefined,
           features: Array.from(adapter.features ?? [] as any),
           limits: Object.fromEntries(Object.entries((adapter.limits as any) || {})),
-          isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined,
+          isFallbackAdapter: (adapter as any).isFallbackAdapter ?? undefined
         }
       : undefined,
-    recommendedActions: recommended,
+    recommendedActions: recommended
   };
 }

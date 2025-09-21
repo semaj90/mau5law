@@ -13,16 +13,16 @@ interface DetectiveSystemStatus {
   grpc: {
     connected: boolean;
     caseScoringAvailable: boolean;
-    streamingActive: boolean;,
+    streamingActive: boolean;
   };
   evidence: {
     totalItems: number;
     processingQueue: number;
-    lastSync: Date | null;,
+    lastSync: Date | null;
   };
   realTime: {
     activeConnections: number;
-    lastHeartbeat: Date | null;,
+    lastHeartbeat: Date | null;
   };
 }
 
@@ -32,16 +32,16 @@ export class ComprehensiveIntegration {
     grpc: {
       connected: false,
       caseScoringAvailable: false,
-      streamingActive: false,
+      streamingActive: false
     },
     evidence: {
       totalItems: 0,
       processingQueue: 0,
-      lastSync: null,
+      lastSync: null
     },
     realTime: {
       activeConnections: 0,
-      lastHeartbeat: null,
+      lastHeartbeat: null
     }
   };
 
@@ -156,7 +156,7 @@ export class ComprehensiveIntegration {
         timestamp: new Date(),
         totalItems: evidenceState.evidence?.length || 0,
         isLoading: evidenceState.isLoading || false,
-        error: evidenceState.error,
+        error: evidenceState.error
       }
     });
 
@@ -174,7 +174,7 @@ export class ComprehensiveIntegration {
         timestamp: new Date(),
         caseId: update.caseId,
         eventType: update.eventType,
-        data: update.data,
+        data: update.data
       }
     });
 
@@ -199,7 +199,7 @@ export class ComprehensiveIntegration {
     console.log('📊 Detective Mode Status:', {
       grpc: this.systemStatus.grpc,
       evidence: this.systemStatus.evidence,
-      realTime: this.systemStatus.realTime,
+      realTime: this.systemStatus.realTime
     });
   }
 
@@ -224,7 +224,7 @@ export class ComprehensiveIntegration {
           legal_precedent: 0.5,
           public_interest: 0.4,
           case_complexity: 0.6,
-          resource_requirements: 0.5,
+          resource_requirements: 0.5
         }
       };
 

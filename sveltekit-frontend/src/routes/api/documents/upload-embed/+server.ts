@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
         mimeType: file.type,
         hash
       },
-      message: 'Document uploaded successfully',
+      message: 'Document uploaded successfully'
     });
 
   } catch (err: any) {
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
       },
       ollama: {
         baseUrl: config.ollamaBaseUrl,
-        connected: true,
+        connected: true
       }
     });
   } catch (err: any) {
@@ -137,7 +137,7 @@ export const GET: RequestHandler = async () => {
       error: err instanceof Error ? err.message: 'Unknown error',
       config: {
         model: config.embeddingModel,
-        ollamaBaseUrl: config.ollamaBaseUrl,
+        ollamaBaseUrl: config.ollamaBaseUrl
       }
     }, { status: 500 });
   }

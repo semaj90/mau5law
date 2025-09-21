@@ -9,7 +9,7 @@ import {
   derived,
   readable,
   type Writable,
-  type Readable,
+  type Readable
 } from "svelte/store";
 // TODO: Fix import - // Orphaned content: import { vscodeCache  // Base interfaces for the barrel pattern
 export interface StoreMetadata {
@@ -27,7 +27,7 @@ export interface BarrelStoreEntry<T = any> {
   validator?: (value: T) => boolean;
   serializer?: {
     serialize: (value: T) => string;
-    deserialize: (value: string) => T;,
+    deserialize: (value: string) => T;
   };
 }
 
@@ -66,7 +66,7 @@ export class BarrelStoreManager {
       cacheable = false,
       ttl = 1000 * 60 * 15, // 15 minutes
       validator,
-      dependencies = [],
+      dependencies = []
     } = config;
 
     // Check if store already exists;
@@ -95,7 +95,7 @@ export class BarrelStoreManager {
       lastUpdated: Date.now(),
       dependencies,
       cacheable,
-      ttl: cacheable ? ttl : undefined,
+      ttl: cacheable ? ttl : undefined
     };
 
     // Store entry;
@@ -105,8 +105,8 @@ export class BarrelStoreManager {
       validator,
       serializer: {
         serialize: (value: T) => JSON.stringify(value),
-        deserialize: (value: string) => JSON.parse(value),
-      },
+        deserialize: (value: string) => JSON.parse(value)
+      }
     };
 
     this.stores.set(id, entry);
@@ -204,7 +204,7 @@ export class BarrelStoreManager {
       const currentValue = await this.getCurrentValue(entry.store);
       exports[id] = {
         value: currentValue,
-        metadata: entry.metadata,
+        metadata: entry.metadata
       };
     }
 
@@ -275,7 +275,7 @@ export class BarrelStoreManager {
       entry.metadata = {
         ...entry.metadata,
         ...updates,
-        lastUpdated: Date.now(),
+        lastUpdated: Date.now()
       };
     }
   }
@@ -354,7 +354,7 @@ export const legalAIStores = {
     id: "legal-ai-current-case",
     initialValue: null,
     persistent: true,
-    cacheable: true,
+    cacheable: true
   }),
 
   // Document processing;
@@ -362,7 +362,7 @@ export const legalAIStores = {
     id: "legal-ai-document-queue",
     initialValue: [],
     persistent: true,
-    cacheable: true,
+    cacheable: true
   }),
 
   // AI analysis results;
@@ -381,7 +381,7 @@ export const legalAIStores = {
       theme: "dark",
       aiModel: "gemma3-legal",
       autoSave: true,
-      notifications: true,
+      notifications: true
     },
     persistent: true,
     validator: (prefs) => {
@@ -390,7 +390,7 @@ export const legalAIStores = {
         prefs !== null &&
         typeof prefs.theme === "string"
       );
-    },
+    }
   }),
 
   // Application state;
@@ -400,9 +400,9 @@ export const legalAIStores = {
       loading: false,
       error: null,
       currentStep: 0,
-      totalSteps: 5,
+      totalSteps: 5
     },
-    cacheable: true,
+    cacheable: true
   }),
 
   // OCR processing state;
@@ -412,10 +412,10 @@ export const legalAIStores = {
       processing: false,
       progress: 0,
       results: [],
-      errors: [],
+      errors: []
     },
-    cacheable: true,
-  }),
+    cacheable: true
+  })
 };
 
 // Computed stores for complex derived state;
@@ -445,7 +445,7 @@ export const legalAIComputed = {
         processed,
         processing,
         remaining: total - processed,
-        progress: total > 0 ? (processed / total) * 100 : 0,
+        progress: total > 0 ? (processed / total) * 100 : 0
       };
     }
   ),
@@ -457,7 +457,7 @@ export const legalAIComputed = {
     ([preferences, appState]) => {
       return !appState.loading && !appState.error && preferences !== null;
     }
-  ),
+  )
 };
 
 // Utility functions for store management;
@@ -499,7 +499,7 @@ export const storeUtils = {
    */;
   async debug(): Promise<Record<string, any> {
     return await barrelStore.exportStores();
-  },
+  }
 };
 
 // Export barrel store instance for advanced usage

@@ -17,7 +17,7 @@ interface LegalAgent {
   specialization: string[];
   modelPath: string;
   confidence: number;
-  isActive: boolean;,
+  isActive: boolean;
 }
 
 // Query Analysis Result;
@@ -27,7 +27,7 @@ interface QueryIntent {
   urgency: 'low' | 'medium' | 'high' | 'critical';
   requiredAgents: string[];
   suggestedWorkflow: string[];
-  confidence: number;,
+  confidence: number;
 }
 
 // Orchestration Plan;
@@ -47,7 +47,7 @@ interface ExecutionStep {
   prompt: string;
   expectedOutput: string;
   dependencies: string[];
-  timeout: number;,
+  timeout: number;
 }
 
 // Ollama Integration;
@@ -61,7 +61,7 @@ interface OllamaModelInfo {
     family: string;
     families: string[];
     parameter_size: string;
-    quantization_level: string;,
+    quantization_level: string;
   };
 }
 
@@ -97,7 +97,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['intent_analysis', 'query_classification', 'workflow_planning'],
         modelPath: 'gemma3-legal-router-q4:latest',
         confidence: 0.95,
-        isActive: true,
+        isActive: true
       },
       {
         id: 'contract_specialist',
@@ -107,7 +107,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['contract_analysis', 'clause_review', 'risk_assessment', 'compliance_check'],
         modelPath: 'gemma3-legal-contract-q4:latest',
         confidence: 0.92,
-        isActive: false,
+        isActive: false
       },
       {
         id: 'litigation_specialist', 
@@ -117,7 +117,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['case_analysis', 'precedent_research', 'evidence_review', 'legal_strategy'],
         modelPath: 'gemma3-legal-litigation-q4:latest',
         confidence: 0.90,
-        isActive: false,
+        isActive: false
       },
       {
         id: 'compliance_specialist',
@@ -127,7 +127,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['regulatory_analysis', 'compliance_audit', 'policy_review', 'risk_management'],
         modelPath: 'gemma3-legal-compliance-q4:latest',
         confidence: 0.88,
-        isActive: false,
+        isActive: false
       },
       {
         id: 'research_specialist',
@@ -137,7 +137,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['legal_research', 'citation_analysis', 'precedent_discovery', 'jurisprudence'],
         modelPath: 'gemma3-legal-research-q4:latest',
         confidence: 0.85,
-        isActive: false,
+        isActive: false
       },
       {
         id: 'synthesis_specialist',
@@ -147,7 +147,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['multi_source_synthesis', 'recommendation_generation', 'report_writing'],
         modelPath: 'gemma3-legal-synthesis-q4:latest',
         confidence: 0.87,
-        isActive: false,
+        isActive: false
       }
     ];
 
@@ -223,7 +223,7 @@ Classify the query and respond with JSON:;
     try {
       const analysis = await qloraWasmLoader.generateText(routerModel, intentAnalysisPrompt, {
         maxTokens: 256,
-        temperature: 0.1,
+        temperature: 0.1
       });
 
       const intent = this.parseIntentFromResponse(analysis.text);
@@ -232,7 +232,7 @@ Classify the query and respond with JSON:;
       console.log('📋 Orchestration plan created:', {
         domain: intent.primaryDomain,
         agents: plan.selectedAgents.length,
-        steps: plan.executionSteps.length,
+        steps: plan.executionSteps.length
       });
 
       return plan;
@@ -273,7 +273,7 @@ Classify the query and respond with JSON:;
         const response = await qloraWasmLoader.generateText(modelKey, step.prompt, {
           maxTokens: 512,
           temperature: 0.2,
-          streaming: false,
+          streaming: false
         });
 
         results.set(step.stepId, response.text);
@@ -311,7 +311,7 @@ Classify the query and respond with JSON:;
         metadata: {
           agentsUsed: plan.selectedAgents.length,
           stepsExecuted: plan.executionSteps.length,
-          avgStepTime: duration / plan.executionSteps.length,
+          avgStepTime: duration / plan.executionSteps.length
         }
       };
 
@@ -324,7 +324,7 @@ Classify the query and respond with JSON:;
         intent: plan.intent,
         agents: plan.selectedAgents.map(a => a.id),
         success: false,
-        duration: performance.now() - startTime,
+        duration: performance.now() - startTime
       });
 
       // Try fallback plan if available;
@@ -369,7 +369,7 @@ Classify the query and respond with JSON:;
           path: `${this.distilledModelsPath}/${agent.modelPath}`,
           size: 256, // Default distilled size
           contextLength: 2048,
-          vocabulary: 32000,
+          vocabulary: 32000
         },
         adapter: {
           name: `${agentId}-adapter`,
@@ -377,7 +377,7 @@ Classify the query and respond with JSON:;
           rank: 16,
           alpha: 32,
           targetModules: ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
-          size: 8,
+          size: 8
         }
       });
 
@@ -449,7 +449,7 @@ Classify the query and respond with JSON:;
           urgency: parsed.urgency || 'medium',
           requiredAgents: this.mapSkillsToAgents(parsed.requiredSkills || []),
           suggestedWorkflow: parsed.suggestedWorkflow || ['analyze', 'synthesize'],
-          confidence: parsed.confidence || 0.7,
+          confidence: parsed.confidence || 0.7
         };
       }
     } catch (error) {
@@ -510,7 +510,7 @@ Classify the query and respond with JSON:;
       selectedAgents,
       executionSteps,
       expectedDuration: this.estimateExecutionTime(executionSteps),
-      fallbackPlan: this.createFallbackPlan(query),
+      fallbackPlan: this.createFallbackPlan(query)
     };
 
     return plan;
@@ -546,7 +546,7 @@ Synthesis:`;
     const modelKey = this.activeModels.get(synthesisAgent.id)!;
     const synthesis = await qloraWasmLoader.generateText(modelKey, synthesisPrompt, {
       maxTokens: 512,
-      temperature: 0.2,
+      temperature: 0.2
     });
 
     return synthesis.text;
@@ -587,7 +587,7 @@ Synthesis:`;
       urgency: 'medium',
       requiredAgents: [primaryDomain === 'general' ? 'contract_specialist' : `${primaryDomain}_specialist`],
       suggestedWorkflow: ['analyze', 'synthesize'],
-      confidence: 0.6,
+      confidence: 0.6
     };
   }
 
@@ -605,7 +605,7 @@ Synthesis:`;
         prompt: `As a ${agent.name}, analyze this legal query with your expertise in ${agent.specialization.join(', ')}:\n\n"${query}"\n\nProvide detailed analysis:`,
         expectedOutput: `${agent.role}_analysis`,
         dependencies: index === 0 ? [] : [`step_${index}_${workingAgents[index-1].role}`],
-        timeout: 30000,
+        timeout: 30000
       });
     });
     
@@ -625,7 +625,7 @@ Synthesis:`;
         urgency: 'low',
         requiredAgents: ['router'],
         suggestedWorkflow: ['basic_analysis'],
-        confidence: 0.5,
+        confidence: 0.5
       },
       selectedAgents: [this.agents.get('router')!],
       executionSteps: [{
@@ -635,9 +635,9 @@ Synthesis:`;
         prompt: `Provide a basic legal analysis for: "${query}"`,
         expectedOutput: 'basic_analysis',
         dependencies: [],
-        timeout: 15000,
+        timeout: 15000
       }],
-      expectedDuration: 15000,
+      expectedDuration: 15000
     };
   }
 
@@ -654,7 +654,7 @@ Synthesis:`;
       successRate: successfulRuns.length / Math.max(this.workflowHistory.length, 1),
       averageDuration: avgDuration,
       activeAgents: Array.from(this.activeModels.keys()),
-      agentLoadingTime: avgDuration * 0.3 // Estimate,
+      agentLoadingTime: avgDuration * 0.3 // Estimate
     };
   }
 }

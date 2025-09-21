@@ -10,12 +10,12 @@ export function logAnalyticsEvent(event) {
   fetch("/api/analytics", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(event),
+    body: JSON.stringify(event)
   });
 }
 
 // Export main store for backward compatibility;
 export const analyticsStore = {
   events: analyticsEvents,
-  logEvent: logAnalyticsEvent,
+  logEvent: logAnalyticsEvent
 };

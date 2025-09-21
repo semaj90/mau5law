@@ -43,7 +43,7 @@ interface HybridSearchResult {
   performance: {
     postgresqlTime?: number;
     qdrantTime?: number;
-    totalTime: number;,
+    totalTime: number;
   };
 }
 
@@ -58,7 +58,7 @@ let qdrantClient: QdrantClient | undefined;
 if (process.env.QDRANT_URL) {
   qdrantClient = new QdrantClient({
     url: process.env.QDRANT_URL,
-    apiKey: process.env.QDRANT_API_KEY,
+    apiKey: process.env.QDRANT_API_KEY
   });
 }
 
@@ -121,18 +121,18 @@ async function ensureQdrantCollection(
       await qdrantClient.createCollection(collectionName, {
         vectors: {
           size: vectorSize,
-          distance,
+          distance
         },
         optimizers_config: {
           default_segment_number: 2,
           memmap_threshold: 20000,
-          indexing_threshold: 20000,
+          indexing_threshold: 20000
         },
         hnsw_config: {
           m: 16,
           ef_construct: 64,
-          full_scan_threshold: 10000,
-        },
+          full_scan_threshold: 10000
+        }
       });
 
       console.log(`✅ Created Qdrant collection: ${collectionName}`);
@@ -154,7 +154,7 @@ async function hybridVectorSearch(
     threshold = 0.7,
     filter = {},
     usePostgreSQL = true,
-    useQdrant = true,
+    useQdrant = true
   } = options;
 
   const results: HybridSearchResult['results'] = [];
@@ -185,7 +185,7 @@ async function hybridVectorSearch(
           id: row.id,
           score: row.similarity,
           document: row as DocumentMetadata,
-          source: 'postgresql',
+          source: 'postgresql'
         });
       }
     } catch (error) {
@@ -206,9 +206,9 @@ async function hybridVectorSearch(
         filter: Object.keys(filter).length > 0 ? {
           must: Object.entries(filter).map(([key, value]) => ({
             key,
-            match: { value },
-          })),
-        } : undefined,
+            match: { value }
+          }))
+        } : undefined
       });
 
       qdrantTime = Date.now() - qdrantStart;
@@ -232,7 +232,7 @@ async function hybridVectorSearch(
               id: (result as { id?: any; score?: any }).id.toString(),
               score: (result as { id?: any; score?: any }).score,
               document,
-              source: 'qdrant',
+              source: 'qdrant'
             });
           }
         }
@@ -260,8 +260,8 @@ async function hybridVectorSearch(
     performance: {
       postgresqlTime,
       qdrantTime,
-      totalTime: Date.now() - startTime,
-    },
+      totalTime: Date.now() - startTime
+    }
   };
 }
 
@@ -274,7 +274,7 @@ async function healthCheck(): Promise<any> {
     postgresql: false,
     qdrant: false,
     pgvector: false,
-    overallHealth: false,
+    overallHealth: false
   };
 
   try {
@@ -333,7 +333,7 @@ export const unifiedDb = {
 
   // Vector operations
   vectorSearch: hybridVectorSearch,
-  ensureCollection: ensureQdrantCollection,
+  ensureCollection: ensureQdrantCollection
 };
 
 // Re-export schema for convenience

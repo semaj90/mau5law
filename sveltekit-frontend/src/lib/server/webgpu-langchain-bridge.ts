@@ -15,7 +15,7 @@ export interface LangChainWebGPUConfig {
   cacheEmbeddings: boolean;
   compressVectors: boolean;
   practiceArea: string;
-  documentType: 'contract' | 'case' | 'statute' | 'brief' | 'general';,
+  documentType: 'contract' | 'case' | 'statute' | 'brief' | 'general';
 }
 
 export interface ProcessingResult {
@@ -33,20 +33,20 @@ export interface ProcessingResult {
     sectionEmbeddings?: Float32Array[];
     compressionRatio: number;
     processingTime: number;
-    cacheHit: boolean;,
+    cacheHit: boolean;
   };
   performance: {
     totalTime: number;
     extractionTime: number;
     embeddingTime: number;
     webgpuUtilized: boolean;
-    throughput: number;,
+    throughput: number;
   };
   metadata: {
     documentLength: number;
     embeddingDimensions: number;
     sectionsProcessed: number;
-    cacheStrategy: string;,
+    cacheStrategy: string;
   };
 }
 
@@ -60,7 +60,7 @@ export class WebGPULangChainBridge {
       cacheEmbeddings: config.cacheEmbeddings ?? true,
       compressVectors: config.compressVectors ?? true,
       practiceArea: config.practiceArea || 'general',
-      documentType: config.documentType || 'general',
+      documentType: config.documentType || 'general'
     };
   }
 
@@ -79,7 +79,7 @@ export class WebGPULangChainBridge {
     // Phase 1: Parallel LangChain extraction and embedding generation
     const [extractionResult, embeddingResult] = await Promise.all([
       this.extractWithLangChain(documentText, mergedConfig),
-      this.generateEmbeddingsWithWebGPU(documentText, mergedConfig),
+      this.generateEmbeddingsWithWebGPU(documentText, mergedConfig)
     ]);
 
     const totalTime = Date.now() - startTime;
@@ -98,8 +98,8 @@ export class WebGPULangChainBridge {
         documentLength: documentText.length,
         embeddingDimensions: embeddingResult.documentEmbedding.length,
         sectionsProcessed: embeddingResult.sectionEmbeddings?.length || 1,
-        cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard',
-      },
+        cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard'
+      }
     };
   }
 
@@ -174,11 +174,11 @@ export class WebGPULangChainBridge {
                 : config.documentType === 'case'
                   ? 'case_law'
                   : config.documentType,
-            extractionType: 'entities',
+            extractionType: 'entities'
           })
           .catch(() => []),
         // assessLegalRisks not available, return empty array
-        Promise.resolve([]),
+        Promise.resolve([])
       ]);
 
       const processingTime = Date.now() - startTime;
@@ -191,9 +191,9 @@ export class WebGPULangChainBridge {
           contractTerms: contractTerms?.terms || [],
           caseCitations: [], // Would extract if document type is case
           legalDates: [], // Would extract legal dates
-          risks: risks || [],
+          risks: risks || []
         },
-        processingTime,
+        processingTime
       };
     } catch (error) {
       console.error('LangChain extraction failed:', error);
@@ -206,9 +206,9 @@ export class WebGPULangChainBridge {
           contractTerms: [],
           caseCitations: [],
           legalDates: [],
-          risks: [],
+          risks: []
         },
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     }
   }
@@ -233,7 +233,7 @@ export class WebGPULangChainBridge {
         const embeddings = await getBatchLegalEmbeddings(sections.map((section) => ({
             text: section,
             documentType: config.documentType === 'general' ? 'case' : config.documentType,
-            practiceArea: config.practiceArea,
+            practiceArea: config.practiceArea
           })
         );
 
@@ -246,14 +246,14 @@ export class WebGPULangChainBridge {
           compressionRatio: config.compressVectors ? 4.2 : 1.0,
           processingTime: Date.now() - startTime,
           cacheHit,
-          webgpuUtilized: true,
+          webgpuUtilized: true
         };
       } else {
         // Standard embedding generation;
         const legalQuery = {
           text,
           documentType: config.documentType === 'general' ? 'case' : config.documentType,
-          practiceArea: config.practiceArea,
+          practiceArea: config.practiceArea
         };
 
         const result = await getLegalEmbedding(legalQuery);
@@ -264,7 +264,7 @@ export class WebGPULangChainBridge {
           compressionRatio: 1.0,
           processingTime: Date.now() - startTime,
           cacheHit,
-          webgpuUtilized: false,
+          webgpuUtilized: false
         };
       }
     } catch (error) {
@@ -276,7 +276,7 @@ export class WebGPULangChainBridge {
         compressionRatio: 1.0,
         processingTime: Date.now() - startTime,
         cacheHit: false,
-        webgpuUtilized: false,
+        webgpuUtilized: false
       };
     }
   }
@@ -335,7 +335,7 @@ export class WebGPULangChainBridge {
       'compliance',
       'violation',
       'penalty',
-      'fine',
+      'fine'
     ];
 
     const words = text.toLowerCase().match(/\b\w+\b/g) || [];
@@ -362,7 +362,7 @@ export class WebGPULangChainBridge {
     const [webgpuStats, cacheStats, ollamaAvailable] = await Promise.all([
       webgpuRedisOptimizer.getOptimizationStats(),
       embeddingCache.getCacheStats(),
-      langExtractService.isOllamaAvailable(),
+      langExtractService.isOllamaAvailable()
     ]);
 
     return {
@@ -370,8 +370,8 @@ export class WebGPULangChainBridge {
       embeddingCache: cacheStats,
       langchainService: {
         available: ollamaAvailable,
-        models: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
-      },
+        models: ollamaAvailable ? await langExtractService.listAvailableModels() : []
+      }
     };
   }
 
@@ -391,7 +391,7 @@ export const webgpuLangChainBridge = new WebGPULangChainBridge({
   cacheEmbeddings: true,
   compressVectors: true,
   practiceArea: 'legal-ai',
-  documentType: 'general',
+  documentType: 'general'
 });
 
 // Convenience functions

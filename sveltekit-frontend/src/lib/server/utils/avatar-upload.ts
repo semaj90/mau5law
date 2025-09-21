@@ -8,7 +8,7 @@ export interface UploadConfig {
   uploadDir: string;
   maxFileSize: number;
   allowedTypes: string[];
-  allowedExtensions: string[];,
+  allowedExtensions: string[];
 }
 
 export interface ValidationResult {
@@ -33,9 +33,9 @@ export const AVATAR_UPLOAD_CONFIG: UploadConfig = {
     "image/png",
     "image/gif",
     "image/svg+xml",
-    "image/webp",
+    "image/webp"
   ],
-  allowedExtensions: ["jpg", "jpeg", "png", "gif", "svg", "webp"],
+  allowedExtensions: ["jpg", "jpeg", "png", "gif", "svg", "webp"]
 };
 
 /**
@@ -59,7 +59,7 @@ export function validateAvatarFile(
     const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024);
     return {
       valid: false,
-      error: `File too large. Maximum size is ${maxSizeMB}MB`,
+      error: `File too large. Maximum size is ${maxSizeMB}MB`
     };
   }
 
@@ -67,7 +67,7 @@ export function validateAvatarFile(
   if (!config.allowedTypes.includes(file.type)) {
     return {
       valid: false,
-      error: "Invalid file type. Allowed types: JPEG, PNG, GIF, SVG, WebP",
+      error: "Invalid file type. Allowed types: JPEG, PNG, GIF, SVG, WebP"
     };
   }
 
@@ -78,7 +78,7 @@ export function validateAvatarFile(
       valid: false,
       error:
         "Invalid file extension. Allowed extensions: " +
-        config.allowedExtensions.join(", "),
+        config.allowedExtensions.join(", ")
     };
   }
 
@@ -90,7 +90,7 @@ export function validateAvatarFile(
   ) {
     return {
       valid: false,
-      error: "Invalid file name",
+      error: "Invalid file name"
     };
   }
 
@@ -153,7 +153,7 @@ export async function handleAvatarUpload(
     if (!isValidImageBuffer(buffer, file.type)) {
       return {
         success: false,
-        error: "File content does not match declared type",
+        error: "File content does not match declared type"
       };
     }
 
@@ -167,13 +167,13 @@ export async function handleAvatarUpload(
       success: true,
       filePath,
       fileName,
-      url,
+      url
     };
   } catch (error: any) {
     console.error("Avatar upload error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message: "Upload failed",
+      error: error instanceof Error ? error.message: "Upload failed"
     };
   }
 }
@@ -212,7 +212,7 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
     "image/jpeg": [0xff, 0xd8, 0xff],
     "image/png": [0x89, 0x50, 0x4e, 0x47],
     "image/gif": [0x47, 0x49, 0x46],
-    "image/webp": [0x52, 0x49, 0x46, 0x46],
+    "image/webp": [0x52, 0x49, 0x46, 0x46]
   };
 
   // For SVG, check if it starts with valid XML/SVG tags;
@@ -254,7 +254,7 @@ export function generateInitials(user: {
   name?: string;
   firstName?: string;
   lastName?: string;
-  email: string;,
+  email: string;
 }): string {
   if (user.firstName && user.lastName) {
     return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();

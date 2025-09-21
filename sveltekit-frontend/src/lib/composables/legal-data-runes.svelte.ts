@@ -131,7 +131,7 @@ export function useLegalCase(initialCaseId?: string) {
       const response = await fetch(`/api/cases/${currentCase.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
+        body: JSON.stringify(updates)
       });
       
       if (!response.ok) throw new Error(`Failed to update case: ${response.statusText}`);
@@ -248,7 +248,7 @@ export function useEvidence(caseId?: string) {
 
       const response = await fetch('/api/evidence/upload', {
         method: 'POST',
-        body: formData,
+        body: formData
       });
 
       if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
@@ -270,7 +270,7 @@ export function useEvidence(caseId?: string) {
   async function deleteEvidence(evidenceId: string): Promise<boolean> {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE',
+        method: 'DELETE'
       });
 
       if (!response.ok) throw new Error(`Failed to delete evidence: ${response.statusText}`);
@@ -379,7 +379,7 @@ export function usePersonsOfInterest() {
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData),
+        body: JSON.stringify(personData)
       });
       
       if (!response.ok) throw new Error(`Failed to create person: ${response.statusText}`);
@@ -404,7 +404,7 @@ export function usePersonsOfInterest() {
       const response = await fetch(`/api/persons-of-interest/${personId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
+        body: JSON.stringify(updates)
       });
       
       if (!response.ok) throw new Error(`Failed to update person: ${response.statusText}`);

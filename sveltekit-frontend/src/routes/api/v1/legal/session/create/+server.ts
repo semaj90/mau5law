@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			status: 'ACTIVE',
 			query_count: 0,
 			processing_time_total: 0,
-			context: validateAndEnhanceContext(context),
+			context: validateAndEnhanceContext(context)
 		};
 
 		// Store session
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({
         success: true,
         session,
-        message: 'Legal AI session created successfully',
+        message: 'Legal AI session created successfully'
       });
 
 	} catch (error: any) {
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'Failed to create legal AI session',
-			details: error instanceof Error ? error.message: 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async () => {
 			priority_level: 'number (1-10)',
 			security_classification: 'SecurityLevel',
 			related_cases: 'string[]',
-			key_entities: 'string[]',
+			key_entities: 'string[]'
 		},
 		session_statuses: ['ACTIVE', 'IDLE', 'PAUSED', 'TERMINATED', 'ERROR'],
 		security_levels: ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'],
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async () => {
 			update_session: 'PUT /api/v1/legal/session/{session_id}',
 			terminate_session: 'DELETE /api/v1/legal/session/{session_id}'
 		},
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 };
 
@@ -95,7 +95,7 @@ function validateAndEnhanceContext(context: any): LegalContext {
 		priority_level: 5,
 		security_classification: 'STANDARD',
 		related_cases: [],
-		key_entities: [],
+		key_entities: []
 	};
 
 	if (!context) return defaultContext;
@@ -117,7 +117,7 @@ function validateAndEnhanceContext(context: any): LegalContext {
       : defaultContext.related_cases,
     key_entities: Array.isArray(context.key_entities)
       ? context.key_entities
-      : defaultContext.key_entities,
+      : defaultContext.key_entities
   };
 }
 

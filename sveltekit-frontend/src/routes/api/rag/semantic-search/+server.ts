@@ -21,7 +21,7 @@ interface EmbeddingResponse {
 	model: string;
 	modelType: string;
 	dimensions: number;
-	processingTime: number;,
+	processingTime: number;
 }
 
 interface VectorSearchResult {
@@ -44,7 +44,7 @@ interface SemanticSearchResponse {
 	semantic_scores?: {
 		highest_relevance: number;
 		lowest_relevance: number;
-		average_relevance: number;,
+		average_relevance: number;
 	};
 }
 
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		if (!body.query) {
 			return json({
 				success: false,
-				error: 'Query is required',
+				error: 'Query is required'
 			}, { status: 400 });
 		}
 
@@ -67,10 +67,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		const embeddingResponse = await fetch('/api/embeddings/gemma?action=generate', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				text: body.query,
+				text: body.query
 			})
 		});
 
@@ -88,16 +88,16 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			queryEmbedding: embeddingData.embedding,
 			options: {
 				limit: body.limit || 10,
-				threshold: body.threshold || 1.0 // Cosine distance threshold,
+				threshold: body.threshold || 1.0 // Cosine distance threshold
 			}
 		};
 
 		const vectorResponse = await fetch('/api/pgvector/test?action=search', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(searchPayload),
+			body: JSON.stringify(searchPayload)
 		});
 
 		if (!vectorResponse.ok) {
@@ -171,8 +171,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       embedding_metadata: {
         model: embeddingData?.model || 'unknown',
         dimensions: embeddingData.dimensions,
-        query: body.query,
-      },
+        query: body.query
+      }
     });
 
 		const response: SemanticSearchResponse = {
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			search_time: searchTime,
 			total_time: totalTime,
 			total_results: enhancedResults.length,
-			semantic_scores: semanticScores,
+			semantic_scores: semanticScores
 		};
 
 		return json(response);
@@ -194,7 +194,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		return json({
 			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error',
-			total_time: Date.now() - startTime,
+			total_time: Date.now() - startTime
 		}, { status: 500 });
 	}
 };

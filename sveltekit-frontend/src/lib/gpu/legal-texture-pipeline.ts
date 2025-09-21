@@ -16,7 +16,7 @@ export interface EvidencePhoto {
     location?: string;
     photographer?: string;
     equipment?: string;
-    chainOfCustody: string[];,
+    chainOfCustody: string[];
   };
   analysis?: {
     bloodspatter?: boolean;
@@ -38,7 +38,7 @@ export interface DocumentScan {
     scanDate: Date;
     originalFormat: string;
     quality: 'low' | 'medium' | 'high';
-    classification: string;,
+    classification: string;
   };
 }
 
@@ -51,7 +51,7 @@ export interface CaseVisualization {
     createdDate: Date;
     lastModified: Date;
     author: string;
-    version: string;,
+    version: string;
   };
 }
 
@@ -60,20 +60,20 @@ export interface VisualizationElement {
   type: 'evidence' | 'person' | 'location' | 'event' | 'document';
   position: { x: number; y: number; z?: number };
   properties: Record<string, any>;
-  connections: string[];,
+  connections: string[];
 }
 
 export interface CourtroomDisplay {
   id: string;
   caseId: string;
   displayType: 'evidence' | 'timeline' | 'comparison' | 'analysis';
-  content: LegalDocumentTexture[];,
+  content: LegalDocumentTexture[];
   }); const settings = {
     contrast: number;
     brightness: number;
     zoom: number;
     annotations: boolean;
-    highlightMode: 'none' | 'evidence' | 'testimony' | 'critical';,
+    highlightMode: 'none' | 'evidence' | 'testimony' | 'critical';
   };
 }
 
@@ -97,7 +97,7 @@ export class LegalDocumentTexturePipeline {
       enableCompression: true,
       adaptiveQuality: true,
       cacheSize: 512, // 512MB for legal documents
-      wasmAcceleration: true,
+      wasmAcceleration: true
     });
   }
 
@@ -146,7 +146,7 @@ export class LegalDocumentTexturePipeline {
         ...enhancedTexture.metadata,
         ...scan.metadata,
         pageNumber: pageIndex + 1,
-        totalPages: scan.pages,
+        totalPages: scan.pages
       };
 
       textures.push(enhancedTexture);
@@ -221,7 +221,7 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         ...texture.metadata,
         enhancement: 'forensic',
-        analysisApplied: photo.analysis,
+        analysisApplied: photo.analysis
       }
     };
   }
@@ -241,7 +241,7 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         ...texture.metadata,
         enhancement: 'document_clarity',
-        originalQuality: scan.metadata.quality,
+        originalQuality: scan.metadata.quality
       }
     };
   }
@@ -277,7 +277,7 @@ export class LegalDocumentTexturePipeline {
         caseId: visualization.caseId,
         evidenceType: '3d_scene',
         timestamp: new Date(),
-        visualization: visualization.metadata,
+        visualization: visualization.metadata
       }
     };
   }
@@ -315,7 +315,7 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         caseId: visualization.caseId,
         evidenceType: 'timeline',
-        timestamp: new Date(),
+        timestamp: new Date()
       }
     };
   }
@@ -359,7 +359,7 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         caseId: visualization.caseId,
         evidenceType: 'relationship_map',
-        timestamp: new Date(),
+        timestamp: new Date()
       }
     };
   }
@@ -394,7 +394,7 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         caseId: visualization.caseId,
         evidenceType: 'evidence_flow',
-        timestamp: new Date(),
+        timestamp: new Date()
       }
     };
   }
@@ -415,7 +415,7 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         ...texture.metadata,
         courtroomSettings: settings,
-        optimized: true,
+        optimized: true
       }
     };
   }
@@ -619,7 +619,7 @@ export class LegalDocumentTexturePipeline {
       case 'location': return '#4444ff';
       case 'event': return '#ffff44';
       case 'document': return '#ff44ff';
-      default: return '#888888';,
+      default: return '#888888';
     }
   }
 
@@ -675,7 +675,7 @@ export class LegalDocumentTexturePipeline {
             body: JSON.stringify({
               documentId,
               image: base64,
-              documentType: scan.documentType,
+              documentType: scan.documentType
             })
           });
 
@@ -752,7 +752,7 @@ export class LegalDocumentTexturePipeline {
       ...this.engine.getPerformanceStats(),
       cachedDocuments: this.documentCache.size,
       queueLength: this.streamingQueue.length,
-      isProcessing: this.isProcessing,
+      isProcessing: this.isProcessing
     };
   }
 

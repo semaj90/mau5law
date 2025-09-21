@@ -7,7 +7,7 @@ const EMBEDDING_CONFIG = {
   localUrl: process.env.LOCAL_EMBEDDER_URL || 'http://localhost:9000/embed',
   nomicApiKey: process.env.NOMIC_API_KEY,
   nomicUrl: process.env.NOMIC_URL,
-  defaultModel: process.env.EMBEDDING_MODEL || 'nomic-embed-text-v1.5',
+  defaultModel: process.env.EMBEDDING_MODEL || 'nomic-embed-text-v1.5'
 };
 
 // Nomic library stub note:
@@ -23,12 +23,12 @@ async function embedWithLocal(text: string): Promise<number[]> {
     const response = await fetch(EMBEDDING_CONFIG.localUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         text: text,
-        model: EMBEDDING_CONFIG.defaultModel,
-      }),
+        model: EMBEDDING_CONFIG.defaultModel
+      })
     });
 
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -57,12 +57,12 @@ async function embedWithNomic(text: string): Promise<number[]> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}`,
+          Authorization: `Bearer ${EMBEDDING_CONFIG.nomicApiKey}`
         },
         body: JSON.stringify({
           text,
-          model: EMBEDDING_CONFIG.defaultModel,
-        }),
+          model: EMBEDDING_CONFIG.defaultModel
+        })
       });
       if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
@@ -155,12 +155,12 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
       const response = await fetch(EMBEDDING_CONFIG.localUrl + '/batch', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           texts: texts,
-          model: model || EMBEDDING_CONFIG.defaultModel,
-        }),
+          model: model || EMBEDDING_CONFIG.defaultModel
+        })
       });
 
       if ((response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -203,7 +203,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
 
       const response = await fetch(EMBEDDING_CONFIG.localUrl + '/health', {
         method: 'GET',
-        signal: controller.signal,
+        signal: controller.signal
       });
 
       clearTimeout(timeoutId);
@@ -226,7 +226,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
   return {
     local: localAvailable,
     nomic: nomicAvailable,
-    activeService,
+    activeService
   };
 }
 
@@ -255,5 +255,5 @@ export default {
   embedText,
   embedTexts,
   getEmbeddingServiceStatus,
-  cosineSimilarity,
+  cosineSimilarity
 };

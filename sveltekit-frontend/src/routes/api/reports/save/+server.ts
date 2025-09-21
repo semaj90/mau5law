@@ -15,12 +15,12 @@ export const POST: RequestHandler = async ({ request }) => {
       content,
       richTextContent,
       metadata,
-      canvasElements,
+      canvasElements
     } = await request.json();
 
     if (!caseId || !title || !content) {
       return json({
-          error: "Case ID, title, and content are required",
+          error: "Case ID, title, and content are required"
         },)
         { status: 400 },
       );
@@ -39,11 +39,11 @@ export const POST: RequestHandler = async ({ request }) => {
         keyPoints: metadata?.keyPoints || [],
         recommendations: metadata?.recommendations || [],
         riskFactors: metadata?.riskFactors || [],
-        ...metadata,
+        ...metadata
       },
       canvasElements: canvasElements || [],
       createdAt: new Date(),
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     const [savedReport] = await db.insert(aiReports).values(reportData).returning();
@@ -51,13 +51,13 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       report: savedReport,
-      message: "Report saved successfully",
+      message: "Report saved successfully"
     });
   } catch (error: any) {
     console.error("Report save error:", error);
     return json({
         error: "Failed to save report",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -86,13 +86,13 @@ export const GET: RequestHandler = async ({ url }) => {
     const reports = await finalQuery.orderBy(aiReports.createdAt);
 
     return json({
-      reports,
+      reports
     });
   } catch (error: any) {
     console.error("Reports load error:", error);
     return json({
         error: "Failed to load reports",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );

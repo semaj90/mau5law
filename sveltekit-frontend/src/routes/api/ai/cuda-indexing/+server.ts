@@ -66,7 +66,7 @@ async function checkCudaIndexingHealth(): Promise<boolean> {
 	try {
 		const response = await fetch(`${CUDA_SERVICE_URL}/api/v1/health`, {
 			method: 'GET',
-			signal: AbortSignal.timeout(5000),
+			signal: AbortSignal.timeout(5000)
 		});
 
 		if (!response.ok) return false;
@@ -90,7 +90,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			return json({
 				success: false,
 				error: 'vectors array is required',
-				processing_time_ms: Date.now() - startTime,
+				processing_time_ms: Date.now() - startTime
 			}, { status: 400 });
 		}
 
@@ -98,7 +98,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			return json({
 				success: false,
 				error: 'vectors array cannot be empty',
-				processing_time_ms: Date.now() - startTime,
+				processing_time_ms: Date.now() - startTime
 			}, { status: 400 });
 		}
 
@@ -113,7 +113,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				success: false,
 				error: 'CUDA indexing service is not available',
 				fallback_available: false,
-				processing_time_ms: Date.now() - startTime,
+				processing_time_ms: Date.now() - startTime
 			}, { status: 503 });
 		}
 
@@ -164,7 +164,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				'X-Client': 'SvelteKit-Legal-AI'
 			},
 			body: JSON.stringify(indexRequest),
-			signal: AbortSignal.timeout(INDEXING_TIMEOUT),
+			signal: AbortSignal.timeout(INDEXING_TIMEOUT)
 		});
 
 		if (!cudaResponse.ok) {
@@ -187,7 +187,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			performance_metrics: {
 				vectors_per_second: requestData.vectors.length / (totalProcessingTime / 1000),
 				memory_efficient: result.stats?.memory_usage_mb < 6000, // Under 6GB for RTX 3060 Ti
-				build_successful: result.success,
+				build_successful: result.success
 			}
 		});
 
@@ -200,7 +200,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			error: 'CUDA index build failed',
 			details: error.message,
 			processing_time_ms: processingTime,
-			gpu_accelerated: false,
+			gpu_accelerated: false
 		}, { status: 500 });
 	}
 };
@@ -225,7 +225,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 							vram_gb: 8,
 							cuda_cores: 4864,
 							tensor_cores: 152,
-							memory_bandwidth_gbs: 448,
+							memory_bandwidth_gbs: 448
 						},
 						...capabilitiesData
 					},
@@ -233,7 +233,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 						hnsw_build_time_per_1k_vectors: '~50ms',
 						ivfpq_build_time_per_10k_vectors: '~200ms',
 						search_time_per_query: '<1ms',
-						concurrent_operations: 16,
+						concurrent_operations: 16
 					}
 				});
 
@@ -267,7 +267,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 						active_indexes: 0, // TODO: Track this
 						total_vectors_indexed: 0, // TODO: Track this
 						average_build_time_ms: 0, // TODO: Track this
-						cache_hit_rate: 0.0 // TODO: Track this,
+						cache_hit_rate: 0.0 // TODO: Track this
 					}
 				});
 
@@ -280,7 +280,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 						POST: 'Build GPU index',
 						GET: 'Get capabilities/status',
 						PATCH: 'Search GPU index',
-						PUT: 'Batch operations',
+						PUT: 'Batch operations'
 					}
 				});
 		}
@@ -292,7 +292,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 			success: false,
 			error: 'Failed to get CUDA indexing capabilities',
 			details: error.message,
-			cuda_available: false,
+			cuda_available: false
 		}, { status: 503 });
 	}
 };
@@ -307,7 +307,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 		if (!searchRequest.query_vector || !Array.isArray(searchRequest.query_vector)) {
 			return json({
 				success: false,
-				error: 'query_vector array is required',
+				error: 'query_vector array is required'
 			}, { status: 400 });
 		}
 
@@ -330,7 +330,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 				'X-Search-Type': 'gpu-accelerated'
 			},
 			body: JSON.stringify(cudaSearchRequest),
-			signal: AbortSignal.timeout(30000),
+			signal: AbortSignal.timeout(30000)
 		});
 
 		if (!response.ok) {
@@ -349,7 +349,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 			performance_metrics: {
 				gpu_search: true,
 				sub_millisecond: result.stats?.search_time_ms < 1,
-				efficiency_score: searchTime < 100 ? 'excellent' : 'good',
+				efficiency_score: searchTime < 100 ? 'excellent' : 'good'
 			}
 		});
 
@@ -358,7 +358,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 			success: false,
 			error: 'GPU vector search failed',
 			details: error.message,
-			fallback_to_cpu: true,
+			fallback_to_cpu: true
 		}, { status: 500 });
 	}
 };
@@ -372,14 +372,14 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 		if (!batchRequest.operations || !Array.isArray(batchRequest.operations)) {
 			return json({
 				success: false,
-				error: 'operations array is required',
+				error: 'operations array is required'
 			}, { status: 400 });
 		}
 
 		if (batchRequest.operations.length > 8) {
 			return json({
 				success: false,
-				error: 'Maximum 8 operations per batch for RTX 3060 Ti optimization',
+				error: 'Maximum 8 operations per batch for RTX 3060 Ti optimization'
 			}, { status: 400 });
 		}
 
@@ -418,7 +418,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(requestBody),
-					signal: AbortSignal.timeout(120000) // 2 min per operation,
+					signal: AbortSignal.timeout(120000) // 2 min per operation
 				});
 
 				if (response.ok) {
@@ -426,7 +426,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 					results.push({
 						operation: operation.operation,
 						success: true,
-						result: result,
+						result: result
 					});
 				} else {
 					results.push({
@@ -440,7 +440,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 				results.push({
 					operation: operation.operation,
 					success: false,
-					error: error.message,
+					error: error.message
 				});
 			}
 		}
@@ -456,17 +456,17 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 				successful_operations: successCount,
 				failed_operations: batchRequest.operations.length - successCount,
 				total_processing_ms: totalTime,
-				average_operation_ms: totalTime / batchRequest.operations.length,
+				average_operation_ms: totalTime / batchRequest.operations.length
 			},
 			cuda_batch_processing: true,
-			rtx_3060_ti_optimized: true,
+			rtx_3060_ti_optimized: true
 		});
 
 	} catch (error: any) {
 		return json({
 			success: false,
 			error: 'Batch indexing failed',
-			details: error.message,
+			details: error.message
 		}, { status: 500 });
 	}
 };
@@ -484,14 +484,14 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 				endpoint = '/api/v1/simd/similarity';
 				requestBody = {
 					vector_a: simdRequest.vector_a,
-					vector_b: simdRequest.vector_b,
+					vector_b: simdRequest.vector_b
 				};
 				break;
 			case 'distance':
 				endpoint = '/api/v1/simd/distance';
 				requestBody = {
 					vector_a: simdRequest.vector_a,
-					vector_b: simdRequest.vector_b,
+					vector_b: simdRequest.vector_b
 				};
 				break;
 			case 'batch':
@@ -499,7 +499,7 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 				requestBody = {
 					query: simdRequest.query,
 					candidates: simdRequest.candidates,
-					operation: 'similarity',
+					operation: 'similarity'
 				};
 				break;
 			default:;
@@ -513,7 +513,7 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(requestBody),
-			signal: AbortSignal.timeout(10000),
+			signal: AbortSignal.timeout(10000)
 		});
 
 		if (!response.ok) {
@@ -526,14 +526,14 @@ const originalDELETEHandler: RequestHandler = async ({ request }) => {
 			...result,
 			simd_operation: simdRequest.operation,
 			cpu_accelerated: true,
-			instruction_set: result.instruction_set || 'AVX2/SSE4',
+			instruction_set: result.instruction_set || 'AVX2/SSE4'
 		});
 
 	} catch (error: any) {
 		return json({
 			success: false,
 			error: 'SIMD operation failed',
-			details: error.message,
+			details: error.message
 		}, { status: 500 });
 	}
 };

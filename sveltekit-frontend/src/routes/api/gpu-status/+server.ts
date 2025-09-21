@@ -10,7 +10,7 @@ async function fetchWithTimeout(path: string, timeoutMs = 2500): Promise<any> {
   
   try {
     const res = await fetch(`${GO_BASE}${path}`, { 
-      signal: controller.signal ,
+      signal: controller.signal 
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
@@ -46,9 +46,9 @@ export const GET: RequestHandler = async () => {
           data: {
             available: false,
             message: "GPU status service unavailable",
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
-          error: (err as Error).message,
+          error: (err as Error).message
         },
         { status: 200 }
       );

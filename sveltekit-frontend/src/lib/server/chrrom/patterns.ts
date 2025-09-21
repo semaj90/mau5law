@@ -106,14 +106,14 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
       document_ids: [ctx.docId],
       max_results: 5,
       temperature: 0.2,
-      include_metadata: true,
+      include_metadata: true
     };
     let summaryText = '';
     try {
       const rag = await fetchJson(ragUrl, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(ragBody),
+        body: JSON.stringify(ragBody)
       }, 10_000);
       if (rag.ok) {
         const answer = (rag.data.answer || rag.data.response || '').toString();
@@ -133,7 +133,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
           createdAt: now,
           ttlMs: 60_000,
           meta: { precomputed: true, source: 'enhanced-rag' },
-          payload: { text: summaryText, style: 'body' as const },
+          payload: { text: summaryText, style: 'body' as const }
         }),
         60
       );
@@ -166,8 +166,8 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
             payload: {
               image: glyphRes.data.data.enhanced_artifact_url || glyphRes.data.data.glyph_url,
               width: 256,
-              height: 256,
-            },
+              height: 256
+            }
           }),
           120
         );
@@ -199,7 +199,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
               createdAt: now,
               ttlMs: 45_000,
               meta: { source: 'enhanced-rag' },
-              payload: { text: snippet, style: 'body' as const },
+              payload: { text: snippet, style: 'body' as const }
             }),
             45
           );
@@ -232,8 +232,8 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
                 payload: {
                   image: glyphRes.data.data.enhanced_artifact_url || glyphRes.data.data.glyph_url,
                   width: 256,
-                  height: 256,
-                },
+                  height: 256
+                }
               }),
               90
             );

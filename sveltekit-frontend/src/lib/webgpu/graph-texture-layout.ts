@@ -23,19 +23,19 @@ export interface GPUNodeData {
   rankingMatrixIndex: number; // u32 index into ranking texture
   varianceMatrixIndex: number; // u32 index into variance texture
   neighborOffset: number; // u32 offset into adjacency buffer
-  neighborCount: number; // u32 count of neighbors,
+  neighborCount: number; // u32 count of neighbors
 }
 
 export interface GPUAdjacencyData {
   nodeIds: Uint32Array; // Flattened adjacency list
-  offsets: Uint32Array; // Starting positions for each node,
+  offsets: Uint32Array; // Starting positions for each node
 }
 
 export interface GPUTextureData {
   rankingTexture: GPUTexture; // rgba32float - 4x4 matrices as 4 pixels
   varianceTexture: GPUTexture; // rgba32float - variance matrices
   nodeDataBuffer: GPUBuffer; // Storage buffer for node data
-  adjacencyBuffer: GPUBuffer; // Storage buffer for adjacency lists,
+  adjacencyBuffer: GPUBuffer; // Storage buffer for adjacency lists
 }
 
 export interface LODLevel {
@@ -96,7 +96,7 @@ class GraphSpatialLayout {
         .filter(neighbor => !visited.has(neighbor);
         .map(neighbor => ({
           id: neighbor,
-          confidence: nodes.find(n => n.nodeId === neighbor)?.metadata.confidence || 0,
+          confidence: nodes.find(n => n.nodeId === neighbor)?.metadata.confidence || 0
         })
         .sort((a, b) => b.confidence - a.confidence) // High confidence first
         .map(n => n.id);
@@ -146,7 +146,7 @@ class GraphSpatialLayout {
       this.nodePositions.set(node.nodeId, {
         x: Math.random() * width,
         y: Math.random() * height,
-        z: 0,
+        z: 0
       });
     }
     
@@ -255,7 +255,7 @@ export class GraphTextureManager {
       requiredLimits: {
         maxBufferSize: 512 * 1024 * 1024, // 512MB
         maxStorageBufferBindingSize: 256 * 1024 * 1024, // 256MB
-        maxTextureDimension2D: 8192,
+        maxTextureDimension2D: 8192
       }
     });
     
@@ -350,7 +350,7 @@ export class GraphTextureManager {
     const nodeDataBuffer = this.device.createBuffer({
       size: nodeDataArray.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
     
     new Float32Array(nodeDataBuffer.getMappedRange()).set(nodeDataArray);
@@ -380,7 +380,7 @@ export class GraphTextureManager {
     const adjacencyBuffer = this.device.createBuffer({
       size: adjacencyData.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
+      mappedAtCreation: true
     });
     
     new Uint32Array(adjacencyBuffer.getMappedRange()).set(adjacencyData);
@@ -421,7 +421,7 @@ export class GraphTextureManager {
     const rankingTexture = this.device.createTexture({
       size: { width: matrixTextureSize, height: matrixTextureSize },
       format: 'rgba32float',
-      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
     });
     
     this.device.queue.writeTexture(
@@ -462,7 +462,7 @@ export class GraphTextureManager {
     const varianceTexture = this.device.createTexture({
       size: { width: matrixTextureSize, height: matrixTextureSize },
       format: 'rgba32float',
-      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
     });
     
     this.device.queue.writeTexture(
@@ -511,7 +511,7 @@ export class GraphTextureManager {
         matrix_index: f32,
         neighbor_offset: f32,
         neighbor_count: f32,
-        padding: f32,
+        padding: f32
       }
 
       @group(0) @binding(0) var<storage, read> node_data: array<NodeData>;
@@ -577,7 +577,7 @@ export class GraphTextureManager {
         // Rough calculation of GPU memory usage
         return sum + (level.nodeCount * 32) + (1024 * 1024 * 2); // Node data + textures
       }, 0),
-      currentViewport: this.currentViewport,
+      currentViewport: this.currentViewport
     };
   }
 

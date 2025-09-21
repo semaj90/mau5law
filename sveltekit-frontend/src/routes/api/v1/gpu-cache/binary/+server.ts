@@ -39,12 +39,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
       shader: {
         sourceCode: shader.sourceCode,
         metadata: shader.metadata,
-        metrics: shader.metrics,
+        metrics: shader.metrics
       },
       cacheKey,
       timestamp: Date.now(),
       compressionSavings: `${((1 - 1 / shader.metrics.compressionRatio) * 100).toFixed(1)}%`,
-      decodingTime: `${shader.metrics.decodingTime.toFixed(2)}ms`,
+      decodingTime: `${shader.metrics.decodingTime.toFixed(2)}ms`
     };
 
     if (preferredFormat === 'json') {
@@ -62,8 +62,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'content-type': contentType,
         'x-encoding-format': format,
         'x-compression-ratio': metrics.compressionRatio.toString(),
-        'x-encode-time': `${metrics.encodeTime.toFixed(2)}ms`,
-      },
+        'x-encode-time': `${metrics.encodeTime.toFixed(2)}ms`
+      }
     });
   } catch (error: any) {
     console.error('Binary shader cache GET error:', error);
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const entry = await binaryGPUShaderCache.storeShader({
       sourceCode,
       compiledBinary: binaryData,
-      metadata: metadata || {},
+      metadata: metadata || {}
     });
 
     // Get workflow optimization recommendations
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
         shaderType: entry.shaderType,
         encodingFormat: entry.encodingFormat,
         compressionRatio: entry.compressionRatio,
-        memoryFootprint: entry.memoryFootprint,
+        memoryFootprint: entry.memoryFootprint
       },
       optimizationRecommendations,
       metrics: {
@@ -141,8 +141,8 @@ export const POST: RequestHandler = async ({ request }) => {
             ? 'excellent'
             : entry.compressionRatio > 1.2
               ? 'good'
-              : 'moderate',
-      },
+              : 'moderate'
+      }
     };
 
     return json(response);
@@ -183,7 +183,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         cacheKey: shader.cacheKey,
         shaderType: shader.shaderType,
         encodingFormat: shader.encodingFormat,
-        compressionRatio: shader.compressionRatio,
+        compressionRatio: shader.compressionRatio
       })),
       batchMetrics: {
         averageCompressionRatio: results.totalCompressionRatio / results.encodedShaders.length,
@@ -191,8 +191,8 @@ export const PUT: RequestHandler = async ({ request }) => {
         totalMemorySaved: results.encodedShaders.reduce((total, shader) => {
           return total + shader.memoryFootprint * (1 - 1 / shader.compressionRatio);
         }, 0),
-        recommendedFormat: workflowOptimization?.recommendedEncodingFormat || 'cbor',
-      },
+        recommendedFormat: workflowOptimization?.recommendedEncodingFormat || 'cbor'
+      }
     };
 
     return json(response);
@@ -227,7 +227,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
         createShaderModule: true,
         binaryData: webgpuShader.binaryAssets.length,
         estimatedLoadTime: `${(webgpuShader.compressionSavings / 1024 / 100).toFixed(1)}ms`, // rough estimate
-      },
+      }
     });
   } catch (error: any) {
     console.error('WebGPU shader cache error:', error);
@@ -244,7 +244,7 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Binary encoding metrics cleared',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error: any) {

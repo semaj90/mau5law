@@ -21,7 +21,7 @@ interface CUDAResponse {
   result: number | number[];
   gpuTime: number;
   parallelWorkers: number;
-  memoryUsed: number;,
+  memoryUsed: number;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalProcessingTime,
         complexityScore,
         requestId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       clientOptimizations: {
         ...clientHints,
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
           chrRomRegion: shouldUseCUDA,
           vectorAlignment: true,
           cacheOptimized: true,
-          simdFriendly: !shouldUseCUDA,
+          simdFriendly: !shouldUseCUDA
         }
       }
     });
@@ -139,7 +139,7 @@ async function processCUDAVectorOperation(params: {
   vectorB?: Float32Array;
   vectors?: Float32Array[];
   algorithm: number;
-  requestId: string;,
+  requestId: string;
 }): Promise<CUDAResponse> {
   const { operation, vectorA, vectorB, vectors, algorithm, requestId } = params;
 
@@ -156,7 +156,7 @@ async function processCUDAVectorOperation(params: {
       vectors: vectors?.map(v => Array.from(v)),
       algorithm,
       dimensions: vectorA.length,
-      vectorCount: vectors?.length || (vectorB ? 2 : 1),
+      vectorCount: vectors?.length || (vectorB ? 2 : 1)
     },
     gpu_config: {
       use_tensor_cores: true,
@@ -167,22 +167,22 @@ async function processCUDAVectorOperation(params: {
       tensor_cores: PGVECTOR_CONFIG.cuda.gpu.tensorCores,
       memory_bandwidth_optimization: true,
       simd_instructions: 'AVX512_FP32', // Enhanced SIMD targeting
-      precision: 'mixed_fp16_fp32' // Tensor core optimized precision,
+      precision: 'mixed_fp16_fp32' // Tensor core optimized precision
     },
     performance_hints: {
       expected_throughput: vectors?.length || 1,
       memory_pattern: 'sequential_access',
       cache_locality: 'high',
-      branch_prediction: 'favorable',
+      branch_prediction: 'favorable'
     }
   };
 
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   });
 
   if (!response.ok) {
@@ -195,7 +195,7 @@ async function processCUDAVectorOperation(params: {
     result: cudaResult.result || cudaResult.similarity || cudaResult.distances,
     gpuTime: cudaResult.gpu_time || 0,
     parallelWorkers: cudaResult.parallel_workers || 1,
-    memoryUsed: cudaResult.memory_used || 0,
+    memoryUsed: cudaResult.memory_used || 0
   };
 }
 
@@ -204,7 +204,7 @@ async function processCPUVectorOperation(params: {
   vectorA: Float32Array;
   vectorB?: Float32Array;
   vectors?: Float32Array[];
-  algorithm: number;,
+  algorithm: number;
 }): Promise<number | number[]> {
   const { operation, vectorA, vectorB, vectors, algorithm } = params;
 
@@ -233,7 +233,7 @@ async function processCPUVectorOperation(params: {
           case 1: return 1.0 / (1.0 + euclideanDistance(vectorA, vector);
           case 2: return dotProduct(vectorA, vector);
           case 3: return 1.0 / (1.0 + manhattanDistance(vectorA, vector);
-          default: return 0;,
+          default: return 0;
         }
       });
 

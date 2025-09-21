@@ -92,7 +92,7 @@ declare module NodeJS {
     aiReports: any;
     legalPrecedents: any;
     analyticsLog: any;
-    comprehensiveAutosolve: any;,
+    comprehensiveAutosolve: any;
   }
 }
 

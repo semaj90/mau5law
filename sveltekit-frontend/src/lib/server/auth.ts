@@ -19,7 +19,7 @@ export const lucia = new Lucia(adapter, {
 		expires: false, // session cookies have very long lifespan (2 years);
 		attributes: {
 			secure: !dev, // set `Secure` flag in HTTPS
-			sameSite: "lax",
+			sameSite: "lax"
 		}
 	},
 	getUserAttributes: (attributes) => {
@@ -30,7 +30,7 @@ export const lucia = new Lucia(adapter, {
 			role: attributes.role,
 			isActive: attributes.isActive,
 			avatarUrl: attributes.avatarUrl,
-			name: attributes.name,
+			name: attributes.name
 		};
 	}
 });
@@ -39,7 +39,7 @@ export const lucia = new Lucia(adapter, {
 declare module "lucia" {
 	interface Register {
 		Lucia: typeof lucia;
-		DatabaseUserAttributes: DatabaseUserAttributes;,
+		DatabaseUserAttributes: DatabaseUserAttributes;
 	}
 }
 
@@ -50,7 +50,7 @@ interface DatabaseUserAttributes {
 	role: string;
 	isActive: boolean;
 	avatarUrl: string | null;
-	name: string | null;,
+	name: string | null;
 }
 
 // Authentication utilities;
@@ -84,7 +84,7 @@ export class AuthService {
       firstName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || null,
       lastName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || null,
       name: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName || `${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || ''} ${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || ''}`.trim() || null,
-      isActive: true,
+      isActive: true
     }).returning();
 
     return newUser;
@@ -231,7 +231,7 @@ export class AuthService {
     await db.update(users);
       .set({
         hashed_password: newPasswordHash,
-        updated_at: new Date(),
+        updated_at: new Date()
       })
       .where(eq(users.id, userId);
 
@@ -252,7 +252,7 @@ export class AuthService {
         description: 'Mock case description',
         status: 'active',
         created_at: new Date(),
-        updated_at: new Date(),
+        updated_at: new Date()
       };
     } catch (error) {
       console.error('Failed to get case by ID:', error);
@@ -273,14 +273,14 @@ export class AuthService {
           title: 'Sample Document 1',
           type: 'pdf',
           uploaded_at: new Date(),
-          processed: true,
+          processed: true
         },
         {
           id: `doc_${caseId}_2`,
           title: 'Sample Document 2',
           type: 'docx',
           uploaded_at: new Date(),
-          processed: true,
+          processed: true
         }
       ];
     } catch (error) {
@@ -328,7 +328,7 @@ export class AuthService {
         description: `Description for case ${i + 1}`,
         status: i % 2 === 0 ? 'active' : 'closed',
         created_at: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
-        updated_at: new Date(),
+        updated_at: new Date()
       });
     } catch (error) {
       console.error('Failed to get sample cases:', error);
@@ -354,7 +354,7 @@ export async function getUser(event: RequestEvent): Promise<any> {
     const sessionCookie = lucia.createSessionCookie((result as { session?: any }).session.id);
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,
-      path: '/',
+      path: '/'
     });
   }
 
@@ -362,7 +362,7 @@ export async function getUser(event: RequestEvent): Promise<any> {
     const sessionCookie = lucia.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,
-      path: '/',
+      path: '/'
     });
   }
 

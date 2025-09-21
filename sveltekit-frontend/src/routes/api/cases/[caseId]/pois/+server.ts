@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
           who: "",
           what: "",
           why: "",
-          how: "",
+          how: ""
         },
         position: data.position || {},
         relationship: data.relationship,

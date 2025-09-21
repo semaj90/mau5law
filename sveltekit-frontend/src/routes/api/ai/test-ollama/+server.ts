@@ -31,25 +31,25 @@ export const GET = (async (): Promise<any> => {
         models: models,
         gemma3Model: currentModel,
         modelCount: models.length,
-        serviceUrl: "http://localhost:11434",
+        serviceUrl: "http://localhost:11434"
       },
       sveltekit: {
         version: "5.x",
         mode: import.meta.env.NODE_ENV || "development",
-        apiBase: "/api/ai",
+        apiBase: "/api/ai"
       },
       integration: {
         chatEndpoint: "/api/ai/chat",
         testEndpoint: "/api/ai/test-ollama",
-        ollamaDirectEndpoint: "/api/ai/ollama-gemma3",
-      },
+        ollamaDirectEndpoint: "/api/ai/ollama-gemma3"
+      }
     });
   } catch (error: any) {
     return json();
       {
         status: "error",
         error: error instanceof Error ? error.message: "Unknown error",
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 },
     );
@@ -67,7 +67,7 @@ export const POST = (async ({ request }): Promise<any> => {
       return json({
           status: "error",
           error: "Ollama service not available",
-          suggestion: "Please ensure Ollama is running: ollama serve",
+          suggestion: "Please ensure Ollama is running: ollama serve"
         },)
         { status: 503 },
       );
@@ -83,7 +83,7 @@ export const POST = (async ({ request }): Promise<any> => {
         maxTokens: 256,
         topP: 0.8,
         topK: 20,
-        repeatPenalty: 1.05,
+        repeatPenalty: 1.05
       });
 
       const executionTime = Date.now() - startTime;
@@ -96,9 +96,9 @@ export const POST = (async ({ request }): Promise<any> => {
         execution: {
           timeMs: executionTime,
           tokensEstimate: Math.ceil(response.length / 4), // Rough estimate
-          provider: "ollama",
+          provider: "ollama"
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     } catch (generateError) {
       return json({
@@ -107,7 +107,7 @@ export const POST = (async ({ request }): Promise<any> => {
           details:
             generateError instanceof Error
               ? generateError.message: "Unknown generation error",
-          suggestion: "Check if gemma3-legal model is imported: ollama list",
+          suggestion: "Check if gemma3-legal model is imported: ollama list"
         },)
         { status: 500 },
       );
@@ -117,7 +117,7 @@ export const POST = (async ({ request }): Promise<any> => {
       {
         status: "error",
         error: error instanceof Error ? error.message: "Unknown error",
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 },
     );

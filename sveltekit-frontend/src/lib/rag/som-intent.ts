@@ -5,7 +5,7 @@
 export interface IntentPoint {
   id: string;
   vector: number[]; // normalized embedding
-  ts: number; // timestamp,
+  ts: number; // timestamp
 }
 
 export interface SOMGridConfig {

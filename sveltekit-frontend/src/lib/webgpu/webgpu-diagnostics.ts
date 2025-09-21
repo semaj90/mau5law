@@ -12,22 +12,22 @@ export interface WebGPUDiagnostics {
     isChrome: boolean;
     isFirefox: boolean;
     isEdge: boolean;
-    isSafari: boolean;,
+    isSafari: boolean;
   };
   adapterInfo?: {
     vendor: string;
     architecture: string;
     device: string;
-    description: string;,
+    description: string;
   };
   deviceInfo?: {
     features: string[];
     limits: Record<string, number>;
     maxBufferSize: number;
-    maxComputeWorkgroupSize: number;,
+    maxComputeWorkgroupSize: number;
   };
   errors: string[];
-  recommendations: string[];,
+  recommendations: string[];
 }
 
 export class WebGPUDiagnosticsService {
@@ -39,7 +39,7 @@ export class WebGPUDiagnosticsService {
       isSupported: false,
       browserSupport: this.getBrowserSupport(),
       errors: [],
-      recommendations: [],
+      recommendations: []
     };
 
     try {
@@ -117,7 +117,7 @@ export class WebGPUDiagnosticsService {
       console.log('🔍 Testing WebGPU adapter request...');
       
       this.adapter = await (navigator as any).gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
 
       if (!this.adapter) {
@@ -133,7 +133,7 @@ export class WebGPUDiagnosticsService {
           vendor: info.vendor || 'Unknown',
           architecture: info.architecture || 'Unknown',  
           device: info.device || 'Unknown',
-          description: info.description || 'Unknown',
+          description: info.description || 'Unknown'
         };
         console.log('✅ WebGPU adapter info:', diagnostics.adapterInfo);
       } catch (error: any) {
@@ -142,7 +142,7 @@ export class WebGPUDiagnosticsService {
           vendor: 'Unknown',
           architecture: 'Unknown',
           device: 'Unknown', 
-          description: 'Unknown',
+          description: 'Unknown'
         };
       }
 
@@ -163,7 +163,7 @@ export class WebGPUDiagnosticsService {
         requiredLimits: {
           maxStorageBufferBindingSize: this.adapter.limits.maxStorageBufferBindingSize || 134217728,
           maxComputeWorkgroupStorageSize: this.adapter.limits.maxComputeWorkgroupStorageSize || 16384,
-          maxComputeInvocationsPerWorkgroup: this.adapter.limits.maxComputeInvocationsPerWorkgroup || 256,
+          maxComputeInvocationsPerWorkgroup: this.adapter.limits.maxComputeInvocationsPerWorkgroup || 256
         }
       });
 
@@ -179,7 +179,7 @@ export class WebGPUDiagnosticsService {
           Object.entries(this.device.limits).map(([key, value]) => [key, Number(value)])
         ),
         maxBufferSize: Number(this.device.limits.maxBufferSize),
-        maxComputeWorkgroupSize: Number(this.device.limits.maxComputeWorkgroupSize),
+        maxComputeWorkgroupSize: Number(this.device.limits.maxComputeWorkgroupSize)
       };
 
       console.log('✅ WebGPU device created successfully');
@@ -212,7 +212,7 @@ export class WebGPUDiagnosticsService {
         layout: 'auto',
         compute: {
           module,
-          entryPoint: 'main',
+          entryPoint: 'main'
         }
       });
 

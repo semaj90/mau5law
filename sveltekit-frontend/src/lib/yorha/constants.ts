@@ -102,7 +102,7 @@ export function withAbort<T>(fn: (signal?: any) => Promise<T>): { promise: Promi
 
   return {
     promise: fn(controller.signal),
-    abort: () => controller.abort && controller.abort(),
+    abort: () => controller.abort && controller.abort()
   };
 }
 

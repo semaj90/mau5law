@@ -24,13 +24,13 @@ const sql = postgres(connectionString, {
       }
     }
   },
-  debug: process.env.NODE_ENV === 'development' ? false : false,
+  debug: process.env.NODE_ENV === 'development' ? false : false
 });
 
 // Create Drizzle instance with schema;
 export const db = drizzle(sql, {
   schema,
-  logger: process.env.NODE_ENV === 'development' ? false : false,
+  logger: process.env.NODE_ENV === 'development' ? false : false
 });
 
 // Database schemas;
@@ -43,7 +43,7 @@ export const documents = pgTable('documents', {
   confidence: real('confidence'),
   legalAnalysis: jsonb('legal_analysis'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 });
 
 export const embeddings = pgTable('legal_embeddings', {
@@ -53,7 +53,7 @@ export const embeddings = pgTable('legal_embeddings', {
   embedding: vector('embedding', { dimensions: 384 }),
   metadata: jsonb('metadata'),
   model: text('model').default('nomic-embed-text'),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 
 export const searchSessions = pgTable('search_sessions', {
@@ -63,7 +63,7 @@ export const searchSessions = pgTable('search_sessions', {
   results: jsonb('results'),
   searchType: text('search_type').default('hybrid'),
   resultCount: serial('result_count'),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at').defaultNow()
 });
 
 // Initialize database with extensions;

@@ -22,7 +22,7 @@ export const GET: RequestHandler = async () => {
       database: result[0]?.current_database || 'unknown',
       version: result[0]?.version || 'unknown',
       timestamp: result[0]?.current_timestamp || new Date().toISOString(),
-      message: 'PostgreSQL connection successful',
+      message: 'PostgreSQL connection successful'
     });
     
   } catch (error) {
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async () => {
     return json({ 
         error: 'Database health check failed', 
         healthy: false,
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 503 }
     );

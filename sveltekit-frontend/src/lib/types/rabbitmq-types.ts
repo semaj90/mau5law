@@ -56,7 +56,7 @@ export interface ProcessingMetrics {
   throughput: number;
   errorRate: number;
   queueDepth: number;
-  activeWorkers: number;,
+  activeWorkers: number;
 }
 
 export interface QueueConfig {

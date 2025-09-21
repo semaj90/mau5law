@@ -6,8 +6,8 @@ export async function runCustomAnalysis(content: string, prompt: string): Promis
     body: JSON.stringify({
       model: "gemma3-legal:latest",
       prompt: `${prompt}\n\nDocument content: ${content.substring(0, 4000)}`,
-      options: { temperature: 0.2, num_predict: 2000 },
-    }),
+      options: { temperature: 0.2, num_predict: 2000 }
+    })
   });
   const data = await res.json();
   return data.response;

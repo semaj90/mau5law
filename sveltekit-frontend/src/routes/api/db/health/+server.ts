@@ -65,27 +65,27 @@ export const GET: RequestHandler = async () => {
         connected: true,
         version: basicCheck[0]?.version?.split(' ').slice(0, 2).join(' ') || 'Unknown',
         database_name: basicCheck[0]?.database || 'Unknown',
-        timestamp: basicCheck[0]?.timestamp || new Date(),
+        timestamp: basicCheck[0]?.timestamp || new Date()
       },
       extensions: {
         pgvector: {
           installed: pgvectorCheck.length > 0,
           version: pgvectorCheck[0]?.extversion || null,
-          relocatable: pgvectorCheck[0]?.extrelocatable || false,
+          relocatable: pgvectorCheck[0]?.extrelocatable || false
         }
       },
       tables: {
         user_management: {
           expected: ['users', 'sessions', 'user_profiles', 'user_activities'],
           found: tablesCheck.map(t => t.table_name),
-          ready: tablesCheck.length === 4,
+          ready: tablesCheck.length === 4
         }
       },
       vector_operations: {
         tested: vectorTest !== null,
         working: vectorTest && !vectorTest.error,
         sample_distance: vectorTest?.cosine_distance || null,
-        error: vectorTest?.error || null,
+        error: vectorTest?.error || null
       }
     };
 
@@ -102,18 +102,18 @@ export const GET: RequestHandler = async () => {
       data: {
         healthy: isHealthy,
         status: isHealthy ? 'healthy' : 'degraded',
-        checks: health,
+        checks: health
       },
       meta: {
         timestamp: new Date().toISOString(),
         version: '1.0.0',
-        environment: dev ? 'development' : 'production',
+        environment: dev ? 'development' : 'production'
       }
     }, {
       status: isHealthy ? 200 : 503,
       headers: {
         'Content-Type': 'application/json',
-        ...(dev && { 'Access-Control-Allow-Origin': '*' ,}),
+        ...(dev && { 'Access-Control-Allow-Origin': '*' })
       }
     });
 
@@ -129,13 +129,13 @@ export const GET: RequestHandler = async () => {
         error: {
           message: err.message,
           code: err.code || 'DATABASE_ERROR',
-          details: dev ? err.stack: undefined,
+          details: dev ? err.stack: undefined
         }
       },
       meta: {
         timestamp: new Date().toISOString(),
         version: '1.0.0',
-        environment: dev ? 'development' : 'production',
+        environment: dev ? 'development' : 'production'
       }
     }, { 
       status: 503,

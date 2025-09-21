@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       testResults.push({
         test: 'health-check',
         status: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     }
 
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       testResults.push({
         test: 'initialization',
         status: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     }
 
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       testResults.push({
         test: 'bucket-management',
         status: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     }
 
@@ -107,7 +107,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
       `;
 
       const testFile = new File([testFileContent], 'test-legal-document.txt', {
-        type: 'text/plain',
+        type: 'text/plain'
       });
 
       const formData = new FormData();
@@ -118,7 +118,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
 
       const uploadResponse = await fetch('/api/v1/minio/process', {
         method: 'POST',
-        body: formData,
+        body: formData
       });
       const uploadData = await uploadResponse.json();
 
@@ -152,7 +152,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
           response: {
             status: downloadResponse.status,
             headers: Object.fromEntries(downloadResponse.headers.entries()),
-            contentLength: downloadResponse.headers.get('content-length'),
+            contentLength: downloadResponse.headers.get('content-length')
           },
           timing: `${Date.now() - startTime}ms`
         });
@@ -161,7 +161,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
       testResults.push({
         test: 'file-operations',
         status: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     }
 
@@ -193,7 +193,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
       testSuite: 'MinIO Integration Phase 1',
       error: error instanceof Error ? error.message: 'Test suite failed',
       partialResults: testResults,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

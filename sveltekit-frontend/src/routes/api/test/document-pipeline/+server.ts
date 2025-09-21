@@ -8,7 +8,7 @@ interface PipelineTestResult {
   message: string;
   data?: any;
   responseTime?: number;
-  timestamp: string;,
+  timestamp: string;
 }
 
 interface DocumentPipelineTestResponse {
@@ -19,10 +19,10 @@ interface DocumentPipelineTestResponse {
     totalSteps: number;
     successfulSteps: number;
     failedSteps: number;
-    skippedSteps: number;,
+    skippedSteps: number;
   };
   steps: PipelineTestResult[];
-  overallMessage: string;,
+  overallMessage: string;
 }
 
 async function testStep(stepName: string, testFn: () => Promise<any>): Promise<PipelineTestResult> {
@@ -41,7 +41,7 @@ async function testStep(stepName: string, testFn: () => Promise<any>): Promise<P
       message: `${stepName} completed successfully`,
       data: result,
       responseTime,
-      timestamp,
+      timestamp
     };
   } catch (error: any) {
     const responseTime = Date.now() - startTime;
@@ -52,7 +52,7 @@ async function testStep(stepName: string, testFn: () => Promise<any>): Promise<P
       status: 'error',
       message: `${stepName} failed: ${error.message}`,
       responseTime,
-      timestamp,
+      timestamp
     };
   }
 }
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async () => {
   testResults.push(await testStep('Database Health Check', async () => {
       const response = await fetch('/api/database/health', {
         method: 'GET',
-        headers: { Accept: 'application/json' },
+        headers: { Accept: 'application/json' }
       });
       if (!response.ok) {
         throw new Error(`Database health check returned ${response.status}`);
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async () => {
   testResults.push(await testStep('Aggregated Health Check', async () => {
       const response = await fetch('/api/health/all', {
         method: 'GET',
-        headers: { Accept: 'application/json' },
+        headers: { Accept: 'application/json' }
       });
       if (!response.ok) {
         throw new Error(`Aggregated health check returned ${response.status}`);
@@ -116,7 +116,7 @@ export const GET: RequestHandler = async () => {
   testResults.push(await testStep('OCR-Specific Health Check', async () => {
       const response = await fetch('/api/health/ocr', {
         method: 'GET',
-        headers: { Accept: 'application/json' },
+        headers: { Accept: 'application/json' }
       });
       // OCR service might not be running, so we check for appropriate response
       const ocrHealthData = await response.json();
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async () => {
         return {
           status: 'OCR service not operational but health endpoint working',
           data: ocrHealthData,
-          note: 'This is expected if OCR service is not running',
+          note: 'This is expected if OCR service is not running'
         };
       }
     })
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async () => {
     testResults.push(await testStep('Document Processing Simulation', async () => {
         // Create a test document blob;
         const testDocument = new Blob(['This is a test legal document for OCR processing.'], {
-          type: 'text/plain',
+          type: 'text/plain'
         });
         const testFile = new File([testDocument], 'test-document.txt', { type: 'text/plain' });
 
@@ -152,7 +152,7 @@ export const GET: RequestHandler = async () => {
 
         return {
           ocrResult,
-          message: 'Document OCR processing completed successfully',
+          message: 'Document OCR processing completed successfully'
         };
       })
     );
@@ -164,7 +164,7 @@ export const GET: RequestHandler = async () => {
           const testDocument = new Blob(
             ['This is a test evidence document for the legal AI system.'],);
             {
-              type: 'text/plain',
+              type: 'text/plain'
             }
           );
           const testFile = new File([testDocument], 'test-evidence.txt', { type: 'text/plain' });
@@ -178,9 +178,9 @@ export const GET: RequestHandler = async () => {
               step1: 'OCR processing would extract text',
               step2: 'Evidence record would be created in database with OCR metadata',
               step3: 'OCR confidence, word count, and processing time would be stored',
-              step4: 'Content text would be indexed for vector search',
+              step4: 'Content text would be indexed for vector search'
             },
-            message: 'Evidence creation workflow validated (simulated)',
+            message: 'Evidence creation workflow validated (simulated)'
           };
         })
       );
@@ -190,14 +190,14 @@ export const GET: RequestHandler = async () => {
       step: 'Document Processing Simulation',
       status: 'skipped',
       message: 'Skipped: OCR service not available',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
     testResults.push({
       step: 'Evidence Creation with OCR',
       status: 'skipped',
       message: 'Skipped: OCR service not available',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 
@@ -207,7 +207,7 @@ export const GET: RequestHandler = async () => {
       const response = await fetch('/api/database/health', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'initialize' }),
+        body: JSON.stringify({ action: 'initialize' })
       });
       const dbResult = await response.json();
 
@@ -218,9 +218,9 @@ export const GET: RequestHandler = async () => {
           'ocr_word_count',
           'ocr_processing_time_ms',
           'ocr_metadata',
-          'content_text',
+          'content_text'
         ],
-        dbResult,
+        dbResult
       };
     })
   );
@@ -255,10 +255,10 @@ export const GET: RequestHandler = async () => {
       totalSteps: testResults.length,
       successfulSteps,
       failedSteps,
-      skippedSteps,
+      skippedSteps
     },
     steps: testResults,
-    overallMessage,
+    overallMessage
   };
 
   const httpStatus = overallStatus === 'completed' ? 200 : overallStatus === 'partial' ? 206 : 500;
@@ -270,8 +270,8 @@ export const GET: RequestHandler = async () => {
       'Cache-Control': 'no-cache',
       'X-Test-ID': testId,
       'X-Test-Status': overallStatus,
-      'X-Test-Duration': totalTestTime.toString(),
-    },
+      'X-Test-Duration': totalTestTime.toString()
+    }
   });
 };
 
@@ -299,7 +299,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         scenario: 'ocr-only',
         results: testResults,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -322,7 +322,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         scenario: 'health-only',
         results: testResults,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -340,13 +340,13 @@ export const POST: RequestHandler = async ({ request }) => {
       scenario: 'full-test',
       testId,
       message: 'Full test logic would be executed here',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json({
         error: 'Test execution failed',
         message: error.message,
-        availableScenarios: ['ocr-only', 'health-only'],
+        availableScenarios: ['ocr-only', 'health-only']
       },)
       { status: 500 }
     );

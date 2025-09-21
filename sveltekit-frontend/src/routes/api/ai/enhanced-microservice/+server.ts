@@ -32,7 +32,7 @@ export interface GoMicroserviceConfig {
   baseUrl: string;
   timeout: number;
   retries: number;
-  enableCache: boolean;,
+  enableCache: boolean;
 }
 
 export interface ProcessDocumentRequest {
@@ -55,7 +55,7 @@ const config: GoMicroserviceConfig = {
   baseUrl: import.meta.env.GO_MICROSERVICE_URL || "http://localhost:8080",
   timeout: parseInt(import.meta.env.GO_MICROSERVICE_TIMEOUT || "30000"),
   retries: 3,
-  enableCache: true,
+  enableCache: true
 };
 
 class GoMicroserviceClient {
@@ -85,10 +85,10 @@ class GoMicroserviceClient {
           method,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+            Accept: "application/json"
           },
           body: body ? JSON.stringify(body) : undefined,
-          signal: controller.signal,
+          signal: controller.signal
         });
 
         clearTimeout(timeoutId);
@@ -151,15 +151,15 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           baseUrl: config.baseUrl,
           timeout: config.timeout,
           retries: config.retries,
-          enableCache: config.enableCache,
-        },
+          enableCache: config.enableCache
+        }
       });
     }
 
     return json({
         status: "error",
         message: "Invalid action parameter",
-        availableActions: ["health"],
+        availableActions: ["health"]
       },)
       { status: 400 }
     );
@@ -171,7 +171,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         status: "error",
         message: "Microservice unavailable",
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );
@@ -192,7 +192,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           return json({
               status: "error",
               message:
-                "Missing required fields: content, document_type, jurisdiction",
+                "Missing required fields: content, document_type, jurisdiction"
             },)
             { status: 400 }
           );
@@ -203,7 +203,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           document_type: body.document_type,
           practice_area: body.practice_area,
           jurisdiction: body.jurisdiction,
-          metadata: body.metadata || {},
+          metadata: body.metadata || {}
         };
 
         const result = await goClient.processDocument(processRequest);
@@ -216,8 +216,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             processingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
             chunksCreated: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).chunks?.length || 0,
             entitiesFound: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).legal_entities?.length || 0,
-            riskScore: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).risk_assessment?.overall_score || 0,
-          },
+            riskScore: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).risk_assessment?.overall_score || 0
+          }
         });
       }
 
@@ -225,7 +225,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         if (!body.query) {
           return json({
               status: "error",
-              message: "Query parameter is required",
+              message: "Query parameter is required"
             },)
             { status: 400 }
           );
@@ -236,7 +236,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           limit: body.limit || 10,
           filters: body.filters || {},
           use_rag: body.use_rag || false,
-          include_context: body.include_context || false,
+          include_context: body.include_context || false
         };
 
         const result = await goClient.searchDocuments(searchRequest);
@@ -249,8 +249,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             queryProcessingTime: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).processing_time,
             resultsFound: (result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).total_found,
             ragEnabled: searchRequest.use_rag,
-            hasRAGContext: !!(result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).rag_context,
-          },
+            hasRAGContext: !!(result as { processing_time?: any; chunks?: any; legal_entities?: any; risk_assessment?: any; total_found?: any; rag_context?: any; similarity?: any; document_id?: any }).rag_context
+          }
         });
       }
 
@@ -258,7 +258,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         if (!body.query) {
           return json({
               status: "error",
-              message: "Query parameter is required for enhanced RAG",
+              message: "Query parameter is required for enhanced RAG"
             },)
             { status: 400 }
           );
@@ -270,12 +270,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           limit: body.limit || 20,
           filters: body.filters || {},
           use_rag: true,
-          include_context: true,
+          include_context: true
         };
 
         const [searchResult, healthStatus] = await Promise.all([
           goClient.searchDocuments(searchRequest),
-          goClient.healthCheck(),
+          goClient.healthCheck()
         ]);
 
         // Enhanced response with microservice status;
@@ -297,9 +297,9 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
                 llm_model: "gemma3-legal:8b",
                 cuda_enabled: healthStatus.config?.enable_gpu || false,
                 vector_similarity: true,
-                semantic_analysis: true,
-              },
-            },
+                semantic_analysis: true
+              }
+            }
           },
           metadata: {
             queryProcessingTime: searchResult.processing_time,
@@ -308,8 +308,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             microserviceStatus: healthStatus.status,
             processingMode: healthStatus.config?.enable_gpu
               ? "GPU-Accelerated"
-              : "CPU-Only",
-          },
+              : "CPU-Only"
+          }
         });
       }
 
@@ -317,7 +317,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         if (!body.content) {
           return json({
               status: "error",
-              message: "Content parameter is required for legal analysis",
+              message: "Content parameter is required for legal analysis"
             },)
             { status: 400 }
           );
@@ -333,8 +333,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
             analysis_type: "comprehensive",
             include_risk_assessment: true,
             include_entity_extraction: true,
-            ...body.metadata,
-          },
+            ...body.metadata
+          }
         };
 
         const processResult = await goClient.processDocument(processRequest);
@@ -344,7 +344,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           ...processResult.keywords.slice(0, 3),
           ...processResult.legal_entities
             .map((entity: any) => entity.text)
-            .slice(0, 2),
+            .slice(0, 2)
         ];
 
         const relatedSearches = await Promise.all(
@@ -354,7 +354,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
                 query,
                 limit: 5,
                 use_rag: true,
-                include_context: true,
+                include_context: true
               })
               .catch(() => ({ results: [], total_found: 0 })
           )
@@ -371,7 +371,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
                 (sum, search) => sum + (search.total_found || 0),
                 0
               ),
-              cross_references: extractCrossReferences(relatedSearches),
+              cross_references: extractCrossReferences(relatedSearches)
             },
             comprehensive_insights: {
               risk_factors: processResult.risk_assessment?.risk_factors || [],
@@ -380,8 +380,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
               recommendations: generateRecommendations(
                 processResult,
                 relatedSearches
-              ),
-            },
+              )
+            }
           },
           metadata: {
             analysisType: "comprehensive",
@@ -391,8 +391,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
               0
             ),
             confidenceScore: calculateConfidenceScore([processResult]),
-            processingPipeline: "gemma3-legal-enhanced",
-          },
+            processingPipeline: "gemma3-legal-enhanced"
+          }
         });
       }
 
@@ -404,8 +404,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
               "process-document",
               "search",
               "enhanced-rag",
-              "legal-analysis",
-            ],
+              "legal-analysis"
+            ]
           },)
           { status: 400 }
         );
@@ -419,7 +419,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         message: "Microservice request failed",
         error: error.message,
         timestamp: new Date().toISOString(),
-        action: action,
+        action: action
       },
       { status: 500 }
     );

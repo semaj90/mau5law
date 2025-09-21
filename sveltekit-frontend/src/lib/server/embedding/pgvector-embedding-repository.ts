@@ -11,7 +11,7 @@ import type {
   IngestionJobRequest,
   SimilarityQueryOptions,
   SimilarityResult,
-  IngestionJobStatus,
+  IngestionJobStatus
 } from './embedding-repository.js';
 import { enqueue, processNext as queueProcessNext, getStatus } from './ingestion-queue.js';
 
@@ -91,7 +91,7 @@ async function querySimilar(query: string, options: SimilarityQueryOptions = {})
     documentType: String(r.document_type),
     chunkIndex: Number(r.chunk_index),
     content: String(r.content),
-    score: 1 - Number(r.distance),
+    score: 1 - Number(r.distance)
   });
 }
 

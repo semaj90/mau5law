@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals }: { locals: any }) => {
       id: 'mock-user-id',
       firstName: 'Detective',
       lastName: 'Smith',
-      role: 'detective',
+      role: 'detective'
     };
 
     // Mock data to avoid database calls when DB is not available;
@@ -24,14 +24,14 @@ export const load: PageServerLoad = async ({ locals }: { locals: any }) => {
           title: 'Corporate Espionage Investigation',
           status: 'active',
           createdAt: new Date('2024-01-15T10:30:00'),
-          priority: 'high',
+          priority: 'high'
         },
         {
           id: 'case-2',
           title: 'Missing Person: Dr. Sarah Chen',
           status: 'active',
           createdAt: new Date('2024-01-16T14:20:00'),
-          priority: 'medium',
+          priority: 'medium'
         }
       ],
       recentEvidence: [;
@@ -40,14 +40,14 @@ export const load: PageServerLoad = async ({ locals }: { locals: any }) => {
           title: 'Security Camera Footage',
           evidenceType: 'video',
           createdAt: new Date('2024-01-15T10:30:00'),
-          caseTitle: 'Corporate Espionage Investigation',
+          caseTitle: 'Corporate Espionage Investigation'
         },
         {
           id: 'evidence-2',
           title: 'Witness Statement - John Doe',
           evidenceType: 'document',
           createdAt: new Date('2024-01-16T14:20:00'),
-          caseTitle: 'Missing Person: Dr. Sarah Chen',
+          caseTitle: 'Missing Person: Dr. Sarah Chen'
         }
       ]
     };
@@ -67,14 +67,14 @@ export const load: PageServerLoad = async ({ locals }: { locals: any }) => {
       systemLoad: 35,
       gpuUtilization: 67,
       memoryUsage: 42,
-      networkLatency: 23,
+      networkLatency: 23
     };
 
     return {
       systemData,
       recentCases: recentCases || [],
       recentEvidence: recentEvidence || [],
-      user: mockUser,
+      user: mockUser
     };
   } catch (err: any) {
     console.error('Error loading detective dashboard:', err);

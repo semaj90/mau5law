@@ -17,7 +17,7 @@ export interface FeedbackState {
   pendingFeedback: FeedbackTrigger[];
   analytics: FeedbackAnalytics;
   userContext: UserFeedbackContext;
-  isCollecting: boolean;,
+  isCollecting: boolean;
 }
 
 class FeedbackStore {
@@ -28,15 +28,15 @@ class FeedbackStore {
       totalInteractions: 0,
       averageRating: 0,
       completionRate: 0,
-      topIssues: [],
+      topIssues: []
     },
     userContext: {
       userId: '',
       sessionId: '',
       deviceType: 'desktop',
-      userType: 'attorney',
+      userType: 'attorney'
     },
-    isCollecting: false,
+    isCollecting: false
   });
 
   // Getters
@@ -60,7 +60,7 @@ class FeedbackStore {
         userAgent: navigator.userAgent,
         viewport: {
           width: window.innerWidth,
-          height: window.innerHeight,
+          height: window.innerHeight
         }
       }
     };
@@ -93,7 +93,7 @@ class FeedbackStore {
       context: {
         ...context,
         page: window.location.pathname,
-        sessionTime: Date.now() - this.state.activeSession.startTime.getTime(),
+        sessionTime: Date.now() - this.state.activeSession.startTime.getTime()
       }
     };
 
@@ -107,7 +107,7 @@ class FeedbackStore {
         type: this.getFeedbackTypeForInteraction(type),
         priority: options.priority || 'medium',
         delay: options.delay || this.getDefaultDelay(type),
-        context: interaction.context,
+        context: interaction.context
       });
     }
 
@@ -182,7 +182,7 @@ class FeedbackStore {
             platform: navigator.platform,
             language: navigator.language,
             featureUsed: ratingType,
-            deviceType: this.state.userContext.deviceType,
+            deviceType: this.state.userContext.deviceType
           }
         })
       });

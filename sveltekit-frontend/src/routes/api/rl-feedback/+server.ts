@@ -22,7 +22,7 @@ interface RLFeedbackData {
     accuracy: number;      // 1-5 scale
     helpfulness: number;   // 1-5 scale
     completeness: number;  // 1-5 scale
-    clarity: number;       // 1-5 scale,
+    clarity: number;       // 1-5 scale
   };
   context: {
     documentType: string;
@@ -30,7 +30,7 @@ interface RLFeedbackData {
     complexityLevel: 'basic' | 'intermediate' | 'advanced';
     modelUsed: string;
     responseTime: number;
-    confidence: number;,
+    confidence: number;
   };
   timestamp: number;
   userCorrections?: string[];
@@ -46,13 +46,13 @@ interface QLorATrainingExample {
   quality_metrics: {
     accuracy: number;
     relevance: number;
-    completeness: number;,
+    completeness: number;
   };
   metadata: {
     domain: string;
     model_used: string;
     user_feedback: string;
-    context_embedding: Float32Array;,
+    context_embedding: Float32Array;
   };
 }
 
@@ -86,13 +86,13 @@ export const POST: RequestHandler = async ({ request }) => {
       quality_metrics: {
         accuracy: feedbackData.feedbackDetails?.accuracy || estimateAccuracy(feedbackData),
         relevance: estimateRelevance(feedbackData),
-        completeness: feedbackData.feedbackDetails?.completeness || estimateCompleteness(feedbackData),
+        completeness: feedbackData.feedbackDetails?.completeness || estimateCompleteness(feedbackData)
       },
       metadata: {
         domain: feedbackData.context.legalDomain,
         model_used: feedbackData.context.modelUsed,
         user_feedback: feedbackData.feedback,
-        context_embedding: contextEmbedding,
+        context_embedding: contextEmbedding
       }
     };
 
@@ -105,14 +105,14 @@ export const POST: RequestHandler = async ({ request }) => {
         corrections: feedbackData.userCorrections || [],
         preference_type: determinePrefererenceType(feedbackData),
         legal_domain: feedbackData.context.legalDomain,
-        confidence_delta: calculateConfidenceDelta(feedbackData),
+        confidence_delta: calculateConfidenceDelta(feedbackData)
       },
       {
         document_type: feedbackData.context.documentType,
         jurisdiction: 'federal', // default
         practice_area: feedbackData.context.legalDomain,
         complexity_level: feedbackData.context.complexityLevel,
-        prior_interactions: [] // would track in production,
+        prior_interactions: [] // would track in production
       }
     );
 
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         feedback: feedbackData.feedback,
         model_performance: feedbackScore,
-        sessionId: feedbackData.sessionId,
+        sessionId: feedbackData.sessionId
       }
     );
 
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
         document_type: feedbackData.context.documentType,
         task: 'feedback_collection',
         legal_domain: feedbackData.context.legalDomain,
-        feedback_score: feedbackScore,
+        feedback_score: feedbackScore
       }
     );
 
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
       message: 'Feedback recorded successfully',
       training_examples: 1,
       distillation_ready: feedbackCount >= 50,
-      next_training_eta: estimateNextTrainingTime(feedbackCount),
+      next_training_eta: estimateNextTrainingTime(feedbackCount)
     });
 
   } catch (error) {
@@ -192,24 +192,24 @@ export const GET: RequestHandler = async ({ url }) => {
         total_feedback: trainingStats.training_queue_size,
         successful_training_runs: trainingStats.data_flywheel_status === 'training' ? 1 : 0,
         model_versions: trainingStats.model_versions,
-        next_training_eta: trainingStats.next_training_eta,
+        next_training_eta: trainingStats.next_training_eta
       },
       context_switching: {
         switching_latency: switchingStats.switchingLatency,
         active_models: switchingStats.activeModels,
         total_switches: switchingStats.totalSwitches,
-        average_cost: switchingStats.averageSwitchingCost,
+        average_cost: switchingStats.averageSwitchingCost
       },
       prediction: {
         success_rate: predictionStats.success_rate,
         average_confidence: predictionStats.average_confidence,
-        cache_improvements: predictionStats.cache_improvements,
+        cache_improvements: predictionStats.cache_improvements
       },
       domain_specific: domainStats,
       enhanced_rag: {
         training_examples: await getEnhancedRAGExampleCount(),
         distilled_models: await getDistilledModelCount(),
-        average_quality_score: await getAverageQualityScore(),
+        average_quality_score: await getAverageQualityScore()
       }
     });
 
@@ -346,7 +346,7 @@ function determinePrefererenceType(feedback: RLFeedbackData): 'accuracy' | 'comp
       accuracy: details.accuracy,
       completeness: details.completeness,
       clarity: details.clarity,
-      relevance: details.helpfulness // Map helpfulness to relevance,
+      relevance: details.helpfulness // Map helpfulness to relevance
     };
     
     // Return the aspect with the highest (or lowest for negative feedback) score
@@ -422,7 +422,7 @@ async function triggerDomainSpecificDistillation(domain: string, userId: string)
       targetModelName: `gemma3-legal-${domain}-distilled-${Date.now()}`,
       trainingExamples: await getEnhancedRAGExampleCount(),
       qualityThreshold: 0.8,
-      maxTrainingTime: '2 hours',
+      maxTrainingTime: '2 hours'
     };
     
     // Start distillation process (would be async in production)
@@ -463,7 +463,7 @@ async function getDomainSpecificStats(domain: string, userId?: string): Promise<
       `gemma3-legal-${domain}-v1`,
       `gemma3-legal-${domain}-v2`
     ],
-    distillation_ready: Math.random() > 0.5,
+    distillation_ready: Math.random() > 0.5
   };
 }
 

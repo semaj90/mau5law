@@ -14,7 +14,7 @@ interface SerializationTask {
   data: any;
   options: SerializationOptions;
   priority: 'low' | 'medium' | 'high' | 'critical';
-  timestamp: number;,
+  timestamp: number;
 }
 
 interface SerializationOptions {
@@ -116,7 +116,7 @@ class WorkerPool {
                 serializedSize: serialized.length,
                 compressionRatio: JSON.stringify(data).length / serialized.length,
                 processingTime,
-                method: 'worker',
+                method: 'worker'
               }
             };
           } catch (error) {
@@ -127,7 +127,7 @@ class WorkerPool {
                 serializedSize: 0,
                 compressionRatio: 1,
                 processingTime: performance.now() - start,
-                method: 'worker',
+                method: 'worker'
               }
             };
           }
@@ -136,7 +136,7 @@ class WorkerPool {
       
       parentPort.on('message', ({ id, data, options }) => {
         const result = JSONSerializer.serialize(data, options);
-        parentPort.postMessage({ id, ...result ,});
+        parentPort.postMessage({ id, ...result });
       });
     `;
 
@@ -209,7 +209,7 @@ class WorkerPool {
     worker.postMessage({
       id: task.id,
       data: task.data,
-      options: task.options,
+      options: task.options
     });
   }
 
@@ -276,7 +276,7 @@ export class ConcurrentJSONSerializer {
         ...options
       },
       priority: this.determinePriority(data, options),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     // Determine optimal serialization method
@@ -311,7 +311,7 @@ export class ConcurrentJSONSerializer {
       const buffer = this.gpuContext.createBuffer({
         size: inputData.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-        mappedAtCreation: true,
+        mappedAtCreation: true
       });
 
       // Copy data to GPU
@@ -392,7 +392,7 @@ export class ConcurrentJSONSerializer {
           serializedSize: serialized.length,
           compressionRatio: originalStr.length / serialized.length,
           processingTime,
-          method: 'cpu',
+          method: 'cpu'
         }
       };
     } catch (error) {
@@ -406,9 +406,9 @@ export class ConcurrentJSONSerializer {
           serializedSize: 2,
           compressionRatio: 1,
           processingTime,
-          method: 'cpu',
+          method: 'cpu'
         },
-        error: error instanceof Error ? error.message: 'Unknown serialization error',
+        error: error instanceof Error ? error.message: 'Unknown serialization error'
       };
     }
   }
@@ -422,7 +422,7 @@ export class ConcurrentJSONSerializer {
   ): Promise<SerializationResult[]> {
     const batchOptions = {
       ...options,
-      priority: 'medium' as const,
+      priority: 'medium' as const
     };
 
     // Process in parallel with worker pool
@@ -512,14 +512,14 @@ export class ConcurrentJSONSerializer {
     queueLength: number;
     totalProcessed: number;
     averageProcessingTime: number;
-    gpuEnabled: boolean;,
+    gpuEnabled: boolean;
   } {
     return {
       activeWorkers: this.workerPool['workers'].length,
       queueLength: this.workerPool['taskQueue'].length,
       totalProcessed: this.taskCounter,
       averageProcessingTime: 0, // Could be enhanced with metrics
-      gpuEnabled: !!this.gpuContext,
+      gpuEnabled: !!this.gpuContext
     };
   }
 
@@ -544,7 +544,7 @@ export async function serializeForAPI<T>(
     validateStructure: true,
     legalDocumentMode: false,
     ...options
-  ,});
+  });
   
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(`API serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`);
@@ -563,7 +563,7 @@ export async function serializeLegalDocument<T>(
     validateStructure: true,
     maxDepth: 15, // Legal docs can be deeply nested
     ...options
-  ,});
+  });
   
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(`Legal document serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`);
@@ -580,7 +580,7 @@ export async function serializeBatchForCache<T>(
     compress: true,
     gpuAccelerated: items.length > 100,
     ...options
-  ,});
+  });
 }
 
 export function deserializeFromAPI<T = any>(serialized: string): T {

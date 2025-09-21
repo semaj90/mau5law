@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!prefix || !since) {
       return json({
         success: false,
-        error: 'Prefix and since timestamp are required',
+        error: 'Prefix and since timestamp are required'
       }, { status: 400 });
     }
     
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
         entries.push({
           key,
           value: cached.value,
-          timestamp: entryTimestamp,
+          timestamp: entryTimestamp
         });
       }
     }
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error.message,
+      error: error.message
     }, { status: 500 });
   }
 };

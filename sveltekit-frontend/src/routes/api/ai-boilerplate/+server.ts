@@ -16,16 +16,16 @@ const CONFIG = {
         password: import.meta.env.DB_PASSWORD || 'password',
         host: import.meta.env.DB_HOST || 'localhost',
         port: parseInt(import.meta.env.DB_PORT || '5432'),
-        database: import.meta.env.DB_NAME || 'prosecutor_db',
+        database: import.meta.env.DB_NAME || 'prosecutor_db'
     },
     ollama: {
         url: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
-        model: import.meta.env.LLM_MODEL || 'gemma3-legal',
+        model: import.meta.env.LLM_MODEL || 'gemma3-legal'
     },
     boilerplate: {
         minProsecutionScore: 70,
         maxTemplates: 5,
-        templateLength: 300,
+        templateLength: 300
     }
 };
 
@@ -47,7 +47,7 @@ const BoilerplateRequestSchema = z.object({
         charges: z.array(z.string()).optional(),
         evidence_types: z.array(z.string()).optional(),
         precedents: z.array(z.string()).optional(),
-        custom_context: z.string().optional(),
+        custom_context: z.string().optional()
     }).optional(),
     tone: z.enum(['formal', 'aggressive', 'neutral', 'persuasive']).optional(),
     length: z.enum(['brief', 'standard', 'detailed']).optional()
@@ -62,7 +62,7 @@ const BoilerplateResponseSchema = z.object({
     metadata: z.object({
         template_type: z.string(),
         jurisdiction: z.string().optional(),
-        generation_time_ms: z.number(),
+        generation_time_ms: z.number()
     })
 });
 
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
             metadata: {
                 template_type: validatedRequest.type,
                 jurisdiction: validatedRequest.jurisdiction,
-                generation_time_ms: Date.now() - startTime,
+                generation_time_ms: Date.now() - startTime
             }
         };
 
@@ -130,13 +130,13 @@ export const POST: RequestHandler = async ({ request }) => {
         if (err instanceof z.ZodError) {
             return json({
                 message: 'Invalid request format',
-                errors: err.errors,
+                errors: err.errors
             }, { status: 400 });
         }
 
         return json({
             message: 'AI Boilerplate service temporarily unavailable',
-            details: err instanceof Error ? err.message: 'Unknown error',
+            details: err instanceof Error ? err.message: 'Unknown error'
         }, { status: 500 });
     }
 };
@@ -245,7 +245,7 @@ Generate the boilerplate text:`;
                     temperature: 0.4,
                     top_p: 0.9,
                     repeat_penalty: 1.1,
-                    num_predict: getLengthTokens(request.length),
+                    num_predict: getLengthTokens(request.length)
                 }
             })
         });
@@ -266,7 +266,7 @@ Generate the boilerplate text:`;
         return {
             text: generatedText,
             confidence,
-            prosecutionStrength: avgProsecutionScore,
+            prosecutionStrength: avgProsecutionScore
         };
 
     } catch (error: any) {
@@ -339,7 +339,7 @@ function getLengthGuidance(length?: string): string {
     switch (length) {
         case 'brief': return '1-2 paragraphs (100-200 words)';
         case 'detailed': return '4-6 paragraphs (400-600 words)';
-        default: return '2-4 paragraphs (200-400 words)';,
+        default: return '2-4 paragraphs (200-400 words)';
     }
 }
 
@@ -347,7 +347,7 @@ function getLengthTokens(length?: string): number {
     switch (length) {
         case 'brief': return 300;
         case 'detailed': return 800;
-        default: return 500;,
+        default: return 500;
     }
 }
 
@@ -363,7 +363,7 @@ function generateFallbackBoilerplate(type: string, sourcePhrases: any[]) {
     return {
         text: fallbackText,
         confidence: 0.6,
-        prosecutionStrength: 75,
+        prosecutionStrength: 75
     };
 }
 
@@ -420,31 +420,31 @@ export const GET: RequestHandler = async () => {
                 type: 'prosecution_argument',
                 name: 'Prosecution Argument',
                 description: 'Compelling arguments for establishing guilt',
-                available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+                available_phrases: stats.rows[0]?.high_performing_phrases || 0
             },
             {
                 type: 'evidence_summary',
                 name: 'Evidence Summary',
                 description: 'Comprehensive overview of case evidence',
-                available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+                available_phrases: stats.rows[0]?.high_performing_phrases || 0
             },
             {
                 type: 'legal_motion',
                 name: 'Legal Motion',
                 description: 'Professional legal motions and requests',
-                available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+                available_phrases: stats.rows[0]?.high_performing_phrases || 0
             },
             {
                 type: 'case_analysis',
                 name: 'Case Analysis',
                 description: 'Detailed legal case analysis',
-                available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+                available_phrases: stats.rows[0]?.high_performing_phrases || 0
             },
             {
                 type: 'sentencing_memo',
                 name: 'Sentencing Memorandum',
                 description: 'Arguments for appropriate sentencing',
-                available_phrases: stats.rows[0]?.high_performing_phrases || 0,
+                available_phrases: stats.rows[0]?.high_performing_phrases || 0
             }
         ];
 
@@ -453,7 +453,7 @@ export const GET: RequestHandler = async () => {
             statistics: {
                 total_phrases: parseInt(String(stats.rows[0]?.total_phrases || '0')),
                 average_score: parseFloat(String(stats.rows[0]?.avg_score || '0')),
-                high_performing_count: parseInt(String(stats.rows[0]?.high_performing_phrases || '0'),
+                high_performing_count: parseInt(String(stats.rows[0]?.high_performing_phrases || '0')
             }
         });
 

@@ -26,13 +26,13 @@ export const GET: RequestHandler = async ({ request }) => {
         success: false,
         error: error.message,
         query: error.query,
-        cause: error.cause?.message,
+        cause: error.cause?.message
       }, { status: 500 });
     }
     
     return json({
       success: true,
-      message: 'Minimal schema test completed successfully',
+      message: 'Minimal schema test completed successfully'
     });
     
   } catch (error: any) {
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      stack: error.stack,
+      stack: error.stack
     }, { status: 500 });
   }
 };

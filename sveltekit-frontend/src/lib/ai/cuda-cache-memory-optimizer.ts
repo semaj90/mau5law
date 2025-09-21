@@ -17,7 +17,7 @@ export interface UserIntent {
   complexity: number; // 0-1 scale
   domainSpecificity: number; // 0-1 scale (legal specific)
   contextualSimilarity: number; // to previous queries
-  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';,
+  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';
 }
 
 export interface ModelPerformanceProfile {
@@ -30,7 +30,7 @@ export interface ModelPerformanceProfile {
   specialtyDomains: string[];
   lastUsed: number;
   usageFrequency: number;
-  switchCost: number; // Cost in ms to switch to this model,
+  switchCost: number; // Cost in ms to switch to this model
 }
 
 export interface CUDAMemoryBlock {
@@ -53,7 +53,7 @@ export interface SOMNeuron {
   lastActivation: number;
   activationCount: number;
   associatedModel: string;
-  userPatternSignature: string;,
+  userPatternSignature: string;
 }
 
 class CUDACacheMemoryOptimizer {
@@ -153,9 +153,9 @@ class CUDACacheMemoryOptimizer {
           complexity: 0.5,
           domainSpecificity: 0.5,
           contextualSimilarity: 0.0,
-          userBehaviorPattern: 'explorer',
+          userBehaviorPattern: 'explorer'
         },
-        didYouMeanSuggestions: [],
+        didYouMeanSuggestions: []
       };
     }
   }
@@ -368,7 +368,7 @@ class CUDACacheMemoryOptimizer {
         lastActivation: 0,
         activationCount: 0,
         associatedModel: 'gemma270m', // Default
-        userPatternSignature: '',
+        userPatternSignature: ''
       })
     );
     
@@ -391,13 +391,13 @@ class CUDACacheMemoryOptimizer {
         w1: initWeight(this.inputFeatureSize * this.hiddenSize),
         b1: new Float32Array(this.hiddenSize).fill(0.01),
         w2: initWeight(this.hiddenSize * this.latentSize),
-        b2: new Float32Array(this.latentSize).fill(0.01),
+        b2: new Float32Array(this.latentSize).fill(0.01)
       },
       decoder: {
         w3: initWeight(this.latentSize * this.hiddenSize),
         b3: new Float32Array(this.hiddenSize).fill(0.01),
         w4: initWeight(this.hiddenSize * this.inputFeatureSize),
-        b4: new Float32Array(this.inputFeatureSize).fill(0.01),
+        b4: new Float32Array(this.inputFeatureSize).fill(0.01)
       }
     };
     
@@ -675,7 +675,7 @@ class CUDACacheMemoryOptimizer {
         specialtyDomains: ['chat', 'general'],
         lastUsed: Date.now(),
         usageFrequency: 50,
-        switchCost: 80,
+        switchCost: 80
       },
       {
         modelId: 'legal-bert',
@@ -687,7 +687,7 @@ class CUDACacheMemoryOptimizer {
         specialtyDomains: ['legal', 'context'],
         lastUsed: Date.now() - 300000,
         usageFrequency: 25,
-        switchCost: 30,
+        switchCost: 30
       },
       {
         modelId: 'llama-rl',
@@ -699,7 +699,7 @@ class CUDACacheMemoryOptimizer {
         specialtyDomains: ['legal', 'research', 'analysis'],
         lastUsed: Date.now() - 600000,
         usageFrequency: 15,
-        switchCost: 200,
+        switchCost: 200
       }
     ];
 
@@ -723,7 +723,7 @@ class CUDACacheMemoryOptimizer {
       modelProfiles: this.modelProfiles.size,
       userIntentHistory: this.userIntentHistory.length,
       somNeuronActivations: totalActivations,
-      cacheHitRate: 0.85 // Would calculate actual hit rate,
+      cacheHitRate: 0.85 // Would calculate actual hit rate
     };
   }
 }

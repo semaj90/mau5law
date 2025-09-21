@@ -18,12 +18,12 @@ export interface CHRROMPattern {
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     cacheHits: number;
     lastAccessed: number;
-    compressionRatio: number;,
+    compressionRatio: number;
   };
   renderData?: {
     colors: [number, number, number, number][]; // RGBA colors
     positions: [number, number][]; // Tile positions
-    attributes: number[]; // Sprite attributes,
+    attributes: number[]; // Sprite attributes
   };
 }
 
@@ -36,7 +36,7 @@ export interface CHRROMCache {
     cacheMisses: number;
     totalRequests: number;
     averageResponseTime: number;
-    bankUtilization: number[];,
+    bankUtilization: number[];
   };
 }
 
@@ -45,7 +45,7 @@ export interface PatternGenerationOptions {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   visualStyle: 'modern' | 'classic' | 'minimal' | 'detailed';
   colorScheme: 'default' | 'accessibility' | 'high_contrast' | 'colorblind';
-  animated: boolean;,
+  animated: boolean;
 }
 
 export class CHRROMPatternCache {
@@ -60,7 +60,7 @@ export class CHRROMPatternCache {
     this.redis = new Redis(redisConfig || {
       host: process.env.REDIS_HOST || 'localhost',
       port: parseInt(process.env.REDIS_PORT || '6379'),
-      password: process.env.REDIS_PASSWORD,
+      password: process.env.REDIS_PASSWORD
     });
     
     this.cache = {
@@ -72,7 +72,7 @@ export class CHRROMPatternCache {
         cacheMisses: 0,
         totalRequests: 0,
         averageResponseTime: 0,
-        bankUtilization: Array(this.MAX_BANKS).fill(0),
+        bankUtilization: Array(this.MAX_BANKS).fill(0)
       }
     };
     
@@ -214,7 +214,7 @@ export class CHRROMPatternCache {
           riskLevel: options.riskLevel,
           cacheHits: 0,
           lastAccessed: Date.now(),
-          compressionRatio: this.calculateCompressionRatio(tileData),
+          compressionRatio: this.calculateCompressionRatio(tileData)
         },
         renderData
       };
@@ -258,7 +258,7 @@ export class CHRROMPatternCache {
       contract: this.generateContractPattern(options.riskLevel),
       evidence: this.generateEvidencePattern(options.riskLevel),
       brief: this.generateBriefPattern(options.riskLevel),
-      citation: this.generateCitationPattern(options.riskLevel),
+      citation: this.generateCitationPattern(options.riskLevel)
     };
     
     let basePattern = basePatterns[options.documentType];
@@ -484,7 +484,7 @@ export class CHRROMPatternCache {
     // Serialize pattern for Redis storage;
     return JSON.stringify({
       ...pattern,
-      tileData: Array.from(pattern.tileData) // Convert Uint8Array to array,
+      tileData: Array.from(pattern.tileData) // Convert Uint8Array to array
     });
   }
 
@@ -493,7 +493,7 @@ export class CHRROMPatternCache {
     const parsed = JSON.parse(data);
     return {
       ...parsed,
-      tileData: new Uint8Array(parsed.tileData) // Convert array back to Uint8Array,
+      tileData: new Uint8Array(parsed.tileData) // Convert array back to Uint8Array
     };
   }
 

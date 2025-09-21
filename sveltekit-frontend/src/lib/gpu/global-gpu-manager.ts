@@ -49,7 +49,7 @@ export interface NESMemoryRegion {
   buffer: ArrayBuffer;
   view: DataView;
   gpuBuffer?: GPUBuffer | WebGLBuffer;
-  isDirty: boolean;,
+  isDirty: boolean;
 }
 
 export interface GPUAcceleration {
@@ -77,7 +77,7 @@ class GlobalGPUManager {
     this.acceleration = {
       isEnabled: false,
       contextType: 'cpu',
-      nesMemory: new Map(),
+      nesMemory: new Map()
     };
   }
 
@@ -118,7 +118,7 @@ class GlobalGPUManager {
         allowWebGL1: GPU_CONFIG.allowWebGL1,
         requireCompute: GPU_CONFIG.requireCompute,
         lodSystemIntegration: GPU_CONFIG.lodSystemIntegration,
-        nesMemoryOptimization: GPU_CONFIG.nesMemoryOptimization,
+        nesMemoryOptimization: GPU_CONFIG.nesMemoryOptimization
       });
 
       this.acceleration.isEnabled = true;
@@ -162,7 +162,7 @@ class GlobalGPUManager {
       const memoryRegion: NESMemoryRegion = {
         buffer,
         view,
-        isDirty: false,
+        isDirty: false
       };
 
       // Create GPU buffer if GPU acceleration is available;
@@ -172,7 +172,7 @@ class GlobalGPUManager {
             const device = this.acceleration.hybridContext.getActiveContextType() as unknown as GPUDevice;
             memoryRegion.gpuBuffer = device.createBuffer({
               size: region.size,
-              usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+              usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
             });
           } else {
             const gl = this.acceleration.hybridContext.getActiveContextType() as unknown as WebGL2RenderingContext | WebGLRenderingContext;
@@ -209,7 +209,7 @@ class GlobalGPUManager {
       this.acceleration.nesMemory.set(regionName, {
         buffer,
         view,
-        isDirty: false,
+        isDirty: false
       });
     }
 

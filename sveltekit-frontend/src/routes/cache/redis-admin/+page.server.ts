@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         getKeyStatistics(),
         getRecentKeys(),
         checkRedisConnection(),
-        getPerformanceMetrics(),
+        getPerformanceMetrics()
       ]);
 
     return {
@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       recentKeys,
       connectionStatus,
       performanceMetrics,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (err) {
     console.error('Error loading Redis admin data:', err);
@@ -48,21 +48,21 @@ export const load: PageServerLoad = async ({ locals }) => {
         keyspace_hits: 98743,
         keyspace_misses: 12456,
         expired_keys: 2341,
-        uptime_in_seconds: 2847293,
+        uptime_in_seconds: 2847293
       },
       keyStats: {
         total_keys: 15679,
         expired_count: 2341,
         avg_ttl: 3600,
         memory_usage: '32.1MB',
-        fragmentation_ratio: 1.23,
+        fragmentation_ratio: 1.23
       },
       recentKeys: [
         { key: 'search:semantic:user123', type: 'hash', ttl: 3456, size: '2.3KB' },
         { key: 'cases:active:list', type: 'list', ttl: 1800, size: '15.7KB' },
         { key: 'rag:embeddings:doc456', type: 'string', ttl: 7200, size: '45.2KB' },
         { key: 'session:legal_user_789', type: 'hash', ttl: 1440, size: '1.2KB' },
-        { key: 'vector:similarity:cache', type: 'zset', ttl: 900, size: '8.9KB' },
+        { key: 'vector:similarity:cache', type: 'zset', ttl: 900, size: '8.9KB' }
       ],
       connectionStatus: 'connected',
       performanceMetrics: {
@@ -70,9 +70,9 @@ export const load: PageServerLoad = async ({ locals }) => {
         miss_rate: 11.2,
         ops_per_sec: 142,
         latency_avg: 0.85,
-        memory_efficiency: 76.3,
+        memory_efficiency: 76.3
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 };
@@ -141,7 +141,7 @@ export const actions: Actions = {
       console.error('Failed to set Redis key:', err);
       return fail(500, { error: 'Failed to set key' });
     }
-  },
+  }
 };
 
 async function getRedisInfo() {
@@ -161,7 +161,7 @@ async function getKeyStatistics() {
       expired_count: 0,
       avg_ttl: 3600,
       memory_usage: '0MB',
-      fragmentation_ratio: 1.0,
+      fragmentation_ratio: 1.0
     };
   } catch (error) {
     throw new Error('Failed to get key statistics');
@@ -176,7 +176,7 @@ async function getRecentKeys() {
       key,
       type: 'string',
       ttl: -1,
-      size: '1KB',
+      size: '1KB'
     })) || [];
   } catch (error) {
     return [];
@@ -200,7 +200,7 @@ async function getPerformanceMetrics() {
       miss_rate: 15.0,
       ops_per_sec: 100,
       latency_avg: 1.0,
-      memory_efficiency: 80.0,
+      memory_efficiency: 80.0
     };
   } catch (error) {
     throw new Error('Failed to get performance metrics');

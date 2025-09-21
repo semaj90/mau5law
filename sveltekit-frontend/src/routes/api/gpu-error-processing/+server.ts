@@ -14,7 +14,7 @@ export interface ParsedError {
   line: number;
   column: number;
   severity: 'error' | 'warning';
-  category: string;,
+  category: string;
 }
 
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         processing_time_ms: processingTime,
         gpu_utilization: 78.5 + Math.random() * 15, // Simulated GPU usage
         memory_usage_mb: 1024 + Math.random() * 500,
-        tokens_per_second: (fixes.length * 150) / processingTime * 1000,
+        tokens_per_second: (fixes.length * 150) / processingTime * 1000
       },
       status: 'completed',
       categories: Object.entries(categorizedErrors).map(([category, errors]) => ({
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
         error: 'GPU processing failed',
         message: error instanceof Error ? error.message: 'Unknown error',
-        status: 'failed',
+        status: 'failed'
       },)
       { status: 500 }
     );
@@ -144,20 +144,20 @@ function generateErrorFix(error: ParsedError, category: string): any {
     },
     import: {
       code: '// Check import path and module existence',
-      explanation: 'Verify import statement and file location',
+      explanation: 'Verify import statement and file location'
     },
     type: { code: '// Add proper type annotations', explanation: 'Fix TypeScript type mismatch' },
     syntax: {
       code: '// Fix syntax error (missing semicolon, bracket, etc.)',
-      explanation: 'Correct syntax issue',
+      explanation: 'Correct syntax issue'
     },
     binding: {
       code: '// Update Svelte binding syntax',
-      explanation: 'Fix Svelte event or data binding',
+      explanation: 'Fix Svelte event or data binding'
     },
     unknown: {
       code: '// Review error context and apply appropriate fix',
-      explanation: 'General error analysis required',
+      explanation: 'General error analysis required'
     }
   };
   const template = fixTemplates[category as keyof typeof fixTemplates] || fixTemplates.unknown;
@@ -168,7 +168,7 @@ function generateErrorFix(error: ParsedError, category: string): any {
     confidence: 0.7 + Math.random() * 0.25,
     explanation: template.explanation,
     category,
-    priority: category === 'svelte5' ? 'high' : category === 'syntax' ? 'critical' : 'medium',
+    priority: category === 'svelte5' ? 'high' : category === 'syntax' ? 'critical' : 'medium'
   };
 }
 
@@ -185,7 +185,7 @@ export const GET: RequestHandler = async () => {
     ],
     endpoints: {
       process: 'POST /api/gpu-error-processing',
-      status: 'GET /api/gpu-error-processing',
+      status: 'GET /api/gpu-error-processing'
     }
   });
 };

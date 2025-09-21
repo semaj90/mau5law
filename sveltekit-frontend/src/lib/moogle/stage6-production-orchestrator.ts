@@ -72,13 +72,13 @@ export interface MoogleQuery {
     user_id: string;
     role: 'prosecutor' | 'detective' | 'admin';
     case_id?: string;
-    search_intent: 'evidence' | 'precedent' | 'analysis';,
+    search_intent: 'evidence' | 'precedent' | 'analysis';
   };
   performance_requirements: {
     max_latency_ms: number;
     min_accuracy: number;
     memory_budget_mb: number;
-    use_compression: boolean;,
+    use_compression: boolean;
   };
 }
 
@@ -91,7 +91,7 @@ export interface MoogleResult {
   confidence_score: number;
   cache_hit: boolean;
   processing_time_ms: number;
-  used_components: ComponentType[];,
+  used_components: ComponentType[];
 }
 
 // 🎮 Enhanced Bits UI Integration;
@@ -118,7 +118,7 @@ class EnhancedBitsUIOrchestrator {
             throughput_ops_sec: 1000,
             memory_usage_mb: 2,
             gpu_utilization: 0,
-            cache_hit_rate: 1.0,
+            cache_hit_rate: 1.0
           }
         };
       }
@@ -139,7 +139,7 @@ class EnhancedBitsUIOrchestrator {
           throughput_ops_sec: webgpuAcceleration ? 2000 : 500,
           memory_usage_mb: props.complex ? 8 : 3,
           gpu_utilization: webgpuAcceleration ? 0.3 : 0,
-          cache_hit_rate: 0.8,
+          cache_hit_rate: 0.8
         }
       };
     } catch (error) {
@@ -151,7 +151,7 @@ class EnhancedBitsUIOrchestrator {
           throughput_ops_sec: 0,
           memory_usage_mb: 0,
           gpu_utilization: 0,
-          cache_hit_rate: 0,
+          cache_hit_rate: 0
         }
       };
     }
@@ -219,7 +219,7 @@ class BVHAcceleratorOrchestrator {
           memory_usage_mb: queryVector.length * 4 / (1024 * 1024),
           gpu_utilization: 0,
           cache_hit_rate: 0.7,
-          accuracy_score: 0.95,
+          accuracy_score: 0.95
         }
       };
     } catch (error) {
@@ -231,7 +231,7 @@ class BVHAcceleratorOrchestrator {
           throughput_ops_sec: 0,
           memory_usage_mb: 0,
           gpu_utilization: 0,
-          cache_hit_rate: 0,
+          cache_hit_rate: 0
         }
       };
     }
@@ -241,7 +241,7 @@ class BVHAcceleratorOrchestrator {
     return Array.from({ length: k }, (_, i) => ({
       index: i,
       distance: Math.random() * 0.5,
-      confidence: 0.8 + Math.random() * 0.2,
+      confidence: 0.8 + Math.random() * 0.2
     });
   }
 }
@@ -291,7 +291,7 @@ class CyberElephantOrchestrator {
           memory_usage_mb: documents.length * 0.5,
           gpu_utilization: this.isInitialized ? 0.6 : 0,
           cache_hit_rate: 0.4,
-          accuracy_score: 0.88,
+          accuracy_score: 0.88
         }
       };
     } catch (error) {
@@ -303,7 +303,7 @@ class CyberElephantOrchestrator {
           throughput_ops_sec: 0,
           memory_usage_mb: 0,
           gpu_utilization: 0,
-          cache_hit_rate: 0,
+          cache_hit_rate: 0
         }
       };
     }
@@ -351,7 +351,7 @@ class MultipassCoordinatorOrchestrator {
             extraction_schema: schema,
             max_passes: 3,
             enable_chunking: true,
-            enable_alignment: true,
+            enable_alignment: true
           })
         });
 
@@ -365,7 +365,7 @@ class MultipassCoordinatorOrchestrator {
               memory_usage_mb: document.content.length / (1024 * 1024),
               gpu_utilization: 0.2,
               cache_hit_rate: 0.3,
-              accuracy_score: data.overall_confidence || 0.85,
+              accuracy_score: data.overall_confidence || 0.85
             }
           };
         }
@@ -384,14 +384,14 @@ class MultipassCoordinatorOrchestrator {
       results: schema.map(field => ({
         field,
         value: `Extracted ${field} from ${document.id}`,
-        confidence: 0.7 + Math.random() * 0.2,
+        confidence: 0.7 + Math.random() * 0.2
       })),
       performance: {
         latency_ms: performance.now() - startTime,
         throughput_ops_sec: schema.length / 0.5,
         memory_usage_mb: 1,
         gpu_utilization: 0,
-        cache_hit_rate: 0,
+        cache_hit_rate: 0
       }
     };
   }
@@ -440,7 +440,7 @@ class Neo4jRerankerOrchestrator {
           memory_usage_mb: documents.length * 0.1,
           gpu_utilization: 0.1,
           cache_hit_rate: 0.9,
-          accuracy_score: 0.95,
+          accuracy_score: 0.95
         }
       };
     } catch (error) {
@@ -453,7 +453,7 @@ class Neo4jRerankerOrchestrator {
           memory_usage_mb: 0,
           gpu_utilization: 0,
           cache_hit_rate: 0,
-          accuracy_score: 0.7,
+          accuracy_score: 0.7
         }
       };
     }
@@ -471,7 +471,7 @@ class Neo4jRerankerOrchestrator {
         factual_accuracy: 0.75,
         chain_of_custody: 0.7,
         precedent_strength: 0.65,
-        overall_confidence: 0.72,
+        overall_confidence: 0.72
       },
       path_context: {
         document_id: doc.id || `doc_${index}`,
@@ -484,9 +484,9 @@ class Neo4jRerankerOrchestrator {
           factual_accuracy: 0.75,
           chain_of_custody: 0.7,
           precedent_strength: 0.65,
-          overall_confidence: 0.72,
+          overall_confidence: 0.72
         },
-        audit_trail: [],
+        audit_trail: []
       },
       explanation: `Fallback reranking for ${query}`
     });
@@ -527,7 +527,7 @@ class CHRROMMemoryOrchestrator {
           memory_usage_mb: (originalSize + compressedSize) / (1024 * 1024),
           gpu_utilization: 0.1,
           cache_hit_rate: 0.6,
-          compression_ratio: actualRatio,
+          compression_ratio: actualRatio
         }
       };
     } catch (error) {
@@ -541,7 +541,7 @@ class CHRROMMemoryOrchestrator {
           memory_usage_mb: originalSize / (1024 * 1024),
           gpu_utilization: 0,
           cache_hit_rate: 0,
-          compression_ratio: 1.0,
+          compression_ratio: 1.0
         }
       };
     }
@@ -552,7 +552,7 @@ class CHRROMMemoryOrchestrator {
       case 'legal_document': return 100; // High compression for documents
       case 'embedding': return 50; // Medium compression for embeddings
       case 'metadata': return 127; // Maximum compression for metadata
-      default: return 75;,
+      default: return 75;
     }
   }
 
@@ -574,7 +574,7 @@ export class MoogleGraphSynthesizerOrchestrator {
     throughput_ops_sec: 0,
     memory_usage_mb: 0,
     gpu_utilization: 0,
-    cache_hit_rate: 0,
+    cache_hit_rate: 0
   });
 
   constructor() {
@@ -678,7 +678,7 @@ export class MoogleGraphSynthesizerOrchestrator {
         confidence_score: avgScore,
         cache_hit: Object.values(componentResults).some(r => r.performance?.cache_hit_rate > 0.5),
         processing_time_ms: performance.now() - startTime,
-        used_components: usedComponents,
+        used_components: usedComponents
       };
 
       this.systemStatus.set('ready');
@@ -698,13 +698,13 @@ export class MoogleGraphSynthesizerOrchestrator {
           throughput_ops_sec: 0,
           memory_usage_mb: 0,
           gpu_utilization: 0,
-          cache_hit_rate: 0,
+          cache_hit_rate: 0
         },
         explanations: ['Query processing failed'],
         confidence_score: 0,
         cache_hit: false,
         processing_time_ms: performance.now() - startTime,
-        used_components: [],
+        used_components: []
       };
     }
   }
@@ -733,7 +733,7 @@ export class MoogleGraphSynthesizerOrchestrator {
         return orchestrator.compressData(textData, 'legal_document');
 
       default:
-        return null;,
+        return null;
     }
   }
 
@@ -748,7 +748,7 @@ export class MoogleGraphSynthesizerOrchestrator {
         throughput_ops_sec: 0,
         memory_usage_mb: 0,
         gpu_utilization: 0,
-        cache_hit_rate: 0,
+        cache_hit_rate: 0
       };
     }
 
@@ -818,7 +818,7 @@ export const systemHealth = derived(
       healthScore: totalComponents > 0 ? healthyComponents / totalComponents : 0,
       healthyComponents,
       totalComponents,
-      isOperational: $systemStatus === 'ready' && (healthyComponents / totalComponents) >= 0.7,
+      isOperational: $systemStatus === 'ready' && (healthyComponents / totalComponents) >= 0.7
     };
   }
 );
@@ -839,7 +839,7 @@ export function createMoogleQuery(
       max_latency_ms: 5000,
       min_accuracy: 0.85,
       memory_budget_mb: 512,
-      use_compression: true,
+      use_compression: true
     }
   };
 }

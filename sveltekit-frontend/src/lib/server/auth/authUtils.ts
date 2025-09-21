@@ -47,7 +47,7 @@ export function verifyToken(
     const decoded = jwt.verify(token, secret) as any;
     return {
       userId: decoded.userId,
-      email: decoded.email,
+      email: decoded.email
     };
   } catch (error: any) {
     return null;
@@ -61,6 +61,6 @@ export function createSessionData(userId: string, email: string, name: string) {
     userId,
     email,
     name,
-    loginTime: Date.now(),
+    loginTime: Date.now()
   };
 }

@@ -13,7 +13,7 @@ export interface ApiResponse<T = any> {
   error?: string;
   message?: string;
   requestId?: string;
-  timestamp: string;,
+  timestamp: string;
 }
 
 export interface ApiError {
@@ -33,7 +33,7 @@ export function apiSuccess<T>(
   const response: ApiResponse<T> = {
     success: true,
     data,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 
   if (message) response.message = message;
@@ -55,7 +55,7 @@ export function apiError(
   const response: ApiResponse = {
     success: false,
     error: message,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 
   if (requestId) response.requestId = requestId;

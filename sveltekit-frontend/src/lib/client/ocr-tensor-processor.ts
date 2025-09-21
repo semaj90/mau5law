@@ -28,7 +28,7 @@ export interface TensorData {
     source: 'ocr' | 'manual' | 'api';
     processed_at: number;
     tensor_id: string;
-    confidence: number;,
+    confidence: number;
   };
 }
 
@@ -37,7 +37,7 @@ export interface ProcessingResult {
   embeddings: TensorData;
   searchIndex: Float32Array;
   processingTime: number;
-  cacheHit: boolean;,
+  cacheHit: boolean;
 }
 
 export class OCRTensorProcessor {
@@ -181,7 +181,7 @@ export class OCRTensorProcessor {
         embeddings: tensorData,
         searchIndex,
         processingTime: totalTime,
-        cacheHit: embeddingResult.fromCache,
+        cacheHit: embeddingResult.fromCache
       };
 
     } catch (error) {
@@ -210,7 +210,7 @@ export class OCRTensorProcessor {
       const result = await recognize(imageData, options.language || 'eng', {
         logger: (m: any) => console.log(`OCR [${this.currentLODLevel}]:`, m),
         ...ocrOptions
-      ,});
+      });
 
       const ocrResult: OCRResult = {
         text: (result as { data?: any; status?: any; value?: any }).data.text,
@@ -218,14 +218,14 @@ export class OCRTensorProcessor {
         boundingBoxes: (result as { data?: any; status?: any; value?: any }).data.words.map((word: any) => ({
           text: word.text,
           bbox: word.bbox,
-          confidence: word.confidence,
+          confidence: word.confidence
         })
       };
 
       console.log('📝 OCR completed:', {
         textLength: ocrResult.text.length,
         confidence: ocrResult.confidence,
-        wordsFound: ocrResult.boundingBoxes.length,
+        wordsFound: ocrResult.boundingBoxes.length
       });
 
       return ocrResult;
@@ -246,7 +246,7 @@ export class OCRTensorProcessor {
           oem: 1, // Original tesseract only
           tessjs_create_pdf: false,
           tessjs_create_hocr: false,
-          tessjs_create_tsv: false,
+          tessjs_create_tsv: false
         };
         
       case 'medium':
@@ -256,7 +256,7 @@ export class OCRTensorProcessor {
           oem: 2, // LSTM + Original tesseract
           tessjs_create_pdf: false,
           tessjs_create_hocr: true,
-          tessjs_create_tsv: false,
+          tessjs_create_tsv: false
         };
         
       case 'high':
@@ -266,7 +266,7 @@ export class OCRTensorProcessor {
           oem: 3, // Default tesseract (best quality)
           tessjs_create_pdf: true,
           tessjs_create_hocr: true,
-          tessjs_create_tsv: true,
+          tessjs_create_tsv: true
         };
         
       default:
@@ -278,7 +278,7 @@ export class OCRTensorProcessor {
     try {
       // Check Ollama GPU memory availability and status;
       const ollamaStatus = await fetch('/api/ai/status', { 
-        signal: AbortSignal.timeout(3000) ,
+        signal: AbortSignal.timeout(3000) 
       });
       const statusData = await ollamaStatus.json();
       
@@ -295,7 +295,7 @@ export class OCRTensorProcessor {
           fallback: ['nomic-embed-text', 'client-autogen'],
           useCrewAI: false,
           parallelism: 4,                     // 4 parallel requests to prevent OOM
-          cacheSize: 128                      // 128MB cache for fast responses,
+          cacheSize: 128                      // 128MB cache for fast responses
         };
       }
       
@@ -306,7 +306,7 @@ export class OCRTensorProcessor {
           fallback: ['gemma:270m', 'nomic-embed-text'],
           useCrewAI: false,
           parallelism: 8,                     // High parallelism for powerful GPU
-          cacheSize: 512                      // Large cache for complex models,
+          cacheSize: 512                      // Large cache for complex models
         };
       } else if (availableMemory > 1024) { // 1GB+ GPU memory;
         return {
@@ -314,7 +314,7 @@ export class OCRTensorProcessor {
           fallback: ['nomic-embed-text'],
           useCrewAI: false,
           parallelism: 6,                     // Balanced parallelism
-          cacheSize: 256                      // Medium cache size,
+          cacheSize: 256                      // Medium cache size
         };
       } else if (availableMemory > 512) { // 512MB+ GPU memory;
         return {
@@ -322,7 +322,7 @@ export class OCRTensorProcessor {
           fallback: ['nomic-embed-text', 'client-autogen'],
           useCrewAI: false,
           parallelism: 3,                     // Conservative parallelism
-          cacheSize: 128                      // Smaller cache to prevent OOM,
+          cacheSize: 128                      // Smaller cache to prevent OOM
         };
       } else {
         // Very low GPU memory - use lightweight model with CrewAI fallback;
@@ -331,7 +331,7 @@ export class OCRTensorProcessor {
           fallback: ['client-autogen'],
           useCrewAI: true,
           parallelism: 2,                     // Minimal parallelism
-          cacheSize: 64                       // Small cache,
+          cacheSize: 64                       // Small cache
         };
       }
     } catch (error) {
@@ -342,7 +342,7 @@ export class OCRTensorProcessor {
         fallback: ['nomic-embed-text', 'client-autogen'],
         useCrewAI: true,
         parallelism: 4,                       // Safe parallelism level
-        cacheSize: 128                        // Safe cache size for 270MB model,
+        cacheSize: 128                        // Safe cache size for 270MB model
       };
     }
   }
@@ -366,7 +366,7 @@ export class OCRTensorProcessor {
           parallelism: modelConfig.parallelism,
           cache_size_mb: modelConfig.cacheSize,
           prevent_oom: true,
-          gpu_fallback_strategy: 'gemma270m'  // Always fallback to 270MB for stability,
+          gpu_fallback_strategy: 'gemma270m'  // Always fallback to 270MB for stability
         })
       });
 
@@ -379,7 +379,7 @@ export class OCRTensorProcessor {
       return {
         embeddings: new Float32Array((data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).embedding),
         fromCache: (data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).fromCache || false,
-        model: data?.model || "unknown" // @ts-ignore - Model property access,
+        model: data?.model || "unknown" // @ts-ignore - Model property access
       };
 
     } catch (error) {
@@ -398,7 +398,7 @@ export class OCRTensorProcessor {
           source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          confidence: 0.8,
+          confidence: 0.8
         }
       };
     }
@@ -410,7 +410,7 @@ export class OCRTensorProcessor {
       // Create input buffer;
       const inputBuffer = this.webgpuDevice.createBuffer({
         size: embeddings.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, embeddings.buffer);
@@ -425,7 +425,7 @@ export class OCRTensorProcessor {
       // Read results back;
       const resultBuffer = this.webgpuDevice.createBuffer({
         size: embeddings.byteLength,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       const commandEncoder = this.webgpuDevice.createCommandEncoder();
@@ -443,7 +443,7 @@ export class OCRTensorProcessor {
           source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          confidence: 0.9,
+          confidence: 0.9
         }
       };
 
@@ -457,7 +457,7 @@ export class OCRTensorProcessor {
           source: 'ocr',
           processed_at: Date.now(),
           tensor_id: `tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          confidence: 0.8,
+          confidence: 0.8
         }
       };
     }
@@ -591,7 +591,7 @@ export class OCRTensorProcessor {
         imageData,
         options,
         lodLevel: this.currentLODLevel,
-        memoryPressure: this.memoryPressure,
+        memoryPressure: this.memoryPressure
       });
 
       // Timeout after 30 seconds;
@@ -612,7 +612,7 @@ export class OCRTensorProcessor {
       case 'high':
         return GAMING_ERA_SPECS.n64.dnnLodSystem?.enabled ? 6 : 8;
       default:
-        return 3;,
+        return 3;
     }
   }
 
@@ -667,12 +667,12 @@ export class OCRTensorProcessor {
             dimensions: r.embeddings.dimensions,
             confidence: r.ocr.confidence,
             tensor_id: r.embeddings.metadata.tensor_id,
-            search_index: Array.from(r.searchIndex),
+            search_index: Array.from(r.searchIndex)
           })),
           metadata: {
             ...metadata,
             processed_at: Date.now(),
-            batch_size: results.length,
+            batch_size: results.length
           }
         })
       });

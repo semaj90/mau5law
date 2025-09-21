@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Verify we're in primary process;
     if (!cluster.isPrimary) {
       return json({
-        error: 'Cluster restart only available from primary process',
+        error: 'Cluster restart only available from primary process'
       }, { status: 403 });
     }
 
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     if (!clusterManager) {
       return json({
-        error: 'Cluster manager not available',
+        error: 'Cluster manager not available'
       }, { status: 503 });
     }
 
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (globalThis.clusterRestarting) {
       return json({
         error: 'Rolling restart already in progress',
-        message: 'Please wait for the current restart to complete',
+        message: 'Please wait for the current restart to complete'
       }, { status: 409 });
     }
 
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
       healthyWorkers: preRestartHealth.healthyWorkers,
       force,
       timeout,
-      initiator: 'admin_api',
+      initiator: 'admin_api'
     };
     
     console.log('📝 Restart audit log:', auditLog);
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
       estimatedDuration: `${Math.ceil(preRestartWorkers.length * 3)}s`,
       force,
       timeout,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error: any) {
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       error: 'Failed to initiate rolling restart',
-      message: error instanceof Error ? error.message: 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async () => {
     
     if (!clusterManager) {
       return json({
-        error: 'Cluster manager not available',
+        error: 'Cluster manager not available'
       }, { status: 503 });
     }
 
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async () => {
       healthyWorkers: health.healthyWorkers,
       lastRestart: globalThis.lastRestartTime || null,
       restartHistory: globalThis.restartHistory || [],
-      canRestart: !isRestarting && health.healthyWorkers > 0,
+      canRestart: !isRestarting && health.healthyWorkers > 0
     });
 
   } catch (error: any) {
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
     
     return json({
       error: 'Failed to get restart status',
-      message: error instanceof Error ? error.message: 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -192,7 +192,7 @@ async function performRollingRestart(
     timestamp: new Date().toISOString(),
     duration,
     workersRestarted: workers.length,
-    success: true,
+    success: true
   };
 
   globalThis.lastRestartTime = Date.now();

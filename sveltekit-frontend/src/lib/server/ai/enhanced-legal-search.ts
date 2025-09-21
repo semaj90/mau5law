@@ -42,7 +42,7 @@ const initializeLegalDocuments = loadLegalDocuments();
 async function generateEmbedding(text: string, options?: { model?: string }): Promise<number[]> {
   const embeddings = new OllamaEmbeddings({
     model: 'nomic-embed-text',
-    baseUrl: 'http://localhost:11434',
+    baseUrl: 'http://localhost:11434'
   });
 
   try {
@@ -86,7 +86,7 @@ export interface LegalSearchConfig {
     exact_match: number;
     jurisdiction: number;
     category: number;
-    recency: number;,
+    recency: number;
   };
 }
 
@@ -100,8 +100,8 @@ const defaultConfig: LegalSearchConfig = {
     exact_match: 3.0,
     jurisdiction: 1.5,
     category: 1.3,
-    recency: 1.2,
-  },
+    recency: 1.2
+  }
 };
 
 // Enhanced Legal Search Result;
@@ -122,7 +122,7 @@ export interface LegalSearchResult {
     semantic: number;
     exact_match: number;
     jurisdiction_match: number;
-    category_match: number;,
+    category_match: number;
   };
   metadata?: Record<string, any>;
 }
@@ -164,8 +164,8 @@ export class EnhancedLegalSearchService {
           category: doc.category,
           code: doc.code,
           sections: doc.sections || [],
-          url: doc.url,
-        },
+          url: doc.url
+        }
       });
 
       this.memoryVectorStore = await MemoryVectorStore.fromDocuments(documents, this.embeddings);
@@ -182,16 +182,16 @@ export class EnhancedLegalSearchService {
       if (import.meta.env.DATABASE_URL) {
         const pgConfig = {
           postgresConnectionOptions: {
-            connectionString: import.meta.env.DATABASE_URL,
+            connectionString: import.meta.env.DATABASE_URL
           },
           tableName: 'search_index',
           columns: {
             idColumnName: 'id',
             vectorColumnName: 'embedding',
             contentColumnName: 'content',
-            metadataColumnName: 'metadata',
+            metadataColumnName: 'metadata'
           },
-          distanceStrategy: 'cosine' as any,
+          distanceStrategy: 'cosine' as any
         };
 
         // Initialize PGVector store
@@ -224,7 +224,7 @@ export class EnhancedLegalSearchService {
           const semanticResponse = await fetch('/api/rag/semantic-search', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
               query,
@@ -232,9 +232,9 @@ export class EnhancedLegalSearchService {
               threshold: this.config.similarityThreshold,
               filters: {
                 category: options.category,
-                jurisdiction: options.jurisdiction,
-              },
-            }),
+                jurisdiction: options.jurisdiction
+              }
+            })
           });
 
           if (semanticResponse.ok) {
@@ -266,8 +266,8 @@ export class EnhancedLegalSearchService {
                     ...result.metadata,
                     semantic_score: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).semantic_score,
                     distance: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).distance,
-                    source: 'enhanced_semantic_search',
-                  },
+                    source: 'enhanced_semantic_search'
+                  }
                 })
               );
 
@@ -351,9 +351,9 @@ export class EnhancedLegalSearchService {
                 options.jurisdiction,
                 doc.metadata?.jurisdiction
               ),
-              category_match: this.calculateCategoryMatch(options.category, doc.metadata?.category),
+              category_match: this.calculateCategoryMatch(options.category, doc.metadata?.category)
             },
-            metadata: doc.metadata || {},
+            metadata: doc.metadata || {}
           });
         }
       }
@@ -427,8 +427,8 @@ export class EnhancedLegalSearchService {
                 options.jurisdiction,
                 doc.jurisdiction
               ),
-              category_match: this.calculateCategoryMatch(options.category, doc.category),
-            },
+              category_match: this.calculateCategoryMatch(options.category, doc.category)
+            }
           });
         }
       }
@@ -479,8 +479,8 @@ export class EnhancedLegalSearchService {
               options.jurisdiction,
               doc.jurisdiction
             ),
-            category_match: this.calculateCategoryMatch(options.category, doc.category),
-          },
+            category_match: this.calculateCategoryMatch(options.category, doc.category)
+          }
         });
       }
     }
@@ -542,7 +542,7 @@ export class EnhancedLegalSearchService {
       vector: 0.9,
       hybrid: 0.8,
       fuzzy: 0.7,
-      fallback: 0.6,
+      fallback: 0.6
     };
 
     return Math.min(baseConfidence[searchType] * score, 1.0);
@@ -591,7 +591,7 @@ export class EnhancedLegalSearchService {
 
       return {
         ...result,
-        score: Math.min(boostedScore, 1.0),
+        score: Math.min(boostedScore, 1.0)
       };
     });
 

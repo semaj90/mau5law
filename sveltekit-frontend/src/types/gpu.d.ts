@@ -70,7 +70,7 @@ export class HiddenMarkaraiModel {
     stateCount: number;
     observationCount: number;
     transitionSmoothness: number;
-    emissionSmoothness: number;,
+    emissionSmoothness: number;
   });
 
   train(observations: number[][]): void;

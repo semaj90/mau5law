@@ -8,7 +8,7 @@ const ollamaService = {
   async isHealthy(): Promise<boolean> {
     try {
       const response = await fetch('http://localhost:11434/api/version', { 
-        signal: AbortSignal.timeout(5000) ,
+        signal: AbortSignal.timeout(5000) 
       });
       return response.ok;
     } catch {
@@ -56,17 +56,17 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
         healthy: ollamaHealthy,
         models: availableModels,
         responseTime: ollamaResponseTime,
-        url: "http://localhost:11434",
+        url: "http://localhost:11434"
       },
       system: {
         memory: `${memoryMB}MB`,
         uptime: `${Math.round((process.uptime() / 3600) * 100) / 100}h`,
-        nodeVersion: process.version,
+        nodeVersion: process.version
       },
       docker: {
         containers: 0, // TODO: Add actual Docker container count
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     const overallStatus = ollamaHealthy ? "healthy" : "degraded";
@@ -77,7 +77,7 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
       message:
         overallStatus === "healthy"
           ? `All systems operational (${availableModels.length} models available)`
-          : "Ollama service not available",
+          : "Ollama service not available"
     };
 
     return apiSuccess(healthData, undefined, requestId);

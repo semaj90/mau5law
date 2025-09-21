@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!title || !content) {
           return json({
               success: false,
-              error: 'Missing required fields: title, content',
+              error: 'Missing required fields: title, content'
             },)
             { status: 400 }
           );
@@ -55,8 +55,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
             extractedEntities: metadata?.extractedEntities || [],
             keyTerms: metadata?.keyTerms || [],
             userId: metadata?.userId,
-            priority: metadata?.priority || 'normal',
-          },
+            priority: metadata?.priority || 'normal'
+          }
         });
 
         // Async Neo4j sync if document ingestion succeeded;
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             JSON.stringify({
               documentId: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).documentId,
               action: 'sync_document',
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             })
           );
         }
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           documentId: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).documentId,
           jobId: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).jobId,
           error: (result as { success?: any; documentId?: any; jobId?: any; error?: any }).error,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!file || !file.buffer) {
           return json({
               success: false,
-              error: 'No file provided',
+              error: 'No file provided'
             },)
             { status: 400 }
           );
@@ -98,12 +98,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           originalName: file.originalName,
           buffer: Buffer.from(file.buffer),
           mimeType: file.mimeType,
-          userId,
+          userId
         });
 
         return json({
           ...result,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!query?.text && !query?.vector) {
           return json({
               success: false,
-              error: 'Query text or vector required',
+              error: 'Query text or vector required'
             },)
             { status: 400 }
           );
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             tags: filters?.tags,
             userId: filters?.userId,
             dateRange: filters?.dateRange,
-            confidenceMin: filters?.confidenceMin,
+            confidenceMin: filters?.confidenceMin
           },
           options: {
             limit: options?.limit || 20,
@@ -136,8 +136,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
             includeEmbeddings: options?.includeEmbeddings || false,
             includeSimilarity: options?.includeSimilarity || true,
             useCache: options?.useCache !== false,
-            neo4jRecommendations: options?.neo4jRecommendations || false,
-          },
+            neo4jRecommendations: options?.neo4jRecommendations || false
+          }
         });
 
         // Enhance with Neo4j recommendations if requested;
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           ...searchResult,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -164,7 +164,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!documentId) {
           return json({
               success: false,
-              error: 'Document ID required',
+              error: 'Document ID required'
             },)
             { status: 400 }
           );
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           similarDocs = {
             documents: [],
             similarities: [],
-            method: 'cosine_similarity',
+            method: 'cosine_similarity'
           };
 
           await cache.set(cacheKey, similarDocs, 600); // 10 minutes
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           similar: similarDocs,
           cached: similarDocs !== null,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
               success: false,
-              error: 'Document IDs array required',
+              error: 'Document IDs array required'
             },)
             { status: 400 }
           );
@@ -217,7 +217,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           synced: syncResult.synced,
           failed: syncResult.failed,
           errors: syncResult.errors,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -227,7 +227,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
               success: false,
-              error: 'Document IDs array required',
+              error: 'Document IDs array required'
             },)
             { status: 400 }
           );
@@ -250,7 +250,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           recommendations,
           cached: recommendations !== null,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -260,7 +260,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!documentIds || !Array.isArray(documentIds)) {
           return json({
               success: false,
-              error: 'Document IDs array required',
+              error: 'Document IDs array required'
             },)
             { status: 400 }
           );
@@ -272,7 +272,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           analysis: networkAnalysis,
           analysisType: analysisType || 'full',
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -287,14 +287,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
             active: dashboardData.jobs.active.length,
             completed: dashboardData.jobs.stats.byState?.completed || 0,
             failed: dashboardData.jobs.stats.byState?.failed || 0,
-            total: dashboardData.jobs.stats.total,
+            total: dashboardData.jobs.stats.total
           },
           workers: {
             active: dashboardData.workers.active.length,
-            total: dashboardData.workers.stats.total,
+            total: dashboardData.workers.stats.total
           },
           system: dashboardData.system,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -304,7 +304,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!documents || !Array.isArray(documents)) {
           return json({
               success: false,
-              error: 'Documents array required',
+              error: 'Documents array required'
             },)
             { status: 400 }
           );
@@ -319,14 +319,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
               {
                 ...metadata,
                 priority: priority || 'normal',
-                batchId: `batch_${Date.now()}`,
+                batchId: `batch_${Date.now()}`
               }
             );
             results.push(result);
           } catch (error) {
             results.push({
               success: false,
-              error: error instanceof Error ? error.message: String(error),
+              error: error instanceof Error ? error.message: String(error)
             });
           }
         }
@@ -340,7 +340,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           successful,
           failed,
           results,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -353,20 +353,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
           system: {
             uptime: process.uptime(),
             memory: process.memoryUsage(),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           search: await getSearchAnalytics(timeRange),
           ingestion: ingestionService.getDashboardData(),
           neo4j: await neo4jService.getHealthStatus(),
           cache: await getCacheStats(),
-          performance: await getPerformanceMetrics(timeRange),
+          performance: await getPerformanceMetrics(timeRange)
         };
 
         return json({
           success: true,
           analytics,
           timeRange: timeRange || '1h',
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -382,7 +382,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             database: true, // Would check PostgreSQL connection
           },
           timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
+          uptime: process.uptime()
         };
 
         const allHealthy = Object.values(health.services).every((s) => s === true);
@@ -391,7 +391,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           health,
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         });
       }
 
@@ -410,8 +410,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
               'get_workflow_status',
               'submit_batch_job',
               'get_analytics',
-              'health',
-            ],
+              'health'
+            ]
           },)
           { status: 400 }
         );
@@ -424,7 +424,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         success: false,
         error: 'Internal server error',
         details: error instanceof Error ? error.message: String(error),
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -440,8 +440,8 @@ export const GET: RequestHandler = async ({ url }) => {
         status: 307,
         headers: {
           Location: '/api/unified',
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
     }
 
@@ -461,7 +461,7 @@ export const GET: RequestHandler = async ({ url }) => {
           'Real-time workflow management',
           'Performance analytics',
           'Distributed caching',
-          'Ready for gRPC, QUIC, SIMD integration',
+          'Ready for gRPC, QUIC, SIMD integration'
         ],
         endpoints: {
           'POST /api/unified': {
@@ -476,9 +476,9 @@ export const GET: RequestHandler = async ({ url }) => {
               'get_workflow_status - Workflow monitoring',
               'submit_batch_job - Batch processing',
               'get_analytics - System analytics',
-              'health - Health check',
-            ],
-          },
+              'health - Health check'
+            ]
+          }
         },
         architecture: {
           services: [
@@ -490,7 +490,7 @@ export const GET: RequestHandler = async ({ url }) => {
             'RabbitMQ - Message queuing',
             'Redis - Caching and pub/sub',
             'PostgreSQL + pgvector - Vector storage',
-            'Drizzle ORM - Database operations',
+            'Drizzle ORM - Database operations'
           ],
           futureIntegrations: [
             'gRPC microservices',
@@ -498,10 +498,10 @@ export const GET: RequestHandler = async ({ url }) => {
             'QUIC protocol support',
             'Vite build optimization',
             'SIMD parsing acceleration',
-            'Go microservices for low latency',
-          ],
-        },
-      },
+            'Go microservices for low latency'
+          ]
+        }
+      }
     });
   } catch (error) {
     console.error('❌ Unified API GET error:', error);
@@ -510,7 +510,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Internal server error',
-        details: error instanceof Error ? error.message: String(error),
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );
@@ -529,7 +529,7 @@ async function getSearchAnalytics(timeRange: string) {
     queryTypes: {
       semantic: 0.6,
       fulltext: 0.3,
-      hybrid: 0.1,
+      hybrid: 0.1
     }
   };
 }
@@ -540,7 +540,7 @@ async function getCacheStats() {
     hitRate: Math.random() * 0.2 + 0.8,
     memoryUsage: Math.floor(Math.random() * 512) + 256, // MB
     keyCount: Math.floor(Math.random() * 10000) + 5000,
-    evictionRate: Math.random() * 0.1,
+    evictionRate: Math.random() * 0.1
   };
 }
 
@@ -552,7 +552,7 @@ async function getPerformanceMetrics(timeRange: string) {
     resourceUtilization: {
       cpu: Math.random() * 0.4 + 0.3,
       memory: Math.random() * 0.3 + 0.4,
-      disk: Math.random() * 0.2 + 0.2,
+      disk: Math.random() * 0.2 + 0.2
     }
   };
 }

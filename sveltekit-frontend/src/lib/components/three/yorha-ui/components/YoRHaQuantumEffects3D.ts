@@ -27,7 +27,7 @@ export interface ConsciousnessVisualizationOptions {
   synapticActivity: number; // 0-1
   neuralNetworkComplexity: number; // 1-10
   emergentProperties: boolean;
-  selfAwareness: boolean;,
+  selfAwareness: boolean;
 }
 
 export interface RealityDistortionOptions {
@@ -36,7 +36,7 @@ export interface RealityDistortionOptions {
   spatialWarp: Vector3GPU;
   causalityLoop: boolean;
   paradoxResolution: 'ignore' | 'branch' | 'collapse';
-  realityStability: number; // 0-1,
+  realityStability: number; // 0-1
 }
 
 export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
@@ -74,7 +74,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       width: 10,
       height: 8,
       depth: 10,
-      variant: 'glass',
+      variant: 'glass'
     });
 
     // Default configurations;
@@ -128,7 +128,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       color: YORHA_COLORS.primary.beige,
       transparent: true,
       opacity: 0.1,
-      wireframe: true,
+      wireframe: true
     });
   }
 
@@ -158,7 +158,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         position: {
           x: (Math.random() - 0.5) * this.quantumOptions.fieldSize.x,
           y: (Math.random() - 0.5) * this.quantumOptions.fieldSize.y,
-          z: (Math.random() - 0.5) * this.quantumOptions.fieldSize.z,
+          z: (Math.random() - 0.5) * this.quantumOptions.fieldSize.z
         },
         waveFunction: new Complex(Math.random(), Math.random()),
         entangled: Math.random() < this.quantumOptions.entanglementStrength,
@@ -166,7 +166,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         probability: Math.random(),
         collapsed: false,
         spin: Math.random() * Math.PI * 2,
-        phase: Math.random() * Math.PI * 2,
+        phase: Math.random() * Math.PI * 2
       };
 
       // Set entanglement partners;
@@ -213,7 +213,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       fragmentShader: this.getQuantumFragmentShader(),
       transparent: true,
       vertexColors: true,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.AdditiveBlending
     });
 
     this.quantumField = new THREE.Points(geometry, material);
@@ -231,14 +231,14 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         position: {
           x: (Math.random() - 0.5) * this.quantumOptions.fieldSize.x * 0.8,
           y: (Math.random() - 0.5) * this.quantumOptions.fieldSize.y * 0.8,
-          z: (Math.random() - 0.5) * this.quantumOptions.fieldSize.z * 0.8,
+          z: (Math.random() - 0.5) * this.quantumOptions.fieldSize.z * 0.8
         },
         activation: Math.random() * this.consciousnessOptions.awarenessLevel,
         connections: [] as number[],
         thought: this.generateRandomThought(),
         awareness: Math.random() * this.consciousnessOptions.awarenessLevel,
         firing: false,
-        lastFired: 0,
+        lastFired: 0
       };
 
       // Create connections to nearby nodes
@@ -257,7 +257,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       const nodeMaterial = new THREE.MeshBasicMaterial({
         color: new THREE.Color().setHSL(node.awareness, 0.8, 0.6),
         transparent: true,
-        opacity: 0.7,
+        opacity: 0.7
       });
 
       const nodeMesh = new THREE.Mesh(nodeGeometry, nodeMaterial);
@@ -281,7 +281,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
           const connectionMaterial = new THREE.LineBasicMaterial({
             color: YORHA_COLORS.accent.gold,
             transparent: true,
-            opacity: 0.3,
+            opacity: 0.3
           });
 
           const connectionLine = new THREE.Line(connectionGeometry, connectionMaterial);
@@ -311,7 +311,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
         vertexShader: this.getMatrixVertexShader(),
         fragmentShader: this.getMatrixFragmentShader(),
         transparent: true,
-        side: THREE.DoubleSide,
+        side: THREE.DoubleSide
       });
 
       this.glitchMaterials.push(streamMaterial);
@@ -341,7 +341,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
           const particles = this.quantumParticles.map(p => ({
             position: p.position,
             velocity: { x: 0, y: 0, z: 0 }, // Quantum particles don't have classical velocity
-            mass: 1 // Quantum mass-energy equivalence,
+            mass: 1 // Quantum mass-energy equivalence
           });
 
           const result = await yorhaWebGPU.simulatePhysics(
@@ -588,7 +588,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       case 'cosine': return 1.0;
       case 'complex': return 2.0;
       case 'superposition': return 3.0;
-      default: return 0.0;,
+      default: return 0.0;
     }
   }
 
@@ -763,7 +763,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     coherence: number;
     entanglement: number;
     collapsed: number;
-    tunneling: number;,
+    tunneling: number;
   } {
     const collapsed = this.quantumParticles.filter(item => item.length);
     const entangled = this.quantumParticles.filter(item => item.length);
@@ -772,7 +772,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       coherence: this.quantumOptions.quantumCoherence,
       entanglement: entangled / this.quantumParticles.length,
       collapsed: collapsed / this.quantumParticles.length,
-      tunneling: this.quantumOptions.enableTunneling ? 1 : 0,
+      tunneling: this.quantumOptions.enableTunneling ? 1 : 0
     };
   }
 
@@ -780,7 +780,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     awareness: number;
     activity: number;
     selfAware: boolean;
-    networkComplexity: number;,
+    networkComplexity: number;
   } {
     const totalActivity = this.consciousnessNodes.reduce((sum, node) => sum + node.activation, 0);
     
@@ -788,7 +788,7 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
       awareness: this.consciousnessOptions.awarenessLevel,
       activity: totalActivity / this.consciousnessNodes.length,
       selfAware: this.consciousnessOptions.selfAwareness,
-      networkComplexity: this.consciousnessOptions.neuralNetworkComplexity,
+      networkComplexity: this.consciousnessOptions.neuralNetworkComplexity
     };
   }
 
@@ -796,13 +796,13 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     stability: number;
     glitchLevel: number;
     temporalDistortion: number;
-    paradoxes: number;,
+    paradoxes: number;
   } {
     return {
       stability: this.realityOptions.realityStability,
       glitchLevel: this.realityOptions.matrixGlitchIntensity,
       temporalDistortion: this.realityOptions.temporalDistortion,
-      paradoxes: this.realityOptions.causalityLoop ? 1 : 0,
+      paradoxes: this.realityOptions.causalityLoop ? 1 : 0
     };
   }
 

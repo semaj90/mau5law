@@ -19,7 +19,7 @@ interface SIMDGlyphRequest extends GlyphRequest {
     compression_target: number; // Target compression ratio (e.g., 50 for 50:1)
     shader_format: 'webgl' | 'webgpu' | 'css' | 'svg';
     adaptive_quality: boolean;
-    performance_tier: 'nes' | 'snes' | 'n64'; // Quality target,
+    performance_tier: 'nes' | 'snes' | 'n64'; // Quality target
   };
 }
 
@@ -32,7 +32,7 @@ interface SIMDShaderData {
     tiling_time_ms: number;
     compression_time_ms: number;
     shader_generation_time_ms: number;
-    total_optimization_time_ms: number;,
+    total_optimization_time_ms: number;
   };
 }
 
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
         compression_target: body.simd_config?.compression_target || 50,
         shader_format: body.simd_config?.shader_format || 'webgpu',
         adaptive_quality: body.simd_config?.adaptive_quality ?? true,
-        performance_tier: body.simd_config?.performance_tier || 'n64',
+        performance_tier: body.simd_config?.performance_tier || 'n64'
       }
     };
 
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!simdGlyphRequest.evidence_id || !simdGlyphRequest.prompt) {
       return json({
         success: false,
-        error: 'evidence_id and prompt are required',
+        error: 'evidence_id and prompt are required'
       }, { status: 400 });
     }
 
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
       style: simdGlyphRequest.style,
       dimensions: simdGlyphRequest.dimensions,
       simd_tiling: simdGlyphRequest.simd_config?.enable_tiling,
-      target_tier: simdGlyphRequest.simd_config?.performance_tier,
+      target_tier: simdGlyphRequest.simd_config?.performance_tier
     });
 
     // Phase 1: Generate base glyph using existing diffusion service
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
         cache_hits: 0,
         neural_sprite_results: {
           compression_ratio: 2.0,
-          predictive_frames: [],
+          predictive_frames: []
         }
       };
     }
@@ -148,14 +148,14 @@ export const POST: RequestHandler = async ({ request }) => {
                 type: 'glyph_visualization',
                 style: simdGlyphRequest.style,
                 dimensions: simdGlyphRequest.dimensions,
-                prompt: simdGlyphRequest.prompt,
+                prompt: simdGlyphRequest.prompt
               }
             },
             {
               tileSize: simdGlyphRequest.simd_config.tile_size,
               compressionRatio: simdGlyphRequest.simd_config.compression_target,
               enableGPUAcceleration: true,
-              qualityTier: simdGlyphRequest.simd_config.performance_tier,
+              qualityTier: simdGlyphRequest.simd_config.performance_tier
             }
           );
         } catch (tilingError) {
@@ -167,15 +167,15 @@ export const POST: RequestHandler = async ({ request }) => {
             compressedData: new Float32Array(imageData.length / simdGlyphRequest.simd_config.compression_target),
             compressionStats: {
               achievedRatio: simdGlyphRequest.simd_config.compression_target,
-              processingTime: 25,
+              processingTime: 25
             },
             tileMap: Array.from({ length: Math.min(tileCount, 64) }, (_, i) => ({
               patternId: `pattern_${i}`,
               frequency: Math.random(),
-              compressedSize: Math.floor(imageData.length / tileCount),
+              compressedSize: Math.floor(imageData.length / tileCount)
             })),
             processingTime: 50,
-            tileSize: simdGlyphRequest.simd_config.tile_size,
+            tileSize: simdGlyphRequest.simd_config.tile_size
           };
         }
 
@@ -196,13 +196,13 @@ export const POST: RequestHandler = async ({ request }) => {
             index,
             pattern_id: tile.patternId,
             frequency: tile.frequency,
-            compressed_size: tile.compressedSize,
+            compressed_size: tile.compressedSize
           })),
           performance_stats: {
             tiling_time_ms: tilingResult.processingTime,
             compression_time_ms: tilingResult.compressionStats.processingTime,
             shader_generation_time_ms: simdProcessingTime - tilingResult.processingTime,
-            total_optimization_time_ms: simdProcessingTime,
+            total_optimization_time_ms: simdProcessingTime
           }
         };
 
@@ -242,17 +242,17 @@ export const POST: RequestHandler = async ({ request }) => {
               {
                 type: 'style',
                 value: simdGlyphRequest.style,
-                confidence: 1.0,
+                confidence: 1.0
               },
               {
                 type: 'optimization_level',
                 value: `${simdShaderData.compression_ratio.toFixed(1)}:1_compression`,
-                confidence: 1.0,
+                confidence: 1.0
               },
               {
                 type: 'performance_tier',
                 value: simdGlyphRequest.simd_config!.performance_tier,
-                confidence: 1.0,
+                confidence: 1.0
               }
             ],
             risk_assessment: 'low',
@@ -261,7 +261,7 @@ export const POST: RequestHandler = async ({ request }) => {
           neural_sprite_data: {
             compression_ratio: glyphResult.neural_sprite_results.compression_ratio || 0,
             tensor_urls: glyphResult.tensor_ids.map(id => `/api/tensors/${id}`),
-            predictive_frames: glyphResult.neural_sprite_results.predictive_frames || [],
+            predictive_frames: glyphResult.neural_sprite_results.predictive_frames || []
           },
           simd_optimization_data: {
             enabled: true,
@@ -269,7 +269,7 @@ export const POST: RequestHandler = async ({ request }) => {
             tile_count: simdShaderData.tile_map.length,
             shader_format: simdGlyphRequest.simd_config!.shader_format,
             performance_tier: simdGlyphRequest.simd_config!.performance_tier,
-            processing_stats: simdShaderData.performance_stats,
+            processing_stats: simdShaderData.performance_stats
           },
           processing_chain: [;
             {
@@ -290,7 +290,7 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               metadata: {
                 cache_hits: glyphResult.cache_hits,
-                tensor_count: glyphResult.tensor_ids.length,
+                tensor_count: glyphResult.tensor_ids.length
               }
             },
             {
@@ -300,7 +300,7 @@ export const POST: RequestHandler = async ({ request }) => {
               metadata: {
                 tile_size: simdGlyphRequest.simd_config!.tile_size,
                 tile_count: simdShaderData.tile_map.length,
-                compression_ratio: simdShaderData.compression_ratio,
+                compression_ratio: simdShaderData.compression_ratio
               }
             },
             {
@@ -309,7 +309,7 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               metadata: {
                 format: simdGlyphRequest.simd_config!.shader_format,
-                performance_tier: simdGlyphRequest.simd_config!.performance_tier,
+                performance_tier: simdGlyphRequest.simd_config!.performance_tier
               }
             },
             {
@@ -318,7 +318,7 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               metadata: {
                 compression_ratio: glyphResult.neural_sprite_results.compression_ratio,
-                predictive_frames_generated: glyphResult.neural_sprite_results.predictive_frames?.length || 0,
+                predictive_frames_generated: glyphResult.neural_sprite_results.predictive_frames?.length || 0
               }
             }
           ]
@@ -332,7 +332,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             neural_sprite_data: enhancedMetadata.neural_sprite_data,
             simd_optimization_data: enhancedMetadata.simd_optimization_data,
-            processing_chain: enhancedMetadata.processing_chain,
+            processing_chain: enhancedMetadata.processing_chain
           }
         );
 
@@ -353,7 +353,7 @@ export const POST: RequestHandler = async ({ request }) => {
       tensor_ids: glyphResult.tensor_ids,
       generation_time_ms: totalTime,
       cache_hits: glyphResult.cache_hits,
-      enhanced_artifact_url: enhancedArtifactUrl,
+      enhanced_artifact_url: enhancedArtifactUrl
     };
 
     console.log(`✅ SIMD glyph generation complete in ${totalTime}ms`);
@@ -370,7 +370,7 @@ export const POST: RequestHandler = async ({ request }) => {
         compression_ratio: simdShaderData?.compression_ratio || 1.0,
         shader_format: simdGlyphRequest.simd_config?.shader_format,
         performance_tier: simdGlyphRequest.simd_config?.performance_tier,
-        generated_at: new Date().toISOString(),
+        generated_at: new Date().toISOString()
       }
     });
 
@@ -379,7 +379,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'SIMD glyph generation failed',
+      error: error instanceof Error ? error.message: 'SIMD glyph generation failed'
     }, { status: 500 });
   }
 };
@@ -474,11 +474,11 @@ interface TilingResult {
   compressedData: Float32Array;
   compressionStats: {
     achievedRatio: number;
-    processingTime: number;,
+    processingTime: number;
   };
   tileMap: Array<any>;
   processingTime: number;
-  tileSize: number;,
+  tileSize: number;
 }
 
 // Generate shader code from SIMD tiling results
@@ -575,7 +575,7 @@ export const GET: RequestHandler = async () => {
         tensor_caching: true,
         png_embedding: true,
         neural_sprite_integration: true,
-        portable_artifacts: true,
+        portable_artifacts: true
       },
       supported_formats: ['webgl', 'webgpu', 'css', 'svg'],
       performance_tiers: ['nes', 'snes', 'n64'],
@@ -583,19 +583,19 @@ export const GET: RequestHandler = async () => {
       integration_status: {
         glyph_diffusion_service: 'connected',
         simd_gpu_tiling_engine: 'connected',
-        png_embed_extractor: 'connected',
+        png_embed_extractor: 'connected'
       }
     };
 
     return json({
       success: true,
-      data: stats,
+      data: stats
     });
 
   } catch (error) {
     return json({
       success: false,
-      error: 'SIMD glyph service unavailable',
+      error: 'SIMD glyph service unavailable'
     }, { status: 503 });
   }
 };

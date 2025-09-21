@@ -8,7 +8,7 @@ export interface SystemInfo {
   available_memory: number;
   cpu_count: number;
   gpu_info: string[];
-  timestamp: string;,
+  timestamp: string;
 }
 
 export interface FileSystemResult {
@@ -67,7 +67,7 @@ export interface RustBridgeStatus {
   buildInfo?: {
     target: string;
     optimized: boolean;
-    features: string[];,
+    features: string[];
   };
 }
 
@@ -81,7 +81,7 @@ export interface LegalDocumentMetadata {
   parties?: string[];
   legalCitations?: string[];
   keyTerms?: string[];
-  confidentiality: 'public' | 'confidential' | 'privileged';,
+  confidentiality: 'public' | 'confidential' | 'privileged';
 }
 
 export interface LegalTextAnalysis {
@@ -94,7 +94,7 @@ export interface LegalTextAnalysis {
   legalComplexity: 'low' | 'medium' | 'high';
   detectedLanguage: string;
   keyPhrases: string[];
-  entities: LegalEntity[];,
+  entities: LegalEntity[];
 }
 
 export interface LegalEntity {
@@ -102,7 +102,7 @@ export interface LegalEntity {
   type: 'person' | 'organization' | 'location' | 'date' | 'statute' | 'case' | 'other';
   confidence: number;
   startOffset: number;
-  endOffset: number;,
+  endOffset: number;
 }
 
 export interface VectorSimilarityResult {
@@ -110,7 +110,7 @@ export interface VectorSimilarityResult {
   documentId1: string;
   documentId2: string;
   computationTimeMs: number;
-  method: 'cosine' | 'euclidean' | 'manhattan' | 'dot-product';,
+  method: 'cosine' | 'euclidean' | 'manhattan' | 'dot-product';
 }
 
 export interface BatchProcessingResult {
@@ -134,7 +134,7 @@ export interface SystemResourceUsage {
     total: number; // bytes
     used: number;
     available: number;
-    percentage: number;,
+    percentage: number;
   };
   disk: {
     reads: number;
@@ -146,7 +146,7 @@ export interface SystemResourceUsage {
     bytesReceived: number;
     bytesSent: number;
     packetsReceived: number;
-    packetsSent: number;,
+    packetsSent: number;
   };
 }
 
@@ -171,7 +171,7 @@ export interface RustBridgeConfig {
   performanceLogging: boolean;
   securityLevel: 'strict' | 'normal' | 'permissive';
   cachingEnabled: boolean;
-  maxCacheSize: number; // bytes,
+  maxCacheSize: number; // bytes
 }
 
 // Error types;
@@ -198,28 +198,28 @@ export interface LegalAISystemStatus {
   database: {
     postgres: boolean;
     connectionPool: number;
-    activeQueries: number;,
+    activeQueries: number;
   };
   ai: {
     ollama: boolean;
     modelLoaded: string;
     availableModels: string[];
-    queueLength: number;,
+    queueLength: number;
   };
   cache: {
     redis: boolean;
     memoryUsage: number;
-    hitRate: number;,
+    hitRate: number;
   };
   search: {
     qdrant: boolean;
     indexedDocuments: number;
-    searchPerformance: number; // ms average,
+    searchPerformance: number; // ms average
   };
   services: {
     go: boolean;
     python: boolean;
-    node: boolean;,
+    node: boolean;
   };
 }
 
@@ -232,7 +232,7 @@ export interface LegalCaseContext {
   createdAt: string;
   updatedAt: string;
   tags: string[];
-  relatedCases: string[];,
+  relatedCases: string[];
 }
 
 // Export utility types

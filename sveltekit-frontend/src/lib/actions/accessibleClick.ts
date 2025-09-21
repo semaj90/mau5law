@@ -82,12 +82,12 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
  * Specialized variant for button-like interactions
  */;
 export function accessibleButton(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
-  return accessibleClick(element, { role: 'button', ...params ,});
+  return accessibleClick(element, { role: 'button', ...params });
 }
 
 /**
  * Specialized variant for menu items
  */;
 export function accessibleMenuItem(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
-  return accessibleClick(element, { role: 'menuitem', ...params ,});
+  return accessibleClick(element, { role: 'menuitem', ...params });
 }

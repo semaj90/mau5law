@@ -19,7 +19,7 @@ class SSEConnectionManager {
       // createClient may be undefined in some runtimes; cast pragmatically
       // to any to avoid TS invocation errors during triage;
       this.redisSubscriber = (createClient as any)({
-        url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+        url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
       });
 
       await this.redisSubscriber.connect();
@@ -32,7 +32,7 @@ class SSEConnectionManager {
         'report_update',
         'citation_update',
         'canvas_update',
-        'user_activity',
+        'user_activity'
       ];
 
       for (const channel of channels) {
@@ -50,7 +50,7 @@ class SSEConnectionManager {
     const data = {
       channel,
       data: JSON.parse(message),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     // Broadcast to all active SSE connections;
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         connectionId,
         userId,
         subscriptions,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
 
       controller.enqueue(`data: ${JSON.stringify(initialMessage)}\n\n`);
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         controller.close();
         console.log(`SSE connection closed: ${connectionId}`);
       });
-    },
+    }
   });
 
   return new Response(stream, {
@@ -137,8 +137,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
       "Cache-Control": "no-cache",
       Connection: "keep-alive",
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Cache-Control",
-    },
+      "Access-Control-Allow-Headers": "Cache-Control"
+    }
   });
 };
 
@@ -147,10 +147,10 @@ export const POST: RequestHandler = async () => {
   const status = {
     sseConnections: sseManager.getConnectionCount(),
     redisInitialized: sseManager["isInitialized"],
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 
   return new Response(JSON.stringify(status), {
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" }
   });
 };

@@ -27,7 +27,7 @@ async function gpuServiceRequest(endpoint: string, options?: RequestInit): Promi
 				...options?.headers
 			},
 			...options
-		,});
+		});
 
 		if (!response.ok) {
 			throw new Error(`GPU service error: ${response.status} ${response.statusText}`);
@@ -63,13 +63,13 @@ export const GET: RequestHandler = async ({ url }) => {
 			case 'series':
 				return await getCudaSeries();
 			default:
-				return await getGPUOverview();,
+				return await getGPUOverview();
 		}
 	} catch (error: any) {
 		console.error('GPU API error:', error);
 		return json({
 				error: 'GPU service unavailable',
-				details: error instanceof Error ? error.message: 'Unknown error',
+				details: error instanceof Error ? error.message: 'Unknown error'
 			},)
 			{ status: 503 }
 		);
@@ -93,13 +93,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
 			case 'route':
 				return await routeRequest(body);
 			default:
-				return await processGPUTask(body);,
+				return await processGPUTask(body);
 		}
 	} catch (error: any) {
 		console.error('GPU task processing error:', error);
 		return json({
 				error: 'Task processing failed',
-				details: error instanceof Error ? error.message: 'Unknown error',
+				details: error instanceof Error ? error.message: 'Unknown error'
 			},)
 			{ status: 500 }
 		);
@@ -116,7 +116,7 @@ async function getGPUStatus(): Promise<Response> {
 		frontend_integration: true,
 		api_version: '1.0.0',
 		sveltekit_ready: true,
-		last_check: new Date().toISOString(),
+		last_check: new Date().toISOString()
 	};
 
 	return json(enrichedData);
@@ -132,7 +132,7 @@ async function getGPUMetrics(): Promise<Response> {
 		frontend_metrics: {
 			api_requests: 0, // This would be tracked in a real implementation
 			cache_hit_ratio: 0.85,
-			average_response_time: 150,
+			average_response_time: 150
 		}
 	});
 }
@@ -145,7 +145,7 @@ async function getGPUHealth(): Promise<Response> {
 	return json({
 		...data,
 		frontend_status: 'healthy',
-		integration_status: 'active',
+		integration_status: 'active'
 	});
 }
 
@@ -173,7 +173,7 @@ async function getServiceRegistry(): Promise<Response> {
 	return json({
 		...data,
 		frontend_managed: true,
-		integration_layer: 'sveltekit',
+		integration_layer: 'sveltekit'
 	});
 }
 
@@ -203,7 +203,7 @@ async function getGPUOverview(): Promise<Response> {
 					backend: 'Go GPU Orchestrator',
 					cuda_worker: 'C++ CUDA',
 					protocols: ['HTTP', 'WebSocket'],
-					ready: true,
+					ready: true
 				}
 			}
 		});
@@ -215,7 +215,7 @@ async function getGPUOverview(): Promise<Response> {
 				error: 'Could not fetch GPU overview',
 				integration: {
 					frontend: 'SvelteKit',
-					ready: false,
+					ready: false
 				}
 			}
 		});
@@ -259,12 +259,12 @@ async function processGPUTask(taskData: any): Promise<Response> {
 		...taskData,
 		service_origin: taskData.service_origin || 'sveltekit-frontend',
 		frontend_timestamp: new Date().toISOString(),
-		priority: taskData.priority || 5 // Default medium priority,
+		priority: taskData.priority || 5 // Default medium priority
 	};
 
 	const response = await gpuServiceRequest('/gpu/process', {
 		method: 'POST',
-		body: JSON.stringify(enrichedTask),
+		body: JSON.stringify(enrichedTask)
 	});
 
 	const result = await response.json();
@@ -272,7 +272,7 @@ async function processGPUTask(taskData: any): Promise<Response> {
 	return json({
 		...result,
 		frontend_processed: true,
-		api_version: '1.0.0',
+		api_version: '1.0.0'
 	});
 }
 
@@ -307,9 +307,9 @@ async function processBatchTasks(batchData: any): Promise<Response> {
 			successful: successful.length,
 			failed: failed.length,
 			results: successful,
-			errors: failed,
+			errors: failed
 		},
-		frontend_batch_processed: true,
+		frontend_batch_processed: true
 	});
 }
 
@@ -317,7 +317,7 @@ async function processBatchTasks(batchData: any): Promise<Response> {
 async function registerService(serviceData: any): Promise<Response> {
 	const response = await gpuServiceRequest('/services/register', {
 		method: 'POST',
-		body: JSON.stringify(serviceData),
+		body: JSON.stringify(serviceData)
 	});
 
 	const result = await response.json();
@@ -328,7 +328,7 @@ async function registerService(serviceData: any): Promise<Response> {
 async function routeRequest(routeData: any): Promise<Response> {
 	const response = await gpuServiceRequest('/lb/route', {
 		method: 'POST',
-		body: JSON.stringify(routeData),
+		body: JSON.stringify(routeData)
 	});
 
 	const result = await response.json();

@@ -31,8 +31,8 @@ export const GET: RequestHandler = async () => {
     headers: {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",
-      Connection: "keep-alive",
-    },
+      Connection: "keep-alive"
+    }
   });
 };
 
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch (e: any) {
     return new Response(JSON.stringify({ ok: false, error: String(e) }), {
-      status: 400,
+      status: 400
     });
   }
 };

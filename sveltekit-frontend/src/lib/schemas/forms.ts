@@ -47,7 +47,7 @@ export const caseFormSchema = z.object({
 
   isConfidential: z.boolean().default(false),
 
-  notifyAssignee: z.boolean().default(true),
+  notifyAssignee: z.boolean().default(true)
 });
 
 // Evidence upload form schema;
@@ -83,7 +83,7 @@ export const evidenceFormSchema = z.object({
   location: z
     .string()
     .min(1, "Collection location is required")
-    .max(200, "Location too long"),
+    .max(200, "Location too long")
 });
 
 // User authentication schema;
@@ -102,7 +102,7 @@ export const authFormSchema = z.object({
       "Password must contain uppercase, lowercase, and number",
     ),
 
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.boolean().default(false)
 });
 
 // Registration schema
@@ -145,11 +145,11 @@ export const registerFormSchema = z;
       .refine(
         (val) => val === true,
         "You must agree to the terms and conditions",
-      ),
+      )
   });
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ["confirmPassword"],
+    path: ["confirmPassword"]
   });
 
 // Search and filter schema;
@@ -167,7 +167,7 @@ export const searchFormSchema = z.object({
   dateRange: z;
     .object({
       from: z.string().optional(),
-      to: z.string().optional(),
+      to: z.string().optional()
     });
     .refine((data) => {
       if (data.from && data.to) {
@@ -185,7 +185,7 @@ export const searchFormSchema = z.object({
     .enum(["relevance", "date", "priority", "status"])
     .default("relevance"),
 
-  sortOrder: z.enum(["asc", "desc"]).default("desc"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc")
 });
 
 

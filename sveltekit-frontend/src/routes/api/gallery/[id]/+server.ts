@@ -40,10 +40,10 @@ export interface GalleryItemDetail {
     ocrComplete: boolean;
     embeddingComplete: boolean;
     thumbnailComplete: boolean;
-    processed: boolean;,
+    processed: boolean;
   };
   downloadUrl: string;
-  shareUrl: string;,
+  shareUrl: string;
 }
 
 export interface UpdateGalleryItemRequest {
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         ocrText: evidence.ocrText,
         contentText: evidence.contentText,
         embedding: evidence.embedding,
-        caseTitle: cases.title,
+        caseTitle: cases.title
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id)
@@ -250,7 +250,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     return json({
       success: true,
       item: updatedItem[0],
-      updated: Object.keys(updateFields),
+      updated: Object.keys(updateFields)
     });
 
   } catch (err) {
@@ -278,7 +278,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .select({
         id: evidence.id,
         filePath: evidence.filePath,
-        fileName: evidence.fileName,
+        fileName: evidence.fileName
       })
       .from(evidence)
       .where(eq(evidence.id, itemId)

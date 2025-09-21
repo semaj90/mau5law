@@ -141,6 +141,6 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
       node.removeEventListener('mouseleave', handleMouseLeave);
       node.removeEventListener('focus', handleMouseEnter);
       node.removeEventListener('blur', handleMouseLeave);
-    },
+    }
   };
 }

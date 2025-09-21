@@ -15,12 +15,12 @@ const orchestrator = getOrchestrator({
     maxLatency: 2000,
     minThroughput: 5,
     maxCpuUsage: 85,
-    maxMemoryUsage: 75,
+    maxMemoryUsage: 75
   },
   retryConfiguration: {
     maxRetries: 3,
     backoffMultiplier: 2,
-    initialDelay: 100,
+    initialDelay: 100
   },
   monitoring: {
     healthCheckInterval: 30000,
@@ -28,9 +28,9 @@ const orchestrator = getOrchestrator({
     alertThresholds: {
       latency: 3000,
       errorRate: 10,
-      throughput: 3,
-    },
-  },
+      throughput: 3
+    }
+  }
 });
 
 // GET /api/v1/orchestrator - System health and status;
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: health,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'metrics':
@@ -54,9 +54,9 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             metrics,
             count: metrics.length,
-            latestMetric: metrics[metrics.length - 1] || null,
+            latestMetric: metrics[metrics.length - 1] || null
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'tasks':
@@ -68,9 +68,9 @@ export const GET: RequestHandler = async ({ url }) => {
             activeTasks,
             taskQueue,
             activeCount: activeTasks.length,
-            queueCount: taskQueue.length,
+            queueCount: taskQueue.length
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       default:
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           priority,
           analysisType: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).analysisType || 'comprehensive',
           maxTokens: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).maxTokens || 2048,
-          temperature: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).temperature || 0.7,
+          temperature: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).temperature || 0.7
         });
         break;
 
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           ...options,
           priority,
           modelType: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).modelType || 'transformer',
-          precision: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).precision || 'fp32',
+          precision: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).precision || 'fp32'
         });
         break;
 
@@ -143,13 +143,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
             width: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.width,
             height: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.height,
             data: canvasData,
-            format: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.format || 'RGBA',
+            format: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).canvasState.format || 'RGBA'
           },
           {
             ...options,
             priority,
             targetBitDepth: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).targetBitDepth || 24,
-            optimization: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).optimization || 'balanced',
+            optimization: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).optimization || 'balanced'
           }
         );
         break;
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           ...options,
           priority,
           precision: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).precision || 'fp32',
-          timeout: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).timeout || 15000,
+          timeout: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).timeout || 15000
         });
         break;
 
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             b: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).b,
             m: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).m || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).a.length),
             n: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).n || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).b.length),
-            k: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).k || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).a.length),
+            k: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).k || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).a.length)
           },
           { ...options, priority }
         );
@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             key: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).key,
             value: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).value,
             seq_len: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).seq_len || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).query.length),
-            dim: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).dim || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).query.length),
+            dim: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).dim || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).query.length)
           },
           { ...options, priority }
         );
@@ -215,7 +215,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             kernel: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).kernel,
             width: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).width || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).input.length),
             height: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).height || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).input.length),
-            kernel_size: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).kernel_size || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).kernel.length),
+            kernel_size: (data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).kernel_size || Math.sqrt((data as { document?: any; analysisType?: any; maxTokens?: any; temperature?: any; input?: any; modelType?: any; precision?: any; canvasState?: any; targetBitDepth?: any; optimization?: any; operation?: any; params?: any; timeout?: any; a?: any; b?: any; m?: any; n?: any; k?: any; query?: any; key?: any; value?: any; seq_len?: any; dim?: any; kernel?: any; width?: any; height?: any; kernel_size?: any }).kernel.length)
           },
           { ...options, priority }
         );
@@ -238,8 +238,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         priority: TaskPriority[priority],
         servicesUsed: (result as { servicesUsed?: any; fallbacksTriggered?: any; performance?: any }).servicesUsed,
         fallbacksTriggered: (result as { servicesUsed?: any; fallbacksTriggered?: any; performance?: any }).fallbacksTriggered,
-        performance: (result as { servicesUsed?: any; fallbacksTriggered?: any; performance?: any }).performance,
-      },
+        performance: (result as { servicesUsed?: any; fallbacksTriggered?: any; performance?: any }).performance
+      }
     });
   } catch (err: any) {
     console.error('[Orchestrator API] POST error:', err);
@@ -252,7 +252,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       {
         success: false,
         error: String(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -277,9 +277,9 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: 'Configuration update acknowledged',
       data: {
         health,
-        requestedConfig: config,
+        requestedConfig: config
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('[Orchestrator API] PUT error:', err);
@@ -302,7 +302,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       message: 'Orchestrator shutdown initiated',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('[Orchestrator API] DELETE error:', err);

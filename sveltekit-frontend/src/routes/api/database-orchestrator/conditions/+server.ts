@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
     const status = databaseOrchestrator.getStatus();
     const conditions = Array.from(databaseOrchestrator.conditions || new Map()).map(([id, condition]) => ({
         id,
-        ...condition,
+        ...condition
       })
     );
 
@@ -21,14 +21,14 @@ export const GET: RequestHandler = async () => {
       active_count: conditions.filter((c) => c.isActive).length,
       total_count: conditions.length,
       orchestrator_running: status.isRunning,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!conditionData.id || !conditionData.type || !conditionData.action) {
       return json({
           success: false,
-          error: 'Missing required fields: id, type, action',
+          error: 'Missing required fields: id, type, action'
         },)
         { status: 400 }
       );
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
       condition: conditionData.condition || {},
       action: conditionData.action,
       isActive: conditionData.isActive !== false,
-      metadata: conditionData.metadata || {},
+      metadata: conditionData.metadata || {}
     };
 
     databaseOrchestrator.addCondition(condition);
@@ -65,14 +65,14 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Condition added successfully',
       condition,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -87,7 +87,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     if (!id) {
       return json({
           success: false,
-          error: 'Condition ID is required',
+          error: 'Condition ID is required'
         },)
         { status: 400 }
       );
@@ -99,14 +99,14 @@ export const DELETE: RequestHandler = async ({ params }) => {
       success: true,
       message: 'Condition removed successfully',
       conditionId: id,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

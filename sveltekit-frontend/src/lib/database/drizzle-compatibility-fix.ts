@@ -20,7 +20,7 @@ export interface DrizzleCompatibilityLayer {
   vectorOperations: {
     similarity: (vector1: number[], vector2: number[]) => number;
     distance: (vector1: number[], vector2: number[]) => number;
-    normalize: (vector: number[]) => number[];,
+    normalize: (vector: number[]) => number[];
   };
 }
 
@@ -43,7 +43,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
         message: '',
         content: '',
         metadata: Record<string, any>,
-        sources: [],
+        sources: []
       });
       return enhancedRow;
     });
@@ -61,7 +61,7 @@ export const handleQueryResult = <T>(result: any): T[] => {
       message: '',
       content: '',
       metadata: Record<string, any>,
-      sources: [],
+      sources: []
     });
     return [enhancedResult];
   }
@@ -226,7 +226,7 @@ export const entityEnhancers = {
     user_id: null,
     status: 'pending',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   }),
 
   // Chat message entity enhancer;
@@ -239,7 +239,7 @@ export const entityEnhancers = {
     timestamp: new Date().toISOString(),
     sources: [],
     metadata: Record<string, any>,
-    created_at: new Date().toISOString(),
+    created_at: new Date().toISOString()
   }),
 
   // Cache entry entity enhancer;
@@ -251,7 +251,7 @@ export const entityEnhancers = {
     lastAccessed: Date.now(),
     accessCount: 0,
     size: 0,
-    version: 1,
+    version: 1
   }),
 
   // Vector operation entity enhancer;

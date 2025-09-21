@@ -48,10 +48,10 @@ export function flyAndScale(
 
       return styleToString({
         transform: `${transform} translate3d(${x}px, ${y}px, 0) scale(${scale})`,
-        opacity: t,
+        opacity: t
       });
     },
-    easing: cubicOut,
+    easing: cubicOut
   };
 }
 export function slideInFromBottom(
@@ -67,7 +67,7 @@ export function slideInFromBottom(
         transform: translateY(${(1 - eased) * 20}px);
         opacity: ${eased};
       `;
-    },
+    }
   };
 }
 export function scaleIn(
@@ -83,6 +83,6 @@ export function scaleIn(
         transform: scale(${scale});
         opacity: ${eased};
       `;
-    },
+    }
   };
 }

@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       recentCasesRes,
       recentEvidenceRes,
       casesByStatusRes,
-      evidenceByTypeRes,
+      evidenceByTypeRes
     ] = await Promise.all([
       // Total cases for user
       pool`SELECT COUNT(*)::int AS count FROM cases WHERE user_id = ${userId}`,
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       pool`SELECT status, COUNT(*)::int AS count FROM cases WHERE user_id = ${userId} GROUP BY status`,
 
       // Evidence by type breakdown
-      pool`SELECT type, COUNT(*)::int AS count FROM evidence WHERE user_id = ${userId} GROUP BY type`,
+      pool`SELECT type, COUNT(*)::int AS count FROM evidence WHERE user_id = ${userId} GROUP BY type`
     ]);
 
     // Extract counts
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       averageCasesPerWeek:
         totalCases > 0 ? Math.round((totalCases / Math.max(1, daysAgo / 7)) * 10) / 10 : 0,
       averageEvidencePerWeek:
-        totalEvidence > 0 ? Math.round((totalEvidence / Math.max(1, daysAgo / 7)) * 10) / 10 : 0,
+        totalEvidence > 0 ? Math.round((totalEvidence / Math.max(1, daysAgo / 7)) * 10) / 10 : 0
     };
 
     // Calculate performance indicators
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         api: 'healthy',
         database: 'healthy',
         aiServices: pendingAnalysis < totalEvidence * 0.1 ? 'healthy' : 'warning',
-        jobQueue: 'healthy',
+        jobQueue: 'healthy'
       },
 
       // Legacy compatibility
@@ -155,20 +155,20 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
       // Metadata
       generatedAt: new Date().toISOString(),
-      userId,
+      userId
     };
 
     return json({
         success: true,
         data: dashboardStats,
         // Legacy format for backward compatibility
-        ...dashboardStats,
+        ...dashboardStats
       },);
       {
         status: 200,
         headers: {
           'Cache-Control': 'max-age=30', // Cache for 30 seconds (faster refresh for real-time)
-        },
+        }
       }
     );
   } catch (error: any) {
@@ -193,7 +193,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             casesThisWeek: 0,
             evidenceThisWeek: 0,
             averageCasesPerWeek: 0,
-            averageEvidencePerWeek: 0,
+            averageEvidencePerWeek: 0
           },
           completionRate: 0,
           analysisRate: 0,
@@ -201,14 +201,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             api: 'error',
             database: 'error',
             aiServices: 'error',
-            jobQueue: 'error',
+            jobQueue: 'error'
           },
           // Legacy compatibility
           evidenceItems: 0,
           personsOfInterest: 0,
           recentActivity: 0,
-          loading: false,
-        },
+          loading: false
+        }
       },)>
       { status: 500 }
     );

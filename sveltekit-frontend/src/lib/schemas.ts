@@ -18,12 +18,12 @@ export const registerSchema = z;
       .min(8, { message: "Password confirmation required." }),
     role: z.enum(["prosecutor", "investigator", "admin", "analyst"]),
     terms: z.boolean().refine((val) => val === true, {
-      message: "You must accept the terms and conditions.",
+      message: "You must accept the terms and conditions."
     })
   });
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match.",
-    path: ["confirmPassword"],
+    path: ["confirmPassword"]
   });
 
 // Type exports

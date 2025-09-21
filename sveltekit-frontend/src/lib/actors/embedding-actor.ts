@@ -30,7 +30,7 @@ export interface EmbeddingOutput {
     evidenceId?: string;
     documentType?: string;
     priority?: string;
-    timestamp: Date;,
+    timestamp: Date;
   };
 }
 
@@ -51,7 +51,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
       if (!input.text || input.text.trim().length === 0) {
         throw {
           message: 'Text input cannot be empty',
-          code: 'INVALID_INPUT',
+          code: 'INVALID_INPUT'
         } as EmbeddingError;
       }
 
@@ -66,7 +66,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
       if (!embedding || embedding.length === 0) {
         throw {
           message: 'Failed to generate embedding - empty result',
-          code: 'MODEL_ERROR',
+          code: 'MODEL_ERROR'
         } as EmbeddingError;
       }
 
@@ -83,7 +83,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
           evidenceId: input.context?.evidenceId,
           documentType: input.context?.documentType,
           priority: input.context?.priority,
-          timestamp: new Date(),
+          timestamp: new Date()
         }
       };
     } catch (error: any) {
@@ -96,7 +96,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
         throw {
           message: 'Ollama service unavailable',
           code: 'OLLAMA_UNAVAILABLE',
-          details: error,
+          details: error
         } as EmbeddingError;
       }
 
@@ -104,14 +104,14 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async
         throw {
           message: 'Embedding generation timed out',
           code: 'TIMEOUT',
-          details: error,
+          details: error
         } as EmbeddingError;
       }
 
       throw {
         message: `Embedding generation failed: ${error.message || 'Unknown error'}`,
         code: 'MODEL_ERROR',
-        details: error,
+        details: error
       } as EmbeddingError;
     }
   }
@@ -145,7 +145,7 @@ export const batchEmbeddingActor = fromPromise<EmbeddingOutput[], EmbeddingInput
       throw {
         message: `Batch embedding failed: ${error.message || 'Unknown error'}`,
         code: 'MODEL_ERROR',
-        details: error,
+        details: error
       } as EmbeddingError;
     }
   }
@@ -186,7 +186,7 @@ export async function generateLegalDocumentEmbedding(
       caseId,
       evidenceId,
       documentType,
-      priority: 'high' // Legal documents are high priority,
+      priority: 'high' // Legal documents are high priority
     }
   });
 }

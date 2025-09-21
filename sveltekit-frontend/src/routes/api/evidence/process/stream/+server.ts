@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types.js';
 import { createActor } from 'xstate';
 import {
   evidenceProcessingMachine,
-  type EvidenceProcessingContext,
+  type EvidenceProcessingContext
 } from '$lib/state/evidence-processing-machine.js';
 
 // Active processing sessions (no longer store controllers; GET opens SSE connections on demand)
@@ -21,8 +21,8 @@ export const POST: RequestHandler = async ({ request }) => {
         uploadProgress: 0,
         errors: [],
         processingTimeMs: 0,
-        streamingUpdates: [],
-      },
+        streamingUpdates: []
+      }
     });
     actor.start();
     session = { actor, startTime: Date.now() };
@@ -33,13 +33,13 @@ export const POST: RequestHandler = async ({ request }) => {
   if (file) {
     try {
       const mockFile = new File([new Uint8Array(1024)], file.name || 'document.pdf', {
-        type: file.type || 'application/pdf',
+        type: file.type || 'application/pdf'
       });
       session.actor.send({ type: 'UPLOAD_FILE', file: mockFile, evidenceId });
     } catch (e) {
       return new Response(JSON.stringify({ error: 'Failed to stage file', details: String(e) }), {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       });
     }
   }
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
   return new Response(JSON.stringify({
       evidenceId,
       status: 'started',
-      streamingEndpoint: `/api/evidence/process/stream?evidenceId=${encodeURIComponent(evidenceId)}`,
+      streamingEndpoint: `/api/evidence/process/stream?evidenceId=${encodeURIComponent(evidenceId)}`
     }),
     { headers: { 'Content-Type': 'application/json' } }
   );
@@ -66,7 +66,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   if (!session) {
     return new Response(JSON.stringify({ error: 'No active session found' }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 
@@ -76,19 +76,19 @@ export const PUT: RequestHandler = async ({ request }) => {
 
     return new Response(JSON.stringify({
         success: true,
-        message: `Event ${event.type} sent to session ${evidenceId}`,
+        message: `Event ${event.type} sent to session ${evidenceId}`
       }),
       {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   } catch (error) {
     return new Response(JSON.stringify({
-        error: `Failed to send event: ${error.message}`,
+        error: `Failed to send event: ${error.message}`
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   }
@@ -100,14 +100,14 @@ export const GET: RequestHandler = async ({ url }) => {
   if (!evidenceId) {
     return new Response(JSON.stringify({ error: 'evidenceId query param is required' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
   const session = activeSessions.get(evidenceId);
   if (!session) {
     return new Response(JSON.stringify({ error: 'No active session for evidenceId' }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
           context: state.context,
           timestamp: Date.now(),
           progress: getOverallProgress(state.context),
-          currentStep: getCurrentStepInfo(state.context),
+          currentStep: getCurrentStepInfo(state.context)
         };
         try {
           send(update);
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url }) => {
     },
     cancel() {
       // subscription cleaned in onCancel
-    },
+    }
   });
 
   return new Response(stream, {
@@ -156,8 +156,8 @@ export const GET: RequestHandler = async ({ url }) => {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'Access-Control-Allow-Origin': '*',
-    },
+      'Access-Control-Allow-Origin': '*'
+    }
   });
 };
 
@@ -168,7 +168,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   if (!evidenceId) {
     return new Response(JSON.stringify({ error: 'evidenceId is required' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 
@@ -180,19 +180,19 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
     return new Response(JSON.stringify({
         success: true,
-        message: `Session ${evidenceId} cancelled and removed`,
+        message: `Session ${evidenceId} cancelled and removed`
       }),
       {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   } else {
     return new Response(JSON.stringify({
-        error: 'Session not found',
+        error: 'Session not found'
       }),
       {
         status: 404,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   }
@@ -232,6 +232,6 @@ function getCurrentStepInfo(context: EvidenceProcessingContext) {
     step: inProgressUpdate?.step || 'idle',
     progress: inProgressUpdate?.progress || 0,
     message: inProgressUpdate?.message || lastUpdate?.message || 'Ready to start processing',
-    status: inProgressUpdate?.status || 'pending',
+    status: inProgressUpdate?.status || 'pending'
   };
 }

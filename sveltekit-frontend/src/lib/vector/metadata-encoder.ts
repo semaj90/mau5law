@@ -30,13 +30,13 @@ export interface VectorMetadata {
   encoding: Float32Array | Int8Array | Uint8Array;
   timestamp: number;
   processingTime: number;
-  gpuAccelerated: boolean;,
+  gpuAccelerated: boolean;
 }
 
 export interface EncodingBatch {
   vectors: Float32Array[];
   metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>;
-  totalSize: number;,
+  totalSize: number;
 }
 
 export interface AdaptiveEncodingResult {
@@ -47,7 +47,7 @@ export interface AdaptiveEncodingResult {
     totalTime: number;
     avgCompressionRatio: number;
     gpuUtilization: number;
-    memoryEfficiency: number;,
+    memoryEfficiency: number;
   };
 }
 
@@ -119,7 +119,7 @@ export class VectorMetadataEncoder {
         encoding: encoded,
         timestamp: Date.now(),
         processingTime,
-        gpuAccelerated: !!this.gpuContext,
+        gpuAccelerated: !!this.gpuContext
       };
 
       return metadata;
@@ -185,7 +185,7 @@ export class VectorMetadataEncoder {
         powerConsumption: 75, // Placeholder
         contextSwitches: scalingApplied ? 1 : 0,
         frameRate: 1000 / totalTime,
-        lastMeasurement: Date.now(),
+        lastMeasurement: Date.now()
       });
 
       return {
@@ -240,7 +240,7 @@ export class VectorMetadataEncoder {
     memoryUsage: {
       l1GpuUsage: number;
       l2RamUsage: number;
-      totalVectors: number;,
+      totalVectors: number;
     };
   } {
     return {
@@ -249,7 +249,7 @@ export class VectorMetadataEncoder {
       memoryUsage: {
         l1GpuUsage: this.estimateGPUMemoryUsage(),
         l2RamUsage: this.estimateRAMUsage(),
-        totalVectors: this.performanceHistory.length,
+        totalVectors: this.performanceHistory.length
       }
     };
   }
@@ -267,7 +267,7 @@ export class VectorMetadataEncoder {
         type: 'context_switch',
         gpuUtilization: 0,
         memoryUsed: this.estimateGPUMemoryUsage(),
-        temperature: 50,
+        temperature: 50
       });
     } catch (error) {
       console.warn('[VectorEncoder] GPU initialization failed, falling back to CPU:', error);
@@ -311,7 +311,7 @@ export class VectorMetadataEncoder {
       name: 'VectorQuantization',
       backend: this.gpuContext.getBackendType(),
       compute: computeShader,
-      entryPoint: 'main',
+      entryPoint: 'main'
     };
   }
 
@@ -359,7 +359,7 @@ export class VectorMetadataEncoder {
       case 'binary':
         return this.quantizeToBinary(vector);
       default:
-        return vector; // No quantization,
+        return vector; // No quantization
     }
   }
 
@@ -380,7 +380,7 @@ export class VectorMetadataEncoder {
         ...metadata[i],
         encoding: encoded,
         processingTime,
-        compressionRatio: encoded.byteLength / (vectors[i].length * 4),
+        compressionRatio: encoded.byteLength / (vectors[i].length * 4)
       });
     }
     
@@ -401,7 +401,7 @@ export class VectorMetadataEncoder {
         ...metadata[i],
         encoding: encoded,
         processingTime,
-        compressionRatio: encoded.byteLength / (vector.length * 4),
+        compressionRatio: encoded.byteLength / (vector.length * 4)
       };
     });
   }
@@ -420,7 +420,7 @@ export class VectorMetadataEncoder {
       case 'binary':
         return this.dequantizeFromBinary(metadata.encoding as Uint8Array, metadata.encodedDimensions);
       default:
-        return metadata.encoding as Float32Array;,
+        return metadata.encoding as Float32Array;
     }
   }
 
@@ -517,7 +517,7 @@ export class VectorMetadataEncoder {
       {
         maxRenderTime: 100,    // 100ms max per operation
         maxMemoryUsage: 80,    // 80% max memory usage
-        maxTemperature: 80     // 80°C max temperature,
+        maxTemperature: 80     // 80°C max temperature
       },
       this.adaptiveMode
     );
@@ -526,7 +526,7 @@ export class VectorMetadataEncoder {
       return {
         ...this.config,
         dimensions: decision.recommendedDimensions,
-        quantization: decision.recommendedQuantization,
+        quantization: decision.recommendedQuantization
       };
     }
 
@@ -585,7 +585,7 @@ export class VectorMetadataEncoder {
       powerConsumption: avg.powerConsumption / count,
       contextSwitches: avg.contextSwitches / count,
       frameRate: avg.frameRate / count,
-      lastMeasurement: avg.lastMeasurement,
+      lastMeasurement: avg.lastMeasurement
     };
   }
 
@@ -617,7 +617,7 @@ export class VectorMetadataEncoder {
   private generateRecommendedConfig(metrics: any): Partial<VectorEncodingConfig> {
     return {
       dimensions: metrics.avgCompressionRatio < 0.5 ? 1024 as VectorDimensions : 512 as VectorDimensions,
-      quantization: metrics.memoryEfficiency < 50 ? 'int4' as QuantizationLevel : 'int8' as QuantizationLevel,
+      quantization: metrics.memoryEfficiency < 50 ? 'int4' as QuantizationLevel : 'int8' as QuantizationLevel
     };
   }
 }

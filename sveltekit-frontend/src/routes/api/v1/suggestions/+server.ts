@@ -22,7 +22,7 @@ const suggestionRequestSchema = z.object({
       caseId: z.string().optional(),
       jurisdiction: z.string().optional(),
       practiceArea: z.string().optional(),
-      documentType: z.string().optional(),
+      documentType: z.string().optional()
     })
     .optional(),
   options: z;
@@ -31,9 +31,9 @@ const suggestionRequestSchema = z.object({
       similarityThreshold: z.number().min(0).max(1).optional().default(0.3),
       includeTypos: z.boolean().optional().default(true),
       includeSemanticSuggestions: z.boolean().optional().default(true),
-      graphDepth: z.number().min(1).max(5).optional().default(3),
+      graphDepth: z.number().min(1).max(5).optional().default(3)
     })
-    .optional(),
+    .optional()
 });
 
 // GET /api/v1/suggestions?q=contract+law&intent=legal_research&maxSuggestions=10;
@@ -65,15 +65,15 @@ export const GET: RequestHandler = async ({ url, request }) => {
         caseId || practiceArea;
           ? {
               caseId: caseId || undefined,
-              practiceArea: practiceArea || undefined,
+              practiceArea: practiceArea || undefined
             }
           : undefined,
       options: {
         maxSuggestions,
         similarityThreshold: threshold,
         includeTypos,
-        includeSemanticSuggestions: true,
-      },
+        includeSemanticSuggestions: true
+      }
     };
 
     // Generate suggestions
@@ -87,8 +87,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
         requestTime: new Date().toISOString(),
         processingTimeMs: processingTime,
         streamStats: didYouMeanService.getStreamStats(),
-        version: '1.0',
-      },
+        version: '1.0'
+      }
     };
 
     return json(response, {
@@ -98,8 +98,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
         'X-Suggestions-Count': (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).suggestions.length.toString(),
         'X-QUIC-Streams': (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.quicStreamsUsed.toString(),
         'Cache-Control': 'public, max-age=300', // 5 minutes cache
-        Vary: 'Accept-Encoding',
-      },
+        Vary: 'Accept-Encoding'
+      }
     });
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
@@ -112,7 +112,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     return json({
         message: 'Failed to generate suggestions',
         code: 'SUGGESTION_ERROR',
-        processingTimeMs: processingTime,
+        processingTimeMs: processingTime
       },)
       { status: 500 }
     );
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
       originalQuery: validatedData.query,
       userIntent: validatedData.userIntent,
       context: validatedData.context,
-      options: validatedData.options,
+      options: validatedData.options
     };
 
     // Generate suggestions with full context
@@ -155,9 +155,9 @@ export const POST: RequestHandler = async ({ request }) => {
           graphTraversalUsed: ((result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.graphTraversalTime || 0) > 0,
           cacheHitRatio:
             (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.cacheHits /
-            ((result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.cacheHits + (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.cacheMisses),
-        },
-      },
+            ((result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.cacheHits + (result as { suggestions?: any; cacheInfo?: any; graphContext?: any }).cacheInfo.cacheMisses)
+        }
+      }
     };
 
     return json(response, {
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'Invalid request format',
           code: 'VALIDATION_ERROR',
           errors: err.errors,
-          processingTimeMs: processingTime,
+          processingTimeMs: processingTime
         },)
         { status: 400 }
       );
@@ -194,7 +194,7 @@ export const POST: RequestHandler = async ({ request }) => {
   return json({
       message: 'Failed to generate suggestions',
       code: 'SUGGESTION_ERROR',
-      processingTimeMs: processingTime,
+      processingTimeMs: processingTime
     },)
     { status: 500 }
   );
@@ -213,7 +213,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Suggestion cache cleared',
       processingTimeMs: processingTime,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (err: any) {
@@ -223,7 +223,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return json({
         message: 'Failed to clear cache',
         code: 'CACHE_CLEAR_ERROR',
-        processingTimeMs: processingTime,
+        processingTimeMs: processingTime
       },)
       { status: 500 }
     );

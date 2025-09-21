@@ -89,7 +89,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       }
     }
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Only update provided fields
@@ -123,7 +123,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
         role: users.role,
         isActive: users.isActive,
         createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
+        updatedAt: users.updatedAt
       });
 
     return json(updatedUser);
@@ -163,7 +163,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const [deletedUser] = await db.delete(users).where(eq(users.id, userId)).returning({
       id: users.id,
       email: users.email,
-      name: users.name,
+      name: users.name
     });
 
     return json({ success: true, deletedUser });
@@ -200,7 +200,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: 'User not found' }, { status: 404 });
     }
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Handle specific patch operations;
@@ -251,7 +251,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
         role: users.role,
         isActive: users.isActive,
         createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
+        updatedAt: users.updatedAt
       });
 
     return json(updatedUser);

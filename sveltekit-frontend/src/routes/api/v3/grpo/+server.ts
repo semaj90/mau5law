@@ -26,7 +26,7 @@ const grpoApiLogger = {
   warn: (message: string, requestId: string, metadata?: any) =>
     console.warn(`[${new Date().toISOString()}] GRPO-API-WARN [${requestId}] ${message}`, metadata ? JSON.stringify(metadata) : ''),
   error: (message: string, requestId: string, error?: Error, metadata?: any) =>
-    console.error(`[${new Date().toISOString()}] GRPO-API-ERROR [${requestId}] ${message}`, error?.message || '', metadata ? JSON.stringify(metadata) : ''),
+    console.error(`[${new Date().toISOString()}] GRPO-API-ERROR [${requestId}] ${message}`, error?.message || '', metadata ? JSON.stringify(metadata) : '')
 };
 
 // Generate unique request ID for tracking;
@@ -144,13 +144,13 @@ export const GET: RequestHandler = async ({ url, request }) => {
               patternExtraction: true,
               legalCitationDetection: true,
               complexityAnalysis: true,
-              serviceWorker: true,
+              serviceWorker: true
             },
             cache: cacheStats,
             performance: {
-              responseTimeMs: Date.now() - startTime,
+              responseTimeMs: Date.now() - startTime
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         }
 
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           if (fromTime && toTime) {
             timeRange = {
               from: new Date(fromTime),
-              to: new Date(toTime),
+              to: new Date(toTime)
             };
           }
 
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           grpoApiLogger.info(`GRPO search completed: ${results.length} results`, requestId, {
             query: query.slice(0, 50),
             resultCount: results.length,
-            duration: Date.now() - startTime,
+            duration: Date.now() - startTime
           });
 
           return json({
@@ -216,9 +216,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
               practiceArea
             },
             performance: {
-              searchTimeMs: Date.now() - startTime,
+              searchTimeMs: Date.now() - startTime
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         }
 
@@ -231,7 +231,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           grpoApiLogger.info(`GRPO trends analyzed: ${patterns.length} patterns`, requestId, {
             timeWindow,
             patternCount: patterns.length,
-            duration: Date.now() - startTime,
+            duration: Date.now() - startTime
           });
 
           return json({
@@ -241,9 +241,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
             patterns,
             count: patterns.length,
             performance: {
-              analysisTimeMs: Date.now() - startTime,
+              analysisTimeMs: Date.now() - startTime
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         }
 
@@ -263,7 +263,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           // Get recent high-confidence thinking responses as recommendations;
           const timeRange = {
             from: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
-            to: new Date(),
+            to: new Date()
           };
 
           const recommendations = await searchGrpoThinkingResponses(query, {
@@ -271,13 +271,13 @@ export const GET: RequestHandler = async ({ url, request }) => {
             threshold: 0.6, // Lower threshold for recommendations
             timeRange,
             includeRecentBias: true,
-            confidenceThreshold: 0.7 // Higher confidence for recommendations,
+            confidenceThreshold: 0.7 // Higher confidence for recommendations
           });
 
           grpoApiLogger.info(`GRPO recommendations generated: ${recommendations.length} items`, requestId, {
             query: query.slice(0, 50),
             conversationId,
-            recommendationCount: recommendations.length,
+            recommendationCount: recommendations.length
           });
 
           return json({
@@ -291,12 +291,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
               timeWindow: '7 days',
               confidenceThreshold: 0.7,
               similarityThreshold: 0.6,
-              recentBiasEnabled: true,
+              recentBiasEnabled: true
             },
             performance: {
-              recommendationTimeMs: Date.now() - startTime,
+              recommendationTimeMs: Date.now() - startTime
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         }
 
@@ -310,7 +310,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             dbStats = {
               totalResponses: 'unknown',
               avgConfidence: 'unknown',
-              commonThinkingTypes: 'unknown',
+              commonThinkingTypes: 'unknown'
             };
           } catch {
             // DB not available
@@ -322,9 +322,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
             cache: cacheStats,
             database: dbStats,
             performance: {
-              responseTimeMs: Date.now() - startTime,
+              responseTimeMs: Date.now() - startTime
             },
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           });
         }
 
@@ -342,14 +342,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
     } catch (error: any) {
       grpoApiLogger.error('GRPO GET request failed', requestId, error, {
         duration: Date.now() - startTime,
-        url: url.toString(),
+        url: url.toString()
       });
 
       return json({
         success: false,
         error: 'Internal GRPO server error',
         requestId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }, { status: 500 });
     }
   });
@@ -402,7 +402,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               ...body.metadata,
               timestamp: new Date().toISOString(),
               requestId,
-              apiVersion: 'v3',
+              apiVersion: 'v3'
             }
           };
 
@@ -422,7 +422,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             stored: true,
             metadata: {
               processingTimeMs: processingTime,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             }
           });
         }
@@ -471,12 +471,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
               metadata: {
                 ...r.metadata,
                 batchId: requestId,
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toISOString()
               }
             })),
             priority: body.priority || 'normal',
             status: 'pending',
-            createdAt: new Date(),
+            createdAt: new Date()
           };
 
           await processBatchGrpoResponses(batchJob);
@@ -485,7 +485,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           grpoApiLogger.info('GRPO batch processing completed', requestId, {
             responseCount: body.responses.length,
             processingTime,
-            status: batchJob.status,
+            status: batchJob.status
           });
 
           return json({
@@ -497,7 +497,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             metadata: {
               processingTimeMs: processingTime,
               completedAt: batchJob.completedAt?.toISOString(),
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             }
           });
         }
@@ -550,7 +550,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               textLength: body.text.length,
               useCache,
               processingTimeMs: processingTime,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             }
           });
         }
@@ -569,7 +569,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       const processingTime = Date.now() - startTime;
 
       grpoApiLogger.error('GRPO POST request failed', requestId, error, {
-        duration: processingTime,
+        duration: processingTime
       });
 
       return json({
@@ -578,7 +578,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         requestId,
         metadata: {
           processingTimeMs: processingTime,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }
       }, { status: 500 });
     }

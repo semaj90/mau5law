@@ -33,8 +33,8 @@ export class ChatHistoryService {
       context: {} as Record<string, any>,
       metadata: {
         model,
-        messageCount: 0,
-      },
+        messageCount: 0
+      }
     };
     await db.insert(chatSessions).values(session);
     return id;
@@ -50,8 +50,8 @@ export class ChatHistoryService {
       embedding: null,
       metadata: {
         model: params?.model || 'unknown',
-        ...(params.metadata || {,}),
-      },
+        ...(params.metadata || {})
+      }
     };
     await db.insert(chatMessages).values(msg);
 
@@ -69,9 +69,9 @@ export class ChatHistoryService {
         .set({
           metadata: {
             ...(currentSession[0].metadata as object),
-            messageCount: currentCount + 1,
+            messageCount: currentCount + 1
           },
-          updatedAt: new Date(),
+          updatedAt: new Date()
         })
         .where(eq(chatSessions.id, params.sessionId);
     }

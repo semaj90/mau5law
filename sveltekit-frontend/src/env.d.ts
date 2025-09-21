@@ -61,7 +61,7 @@ declare global {
     __DEV_TOOLS__?: {
       showGPUStats: () => void;
       exportTelemetry: () => Promise<Blob>;
-      resetMemoryBanks: () => void;,
+      resetMemoryBanks: () => void;
     };
     
     // Performance Monitoring
@@ -69,7 +69,7 @@ declare global {
     __MEMORY_TRACKER__?: {
       l1GpuUsage: number;
       l2RamUsage: number; 
-      l3RedisUsage: number;,
+      l3RedisUsage: number;
     };
   }
 
@@ -80,7 +80,7 @@ declare global {
       size: number;
       used: number;
       available: number;
-      type: 'L1_GPU' | 'L2_RAM' | 'L3_REDIS' | 'CHR_ROM' | 'PRG_ROM';,
+      type: 'L1_GPU' | 'L2_RAM' | 'L3_REDIS' | 'CHR_ROM' | 'PRG_ROM';
     }
 
     interface CHRROMBank {
@@ -88,7 +88,7 @@ declare global {
       address: number;
       size: 0x1000; // 4KB per bank
       patternData: Uint8Array;
-      isDirty: boolean;,
+      isDirty: boolean;
     }
   }
 
@@ -111,14 +111,14 @@ declare global {
       type: 'render_time' | 'api_latency' | 'cache_hit' | 'vector_encoding';
       duration: number;
       operation: string;
-      success: boolean;,
+      success: boolean;
     }
 
     interface ErrorEvent extends BaseEvent {
       type: 'error' | 'warning' | 'critical';
       message: string;
       stack?: string;
-      component: string;,
+      component: string;
     }
   }
 }

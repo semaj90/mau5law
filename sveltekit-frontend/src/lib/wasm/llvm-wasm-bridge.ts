@@ -26,7 +26,7 @@ const LLVM_CONFIG = {
     enableTextProcessing: true,
     enableVectorSearch: true,
     enableDocumentParsing: true,
-    enableCitationExtraction: true,
+    enableCitationExtraction: true
   }
 } as const;
 }
@@ -43,7 +43,7 @@ export interface LLVMModule {
     compileTimeMs: number;
     loadTimeMs: number;
     executionTimeMs: number;
-    memoryUsage: number;,
+    memoryUsage: number;
   };
 }
 
@@ -57,22 +57,22 @@ export class LLVMWASMBridge {
     textProcessor: {
       sources: ['legal_text_processor.cpp', 'citation_extractor.cpp'],
       exports: ['processLegalText', 'extractCitations', 'analyzePrecedents'],
-      memoryRequired: 8 * 1024 * 1024 // 8MB,
+      memoryRequired: 8 * 1024 * 1024 // 8MB
     },
     documentParser: {
       sources: ['document_parser.cpp', 'pdf_processor.cpp', 'ocr_bridge.cpp'],
       exports: ['parseDocument', 'extractText', 'analyzeStructure'],
-      memoryRequired: 16 * 1024 * 1024 // 16MB,
+      memoryRequired: 16 * 1024 * 1024 // 16MB
     },
     vectorEngine: {
       sources: ['vector_engine.cpp', 'similarity_calc.cpp', 'indexing.cpp'],
       exports: ['computeEmbedding', 'calculateSimilarity', 'buildIndex'],
-      memoryRequired: 32 * 1024 * 1024 // 32MB,
+      memoryRequired: 32 * 1024 * 1024 // 32MB
     },
     legalAnalyzer: {
       sources: ['legal_analyzer.cpp', 'contract_parser.cpp', 'risk_assessor.cpp'],
       exports: ['analyzeContract', 'assessRisk', 'identifyObligations'],
-      memoryRequired: 12 * 1024 * 1024 // 12MB,
+      memoryRequired: 12 * 1024 * 1024 // 12MB
     }
   };
 
@@ -114,9 +114,9 @@ export class LLVMWASMBridge {
       memory: new WebAssembly.Memory({
         initial: 256, // 16MB initial
         maximum: 1024, // 64MB maximum
-        shared: false,
+        shared: false
       }),
-      exports: new Map(),
+      exports: new Map()
     };
   }
 
@@ -157,7 +157,7 @@ export class LLVMWASMBridge {
         moduleId,
         optimizationLevel: LLVM_CONFIG.optimizationLevel,
   features: Array.from(LLVM_CONFIG.features as readonly string[]),
-        memorySize: config.memoryRequired,
+        memorySize: config.memoryRequired
       });
 
       if (!compilationResult.success || !compilationResult.wasmBinary) {
@@ -177,7 +177,7 @@ export class LLVMWASMBridge {
           compileTimeMs: performance.now() - startTime,
           loadTimeMs: 0,
           executionTimeMs: 0,
-          memoryUsage: 0,
+          memoryUsage: 0
         }
       };
 
@@ -354,7 +354,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         memoryUsage: options.memorySize || 1024 * 1024,
         optimizations: options.features || [],
         warnings: [],
-        error: null,
+        error: null
       };
     } catch (error: any) {
       return {
@@ -365,7 +365,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         memoryUsage: 0,
         optimizations: [],
         warnings: [],
-        error: error instanceof Error ? error.message: 'Unknown compilation error',
+        error: error instanceof Error ? error.message: 'Unknown compilation error'
       };
     }
   }
@@ -443,7 +443,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
       const memoryPages = Math.ceil(this.legalModules[module.name.replace('legal_', '')]?.memoryRequired || (1024 * 1024) / (64 * 1024);
       module.memory = new WebAssembly.Memory({
         initial: memoryPages,
-        maximum: memoryPages * 2,
+        maximum: memoryPages * 2
       });
 
       // Instantiate the WASM module;
@@ -468,7 +468,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
           tan: Math.tan,
           sqrt: Math.sqrt,
           exp: Math.exp,
-          log: Math.log,
+          log: Math.log
         }
       });
 
@@ -576,7 +576,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         const embedding = Array.from(result[0] || new Float32Array(dimensions);
         return {
           embedding,
-          processingTime: performance.now() - startTime,
+          processingTime: performance.now() - startTime
         };
       }
 
@@ -615,7 +615,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         const embedding = Array.from(result[0] || new Float32Array(dimensions);
         return {
           embedding,
-          processingTime: performance.now() - startTime,
+          processingTime: performance.now() - startTime
         };
       } catch (fallbackError) {
         console.error('❌ GPU service fallback failed:', fallbackError);
@@ -624,7 +624,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
         return {
           embedding: embedding.map(val => val / norm),
-          processingTime: performance.now() - startTime,
+          processingTime: performance.now() - startTime
         };
       }
     }
@@ -664,7 +664,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         isLoaded: module.isLoaded,
         sourceFiles: module.sourceFiles.length,
         exports: Object.keys(module.exports).length,
-        performance: module.performance,
+        performance: module.performance
       };
     }
 

@@ -15,7 +15,7 @@ export interface LegalDocumentMessage {
   metadata: Record<string, any>;
   priority: 'low' | 'normal' | 'high' | 'urgent';
   retryCount: number;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface ProcessingResult {
@@ -23,7 +23,7 @@ export interface ProcessingResult {
   documentId: string;
   result?: any;
   error?: string;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export type MessageHandler = (message: any, originalMessage?: any) => Promise<any> | any;
@@ -48,13 +48,13 @@ class RabbitMQService extends EventEmitter {
     dlxDocumentIngestion: 'legal.dlx.document.ingestion',
     dlxDocumentAnalysis: 'legal.dlx.document.analysis',
     processingResults: 'legal.processing.results',
-    notifications: 'legal.notifications',
+    notifications: 'legal.notifications'
   };
 
   private exchanges = {
     legal: 'legal.direct',
     legalTopic: 'legal.topic',
-    dlx: 'legal.dlx',
+    dlx: 'legal.dlx'
   };
 
   constructor(url = 'amqp://localhost:5672') {
@@ -102,7 +102,7 @@ class RabbitMQService extends EventEmitter {
       arguments: {
         'x-dead-letter-exchange': this.exchanges.dlx,
         'x-message-ttl': 24 * 60 * 60 * 1000, // 24 hours
-      },
+      }
     };
 
     for (const [key, queueName] of Object.entries(this.queues)) {
@@ -122,7 +122,7 @@ class RabbitMQService extends EventEmitter {
       { queue: this.queues.contractAnalysis, routingKey: 'contract.analyze' },
       { queue: this.queues.evidenceProcessing, routingKey: 'evidence.process' },
       { queue: this.queues.citationExtraction, routingKey: 'citation.extract' },
-      { queue: this.queues.urgentProcessing, routingKey: 'urgent.*' },
+      { queue: this.queues.urgentProcessing, routingKey: 'urgent.*' }
     ];
 
     for (const binding of bindings) {
@@ -169,7 +169,7 @@ class RabbitMQService extends EventEmitter {
       case 'citation':
         return 'citation.extract';
       default:
-        return 'document.analyze';,
+        return 'document.analyze';
     }
   }
 
@@ -186,7 +186,7 @@ class RabbitMQService extends EventEmitter {
         stats[key] = {
           queue: queueName,
           messageCount: queueInfo.messageCount,
-          consumerCount: queueInfo.consumerCount,
+          consumerCount: queueInfo.consumerCount
         };
       } catch (error) {
         stats[key] = { error: 'Queue not found' };
@@ -240,7 +240,7 @@ class RabbitMQService extends EventEmitter {
       );
       const published = this.channel.publish(exchange, routingKey, messageBuffer, {
         persistent: true,
-        ...options,
+        ...options
       });
 
       return published;

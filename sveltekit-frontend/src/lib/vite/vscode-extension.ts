@@ -152,7 +152,7 @@ export class VSCodeIntegration {
           line: 2,
           column: 3,
           message: 4,
-          severity: 'error',
+          severity: 'error'
         },
         {
           regexp: '^WARN\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
@@ -160,7 +160,7 @@ export class VSCodeIntegration {
           line: 2,
           column: 3,
           message: 4,
-          severity: 'warning',
+          severity: 'warning'
         }
       ]
     };
@@ -281,13 +281,13 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Install missing dependencies',
         command: 'npm install',
-        args: [],
+        args: []
       });
       
       suggestions.push({
         title: 'Check import paths',
         command: 'editor.action.quickFix',
-        args: [],
+        args: []
       });
     }
 
@@ -295,13 +295,13 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Run TypeScript check',
         command: 'workbench.action.tasks.runTask',
-        args: ['npm: check'],
+        args: ['npm: check']
       });
       
       suggestions.push({
         title: 'Generate missing types',
         command: 'typescript.generateGettersAndSetters',
-        args: [],
+        args: []
       });
     }
 
@@ -309,7 +309,7 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Check Svelte syntax',
         command: 'svelte.restartLanguageServer',
-        args: [],
+        args: []
       });
       
       suggestions.push({
@@ -323,7 +323,7 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Check UnoCSS configuration',
         command: 'editor.action.formatDocument',
-        args: [],
+        args: []
       });
     }
 

@@ -90,7 +90,7 @@ export type SubmitHandler = (event: Event & { currentTarget: HTMLFormElement }) 
 }
 
 export interface CustomEventDetail<T = any> {
-  detail: T;,
+  detail: T;
 }
 
 export type CustomEventHandler<T = any> = (event: CustomEvent<T>) => void;
@@ -104,7 +104,7 @@ export interface FormFieldState {
   value: any;
   error?: string;
   touched: boolean;
-  dirty: boolean;,
+  dirty: boolean;
 }
 
 export interface FormValidationState {
@@ -123,13 +123,13 @@ export interface FormValidationState {
 export interface SidebarState {
   open: boolean;
   collapsed: boolean;
-  pinned: boolean;,
+  pinned: boolean;
 }
 
 export interface LayoutState {
   sidebar: SidebarState;
   theme: 'light' | 'dark' | 'auto';
-  fullscreen: boolean;,
+  fullscreen: boolean;
 }
 
 // =====================================================
@@ -142,7 +142,7 @@ export interface SearchFilters {
   caseId?: string;
   dateRange?: {
     start: string;
-    end: string;,
+    end: string;
   };
   status?: string[];
   tags?: string[];
@@ -177,7 +177,7 @@ export interface ModelAvailability {
   ollama: boolean;
   openai: boolean;
   claude: boolean;
-  local: boolean;,
+  local: boolean;
 }
 
 // =====================================================
@@ -197,7 +197,7 @@ export interface Toast {
 export interface Notification extends Toast {
   read: boolean;
   timestamp: string;
-  category: string;,
+  category: string;
 }
 
 // (All interfaces exported individually above; no aggregate export block to avoid conflicts)

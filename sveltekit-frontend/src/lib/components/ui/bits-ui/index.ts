@@ -23,7 +23,7 @@ export const LEGAL_AI_VARIANTS = {
   input: ['default', 'filled', 'outlined'] as const,
   dialog: ['sm', 'md', 'lg', 'xl', 'full'] as const,
   select: ['default', 'filled', 'outlined'] as const,
-  tabs: ['default', 'pills', 'underline'] as const,
+  tabs: ['default', 'pills', 'underline'] as const
 } as const;
 
 export const LEGAL_AI_SIZES = {
@@ -31,7 +31,7 @@ export const LEGAL_AI_SIZES = {
   input: ['sm', 'md', 'lg'] as const,
   card: ['none', 'sm', 'md', 'lg', 'xl'] as const,
   select: ['sm', 'md', 'lg'] as const,
-  tabs: ['sm', 'md', 'lg'] as const,
+  tabs: ['sm', 'md', 'lg'] as const
 } as const;
 
 // Type helpers for better TypeScript experience

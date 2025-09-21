@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     if (!file || !(file instanceof File)) {
       return new Response(JSON.stringify({
         error: 'No file provided',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -47,13 +47,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const uploadResult = await minioService.uploadFile(file, file.name, {
       bucket,
       caseId: caseId ? parseInt(caseId) : undefined,
-      uploadedBy: userId ? parseInt(userId) : undefined,
+      uploadedBy: userId ? parseInt(userId) : undefined
     });
 
     if (!uploadResult.success) {
       return new Response(JSON.stringify({
         error: uploadResult.error || 'Upload failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const minioUrl = `minio://${bucket}/${uploadResult.fileName}`;
         const extractionResult = await MinIOUtility.getTextContent(minioUrl, {
           maxSize: 10 * 1024 * 1024, // 10MB max
-          extractPlainText: true,
+          extractPlainText: true
         });
 
         textContent = extractionResult.content;
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             wordCount: textContent.split(/\s+/).length,
             characterCount: textContent.length,
             processingTime: extractionResult.metadata.processingTime,
-            confidence: 0.85,
+            confidence: 0.85
           }
         };
 
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         console.warn('AI analysis failed, continuing without it:', aiError);
         aiAnalysis = {
           error: aiError instanceof Error ? aiError.message: 'AI analysis failed',
-          fallback: true,
+          fallback: true
         };
       }
     }
@@ -113,15 +113,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
         bucket: uploadResult.bucket,
         size: uploadResult.size,
         url: uploadResult.url,
-        contentType: file.type,
+        contentType: file.type
       },
       ai: enableAI ? aiAnalysis : null,
       processing: {
         totalTime: totalProcessingTime,
         enabledAI: enableAI,
-        textExtracted: !!textContent,
+        textExtracted: !!textContent
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('File processing error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Processing failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!fileId) {
       return new Response(JSON.stringify({
         error: 'fileId parameter is required',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -163,7 +163,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url }) => {
       status: fileExists ? 'completed' : 'not_found',
       exists: fileExists,
       file: fileExists ? files[0] : null,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -189,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Processing status error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Status check failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

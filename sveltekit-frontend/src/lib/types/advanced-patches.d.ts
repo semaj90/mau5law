@@ -16,14 +16,14 @@ declare global {
   namespace Asset3DSearchResult {
     interface Result {
       id: string;
-      score: number;,
+      score: number;
     }
   }
 
   namespace HybridRAGResult {
     interface Result {
       content: string;
-      score: number;,
+      score: number;
     }
   }
 
@@ -37,13 +37,13 @@ declare global {
   namespace ChatResponse {
     interface Response {
       message: string;
-      done: boolean;,
+      done: boolean;
     }
   }
 
   interface GPUSearchMetrics {
     searchTime: number;
-    resultCount: number;,
+    resultCount: number;
   }
 }
 

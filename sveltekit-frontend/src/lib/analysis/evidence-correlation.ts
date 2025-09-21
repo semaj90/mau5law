@@ -17,16 +17,16 @@ const CorrelationAnalysisSchema = z.object({
   timeWindow: z;
     .object({
       unit: z.enum(['hours', 'days', 'weeks', 'months']),
-      value: z.number().positive(),
+      value: z.number().positive()
     })
-    .optional(),
+    .optional()
 });
 
 const PatternDetectionSchema = z.object({
   evidenceIds: z.array(z.string().uuid()),
   patternTypes: z.array(z.enum(['sequence', 'cluster', 'anomaly', 'trend', 'cycle'])),
   sensitivity: z.enum(['low', 'medium', 'high']).default('medium'),
-  includeMetadata: z.boolean().default(true),
+  includeMetadata: z.boolean().default(true)
 });
 
 // Correlation types and interfaces
@@ -75,7 +75,7 @@ interface TimelineEvent {
   duration?: number;
   type: string;
   description: string;
-  evidenceIds: string[];,
+  evidenceIds: string[];
 }
 
 interface PatternMatch {
@@ -92,7 +92,7 @@ interface PatternMatch {
 interface PatternVisualization {
   type: string;
   data: any;
-  highlights: string[];,
+  highlights: string[];
 }
 
 interface EntityRelationship {
@@ -101,7 +101,7 @@ interface EntityRelationship {
   relationship: string;
   confidence: number;
   evidenceBasis: string[];
-  legalSignificance: string;,
+  legalSignificance: string;
 }
 
 interface CausalChain {
@@ -109,7 +109,7 @@ interface CausalChain {
   events: CausalEvent[];
   strength: number;
   legalTheory: string;
-  supportingEvidence: string[];,
+  supportingEvidence: string[];
 }
 
 interface CausalEvent {
@@ -117,7 +117,7 @@ interface CausalEvent {
   description: string;
   timestamp: Date;
   causality: 'cause' | 'effect' | 'mediating';
-  evidenceId: string;,
+  evidenceId: string;
 }
 
 // Advanced Evidence Correlation Engine;
@@ -219,18 +219,18 @@ export class EvidenceCorrelationEngine {
               timestamp: timeA,
               type: evidenceA.type || evidenceA.evidenceType || 'unknown',
               description: evidenceA.filename,
-              evidenceIds: [evidenceA.id],
+              evidenceIds: [evidenceA.id]
             },>;
             {
               id: evidenceB.id,
               timestamp: timeB,
               type: evidenceB.type || evidenceB.evidenceType || 'unknown',
               description: evidenceB.filename,
-              evidenceIds: [evidenceB.id],
-            },
-          ],
-        },
-      },
+              evidenceIds: [evidenceB.id]
+            }
+          ]
+        }
+      }
     };
   }
 
@@ -263,13 +263,13 @@ export class EvidenceCorrelationEngine {
       description: `Semantic similarity: ${(strength * 100).toFixed(0)}%`,
       supportingFactors: [
         `Common tags: ${commonTags.join(', ') || 'None'}`,
-        `Common legal areas: ${commonLaws.join(', ') || 'None'}`,
+        `Common legal areas: ${commonLaws.join(', ') || 'None'}`
       ],
       implications: [
         strength > 0.7 ? 'Highly related content' : 'Moderately related content',
         'Similar legal implications',
-        'Potential for joint analysis',
-      ],
+        'Potential for joint analysis'
+      ]
     };
   }
 
@@ -301,8 +301,8 @@ export class EvidenceCorrelationEngine {
           ? 'Involves same parties or objects'
           : 'Different entities involved',
         'Potential witness overlap',
-        'Shared jurisdiction or venue',
-      ],
+        'Shared jurisdiction or venue'
+      ]
     };
   }
 
@@ -333,13 +333,13 @@ export class EvidenceCorrelationEngine {
       description: strength > 0.6 ? 'Strong causal relationship' : 'Potential causal relationship',
       supportingFactors: [
         `Sequential timing: ${isSequential ? 'Yes' : 'No'}`,
-        `Causal indicators present: ${strength > 0.4 ? 'Yes' : 'No'}`,
+        `Causal indicators present: ${strength > 0.4 ? 'Yes' : 'No'}`
       ],
       implications: [
         'Potential cause-and-effect relationship',
         'Chain of events evidence',
-        'Timeline reconstruction support',
-      ],
+        'Timeline reconstruction support'
+      ]
     };
   }
 
@@ -391,8 +391,8 @@ export class EvidenceCorrelationEngine {
           legalImplications: [
             'Establishes chronological order',
             'Supports chain of events theory',
-            'Timeline evidence for case narrative',
-          ],
+            'Timeline evidence for case narrative'
+          ]
         });
       }
     }
@@ -421,8 +421,8 @@ export class EvidenceCorrelationEngine {
           legalImplications: [
             'Concentrated activity period',
             'Potential coordinated actions',
-            'Critical time period identification',
-          ],
+            'Critical time period identification'
+          ]
         });
       }
     }
@@ -457,8 +457,8 @@ export class EvidenceCorrelationEngine {
           legalImplications: [
             'Missing evidence period',
             'Potential evidence destruction',
-            'Case timeline gap requiring explanation',
-          ],
+            'Case timeline gap requiring explanation'
+          ]
         });
       }
     }
@@ -485,8 +485,8 @@ export class EvidenceCorrelationEngine {
         legalImplications: [
           trend.slope > 0 ? 'Escalating situation' : 'De-escalating situation',
           'Activity pattern analysis',
-          'Case development timeline',
-        ],
+          'Case development timeline'
+        ]
       });
     }
 
@@ -501,7 +501,7 @@ export class EvidenceCorrelationEngine {
     nodes: NetworkNode[];
     edges: NetworkEdge[];
     communities: string[][];
-    centralNodes: string[];,
+    centralNodes: string[];
   } {
     const nodes: NetworkNode[] = evidence.map((e) => ({
       id: e.id,
@@ -512,8 +512,8 @@ export class EvidenceCorrelationEngine {
       metadata: {
         uploadDate: e.uploadedAt,
         prosecutionScore: e.aiAnalysis?.relevanceScore,
-        relevantLaws: e.aiAnalysis?.legalImplications,
-      },
+        relevantLaws: e.aiAnalysis?.legalImplications
+      }
     });
 
     const edges: NetworkEdge[] = correlations.map((corr) => ({
@@ -521,7 +521,7 @@ export class EvidenceCorrelationEngine {
       target: corr.evidenceB,
       weight: corr.strength,
       type: corr.correlationType,
-      label: `${corr.correlationType} (${(corr.strength * 100).toFixed(0)}%)`,
+      label: `${corr.correlationType} (${(corr.strength * 100).toFixed(0)}%)`
     });
 
     // Detect communities using simple clustering
@@ -648,7 +648,7 @@ export class EvidenceCorrelationEngine {
 
   static analyzeTrend(data: { month: string; count: number }[]): {
     slope: number;
-    direction: string;,
+    direction: string;
   } {
     if (data.length < 2) return { slope: 0, direction: 'flat' };
 
@@ -671,7 +671,7 @@ export class EvidenceCorrelationEngine {
       image: '#10B981',
       video: '#F59E0B',
       audio: '#8B5CF6',
-      other: '#6B7280',
+      other: '#6B7280'
     };
     return colors[type as keyof typeof colors] || colors.other;
   }

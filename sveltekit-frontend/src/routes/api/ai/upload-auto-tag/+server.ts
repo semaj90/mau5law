@@ -75,7 +75,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           const metadata = JSON.stringify({
             tags: autoTagResult.tags,
             entities: autoTagResult.entities,
-            confidence: autoTagResult.confidence,
+            confidence: autoTagResult.confidence
           });
           
           const parsedMetadata = await goMicroservice.parseJSONSIMD(metadata, true);
@@ -83,7 +83,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           gpuProcessingResult = {
             embeddings: gpuEmbeddings[0],
             parsedMetadata,
-            gpuAccelerated: true,
+            gpuAccelerated: true
           };
           
           console.log('⚡ GPU processing completed successfully');
@@ -100,14 +100,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       useMemoryGraph: false,
       useMultiAgent: false,
       maxSources: 5,
-      minConfidence: 0.6,
+      minConfidence: 0.6
     });
     
     // 4. Update document in database with enriched data;
     const updateData: any = {
       tags: autoTagResult.tags,
       summary: autoTagResult.summary,
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
     
     // Use GPU embeddings if available, otherwise use CPU embeddings;
@@ -131,7 +131,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         title: doc.title,
         content: doc.content || '',
         tags: doc.tags || [],
-        type: 'document',
+        type: 'document'
       }));
     } catch (indexError) {
       console.warn('⚠️ Search index update failed:', indexError);
@@ -149,17 +149,17 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       similarDocuments: ragResult.sources.slice(0, 3).map((source: any) => ({
         id: source.id,
         title: source.title,
-        relevance: source.relevance,
+        relevance: source.relevance
       })),
       processing: {
         gpuAccelerated: !!gpuProcessingResult,
         embeddingDimensions: gpuProcessingResult?.embeddings?.length || autoTagResult.embedding.length,
-        processingTime: Date.now() - new Date().getTime(),
+        processingTime: Date.now() - new Date().getTime()
       },
       ragAnalysis: {
         answer: ragResult.answer,
         confidence: ragResult.confidence,
-        suggestedActions: ragResult.suggestedActions,
+        suggestedActions: ragResult.suggestedActions
       }
     };
     
@@ -173,7 +173,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json({
       error: 'Auto-tagging failed',
       details: error.message,
-      success: false,
+      success: false
     }, { status: 500 });
   }
 };
@@ -203,7 +203,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         tags: document[0].tags || [],
         summary: document[0].summary || '',
         hasEmbedding: !!document[0].embedding,
-        lastUpdated: document[0].updatedAt,
+        lastUpdated: document[0].updatedAt
       });
     }
     
@@ -230,7 +230,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         aiAutoTagging: 'operational',
         enhancedRAG: 'operational',
         goMicroservice: goServiceHealth.status,
-        gpuAcceleration: goServiceHealth.gpu_available,
+        gpuAcceleration: goServiceHealth.gpu_available
       },
       capabilities: [
         'AI-powered auto-tagging',
@@ -247,7 +247,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     
     return json({
       error: 'Failed to get auto-tagging status',
-      details: error.message,
+      details: error.message
     }, { status: 500 });
   }
 };

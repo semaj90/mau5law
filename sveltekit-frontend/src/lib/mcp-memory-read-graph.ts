@@ -13,7 +13,7 @@ export interface GraphNode {
   file: string;
   lineNumber?: number;
   duplicateCount?: number;
-  relationships: string[];,
+  relationships: string[];
 }
 
 export interface GraphReadResponse {
@@ -21,13 +21,13 @@ export interface GraphReadResponse {
   edges: {
     from: string;
     to: string;
-    type: 'declares' | 'uses' | 'imports' | 'exports' | 'duplicates';,
+    type: 'declares' | 'uses' | 'imports' | 'exports' | 'duplicates';
   }[];
   metadata: {
     totalNodes: number;
     duplicateVariables: number;
     componentCount: number;
-    lastUpdated: string;,
+    lastUpdated: string;
   };
 }
 
@@ -42,7 +42,7 @@ export async function mcpMemory2ReadGraph(
   
   const response = await fetch(`/api/mcp/memory2/read-graph?${params.toString()}`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" }
   });
   
   if (!response.ok) {
@@ -84,7 +84,7 @@ export async function analyzeComponentStructure(componentName: string): Promise<
     component: componentNode,
     variables: relatedNodes.filter(n => n.type === 'variable'),
     props: relatedNodes.filter(n => n.type === 'prop'),
-    duplicates: relatedNodes.filter(n => (n.duplicateCount || 0) > 1),
+    duplicates: relatedNodes.filter(n => (n.duplicateCount || 0) > 1)
   };
 }
 

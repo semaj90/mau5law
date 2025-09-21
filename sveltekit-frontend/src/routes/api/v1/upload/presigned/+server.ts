@@ -11,7 +11,7 @@ import { URL } from 'url';
 const presignedRequestSchema = z.object({
   filename: z.string().min(1).max(255),
   contentType: z.string().min(1).max(100),
-  caseId: z.string().uuid(),
+  caseId: z.string().uuid()
 });
 
 // Initialize MinIO client;
@@ -20,7 +20,7 @@ const minioClient = new Client({
   port: 9000,
   useSSL: false,
   accessKey: import.meta.env.MINIO_ACCESS_KEY || 'minioadmin',
-  secretKey: import.meta.env.MINIO_SECRET_KEY || 'minioadmin',
+  secretKey: import.meta.env.MINIO_SECRET_KEY || 'minioadmin'
 });
 
 const BUCKET_NAME = 'legal-documents';
@@ -59,15 +59,15 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
               Effect: 'Allow',
               Principal: { AWS: ['*'] },
               Action: ['s3:GetObject'],
-              Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`],
+              Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`]
             },
             {
               Effect: 'Allow',
               Principal: { AWS: ['*'] },
               Action: ['s3:PutObject'],
-              Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`],
-            },
-          ],
+              Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`]
+            }
+          ]
         };
         await minioClient.setBucketPolicy(BUCKET_NAME, JSON.stringify(policy);
       }
@@ -85,7 +85,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
         'Content-Type': contentType,
         'x-amz-meta-original-name': filename,
         'x-amz-meta-file-id': fileId,
-        'x-amz-meta-case-id': caseId,
+        'x-amz-meta-case-id': caseId
       }
     );
 
@@ -103,8 +103,8 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
         processingStatus: 'pending',
         metadata: {
           uploadedAt: new Date().toISOString(),
-          uploadMethod: 'presigned',
-        },
+          uploadMethod: 'presigned'
+        }
       })
       .returning();
 
@@ -117,8 +117,8 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
         uuid: document.uuid,
         filename: document.filename,
         originalName: document.originalName,
-        status: document.processingStatus,
-      },
+        status: document.processingStatus
+      }
     });
   } catch (error: any) {
     console.error('Presigned URL generation error:', error);
@@ -174,8 +174,8 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<any> 
         status: document.processingStatus,
         fileSize,
         fileExists,
-        uploadedAt: document.createdAt,
-      },
+        uploadedAt: document.createdAt
+      }
     });
   } catch (error: any) {
     console.error('Upload status check error:', error);

@@ -68,12 +68,12 @@ async function generateLocalEmbedding(text: string, model: string = "embeddingge
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         model: model,
-        prompt: text,
-      }),
+        prompt: text
+      })
     });
 
     if (!response.ok) {
@@ -149,7 +149,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
     const caseData = await db;
       .select({
         title: cases.title,
-        description: cases.description,
+        description: cases.description
       })
       .from(cases)
       .where(eq(cases.id, caseId);
@@ -165,7 +165,7 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
       await generateBatchEmbeddings([
         case_.title,
         case_.description || "",
-        fullText,
+        fullText
       ]);
 
     // TODO: Re-enable when titleEmbedding field is added to schema
@@ -197,7 +197,7 @@ export async function updateEvidenceEmbeddings(
         title: evidence.title,
         description: evidence.description,
         summary: evidence.summary,
-        aiSummary: evidence.aiSummary,
+        aiSummary: evidence.aiSummary
       })
       .from(evidence)
       .where(eq(evidence.id, evidenceId);
@@ -210,7 +210,7 @@ export async function updateEvidenceEmbeddings(
       evidence_.title,
       evidence_.description,
       evidence_.summary,
-      evidence_.aiSummary,
+      evidence_.aiSummary
     ]
       .filter(Boolean)
       .join(" ");
@@ -220,12 +220,12 @@ export async function updateEvidenceEmbeddings(
       titleEmbedding,
       descriptionEmbedding,
       summaryEmbedding,
-      contentEmbedding,
+      contentEmbedding
     ] = await generateBatchEmbeddings([
       evidence_.title,
       evidence_.description || "",
       evidence_.summary || "",
-      combinedContent,
+      combinedContent
     ]);
 
     // TODO: Re-enable when embedding fields are added to evidence schema

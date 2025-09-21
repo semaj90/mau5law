@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
       imported: 0,
       updated: 0,
       skipped: 0,
-      errors: [] as string[],
+      errors: [] as string[]
     };
 
     // Process import based on type;
@@ -74,12 +74,12 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       results,
-      message: `Import completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped`,
+      message: `Import completed: ${results.imported} imported, ${results.updated} updated, ${results.skipped} skipped`
     });
   } catch (error: any) {
     console.error("Import error:", error);
     return json({
-        error: error instanceof Error ? error.message: "Import failed",
+        error: error instanceof Error ? error.message: "Import failed"
       },)
       { status: 500 }
     );
@@ -123,7 +123,7 @@ async function importCases(
               description: caseData.description,
               status: caseData.status,
               priority: caseData.priority,
-              updatedAt: new Date(),
+              updatedAt: new Date()
             })
             .where(eq(cases.id, caseData.id);
           results.updated++;
@@ -141,7 +141,7 @@ async function importCases(
           createdAt: caseData.created_at
             ? new Date(caseData.created_at)
             : new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
 
         await db.insert(cases).values(newCase);
@@ -196,7 +196,7 @@ async function importEvidence(
               evidenceType: evidenceItem.type,
               description: evidenceItem.description,
               fileUrl: evidenceItem.file_path,
-              updatedAt: new Date(),
+              updatedAt: new Date()
             })
             .where(eq(evidence.id, evidenceItem.id);
           results.updated++;
@@ -232,7 +232,7 @@ async function importEvidence(
           uploadedBy: evidenceItem.uploaded_by || null,
           uploadedAt: evidenceItem.uploaded_at
             ? new Date(evidenceItem.uploaded_at)
-            : new Date(),
+            : new Date()
         };
 
         await db.insert(evidence).values(newEvidence);
@@ -286,7 +286,7 @@ async function importParticipants(
               notes: participant.role ? `Role: ${participant.role}` : null,
               email: participant.contact_info?.email || null,
               phone: participant.contact_info?.phone || null,
-              updatedAt: new Date(),
+              updatedAt: new Date()
             })
             .where(eq(criminals.id, participant.id);
           results.updated++;
@@ -305,7 +305,7 @@ async function importParticipants(
           createdAt: participant.created_at
             ? new Date(participant.created_at)
             : new Date(),
-          updatedAt: new Date(),
+          updatedAt: new Date()
         };
 
         await db.insert(criminals).values(newParticipant);

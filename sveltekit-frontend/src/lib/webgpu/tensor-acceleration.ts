@@ -14,7 +14,7 @@ export interface WebGPUTensorConfig {
 	powerPreference: 'high-performance' | 'low-power';
 	enableDebug: boolean;
 	maxBufferSize: number;
-	shaderCacheEnabled: boolean;,
+	shaderCacheEnabled: boolean;
 }
 
 export interface TensorOperation {
@@ -48,7 +48,7 @@ export class WebGPUTensorAccelerator {
     operationsPerSecond: 0,
     averageLatency: 0,
     totalOperations: 0,
-    errorCount: 0,
+    errorCount: 0
   };
   private isInitialized = false;
   private operationQueue: TensorOperation[] = [];
@@ -61,7 +61,7 @@ export class WebGPUTensorAccelerator {
       enableDebug: false,
       maxBufferSize: 256 * 1024 * 1024, // 256MB
       shaderCacheEnabled: true,
-      ...config,
+      ...config
     };
   }
 
@@ -76,7 +76,7 @@ export class WebGPUTensorAccelerator {
       // Request GPU adapter;
       this.adapter = await navigator.gpu.requestAdapter({
         powerPreference: this.config.powerPreference,
-        forceFallbackAdapter: false,
+        forceFallbackAdapter: false
       });
 
       if (!this.adapter) {
@@ -87,7 +87,7 @@ export class WebGPUTensorAccelerator {
         vendor: this.adapter.info?.vendor,
         architecture: this.adapter.info?.architecture,
         device: this.adapter.info?.device,
-        limits: this.adapter.limits,
+        limits: this.adapter.limits
       });
 
       // Request GPU device
@@ -104,8 +104,8 @@ export class WebGPUTensorAccelerator {
         requiredLimits: {
           maxBufferSize: this.config.maxBufferSize,
           maxStorageBufferBindingSize: this.config.maxBufferSize,
-          maxComputeWorkgroupStorageSize: 32768,
-        },
+          maxComputeWorkgroupStorageSize: 32768
+        }
       });
 
       this.queue = this.device.queue;
@@ -297,13 +297,13 @@ export class WebGPUTensorAccelerator {
 						result[row * N + col] = sum;
 					}
 				}
-			`,
+			`
     };
 
     for (const [name, source] of Object.entries(shaders)) {
       const shader = this.device.createShaderModule({
         label: `${name}Shader`,
-        code: source,
+        code: source
       });
 
       if (this.config.shaderCacheEnabled) {
@@ -327,11 +327,11 @@ export class WebGPUTensorAccelerator {
       const bufferB = this.createBuffer(vectorB, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST);
       const resultBuffer = this.device.createBuffer({
         size: size * 4,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
       const paramsBuffer = this.device.createBuffer({
         size: 16,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
       });
 
       // Upload parameters
@@ -343,8 +343,8 @@ export class WebGPUTensorAccelerator {
         layout: 'auto',
         compute: {
           module: shader,
-          entryPoint: 'main',
-        },
+          entryPoint: 'main'
+        }
       });
 
       const bindGroup = this.device.createBindGroup({
@@ -353,8 +353,8 @@ export class WebGPUTensorAccelerator {
           { binding: 0, resource: { buffer: bufferA } },
           { binding: 1, resource: { buffer: bufferB } },
           { binding: 2, resource: { buffer: resultBuffer } },
-          { binding: 3, resource: { buffer: paramsBuffer } },
-        ],
+          { binding: 3, resource: { buffer: paramsBuffer } }
+        ]
       });
 
       // Execute computation
@@ -368,7 +368,7 @@ export class WebGPUTensorAccelerator {
       // Copy result to staging buffer;
       const stagingBuffer = this.device.createBuffer({
         size: size * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
       });
 
       commandEncoder.copyBufferToBuffer(resultBuffer, 0, stagingBuffer, 0, size * 4);
@@ -476,7 +476,7 @@ export class WebGPUTensorAccelerator {
               acc[chunk.memoryRegion] = (acc[chunk.memoryRegion] || 0) + 1;
               return acc;
             }, {}),
-            simdMetrics: tilingResults.simdMetrics,
+            simdMetrics: tilingResults.simdMetrics
           };
 
           // Enhance similarity score with tiling confidence
@@ -495,7 +495,7 @@ export class WebGPUTensorAccelerator {
               standardSimilarity,
               confidenceBoost,
               tilingEnabled: true,
-              device: this.adapter?.name || 'Unknown GPU',
+              device: this.adapter?.name || 'Unknown GPU'
             },
             tilingMeta,
             performanceMetrics: {
@@ -503,7 +503,7 @@ export class WebGPUTensorAccelerator {
               simdTime,
               gpuTime,
               throughput: combinedData.byteLength / 1024 / 1024 / (totalTime / 1000), // MB/s
-            },
+            }
           };
         } catch (tilingError) {
           console.warn('SIMD GPU tiling failed, using standard similarity:', tilingError);
@@ -518,14 +518,14 @@ export class WebGPUTensorAccelerator {
         gpuMeta: {
           standardSimilarity,
           tilingEnabled: false,
-          device: this.adapter?.name || 'Unknown GPU',
+          device: this.adapter?.name || 'Unknown GPU'
         },
         performanceMetrics: {
           totalTime,
           simdTime,
           gpuTime,
           throughput: (vectorA.byteLength + vectorB.byteLength) / 1024 / 1024 / (totalTime / 1000), // MB/s
-        },
+        }
       };
     } catch (error: any) {
       this.metrics.errorCount++;
@@ -583,11 +583,11 @@ export class WebGPUTensorAccelerator {
     const weightsBuffer = this.createBuffer(weights, GPUBufferUsage.STORAGE);
     const outputBuffer = this.device.createBuffer({
       size: tokens.length * embeddingDim * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
     });
 
     // Upload parameters
@@ -603,8 +603,8 @@ export class WebGPUTensorAccelerator {
       layout: 'auto',
       compute: {
         module: shader,
-        entryPoint: 'main',
-      },
+        entryPoint: 'main'
+      }
     });
 
     const bindGroup = this.device.createBindGroup({
@@ -613,8 +613,8 @@ export class WebGPUTensorAccelerator {
         { binding: 0, resource: { buffer: tokensBuffer } },
         { binding: 1, resource: { buffer: weightsBuffer } },
         { binding: 2, resource: { buffer: outputBuffer } },>
-        { binding: 3, resource: { buffer: paramsBuffer } },
-      ],
+        { binding: 3, resource: { buffer: paramsBuffer } }
+      ]
     });
 
     const commandEncoder = this.device.createCommandEncoder();
@@ -627,7 +627,7 @@ export class WebGPUTensorAccelerator {
     // Copy and read result;
     const stagingBuffer = this.device.createBuffer({
       size: tokens.length * embeddingDim * 4,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
     commandEncoder.copyBufferToBuffer(
@@ -666,7 +666,7 @@ export class WebGPUTensorAccelerator {
   private createBuffer(data: ArrayBufferView, usage: GPUBufferUsageFlags): GPUBuffer {
     const buffer = this.device!.createBuffer({
       size: data.byteLength,
-      usage,
+      usage
     });
     this.queue!.writeBuffer(buffer, 0, data);
     return buffer;
@@ -700,7 +700,7 @@ export class WebGPUTensorAccelerator {
       adapter: this.adapter?.info || null,
       limits: this.adapter?.limits || null,
       features: this.adapter ? Array.from(this.adapter.features) : [],
-      shaderCacheSize: this.shaderCache.size,
+      shaderCacheSize: this.shaderCache.size
     };
   }
 
@@ -727,7 +727,7 @@ export async function initializeWebGPU(): Promise<WebGPUTensorAccelerator | null
     tensorAccelerator = new WebGPUTensorAccelerator({
       powerPreference: 'high-performance',
       enableDebug: true,
-      shaderCacheEnabled: true,
+      shaderCacheEnabled: true
     });
 
     const success = await tensorAccelerator.initialize();

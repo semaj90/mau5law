@@ -13,7 +13,7 @@ export interface GraphNode {
   id: string;
   label: string;
   properties: Record<string, any>;
-  type: 'Case' | 'Evidence' | 'Person' | 'Document' | 'Relationship';,
+  type: 'Case' | 'Evidence' | 'Person' | 'Document' | 'Relationship';
 }
 
 export interface GraphEdge {
@@ -31,7 +31,7 @@ export interface GraphResult {
   metadata: {
     queryTime: number;
     resultCount: number;
-    source: 'wasm' | 'cache' | 'remote';,
+    source: 'wasm' | 'cache' | 'remote';
   };
 }
 
@@ -48,7 +48,7 @@ export interface WasmEngineStats {
   memoryUsage: string;
   uptime: number;
   cacheHitRate: number;
-  lastHydration: Date | null;,
+  lastHydration: Date | null;
 }
 
 class TinyGoWasmGraphEngine implements WasmGraphEngine {
@@ -98,7 +98,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         return {
           nodes: nodeCount,
           edges: edgeCount,
-          executionTime: Math.floor(Math.random() * 10) + 1,
+          executionTime: Math.floor(Math.random() * 10) + 1
         };
       },
       
@@ -106,13 +106,13 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         // Simulate recommendation algorithm;
         return {
           recommendations: Math.floor(Math.random() * 5) + 1,
-          confidence: Math.random(),
+          confidence: Math.random()
         };
       },
       
       memory: () => ({
         used: Math.floor(Math.random() * 1000000) + 500000, // bytes
-        allocated: 2000000,
+        allocated: 2000000
       })
     };
   }
@@ -134,7 +134,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           metadata: {
             ...cached.metadata,
             source: 'cache',
-            queryTime: Date.now() - startTime,
+            queryTime: Date.now() - startTime
           }
         };
       }
@@ -153,7 +153,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           metadata: {
             ...result.metadata,
             source: 'wasm',
-            queryTime: Date.now() - startTime,
+            queryTime: Date.now() - startTime
           }
         };
       }
@@ -167,7 +167,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         metadata: {
           ...remoteResult.metadata,
           source: 'remote',
-          queryTime: Date.now() - startTime,
+          queryTime: Date.now() - startTime
         }
       };
 
@@ -190,7 +190,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         type: ['Case', 'Evidence', 'Person', 'Document'][Math.floor(Math.random() * 4)] as any,
         properties: {
           created: new Date().toISOString(),
-          source: 'wasm',
+          source: 'wasm'
         }
       });
     }
@@ -204,7 +204,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         label: 'RELATED_TO',
         properties: {
           weight: Math.random(),
-          created: new Date().toISOString(),
+          created: new Date().toISOString()
         }
       });
     }
@@ -215,7 +215,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: wasmResult.executionTime,
         resultCount: nodes.length + edges.length,
-        source: 'wasm',
+        source: 'wasm'
       }
     };
   }
@@ -238,7 +238,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: 75,
         resultCount: 1,
-        source: 'remote',
+        source: 'remote'
       }
     };
   }
@@ -268,7 +268,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           properties: {
             confidence: wasmResult.confidence,
             source: 'wasm_recommendation',
-            basedOn: nodeId,
+            basedOn: nodeId
           }
         });
       }
@@ -288,7 +288,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       memoryUsage: `${Math.round(memoryInfo.used / 1024 / 1024 * 100) / 100}MB`,
       uptime: Date.now() - this.startTime,
       cacheHitRate: this.cacheRequests > 0 ? (this.cacheHits / this.cacheRequests) * 100 : 0,
-      lastHydration: this.lastHydration,
+      lastHydration: this.lastHydration
     };
   }
 
@@ -334,7 +334,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: storedResult.queryTime || 0,
         resultCount: (storedResult.nodes?.length || 0) + (storedResult.edges?.length || 0),
-        source: 'cache',
+        source: 'cache'
       }
     };
   }

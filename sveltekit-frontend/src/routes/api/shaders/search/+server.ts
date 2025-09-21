@@ -18,14 +18,14 @@ export const GET: RequestHandler = async () => {
         operation: 'string (optional) - Filter by shader operation',
         tags: 'string[] (optional) - Filter by tags',
         sortBy: 'string (optional) - "relevance", "performance", "usage", or "recent"',
-        limit: 'number (optional) - Maximum results to return (default: 20)',
+        limit: 'number (optional) - Maximum results to return (default: 20)'
       },
       responseFormat: {
         shaders: 'ShaderSearchResult[] - Array of matching shaders',
         metadata: {
           totalResults: 'number - Total matching shaders',
           searchTime: 'number - Search execution time in ms',
-          query: 'object - Original search query',
+          query: 'object - Original search query'
         }
       },
       examples: [;
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate query;
     if (query.limit && (query.limit < 1 || query.limit > 100)) {
       return json({
-        error: 'limit must be between 1 and 100',
+        error: 'limit must be between 1 and 100'
       }, { status: 400 });
     }
 
@@ -83,18 +83,18 @@ export const POST: RequestHandler = async ({ request }) => {
           ...shader.metadata,
           // Format timestamps for readability
           compiledAt: new Date(shader.metadata.compiledAt).toISOString(),
-          lastUsed: new Date(shader.metadata.lastUsed).toISOString(),
+          lastUsed: new Date(shader.metadata.lastUsed).toISOString()
         },
         relevanceScore: shader.relevanceScore,
         embeddingSimilarity: shader.embeddingSimilarity,
         // Truncate WGSL code in list view for performance
         wgslPreview: shader.wgsl.length > 500 ? shader.wgsl.substring(0, 500) + '...' : shader.wgsl
-      ,})),
+      })),
       metadata: {
         totalResults: results.length,
         searchTime,
         query: query,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     };
 
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalResults: 0,
         searchTime,
         query: Record<string, any>,
-        error: error.message || 'Search failed',
+        error: error.message || 'Search failed'
       }
     }, { status: 500 });
   }

@@ -118,7 +118,7 @@ export function quantizeToINT8(
       scale,
       zeroPoint,
       minValue: minVal,
-      maxValue: maxVal,
+      maxValue: maxVal
     }
   };
 }
@@ -196,11 +196,11 @@ export function createWebGPUBuffer(
           originalSize: float32Data.length * 4,
           compressedSize: processedData.length * 1,
           compressionRatio: 4.0,
-          quantizationConfig: quantization,
+          quantizationConfig: quantization
         };
         break;
       default:
-        processedData = float32Data;,
+        processedData = float32Data;
     }
   } else {
     processedData = float32Data;
@@ -210,7 +210,7 @@ export function createWebGPUBuffer(
   const buffer = device.createBuffer({
     size: processedData.byteLength,
     usage,
-    mappedAtCreation: true,
+    mappedAtCreation: true
   });
   
   // Copy data to buffer based on type

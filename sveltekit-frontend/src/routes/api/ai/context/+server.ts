@@ -59,14 +59,14 @@ export async function GET({ url }): Promise<any> {
           "case_strategy_recommendations",
           "evidence_evaluation",
           "contract_review",
-          "chain_of_custody_analysis",
+          "chain_of_custody_analysis"
         ],
         configuration: {
           temperature: 0.1,
           maxTokens: 2048,
           contextWindow: 8192,
-          streamingEnabled: true,
-        },
+          streamingEnabled: true
+        }
       },
 
       // System architecture context;
@@ -76,7 +76,7 @@ export async function GET({ url }): Promise<any> {
         aiInfrastructure: "Ollama GPU + Docker",
         vectorSearch: "Qdrant + pgvector",
         caching: "Redis",
-        messaging: "RabbitMQ",
+        messaging: "RabbitMQ"
       },
 
       // Development guidelines;
@@ -85,15 +85,15 @@ export async function GET({ url }): Promise<any> {
           runesRequired: true,
           stateDeclaration: "let (never const)",
           derivedFunctions: "$derived.by(() => ...)",
-          errorBoundaries: "component rendering only",
+          errorBoundaries: "component rendering only"
         },
         aiIntegration: {
           priorityIndex: "enhanced_legal_ai_index",
           contextBoost: 0.2,
           mcpActive: true,
-          fallbackChain: ["gemma3-legal", "gemma3:12b", "mock"],
-        },
-      },
+          fallbackChain: ["gemma3-legal", "gemma3:12b", "mock"]
+        }
+      }
     };
 
     // Add documentation context if requested;
@@ -101,7 +101,7 @@ export async function GET({ url }): Promise<any> {
       enhancedContext.documentation = {
         copilotContext: "Enhanced Legal AI Index with Context7 MCP",
         claudeContext: "Comprehensive legal AI system documentation",
-        errorResolution: "SvelteKit troubleshooting and best practices",
+        errorResolution: "SvelteKit troubleshooting and best practices"
       };
     }
 
@@ -114,9 +114,9 @@ export async function GET({ url }): Promise<any> {
           "witness_interview_analysis",
           "legal_precedent_research",
           "case_strategy_development",
-          "compliance_verification",
+          "compliance_verification"
         ],
-        aiPromptTemplate: "specialized_legal_assistant_prompt",
+        aiPromptTemplate: "specialized_legal_assistant_prompt"
       };
     }
 
@@ -124,14 +124,14 @@ export async function GET({ url }): Promise<any> {
       success: true,
       context: enhancedContext,
       timestamp: new Date().toISOString(),
-      version: "1.0.0",
+      version: "1.0.0"
     });
   } catch (error: any) {
     console.error("Context API error:", error);
     return json({
         success: false,
         error: "Failed to retrieve AI context",
-        message: error instanceof Error ? error.message: "Unknown error",
+        message: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -154,13 +154,13 @@ export async function POST({ request }): Promise<any> {
 
     return json({
       success: true,
-      message: "Context updated successfully",
+      message: "Context updated successfully"
     });
   } catch (error: any) {
     console.error("Context update error:", error);
     return json({
         success: false,
-        error: "Failed to update context",
+        error: "Failed to update context"
       },)
       { status: 500 },
     );

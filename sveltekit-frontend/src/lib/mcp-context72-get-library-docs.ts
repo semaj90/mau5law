@@ -19,12 +19,12 @@ export interface LibraryDocsResponse {
     library: string;
     version?: string;
     topic?: string;
-    tokenCount: number;,
+    tokenCount: number;
   };
   snippets?: {
     title: string;
     code: string;
-    description: string;,
+    description: string;
   }[];
 }
 
@@ -43,8 +43,8 @@ export async function mcpContext72GetLibraryDocs(
       topic,
       tokens: options.tokens || 10000,
       format: options.format || 'markdown',
-      ...options,
-    }),
+      ...options
+    })
   });
 
   if (!response.ok) {
@@ -64,7 +64,7 @@ export async function getSvelte5Docs(topic?: string, fetchFn?: typeof fetch): Pr
     topic,);
     {
       format: 'typescript',
-      tokens: 15000,
+      tokens: 15000
     },
     fetchFn
   );
@@ -76,7 +76,7 @@ export async function getBitsUIv2Docs(topic?: string, fetchFn?: typeof fetch): P
     topic,);
     {
       format: 'typescript',
-      tokens: 12000,
+      tokens: 12000
     },
     fetchFn
   );
@@ -88,7 +88,7 @@ export async function getMeltUIDocs(topic?: string, fetchFn?: typeof fetch): Pro
     topic,);
     {
       format: 'typescript',
-      tokens: 10000,
+      tokens: 10000
     },
     fetchFn
   );
@@ -100,7 +100,7 @@ export async function getXStateDocs(topic?: string, fetchFn?: typeof fetch): Pro
     topic,);
     {
       format: 'typescript',
-      tokens: 8000,
+      tokens: 8000
     },
     fetchFn
   );
@@ -114,7 +114,7 @@ export async function getXStateDocs(topic?: string, fetchFn?: typeof fetch): Pro
 export async function getWebGPUDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/webgpu/webgpu', topic, {
     format: 'typescript',
-    tokens: 10000,
+    tokens: 10000
   }, fetchFn);
 }
 
@@ -125,7 +125,7 @@ export async function getWebGPUDocs(topic?: string, fetchFn?: typeof fetch): Pro
 export async function getWebAssemblyDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/webassembly/wasm', topic, {
     format: 'markdown',
-    tokens: 8000,
+    tokens: 8000
   }, fetchFn);
 }
 
@@ -136,7 +136,7 @@ export async function getWebAssemblyDocs(topic?: string, fetchFn?: typeof fetch)
 export async function getSvelteKitV2Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/sveltejs/kit', topic, {
     format: 'typescript',
-    tokens: 12000,
+    tokens: 12000
   }, fetchFn);
 }
 

@@ -79,7 +79,7 @@ export function validateFileType(file: File): {
   if (file.size > maxSize) {
     return {
       valid: false,
-      error: `File size must be less than ${formatFileSize(maxSize)}`,
+      error: `File size must be less than ${formatFileSize(maxSize)}`
     };
   }
   const allowedTypes = [
@@ -107,7 +107,7 @@ export function validateFileType(file: File): {
     "video/mov",
     "video/avi",
     "video/mkv",
-    "video/webm",
+    "video/webm"
   ];
 
   if (!allowedTypes.includes(file.type)) {

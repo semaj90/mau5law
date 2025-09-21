@@ -16,7 +16,7 @@ const EvidenceQuerySchema = z.object({
   sortBy: z.enum(['createdAt', 'updatedAt', 'title', 'evidenceType']).default('createdAt'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   includeAnalysis: z.coerce.boolean().default(true),
-  search: z.string().optional(),
+  search: z.string().optional()
 });
 
 /*
@@ -63,8 +63,8 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       sortBy,
       sortOrder,
       filters: {
-        ...(type && { evidenceType: type ,}),
-        ...(search && { search ,})
+        ...(type && { evidenceType: type }),
+        ...(search && { search })
       }
     };
 
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         makeHttpErrorPayload({
           message: 'Failed to retrieve evidence',
           code: 'EVIDENCE_FETCH_FAILED',
-          details: evidenceResult.error,
+          details: evidenceResult.error
         })
       );
     }
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                 title: evidence.title,
                 evidenceType: evidence.evidenceType,
                 useGemmaEmbeddings: true,
-                analysisType: 'comprehensive',
+                analysisType: 'comprehensive'
               })
             });
 
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                     embeddingVector: analysisData.embedding,
                     confidence: analysisData.confidence || 0,
                     analyzedAt: new Date().toISOString(),
-                    analyzedBy: 'gemma-embeddings',
+                    analyzedBy: 'gemma-embeddings'
                   }
                 }
               };
@@ -145,7 +145,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     const analysisStatus = {
       total: enhancedEvidence.length,
       analyzed: enhancedEvidence.filter(item => item.length),
-      pending: enhancedEvidence.filter(item => item.length),
+      pending: enhancedEvidence.filter(item => item.length)
     };
 
     return json({
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           total: evidenceResult.total || enhancedEvidence.length,
           pages: Math.ceil((evidenceResult.total || enhancedEvidence.length) / limit),
           hasNext: page * limit < (evidenceResult.total || enhancedEvidence.length),
-          hasPrev: page > 1,
+          hasPrev: page > 1
         },
         metadata: {
           caseId,
@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           totalSize,
           analysisStatus,
           includeAnalysis,
-          filters: options.filters,
+          filters: options.filters
         }
       },
       meta: {
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid query parameters',
           code: 'INVALID_PARAMS',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -196,7 +196,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to retrieve evidence',
         code: 'EVIDENCE_FETCH_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }

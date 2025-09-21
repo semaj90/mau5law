@@ -8,7 +8,7 @@
 export interface ShaderCacheConfig {
   enableNVIDIAOptimizations: boolean;
   cacheSize: number;
-  persistToDisk: boolean;,
+  persistToDisk: boolean;
 }
 
 export interface ShaderProgram {
@@ -17,14 +17,14 @@ export interface ShaderProgram {
   uniforms: Record<string, WebGLUniformLocation>;
   attributes: Record<string, number>;
   lastUsed: number;
-  complexity: number;,
+  complexity: number;
 }
 
 export interface SpriteTransforms {
   webgl?: {
     matrix: Float32Array;
     opacity: number;
-    blend: string;,
+    blend: string;
   };
   css3d?: string;
 }
@@ -260,7 +260,7 @@ export class ShaderCache {
       uniforms,
       attributes,
       lastUsed: Date.now(),
-      complexity: this.calculateComplexity(vertexSource, fragmentSource),
+      complexity: this.calculateComplexity(vertexSource, fragmentSource)
     };
 
     this.programs.set(id, shaderProgram);
@@ -414,7 +414,7 @@ export class ShaderCache {
   public getStats(): {
     programCount: number;
     cacheHits: number;
-    memoryUsage: number;,
+    memoryUsage: number;
   } {
     return {
       programCount: this.programs.size,

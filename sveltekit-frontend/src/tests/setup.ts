@@ -10,7 +10,7 @@ import path from 'path';
 // Load test environment variables;
 config({
   path: path.join(process.cwd(), '.env.test'),
-  override: false,
+  override: false
 });
 
 // Global test configuration;
@@ -18,7 +18,7 @@ global.TEST_CONFIG = {
   baseUrl: process.env.TEST_BASE_URL || 'http://localhost:5173',
   databaseUrl: process.env.TEST_DATABASE_URL || 'postgresql://localhost:5432/legal_ai_test',
   timeout: 30000,
-  retryAttempts: 3,
+  retryAttempts: 3
 };
 
 // Global setup - runs once before all tests;
@@ -44,7 +44,7 @@ afterAll(async () => {
 
   // Cleanup any global test state
   console.log('✅ Global test cleanup completed');
-,});
+});
 
 // Mock implementations for testing
 global.fetch = global.fetch || require('node-fetch');

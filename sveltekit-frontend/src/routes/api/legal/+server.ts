@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       messages: requestData.messages.map(msg => ({
         ...msg,
         message_id: msg.message_id || generateMessageId(),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       })),
       model_config: {
         model_type: requestData.model_config?.model_type || 'gemma3',
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         use_rl_optimization: requestData.model_config?.use_rl_optimization ?? true,
         enable_cache: requestData.model_config?.enable_cache ?? true,
         enable_kv_reuse: true,
-        compression_type: 'float16',
+        compression_type: 'float16'
       },
       legal_context: {
         case_id: requestData.case_id,
@@ -75,11 +75,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         priority: requestData.legal_context?.priority || 'medium',
         legal_entities: requestData.legal_context?.legal_entities || [],
         precedent_refs: [],
-        confidence_score: 0.8,
+        confidence_score: 0.8
       },
       workflow_config: requestData.workflow_config || null,
       store_embeddings: true,
-      cache_strategy: 'rl_optimized',
+      cache_strategy: 'rl_optimized'
     };
 
     // Submit job to MCP server;
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(jobPayload),
+      body: JSON.stringify(jobPayload)
     });
 
     if (!mcpResponse.ok) {
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         user_id: user?.id || 'anonymous',
         status: 'submitted',
         submitted_at: Date.now(),
-        estimated_completion: mcpResult.estimated_completion,
+        estimated_completion: mcpResult.estimated_completion
       })
     );
 
@@ -156,16 +156,16 @@ export const GET: RequestHandler = async ({ url }) => {
           // This would be parsed from protobuf
           response: 'Legal analysis completed',
           confidence: 0.9,
-          processing_time: Date.now() - jobData.submitted_at,
+          processing_time: Date.now() - jobData.submitted_at
         },
-        completed_at: Date.now(),
+        completed_at: Date.now()
       });
     } else {
       return json({
         job_id: jobId,
         status: 'processing',
         submitted_at: jobData.submitted_at,
-        estimated_completion: jobData.estimated_completion,
+        estimated_completion: jobData.estimated_completion
       });
     }
   } else if (caseId) {

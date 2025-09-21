@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
             title: 'Sample Investigative Case',
             description: 'Demonstration case seeded in development environment for UI & API testing.',
             priority: 'medium',
-            status: 'open',
+            status: 'open'
           });
         }
       } catch (e) {
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
     await db.insert(sessions).values({
       id: sessionId,
       user_id: userInfo.id,
-      expires_at: expiresAt,
+      expires_at: expiresAt
     }).onConflictDoUpdate({ target: sessions.id, set: { expires_at: expiresAt } });
 
     cookies.set('session', sessionId, { path: '/', httpOnly: true, sameSite: 'lax', maxAge: 60 * 60 * 8 });

@@ -35,7 +35,7 @@ export interface GraphEdge {
   metadata: {
     confidence: number;
     strength: number;
-    bidirectional: boolean;,
+    bidirectional: boolean;
   };
 }
 
@@ -64,13 +64,13 @@ export interface GraphTraversalResult {
     nodesVisited: number;
     edgesTraversed: number;
     cacheHits: number;
-    wasmAccelerated: boolean;,
+    wasmAccelerated: boolean;
   };
   visualizationData: {
     positions: Float32Array;
     colors: Float32Array;
     connections: Uint32Array;
-    metadata: any;,
+    metadata: any;
   };
 }
 
@@ -95,7 +95,7 @@ export class SoraGraphTraversal {
     cacheHits: 0,
     averageTraversalTime: 0,
     wasmAccelerationUsed: 0,
-    memoryBankAccess: 0,
+    memoryBankAccess: 0
   };
 
   constructor(private config: {
@@ -328,7 +328,7 @@ export class SoraGraphTraversal {
         paths.push({
           nodes: [startNodeId, similarNode.id],
           totalWeight: similarNode.metadata.importance,
-          confidence: similarNode.metadata.confidence,
+          confidence: similarNode.metadata.confidence
         });
 
         // Find edges between nodes
@@ -381,7 +381,7 @@ export class SoraGraphTraversal {
           paths.push({
             nodes: [...current.path],
             totalWeight: current.weight,
-            confidence: node.metadata.confidence,
+            confidence: node.metadata.confidence
           });
         }
       }
@@ -399,7 +399,7 @@ export class SoraGraphTraversal {
               nodeId: neighborNode.id,
               depth: current.depth + 1,
               path: [...current.path, neighborNode.id],
-              weight: current.weight + edge.weight,
+              weight: current.weight + edge.weight
             });
           }
         }
@@ -415,7 +415,7 @@ export class SoraGraphTraversal {
         nodesVisited,
         edgesTraversed,
         cacheHits: this.metrics.cacheHits,
-        wasmAccelerated: false,
+        wasmAccelerated: false
       },
       visualizationData: {
         positions: new Float32Array(0),
@@ -464,7 +464,7 @@ export class SoraGraphTraversal {
           paths.push({
             nodes: [...current.path],
             totalWeight: current.weight,
-            confidence: node.metadata.confidence,
+            confidence: node.metadata.confidence
           });
         }
       }
@@ -484,7 +484,7 @@ export class SoraGraphTraversal {
               nodeId: neighborNode.id,
               depth: current.depth + 1,
               path: [...current.path, neighborNode.id],
-              weight: current.weight + edge.weight,
+              weight: current.weight + edge.weight
             });
           }
         }
@@ -500,7 +500,7 @@ export class SoraGraphTraversal {
         nodesVisited,
         edgesTraversed,
         cacheHits: this.metrics.cacheHits,
-        wasmAccelerated: false,
+        wasmAccelerated: false
       },
       visualizationData: {
         positions: new Float32Array(0),
@@ -563,7 +563,7 @@ export class SoraGraphTraversal {
           paths.push({
             nodes: path,
             totalWeight: minDistance,
-            confidence: node.metadata.confidence,
+            confidence: node.metadata.confidence
           });
         }
       }
@@ -597,7 +597,7 @@ export class SoraGraphTraversal {
         nodesVisited,
         edgesTraversed,
         cacheHits: this.metrics.cacheHits,
-        wasmAccelerated: false,
+        wasmAccelerated: false
       },
       visualizationData: {
         positions: new Float32Array(0),
@@ -686,7 +686,7 @@ export class SoraGraphTraversal {
           edges: [],
           paths: [],
           nodesVisited: 0,
-          edgesTraversed: 0,
+          edgesTraversed: 0
         })
       };
       console.log('🚀 WASM module initialized (mock)');
@@ -734,7 +734,7 @@ export class SoraGraphTraversal {
           importance: Math.random(),
           confidence: Math.random() * 0.3 + 0.7,
           lastAccessed: Date.now(),
-          vectorEmbedding: embedding,
+          vectorEmbedding: embedding
         }
       });
     }
@@ -754,7 +754,7 @@ export class SoraGraphTraversal {
       metadata: {
         confidence: Math.random() * 0.3 + 0.7,
         strength: Math.random(),
-        bidirectional: true,
+        bidirectional: true
       }
     }];
   }
@@ -774,12 +774,12 @@ export class SoraGraphTraversal {
       position: {
         x: Math.random() * 100,
         y: Math.random() * 100,
-        z: Math.random() * 100,
+        z: Math.random() * 100
       },
       metadata: {
         importance: Math.random(),
         confidence: Math.random() * 0.3 + 0.7,
-        lastAccessed: Date.now(),
+        lastAccessed: Date.now()
       }
     };
 
@@ -806,7 +806,7 @@ export class SoraGraphTraversal {
           metadata: {
             confidence: Math.random() * 0.3 + 0.7,
             strength: Math.random(),
-            bidirectional: true,
+            bidirectional: true
           }
         };
 
@@ -911,7 +911,7 @@ export class SoraGraphTraversal {
       1: 'CHR_ROM',
       2: 'PRG_ROM',
       3: 'SAVE_RAM',
-      4: 'EXPANSION_ROM',
+      4: 'EXPANSION_ROM'
     };
 
     return bankNames[bankId as keyof typeof bankNames] || 'UNKNOWN';
@@ -922,7 +922,7 @@ export class SoraGraphTraversal {
       query: JSON.stringify(query),
       embeddings: Array.from(embeddings.entries()).map(([id, emb]) => ({
         id,
-        embedding: Array.from(emb),
+        embedding: Array.from(emb)
       })
     };
   }

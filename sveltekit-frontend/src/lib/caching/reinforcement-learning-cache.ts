@@ -20,7 +20,7 @@ interface AnimationPrediction {
   duration: number;
   easing: string;
   triggerProbability: number;
-  preRenderedFrames: Component3DMetadata[];,
+  preRenderedFrames: Component3DMetadata[];
 }
 
 interface AssetSearchPattern {
@@ -28,7 +28,7 @@ interface AssetSearchPattern {
   assetType: '3d_model' | 'texture' | 'animation' | 'material';
   contextVector: number[]; // embedding for semantic search
   usageFrequency: number;
-  lastAccessed: number;,
+  lastAccessed: number;
 }
 
 export class ReinforcementLearningCache {
@@ -89,7 +89,7 @@ export class ReinforcementLearningCache {
       component3DPredictions: this.component3DCache.size,
       animationsPredicted: this.animationPredictions.size,
       assetSearchAccuracy: this.calculateSearchAccuracy(),
-      sequenceModelAccuracy: this.calculateSequencePredictionAccuracy(),
+      sequenceModelAccuracy: this.calculateSequencePredictionAccuracy()
     };
   }
 
@@ -136,7 +136,7 @@ export class ReinforcementLearningCache {
       duration: this.predictAnimationDuration(animationType),
       easing: this.selectOptimalEasing(animationType),
       triggerProbability: this.calculateTriggerProbability(componentId),
-      preRenderedFrames: [],
+      preRenderedFrames: []
     };
 
     // Pre-compute key animation frames (autoencoder compression)
@@ -336,7 +336,7 @@ export class ReinforcementLearningCache {
         assetType: '3d_model',
         contextVector: queryVector,
         usageFrequency: 1,
-        lastAccessed: Date.now(),
+        lastAccessed: Date.now()
       });
     }
     
@@ -346,7 +346,7 @@ export class ReinforcementLearningCache {
         assetType: '3d_model',
         contextVector: queryVector,
         usageFrequency: 1,
-        lastAccessed: Date.now(),
+        lastAccessed: Date.now()
       });
     }
     

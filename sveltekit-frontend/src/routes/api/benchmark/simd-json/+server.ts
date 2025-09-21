@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             ...standardBench,
             iterations,
-            totalTestTime: performance.now() - startTime,
+            totalTestTime: performance.now() - startTime
           }
         });
         
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
               type: i % 5 === 0 ? 'termination' : 'standard',
               text: 'Legal clause text content here '.repeat(20),
               entities: ['date', 'party', 'amount', 'jurisdiction'],
-              riskLevel: Math.random() > 0.7 ? 'high' : 'low',
+              riskLevel: Math.random() > 0.7 ? 'high' : 'low'
             })
           },
           analysis: {
@@ -58,7 +58,7 @@ export const GET: RequestHandler = async ({ url }) => {
             entities: Array.from({ length: 50 }, (_, i) => ({
               text: `Entity ${i}`,
               type: ['person', 'organization', 'date', 'money'][i % 4],
-              confidence: Math.random(),
+              confidence: Math.random()
             })),
             embeddings: Array.from({ length: 768 }, () => Math.random()),
             similarCases: Array.from({ length: 20 }, (_, i) => ({
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
           metadata: {
             algorithm: 'cosine',
             threshold: 0.8,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           },
           results: Array.from({ length: 1000 }, () => Math.random()
         };
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
               metadata: {
                 source: 'legal_database',
                 confidence: Math.random(),
-                processed: false,
+                processed: false
               }
             })),
             processingPipeline: [
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
             timestamp: Date.now(),
             source: 'api_endpoint',
             priority: 'high',
-            expectedDuration: 30000,
+            expectedDuration: 30000
           }
         };
         
@@ -169,7 +169,7 @@ export const GET: RequestHandler = async ({ url }) => {
               created: Date.now(),
               hits: Math.floor(Math.random() * 100),
               lastAccess: Date.now(),
-              source: 'vector_computation',
+              source: 'vector_computation'
             },
             similarityResults: Array.from({ length: 50 }, () => ({
               id: `result-${Math.random()}`,
@@ -214,7 +214,7 @@ export const GET: RequestHandler = async ({ url }) => {
               totalTests: scenarios.length,
               avgSpeedup: Object.values(comparisonResults).reduce((sum: number, result: any) => 
                 sum + ((result as { data?: any; speedup?: any }).speedup || 1), 0) / scenarios.length,
-              totalTestTime: performance.now() - startTime,
+              totalTestTime: performance.now() - startTime
             }
           }
         });
@@ -237,7 +237,7 @@ export const GET: RequestHandler = async ({ url }) => {
               memory: typeof performance !== 'undefined' && (performance as any).memory ? {
                 used: Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024),
                 total: Math.round((performance as any).memory.totalJSHeapSize / 1024 / 1024),
-                limit: Math.round((performance as any).memory.jsHeapSizeLimit / 1024 / 1024),
+                limit: Math.round((performance as any).memory.jsHeapSizeLimit / 1024 / 1024)
               } : null
             }
           }
@@ -261,7 +261,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       error: {
         message: error.message || 'Benchmark failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -292,7 +292,7 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             ...loadResults,
             configuration: { duration, concurrency, payloadSize, scenario },
-            totalTestTime: performance.now() - startTime,
+            totalTestTime: performance.now() - startTime
           }
         });
         
@@ -306,7 +306,7 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             ...stressResults,
             configuration: { duration, payloadSize },
-            totalTestTime: performance.now() - startTime,
+            totalTestTime: performance.now() - startTime
           }
         });
         
@@ -320,7 +320,7 @@ export const POST: RequestHandler = async ({ request }) => {
           data: {
             ...spikeResults,
             configuration: { peakConcurrency: concurrency * 5, payloadSize },
-            totalTestTime: performance.now() - startTime,
+            totalTestTime: performance.now() - startTime
           }
         });
         
@@ -339,7 +339,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: false,
       error: {
         message: error.message || 'Load test failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -369,15 +369,15 @@ async function benchmarkCustomPayload(payload: any, iterations: number): Promise
     standard: {
       totalTime: standardTime,
       avgTime: standardTime / iterations,
-      parsesPerSecond: (iterations / standardTime) * 1000,
+      parsesPerSecond: (iterations / standardTime) * 1000
     },
     simd: {
       totalTime: simdTime, 
       avgTime: simdTime / iterations,
-      parsesPerSecond: (iterations / simdTime) * 1000,
+      parsesPerSecond: (iterations / simdTime) * 1000
     },
     speedup: simdTime > 0 ? standardTime / simdTime : 1,
-    payloadBytes: testData.length,
+    payloadBytes: testData.length
   };
 }
 
@@ -393,7 +393,7 @@ async function runLoadTest(duration: number, concurrency: number, payloadSize: s
     maxResponseTime: 0,
     minResponseTime: Infinity,
     responseTimes: [] as number[],
-    throughput: 0,
+    throughput: 0
   };
   
   const endTime = Date.now() + duration;
@@ -453,7 +453,7 @@ async function runStressTest(maxDuration: number, payloadSize: string): Promise<
     maxConcurrency: 0,
     breakingPoint: 0,
     totalRequests: 0,
-    phases: [] as any[],
+    phases: [] as any[]
   };
   
   const payload = generateTestPayload(payloadSize, 'mixed');
@@ -469,7 +469,7 @@ async function runStressTest(maxDuration: number, payloadSize: string): Promise<
       concurrency,
       avgResponseTime: phaseResults.avgTime,
       successRate: phaseResults.successRate,
-      throughput: phaseResults.throughput,
+      throughput: phaseResults.throughput
     });
     
     if (phaseResults.successRate < 0.95) { // 95% success threshold
@@ -509,7 +509,7 @@ async function runSpikeTest(peakConcurrency: number, payloadSize: string): Promi
     spikeImpact: {
       responseTimeDegradation: spikeResults.avgTime / baselineResults.avgTime,
       throughputImpact: spikeResults.throughput / baselineResults.throughput,
-      recoveryTime: recoveryResults.avgTime / baselineResults.avgTime,
+      recoveryTime: recoveryResults.avgTime / baselineResults.avgTime
     }
   };
 }
@@ -524,7 +524,7 @@ async function runConcurrentParsing(testData: string, concurrency: number, itera
     responseTimes: [] as number[],
     avgTime: 0,
     throughput: 0,
-    successRate: 0,
+    successRate: 0
   };
   
   const startTime = performance.now();
@@ -567,7 +567,7 @@ function generateTestPayload(size: string, scenario: string): any {
     small: 1,
     medium: 10,
     large: 100,
-    xlarge: 1000,
+    xlarge: 1000
   }[size] || 10;
   
   const baseItems = 10 * sizeMultiplier;
@@ -584,7 +584,7 @@ function generateTestPayload(size: string, scenario: string): any {
       metadata: {
         created: Date.now(),
         processed: Math.random() > 0.5,
-        confidence: Math.random(),
+        confidence: Math.random()
       }
     })
   };

@@ -41,7 +41,7 @@ export interface GlobalUserState {
   // Real-time Sync State
   syncStatus: 'idle' | 'syncing' | 'error' | 'offline';
   lastSync: Date | null;
-  pendingChanges: number;,
+  pendingChanges: number;
 }
 
 export interface UserProfile {
@@ -55,7 +55,7 @@ export interface UserProfile {
   jurisdiction?: string;
   avatarUrl?: string;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface UserPreferences {
@@ -67,18 +67,18 @@ export interface UserPreferences {
     temperature: number;
     maxTokens: number;
     enableStreaming: boolean;
-    autoComplete: boolean;,
+    autoComplete: boolean;
   };
   notifications: {
     email: boolean;
     push: boolean;
     desktop: boolean;
-    legal: boolean;,
+    legal: boolean;
   };
   privacy: {
     shareAnalytics: boolean;
     storeSearchHistory: boolean;
-    enableRecommendations: boolean;,
+    enableRecommendations: boolean;
   };
 }
 
@@ -101,14 +101,14 @@ export interface SessionMetrics {
   queriesCount: number;
   successRate: number;
   averageResponseTime: number;
-  topTopics: string[];,
+  topTopics: string[];
 }
 
 export interface EmbeddingCache {
   textHash: string;
   embedding: number[];
   model: string;
-  createdAt: Date;,
+  createdAt: Date;
 }
 
 export interface SearchQuery {
@@ -129,18 +129,18 @@ const defaultPreferences: UserPreferences = {
     temperature: 0.7,
     maxTokens: 2048,
     enableStreaming: true,
-    autoComplete: true,
+    autoComplete: true
   },
   notifications: {
     email: true,
     push: false,
     desktop: true,
-    legal: true,
+    legal: true
   },
   privacy: {
     shareAnalytics: true,
     storeSearchHistory: true,
-    enableRecommendations: true,
+    enableRecommendations: true
   }
 };
 
@@ -161,13 +161,13 @@ const defaultState: GlobalUserState = {
     queriesCount: 0,
     successRate: 0,
     averageResponseTime: 0,
-    topTopics: [],
+    topTopics: []
   },
   recentEmbeddings: [],
   searchHistory: [],
   syncStatus: 'idle',
   lastSync: null,
-  pendingChanges: 0,
+  pendingChanges: 0
 };
 
 // ===== SVELTE 5 RUNES STORE =====
@@ -254,7 +254,7 @@ export const globalUserStore = {
         await fetch(`/api/v1/users/${globalUserState.user.id}/preferences`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updates),
+          body: JSON.stringify(updates)
         });
 
         await this.syncToDatabase();
@@ -270,7 +270,7 @@ export const globalUserStore = {
     const aiMessage: AIMessage = {
       ...message,
       id: crypto.randomUUID(),
-      timestamp: new Date(),
+      timestamp: new Date()
     };
 
     globalUserState.chatHistory.push(aiMessage);
@@ -303,7 +303,7 @@ export const globalUserStore = {
           metadata: message.metadata,
           isSuccessful: message.isSuccessful,
           processingTimeMs: message.processingTime,
-          tokensUsed: message.tokensUsed,
+          tokensUsed: message.tokensUsed
         })
       });
     } catch (error: any) {
@@ -410,7 +410,7 @@ export const globalUserStore = {
       textHash,
       embedding,
       model,
-      createdAt: new Date(),
+      createdAt: new Date()
     };
 
     globalUserState.recentEmbeddings.unshift(cache);
@@ -458,7 +458,7 @@ export const globalUserStore = {
         preferences: globalUserState.preferences,
         sessionMetrics: globalUserState.sessionMetrics,
         searchHistory: globalUserState.searchHistory.slice(0, 10), // Recent searches
-        lastActivity: globalUserState.lastActivity,
+        lastActivity: globalUserState.lastActivity
       };
 
       const response = await fetch('/api/v1/sync/user-state', {
@@ -466,7 +466,7 @@ export const globalUserStore = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: globalUserState.user.id,
-          data: syncData,
+          data: syncData
         })
       });
 
@@ -492,7 +492,7 @@ export const globalUserStore = {
       queriesCount: 0,
       successRate: 0,
       averageResponseTime: 0,
-      topTopics: [],
+      topTopics: []
     };
 
     // Load user data;

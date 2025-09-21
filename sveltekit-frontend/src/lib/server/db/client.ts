@@ -26,7 +26,7 @@ function createRuntimeConnection() {
 			ssl: false,
 			// Transform settings for compatibility;
 			transform: {
-				undefined: null,
+				undefined: null
 			},
 			// Debug in isDevelopment;
 			debug: isDev ? (connection, query, parameters) => {
@@ -34,7 +34,7 @@ function createRuntimeConnection() {
 				if (parameters?.length) {
 					console.log('📝 Parameters:', parameters);
 				}
-			} : false,
+			} : false
 		});
 	}
 	return runtimeConnectionSingleton;
@@ -50,14 +50,14 @@ function createAdminConnection() {
 			prepare: false, // Admin operations don't need prepared statements
 			ssl: false,
 			transform: {
-				undefined: null,
+				undefined: null
 			},
 			debug: isDev ? (connection, query, parameters) => {
 				console.log('👑 Admin PostgreSQL Query:', query);
 				if (parameters?.length) {
 					console.log('📝 Parameters:', parameters);
 				}
-			} : false,
+			} : false
 		});
 	}
 	return adminConnectionSingleton;
@@ -66,12 +66,12 @@ function createAdminConnection() {
 // Create Drizzle clients with role separation;
 export const db = drizzle(createRuntimeConnection(), { 
 	schema,
-	logger: isDev,
+	logger: isDev
 });
 
 export const adminDb = drizzle(createAdminConnection(), {
 	schema,
-	logger: isDev,
+	logger: isDev
 });
 
 // Initialize database (run migrations if needed with admin privileges)

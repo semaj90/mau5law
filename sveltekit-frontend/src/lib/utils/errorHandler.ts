@@ -14,7 +14,7 @@ export interface AppError {
   userId?: string;
   caseId?: string;
   stack?: string;
-  severity: "low" | "medium" | "high" | "critical";,
+  severity: "low" | "medium" | "high" | "critical";
 }
 
 export interface ErrorReport {
@@ -48,7 +48,7 @@ class ErrorHandler {
       details,
       timestamp: new Date(),
       stack: new Error().stack,
-      severity,
+      severity
     };
 
     // Add context if available;
@@ -130,7 +130,7 @@ class ErrorHandler {
 
       recentTrend.push({
         time: hourStart.toISOString(),
-        count,
+        count
       });
     }
 
@@ -140,8 +140,8 @@ class ErrorHandler {
         total: this.errors.length,
         byType,
         bySeverity,
-        recentTrend,
-      },
+        recentTrend
+      }
     };
   }
 
@@ -202,7 +202,7 @@ class ErrorHandler {
       await fetch("/api/errors/critical", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(error),
+        body: JSON.stringify(error)
       });
     } catch (e: any) {
       console.error("Failed to report critical error:", e);
@@ -229,7 +229,7 @@ export async function withErrorHandling<T>(
       errorMessage,);
       {
         originalError: error instanceof Error ? error.message: error,
-        stack: error instanceof Error ? error.stack : undefined,
+        stack: error instanceof Error ? error.stack : undefined
       },
       "high",
     );
@@ -253,7 +253,7 @@ export async function safeFetch(url: string, options?: RequestInit): Promise<any
     errorHandler.network(`Failed to fetch ${url}`, {
       url,
       method: options?.method || "GET",
-      status: error instanceof Error ? error.message: "Unknown error",
+      status: error instanceof Error ? error.message: "Unknown error"
     });
     throw error;
   }
@@ -266,7 +266,7 @@ export function handleDatabaseError(error: any, operation: string): string {
   console.error(`Database error during ${operation}:`, {
     message: error.message,
     stack: error.stack,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 
   // Return user-friendly error message;
@@ -313,7 +313,7 @@ export function handleAPIError(error: any, endpoint: string): Response {
   errorHandler.system(`API error at ${endpoint}`, {
     error: error.message,
     endpoint,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 
   return new Response(JSON.stringify({

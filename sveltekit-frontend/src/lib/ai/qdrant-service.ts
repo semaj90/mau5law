@@ -50,7 +50,7 @@ export interface LegalDocumentMetadata {
     practiceArea: string;
     jurisdiction: string;
     confidentialityLevel: string;
-    tags: string[];,
+    tags: string[];
   };
   extractedData?: {
     parties?: string[];
@@ -84,7 +84,7 @@ export class QdrantService {
   constructor(config: QdrantServiceConfig) {
     this.client = new QdrantClient({
       url: config.url,
-      apiKey: config.apiKey,
+      apiKey: config.apiKey
     });
     this.collectionName = config.collectionName;
     this.vectorSize = config.vectorSize;
@@ -98,8 +98,8 @@ export class QdrantService {
       await this.client.createCollection(this.collectionName, {
         vectors: {
           size: this.vectorSize,
-          distance: "Cosine",
-        },
+          distance: "Cosine"
+        }
       });
     }
   }
@@ -110,7 +110,7 @@ export class QdrantService {
     await this.ensureCollection();
     await this.client.upsert(this.collectionName, {
       wait: true,
-      points: points,
+      points: points
     });
   }
 
@@ -126,20 +126,20 @@ export class QdrantService {
       limit,
       filter,
       with_payload: true,
-      score_threshold: 0.5,
+      score_threshold: 0.5
     });
 
     return searchResult.map((result: any) => ({
       id: (result as { id?: any; score?: any; payload?: any }).id as string,
       score: (result as { id?: any; score?: any; payload?: any }).score,
-      payload: (result as { id?: any; score?: any; payload?: any }).payload as LegalDocumentMetadata,
+      payload: (result as { id?: any; score?: any; payload?: any }).payload as LegalDocumentMetadata
     });
   }
 
   async deletePoints(ids: string[]): Promise<void> {
     await this.client.delete(this.collectionName, {
       wait: true,
-      points: ids,
+      points: ids
     });
   }
 
@@ -157,5 +157,5 @@ export const qdrantService = new QdrantService({
   url: import.meta.env.QDRANT_URL || "http://localhost:6333",
   collectionName: "legal_documents",
   vectorSize: 768,
-  apiKey: import.meta.env.QDRANT_API_KEY,
+  apiKey: import.meta.env.QDRANT_API_KEY
 });

@@ -14,7 +14,7 @@ export interface DimensionalArray {
     created: number;
     lastAccessed: number;
     computationHash: string;
-    attentionWeights: Float32Array;,
+    attentionWeights: Float32Array;
   };
 }
 
@@ -23,7 +23,7 @@ export interface KernelAttentionSlice {
   endIndex: number;
   attentionScore: number;
   recommendationVector: Float32Array;
-  contextEmbedding: Float32Array;,
+  contextEmbedding: Float32Array;
 }
 
 export interface CacheEntry {
@@ -34,7 +34,7 @@ export interface CacheEntry {
   userContext: {
     userId: string;
     sessionId: string;
-    behaviorPattern: string;,
+    behaviorPattern: string;
   };
 }
 
@@ -75,7 +75,7 @@ export class DimensionalCacheEngine {
         created: Date.now(),
         lastAccessed: Date.now(),
         computationHash: this.generateHash(flatData, shape),
-        attentionWeights: attention,
+        attentionWeights: attention
       }
     };
 
@@ -375,7 +375,7 @@ export class DimensionalCacheEngine {
     cacheSize: number;
     hitRate: number;
     avgAttentionScore: number;
-    totalComputations: number;,
+    totalComputations: number;
   } {
     const totalAttentionScores = Array.from(this.cache.values()
       .flatMap(entry => entry.dimensionalArray.kernelSplices)

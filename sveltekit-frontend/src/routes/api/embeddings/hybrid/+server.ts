@@ -29,22 +29,22 @@ const EMBEDDING_MODELS: Record<string, EmbeddingModel> = {
     dimensions: 384,
     maxTokens: 8192,
     provider: "ollama",
-    endpoint: "http://localhost:11434",
+    endpoint: "http://localhost:11434"
   },
   "all-MiniLM-L6-v2": {
     id: "all-MiniLM-L6-v2",
     name: "All MiniLM L6 v2",
     dimensions: 384,
     maxTokens: 512,
-    provider: "local",
+    provider: "local"
   },
   "text-embedding-ada-002": {
     id: "text-embedding-ada-002",
     name: "OpenAI Ada 002",
     dimensions: 1536,
     maxTokens: 8191,
-    provider: "openai",
-  },
+    provider: "openai"
+  }
 };
 
 // Vector storage backends;
@@ -52,7 +52,7 @@ export interface VectorBackend {
   id: string;
   name: string;
   endpoint: string;
-  supported: boolean;,
+  supported: boolean;
 }
 
 const VECTOR_BACKENDS: Record<string, VectorBackend> = {
@@ -60,14 +60,14 @@ const VECTOR_BACKENDS: Record<string, VectorBackend> = {
     id: "pgvector",
     name: "PostgreSQL pgvector",
     endpoint: import.meta.env.DATABASE_URL || "",
-    supported: true,
+    supported: true
   },
   qdrant: {
     id: "qdrant",
     name: "Qdrant Vector DB",
     endpoint: import.meta.env.QDRANT_URL || "http://localhost:6333",
     supported: false, // Will be checked at runtime
-  },
+  }
 };
 
 // Embedding cache for performance
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       content,
       model = "nomic-embed-text",
       backend = "hybrid",
-      options = {},
+      options = {}
     } = await request.json();
 
     if (!content || typeof content !== "string") {
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         embedding: cached.embedding,
         model,
         cached: true,
-        dimensions: cached.embedding.length,
+        dimensions: cached.embedding.length
       });
     }
 
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       model,
       backend: usedBackend,
       dimensions: embedding.length,
-      cached: false,
+      cached: false
     });
   } catch (err: any) {
     console.error("Embedding generation error:", err);
@@ -163,13 +163,13 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         models: Object.values(EMBEDDING_MODELS),
-        backends: Object.values(VECTOR_BACKENDS),
+        backends: Object.values(VECTOR_BACKENDS)
       });
 
     case "health":;
       return json({
         success: true,
-        health: await checkSystemHealth(),
+        health: await checkSystemHealth()
       });
 
     case "cache-stats":;
@@ -177,8 +177,8 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         cache: {
           size: embeddingCache.size,
-          entries: Array.from(embeddingCache.keys()).slice(0, 10),
-        },
+          entries: Array.from(embeddingCache.keys()).slice(0, 10)
+        }
       });
 
     default:
@@ -237,11 +237,11 @@ async function generateQdrantEmbedding(
               payload: {
                 content: content.substring(0, 1000), // Truncate for storage
                 model,
-                timestamp: Date.now(),
-              },
-            },
-          ],
-        }),
+                timestamp: Date.now()
+              }
+            }
+          ]
+        })
       });
     } catch (storageError) {
       console.warn(
@@ -303,7 +303,7 @@ async function generateOllamaEmbedding(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: model,
-        prompt: content,
+        prompt: content
       }),
       signal: AbortSignal.timeout(30000), // 30 second timeout
     });
@@ -400,13 +400,13 @@ async function checkSystemHealth(): Promise<any> {
     ollama: false,
     qdrant: false,
     pgvector: true, // Assume true if we can connect to DB
-    models: [] as string[],
+    models: [] as string[]
   };
 
   // Check Ollama;
   try {
     const response = await fetch("http://localhost:11434/api/tags", {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     if (response.ok) {
       const data = await response.json();
@@ -421,7 +421,7 @@ async function checkSystemHealth(): Promise<any> {
   try {
     const qdrantEndpoint = VECTOR_BACKENDS.qdrant.endpoint;
     const response = await fetch(`${qdrantEndpoint}/collections`, {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     health.qdrant = response.ok;
   } catch (error: any) {

@@ -18,9 +18,9 @@ export const GET: RequestHandler = async () => {
         recommendations: [
           'Call POST /api/orchestrator-startup with action: "start"',
           'Verify all required services are available',
-          'Check database connectivity',
+          'Check database connectivity'
         ],
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -33,16 +33,16 @@ export const GET: RequestHandler = async () => {
         'Database operation monitoring',
         'Context7 MCP integration',
         'Condition-based automation',
-        'Multi-service health monitoring',
+        'Multi-service health monitoring'
       ],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -83,8 +83,8 @@ export const POST: RequestHandler = async ({ request }) => {
               'restart',
               'initialize_system',
               'health_check',
-              'configure',
-            ],
+              'configure'
+            ]
           },)
           { status: 400 }
         );
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -111,7 +111,7 @@ async function startOrchestrator(configuration: any = {}): Promise<any> {
         success: true,
         message: 'Database orchestrator is already running',
         status,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -134,15 +134,15 @@ async function startOrchestrator(configuration: any = {}): Promise<any> {
         'Event loops running',
         'Database monitoring active',
         'Context7 integration enabled',
-        'Real-time processing ready',
-      ],
+        'Real-time processing ready'
+      ]
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: `Failed to start orchestrator: ${error.message}`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -159,7 +159,7 @@ async function stopOrchestrator(): Promise<any> {
         success: true,
         message: 'Database orchestrator is already stopped',
         status,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -168,14 +168,14 @@ async function stopOrchestrator(): Promise<any> {
     return json({
       success: true,
       message: 'Database orchestrator stopped successfully',
-      shutdown_time: new Date().toISOString(),
+      shutdown_time: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: `Failed to stop orchestrator: ${error.message}`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -196,14 +196,14 @@ async function restartOrchestrator(configuration: any = {}): Promise<any> {
       success: true,
       message: 'Database orchestrator restarted successfully',
       restart_time: new Date().toISOString(),
-      start_result: startResult,
+      start_result: startResult
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: `Failed to restart orchestrator: ${error.message}`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -228,7 +228,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
         condition: { interval: 60000 }, // 1 minute
         action: 'check_system_health',
         isActive: true,
-        metadata: { created_by: 'initialization' },
+        metadata: { created_by: 'initialization' }
       },
       {
         id: 'database_change_processor',
@@ -236,7 +236,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
         condition: { table: '*', operation: 'insert' },
         action: 'process_new_data',
         isActive: true,
-        metadata: { created_by: 'initialization' },
+        metadata: { created_by: 'initialization' }
       },
       {
         id: 'context7_sync_condition',
@@ -244,8 +244,8 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
         condition: { interval: 300000 }, // 5 minutes
         action: 'sync_context7_data',
         isActive: true,
-        metadata: { created_by: 'initialization' },
-      },
+        metadata: { created_by: 'initialization' }
+      }
     ];
 
     for (const condition of defaultConditions) {
@@ -257,7 +257,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
     const testRecord = {
       type: 'system_initialization',
       message: 'System initialization test',
-      timestamp: new Date(),
+      timestamp: new Date()
     };
     await (orchestrator as any).saveToDatabase?.(testRecord, 'system_logs');
 
@@ -270,7 +270,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
     (orchestrator as any).emit?.('system:initialization_complete', {
       timestamp: new Date(),
       configuration,
-      health_results: healthResults,
+      health_results: healthResults
     });
 
     return json({
@@ -280,14 +280,14 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
       status: (orchestrator as any).getStatus?.(),
       default_conditions_added: defaultConditions.length,
       system_ready: true,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: `System initialization failed: ${error.message}`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -301,7 +301,7 @@ async function performSystemHealthCheck(): Promise<any> {
       orchestrator: (orchestrator as any).getStatus?.(),
       services: Record<string, any>,
       database: null,
-      overall_status: 'unknown',
+      overall_status: 'unknown'
     };
 
     // Check key services
@@ -309,7 +309,7 @@ async function performSystemHealthCheck(): Promise<any> {
       { name: 'ollama', url: 'http://localhost:11434/api/tags' },
       { name: 'enhanced_rag', url: 'http://localhost:8094/health' },
       { name: 'upload_service', url: 'http://localhost:8093/health' },
-      { name: 'recommendation_service', url: 'http://localhost:8096/health' },
+      { name: 'recommendation_service', url: 'http://localhost:8096/health' }
     ];
 
     for (const service of serviceEndpoints) {
@@ -321,13 +321,13 @@ async function performSystemHealthCheck(): Promise<any> {
         (healthResults.services as any)[service.name] = {
           status: response.ok ? 'healthy' : 'unhealthy',
           response_code: response.status,
-          endpoint: service.url,
+          endpoint: service.url
         };
       } catch (error: any) {
         (healthResults.services as any)[service.name] = {
           status: 'error',
           error: (error as Error).message,
-          endpoint: service.url,
+          endpoint: service.url
         };
       }
     }
@@ -338,12 +338,12 @@ async function performSystemHealthCheck(): Promise<any> {
       healthResults.database = {
         status: 'healthy',
         connection: 'active',
-        test_query: 'successful',
+        test_query: 'successful'
       };
     } catch (error: any) {
       healthResults.database = {
         status: 'error',
-        error: error.message,
+        error: error.message
       };
     }
 
@@ -367,14 +367,14 @@ async function performSystemHealthCheck(): Promise<any> {
       health_check: healthResults,
       healthy_services: healthyServices,
       total_services: totalServices,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: `Health check failed: ${error.message}`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -408,7 +408,7 @@ async function configureOrchestrator(configuration: any): Promise<any> {
         configuration,
         applied_settings: appliedSettings,
         configured_at: new Date(),
-        configured_by: 'api',
+        configured_by: 'api'
       },
       'orchestrator_configurations'
     );
@@ -418,14 +418,14 @@ async function configureOrchestrator(configuration: any): Promise<any> {
       message: 'Orchestrator configured successfully',
       applied_settings: appliedSettings,
       configuration,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: `Configuration failed: ${error.message}`,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

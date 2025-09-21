@@ -18,7 +18,7 @@ interface CacheWarmingTask {
   type: 'legal_document' | 'vector_similarity' | 'search_results' | 'som_embeddings';
   priority: number;
   payload: any;
-  retries: number;,
+  retries: number;
 }
 
 const warmingQueue: CacheWarmingTask[] = [];
@@ -149,8 +149,8 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
         return new Response(JSON.stringify(somResult), {
           headers: {
             'Content-Type': 'application/json',
-            'X-Cache-Source': 'som-webgpu',
-          },
+            'X-Cache-Source': 'som-webgpu'
+          }
         });
       }
     } catch (error) {
@@ -166,8 +166,8 @@ async function checkCacheHierarchy(cacheKey: string, request: Request): Promise<
         return new Response(JSON.stringify(redisResult), {
           headers: {
             'Content-Type': 'application/json',
-            'X-Cache-Source': 'redis-distributed',
-          },
+            'X-Cache-Source': 'redis-distributed'
+          }
         });
       }
     } catch (error) {
@@ -211,8 +211,8 @@ async function fetchWithSIMD(request: Request): Promise<Response> {
       statusText: response.statusText,
       headers: {
         ...Object.fromEntries(response.headers.entries()),
-        'X-SIMD-Optimized': 'true',
-      },
+        'X-SIMD-Optimized': 'true'
+      }
     });
   } catch (error) {
     console.warn('SIMD JSON optimization failed, using original response:', error);
@@ -245,7 +245,7 @@ async function cacheResponse(
     if (isRedisConnected && cacheStrategy.useRedis) {
       cachePromises.push(redisWebGPUIntegration.cacheResult(cacheKey, responseData, {
           ttl: cacheStrategy.ttl,
-          priority: cacheStrategy.priority,
+          priority: cacheStrategy.priority
         })
       );
     }
@@ -268,7 +268,7 @@ function determineCacheStrategy(request: Request): {
   useRedis: boolean;
   useSOM: boolean;
   ttl: number;
-  priority: number;,
+  priority: number;
 } {
   const url = new URL(request.url);
 
@@ -278,7 +278,7 @@ function determineCacheStrategy(request: Request): {
       useRedis: true,
       useSOM: true,
       ttl: 24 * 60 * 60, // 24 hours
-      priority: 10,
+      priority: 10
     };
   }
 
@@ -288,7 +288,7 @@ function determineCacheStrategy(request: Request): {
       useRedis: true,
       useSOM: false,
       ttl: 60 * 60, // 1 hour
-      priority: 5,
+      priority: 5
     };
   }
 
@@ -298,7 +298,7 @@ function determineCacheStrategy(request: Request): {
       useRedis: true,
       useSOM: true,
       ttl: 15 * 60, // 15 minutes
-      priority: 8,
+      priority: 8
     };
   }
 
@@ -308,7 +308,7 @@ function determineCacheStrategy(request: Request): {
       useRedis: false,
       useSOM: false,
       ttl: 5 * 60, // 5 minutes
-      priority: 3,
+      priority: 3
     };
   }
 
@@ -317,7 +317,7 @@ function determineCacheStrategy(request: Request): {
     useRedis: true,
     useSOM: false,
     ttl: 30 * 60, // 30 minutes
-    priority: 5,
+    priority: 5
   };
 }
 
@@ -413,22 +413,22 @@ function queueCommonCacheWarming(): void {
       type: 'legal_document',
       priority: 10,
       payload: { type: 'template_analysis' },
-      retries: 0,
+      retries: 0
     },
     {
       id: 'common-vectors',
       type: 'vector_similarity',
       priority: 8,
       payload: { precompute: 'common_embeddings' },
-      retries: 0,
+      retries: 0
     },
     {
       id: 'search-patterns',
       type: 'search_results',
       priority: 7,
       payload: { warm: 'popular_queries' },
-      retries: 0,
-    },
+      retries: 0
+    }
   ];
 
   warmingQueue.push(...commonTasks);
@@ -570,7 +570,7 @@ self.addEventListener('message', (event: MessageEvent) => {
         webgpu: webgpuInitialized,
         som: somCacheReady,
         warmingQueue: warmingQueue.length,
-        activeWarming: activeWarmingTasks.size,
+        activeWarming: activeWarmingTasks.size
       });
       break;
   }

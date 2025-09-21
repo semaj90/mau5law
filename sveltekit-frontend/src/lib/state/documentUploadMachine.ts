@@ -43,7 +43,7 @@ export interface DocumentUploadContext {
   // Error handling
   error?: string;
   retryCount: number;
-  maxRetries: number;,
+  maxRetries: number;
 }
 
 export type DocumentUploadEvent =
@@ -149,7 +149,7 @@ const uploadFileService = fromPromise(async ({ input }: { input: DocumentUploadC
   // This would be replaced with actual upload to your backend;
   const response = await fetch('/api/documents/upload', {
     method: 'POST',
-    body: formData,
+    body: formData
   });
   
   if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
@@ -163,7 +163,7 @@ const uploadFileService = fromPromise(async ({ input }: { input: DocumentUploadC
     documentId: (result as { documentId?: any; evidenceId?: any; extractedText?: any }).documentId,
     evidenceId: (result as { documentId?: any; evidenceId?: any; extractedText?: any }).evidenceId,
     extractedText: (result as { documentId?: any; evidenceId?: any; extractedText?: any }).extractedText,
-    uploadTime: Date.now() - input.uploadStartTime,
+    uploadTime: Date.now() - input.uploadStartTime
   };
 });
 
@@ -212,7 +212,7 @@ export const documentUploadMachine = createMachine({
     validationErrors: [],
     uploadStartTime: 0,
     retryCount: 0,
-    maxRetries: 3,
+    maxRetries: 3
   },
   states: {
     idle: {
@@ -232,7 +232,7 @@ export const documentUploadMachine = createMachine({
             uploadStartTime: Date.now(),
             retryCount: 0,
             validationErrors: [],
-            error: undefined,
+            error: undefined
           })
         }
       }
@@ -240,7 +240,7 @@ export const documentUploadMachine = createMachine({
 
     fileSelected: {
       always: {
-        target: 'validating',
+        target: 'validating'
       }
     },
 
@@ -253,7 +253,7 @@ export const documentUploadMachine = createMachine({
             target: 'calculatingHash',
             guard: ({ event }) => event.output.valid,
             actions: assign({
-              validationErrors: [],
+              validationErrors: []
             })
           },
           {
@@ -286,10 +286,10 @@ export const documentUploadMachine = createMachine({
             description: ({ event }) => event.description,
             tags: ({ event }) => event.tags || [],
             validationErrors: [],
-            error: undefined,
+            error: undefined
           })
         },
-        RESET: 'idle',
+        RESET: 'idle'
       }
     },
 
@@ -346,10 +346,10 @@ export const documentUploadMachine = createMachine({
             description: ({ event }) => event.description,
             tags: ({ event }) => event.tags || [],
             validationErrors: [],
-            error: undefined,
+            error: undefined
           })
         },
-        RESET: 'idle',
+        RESET: 'idle'
       }
     },
 
@@ -364,7 +364,7 @@ export const documentUploadMachine = createMachine({
             evidenceId: ({ event }) => event.output.evidenceId,
             extractedText: ({ event, context }) => event.output.extractedText || context.extractedText,
             uploadEndTime: Date.now(),
-            uploadProgress: 100,
+            uploadProgress: 100
           })
         },
         onError: {
@@ -375,7 +375,7 @@ export const documentUploadMachine = createMachine({
         }
       },
       on: {
-        CANCEL_UPLOAD: 'cancelled',
+        CANCEL_UPLOAD: 'cancelled'
       }
     },
 
@@ -387,15 +387,15 @@ export const documentUploadMachine = createMachine({
             guard: ({ context }) => context.retryCount < context.maxRetries,
             actions: assign({
               retryCount: ({ context }) => context.retryCount + 1,
-              error: undefined,
+              error: undefined
             })
           },
           {
-            target: 'uploadFailed',
+            target: 'uploadFailed'
           }
         ],
         CANCEL_UPLOAD: 'cancelled',
-        RESET: 'idle',
+        RESET: 'idle'
       }
     },
 
@@ -403,7 +403,7 @@ export const documentUploadMachine = createMachine({
       always: {
         target: 'startingProcessing',
         actions: assign({
-          processingStartTime: Date.now(),
+          processingStartTime: Date.now()
         })
       }
     },
@@ -426,7 +426,7 @@ export const documentUploadMachine = createMachine({
               originalFilename: context.filename,
               fileSize: context.fileSize,
               mimeType: context.mimeType,
-              fileHash: context.fileHash,
+              fileHash: context.fileHash
             }
           })
         })
@@ -440,41 +440,41 @@ export const documentUploadMachine = createMachine({
       states: {
         analyzing: {
           after: {
-            2000: 'embedding',
+            2000: 'embedding'
           },
           entry: assign({
-            uploadProgress: 25,
+            uploadProgress: 25
           })
         },
         embedding: {
           after: {
-            3000: 'indexing',
+            3000: 'indexing'
           },
           entry: assign({
-            uploadProgress: 50,
+            uploadProgress: 50
           })
         },
         indexing: {
           after: {
-            2000: 'caching',
+            2000: 'caching'
           },
           entry: assign({
-            uploadProgress: 75,
+            uploadProgress: 75
           })
         },
         caching: {
           after: {
-            1000: 'done',
+            1000: 'done'
           },
           entry: assign({
-            uploadProgress: 90,
+            uploadProgress: 90
           })
         },
         done: {
           type: 'final',
           entry: assign({
             uploadProgress: 100,
-            processingEndTime: Date.now(),
+            processingEndTime: Date.now()
           })
         }
       },
@@ -491,7 +491,7 @@ export const documentUploadMachine = createMachine({
             error: ({ event }) => event.error
           })
         },
-        CANCEL_UPLOAD: 'cancelled',
+        CANCEL_UPLOAD: 'cancelled'
       }
     },
 
@@ -506,7 +506,7 @@ export const documentUploadMachine = createMachine({
         },
         FORCE_COMPLETE: 'completed',
         CANCEL_UPLOAD: 'cancelled',
-        RESET: 'idle',
+        RESET: 'idle'
       }
     },
 
@@ -570,7 +570,7 @@ export const getUploadMetrics = (state: any) => {
     processingTime: context.processingEndTime ? context.processingEndTime - context.processingStartTime! : 0,
     totalTime: context.processingEndTime ? context.processingEndTime - context.uploadStartTime : 0,
     fileSize: context.fileSize,
-    filename: context.filename,
+    filename: context.filename
   };
 };
 

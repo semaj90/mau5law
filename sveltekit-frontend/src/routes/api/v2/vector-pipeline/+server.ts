@@ -37,7 +37,7 @@ interface EmbeddingResult {
   embedding: number[];
   metadata: Record<string, any>;
   processing_time: number;
-  model_used: string;,
+  model_used: string;
 }
 
 class VectorPipelineService {
@@ -94,7 +94,7 @@ class VectorPipelineService {
         embeddings_generated: results.length,
         processing_time: processingTime,
         results,
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       };
     } catch (err) {
       console.error('Vector pipeline processing failed:', err);
@@ -151,10 +151,10 @@ class VectorPipelineService {
         chunk_size: chunk.length,
         processed_at: new Date().toISOString(),
         cuda_enabled: this.cudaEnabled,
-        ...request.metadata,
+        ...request.metadata
       },
       processing_time: 0, // Will be set by caller
-      model_used: request.embed_model || 'BAAI/bge-small-en-v1.5',
+      model_used: request.embed_model || 'BAAI/bge-small-en-v1.5'
     });
 
     // Store in database
@@ -241,14 +241,14 @@ class VectorPipelineService {
       const response = await fetch(`${this.fastEmbedUrl}/embed`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           texts,
           model,
           normalize: true,
-          device: this.cudaEnabled ? 'cuda' : 'cpu',
-        }),
+          device: this.cudaEnabled ? 'cuda' : 'cpu'
+        })
       });
 
       if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -292,7 +292,7 @@ class VectorPipelineService {
             (result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).text,
             embeddingVector,
             JSON.stringify((result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).metadata),
-            (result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).model_used,
+            (result as { embeddings?: any; embedding?: any; document_id?: any; chunk_id?: any; text?: any; metadata?: any; model_used?: any }).model_used
           ]
         );
       }
@@ -327,7 +327,7 @@ class VectorPipelineService {
         embedding: JSON.parse(row.embedding), // Parse pgvector format
         metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
         processing_time: 0,
-        model_used: row.model_used,
+        model_used: row.model_used
       });
     } catch (err) {
       console.error('Failed to check existing embeddings:', err);
@@ -419,7 +419,7 @@ class VectorPipelineService {
         metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
         model_used: row.model_used,
         processed_at: row.processed_at,
-        similarity: parseFloat(row.similarity),
+        similarity: parseFloat(row.similarity)
       });
     } catch (err) {
       throw new Error(`Similarity search failed: ${err}`);
@@ -458,8 +458,8 @@ class VectorPipelineService {
         fastembed_service: fastEmbedHealth,
         pipeline_config: {
           fastembed_url: this.fastEmbedUrl,
-          cuda_enabled: this.cudaEnabled,
-        },
+          cuda_enabled: this.cudaEnabled
+        }
       };
     } catch (err) {
       throw new Error(`Failed to get stats: ${err}`);
@@ -482,7 +482,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: true,
-      result,
+      result
     });
   } catch (err) {
 		console.error('Vector pipeline processing error:', err);
@@ -518,7 +518,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					limit,
 					threshold,
 					model,
-					filters: Object.keys(filters).length > 0 ? filters : undefined,
+					filters: Object.keys(filters).length > 0 ? filters : undefined
 				});
 
 				return json({

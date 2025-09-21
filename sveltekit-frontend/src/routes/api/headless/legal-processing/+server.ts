@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return json({
         success: false,
         error: 'Document text is required',
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       }, { status: 400 });
     }
 
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: false,
           error: 'Failed to initialize headless WebGPU processor',
           processingTime: Date.now() - startTime,
-          fallback: 'CPU processing available',
+          fallback: 'CPU processing available'
         }, { status: 500 });
       }
     }
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       documentType: body.documentType,
       requestId: generateRequestId(),
       timestamp: Date.now(),
-      metadata: body.metadata,
+      metadata: body.metadata
     };
 
     console.log(`⚡ Starting headless processing with config: ${JSON.stringify(processingConfig)}`);
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         id: body.documentId,
         type: body.documentType,
         length: body.text.length,
-        processingMode: 'headless-webgpu',
+        processingMode: 'headless-webgpu'
       },
 
       // WebGPU results;
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           mipmap: processingConfig.enableMipmapGeneration,
           lod: processingConfig.enableLODCaching,
           offscreen: processingConfig.enableOffscreenRendering,
-          streaming: processingConfig.enableStreamingOptimization,
+          streaming: processingConfig.enableStreamingOptimization
         }
       }
     };
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       system: {
         webgpuAvailable: false,
         fallbackMode: 'cpu',
-        error: error.name,
+        error: error.name
       }
     }, { status: 500 });
   }
@@ -180,7 +180,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'Documents array is required for batch processing',
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       }, { status: 400 });
     }
 
@@ -211,7 +211,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       totalProcessingTime: results.reduce((sum, r) => sum + r.processingTime, 0),
       averageProcessingTime: results.reduce((sum, r) => sum + r.processingTime, 0) / results.length,
       totalMemoryUsed: results.reduce((sum, r) => sum + (r.mipmapChain?.totalMemoryUsed || 0), 0),
-      compressionRatios: results.map(r => r.lodEntry?.cache_metadata.compression_stats.compression_ratio).filter(Boolean),
+      compressionRatios: results.map(r => r.lodEntry?.cache_metadata.compression_stats.compression_ratio).filter(Boolean)
     };
 
     const response = {
@@ -238,10 +238,10 @@ export const PUT: RequestHandler = async ({ request }) => {
       performance: {
         documentsPerSecond: body.documents.length / ((Date.now() - startTime) / 1000),
         parallelizationEfficiency: batchStats.totalProcessingTime / (Date.now() - startTime),
-        memoryEfficiency: batchStats.totalMemoryUsed / (1024 * 1024) // MB,
+        memoryEfficiency: batchStats.totalMemoryUsed / (1024 * 1024) // MB
       },
 
-      system: headlessLegalProcessorFactory.getStats(),
+      system: headlessLegalProcessorFactory.getStats()
     };
 
     console.log(`✅ Batch processing completed: ${body.documents.length} documents in ${(response as { processingTime?: any }).processingTime}ms`);
@@ -253,7 +253,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message || 'Batch processing failed',
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     }, { status: 500 });
   }
 };
@@ -274,14 +274,14 @@ export const GET: RequestHandler = async () => {
       streamingOptimization: true,
       batchProcessing: true,
       svgGeneration: true,
-      legalAIAnalysis: true,
+      legalAIAnalysis: true
     },
     performance: {
       isInitialized: stats.isInitialized,
       queueLength: stats.queueLength,
-      cacheStats: stats.lodCacheStats,
+      cacheStats: stats.lodCacheStats
     },
-    configuration: DEFAULT_HEADLESS_CONFIG,
+    configuration: DEFAULT_HEADLESS_CONFIG
   });
 };
 
@@ -295,13 +295,13 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Headless processor resources cleaned up',
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   } catch (error: any) {
     return json({
       success: false,
       error: error.message,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, { status: 500 });
   }
 };

@@ -43,7 +43,7 @@ interface FileMetadata {
   size: number;
   lastModified: Date;
   contentType?: string;
-  bucket: string;,
+  bucket: string;
 }
 
 interface TextExtractionResult {
@@ -52,7 +52,7 @@ interface TextExtractionResult {
     originalSize: number;
     extractedSize: number;
     contentType: string;
-    processingTime: number;,
+    processingTime: number;
   };
 }
 
@@ -71,9 +71,9 @@ const createMinIOClient = (): InstanceType<typeof S3Client> => {
     region: config.region,
     credentials: {
       accessKeyId: config.accessKeyId,
-      secretAccessKey: config.secretAccessKey,
+      secretAccessKey: config.secretAccessKey
     },
-    forcePathStyle: config.forcePathStyle,
+    forcePathStyle: config.forcePathStyle
   });
 };
 
@@ -121,7 +121,7 @@ function detectFileType(key: string, contentType?: string): string {
     case 'html': case 'htm': return 'html';
     case 'csv': return 'csv';
     case 'log': return 'log';
-    default: return 'unknown';,
+    default: return 'unknown';
   }
 }
 
@@ -191,8 +191,8 @@ export class MinIOService {
           originalSize: rawContent.length,
           extractedSize: extractedContent.length,
           contentType: response.ContentType || 'application/octet-stream',
-          processingTime,
-        },
+          processingTime
+        }
       };
 
     } catch (error) {
@@ -243,7 +243,7 @@ export class MinIOService {
 
       case 'text':
       default:
-        return content;,
+        return content;
     }
   }
 
@@ -262,7 +262,7 @@ export class MinIOService {
         Key: key,
         Body: content,
         ContentType: 'text/plain',
-        Metadata: metadata,
+        Metadata: metadata
       });
 
       await this.client.send(command);
@@ -290,8 +290,8 @@ export class MinIOService {
           Bucket: bucket,
           Key: key,
           Body: content,
-          ContentType: contentType || 'application/octet-stream',
-        },
+          ContentType: contentType || 'application/octet-stream'
+        }
       });
 
       await upload.done();
@@ -315,7 +315,7 @@ export class MinIOService {
       const command = new ListObjectsV2Command({
         Bucket: bucket,
         Prefix: prefix,
-        MaxKeys: maxKeys,
+        MaxKeys: maxKeys
       });
 
       const response = await this.client.send(command);
@@ -324,7 +324,7 @@ export class MinIOService {
         key: obj.Key!,
         size: obj.Size || 0,
         lastModified: obj.LastModified || new Date(),
-        bucket,
+        bucket
       });
 
     } catch (error) {
@@ -359,7 +359,7 @@ export class MinIOService {
         size: response.ContentLength || 0,
         lastModified: response.LastModified || new Date(),
         contentType: response.ContentType,
-        bucket,
+        bucket
       };
     } catch {
       return null;
@@ -387,7 +387,7 @@ export class MinIOService {
         } catch (error) {
           return {
             url,
-            error: error instanceof Error ? error.message: 'Unknown error',
+            error: error instanceof Error ? error.message: 'Unknown error'
           };
         }
       });

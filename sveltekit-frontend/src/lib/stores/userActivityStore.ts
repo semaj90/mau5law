@@ -12,7 +12,7 @@ interface UserActivityMetrics {
   interactionCount: number;
   activityScore: number;
   isActive: boolean;
-  sessionStartTime: number;,
+  sessionStartTime: number;
 }
 
 interface ActivityEvent {
@@ -29,7 +29,7 @@ class UserActivityDetector {
     interactionCount: 0,
     activityScore: 0,
     isActive: true,
-    sessionStartTime: Date.now(),
+    sessionStartTime: Date.now()
   });
 
   private eventHistory: ActivityEvent[] = [];
@@ -87,7 +87,7 @@ class UserActivityDetector {
     const activityEvent: ActivityEvent = {
       type: eventType,
       timestamp: now,
-      target: event?.target ? (event.target as Element).tagName: undefined,
+      target: event?.target ? (event.target as Element).tagName: undefined
     };
 
     // Add to history
@@ -106,7 +106,7 @@ class UserActivityDetector {
         idleTimeMs: 0,
         interactionCount: metrics.interactionCount + 1,
         activityScore: this.calculateActivityScore(),
-        isActive: true,
+        isActive: true
       };
     });
 
@@ -166,12 +166,12 @@ class UserActivityDetector {
 
     this.activityStore.update(metrics => ({
       ...metrics,
-      isActive: false,
+      isActive: false
     });
 
     // Send idle event to GPU bridge;
     this.sendActivityToGPUBridge('IDLE_TIMEOUT', {
-      idleTimeMs: this.idleThreshold,
+      idleTimeMs: this.idleThreshold
     });
   }
 
@@ -273,7 +273,7 @@ class UserActivityDetector {
       ...metrics,
       recentEventCount: recentActivity.length,
       recentEventTypes: [...new Set(recentActivity.map(e => e.type))],
-      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected',
+      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected'
     };
   }
 

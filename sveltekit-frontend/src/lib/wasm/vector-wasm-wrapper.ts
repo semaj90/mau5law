@@ -35,7 +35,7 @@ export interface VectorWasmModule {
   __unpin(ptr: number): void;
   __collect(): void;
   
-  memory: WebAssembly.Memory;,
+  memory: WebAssembly.Memory;
 }
 
 export class VectorWasmWrapper {
@@ -240,7 +240,7 @@ export class VectorWasmWrapper {
     const pages = this.module.memory.buffer.byteLength / 65536;
     return {
       pages,
-      bytes: this.module.memory.buffer.byteLength,
+      bytes: this.module.memory.buffer.byteLength
     };
   }
 

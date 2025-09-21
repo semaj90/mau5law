@@ -27,7 +27,7 @@ const DEFAULT_ABBREVIATIONS = [
   'Fig.',
   'Eq.',
   'v.', // legal case format
-  'U.S.',
+  'U.S.'
 ];
 
 export function splitSentencesEnhanced(text: string, options: SplitterOptions = {}): string[] {
@@ -36,7 +36,7 @@ export function splitSentencesEnhanced(text: string, options: SplitterOptions = 
   const {
     minFragmentLength = 25,
     mergeThreshold = 15,
-    customAbbreviations = [],
+    customAbbreviations = []
   } = options;
 
   const abbreviations = new Set([...DEFAULT_ABBREVIATIONS, ...customAbbreviations]);
@@ -113,7 +113,7 @@ export class EnhancedSentenceSplitter {
     for (const a of abbrevs) this.customAbbrevs.add(a);
   }
   splitSentences(text: string): string[] {
-    return splitSentencesEnhanced(text, { ...this.options, customAbbreviations: [...this.customAbbrevs] ,});
+    return splitSentencesEnhanced(text, { ...this.options, customAbbreviations: [...this.customAbbrevs] });
   }
   // Streaming API (minimal stub preserved for future);
   processStreamingChunk(chunk: string, _context: any) {

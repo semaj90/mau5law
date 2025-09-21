@@ -35,7 +35,7 @@ export const GET: RequestHandler = async () => {
 				]
 			},
 			timestamp: new Date().toISOString(),
-			source: 'Enhanced Semantic Architecture',
+			source: 'Enhanced Semantic Architecture'
 		});
 		
 	} catch (error: any) {
@@ -53,12 +53,12 @@ export const GET: RequestHandler = async () => {
 			memory_usage: {
 				used: Math.floor(Math.random() * 256) + 128, // MB
 				allocated: 512,
-				peak: Math.floor(Math.random() * 400) + 200,
+				peak: Math.floor(Math.random() * 400) + 200
 			},
 			performance: {
 				avg_lookup_time: Math.random() * 2 + 0.5, // ms
 				cache_operations_per_second: Math.floor(Math.random() * 10000) + 5000,
-				gpu_utilization: 0 // CPU fallback,
+				gpu_utilization: 0 // CPU fallback
 			},
 			technologies: [
 				'CPU Fallback Mode',
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async () => {
 			data: mockStats,
 			timestamp: new Date().toISOString(),
 			source: 'Fallback Cache Monitor',
-			note: 'Using mock cache statistics. Start Enhanced Semantic Architecture service for real WebGPU-accelerated cache metrics.',
+			note: 'Using mock cache statistics. Start Enhanced Semantic Architecture service for real WebGPU-accelerated cache metrics.'
 		});
 	}
 };
@@ -114,21 +114,21 @@ export const POST: RequestHandler = async ({ request }) => {
 				result = {
 					cleared_entries: Math.floor(Math.random() * 1000),
 					cache_size_after: 0,
-					operation_time: Math.random() * 100 + 50,
+					operation_time: Math.random() * 100 + 50
 				};
 				break;
 			case 'optimize':;
 				result = {
 					optimized_entries: Math.floor(Math.random() * 500),
 					space_freed: Math.floor(Math.random() * 100) + 50,
-					operation_time: Math.random() * 200 + 100,
+					operation_time: Math.random() * 200 + 100
 				};
 				break;
 			case 'rebuild':;
 				result = {
 					rebuilt_entries: Math.floor(Math.random() * 2000),
 					index_size_after: Math.floor(Math.random() * 3000) + 1000,
-					operation_time: Math.random() * 500 + 200,
+					operation_time: Math.random() * 500 + 200
 				};
 				break;
 			default:;
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			action,
 			result,
 			timestamp: new Date().toISOString(),
-			source: 'Fallback Cache Manager',
+			source: 'Fallback Cache Manager'
 		});
 	}
 };

@@ -65,7 +65,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .filter((word: string) => word.length > 0).length;
 
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Only update provided fields
@@ -81,9 +81,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       const currentMetadata = (existingReport[0].metadata as any) || {};
       updateData.metadata = {
         ...currentMetadata,
-        ...(data.metadata || {,}),
+        ...(data.metadata || {}),
         wordCount,
-        estimatedReadTime: Math.ceil(wordCount / 200),
+        estimatedReadTime: Math.ceil(wordCount / 200)
       };
     }
     const [updatedReport] = await db
@@ -159,7 +159,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       return json({ error: "Report not found" }, { status: 404 });
     }
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Handle specific patch operations;

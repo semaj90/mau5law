@@ -534,14 +534,14 @@ export const compositeActions = {
       role: 'dialog',
       hidden: false,
       label: options.title,
-      describedBy: options.description ? descId : undefined,
+      describedBy: options.description ? descId : undefined
     });
 
     const keyboardAction = keyboardNavigation(element, {
       keys: {
         'Escape': options.onClose
       },
-      preventDefault: true,
+      preventDefault: true
     });
 
     return {
@@ -557,14 +557,14 @@ export const compositeActions = {
   dropdown: (element: HTMLElement, options: {
     isOpen: boolean;
     onToggle: () => void;
-    onSelect: (value: any) => void;,
+    onSelect: (value: any) => void;
   }) => {
     const listboxId = a11yUtils.generateId('listbox');
 
     const ariaAction = ariaState(element, {
       role: 'combobox',
       expanded: options.isOpen,
-      controls: listboxId,
+      controls: listboxId
     });
 
     const keyboardAction = keyboardNavigation(element, {

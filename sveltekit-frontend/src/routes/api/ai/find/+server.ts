@@ -167,7 +167,7 @@ function generateCacheKey(request: AIFindRequest): string {
     useAI: request.useAI,
     mcpAnalysis: request.mcpAnalysis,
     semanticSearch: request.semanticSearch,
-    confidenceThreshold: request.confidenceThreshold,
+    confidenceThreshold: request.confidenceThreshold
   };
   
   return `ai_search:${Buffer.from(JSON.stringify(keyData)).toString('base64')}`;
@@ -197,7 +197,7 @@ async function performDatabaseSearch(
       incidentDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
       location: 'Downtown District',
       dangerScore: 7,
-      jurisdiction: 'State Court',
+      jurisdiction: 'State Court'
     },
     {
       id: 'case-2',
@@ -211,7 +211,7 @@ async function performDatabaseSearch(
       incidentDate: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
       location: 'Business District',
       dangerScore: 3,
-      jurisdiction: 'Federal Court',
+      jurisdiction: 'Federal Court'
     }
   ];
 
@@ -380,7 +380,7 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
         confidence: Math.max(0.6, Math.random() * 0.4 + 0.6),
         relevanceScore: Math.max(0.7, Math.random() * 0.3 + 0.7),
         excerpt: (result as { id?: any; description?: any; content?: any; type?: any }).description?.substring(0, 200) + '...' || 
-                (result as { id?: any; description?: any; content?: any; type?: any ,}).content?.substring(0, 200) + '...' || '',
+                (result as { id?: any; description?: any; content?: any; type?: any }).content?.substring(0, 200) + '...' || '',
         highlights: [query],
         reasoning: `Matched search term "${query}" in ${(result as { id?: any; description?: any; content?: any; type?: any }).type}`
       });
@@ -391,7 +391,7 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
           queryIntent: 'general_search',
           suggestedFilters: [],
           relatedQueries: [],
-          confidence: 0.7,
+          confidence: 0.7
         }
       };
     }
@@ -405,16 +405,16 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
       confidence: 0.7,
       relevanceScore: 0.8,
       excerpt: (result as { id?: any; description?: any; content?: any; type?: any }).description?.substring(0, 200) + '...' || 
-              (result as { id?: any; description?: any; content?: any; type?: any ,}).content?.substring(0, 200) + '...' || '',
+              (result as { id?: any; description?: any; content?: any; type?: any }).content?.substring(0, 200) + '...' || '',
       highlights: [query],
-      reasoning: 'Basic relevance match',
+      reasoning: 'Basic relevance match'
     });
 
     return {
       enhanced,
       aiAnalysis: {
         queryIntent: 'basic_search',
-        confidence: 0.7,
+        confidence: 0.7
       }
     };
   }
@@ -436,7 +436,7 @@ async function performMCPAnalysis(query: string): Promise<MCPContextAnalysis | n
         context: {
           searchQuery: query,
           domain: 'legal-ai',
-          userIntent: 'search_assistance',
+          userIntent: 'search_assistance'
         }
       }
     );
@@ -447,7 +447,7 @@ async function performMCPAnalysis(query: string): Promise<MCPContextAnalysis | n
       bestPractices: Array.isArray(mcpResults.bestPractices) ? 
         mcpResults.bestPractices: [mcpResults.bestPractices].filter(Boolean),
       recommendations: [],
-      integrationSuggestions: mcpResults.agentResults || [],
+      integrationSuggestions: mcpResults.agentResults || []
     };
 
     // Extract recommendations from synthesized output;
@@ -479,14 +479,14 @@ function generateAutoSuggestions(query: string, mcpContext: any): AutoMCPSuggest
       priority: 'high',
       suggestion: 'Enable semantic clustering for related cases',
       implementation: `Group cases similar to "${query}" using AI embeddings`,
-      mcpQuery: commonMCPQueries.aiChatIntegration(),
+      mcpQuery: commonMCPQueries.aiChatIntegration()
     },
     {
       type: 'performance',
       priority: 'medium',
       suggestion: 'Cache search results for faster retrieval',
       implementation: `Store results for "${query}" in Redis cache`,
-      mcpQuery: commonMCPQueries.performanceBestPractices(),
+      mcpQuery: commonMCPQueries.performanceBestPractices()
     }
   ];
 
@@ -499,7 +499,7 @@ function generateAutoSuggestions(query: string, mcpContext: any): AutoMCPSuggest
           priority: 'low',
           suggestion: 'AI-driven UI improvement',
           implementation: mcpSuggestion.result,
-          mcpQuery: commonMCPQueries.uiUxBestPractices(),
+          mcpQuery: commonMCPQueries.uiUxBestPractices()
         });
       }
     }
@@ -521,7 +521,7 @@ async function updateMemoryGraph(query: string, results: any[], metadata: any): 
       resultsCount: results.length,
       aiConfidence: metadata.confidence,
       processingTime: metadata.processingTime,
-      successful: results.length > 0,
+      successful: results.length > 0
     };
 
     // This would integrate with the actual MCP memory service
@@ -568,7 +568,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           aiAnalysis: false,
           mcpAnalysis: false,
           fromCache: false,
-          error: 'Invalid query',
+          error: 'Invalid query'
         }
       } as AIFindResponse, { status: 400 });
     }
@@ -589,7 +589,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           aiAnalysis: false,
           mcpAnalysis: false,
           fromCache: false,
-          error: 'Rate limit exceeded',
+          error: 'Rate limit exceeded'
         }
       } as AIFindResponse, { 
         status: 429,
@@ -685,7 +685,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         title: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title || 'Untitled',
         excerpt: aiEnhancement.excerpt || 
                 (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).description?.substring(0, 200) + '...' || 
-                (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any ,}).content?.substring(0, 200) + '...' || 
+                (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).content?.substring(0, 200) + '...' || 
                 'No description available',
         type: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).type,
         aiConfidence: finalConfidence,
@@ -742,7 +742,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         mcpAnalysis: !!mcpContext,
         fromCache,
         model: 'gemma3-legal:latest',
-        confidence: avgConfidence,
+        confidence: avgConfidence
       },
       suggestions: aiAnalysis?.relatedQueries || [],
       mcpContext,
@@ -786,7 +786,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         aiAnalysis: false,
         mcpAnalysis: false,
         fromCache: false,
-        error: error instanceof Error ? error.message: 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error'
       }
     } as AIFindResponse, { status: 500 });
   }
@@ -805,7 +805,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       return json({ 
         success: true,
         suggestions: [],
-        query: query.trim(),
+        query: query.trim()
       });
     }
 
@@ -817,7 +817,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       return json({
         success: false,
         suggestions: [],
-        error: 'Rate limit exceeded',
+        error: 'Rate limit exceeded'
       }, { status: 429 });
     }
 
@@ -873,7 +873,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       query,
       metadata: {
         processingTime: Date.now() - startTime,
-        fromCache: suggestions.length > 0,
+        fromCache: suggestions.length > 0
       }
     });
 
@@ -885,7 +885,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       suggestions: [],
       error: 'Failed to generate suggestions',
       metadata: {
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       }
     }, { status: 500 });
   }
@@ -905,7 +905,7 @@ async function generateAISuggestions(query: string): Promise<string[]> {
         stream: false,
         options: {
           temperature: 0.7,
-          max_tokens: 150,
+          max_tokens: 150
         }
       })
     });
@@ -950,9 +950,9 @@ export const OPTIONS: RequestHandler = async () => {
       services: {
         ai: aiHealthy,
         database: dbHealthy,
-        redis: redisHealthy,
+        redis: redisHealthy
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { 
       status: allHealthy ? 200 : 503,
       headers: {
@@ -964,7 +964,7 @@ export const OPTIONS: RequestHandler = async () => {
     return json({
       healthy: false,
       error: 'Health check failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 503 });
   }
 };
@@ -973,7 +973,7 @@ async function checkAIServiceHealth(): Promise<boolean> {
   try {
     const response = await fetch('http://localhost:11434/api/version', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     });
     return (response as { ok?: any; json?: any }).ok;
   } catch {

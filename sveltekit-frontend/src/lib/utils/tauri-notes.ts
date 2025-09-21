@@ -45,7 +45,7 @@ export interface TauriNoteExport {
   title: string;
   content: string;
   format: "markdown" | "html" | "json";
-  filePath: string;,
+  filePath: string;
 }
 class TauriNotesService {
   private static instance: TauriNotesService;
@@ -133,7 +133,7 @@ class TauriNotesService {
           noteType: "general",
           tags: [],
           userId: "desktop-user",
-          savedAt: new Date(),
+          savedAt: new Date()
         };
       }
       return null;
@@ -204,12 +204,12 @@ class TauriNotesService {
         title: note.title,
         content: note.content,
         markdown: note.markdown,
-        tags: note.tags,
+        tags: note.tags
       });
 
       const results = await invoke("search_notes", {
         query,
-        notes: searchData,
+        notes: searchData
       });
       return results as SavedNote[];
     } catch (error: any) {

@@ -293,7 +293,7 @@ export class YoRHaLayout3D extends THREE.Group {
       bottom: padding?.bottom || 0,
       left: padding?.left || 0,
       front: padding?.front || 0,
-      back: padding?.back || 0,
+      back: padding?.back || 0
     };
   }
 
@@ -335,7 +335,7 @@ export class YoRHaLayout3D extends THREE.Group {
         return availableCross / 2 - childCrossSize / 2 - padding.bottom;
       case 'start':
       default:
-        return -availableCross / 2 + childCrossSize / 2 + padding.top;,
+        return -availableCross / 2 + childCrossSize / 2 + padding.top;
     }
   }
 
@@ -461,7 +461,7 @@ export class YoRHaLayoutPresets {
       justify: 'center',
       align: 'center',
       padding: { top: 0.3, right: 0.3, bottom: 0.3, left: 0.3, front: 0, back: 0 },
-      gap: 0.3,
+      gap: 0.3
     });
   }
 
@@ -472,7 +472,7 @@ export class YoRHaLayoutPresets {
       justify: 'start',
       align: 'stretch',
       padding: { top: 0.4, right: 0.4, bottom: 0.4, left: 0.4, front: 0, back: 0 },
-      gap: 0.25,
+      gap: 0.25
     });
   }
 
@@ -483,7 +483,7 @@ export class YoRHaLayoutPresets {
       justify: 'space-between',
       align: 'center',
       padding: { top: 0.1, right: 0.2, bottom: 0.1, left: 0.2, front: 0, back: 0 },
-      gap: 0.15,
+      gap: 0.15
     });
   }
 }

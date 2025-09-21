@@ -15,7 +15,7 @@ const REDIS_CONFIG = {
   port: 6379,
   db: 0,
   keyPrefix: 'legal_ai:',
-  defaultTTL: 3600 // 1 hour,
+  defaultTTL: 3600 // 1 hour
 };
 
 // Cache key patterns for different data types;
@@ -34,7 +34,7 @@ interface RedisWebGPUConfig {
   enableCrossUserSharing: boolean;
   cacheStrategy: 'aggressive' | 'balanced' | 'conservative';
   maxCacheSize: number; // MB
-  defaultTTL: number; // seconds,
+  defaultTTL: number; // seconds
 }
 
 interface ProcessingMetrics {
@@ -42,7 +42,7 @@ interface ProcessingMetrics {
   webgpuComputations: number;
   simdParsing: number;
   totalProcessingTime: number;
-  cacheEfficiency: number;,
+  cacheEfficiency: number;
 }
 
 export class RedisWebGPUSIMDIntegration {
@@ -59,7 +59,7 @@ export class RedisWebGPUSIMDIntegration {
       cacheStrategy: 'balanced',
       maxCacheSize: 1000, // 1GB
       defaultTTL: 3600, // 1 hour
-      ...config,
+      ...config
     };
 
     this.metrics = {
@@ -67,7 +67,7 @@ export class RedisWebGPUSIMDIntegration {
       webgpuComputations: 0,
       simdParsing: 0,
       totalProcessingTime: 0,
-      cacheEfficiency: 0,
+      cacheEfficiency: 0
     };
 
     this.webgpuCache = new WebGPUSOMCache();
@@ -83,7 +83,7 @@ export class RedisWebGPUSIMDIntegration {
       this.initializeRedis(),
       this.webgpuCache.initializeWebGPU(),
       this.webgpuCache.initializeIndexDB(),
-      simdJSONClient.initialize(),
+      simdJSONClient.initialize()
     ]);
 
     const [redisOK, webgpuOK, indexdbOK, simdOK] = results.map((r) =>
@@ -142,7 +142,7 @@ export class RedisWebGPUSIMDIntegration {
       // Step 2: Check Redis cache for existing analysis;
       const cacheKey = this.buildCacheKey(CACHE_PATTERNS.LEGAL_ANALYSIS, {
         doc_hash: docHash,
-        pipeline: (options.pipeline || []).join('|'),
+        pipeline: (options.pipeline || []).join('|')
       });
 
       if (options.useCache !== false) {
@@ -157,8 +157,8 @@ export class RedisWebGPUSIMDIntegration {
             performance: {
               totalTime: performance.now() - startTime,
               cacheHit: true,
-              source: 'redis',
-            },
+              source: 'redis'
+            }
           };
         }
       }
@@ -183,7 +183,7 @@ export class RedisWebGPUSIMDIntegration {
         if (this.config.enableCrossUserSharing && !this.isSensitiveContent(documentData)) {
           const globalKey = this.buildCacheKey(CACHE_PATTERNS.CROSS_USER_CACHE, {
             operation: 'legal_analysis',
-            content_hash: docHash,
+            content_hash: docHash
           });
           await this.setInRedis(globalKey, analysis, this.config.defaultTTL * 24); // 24h TTL
           processingPath.push('GLOBAL_CACHED');
@@ -199,8 +199,8 @@ export class RedisWebGPUSIMDIntegration {
         performance: {
           totalTime,
           cacheHit: false,
-          source: processingPath.includes('WEBGPU_COMPUTE') ? 'webgpu' : 'cpu',
-        },
+          source: processingPath.includes('WEBGPU_COMPUTE') ? 'webgpu' : 'cpu'
+        }
       };
     } catch (error) {
       console.error('❌ Legal document processing failed:', error);
@@ -229,7 +229,7 @@ export class RedisWebGPUSIMDIntegration {
       const candidatesHash = await this.generateArrayHash(candidateVectors.flat();
       const cacheKey = this.buildCacheKey(CACHE_PATTERNS.VECTOR_SIMILARITY, {
         query_hash: queryHash,
-        candidates_hash: candidatesHash,
+        candidates_hash: candidatesHash
       });
 
       // Check Redis cache first;
@@ -245,8 +245,8 @@ export class RedisWebGPUSIMDIntegration {
             performance: {
               totalTime: performance.now() - startTime,
               cacheHit: true,
-              source: 'redis',
-            },
+              source: 'redis'
+            }
           };
         }
       }
@@ -283,8 +283,8 @@ export class RedisWebGPUSIMDIntegration {
         performance: {
           totalTime: performance.now() - startTime,
           cacheHit: false,
-          source: processingPath.includes('WEBGPU_SIMILARITY') ? 'webgpu' : 'cpu',
-        },
+          source: processingPath.includes('WEBGPU_SIMILARITY') ? 'webgpu' : 'cpu'
+        }
       };
     } catch (error) {
       console.error('❌ Vector similarity processing failed:', error);
@@ -311,7 +311,7 @@ export class RedisWebGPUSIMDIntegration {
 
       const cacheKey = this.buildCacheKey(CACHE_PATTERNS.SOM_INTELLIGENCE, {
         error_hash: errorHash,
-        timestamp: timestamp.toString(),
+        timestamp: timestamp.toString()
       });
 
       // Check cache;
@@ -327,8 +327,8 @@ export class RedisWebGPUSIMDIntegration {
             performance: {
               totalTime: performance.now() - startTime,
               cacheHit: true,
-              source: 'redis',
-            },
+              source: 'redis'
+            }
           };
         }
       }
@@ -350,8 +350,8 @@ export class RedisWebGPUSIMDIntegration {
         performance: {
           totalTime: performance.now() - startTime,
           cacheHit: false,
-          source: 'webgpu_som',
-        },
+          source: 'webgpu_som'
+        }
       };
     } catch (error) {
       console.error('❌ Intelligent todos processing failed:', error);
@@ -413,7 +413,7 @@ export class RedisWebGPUSIMDIntegration {
     const deltaMetrics = {
       redisHits: finalMetrics.redisHits - initialMetrics.redisHits,
       webgpuComputations: finalMetrics.webgpuComputations - initialMetrics.webgpuComputations,
-      simdParsing: finalMetrics.simdParsing - initialMetrics.simdParsing,
+      simdParsing: finalMetrics.simdParsing - initialMetrics.simdParsing
     };
 
     return {
@@ -421,9 +421,9 @@ export class RedisWebGPUSIMDIntegration {
       performance: {
         totalTime: performance.now() - startTime,
         batchSize: operations.length,
-        averageTimePerOp: (performance.now() - startTime) / operations.length,
+        averageTimePerOp: (performance.now() - startTime) / operations.length
       },
-      cacheStats: deltaMetrics,
+      cacheStats: deltaMetrics
     };
   }
 
@@ -439,7 +439,7 @@ export class RedisWebGPUSIMDIntegration {
       similarity: await this.findSimilarDocumentsWebGPU(documentData),
       risk_assessment: await this.assessRiskWebGPU(documentData),
       webgpu_accelerated: true,
-      processing_time: performance.now(),
+      processing_time: performance.now()
     };
 
     return analysis;
@@ -457,7 +457,7 @@ export class RedisWebGPUSIMDIntegration {
       similarity: await this.findSimilarDocumentsCPU(documentData),
       risk_assessment: this.assessRiskCPU(documentData),
       cpu_processed: true,
-      processing_time: performance.now(),
+      processing_time: performance.now()
     };
   }
 
@@ -632,7 +632,7 @@ export class RedisWebGPUSIMDIntegration {
       this.metrics.redisHits + this.metrics.webgpuComputations + this.metrics.simdParsing;
     return {
       ...this.metrics,
-      efficiency: totalOps > 0 ? this.metrics.redisHits / totalOps : 0,
+      efficiency: totalOps > 0 ? this.metrics.redisHits / totalOps : 0
     };
   }
 
@@ -643,7 +643,7 @@ export class RedisWebGPUSIMDIntegration {
     redis: boolean;
     webgpu: boolean;
     simd: boolean;
-    som: boolean;,
+    som: boolean;
   } {
     return {
       redis: this.redisClient !== null,
@@ -663,7 +663,7 @@ export class RedisWebGPUSIMDIntegration {
       return [
         'legal_ai:webgpu:compute:similarity:abc123',
         'legal_ai:legal:analysis:doc456:standard',
-        'legal_ai:vector:sim:query789:candidates012',
+        'legal_ai:vector:sim:query789:candidates012'
       ];
     } catch (error) {
       console.error('❌ Failed to get cache keys:', error);
@@ -752,7 +752,7 @@ export class RedisWebGPUSIMDIntegration {
 export const redisWebGPUIntegration = new RedisWebGPUSIMDIntegration({
   cacheStrategy: 'balanced',
   enableCrossUserSharing: true,
-  maxCacheSize: 2000 // 2GB,
+  maxCacheSize: 2000 // 2GB
 });
 
 // Initialize on module load;

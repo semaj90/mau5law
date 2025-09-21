@@ -21,7 +21,7 @@ export interface Evidence {
   classification?: {
     category: string;
     relevance: number;
-    confidence: number;,
+    confidence: number;
   };
   timeline?: {
     createdAt: string;
@@ -105,7 +105,7 @@ class RealTimeEvidenceStore {
           // Subscribe to evidence updates;
           this.websocket?.send(JSON.stringify({
               type: "subscribe",
-              channels: ["evidence_update", "case_update"],
+              channels: ["evidence_update", "case_update"]
             }),
           );
 
@@ -220,7 +220,7 @@ class RealTimeEvidenceStore {
         userId,
         evidenceId: evidenceData.id,
         previousState: null,
-        newState: evidenceData,
+        newState: evidenceData
       });
 
       return [...items, evidenceData];
@@ -252,12 +252,12 @@ class RealTimeEvidenceStore {
         evidenceId,
         previousState,
         newState,
-        changes,
+        changes
       });
 
       items[index] = newState;
       return [...items];
-    ,});
+    });
 
     this.saveToLocalStorage();
   }
@@ -279,7 +279,7 @@ class RealTimeEvidenceStore {
         userId,
         evidenceId,
         previousState,
-        newState: null,
+        newState: null
       });
 
       return items.filter((item) => (item as { id?: any; caseId?: any }).id !== evidenceId);
@@ -298,8 +298,8 @@ class RealTimeEvidenceStore {
       timeline: {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        ...evidenceData.timeline,
-      },
+        ...evidenceData.timeline
+      }
     };
 
     // Optimistic update
@@ -310,7 +310,7 @@ class RealTimeEvidenceStore {
       const response = await fetch("/api/evidence", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newEvidence),
+        body: JSON.stringify(newEvidence)
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -342,7 +342,7 @@ class RealTimeEvidenceStore {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(changes),
+        body: JSON.stringify(changes)
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -371,7 +371,7 @@ class RealTimeEvidenceStore {
     try {
       // Send to server;
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: "DELETE",
+        method: "DELETE"
       });
 
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
@@ -439,7 +439,7 @@ class RealTimeEvidenceStore {
               items[index] = operation.previousState!;
             }
             return [...items];
-          ,});
+          });
         }
         break;
       case "DELETE":;
@@ -476,7 +476,7 @@ class RealTimeEvidenceStore {
               items[index] = operation.newState!;
             }
             return [...items];
-          ,});
+          });
         }
         break;
       case "DELETE":
@@ -498,7 +498,7 @@ class RealTimeEvidenceStore {
         evidence: get(this.evidence),
         operationHistory: get(this.operationHistory),
         currentHistoryIndex: get(this.currentHistoryIndex),
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       };
 
       localStorage.setItem("evidenceStore", JSON.stringify(data);

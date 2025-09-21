@@ -30,7 +30,7 @@ export interface ContextualEngineMetrics {
   adaptabilityScore: number;
   coherenceIndex: number;
   predictionAccuracy: number;
-  contextualRelevance: number;,
+  contextualRelevance: number;
 }
 
 export interface ConversationContext {
@@ -44,7 +44,7 @@ export interface ConversationContext {
     commonDaysOfWeek: number[];
     seasonalTrends: string[];
     timeBasedIntents: Map<string, number[]>; // Intent -> time slots when most active
-    workflowPatterns: string[]; // Common task sequences,
+    workflowPatterns: string[]; // Common task sequences
   };
   contextualMemory: {
     topicsDiscussed: string[];
@@ -57,7 +57,7 @@ export interface ConversationContext {
       sentiment: number; // -1 to 1
       stress_level: number; // 0 to 1
       confidence: number; // 0 to 1
-      engagement: number; // 0 to 1,
+      engagement: number; // 0 to 1
     };
   };
   learningProfile: {
@@ -65,7 +65,7 @@ export interface ConversationContext {
     preferred_explanation_style: 'detailed' | 'concise' | 'examples';
     common_mistakes: string[];
     learning_velocity: number;
-    knowledge_gaps: string[];,
+    knowledge_gaps: string[];
   };
 }
 
@@ -83,7 +83,7 @@ export class ContextualEngineeringMachine {
     adaptabilityScore: 0,
     coherenceIndex: 0,
     predictionAccuracy: 0,
-    contextualRelevance: 0,
+    contextualRelevance: 0
   };
   
   private conversationContexts = new Map<string, ConversationContext>();
@@ -272,22 +272,22 @@ export class ContextualEngineeringMachine {
         {
           input: "I need help reviewing a contract",
           expectedIntent: "contract_review",
-          minConfidence: 0.7,
+          minConfidence: 0.7
         },
         {
           input: "Can you find me similar case law?",
           expectedIntent: "legal_research", 
-          minConfidence: 0.6,
+          minConfidence: 0.6
         },
         {
           input: "Help me draft an NDA",
           expectedIntent: "document_drafting",
-          minConfidence: 0.7,
+          minConfidence: 0.7
         },
         {
           input: "Is our company compliant with new regulations?",
           expectedIntent: "compliance_check",
-          minConfidence: 0.6,
+          minConfidence: 0.6
         }
       ];
       
@@ -332,9 +332,9 @@ export class ContextualEngineeringMachine {
           accuracy,
           successfulPredictions,
           totalTests: testCases.length,
-          averageConfidence: this.metrics.averageConfidence,
+          averageConfidence: this.metrics.averageConfidence
         },
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       });
       
     } catch (error) {
@@ -408,9 +408,9 @@ export class ContextualEngineeringMachine {
         details: {
           patternsDetected,
           totalConversations: this.TEST_CONVERSATIONS.length,
-          detectionRate: patternsDetected / this.TEST_CONVERSATIONS.length,
+          detectionRate: patternsDetected / this.TEST_CONVERSATIONS.length
         },
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       });
       
     } catch (error) {
@@ -473,9 +473,9 @@ export class ContextualEngineeringMachine {
         details: {
           suggestionsGenerated,
           totalInputs: testInputs.length,
-          suggestionRate: suggestionsGenerated / testInputs.length,
+          suggestionRate: suggestionsGenerated / testInputs.length
         },
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       });
       
     } catch (error) {
@@ -542,7 +542,7 @@ export class ContextualEngineeringMachine {
           messageType: 'user',
           metadata: {
             intent: prediction.predictedIntent,
-            confidence: prediction.confidence,
+            confidence: prediction.confidence
           }
         });
       }
@@ -559,9 +559,9 @@ export class ContextualEngineeringMachine {
         details: {
           contextMaintained,
           totalMessages: conversationFlow.length,
-          contextRate: this.metrics.contextMaintenance,
+          contextRate: this.metrics.contextMaintenance
         },
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       });
       
     } catch (error) {
@@ -636,9 +636,9 @@ export class ContextualEngineeringMachine {
         details: {
           successfulSearches,
           totalQueries: searchQueries.length,
-          searchSuccessRate: successfulSearches / searchQueries.length,
+          searchSuccessRate: successfulSearches / searchQueries.length
         },
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       });
       
     } catch (error) {
@@ -698,7 +698,7 @@ export class ContextualEngineeringMachine {
         executionTime: performance.now() - startTime,
         details: {
           optimizationScore: this.metrics.queryOptimization,
-          totalQueries: partialQueries.length,
+          totalQueries: partialQueries.length
         }
       });
       
@@ -751,7 +751,7 @@ export class ContextualEngineeringMachine {
         details: {
           contextMaintained: success,
           similarQueries: prediction.contextualRecommendations.similarPastQueries.length,
-          intent: prediction.predictedIntent,
+          intent: prediction.predictedIntent
         }
       });
       
@@ -781,13 +781,13 @@ export class ContextualEngineeringMachine {
         temporalPatterns: {
           preferredTimeSlots: [],
           commonDaysOfWeek: [],
-          seasonalTrends: [],
+          seasonalTrends: []
         },
         contextualMemory: {
           topicsDiscussed: [],
           documentsReferenced: [],
           decisionsTracked: [],
-          followUpItems: [],
+          followUpItems: []
         }
       });
     }
@@ -878,9 +878,9 @@ export class ContextualEngineeringMachine {
           entitiesExtracted: entities.length,
           conceptRelationships: conceptGraph.size,
           memoryScore,
-          recallConfidence: prediction.confidence,
+          recallConfidence: prediction.confidence
         },
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       });
       
     } catch (error) {
@@ -959,7 +959,7 @@ export class ContextualEngineeringMachine {
             metadata: {
               intent: prediction.predictedIntent,
               confidence: prediction.confidence,
-              complexity: stage.stage,
+              complexity: stage.stage
             }
           });
         }
@@ -987,9 +987,9 @@ export class ContextualEngineeringMachine {
         details: {
           learningScore,
           adaptabilityScore: this.metrics.adaptabilityScore,
-          stagesPassed: learningScore / 0.33,
+          stagesPassed: learningScore / 0.33
         },
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       });
       
     } catch (error) {
@@ -1073,9 +1073,9 @@ export class ContextualEngineeringMachine {
           entitiesIdentified: entities.length,
           conceptsMapped: conceptGraph.size,
           mappingScore,
-          relationshipConfidence: prediction.confidence,
+          relationshipConfidence: prediction.confidence
         },
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       });
       
     } catch (error) {
@@ -1152,9 +1152,9 @@ export class ContextualEngineeringMachine {
         details: {
           emotionalAccuracy,
           messagesAnalyzed: emotionalJourney.length,
-          finalEmotionalState: context.contextualMemory.emotionalState,
+          finalEmotionalState: context.contextualMemory.emotionalState
         },
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : undefined
       });
       
     } catch (error) {
@@ -1189,7 +1189,7 @@ export class ContextualEngineeringMachine {
           commonDaysOfWeek: [],
           seasonalTrends: [],
           timeBasedIntents: new Map(),
-          workflowPatterns: [],
+          workflowPatterns: []
         },
         contextualMemory: {
           topicsDiscussed: [],
@@ -1202,7 +1202,7 @@ export class ContextualEngineeringMachine {
             sentiment: 0,
             stress_level: 0,
             confidence: 0.5,
-            engagement: 0.5,
+            engagement: 0.5
           }
         },
         learningProfile: {
@@ -1210,7 +1210,7 @@ export class ContextualEngineeringMachine {
           preferred_explanation_style: 'detailed',
           common_mistakes: [],
           learning_velocity: 0.1,
-          knowledge_gaps: [],
+          knowledge_gaps: []
         }
       });
     }
@@ -1257,7 +1257,7 @@ export class ContextualEngineeringMachine {
         type,
         frequency: 1,
         lastMentioned: new Date(),
-        context: [messageContext],
+        context: [messageContext]
       });
     }
   }

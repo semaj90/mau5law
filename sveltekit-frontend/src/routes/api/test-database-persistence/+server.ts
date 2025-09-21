@@ -28,7 +28,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       return json({
         success: false,
         error: 'Failed to create test user',
-        results: testResults,
+        results: testResults
       });
     }
     
@@ -42,7 +42,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       return json({
         success: false,
         error: 'Failed to create chat session',
-        results: testResults,
+        results: testResults
       });
     }
     
@@ -60,7 +60,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       return json({
         success: false,
         error: 'Failed to store message',
-        results: testResults,
+        results: testResults
       });
     }
     
@@ -95,10 +95,10 @@ export async function POST({ request }: RequestEvent): Promise<any> {
         totalTests,
         passed: successCount,
         failed: totalTests - successCount,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       results: testResults,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
@@ -107,7 +107,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       error: 'Database persistence test failed',
       details: error instanceof Error ? error.message: 'Unknown error',
       results: testResults,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     }, { status: 500 });
   }
 }
@@ -123,7 +123,7 @@ async function testCreateUser(): Promise<any> {
       id: userId,
       email: testEmail,
       displayName: 'Test User',
-      role: 'user',
+      role: 'user'
     });
     
     return {
@@ -131,7 +131,7 @@ async function testCreateUser(): Promise<any> {
       success: true,
       message: 'Test user created successfully',
       data: { userId, email: testEmail },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (error: any) {
     return {
@@ -139,7 +139,7 @@ async function testCreateUser(): Promise<any> {
       success: false,
       message: 'Failed to create test user',
       error: error instanceof Error ? error.message: 'Unknown error',
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -157,7 +157,7 @@ async function testCreateChatSession(userId: string): Promise<any> {
       context: { testSession: true },
       metadata: { 
         createdForTesting: true,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
     
@@ -166,7 +166,7 @@ async function testCreateChatSession(userId: string): Promise<any> {
       success: true,
       message: 'Chat session created successfully',
       data: { sessionId },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (error: any) {
     return {
@@ -174,7 +174,7 @@ async function testCreateChatSession(userId: string): Promise<any> {
       success: false,
       message: 'Failed to create chat session',
       error: error instanceof Error ? error.message: 'Unknown error',
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -186,7 +186,7 @@ async function testEmbeddingGeneration(content: string): Promise<any> {
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true,
+      cache: true
     }) as number[];
     
     if (!Array.isArray(embedding) || embedding.length === 0) {
@@ -202,7 +202,7 @@ async function testEmbeddingGeneration(content: string): Promise<any> {
         dimensions: embedding.length,
         sampleValues: embedding.slice(0, 5)
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (error: any) {
     return {
@@ -210,7 +210,7 @@ async function testEmbeddingGeneration(content: string): Promise<any> {
       success: false,
       message: 'Failed to generate embedding',
       error: error instanceof Error ? error.message: 'Unknown error',
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -231,7 +231,7 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
         embedding,
         metadata: {
           testMessage: true,
-          embeddingDimensions: embedding.length,
+          embeddingDimensions: embedding.length
         }
       });
       
@@ -247,7 +247,7 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
         content,
         metadata: {
           testMessage: true,
-          embeddingStatus: 'not_available',
+          embeddingStatus: 'not_available'
         }
       });
     }
@@ -259,9 +259,9 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
       data: { 
         messageId,
         hasEmbedding: !!embedding,
-        embeddingDimensions: embedding?.length || 0,
+        embeddingDimensions: embedding?.length || 0
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (error: any) {
     return {
@@ -269,7 +269,7 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
       success: false,
       message: 'Failed to store message',
       error: error instanceof Error ? error.message: 'Unknown error',
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -287,7 +287,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
         metadata: {
           category: 'evidence_handling',
           source: 'test',
-          reasoning: 'Test recommendation for database persistence',
+          reasoning: 'Test recommendation for database persistence'
         }
       },
       {
@@ -298,7 +298,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
         metadata: {
           category: 'compliance',
           source: 'test',
-          reasoning: 'Test procedural recommendation',
+          reasoning: 'Test procedural recommendation'
         }
       }
     ];
@@ -311,7 +311,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
         recommendationType: rec.type,
         content: rec.content,
         confidence: rec.confidence,
-        metadata: rec.metadata,
+        metadata: rec.metadata
       });
     }
     
@@ -321,9 +321,9 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
       message: `Stored ${recommendations.length} test recommendations`,
       data: { 
         recommendationsCount: recommendations.length,
-        recommendationIds: recommendations.map(r => r.id),
+        recommendationIds: recommendations.map(r => r.id)
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (error: any) {
     return {
@@ -331,7 +331,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
       success: false,
       message: 'Failed to store recommendations',
       error: error instanceof Error ? error.message: 'Unknown error',
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -345,14 +345,14 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
         test: 'Vector Similarity Search',
         success: false,
         message: 'No embedding available for similarity search',
-        responseTime: Date.now() - startTime,
+        responseTime: Date.now() - startTime
       };
     }
     
     const similarResults = await searchSimilarMessages(embedding, {
       limit: 5,
       threshold: 0.1, // Low threshold to ensure we find our test message
-      includeMetadata: true,
+      includeMetadata: true
     });
     
     return {
@@ -366,9 +366,9 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
           id: r.id,
           similarity: r.similarity,
           contentPreview: r.content.substring(0, 50) + '...'
-        ,})
+        })
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (error: any) {
     return {
@@ -376,7 +376,7 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
       success: false,
       message: 'Vector similarity search failed',
       error: error instanceof Error ? error.message: 'Unknown error',
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -392,7 +392,7 @@ async function testRetrieveRecommendations(userId: string): Promise<any> {
         type: chatRecommendations.recommendationType,
         confidence: chatRecommendations.confidence,
         metadata: chatRecommendations.metadata,
-        feedback: chatRecommendations.feedback,
+        feedback: chatRecommendations.feedback
       })
       .from(chatRecommendations)
       .where(eq(chatRecommendations.userId, userId)
@@ -409,10 +409,10 @@ async function testRetrieveRecommendations(userId: string): Promise<any> {
           type: r.type,
           confidence: r.confidence,
           contentPreview: r.content.substring(0, 50) + '...',
-          hasFeedback: !!r.feedback,
+          hasFeedback: !!r.feedback
         })
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (error: any) {
     return {
@@ -420,7 +420,7 @@ async function testRetrieveRecommendations(userId: string): Promise<any> {
       success: false,
       message: 'Failed to retrieve recommendations',
       error: error instanceof Error ? error.message: 'Unknown error',
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -449,7 +449,7 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
         feedback: 'helpful',
         metadata: {
           feedbackUpdated: true,
-          feedbackTimestamp: new Date().toISOString(),
+          feedbackTimestamp: new Date().toISOString()
         }
       })
       .where(eq(chatRecommendations.id, recommendationId)
@@ -461,9 +461,9 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
       message: 'Recommendation feedback updated successfully',
       data: {
         updatedRecommendationId: recommendationId,
-        feedback: 'helpful',
+        feedback: 'helpful'
       },
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   } catch (error: any) {
     return {
@@ -471,7 +471,7 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
       success: false,
       message: 'Failed to update recommendation feedback',
       error: error instanceof Error ? error.message: 'Unknown error',
-      responseTime: Date.now() - startTime,
+      responseTime: Date.now() - startTime
     };
   }
 }
@@ -501,14 +501,14 @@ export async function GET(): Promise<any> {
     return json({
       status: 'healthy',
       message: 'Database persistence test endpoint is operational',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json({
       status: 'unhealthy',
       message: 'Database connection failed',
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 }

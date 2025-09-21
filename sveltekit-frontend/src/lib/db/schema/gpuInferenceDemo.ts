@@ -8,7 +8,7 @@ export const gpuInferenceSessions = pgTable("gpu_inference_sessions", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   metadata: jsonb("metadata"), // Session settings, preferences
-  isActive: boolean("is_active").default(true),
+  isActive: boolean("is_active").default(true)
 });
 
 export const gpuInferenceMessages = pgTable("gpu_inference_messages", {
@@ -22,7 +22,7 @@ export const gpuInferenceMessages = pgTable("gpu_inference_messages", {
   tokensGenerated: integer("tokens_generated"),
   cacheHit: boolean("cache_hit").default(false),
   metadata: jsonb("metadata"), // Engine-specific metadata, performance stats
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow()
 });
 
 export const gpuPerformanceMetrics = pgTable("gpu_performance_metrics", {
@@ -37,7 +37,7 @@ export const gpuPerformanceMetrics = pgTable("gpu_performance_metrics", {
   memoryUsage: real("memory_usage"),
   errorCount: integer("error_count"),
   metadata: jsonb("metadata"), // Detailed performance data
-  measuredAt: timestamp("measured_at").defaultNow(),
+  measuredAt: timestamp("measured_at").defaultNow()
 });
 
 export const aiEngineStatus = pgTable("ai_engine_status", {
@@ -50,5 +50,5 @@ export const aiEngineStatus = pgTable("ai_engine_status", {
   capabilities: jsonb("capabilities"), // What features this engine supports
   configuration: jsonb("configuration"), // Engine-specific config
   errorStatus: text("error_status"),
-  metadata: jsonb("metadata"),
+  metadata: jsonb("metadata")
 });

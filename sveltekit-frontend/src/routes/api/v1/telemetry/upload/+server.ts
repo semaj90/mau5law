@@ -9,7 +9,7 @@ import type { TelemetryEvent } from '$lib/services/upload-telemetry-service';
 
 interface TelemetryBatch {
   sessionId: string;
-  events: TelemetryEvent[];,
+  events: TelemetryEvent[];
 }
 
 interface ProcessedTelemetryStats {
@@ -19,12 +19,12 @@ interface ProcessedTelemetryStats {
   timespan: {
     first: number;
     last: number;
-    durationMs: number;,
+    durationMs: number;
   };
   performance: {
     avgUploadTime: number;
     successRate: number;
-    retryRate: number;,
+    retryRate: number;
   };
 }
 
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     console.log(`📊 Telemetry batch received from ${getClientAddress()}:`, {
       sessionId: batch.sessionId,
       eventCount: batch.events.length,
-      stats,
+      stats
     });
 
     // Store events (placeholder - implement with your preferred storage)
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       success: true,
       processed: batch.events.length,
       sessionId: batch.sessionId,
-      stats,
+      stats
     });
   } catch (error) {
     console.error('Telemetry processing error:', error);
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       sessionId,
       stats: sessionStats,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 
@@ -97,9 +97,9 @@ export const GET: RequestHandler = async ({ url }) => {
       'batch_summary',
       'canceled_all',
       'session_restored',
-      'custom_event',
+      'custom_event'
     ],
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 };
 
@@ -115,7 +115,7 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
       eventCount: 0,
       eventTypes: Record<string, any>,
       timespan: { first: 0, last: 0, durationMs: 0 },
-      performance: { avgUploadTime: 0, successRate: 0, retryRate: 0 },
+      performance: { avgUploadTime: 0, successRate: 0, retryRate: 0 }
     };
   }
 
@@ -132,7 +132,7 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
   const timespan = {
     first: timestamps[0],
     last: timestamps[timestamps.length - 1],
-    durationMs: timestamps[timestamps.length - 1] - timestamps[0],
+    durationMs: timestamps[timestamps.length - 1] - timestamps[0]
   };
 
   // Calculate performance metrics
@@ -163,8 +163,8 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
     performance: {
       avgUploadTime: Math.round(avgUploadTime),
       successRate: Math.round(successRate * 100) / 100,
-      retryRate: Math.round(retryRate * 100) / 100,
-    },
+      retryRate: Math.round(retryRate * 100) / 100
+    }
   };
 }
 
@@ -179,7 +179,7 @@ async function storeTelemetryEvents(batch: TelemetryBatch, clientIp: string): Pr
     console.log(`📊 [${event.eventType}] ${batch.sessionId}:`, {
       timestamp: new Date(event.timestamp).toISOString(),
       data: event.data,
-      clientIp,
+      clientIp
     });
   }
 }
@@ -194,6 +194,6 @@ async function getSessionStats(sessionId: string): Promise<any> {
     sessionId,
     totalEvents: 0,
     lastSeen: Date.now(),
-    placeholder: true,
+    placeholder: true
   };
 }

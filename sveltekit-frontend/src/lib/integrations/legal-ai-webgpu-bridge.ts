@@ -24,11 +24,11 @@ export interface LegalAIProcessingResult {
     originalSize: number;
     compressedSize: number;
     compressionRatio: number;
-    spaceSavings: string;,
+    spaceSavings: string;
   };
   processingTime: number;
   profile: LegalAIProfile;
-  cacheHit: boolean;,
+  cacheHit: boolean;
 }
 
 /**
@@ -118,7 +118,7 @@ export class LegalAIWebGPUBridge {
       },
       processingTime,
       profile,
-      cacheHit: false // TODO: Implement cache hit detection,
+      cacheHit: false // TODO: Implement cache hit detection
     };
   }
 
@@ -148,7 +148,7 @@ export class LegalAIWebGPUBridge {
       const result = await this.processLegalDocumentEmbeddings(doc.embeddings, {
         ...globalOptions,
         documentType: doc.type,
-        priority: doc.priority,
+        priority: doc.priority
       });
       results.push(result);
     }
@@ -188,18 +188,18 @@ export class LegalAIWebGPUBridge {
     const queryResult = await this.processLegalDocumentEmbeddings(queryEmbedding, {
       ...options,
       profile: 'legal_critical', // High precision for queries
-      documentType: 'brief',
+      documentType: 'brief'
     });
 
     // Process corpus with compression for efficiency;
     const corpusResults = await this.batchProcessLegalDocuments(documentCorpus.map(embedding => ({
         embeddings: embedding,
         type: 'case-law' as const,
-        priority: 'medium' as const,
+        priority: 'medium' as const
       })),
       {
         ...options,
-        profile: 'legal_compressed' // Compressed for bulk processing,
+        profile: 'legal_compressed' // Compressed for bulk processing
       }
     );
 
@@ -240,7 +240,7 @@ export class LegalAIWebGPUBridge {
     return {
       cacheStats: this.uploader.getCacheStats(),
       isWebGPUAvailable: this.isInitialized,
-      bridgeStatus: this.isInitialized ? 'ready' : 'offline',
+      bridgeStatus: this.isInitialized ? 'ready' : 'offline'
     };
   }
 
@@ -297,7 +297,7 @@ export class LegalAIWebGPUBridge {
           case 'low':
             return 'legal_compressed';
           default:
-            return 'legal_standard';,
+            return 'legal_standard';
         }
     }
   }
@@ -328,7 +328,7 @@ export namespace LegalAIIntegration {
 
       const result = await legalAIBridge.processLegalDocumentEmbeddings(embeddings, {
         documentType,
-        enableCaching: true,
+        enableCaching: true
       });
 
       return (result as { buffer?: any }).buffer;
@@ -353,7 +353,7 @@ export namespace LegalAIIntegration {
         {
           documentType: 'brief',
           enableCaching: true,
-          debugMode: true,
+          debugMode: true
         }
       );
     } catch (error) {

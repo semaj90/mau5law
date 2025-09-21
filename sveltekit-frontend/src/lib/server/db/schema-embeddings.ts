@@ -10,7 +10,7 @@ export const embeddings = pgTable("embeddings", {
   metadata: jsonb("metadata"), // Store additional context
   source: text("source").default("user_input"), // Track where embedding came from
   createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull()
 });
 
 // Legal document embeddings (more specific for legal AI);
@@ -26,7 +26,7 @@ export const legalDocumentEmbeddings = pgTable("legal_document_embeddings", {
   extractedEntities: jsonb("extracted_entities"), // NER results
   legalConcepts: jsonb("legal_concepts"), // Legal concept extraction
   createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull()
 });
 
 // Search queries and results for learning;
@@ -40,7 +40,7 @@ export const searchQueries = pgTable("search_queries", {
   sessionId: text("session_id"),
   searchType: text("search_type").default("semantic"), // semantic, keyword, hybrid
   filters: jsonb("filters"), // Applied filters
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull()
 });
 
 // Export types for TypeScript

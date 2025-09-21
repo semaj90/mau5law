@@ -19,7 +19,7 @@ export const evidenceChainOfCustody = pgTable("evidence_chain_of_custody", {
   witnessSignature: text("witness_signature"),
   integrityHash: varchar("integrity_hash", { length: 64 }),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // Case Assignments;
@@ -33,7 +33,7 @@ export const caseAssignments = pgTable("case_assignments", {
   status: varchar("status", { length: 20 }).default("active").notNull(), // 'active', 'inactive', 'completed'
   permissions: jsonb("permissions").default({}),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // AI Query Storage;
@@ -50,7 +50,7 @@ export const userAiQueries = pgTable("user_ai_queries", {
   processingTimeMs: integer("processing_time_ms"),
   tokensUsed: integer("tokens_used"),
   model: varchar("model", { length: 100 }).default("gemma3-legal").notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // Embedding Cache;
@@ -58,7 +58,7 @@ export const embeddingCache = pgTable("embedding_cache", {
   textHash: varchar("text_hash", { length: 64 }).primaryKey(),
   embedding: vector("embedding", { dimensions: 384 }),
   model: varchar("model", { length: 100 }).notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // RAG Sessions;
@@ -73,7 +73,7 @@ export const ragSessions = pgTable("rag_sessions", {
   isActive: boolean("is_active").default(true).notNull(),
   metadata: jsonb("metadata").default({}),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // RAG Messages;
@@ -86,7 +86,7 @@ export const ragMessages = pgTable("rag_messages", {
   sources: jsonb("sources").default([]),
   confidence: decimal("confidence", { precision: 3, scale: 2 }),
   processingTimeMs: integer("processing_time_ms"),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // Document Chunks for RAG;
@@ -98,7 +98,7 @@ export const documentChunks = pgTable("document_chunks", {
   embedding: vector("embedding", { dimensions: 384 }),
   metadata: jsonb("metadata").default({}),
   wordCount: integer("word_count").notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // Case Embeddings for vector search;
@@ -110,7 +110,7 @@ export const caseEmbeddings = pgTable("case_embeddings", {
   sourceField: varchar("source_field", { length: 100 }).notNull(),
   model: varchar("model", { length: 100 }).default("nomic-embed-text").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // Evidence Vectors;
@@ -122,7 +122,7 @@ export const evidenceVectors = pgTable("evidence_vectors", {
   sourceField: varchar("source_field", { length: 100 }).notNull(),
   model: varchar("model", { length: 100 }).default("nomic-embed-text").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });
 
 // Legal Precedents;
@@ -142,5 +142,5 @@ export const legalPrecedents = pgTable("legal_precedents", {
   url: varchar("url", { length: 500 }),
   fullText: text("full_text"),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull()
 });

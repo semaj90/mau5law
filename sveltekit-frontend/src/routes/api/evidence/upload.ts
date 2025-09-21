@@ -22,7 +22,7 @@ export interface EvidenceRecord {
   updatedAt: Date;
   fileName: string;
   summary: string | null;
-  aiSummary: string | null;,
+  aiSummary: string | null;
 }
 
 import type { RequestHandler } from './$types.js';
@@ -76,7 +76,7 @@ export const POST: RequestHandler = (async ({ request, locals }) => {
     updatedAt: now,
     fileName: file.name,
     summary: null,
-    aiSummary: null,
+    aiSummary: null
   };
   try {
     await db.insert(evidence).values(newEvidence);

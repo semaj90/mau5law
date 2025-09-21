@@ -18,14 +18,14 @@ export interface RouteRegistryState {
   currentRoute: RouteDefinition | null;
   routeHistory: string[];
   favorites: Set<string>;
-  recentRoutes: string[];,
+  recentRoutes: string[];
 }
 
 export interface RouteRegistryOptions {
   maxHistorySize: number;
   maxRecentSize: number;
   persistState: boolean;
-  storageKey: string;,
+  storageKey: string;
 }
 
 export class RouteRegistry {
@@ -35,7 +35,7 @@ export class RouteRegistry {
     currentRoute: null,
     routeHistory: [],
     favorites: new Set(),
-    recentRoutes: [],
+    recentRoutes: []
   });
 
   private options: RouteRegistryOptions;
@@ -76,7 +76,7 @@ export class RouteRegistry {
       return {
         ...state,
         routes: routesMap,
-        dynamicRoutes: dynamicRoutesMap,
+        dynamicRoutes: dynamicRoutesMap
       };
     });
 
@@ -112,7 +112,7 @@ export class RouteRegistry {
       
       return {
         ...state,
-        routes: newRoutes,
+        routes: newRoutes
       };
     });
   }
@@ -133,7 +133,7 @@ export class RouteRegistry {
       
       return {
         ...state,
-        dynamicRoutes: newDynamicRoutes,
+        dynamicRoutes: newDynamicRoutes
       };
     });
     
@@ -164,7 +164,7 @@ export class RouteRegistry {
       return {
         ...state,
         routes: newRoutes,
-        dynamicRoutes: newDynamicRoutes,
+        dynamicRoutes: newDynamicRoutes
       };
     });
     
@@ -247,7 +247,7 @@ export class RouteRegistry {
         ...state,
         currentRoute: route,
         routeHistory: newHistory,
-        recentRoutes: newRecent,
+        recentRoutes: newRecent
       };
     });
   }
@@ -271,7 +271,7 @@ export class RouteRegistry {
       newFavorites.delete(routeId);
       return {
         ...state,
-        favorites: newFavorites,
+        favorites: newFavorites
       };
     });
   }
@@ -340,7 +340,7 @@ export class RouteRegistry {
     this.state.update(state => ({
       ...state,
       routeHistory: [],
-      recentRoutes: [],
+      recentRoutes: []
     });
   }
 
@@ -350,7 +350,7 @@ export class RouteRegistry {
   public clearFavorites(): void {
     this.state.update(state => ({
       ...state,
-      favorites: new Set(),
+      favorites: new Set()
     });
   }
 
@@ -376,7 +376,7 @@ export class RouteRegistry {
       const persistedData = {
         favorites: Array.from(state.favorites),
         recentRoutes: state.recentRoutes,
-        routeHistory: state.routeHistory,
+        routeHistory: state.routeHistory
       };
       
       localStorage.setItem(this.options.storageKey, JSON.stringify(persistedData);
@@ -400,7 +400,7 @@ export class RouteRegistry {
           ...state,
           favorites: new Set(persistedData.favorites || []),
           recentRoutes: persistedData.recentRoutes || [],
-          routeHistory: persistedData.routeHistory || [],
+          routeHistory: persistedData.routeHistory || []
         });
       }
     } catch (error: any) {

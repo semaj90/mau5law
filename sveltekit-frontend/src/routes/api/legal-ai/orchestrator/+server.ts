@@ -30,7 +30,7 @@ interface OrchestrationResult {
     totalTime: number;
     apiCalls: number;
     cacheHits: number;
-    gpuAccelerated: boolean;,
+    gpuAccelerated: boolean;
   };
 }
 
@@ -40,7 +40,7 @@ interface WorkflowStep {
   result?: any;
   error?: string;
   duration: number;
-  apiEndpoint: string;,
+  apiEndpoint: string;
 }
 
 // Workflow orchestration class;
@@ -87,7 +87,7 @@ class LegalAIOrchestrator {
         totalTime: 0,
         apiCalls: 0,
         cacheHits: 0,
-        gpuAccelerated: request.options?.useGPU || false,
+        gpuAccelerated: request.options?.useGPU || false
       }
     };
 
@@ -101,7 +101,7 @@ class LegalAIOrchestrator {
           name: stepConfig.name,
           status: 'processing',
           duration: 0,
-          apiEndpoint: stepConfig.endpoint,
+          apiEndpoint: stepConfig.endpoint
         };
         
         (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps.push(step);
@@ -157,7 +157,7 @@ class LegalAIOrchestrator {
         query: params.query,
         jurisdiction: params.jurisdiction,
         maxResults: params.maxResults || 20,
-        useAI: true,
+        useAI: true
       })
     });
 
@@ -179,7 +179,7 @@ class LegalAIOrchestrator {
         jurisdiction: params.jurisdiction,
         sources: ['cases', 'statutes'],
         includeAnalysis: true,
-        userRole: params.userRole,
+        userRole: params.userRole
       })
     });
 
@@ -199,7 +199,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         message: `Generate a comprehensive legal research summary for: ${params.query}. Include key findings, precedents, and strategic recommendations based on the following analysis: ${precedentData.substring(0, 2000)}`,
         model: 'gemma3-legal:latest',
-        temperature: 0.3,
+        temperature: 0.3
       })
     });
 
@@ -218,7 +218,7 @@ class LegalAIOrchestrator {
         content: params.content,
         documentType: params.documentType || 'legal_document',
         extractEntities: true,
-        includeKeyTerms: true,
+        includeKeyTerms: true
       })
     });
 
@@ -236,7 +236,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         text: params.content,
         analysisType: 'legal_document',
-        includeMetadata: true,
+        includeMetadata: true
       })
     });
 
@@ -255,7 +255,7 @@ class LegalAIOrchestrator {
         content: params.content,
         maxLength: 500,
         includeKeyPoints: true,
-        legalFocus: true,
+        legalFocus: true
       })
     });
 
@@ -274,7 +274,7 @@ class LegalAIOrchestrator {
         caseTitle: params.title,
         description: params.description,
         caseType: params.caseType,
-        jurisdiction: params.jurisdiction,
+        jurisdiction: params.jurisdiction
       })
     });
 
@@ -292,7 +292,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         context: `New ${params.caseType} case: ${params.title}. ${params.description}`,
         suggestionType: 'research',
-        maxSuggestions: 10,
+        maxSuggestions: 10
       })
     });
 
@@ -311,7 +311,7 @@ class LegalAIOrchestrator {
         { name: 'Initial Research Due', date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), type: 'deadline' },
         { name: 'Discovery Phase', date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), type: 'phase' }
       ],
-      generated: new Date(),
+      generated: new Date()
     };
 
     return timeline;
@@ -324,7 +324,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         evidenceId: params.evidenceId,
         metadata: params.metadata,
-        extractAdditional: true,
+        extractAdditional: true
       })
     });
 
@@ -342,7 +342,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         query: params.caseContext || params.title,
         evidenceItems: [params.evidenceId],
-        analysisDepth: 'comprehensive',
+        analysisDepth: 'comprehensive'
       })
     });
 
@@ -363,7 +363,7 @@ class LegalAIOrchestrator {
         reportType: 'evidence_analysis',
         evidenceId: params.evidenceId,
         relevanceScore: relevanceData,
-        includeRecommendations: true,
+        includeRecommendations: true
       })
     });
 
@@ -414,7 +414,7 @@ class LegalAIOrchestrator {
       workflow,
       completedSteps: steps.filter(item => item.length),
       totalSteps: steps.length,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
 
     switch (workflow) {
@@ -424,7 +424,7 @@ class LegalAIOrchestrator {
           searchResults: results[0]?.results || [],
           precedentAnalysis: results[1]?.analysis || '',
           summary: results[2]?.response || '',
-          recommendations: results[1]?.recommendations || [],
+          recommendations: results[1]?.recommendations || []
         };
 
       case 'document-processing':;
@@ -433,7 +433,7 @@ class LegalAIOrchestrator {
           entities: results[0]?.entities || [],
           analysis: results[1]?.analysis || {},
           summary: results[2]?.summary || '',
-          keyTerms: results[2]?.keyTerms || [],
+          keyTerms: results[2]?.keyTerms || []
         };
 
       case 'case-creation':;
@@ -449,7 +449,7 @@ class LegalAIOrchestrator {
           ...baseResult,
           metadata: results[0] || {},
           relevanceAnalysis: results[1] || {},
-          report: results[2]?.report || '',
+          report: results[2]?.report || ''
         };
 
       default:
@@ -523,7 +523,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ url }) => {
   return createSSRResponse({
     activeWorkflows,
     total: activeWorkflows.length,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -540,6 +540,6 @@ export const OPTIONS: RequestHandler = withSSRHandler(async () => {
       'Error recovery',
       'Progress tracking'
     ],
-    version: '1.0.0',
+    version: '1.0.0'
   });
 });

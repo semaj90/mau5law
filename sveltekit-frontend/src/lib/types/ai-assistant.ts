@@ -30,7 +30,7 @@ export interface AssistantConfig {
   model: string;
   systemPrompt: string;
   autoSwitchBackend: boolean;
-  persistHistory: boolean;,
+  persistHistory: boolean;
 }
 
 export interface ChatSession {
@@ -43,7 +43,7 @@ export interface ChatSession {
     totalMessages: number;
     primaryBackend: Backend;
     legalDomain?: string;
-    averageResponseTime: number;,
+    averageResponseTime: number;
   };
 }
 
@@ -123,7 +123,7 @@ export interface LokiMessage extends ChatMessage {
   meta?: {
     created: number;
     revision: number;
-    version: number;,
+    version: number;
   };
 }
 
@@ -143,7 +143,7 @@ export interface PerformanceMetrics {
   requestCount: number;
   errorRate: number;
   lastUpdated: number;
-  healthScore: number;,
+  healthScore: number;
 }
 
 export interface BackendCapabilities {
@@ -160,7 +160,7 @@ export interface BackendCapabilities {
   pricing?: {
     inputTokens: number;
     outputTokens: number;
-    currency: string;,
+    currency: string;
   };
 }
 
@@ -185,9 +185,9 @@ export interface LegalAnalysisResult {
   citations: {
     type: 'statute' | 'case_law' | 'regulation' | 'contract';
     citation: string;
-    relevance: number;,
+    relevance: number;
   }[];
-  confidence: number;,
+  confidence: number;
 }
 
 // WebGPU and CUDA integration types;
@@ -199,7 +199,7 @@ export interface GPUAcceleration {
   performance?: {
     tokensPerSecond: number;
     latencyMs: number;
-    throughput: number;,
+    throughput: number;
   };
 }
 
@@ -207,7 +207,7 @@ export interface WebGPUConfig {
   maxBufferSize: number;
   preferredLimits?: GPULimits;
   enableOptimizations: boolean;
-  fallbackToCPU: boolean;,
+  fallbackToCPU: boolean;
 }
 
 // Go microservice types;
@@ -219,7 +219,7 @@ export interface GoMicroRequest {
   timeout?: number;
   retryPolicy?: {
     maxRetries: number;
-    backoffMs: number;,
+    backoffMs: number;
   };
 }
 
@@ -242,7 +242,7 @@ export interface WebASMConfig {
   nThreads: number;
   enableGPU: boolean;
   memorySize: number;
-  cacheSize: number;,
+  cacheSize: number;
 }
 
 export interface WebASMResponse {
@@ -252,7 +252,7 @@ export interface WebASMResponse {
   confidence: number;
   fromCache: boolean;
   cacheHit: boolean;
-  processingPath: 'cpu' | 'gpu' | 'hybrid';,
+  processingPath: 'cpu' | 'gpu' | 'hybrid';
 }
 
 // Export formats
@@ -280,7 +280,7 @@ export interface RealtimeConfig {
     language: string;
     voice: string;
     rate: number;
-    pitch: number;,
+    pitch: number;
   };
 }
 
@@ -288,7 +288,7 @@ export interface VoiceInputResult {
   text: string;
   confidence: number;
   language: string;
-  duration: number;,
+  duration: number;
 }
 
 // Integration with existing legal platform;
@@ -301,7 +301,7 @@ export interface LegalPlatformIntegration {
   permissions?: {
     read: boolean;
     write: boolean;
-    share: boolean;,
+    share: boolean;
   };
 }
 
@@ -311,7 +311,7 @@ export interface CacheStrategy {
   maxSize: number;
   ttlMs?: number;
   compressionEnabled: boolean;
-  persistToDisk: boolean;,
+  persistToDisk: boolean;
 }
 
 export interface CacheMetrics {
@@ -321,5 +321,5 @@ export interface CacheMetrics {
   averageHitTime: number;
   averageMissTime: number;
   memoryUsage: number;
-  diskUsage: number;,
+  diskUsage: number;
 }

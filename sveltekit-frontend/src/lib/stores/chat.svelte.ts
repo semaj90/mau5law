@@ -10,7 +10,7 @@ import type {
   ConnectionStatus,
   Recommendation,
   UserActivity,
-  RAGContext,
+  RAGContext
 } from "$lib/types/ai-chat";
 
 // Internal shapes
@@ -100,7 +100,7 @@ export function createSession(input: {
     updated: now,
     messageCount: 0,
     status: "active",
-    context: input.context,
+    context: input.context
   };
   chatStore.sessions = [session, ...chatStore.sessions.filter((s) => s.id !== session.id)];
   if (!chatStore.sessionMessages.has(session.id)) {
@@ -152,7 +152,7 @@ export function getContextWindow(opts: {
     sessionId,
     maxTokens = 3000,
     maxMessages = 30,
-    halfLifeMinutes = 30,
+    halfLifeMinutes = 30
   } = opts;
   const messages = chatStore.sessionMessages.get(sessionId) ?? [];
   const now = Date.now();
@@ -166,7 +166,7 @@ export function getContextWindow(opts: {
   const scored = messages.map((m) => ({
     msg: m,
     score: decay(m.timestamp) * roleWeight(m.role),
-    estTokens: Math.ceil(m.content.length / 4),
+    estTokens: Math.ceil(m.content.length / 4)
   });
 
   // Sort by weighted recency, then take until budgets hit
@@ -274,7 +274,7 @@ export function sendRealtime(payload: any) {
     fetch("/api/realtime", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     }).catch(() => {});
   }
 }

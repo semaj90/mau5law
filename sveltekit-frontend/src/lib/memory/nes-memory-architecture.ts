@@ -18,7 +18,7 @@ const NES_MEMORY_MAP = {
     end: 0x07FF,
     size: 2048,
     mirrored: true,
-    mirrorSize: 8192 // $0000-$1FFF,
+    mirrorSize: 8192 // $0000-$1FFF
   },
 
   // PPU registers (for UI components);
@@ -27,28 +27,28 @@ const NES_MEMORY_MAP = {
     end: 0x2007,
     size: 8,
     mirrored: true,
-    mirrorSize: 8192 // $2000-$3FFF,
+    mirrorSize: 8192 // $2000-$3FFF
   },
 
   // APU and I/O registers (for audio/input);
   APU_IO_REGISTERS: {
     start: 0x4000,
     end: 0x4017,
-    size: 24,
+    size: 24
   },
 
   // Expansion ROM (for legal plugins);
   EXPANSION_ROM: {
     start: 0x4020,
     end: 0x5FFF,
-    size: 8160,
+    size: 8160
   },
 
   // Save RAM (for persistent legal data);
   SAVE_RAM: {
     start: 0x6000,
     end: 0x7FFF,
-    size: 8192,
+    size: 8192
   },
 
   // PRG-ROM (Program ROM - for legal processing logic);
@@ -56,7 +56,7 @@ const NES_MEMORY_MAP = {
     start: 0x8000,
     end: 0xFFFF,
     size: 32768,
-    bankSwitchable: true,
+    bankSwitchable: true
   },
 
   // CHR-ROM (Character ROM - for legal document patterns);
@@ -64,7 +64,7 @@ const NES_MEMORY_MAP = {
     start: 0x0000, // Separate PPU address space
     end: 0x1FFF,
     size: 8192,
-    bankSwitchable: true,
+    bankSwitchable: true
   }
 } as const;
 }
@@ -98,7 +98,7 @@ export interface MemoryBank {
   readonly documents: Map<string, LegalDocument>;
   isActive: boolean;
   lastBankSwitch: number;
-  compressionRatio: number;,
+  compressionRatio: number;
 }
 
 export interface MemoryStats {
@@ -132,7 +132,7 @@ export class NESMemoryArchitecture {
     oamaddr: 0, // OAM address register
     ppuscroll: { x: 0, y: 0 }, // PPU scroll registers
     ppuaddr: 0, // PPU address register
-    ppudata: 0  // PPU data register,
+    ppudata: 0  // PPU data register
   } as const;
 
   // Legal AI priority scoring;
@@ -141,7 +141,7 @@ export class NESMemoryArchitecture {
     high: 192,        // Evidence and contracts under review
     medium: 128,      // Research documents and precedents
     low: 64,          // Archived or reference materials
-    background: 32    // AI-generated summaries and metadata,
+    background: 32    // AI-generated summaries and metadata
   };
 
   constructor() {
@@ -162,7 +162,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: true,
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
 
     // CHR-ROM bank (8KB - legal document patterns);
@@ -176,7 +176,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: true,
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
 
     // PRG-ROM bank (32KB - legal processing logic);
@@ -190,7 +190,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: true,
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
 
     // Save RAM bank (8KB - persistent legal data);
@@ -204,7 +204,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: true,
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
 
     // Expansion ROM bank (8KB - legal plugins);
@@ -218,7 +218,7 @@ export class NESMemoryArchitecture {
       documents: new Map(),
       isActive: false, // Activated on-demand
       lastBankSwitch: Date.now(),
-      compressionRatio: 1.0,
+      compressionRatio: 1.0
     });
   }
 
@@ -327,7 +327,7 @@ export class NESMemoryArchitecture {
         size: documentSize,
         lastAccessed: Date.now(),
         compressed: compress,
-        bankId: bank.id,
+        bankId: bank.id
       };
 
       // Allocate document in bank
@@ -430,7 +430,7 @@ export class NESMemoryArchitecture {
           resolve({
             data: e.data.compressedData,
             ratio: e.data.compressionRatio,
-            priority: e.data.legalPriority,
+            priority: e.data.legalPriority
           });
         } else {
           reject(new Error(e.data.error);
@@ -442,7 +442,7 @@ export class NESMemoryArchitecture {
         legalContext: {
           type: document.type,
           riskLevel: document.riskLevel,
-          confidenceLevel: document.confidenceLevel,
+          confidenceLevel: document.confidenceLevel
         },
         compressionLevel
       });
@@ -510,7 +510,7 @@ export class NESMemoryArchitecture {
     if (expansionBank.used + document.size <= expansionBank.size) {
       expansionBank.documents.set(docId, {
         ...document,
-        bankId: expansionBank.id,
+        bankId: expansionBank.id
       });
       expansionBank.used += document.size;
       expansionBank.isActive = true;
@@ -641,7 +641,7 @@ export class NESMemoryArchitecture {
       garbageCollections: this.gcCount,
       compressionSavings: this.calculateCompressionSavings(),
       documentCount,
-      averageAccessTime: accessCount > 0 ? totalAccessTime / accessCount : 0,
+      averageAccessTime: accessCount > 0 ? totalAccessTime / accessCount : 0
     };
   }
 
@@ -686,7 +686,7 @@ export class NESMemoryArchitecture {
       case 0x2007: // PPU Data
         return state.ppudata;
       default:
-        return 0;,
+        return 0;
     }
   }
 
@@ -737,7 +737,7 @@ interface PlannerNodeRecord {
   handle: number;          // index in typed arrays
   graphNodeId: string;     // external graph node id (Neo4j id)
   parentHandle: number;    // -1 for root
-  depth: number;,
+  depth: number;
 }
 
 class PlannerMemoryManager {
@@ -865,7 +865,7 @@ class PlannerMemoryManager {
       valueSum: this.valueSum[handle],
       prior: this.prior[handle],
       depth: this.depth[handle],
-      graphNodeId: this.records[handle]?.graphNodeId,
+      graphNodeId: this.records[handle]?.graphNodeId
     };
   }
 
@@ -881,7 +881,7 @@ class PlannerMemoryManager {
       capacity: this.capacity,
       allocated: this.records.length - this.freeList.length,
       free: this.freeList.length,
-      transpositions: this.transpositionCache.size,
+      transpositions: this.transpositionCache.size
     };
   }
 }

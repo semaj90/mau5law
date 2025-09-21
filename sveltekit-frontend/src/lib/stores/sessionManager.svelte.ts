@@ -18,12 +18,12 @@ export interface SessionState {
   health: {
     isValid: boolean;
     warningCount: number;
-    lastCheck: Date | null;,
+    lastCheck: Date | null;
   };
   analytics: {
     loginTime: Date | null;
     activityCount: number;
-    featuresUsed: string[];,
+    featuresUsed: string[];
   };
 }
 
@@ -39,12 +39,12 @@ const sessionState = $state<SessionState>({
   health: {
     isValid: false,
     warningCount: 0,
-    lastCheck: null,
+    lastCheck: null
   },
   analytics: {
     loginTime: null,
     activityCount: 0,
-    featuresUsed: [],
+    featuresUsed: []
   }
 });
 
@@ -220,7 +220,7 @@ export class SessionManager {
       sessionDuration: sessionState.analytics.loginTime ?
         Date.now() - sessionState.analytics.loginTime.getTime() : 0,
       isHealthy: sessionState.health.isValid,
-      warningCount: sessionState.health.warningCount,
+      warningCount: sessionState.health.warningCount
     };
   }
 

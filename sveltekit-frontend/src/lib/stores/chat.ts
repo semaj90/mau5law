@@ -6,7 +6,7 @@ const initialState: ChatState = {
   messages: [],
   currentSession: null,
   isLoading: false,
-  error: null,
+  error: null
 };
 
 function createChatStore() {

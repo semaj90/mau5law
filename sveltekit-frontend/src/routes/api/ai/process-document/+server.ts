@@ -51,13 +51,13 @@ interface ProcessingResult {
     label: string;
     confidence: number;
     start: number;
-    end: number;,
+    end: number;
   }>;
   embeddings?: {
     document_embedding: number[];
     chunk_embeddings?: number[][];
     embedding_model: string;
-    dimensions: number;,
+    dimensions: number;
   };
   legal_analysis?: {
     document_type: string;
@@ -66,11 +66,11 @@ interface ProcessingResult {
     risk_assessment: {
       level: 'low' | 'medium' | 'high' | 'critical';
       factors: string[];
-      score: number;,
+      score: number;
     };
     compliance_check: {
       status: 'compliant' | 'non_compliant' | 'requires_review';
-      issues: string[];,
+      issues: string[];
     };
   };
   performance_metrics: {
@@ -88,7 +88,7 @@ interface ProcessingResult {
     chunks_processed: number;
     tokens_processed: number;
     gpu_accelerated: boolean;
-    simd_optimized: boolean;,
+    simd_optimized: boolean;
   };
 }
 
@@ -100,9 +100,9 @@ async function generateEmbeddingsWithOllama(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'embeddinggemma:latest',
-        prompt: text,
+        prompt: text
       }),
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(30000)
     });
 
     if (!response.ok) {
@@ -131,9 +131,9 @@ async function processCudaAccelerated(content: string, options: any): Promise<an
         body: JSON.stringify({
           vectors: [embedding],
           dimensions: embedding.length,
-          max_elements: 10000,
+          max_elements: 10000
         }),
-        signal: AbortSignal.timeout(60000),
+        signal: AbortSignal.timeout(60000)
       });
 
       if (indexResponse.ok) {
@@ -141,21 +141,21 @@ async function processCudaAccelerated(content: string, options: any): Promise<an
         return {
           embedding: embedding,
           cuda_index: indexResult,
-          gpu_accelerated: true,
+          gpu_accelerated: true
         };
       }
     }
 
     return {
       embedding: embedding,
-      gpu_accelerated: false,
+      gpu_accelerated: false
     };
   } catch (error) {
     console.error('CUDA acceleration failed:', error);
     return {
       embedding: null,
       gpu_accelerated: false,
-      error: error.message,
+      error: error.message
     };
   }
 }
@@ -181,10 +181,10 @@ ${content.substring(0, 4000)}...`, // Limit for performance
         options: {
           temperature: 0.1,
           top_p: 0.9,
-          num_predict: 1000,
+          num_predict: 1000
         }
       }),
-      signal: AbortSignal.timeout(45000),
+      signal: AbortSignal.timeout(45000)
     });
 
     if (!response.ok) {
@@ -202,7 +202,7 @@ ${content.substring(0, 4000)}...`, // Limit for performance
       key_clauses: extractKeyClauses(analysis),
       risk_assessment: extractRiskAssessment(analysis),
       compliance_check: extractComplianceStatus(analysis),
-      raw_analysis: analysis,
+      raw_analysis: analysis
     };
   } catch (error) {
     console.error('Legal analysis failed:', error);
@@ -212,7 +212,7 @@ ${content.substring(0, 4000)}...`, // Limit for performance
       key_clauses: [],
       risk_assessment: { level: 'medium', factors: [], score: 0.5 },
       compliance_check: { status: 'requires_review', issues: ['Analysis failed'] },
-      error: error.message,
+      error: error.message
     };
   }
 }
@@ -327,7 +327,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           document_embedding: cudaResult.embedding || [],
           embedding_model: 'embeddinggemma:latest',
           dimensions: cudaResult.embedding?.length || 0,
-          cuda_indexed: cudaResult.gpu_accelerated || false,
+          cuda_indexed: cudaResult.gpu_accelerated || false
         };
       } else {
         const embedding = await generateEmbeddingsWithOllama(documentContent);
@@ -335,7 +335,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           document_embedding: embedding,
           embedding_model: 'embeddinggemma:latest',
           dimensions: embedding.length,
-          cuda_indexed: false,
+          cuda_indexed: false
         };
       }
 
@@ -362,7 +362,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             stream: false,
             options: { temperature: 0.3, num_predict: 200 }
           }),
-          signal: AbortSignal.timeout(30000),
+          signal: AbortSignal.timeout(30000)
         });
 
         if (summaryResponse.ok) {
@@ -396,7 +396,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         embedding_generation_ms: embeddingResult.generation_time_ms || 0,
         model_inference_ms: legalAnalysis.analysis_time_ms || 0,
         gpu_utilization: cudaResult.cuda_index?.stats?.gpu_utilization || 0,
-        memory_usage_mb: cudaResult.cuda_index?.stats?.memory_usage_mb || 0,
+        memory_usage_mb: cudaResult.cuda_index?.stats?.memory_usage_mb || 0
       },
       metadata: {
         model: 'gemma3:legal-latest + embeddinggemma:latest',
@@ -404,7 +404,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         chunks_processed: Math.ceil(documentContent.length / chunk_size),
         tokens_processed: Math.ceil(documentContent.length / 4), // Rough token estimate
         gpu_accelerated: use_cuda_acceleration && (cudaResult.gpu_accelerated || false),
-        simd_optimized: use_simd_optimization,
+        simd_optimized: use_simd_optimization
       }
     };
 
@@ -416,7 +416,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         error: 'Processing failed',
         details: error instanceof Error ? error.message: 'Unknown error',
         gpu_accelerated: false,
-        processing_time_ms: 0,
+        processing_time_ms: 0
       },)
       { status: 500 }
     );

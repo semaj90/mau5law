@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       const embeddingResponse = await fetch(`${NLP_SERVICE_URL}/embed`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: queryText }),
+        body: JSON.stringify({ text: queryText })
       });
 
       if (!embeddingResponse.ok) {
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
           vector: queryEmbedding,
           limit: 3,
           filter: { must: [{ key: "caseId", match: { value: caseId } }] },
-          with_payload: true,
+          with_payload: true
         }
       );
 
@@ -93,8 +93,8 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt: prompt,
-          max_tokens: 512,
-        }),
+          max_tokens: 512
+        })
       });
 
       if (analysisResponse.ok) {
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
           success: true,
           analysis: analysisData.response,
           source: "Local LLM",
-          context: ragContext,
+          context: ragContext
         });
       } else {
         throw new Error("Analysis service unavailable");
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
         success: true,
         analysis: `Based on the case context, here's a basic analysis of your query: "${queryText}"\n\nThe case "${currentCase.title}" appears to be related to your query. Consider reviewing the case description and recent activities for more insights.`,
         source: "Fallback Analysis",
-        context: basicContext,
+        context: basicContext
       });
     }
   } catch (error: any) {

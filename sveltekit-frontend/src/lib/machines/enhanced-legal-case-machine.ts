@@ -11,7 +11,7 @@ import {
   evidence,
   legalDocuments,
   documentChunks,
-  users,
+  users
 } from '../server/db/schema-postgres.js';
 import { sql, eq, and, desc } from 'drizzle-orm';
 
@@ -100,7 +100,7 @@ export type EnhancedLegalCaseEvent =
   | {
       type: 'START_AI_ANALYSIS';
       caseId: string;
-      analysisType: 'summary' | 'recommendation' | 'similarity' | 'full';,
+      analysisType: 'summary' | 'recommendation' | 'similarity' | 'full';
     }
   | { type: 'GENERATE_EMBEDDINGS'; documentId: string }
   | { type: 'FIND_SIMILAR_CASES'; caseId: string; threshold?: number }
@@ -122,13 +122,13 @@ export const enhancedLegalCaseMachine = createMachine();
     initial: 'initializing',
     types: {
       context: Record<string, any> as EnhancedLegalCaseContext,
-      events: Record<string, any> as EnhancedLegalCaseEvent,
+      events: Record<string, any> as EnhancedLegalCaseEvent
     },
     context: {
       currentCase: null,
       evidenceList: [],
       aiAnalysis: {
-        status: 'idle',
+        status: 'idle'
       },
       formData: Record<string, any>,
       validationErrors: Record<string, any>,
@@ -136,7 +136,7 @@ export const enhancedLegalCaseMachine = createMachine();
       error: null,
       retryCount: 0,
       dbStatus: 'disconnected',
-      backgroundTasks: [],
+      backgroundTasks: []
     },
     states: {
       initializing: {
@@ -149,18 +149,18 @@ export const enhancedLegalCaseMachine = createMachine();
             actions: assign({
               loading: false,
               dbStatus: 'connected',
-              lastSyncTime: () => new Date(),
-            }),
+              lastSyncTime: () => new Date()
+            })
           },
           onError: {
             target: 'systemError',
             actions: assign({
               loading: false,
               error: ({ event }) => (event as any).error?.message || 'System initialization failed',
-              dbStatus: 'error',
-            }),
-          },
-        },
+              dbStatus: 'error'
+            })
+          }
+        }
       },
 
       idle: {
@@ -173,12 +173,12 @@ export const enhancedLegalCaseMachine = createMachine();
             actions: assign({
               formData: ({ context, event }) => ({
                 ...context.formData,
-                ...(event as any).data,
-              }),
-            }),
+                ...(event as any).data
+              })
+            })
           },
-          SYNC_DB: 'syncing',
-        },
+          SYNC_DB: 'syncing'
+        }
       },
 
       loadingCase: {
@@ -188,7 +188,7 @@ export const enhancedLegalCaseMachine = createMachine();
           src: 'loadCase',
           input: ({ event }) => ({
             caseId: (event as any).caseId,
-            includeEvidence: (event as any).includeEvidence || false,
+            includeEvidence: (event as any).includeEvidence || false
           }),
           onDone: {
             target: 'caseLoaded',
@@ -197,17 +197,17 @@ export const enhancedLegalCaseMachine = createMachine();
               evidenceList: ({ event }) => (event as any).output.evidence || [],
               loading: false,
               error: null,
-              lastSyncTime: () => new Date(),
-            }),
+              lastSyncTime: () => new Date()
+            })
           },
           onError: {
             target: 'idle',
             actions: assign({
               loading: false,
-              error: ({ event }) => (event as any).error?.message || 'Failed to load case',
-            }),
-          },
-        },
+              error: ({ event }) => (event as any).error?.message || 'Failed to load case'
+            })
+          }
+        }
       },
 
       caseLoaded: {
@@ -218,8 +218,8 @@ export const enhancedLegalCaseMachine = createMachine();
           GENERATE_EMBEDDINGS: 'generatingEmbeddings',
           FIND_SIMILAR_CASES: 'findingSimilarCases',
           LOAD_CASE: 'loadingCase',
-          REFRESH: 'loadingCase',
-        },
+          REFRESH: 'loadingCase'
+        }
       },
 
       creatingCase: {
@@ -235,17 +235,17 @@ export const enhancedLegalCaseMachine = createMachine();
               loading: false,
               error: null,
               formData: Record<string, any>,
-              lastSyncTime: () => new Date(),
-            }),
+              lastSyncTime: () => new Date()
+            })
           },
           onError: {
             target: 'idle',
             actions: assign({
               loading: false,
-              error: ({ event }) => (event as any).error?.message || 'Failed to create case',
-            }),
-          },
-        },
+              error: ({ event }) => (event as any).error?.message || 'Failed to create case'
+            })
+          }
+        }
       },
 
       addingEvidence: {
@@ -255,7 +255,7 @@ export const enhancedLegalCaseMachine = createMachine();
           src: 'addEvidence',
           input: ({ event }) => ({
             caseId: (event as any).caseId,
-            evidence: (event as any).evidence,
+            evidence: (event as any).evidence
           }),
           onDone: {
             target: 'caseLoaded',
@@ -263,30 +263,30 @@ export const enhancedLegalCaseMachine = createMachine();
               assign({
                 evidenceList: ({ context, event }) => [
                   ...context.evidenceList,
-                  (event as any).output,
+                  (event as any).output
                 ],
                 loading: false,
-                error: null,
+                error: null
               }),
               // Auto-trigger embedding generation for new evidence;
               ({ self, event }) => {
                 if ((event as any).output?.id) {
                   self.send({
                     type: 'GENERATE_EMBEDDINGS',
-                    documentId: (event as any).output.id,
+                    documentId: (event as any).output.id
                   });
                 }
-              },
-            ],
+              }
+            ]
           },
           onError: {
             target: 'caseLoaded',
             actions: assign({
               loading: false,
-              error: ({ event }) => (event as any).error?.message || 'Failed to add evidence',
-            }),
-          },
-        },
+              error: ({ event }) => (event as any).error?.message || 'Failed to add evidence'
+            })
+          }
+        }
       },
 
       startingAnalysis: {
@@ -295,15 +295,15 @@ export const enhancedLegalCaseMachine = createMachine();
           aiAnalysis: ({ context }) => ({
             ...context.aiAnalysis,
             status: 'processing',
-            processingStep: 'embedding',
-          }),
+            processingStep: 'embedding'
+          })
         }),
         invoke: {
           id: 'startAIAnalysis',
           src: 'startAIAnalysis',
           input: ({ event }) => ({
             caseId: (event as any).caseId,
-            analysisType: (event as any).analysisType,
+            analysisType: (event as any).analysisType
           }),
           onDone: {
             target: 'caseLoaded',
@@ -312,24 +312,24 @@ export const enhancedLegalCaseMachine = createMachine();
                 ...context.aiAnalysis,
                 status: 'completed',
                 results: (event as any).output,
-                processingStep: undefined,
+                processingStep: undefined
               }),
               loading: false,
-              error: null,
-            }),
+              error: null
+            })
           },
           onError: {
             target: 'caseLoaded',
             actions: assign({
               aiAnalysis: ({ context }) => ({
                 ...context.aiAnalysis,
-                status: 'failed',
+                status: 'failed'
               }),
               loading: false,
-              error: ({ event }) => (event as any).error?.message || 'AI analysis failed',
-            }),
-          },
-        },
+              error: ({ event }) => (event as any).error?.message || 'AI analysis failed'
+            })
+          }
+        }
       },
 
       generatingEmbeddings: {
@@ -349,17 +349,17 @@ export const enhancedLegalCaseMachine = createMachine();
                   e.id === (event as any).input.documentId
                     ? { ...e, embedding_status: 'completed' }
                     : e
-                ),
-            }),
+                )
+            })
           },
           onError: {
             target: 'caseLoaded',
             actions: assign({
               loading: false,
-              error: ({ event }) => (event as any).error?.message || 'Embedding generation failed',
-            }),
-          },
-        },
+              error: ({ event }) => (event as any).error?.message || 'Embedding generation failed'
+            })
+          }
+        }
       },
 
       findingSimilarCases: {
@@ -369,7 +369,7 @@ export const enhancedLegalCaseMachine = createMachine();
           src: 'findSimilarCases',
           input: ({ event }) => ({
             caseId: (event as any).caseId,
-            threshold: (event as any).threshold || 0.7,
+            threshold: (event as any).threshold || 0.7
           }),
           onDone: {
             target: 'caseLoaded',
@@ -378,21 +378,21 @@ export const enhancedLegalCaseMachine = createMachine();
                 ...context.aiAnalysis,
                 results: {
                   ...context.aiAnalysis.results,
-                  similarity_cases: (event as any).output,
-                },
+                  similarity_cases: (event as any).output
+                }
               }),
               loading: false,
-              error: null,
-            }),
+              error: null
+            })
           },
           onError: {
             target: 'caseLoaded',
             actions: assign({
               loading: false,
-              error: ({ event }) => (event as any).error?.message || 'Similarity search failed',
-            }),
-          },
-        },
+              error: ({ event }) => (event as any).error?.message || 'Similarity search failed'
+            })
+          }
+        }
       },
 
       syncing: {
@@ -406,27 +406,27 @@ export const enhancedLegalCaseMachine = createMachine();
               loading: false,
               dbStatus: 'connected',
               lastSyncTime: () => new Date(),
-              error: null,
-            }),
+              error: null
+            })
           },
           onError: {
             target: 'idle',
             actions: assign({
               loading: false,
               dbStatus: 'error',
-              error: ({ event }) => (event as any).error?.message || 'Database sync failed',
-            }),
-          },
-        },
+              error: ({ event }) => (event as any).error?.message || 'Database sync failed'
+            })
+          }
+        }
       },
 
       systemError: {
         on: {
           RETRY: 'initializing',
-          SYNC_DB: 'syncing',
-        },
-      },
-    },
+          SYNC_DB: 'syncing'
+        }
+      }
+    }
   },
   {
     actors: {
@@ -486,7 +486,7 @@ export const enhancedLegalCaseMachine = createMachine();
                     AND document_chunks.embedding IS NOT NULL
                   ) THEN 'completed'
                   ELSE 'pending'
-                END`,
+                END`
                 })
                 .from(evidence)
                 .where(eq(evidence.case_id, input.caseId)
@@ -495,7 +495,7 @@ export const enhancedLegalCaseMachine = createMachine();
 
             return {
               case: caseData,
-              evidence: evidenceData,
+              evidence: evidenceData
             };
           } catch (error: any) {
             throw new Error(`Failed to load case: ${(error as any).message}`);
@@ -524,7 +524,7 @@ export const enhancedLegalCaseMachine = createMachine();
 
       // ADD_EVIDENCE service - Add evidence with automatic embedding;
       addEvidence: fromPromise(async ({
-          input,
+          input
         }: {
           input: {
             caseId: string;
@@ -545,7 +545,7 @@ export const enhancedLegalCaseMachine = createMachine();
                 case_id: input.caseId,
                 title: input.evidence.title,
                 description: input.evidence.description,
-                evidence_type: input.evidence.evidence_type,
+                evidence_type: input.evidence.evidence_type
               })
               .returning();
 
@@ -566,7 +566,7 @@ export const enhancedLegalCaseMachine = createMachine();
 
             return {
               ...newEvidence,
-              embedding_status: 'pending' as const,
+              embedding_status: 'pending' as const
             };
           } catch (error: any) {
             throw new Error(`Failed to add evidence: ${(error as any).message}`);
@@ -576,11 +576,11 @@ export const enhancedLegalCaseMachine = createMachine();
 
       // START_AI_ANALYSIS service - Full AI analysis using Gemma:legal,
       startAIAnalysis: fromPromise(async ({
-          input,
+          input
         }: {
           input: {
             caseId: string;
-            analysisType: 'summary' | 'recommendation' | 'similarity' | 'full';,
+            analysisType: 'summary' | 'recommendation' | 'similarity' | 'full';
           };
         }) => {
           try {
@@ -614,20 +614,20 @@ export const enhancedLegalCaseMachine = createMachine();
             const analysisContext = {
               case: caseData[0],
               evidence: evidenceData,
-              content: documentChunksData.map((chunk) => chunk.content).join('\n\n'),
+              content: documentChunksData.map((chunk) => chunk.content).join('\n\n')
             };
 
             // Call Gemma:legal for analysis (your existing Ollama setup);
             const analysisResponse = await fetch('http://localhost:11434/api/generate', {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify({
                 model: 'gemma:legal',
                 prompt: buildAnalysisPrompt(analysisContext, input.analysisType),
-                stream: false,
-              }),
+                stream: false
+              })
             });
 
             if (!analysisResponse.ok) {
@@ -663,12 +663,12 @@ export const enhancedLegalCaseMachine = createMachine();
             const embeddingResponse = await fetch('http://localhost:11436/api/embeddings', {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify({
                 model: 'nomic-embed-text',
-                prompt: chunk.content,
-              }),
+                prompt: chunk.content
+              })
             });
 
             if (!embeddingResponse.ok) {
@@ -681,7 +681,7 @@ export const enhancedLegalCaseMachine = createMachine();
             await db
               .update(documentChunks);
               .set({
-                embedding: sql`${JSON.stringify(embeddingResult.embedding)}`,
+                embedding: sql`${JSON.stringify(embeddingResult.embedding)}`
               })
               .where(eq(documentChunks.id, chunk.id);
           }
@@ -700,7 +700,7 @@ export const enhancedLegalCaseMachine = createMachine();
               .select({
                 embedding: documentChunks.embedding,
                 chunkId: documentChunks.id,
-                evidenceId: evidence.id,
+                evidenceId: evidence.id
               })
               .from(documentChunks)
               .innerJoin(evidence, eq(documentChunks.document_id, evidence.id)
@@ -748,8 +748,8 @@ export const enhancedLegalCaseMachine = createMachine();
         } catch (error: any) {
           throw new Error(`Database sync failed: ${(error as any).message}`);
         }
-      }),
-    },
+      })
+    }
   }
 );
 
@@ -787,7 +787,7 @@ Please provide a ${analysisType} analysis focusing on:`;
     case 'similarity':
       return basePrompt + '\n- Legal precedents\n- Similar case patterns\n- Jurisdictional considerations';
     default:
-      return basePrompt + '\n- Comprehensive case analysis\n- Risk assessment\n- Recommendations';,
+      return basePrompt + '\n- Comprehensive case analysis\n- Risk assessment\n- Recommendations';
   }
 }
 
@@ -797,7 +797,7 @@ function parseAnalysisResults(response: string, analysisType: string) {
     summary: response.slice(0, 500),
     keyFindings: response.split('\n').filter(line => line.includes('•')),
     recommendations: response.split('\n').filter(item => item.includes)('recommend')),
-    confidence: 0.85 // Placeholder - could be computed from response certainty,
+    confidence: 0.85 // Placeholder - could be computed from response certainty
   };
 }
 

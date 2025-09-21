@@ -38,7 +38,7 @@ export interface UserPreferences {
   enable_rag: boolean;
   default_model: string;
   notification_sound: boolean;
-  export_format: 'json' | 'markdown' | 'txt';,
+  export_format: 'json' | 'markdown' | 'txt';
 }
 
 export interface ChatState {
@@ -48,7 +48,7 @@ export interface ChatState {
   isLoading: boolean;
   connectionStatus: 'connected' | 'disconnected' | 'connecting';
   ragServiceUrl: string;
-  lastError: string | null;,
+  lastError: string | null;
 }
 
 // Default preferences;
@@ -59,7 +59,7 @@ const defaultPreferences: UserPreferences = {
   enable_rag: true,
   default_model: 'enhanced-rag',
   notification_sound: false,
-  export_format: 'markdown',
+  export_format: 'markdown'
 };
 
 // Initialize chat state;
@@ -70,7 +70,7 @@ const initialState: ChatState = {
   isLoading: false,
   connectionStatus: 'disconnected',
   ragServiceUrl: 'http://localhost:8093',
-  lastError: null,
+  lastError: null
 };
 
 // Main chat store
@@ -87,7 +87,7 @@ export const connectionStatus = derived(chatStore, $state => $state.connectionSt
 const STORAGE_KEYS = {
   SESSIONS: 'yorha-ai-chat-sessions',
   PREFERENCES: 'yorha-ai-chat-preferences',
-  CURRENT_SESSION: 'yorha-ai-current-session',
+  CURRENT_SESSION: 'yorha-ai-current-session'
 };
 
 /**
@@ -162,7 +162,7 @@ class AIChatStore {
     const fullMessage: ChatMessage = {
       ...message,
       id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: message.timestamp || new Date(),
+      timestamp: message.timestamp || new Date()
     };
 
     chatStore.update(state => {
@@ -243,7 +243,7 @@ class AIChatStore {
       const response = await fetch(`${this.RAG_SERVICE_URL}/api/chat`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           message,
@@ -252,7 +252,7 @@ class AIChatStore {
           session_id: get(currentSession)?.id || 'default',
           include_vector_search: true,
           max_tokens: 1000,
-          temperature: 0.7,
+          temperature: 0.7
         })
       });
 
@@ -294,7 +294,7 @@ class AIChatStore {
         try {
           response = await fetch(`${this.RAG_SERVICE_URL}/health`, {
         method: 'GET',
-        timeout: 5000,
+        timeout: 5000
       } as any);
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -335,7 +335,7 @@ class AIChatStore {
           updated_at: s.updated_at.toISOString(),
           messages: s.messages.map(m => ({
             ...m,
-            timestamp: m.timestamp.toISOString(),
+            timestamp: m.timestamp.toISOString()
           })
         })
       );
@@ -373,7 +373,7 @@ class AIChatStore {
           updated_at: new Date(s.updated_at),
           messages: s.messages.map((m: any) => ({
             ...m,
-            timestamp: new Date(m.timestamp),
+            timestamp: new Date(m.timestamp)
           })
         });
 
@@ -427,7 +427,7 @@ class AIChatStore {
         return txt;
 
       default:
-        return '';,
+        return '';
     }
   }
 

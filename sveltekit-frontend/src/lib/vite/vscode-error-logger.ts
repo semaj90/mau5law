@@ -30,9 +30,9 @@ export function vscodeErrorLogger(options: any = {}) {
         errorLog = {
           metadata: {
             lastUpdated: parsed?.metadata?.lastUpdated || new Date().toISOString(),
-            version: parsed?.metadata?.version || 1,
+            version: parsed?.metadata?.version || 1
           },
-          errors: Array.isArray(parsed?.errors) ? parsed.errors: [],
+          errors: Array.isArray(parsed?.errors) ? parsed.errors: []
         };
       }
     } catch (e: any) {
@@ -73,7 +73,7 @@ export function vscodeErrorLogger(options: any = {}) {
       column: err?.loc?.column || undefined,
       frame: err?.frame || undefined,
       plugin: err?.plugin || undefined,
-      buildPhase: 'vite',
+      buildPhase: 'vite'
     };
     return entry;
   }
@@ -125,5 +125,5 @@ export const defaultVSCodeErrorConfig = {
   autoOpenProblems: false,
   notificationLevel: 'errors-only',
   integrateTasks: true,
-  generateDiagnostics: true,
+  generateDiagnostics: true
 };

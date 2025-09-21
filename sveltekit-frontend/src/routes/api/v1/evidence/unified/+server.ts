@@ -42,19 +42,19 @@ const UnifiedAnalysisSchema = z.object({
     vectorSimilarity: z.boolean().default(true),
     strategyRecommendations: z.boolean().default(true),
     wasmProcessing: z.boolean().default(false), // Computationally expensive
-    correlationAnalysis: z.boolean().default(true),
+    correlationAnalysis: z.boolean().default(true)
   }),
   parameters: z.object({
     similarityThreshold: z.number().min(0).max(1).default(0.7),
     strategyType: z.enum(['evidence-driven', 'settlement', 'aggressive', 'comprehensive']).default('comprehensive'),
     correlationConfidence: z.number().min(0).max(1).default(0.6),
-    includeVisualization: z.boolean().default(true),
+    includeVisualization: z.boolean().default(true)
   }),
   context: z.object({
     caseType: z.string().optional(),
     jurisdiction: z.string().optional(),
     urgency: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
-    clientObjectives: z.array(z.string()).optional(),
+    clientObjectives: z.array(z.string()).optional()
   }).optional()
 });
 
@@ -67,7 +67,7 @@ interface UnifiedAnalysisResult {
   vectorAnalysis?: {
     similarityGroups: Array<any>;
     outliers: string[];
-    recommendedActions: string[];,
+    recommendedActions: string[];
   };
 
   // Strategy recommendations;
@@ -77,9 +77,9 @@ interface UnifiedAnalysisResult {
     riskAssessment: {
       level: 'low' | 'medium' | 'high' | 'critical';
       factors: string[];
-      mitigations: string[];,
+      mitigations: string[];
     };
-    outcomeProjections: Array<any>;,
+    outcomeProjections: Array<any>;
   };
 
   // WASM processing results;
@@ -89,7 +89,7 @@ interface UnifiedAnalysisResult {
     qualityMetrics: {
       averageReadability: number;
       uniqueDocuments: number;
-      duplicateGroups: Array<string[]>;,
+      duplicateGroups: Array<string[]>;
     };
   };
 
@@ -100,7 +100,7 @@ interface UnifiedAnalysisResult {
     networkAnalysis: {
       centralEvidence: string[];
       communities: Array<string[]>;
-      weakLinks: Array<any>;,
+      weakLinks: Array<any>;
   };
 
   // Unified insights;
@@ -118,7 +118,7 @@ interface UnifiedAnalysisResult {
     wasmProcessingMs?: number;
     correlationAnalysisMs?: number;
     totalEvidenceProcessed: number;
-    memoryUsageMb: number;,
+    memoryUsageMb: number;
   };
 }
 
@@ -192,12 +192,12 @@ export const POST: RequestHandler = async ({ params, request }) => {
         keyFindings: [],
         criticalGaps: [],
         recommendations: [],
-        visualizations: [],
+        visualizations: []
       },
       performance: {
         processingTimeMs: 0,
         totalEvidenceProcessed: evidence.length,
-        memoryUsageMb: 0,
+        memoryUsageMb: 0
       }
     };
 
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         evidenceIds: analysisRequest.evidenceIds,
         algorithms: ['semantic', 'legal', 'temporal', 'contextual'],
         clustering: true,
-        threshold: analysisRequest.parameters.similarityThreshold,
+        threshold: analysisRequest.parameters.similarityThreshold
       });
 
       // Process similarity results into groups
@@ -219,7 +219,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
           groupId: `cluster_${index}`,
           evidenceIds: cluster.evidenceIds,
           averageSimilarity: cluster.coherenceScore,
-          keyThemes: cluster.themes || [],
+          keyThemes: cluster.themes || []
         })) || [];
 
       const outliers = evidence
@@ -236,8 +236,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
           outliers.length > 0
             ? `${outliers.length} outlier documents require special attention`
             : 'All evidence shows strong correlation',
-          'Use clustering results to optimize case presentation structure',
-        ],
+          'Use clustering results to optimize case presentation structure'
+        ]
       };
 
       vectorSearchTime = Date.now() - vectorStart;
@@ -253,7 +253,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         strategyType: analysisRequest.parameters.strategyType,
         caseContext: analysisRequest.context || {},
         includeRiskAssessment: true,
-        generateAlternatives: true,
+        generateAlternatives: true
       });
 
       (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis = {
@@ -264,9 +264,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
         riskAssessment: {
           level: strategyResults.riskAssessment?.overallRisk || 'medium',
           factors: strategyResults.riskAssessment?.riskFactors || [],
-          mitigations: strategyResults.riskAssessment?.mitigationStrategies || [],
+          mitigations: strategyResults.riskAssessment?.mitigationStrategies || []
         },
-        outcomeProjections: strategyResults.outcomeProjections || [],
+        outcomeProjections: strategyResults.outcomeProjections || []
       };
 
       strategyTime = Date.now() - strategyStart;
@@ -290,7 +290,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             entities: (analysis?.entities as string[]) || [],
             citations: (analysis?.citations as string[]) || [],
             readabilityScore: (analysis?.readabilityScore as number) || 0,
-            fingerprint: (analysis?.fingerprint as string) || '',
+            fingerprint: (analysis?.fingerprint as string) || ''
           };
         })
       );
@@ -307,7 +307,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
           crossSimilarity.push({
             evidenceA: processedResults[i].evidenceId,
             evidenceB: processedResults[j].evidenceId,
-            similarity: simScore,
+            similarity: simScore
           });
         }
       }
@@ -338,8 +338,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
         qualityMetrics: {
           averageReadability,
           uniqueDocuments: evidence.length - duplicateGroups.length,
-          duplicateGroups,
-        },
+          duplicateGroups
+        }
       };
 
       wasmTime = Date.now() - wasmStart;
@@ -375,7 +375,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         .map(e => ({
           evidenceA: e.id,
           evidenceB: 'isolated',
-          reason: 'No significant correlations found with other evidence',
+          reason: 'No significant correlations found with other evidence'
         });
 
       (result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).correlationAnalysis = {
@@ -384,13 +384,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
           evidenceB: c.evidenceB,
           type: c.correlationType,
           strength: c.strength,
-          legalImplication: c.implications[0] || 'Requires further analysis',
+          legalImplication: c.implications[0] || 'Requires further analysis'
         })),
         patterns: patterns.map(p => ({
           type: p.patternType,
           description: p.description,
           significance: p.significance,
-          evidenceIds: p.evidenceIds,
+          evidenceIds: p.evidenceIds
         })),
         networkAnalysis: {
           centralEvidence: networkAnalysis.centralNodes,
@@ -440,7 +440,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         priority: 'high' as const,
         action: `Implement ${(result as { vectorAnalysis?: any; performance?: any; strategyAnalysis?: any; wasmAnalysis?: any; correlationAnalysis?: any; unifiedInsights?: any }).strategyAnalysis.primaryStrategy} strategy`,
         rationale: `Analysis shows this approach optimizes case strengths`,
-        estimatedImpact: 'Significant improvement in case outcome probability',
+        estimatedImpact: 'Significant improvement in case outcome probability'
       });
 
       // Strategy tree visualization;
@@ -472,7 +472,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
           priority: 'high' as const,
           action: 'Focus case narrative on central evidence pieces',
           rationale: 'Network analysis identifies key evidence with high connectivity',
-          estimatedImpact: 'Strengthens overall case coherence and impact',
+          estimatedImpact: 'Strengthens overall case coherence and impact'
         });
       }
 
@@ -486,7 +486,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             source: c.evidenceA,
             target: c.evidenceB,
             weight: c.strength,
-            type: c.type,
+            type: c.type
           })
         },
         insights: ['Evidence network shows connection patterns', 'Central nodes identified for case focus']
@@ -501,7 +501,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         priority: 'medium' as const,
         action: 'Address identified evidence gaps',
         rationale: 'Strengthening weak areas will improve case robustness',
-        estimatedImpact: 'Enhanced case completeness and reduced vulnerability',
+        estimatedImpact: 'Enhanced case completeness and reduced vulnerability'
       });
     }
 
@@ -548,7 +548,7 @@ export const GET: RequestHandler = async ({ url }) => {
     wasmProcessing: {
       available: true,
       features: ['document-extraction', 'entity-detection', 'citation-parsing', 'similarity-calculation'],
-      performance: 'high-performance-client-side',
+      performance: 'high-performance-client-side'
     },
     correlationAnalysis: {
       available: true,
@@ -565,7 +565,7 @@ export const GET: RequestHandler = async ({ url }) => {
     timestamp: new Date().toISOString(),
     systemHealth: 'operational',
     availableFeatures: Object.keys(capabilities).length,
-    version: '1.0.0',
+    version: '1.0.0'
   };
 
   return json({ capabilities, status });

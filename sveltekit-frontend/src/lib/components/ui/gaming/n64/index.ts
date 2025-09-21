@@ -122,7 +122,7 @@ export const N64_QUICK_START_CONFIG = {
   enableTextureFiltering: true,
   animationStyle: 'smooth' as const,
   perspective: 1000,
-  glowIntensity: 0.4,
+  glowIntensity: 0.4
 };
 
 /**
@@ -141,7 +141,7 @@ export const N64_PERFORMANCE_PRESETS = {
     enableParticles: true,
     enableSpatialAudio: true,
     glowIntensity: 0.8,
-    perspective: 1200,
+    perspective: 1200
   },
 
   // Balanced quality for most devices;
@@ -154,7 +154,7 @@ export const N64_PERFORMANCE_PRESETS = {
     enableParticles: false,
     enableSpatialAudio: true,
     glowIntensity: 0.4,
-    perspective: 1000,
+    perspective: 1000
   },
 
   // Optimized for low-end devices;
@@ -167,7 +167,7 @@ export const N64_PERFORMANCE_PRESETS = {
     enableParticles: false,
     enableSpatialAudio: false,
     glowIntensity: 0.2,
-    perspective: 800,
+    perspective: 800
   }
 };
 
@@ -365,5 +365,5 @@ export default {
   themes: N64_THEME_VARIANTS,
   utils: N64_UTILS,
   a11y: N64_A11Y_HELPERS,
-  css: N64_CSS_GENERATORS,
+  css: N64_CSS_GENERATORS
 };

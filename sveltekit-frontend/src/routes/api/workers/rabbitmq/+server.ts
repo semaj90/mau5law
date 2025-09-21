@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             worker: stats,
             queues: Object.keys(QUEUES),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
 
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
             availableQueues: Object.entries(QUEUES).map(([key, value]) => ({
               name: key,
               queueName: value,
-              description: getQueueDescription(value),
+              description: getQueueDescription(value)
             })
           }
         });
@@ -55,12 +55,12 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             worker: {
               ...workerStats,
-              health: healthStatus,
+              health: healthStatus
             },
             endpoints: {
               health: '/api/workers/rabbitmq?action=health',
               stats: '/api/workers/rabbitmq?action=stats',
-              queues: '/api/workers/rabbitmq?action=queues',
+              queues: '/api/workers/rabbitmq?action=queues'
             }
           }
         });
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
       status: 'error',
       error: {
         message: error.message || 'RabbitMQ Worker API error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
           enableLogging: true,
           enableN64Logging: config.enableN64Style || false,
           maxRetries: config.maxRetries || 3,
-          processingTimeout: config.timeout || 30000,
+          processingTimeout: config.timeout || 30000
         });
 
         return json({
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: '🎮 RabbitMQ Service Worker started successfully',
           data: {
             workerStats: worker.getStats(),
-            config: config,
+            config: config
           }
         });
 
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
         
         return json({
           status: 'success',
-          message: 'RabbitMQ Service Worker stopped successfully',
+          message: 'RabbitMQ Service Worker stopped successfully'
         });
 
       case 'publish':
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ...message,
           priority,
           publishedVia: 'worker_api',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
 
         return json({
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request }) => {
               {
                 ...msg.message,
                 publishedVia: 'bulk_api',
-                timestamp: Date.now(),
+                timestamp: Date.now()
               }
             ));
             return { queueName: msg.queueName, success, messageId: msg.message.id };
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request }) => {
             summary: {
               total: messages.length,
               successful: successCount,
-              failed: messages.length - successCount,
+              failed: messages.length - successCount
             }
           }
         });
@@ -186,7 +186,7 @@ export const POST: RequestHandler = async ({ request }) => {
               documentId: `doc-${Date.now()}`,
               fileName: 'legal_contract.pdf',
               type: 'contract_analysis',
-              priority: 'medium',
+              priority: 'medium'
             }
           },
           {
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
               documentId: `doc-${Date.now()}`,
               content: 'Sample legal document content for embedding generation',
               type: 'embedding_generation',
-              priority: 'high',
+              priority: 'high'
             }
           },
           {
@@ -204,7 +204,7 @@ export const POST: RequestHandler = async ({ request }) => {
               evidenceId: `evidence-${Date.now()}`,
               type: 'document_analysis',
               caseId: `case-${Date.now()}`,
-              priority: 'high',
+              priority: 'high'
             }
           }
         ];
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'Load simulation completed',
           data: {
             jobsSubmitted: loadResults.length,
-            results: loadResults,
+            results: loadResults
           }
         });
 
@@ -238,7 +238,7 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'error',
       error: {
         message: error.message || 'RabbitMQ Worker operation failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -258,7 +258,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: 'Worker configuration updated',
       data: {
         appliedConfig: config,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -269,7 +269,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       status: 'error',
       error: {
         message: error.message || 'Configuration update failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -287,7 +287,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
           status: 'success',
           message: 'Worker statistics reset',
           data: {
-            resetAt: new Date().toISOString(),
+            resetAt: new Date().toISOString()
           }
         });
 
@@ -297,7 +297,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
           status: 'success',
           message: 'Queue clearing initiated (simulation)',
           data: {
-            clearedAt: new Date().toISOString(),
+            clearedAt: new Date().toISOString()
           }
         });
 
@@ -315,7 +315,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       status: 'error',
       error: {
         message: error.message || 'Delete operation failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }

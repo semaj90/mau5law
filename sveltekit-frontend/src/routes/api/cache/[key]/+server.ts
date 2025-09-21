@@ -11,7 +11,7 @@ const mockCache = new Map<string, {
   value: any;
   timestamp: number;
   ttl: number;
-  version: string;,
+  version: string;
 }>();
 
 export const GET: RequestHandler = async ({ params }) => {
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ params }) => {
       value: entry.value,
       version: entry.version,
       timestamp: entry.timestamp,
-      ttl: entry.ttl,
+      ttl: entry.ttl
     });
     
   } catch (error: any) {

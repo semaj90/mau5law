@@ -36,7 +36,7 @@ const webLlamaService = {
         prompt: options.prompt,
         maxTokens: options.maxTokens,
         temperature: options.temperature,
-        useCase: 'chat',
+        useCase: 'chat'
       });
 
       return {
@@ -44,13 +44,13 @@ const webLlamaService = {
         text: response.text,
         metadata: {
           tokensGenerated: response.metadata.tokensGenerated,
-          confidence: response.metadata.confidence,
+          confidence: response.metadata.confidence
         }
       };
     } catch (error: any) {
       return {
         success: false,
-        error: error.message,
+        error: error.message
       };
     }
   },
@@ -62,7 +62,7 @@ const webLlamaService = {
       recommendations: ['Consider reviewing with legal expert'],
       confidence: 0.5,
       processingTime: 100,
-      method: 'fallback',
+      method: 'fallback'
     };
   },
 
@@ -75,7 +75,7 @@ const webLlamaService = {
       workerEnabled: false,
       cacheSize: 0,
       threadsCount: navigator.hardwareConcurrency || 4,
-      wasmSupported: typeof WebAssembly !== 'undefined',
+      wasmSupported: typeof WebAssembly !== 'undefined'
     };
   },
 
@@ -130,12 +130,12 @@ export interface WebAssemblyAIConfig {
     name: 'gemma3:270m' | 'gemma3-legal:latest';
     quantization: 'Q4_0' | 'Q4_1' | 'Q8_0' | 'F16' | 'F32';
     threads: number;
-    batchSize: number;,
+    batchSize: number;
   };
 
   // Fallback strategy (removed ONNX)
   fallbackStrategy: 'ollama' | 'python' | 'webasm' | 'auto';
-  gpuDetectionTimeout: number;,
+  gpuDetectionTimeout: number;
 }
 
 export interface WebAssemblyAIResponse {
@@ -179,7 +179,7 @@ export class WebAssemblyAIAdapter {
         name: 'gemma3:270m',
         quantization: 'Q4_0',
         threads: navigator.hardwareConcurrency || 4,
-        batchSize: 512,
+        batchSize: 512
       },
 
       // Parameters
@@ -191,7 +191,7 @@ export class WebAssemblyAIAdapter {
       fallbackStrategy: 'auto',
       gpuDetectionTimeout: 5000,
 
-      ...config,
+      ...config
     };
   }
 
@@ -232,7 +232,7 @@ export class WebAssemblyAIAdapter {
           await this.initializeWebAssemblyLlamaCpp();
           break;
         default:
-          throw new Error('No viable inference method available');,
+          throw new Error('No viable inference method available');
       }
 
       this.initialized = true;
@@ -243,7 +243,7 @@ export class WebAssemblyAIAdapter {
         webgpu: capabilities.webgpu.available,
         webgl2: capabilities.webgl2.available,
         wasmSIMD: capabilities.wasmSIMD.available,
-        tensorRT: capabilities.tensorRT.available,
+        tensorRT: capabilities.tensorRT.available
       });
 
       return true;
@@ -295,7 +295,7 @@ export class WebAssemblyAIAdapter {
     try {
       const ollamaCheck = await fetch(`${this.config.ollamaEndpoint}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(this.config.gpuDetectionTimeout),
+        signal: AbortSignal.timeout(this.config.gpuDetectionTimeout)
       });
       if (ollamaCheck.ok) {
         console.log('[WebAssembly AI] Ollama available');
@@ -309,7 +309,7 @@ export class WebAssemblyAIAdapter {
     try {
       const pythonCheck = await fetch(`${this.config.pythonMiddlewareEndpoint}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(this.config.gpuDetectionTimeout),
+        signal: AbortSignal.timeout(this.config.gpuDetectionTimeout)
       });
       if (pythonCheck.ok) {
         console.log('[WebAssembly AI] Python middleware available');
@@ -365,12 +365,12 @@ export class WebAssemblyAIAdapter {
           name: this.config.modelConfig.name,
           quantization: this.config.modelConfig.quantization,
           contextSize: this.config.contextSize,
-          batchSize: this.config.modelConfig.batchSize,
+          batchSize: this.config.modelConfig.batchSize
         },
         threads: this.config.modelConfig.threads,
         enableSIMD: this.config.enableSIMD,
         enableGPU: this.gpuAvailable && this.config.enableGPU,
-        enableMultiCore: this.config.enableMultiCore,
+        enableMultiCore: this.config.enableMultiCore
       });
 
       if (!initResult.success) {
@@ -386,7 +386,7 @@ export class WebAssemblyAIAdapter {
         threads: this.config.modelConfig.threads,
         simdEnabled: this.config.enableSIMD,
         gpuEnabled: this.gpuAvailable && this.config.enableGPU,
-        multiCoreEnabled: this.config.enableMultiCore,
+        multiCoreEnabled: this.config.enableMultiCore
       });
     } catch (error) {
       console.error('[WebAssembly AI] WebAssembly llama.cpp initialization failed:', error);
@@ -437,7 +437,7 @@ export class WebAssemblyAIAdapter {
           response = await this.generateWithUnifiedRuntime(prompt, options);
           break;
         default:
-          throw new Error('No active inference method');,
+          throw new Error('No active inference method');
       }
 
       const totalTime = performance.now() - startTime;
@@ -476,10 +476,10 @@ export class WebAssemblyAIAdapter {
         prompt: prompt,
         options: {
           num_predict: options.maxTokens || this.config.maxTokens,
-          temperature: options.temperature || this.config.temperature,
+          temperature: options.temperature || this.config.temperature
         },
-        stream: false,
-      }),
+        stream: false
+      })
     });
 
     if (!response.ok) {
@@ -496,8 +496,8 @@ export class WebAssemblyAIAdapter {
         confidence: 0.9,
         method: 'ollama',
         modelUsed: this.currentModel,
-        fromCache: false,
-      },
+        fromCache: false
+      }
     };
   }
 
@@ -512,8 +512,8 @@ export class WebAssemblyAIAdapter {
         prompt: prompt,
         max_tokens: options.maxTokens || this.config.maxTokens,
         temperature: options.temperature || this.config.temperature,
-        model: this.currentModel,
-      }),
+        model: this.currentModel
+      })
     });
 
     if (!response.ok) {
@@ -530,8 +530,8 @@ export class WebAssemblyAIAdapter {
         confidence: data.confidence || 0.85,
         method: 'python',
         modelUsed: this.currentModel,
-        fromCache: data.from_cache || false,
-      },
+        fromCache: data.from_cache || false
+      }
     };
   }
 
@@ -553,7 +553,7 @@ export class WebAssemblyAIAdapter {
         temperature: options.temperature || this.config.temperature,
         complexity: complexity,
         useCase: this.determineUseCase(prompt),
-        preferredRuntime: options.preferredRuntime,
+        preferredRuntime: options.preferredRuntime
       };
 
       // Get recommended runtime
@@ -575,7 +575,7 @@ export class WebAssemblyAIAdapter {
           modelUsed: this.currentModel,
           fromCache: false,
           gpuAccelerated: ['webgpu', 'tensorrt'].includes(unifiedResponse.metadata.runtime),
-          tensorAccelerationUsed: unifiedResponse.metadata.runtime === 'tensorrt',
+          tensorAccelerationUsed: unifiedResponse.metadata.runtime === 'tensorrt'
         }
       };
     } catch (error: any) {
@@ -606,7 +606,7 @@ export class WebAssemblyAIAdapter {
         repeatPenalty: 1.1,
         useGPU: this.gpuAvailable && this.config.enableGPU,
         useSIMD: this.config.enableSIMD,
-        streaming: false,
+        streaming: false
       });
 
       const processingTime = performance.now() - startTime;
@@ -625,8 +625,8 @@ export class WebAssemblyAIAdapter {
           modelUsed: this.currentModel,
           fromCache: wasmResponse.metadata?.fromCache || false,
           gpuAccelerated: wasmResponse.metadata?.gpuAccelerated || false,
-          tensorAccelerationUsed: wasmResponse.metadata?.simdUsed || false,
-        },
+          tensorAccelerationUsed: wasmResponse.metadata?.simdUsed || false
+        }
       };
     } catch (error: any) {
       console.error('[WebAssembly AI] WebAssembly llama.cpp inference failed:', error);
@@ -668,7 +668,7 @@ export class WebAssemblyAIAdapter {
       response.metadata = {
         ...response.metadata,
         gpuAccelerated: true,
-        tensorAccelerationUsed: true,
+        tensorAccelerationUsed: true
       };
 
       console.log(
@@ -730,7 +730,7 @@ export class WebAssemblyAIAdapter {
   private async testOllamaConnection(): Promise<boolean> {
     try {
       const response = await fetch(`${this.config.ollamaEndpoint}/health`, {
-        signal: AbortSignal.timeout(2000),
+        signal: AbortSignal.timeout(2000)
       });
       return response.ok;
     } catch {
@@ -744,7 +744,7 @@ export class WebAssemblyAIAdapter {
   private async testPythonConnection(): Promise<boolean> {
     try {
       const response = await fetch(`${this.config.pythonMiddlewareEndpoint}/health`, {
-        signal: AbortSignal.timeout(2000),
+        signal: AbortSignal.timeout(2000)
       });
       return response.ok;
     } catch {
@@ -764,7 +764,7 @@ export class WebAssemblyAIAdapter {
     recommendations: string[];
     confidence: number;
     processingTime: number;
-    method: string;,
+    method: string;
   }> {
     if (!this.initialized) {
       await this.initialize();
@@ -793,7 +793,7 @@ export class WebAssemblyAIAdapter {
   ): Promise<void> {
     try {
       const response = await this.sendMessage(message, {
-        conversationHistory: options.conversationHistory,
+        conversationHistory: options.conversationHistory
       });
 
       // Simulate streaming by chunking the response
@@ -857,14 +857,14 @@ export class WebAssemblyAIAdapter {
     cacheSize: number;
     threadsCount: number;
     wasmSupported: boolean;
-    currentModel: string;,
+    currentModel: string;
   } {
     const wasmHealth = webLlamaService.getHealthStatus();
 
     return {
       initialized: this.initialized,
       currentModel: this.currentModel,
-      ...wasmHealth,
+      ...wasmHealth
     };
   }
 
@@ -1006,8 +1006,8 @@ export class WebAssemblyAIAdapter {
           text,
           model: 'embeddinggemma:latest',
           useCUDA: true,
-          normalize: true,
-        }),
+          normalize: true
+        })
       });
 
       if (!response.ok) {
@@ -1015,7 +1015,7 @@ export class WebAssemblyAIAdapter {
         const ollamaResponse = await fetch('/api/ai/embedding', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text }),
+          body: JSON.stringify({ text })
         });
 
         if (!ollamaResponse.ok) {

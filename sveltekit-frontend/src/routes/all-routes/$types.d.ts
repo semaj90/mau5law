@@ -7,13 +7,13 @@ export interface SystemHealthData {
     healthy_services: number;
     total_services: number;
     uptime_hours: number;
-    last_updated: string;,
+    last_updated: string;
   };
   services: Array<any>;
   performance: {
     cpu_usage: number;
     memory_usage: number;
-    disk_usage: number;,
+    disk_usage: number;
   };
 }
 
@@ -30,7 +30,7 @@ export interface UserSession {
       notifications: Record<string, boolean>;
     };
   } | null;
-  isAuthenticated: boolean;,
+  isAuthenticated: boolean;
 }
 
 export interface RecentOperation {
@@ -44,7 +44,7 @@ export interface RoutePageData {
   systemHealth: SystemHealthData | null;
   userSession: UserSession;
   availableRoutes: RouteDefinition[];
-  recentOperations: RecentOperation[];,
+  recentOperations: RecentOperation[];
 }
 
 type RouteParams = {};

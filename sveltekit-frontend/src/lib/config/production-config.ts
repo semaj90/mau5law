@@ -13,7 +13,7 @@ export interface ProductionConfig {
     cacheTimeout: number; // milliseconds
     requestTimeout: number; // milliseconds
     retryAttempts: number;
-    retryDelay: number; // milliseconds,
+    retryDelay: number; // milliseconds
   };
 
   // Database Settings;
@@ -22,7 +22,7 @@ export interface ProductionConfig {
     queryTimeout: number; // milliseconds
     enableQueryLogging: boolean;
     enableSlowQueryLogging: boolean;
-    slowQueryThreshold: number; // milliseconds,
+    slowQueryThreshold: number; // milliseconds
   };
 
   // Cache Settings;
@@ -31,12 +31,12 @@ export interface ProductionConfig {
       maxMemory: string;
       ttl: number; // seconds
       keyPrefix: string;
-      enableCompression: boolean;,
+      enableCompression: boolean;
     };
     gpu: {
       bufferSize: number; // bytes
       maxBuffers: number;
-      enablePrefetch: boolean;,
+      enablePrefetch: boolean;
     };
   };
 
@@ -45,12 +45,12 @@ export interface ProductionConfig {
     enableRateLimit: boolean;
     rateLimit: {
       windowMs: number;
-      maxRequests: number;,
+      maxRequests: number;
     };
     enableCors: boolean;
     corsOrigins: string[];
     enableCsrfProtection: boolean;
-    maxRequestSize: number; // bytes,
+    maxRequestSize: number; // bytes
   };
 
   // Monitoring Settings;
@@ -60,7 +60,7 @@ export interface ProductionConfig {
     enableHealthChecks: boolean;
     healthCheckInterval: number; // milliseconds
     enableErrorTracking: boolean;
-    logLevel: 'error' | 'warn' | 'info' | 'debug';,
+    logLevel: 'error' | 'warn' | 'info' | 'debug';
   };
 
   // AI Settings;
@@ -71,7 +71,7 @@ export interface ProductionConfig {
     temperature: number;
     enableCaching: boolean;
     batchProcessing: boolean;
-    maxBatchSize: number;,
+    maxBatchSize: number;
   };
 
   // MinIO Settings;
@@ -81,7 +81,7 @@ export interface ProductionConfig {
     bucketRetention: number; // days
     enableEncryption: boolean;
     enableVersioning: boolean;
-    enableNotifications: boolean;,
+    enableNotifications: boolean;
   };
 }
 
@@ -110,13 +110,13 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
       maxMemory: '1gb',
       ttl: 3600, // 1 hour
       keyPrefix: 'legal_ai:',
-      enableCompression: true,
+      enableCompression: true
     },
     gpu: {
       bufferSize: 64 * 1024 * 1024, // 64MB
       maxBuffers: 10,
-      enablePrefetch: true,
-    },
+      enablePrefetch: true
+    }
   },
 
   security: {
@@ -150,7 +150,7 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
     temperature: 0.7,
     enableCaching: true,
     batchProcessing: true,
-    maxBatchSize: 10,
+    maxBatchSize: 10
   },
 
   minio: {
@@ -168,8 +168,8 @@ export const PRODUCTION_CONFIG: ProductionConfig = {
     bucketRetention: 2555, // 7 years for legal compliance
     enableEncryption: true,
     enableVersioning: true,
-    enableNotifications: true,
-  },
+    enableNotifications: true
+  }
 };
 
 // Development Configuration (less restrictive);
@@ -201,7 +201,7 @@ export const DEVELOPMENT_CONFIG: ProductionConfig = {
     ...PRODUCTION_CONFIG.monitoring,
     logLevel: 'debug', // Full logging in development
     metricsInterval: 30000, // 30 seconds
-  },
+  }
 };
 
 // Environment-based configuration;

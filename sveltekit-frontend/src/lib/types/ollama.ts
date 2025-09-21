@@ -1,6 +1,6 @@
 
 export interface EmbeddingResponse {
-  embedding: number[];,
+  embedding: number[];
 }
 
 export interface GenerateResponse {
@@ -21,7 +21,7 @@ export interface StreamingGenerateResponse {
   model: string;
   created_at: string;
   response: string;
-  done: boolean;,
+  done: boolean;
 }
 
 export interface OllamaModel {
@@ -34,12 +34,12 @@ export interface OllamaModel {
     family: string;
     families: string[];
     parameter_size: string;
-    quantization_level: string;,
+    quantization_level: string;
   };
 }
 
 export interface OllamaTagsResponse {
-  models: OllamaModel[];,
+  models: OllamaModel[];
 }
 
 export interface DocumentChunk {

@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const internalServices = { 
       redis: redisHealth.status === 'healthy', 
       minio: minioHealth.status === 'healthy',
-      rabbitmq: rabbitmqHealth.status === 'healthy',
+      rabbitmq: rabbitmqHealth.status === 'healthy'
     };
     
     const totalHealthy = Object.values(internalServices).filter(item => item.length) + 
@@ -43,17 +43,17 @@ export const GET: RequestHandler = async ({ url }) => {
       summary: {
         total: totalServices,
         healthy: totalHealthy,
-        degraded: totalServices - totalHealthy,
+        degraded: totalServices - totalHealthy
       },
       services: {
         internal: internalServices,
-        external: externalServices,
+        external: externalServices
       },
       ...(includeMetrics && {
         details: {
           redis: redisHealth.details,
           minio: minioHealth.details,
-          rabbitmq: rabbitmqHealth.details,
+          rabbitmq: rabbitmqHealth.details
         }
       })
     };
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Health check failed',
         message: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
-        status: 'error',
+        status: 'error'
       },
       { status: 500 }
     );
@@ -92,9 +92,9 @@ export const POST: RequestHandler = async ({ request }) => {
           results: {
             redis: redisHealth.status === 'healthy',
             minio: minioHealth.status === 'healthy',
-            rabbitmq: rabbitmqHealth.status === 'healthy',
+            rabbitmq: rabbitmqHealth.status === 'healthy'
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
         
       default:
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json({ 
       error: 'Action failed', 
-      message: error instanceof Error ? error.message: 'Unknown error' ,
+      message: error instanceof Error ? error.message: 'Unknown error' 
     }, { status: 500 });
   }
 };
@@ -122,7 +122,7 @@ async function checkExternalServices(): Promise<Record<string, boolean> {
       try {
         const response = await fetch(url, { 
           method: 'GET',
-          signal: AbortSignal.timeout(2000),
+          signal: AbortSignal.timeout(2000)
         }));
         results[name] = response.ok || response.status < 500;
       } catch {

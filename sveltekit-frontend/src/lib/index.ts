@@ -100,7 +100,7 @@ export const FRAMEWORK_INFO = {
   sveltekit: '2.x',
   svelte: '5.x',
   typescript: '5.x',
-  vite: '5.x',
+  vite: '5.x'
 };
 
 // ===== FEATURE FLAGS =====;
@@ -114,7 +114,7 @@ export const FEATURES = {
   MCP_INTEGRATION: true,
   WASM_SUPPORT: true,
   WEBGPU_SUPPORT: true,
-  CUDA_SUPPORT: true,
+  CUDA_SUPPORT: true
 } as const;
 
 // ===== DEVELOPMENT UTILITIES =====;
@@ -123,7 +123,7 @@ export const DEV_TOOLS = {
   ROUTE_COUNT: 82,
   API_ENDPOINT_COUNT: 145,
   STORE_COUNT: 8,
-  SERVICE_COUNT: 12,
+  SERVICE_COUNT: 12
 } as const;
 
 // ===== BARREL STORE - MISSING FUNCTIONS & METHODS =====;

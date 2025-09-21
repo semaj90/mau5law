@@ -27,7 +27,7 @@ export async function queryPgvector(vec: number[], limit = 200, temperature = 0.
       id: String(r.id),
       text: r.text,
       metadata: r.metadata ?? {},
-      embedding: r.embedding,
-    })),
+      embedding: r.embedding
+    }))
   };
 }

@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const eventCollector = (eventData: any) => {
       events.push({
         ...eventData,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     };
 
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
       'condition:triggered',
       'health:check',
       'orchestrator:started',
-      'orchestrator:stopped',
+      'orchestrator:stopped'
     ];
 
     // Add temporary listeners;
@@ -69,16 +69,16 @@ export const GET: RequestHandler = async ({ url }) => {
       filters: {
         type: eventType,
         since,
-        limit,
+        limit
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!eventType) {
       return json({
           success: false,
-          error: 'Event type is required',
+          error: 'Event type is required'
         },)
         { status: 400 }
       );
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
       data: data || {},
       metadata: metadata || {},
       timestamp: new Date().toISOString(),
-      source: 'api',
+      source: 'api'
     };
 
     // Emit the custom event
@@ -114,14 +114,14 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Event triggered successfully',
       event: eventData,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

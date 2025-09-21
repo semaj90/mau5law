@@ -16,7 +16,7 @@ import {
   square,
   mean,
   mul,
-  expandDims,
+  expandDims
 } from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-webgpu';
@@ -35,7 +35,7 @@ export interface AutoEncoderConfig {
   compressionTarget: number; // Target compression ratio (0.1 = 90% compression)
   enableNormalization: boolean;
   enableDropout: boolean;
-  dropoutRate: number;,
+  dropoutRate: number;
 }
 
 export interface GraphNode {
@@ -70,7 +70,7 @@ export interface GraphData {
     density: number;
     averageDegree: number;
     legalDomain: string;
-    timestamp: number;,
+    timestamp: number;
   };
 }
 
@@ -81,7 +81,7 @@ export interface EncodedGraphPattern {
   encodedSize: number;
   reconstructionError: number;
   patternSignature: string;
-  legalPatterns: LegalPatternFeatures;,
+  legalPatterns: LegalPatternFeatures;
 }
 
 export interface LegalPatternFeatures {
@@ -90,7 +90,7 @@ export interface LegalPatternFeatures {
   temporalPatterns: number[];
   authorityWeights: number[];
   precedentStrength: number;
-  conceptSimilarity: number;,
+  conceptSimilarity: number;
 }
 
 export interface DecodedGraphPattern {
@@ -101,7 +101,7 @@ export interface DecodedGraphPattern {
     nodeFidelity: number;
     edgeFidelity: number;
     structuralFidelity: number;
-    semanticFidelity: number;,
+    semanticFidelity: number;
   };
 }
 
@@ -113,7 +113,7 @@ export interface AutoEncoderTrainingMetrics {
   compressionEfficiency: number;
   patternRecognitionAccuracy: number;
   gpuUtilization: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export class GraphPatternAutoEncoder {
@@ -141,7 +141,7 @@ export class GraphPatternAutoEncoder {
       enableNormalization: true,
       enableDropout: true,
       dropoutRate: 0.2,
-      ...config,
+      ...config
     };
 
     this.initializeCache();
@@ -209,7 +209,7 @@ export class GraphPatternAutoEncoder {
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
           biasInitializer: 'zeros',
-          name: `encoder_dense_${i}`,
+          name: `encoder_dense_${i}`
         })
         .apply(encoderLayer) as any;
 
@@ -217,7 +217,7 @@ export class GraphPatternAutoEncoder {
       if (this.config.enableNormalization) {
         encoderLayer = layers;
           .batchNormalization({
-            name: `encoder_bn_${i}`,
+            name: `encoder_bn_${i}`
           })
           .apply(encoderLayer) as any;
       }
@@ -227,7 +227,7 @@ export class GraphPatternAutoEncoder {
         encoderLayer = layers;
           .dropout({
             rate: this.config.dropoutRate,
-            name: `encoder_dropout_${i}`,
+            name: `encoder_dropout_${i}`
           })
           .apply(encoderLayer) as any;
       }
@@ -237,7 +237,7 @@ export class GraphPatternAutoEncoder {
     this.encoder = model({
       inputs: encoderInputs,
       outputs: encoderLayer,
-      name: 'graph_pattern_encoder',
+      name: 'graph_pattern_encoder'
     });
 
     // Build Decoder
@@ -257,14 +257,14 @@ export class GraphPatternAutoEncoder {
           activation: this.config.activationFunction,
           kernelInitializer: 'glorotUniform',
           biasInitializer: 'zeros',
-          name: `decoder_dense_${i}`,
+          name: `decoder_dense_${i}`
         })
         .apply(decoderLayer) as any;
 
       if (this.config.enableNormalization) {
         decoderLayer = layers;
           .batchNormalization({
-            name: `decoder_bn_${i}`,
+            name: `decoder_bn_${i}`
           })
           .apply(decoderLayer) as any;
       }
@@ -273,7 +273,7 @@ export class GraphPatternAutoEncoder {
         decoderLayer = layers;
           .dropout({
             rate: this.config.dropoutRate,
-            name: `decoder_dropout_${i}`,
+            name: `decoder_dropout_${i}`
           })
           .apply(decoderLayer) as any;
       }
@@ -284,7 +284,7 @@ export class GraphPatternAutoEncoder {
       .dense({
         units: this.config.inputDimension,
         activation: 'sigmoid', // Output between 0 and 1
-        name: 'decoder_output',
+        name: 'decoder_output'
       })
       .apply(decoderLayer) as any;
 
@@ -292,7 +292,7 @@ export class GraphPatternAutoEncoder {
     this.decoder = model({
       inputs: decoderInputs,
       outputs: decoderLayer,
-      name: 'graph_pattern_decoder',
+      name: 'graph_pattern_decoder'
     });
 
     // Build complete autoencoder
@@ -301,14 +301,14 @@ export class GraphPatternAutoEncoder {
     this.autoencoder = model({
       inputs: encoderInputs,
       outputs: autoencoderOutput,
-      name: 'graph_pattern_autoencoder',
+      name: 'graph_pattern_autoencoder'
     });
 
     // Compile with custom loss function;
     this.autoencoder.compile({
       optimizer: train.adam(this.config.learningRate),
       loss: this.customGraphLoss,
-      metrics: ['mse', 'mae'],
+      metrics: ['mse', 'mae']
     });
 
     console.log('Auto-Encoder architecture built:');
@@ -402,7 +402,7 @@ export class GraphPatternAutoEncoder {
       encodedSize,
       reconstructionError,
       patternSignature,
-      legalPatterns,
+      legalPatterns
     };
 
     // Store in pattern library
@@ -464,13 +464,13 @@ export class GraphPatternAutoEncoder {
       semanticFidelity: this.calculateSemanticFidelity(
         encodedPattern.legalPatterns,
         reconstructedGraph
-      ),
+      )
     };
 
     const result: DecodedGraphPattern = {
       ...reconstructedGraph,
       fidelityScore,
-      lossMetrics,
+      lossMetrics
     };
 
     // Cache the result;
@@ -516,7 +516,7 @@ export class GraphPatternAutoEncoder {
         batchSize: this.config.batchSize,
         epochs: 1,
         verbose: 0,
-        shuffle: true,
+        shuffle: true
       });
 
       // Calculate metrics
@@ -533,7 +533,7 @@ export class GraphPatternAutoEncoder {
         compressionEfficiency,
         patternRecognitionAccuracy,
         gpuUtilization: this.gpuBackend !== 'cpu' ? 75.0 : 0.0,
-        processingTime: performance.now() - epochStartTime,
+        processingTime: performance.now() - epochStartTime
       };
 
       this.trainingHistory.push(metrics);
@@ -599,7 +599,7 @@ export class GraphPatternAutoEncoder {
       regulation: 0,
       precedent: 0,
       person: 0,
-      organization: 0,
+      organization: 0
     };
     nodes.forEach((node) => typeCount[node.type]++);
     Object.values(typeCount).forEach((count) => features.push(count / nodes.length);
@@ -639,7 +639,7 @@ export class GraphPatternAutoEncoder {
       references: 0,
       influenced_by: 0,
       related_to: 0,
-      conflicts_with: 0,
+      conflicts_with: 0
     };
     edges.forEach((edge) => typeCount[edge.type]++);
     Object.values(typeCount).forEach((count) => features.push(count / edges.length || 0);
@@ -683,11 +683,11 @@ export class GraphPatternAutoEncoder {
       contract: [1, 0, 0, 0],
       tort: [0, 1, 0, 0],
       criminal: [0, 0, 1, 0],
-      corporate: [0, 0, 0, 1],
+      corporate: [0, 0, 0, 1]
     };
 
     const domainFeatures = domainMap[graphData.metadata.legalDomain as keyof typeof domainMap] || [
-      0, 0, 0, 0,
+      0, 0, 0, 0
     ];
     features.push(...domainFeatures);
 
@@ -750,7 +750,7 @@ export class GraphPatternAutoEncoder {
     originalPattern: EncodedGraphPattern;
   ): {
     reconstructedNodes: GraphNode[];
-    reconstructedEdges: GraphEdge[];,
+    reconstructedEdges: GraphEdge[];
   } {
     // Reconstruct approximate graph structure from features
     // This is a simplified reconstruction - in practice would be more sophisticated
@@ -769,10 +769,10 @@ export class GraphPatternAutoEncoder {
         type: 'case', // Simplified - would infer from features;
         position: {
           x: features[6] * 1000 + i * 10,
-          y: features[7] * 1000 + i * 10,
+          y: features[7] * 1000 + i * 10
         },
         features: new Float32Array(features.slice(8, 32)),
-        metadata: { reconstructed: true },
+        metadata: { reconstructed: true }
       });
     }
 
@@ -787,7 +787,7 @@ export class GraphPatternAutoEncoder {
         target: reconstructedNodes[targetIdx].id,
         type: 'references',
         weight: features[260] || 0.5,
-        metadata: { reconstructed: true },
+        metadata: { reconstructed: true }
       });
     }
 
@@ -816,7 +816,7 @@ export class GraphPatternAutoEncoder {
       temporalPatterns,
       authorityWeights,
       precedentStrength,
-      conceptSimilarity,
+      conceptSimilarity
     };
   }
 
@@ -861,7 +861,7 @@ export class GraphPatternAutoEncoder {
     return [
       timeSpan / (365 * 24 * 60 * 60 * 1000),
       avgInterval / (30 * 24 * 60 * 60 * 1000),
-      density,
+      density
     ];
   }
 
@@ -977,7 +977,7 @@ export class GraphPatternAutoEncoder {
 
   private calculateStructuralFidelity(decoded: {
     reconstructedNodes: GraphNode[];
-    reconstructedEdges: GraphEdge[];,
+    reconstructedEdges: GraphEdge[];
   }): number {
     // Simplified structural fidelity
     const nodeEdgeRatio =
@@ -995,7 +995,7 @@ export class GraphPatternAutoEncoder {
     patternCount: number;
     avgCompressionRatio: number;
     totalSavings: number;
-    cachingStats: any;,
+    cachingStats: any;
   } {
     const patterns = Array.from(this.patternLibrary.values();
     const avgCompressionRatio =
@@ -1007,7 +1007,7 @@ export class GraphPatternAutoEncoder {
       patternCount: patterns.length,
       avgCompressionRatio,
       totalSavings,
-      cachingStats: this.rlCache.getStats(),
+      cachingStats: this.rlCache.getStats()
     };
   }
 

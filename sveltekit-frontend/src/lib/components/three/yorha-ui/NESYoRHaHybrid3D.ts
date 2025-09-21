@@ -76,7 +76,7 @@ export interface DOMSyncData {
   scale: THREE.Vector3;
   opacity: number;
   nesCssClasses: string[];
-  syncFrequency: number;,
+  syncFrequency: number;
 }
 
 export class NESYoRHaHybrid3D extends YoRHa3DComponent {
@@ -305,7 +305,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       const success = await gpuContextProvider.initialize({
         preferredBackend: 'webgpu',
         requireCompute: false,
-        memoryLimit: 64 * 1024 * 1024 // 64MB for NES processing,
+        memoryLimit: 64 * 1024 * 1024 // 64MB for NES processing
       });
 
       if (!success) {
@@ -345,15 +345,15 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     // Load NES pixel processing shaders for different backends;
     const nesPixelShaders = await gpuContextProvider.loadShaderResources('nes-pixel-processing', {
       webgpu: {
-        compute: this.createWebGPUPixelShader(),
+        compute: this.createWebGPUPixelShader()
       },
       webgl2: {
         vertex: this.createWebGL2VertexShader(),
-        fragment: this.createWebGL2FragmentShader(),
+        fragment: this.createWebGL2FragmentShader()
       },
       webgl1: {
         vertex: this.createWebGL1VertexShader(), 
-        fragment: this.createWebGL1FragmentShader(),
+        fragment: this.createWebGL1FragmentShader()
       },
       cpu: {
         // CPU implementation metadata
@@ -369,15 +369,15 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     // Load CRT effect shaders;
     const crtShaders = await gpuContextProvider.loadShaderResources('crt-effects', {
       webgpu: {
-        compute: this.createWebGPUCRTShader(),
+        compute: this.createWebGPUCRTShader()
       },
       webgl2: {
         vertex: this.createWebGL2VertexShader(),
-        fragment: this.createWebGL2CRTFragmentShader(),
+        fragment: this.createWebGL2CRTFragmentShader()
       },
       webgl1: {
         vertex: this.createWebGL1VertexShader(),
-        fragment: this.createWebGL1CRTFragmentShader(),
+        fragment: this.createWebGL1CRTFragmentShader()
       }
     });
 
@@ -398,7 +398,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     // Create pixel buffer for 256x240 NES resolution with RGBA format;
     this.gpuPixelBuffer = device.createBuffer({
       size: 256 * 240 * 4 * 4, // RGBA float32 
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
     });
   }
 
@@ -851,7 +851,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         renderMode: this.hybridStyle.renderMode,
         nesCssClass: this.hybridStyle.nesCssClass,
         yorhaVariant: this.hybridStyle.variant,
-        cacheRegion: 'CHR_ROM',
+        cacheRegion: 'CHR_ROM'
       }
     };
 
@@ -861,7 +861,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       [canvasState],);
       {
         priority: 2,
-        compression: true,
+        compression: true
       }
     );
 
@@ -884,7 +884,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         nesStyle: {
           cssClass: this.hybridStyle.nesCssClass,
           container: this.hybridStyle.nesContainer,
-          pixelPerfect: this.hybridStyle.pixelPerfect,
+          pixelPerfect: this.hybridStyle.pixelPerfect
         }
       }]
     };
@@ -923,7 +923,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       secondary: NES_YORHA_PALETTE.nesGray,
       accent: NES_YORHA_PALETTE.hybridAccent,
       hover: NES_YORHA_PALETTE.nesLightGray,
-      active: NES_YORHA_PALETTE.nesSuccess,
+      active: NES_YORHA_PALETTE.nesSuccess
     };
 
     const baseJSON = JSON.parse(this.serializeToFabricJSON();
@@ -1128,7 +1128,7 @@ export function createNESButton(options: {
     pixelPerfect: true,
     crtEffect: true,
     scanlines: true,
-    animationStyle: 'hybrid-morphing',
+    animationStyle: 'hybrid-morphing'
   });
 }
 
@@ -1150,7 +1150,7 @@ export function createNESContainer(options: {
     renderMode: '2d-overlay',
     backgroundColor: options.dark
       ? NES_YORHA_PALETTE.nesBlack: NES_YORHA_PALETTE.yorhaBeige,
-    pixelPerfect: true,
+    pixelPerfect: true
   });
 }
 
@@ -1169,7 +1169,7 @@ export function createNESProgressBar(options: {
     animation: {
       type: 'pulse',
       duration: 1000,
-      loop: true,
+      loop: true
     }
   });
 }

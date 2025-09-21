@@ -33,7 +33,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 interface CacheEntry {
   data: Buffer;
   timestamp: number;
-  ttl: number;,
+  ttl: number;
 }
 
 const cache = new Map<string, CacheEntry>();
@@ -58,12 +58,12 @@ interface QLoRATopologyResponse {
     hmmPredictionScore: number;
     somClusterAccuracy: number;
     webgpuOptimizationGain: number;
-    cacheEfficiency: number;,
+    cacheEfficiency: number;
   };
   learningData?: {
     dataFlywheelSamples: number;
     modelUpdateApplied: boolean;
-    accuracyImprovement: number;,
+    accuracyImprovement: number;
   };
 }
 
@@ -86,7 +86,7 @@ function generateCacheKey(request: QLoRATopologyRequest): string {
     context: request.context,
     topologyType: request.topologyType,
     accuracyTarget: request.accuracyTarget,
-    trainingMode: request.trainingMode,
+    trainingMode: request.trainingMode
   });
   return `qlora:${hash.digest('hex').substring(0, 16)}`;
 }
@@ -177,7 +177,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           lastAccessed: Date.now(),
           compressed: false,
           metadata: {
-            caseId: 'api_request',
+            caseId: 'api_request'
           }
         } as any,
         userSession: {
@@ -186,21 +186,21 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           documentFlow: ['brief'],
           interactionVelocity: 1.0,
           qualityExpectation: 0.9,
-          timeConstraints: 0.5,
+          timeConstraints: 0.5
         },
         renderingNeeded: false,
-        realTimeRequired: false,
+        realTimeRequired: false
       },
       requirements: {
         minAccuracy: 0.8,
         memoryBudget: 1024,
         maxLatency: 30000,
-        qualityLevel: 'production',
+        qualityLevel: 'production'
       },
       metadata: {
         timestamp: Date.now(),
         clientCapabilities: Record<string, any>,
-        previousResults: [],
+        previousResults: []
       },
       cachePreferences: {
         enableMultiTierCache: useCache,
@@ -209,7 +209,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         enableRabbitMQCache: false,
         cacheStrategy: 'adaptive',
         maxLatencyMs: 30000,
-        minAccuracyThreshold: accuracyTarget / 100,
+        minAccuracyThreshold: accuracyTarget / 100
       },
       optimization: {
         predictiveAccuracy: 0.6,
@@ -217,7 +217,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         learningRate: 0.03,
         useReinforcementLearning: trainingMode,
         useWebGPUAcceleration: true,
-        useAsyncOrchestration: false,
+        useAsyncOrchestration: false
       }
     });
 
@@ -237,7 +237,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         hmmPredictionScore: metrics.hmmAccuracy,
         somClusterAccuracy: metrics.somClusterScore,
         webgpuOptimizationGain: metrics.webgpuSpeedup,
-        cacheEfficiency: cacheStats.hitRate,
+        cacheEfficiency: cacheStats.hitRate
       }
     };
 
@@ -256,7 +256,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       cache.set(cacheKey, {
         data: compressedData,
         timestamp: Date.now(),
-        ttl: 5 * 60 * 1000 // 5 minutes TTL,
+        ttl: 5 * 60 * 1000 // 5 minutes TTL
       });
       console.log(`[QLoRA API] Cached response with key: ${cacheKey} (${compressedData.length} bytes)`);
     }
@@ -285,7 +285,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     return json({
       error: 'Failed to process QLoRA topology prediction',
-      details: error.message,
+      details: error.message
     }, { status: 500 });
   }
 };
@@ -304,13 +304,13 @@ const originalGETHandler: RequestHandler = async () => {
         qloraPredictor: metrics.predictorStatus,
         searchEngine: metrics.searchEngineStatus,
         cacheOrchestrator: cacheStats.status,
-        webgpuAcceleration: metrics.webgpuEnabled,
+        webgpuAcceleration: metrics.webgpuEnabled
       },
       performance: {
         averageAccuracy: metrics.averageAccuracy,
         averageProcessingTime: metrics.averageProcessingTime,
         cacheHitRate: cacheStats.hitRate,
-        systemLoad: metrics.systemLoad,
+        systemLoad: metrics.systemLoad
       }
     });
 
@@ -319,7 +319,7 @@ const originalGETHandler: RequestHandler = async () => {
 
     return json({
       status: 'error',
-      error: error.message,
+      error: error.message
     }, { status: 500 });
   }
 };

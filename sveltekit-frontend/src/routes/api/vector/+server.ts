@@ -11,14 +11,14 @@ const searchSchema = z.object({
   query: z.string().min(1).max(1000),
   documentType: z.enum(["case", "evidence", "note", "report"]).optional(),
   limit: z.number().min(1).max(50).default(10),
-  threshold: z.number().min(0).max(1).default(0.7),
+  threshold: z.number().min(0).max(1).default(0.7)
 });
 
 const storeDocumentSchema = z.object({
   documentId: z.string(),
   documentType: z.enum(["case", "evidence", "note", "report"]),
   text: z.string().min(1),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
 });
 
 const analyzeSchema = z.object({
@@ -27,8 +27,8 @@ const analyzeSchema = z.object({
     "summary",
     "key_points",
     "legal_issues",
-    "recommendations",
-  ]),
+    "recommendations"
+  ])
 });
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -42,13 +42,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const results = await VectorService.semanticSearch(params.query, {
           type: params.documentType,
           limit: params.limit,
-          threshold: params.threshold,
+          threshold: params.threshold
         });
 
         return json({
           success: true,
           results,
-          count: results.length,
+          count: results.length
         });
       }
       case "store": {
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         return json({
           success: true,
           embeddingIds: embeddings,
-          count: embeddings.length,
+          count: embeddings.length
         });
       }
       case "analyze": {
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         return json({
           success: true,
           analysis,
-          analysisType: params.analysisType,
+          analysisType: params.analysisType
         });
       }
       case "similar": {
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         return json({
           success: true,
           similar,
-          count: similar.length,
+          count: similar.length
         });
       }
       case "test": {
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           success: true,
           message: "Vector service is working!",
           embeddingDimension: testEmbedding.length,
-          model: "test-model",
+          model: "test-model"
         });
       }
       default:
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     return json({
         success: false,
-        error: error instanceof Error ? error.message: "Internal server error",
+        error: error instanceof Error ? error.message: "Internal server error"
       },)
       { status: 500 }
     );
@@ -141,19 +141,19 @@ export const GET: RequestHandler = async () => {
       status: "healthy",
       ollama: {
         connected: true,
-        models: data.models?.map((m: any) => m.name) || [],
+        models: data.models?.map((m: any) => m.name) || []
       },
       embedding: {
         model: import.meta.env.OLLAMA_EMBEDDING_MODEL || "nomic-embed-text",
-        dimension: parseInt(import.meta.env.EMBEDDING_DIMENSION || "768"),
-      },
+        dimension: parseInt(import.meta.env.EMBEDDING_DIMENSION || "768")
+      }
     });
   } catch (error: any) {
     return json({
         success: false,
         status: "unhealthy",
         error: "Failed to connect to Ollama",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 503 }
     );

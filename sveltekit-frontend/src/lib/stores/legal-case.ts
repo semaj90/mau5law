@@ -17,8 +17,8 @@ export const legalCaseStore = $state({
     generatingEmbedding: false,
     searchingRelatedEvidence: false,
     relatedEvidence: [],
-    lastEmbedding: null,
-  },
+    lastEmbedding: null
+  }
 });
 
 // Update store when actor state changes;
@@ -42,11 +42,11 @@ export const legalCaseActions = {
   generateEmbedding: (payload: {
     caseId: string;
     evidenceText: string;
-    userId: string;,
+    userId: string;
   }) => legalCaseActor?.send({
     type: 'GENERATE_EMBEDDING',
     ...payload
-  ,}),
+  }),
 
   searchRelatedEvidence: (payload: {
     caseId: string;
@@ -56,7 +56,7 @@ export const legalCaseActions = {
   }) => legalCaseActor?.send({
     type: 'SEARCH_RELATED_EVIDENCE',
     ...payload
-  ,}),
+  }),
 
   clearRelatedEvidence: () =>
     legalCaseActor?.send({ type: 'CLEAR_RELATED_EVIDENCE' }),
@@ -83,6 +83,6 @@ export const legalCaseGetters = {
   getEmbeddingStatus: () => ({
     generating: legalCaseStore.context.generatingEmbedding,
     searching: legalCaseStore.context.searchingRelatedEvidence,
-    hasResults: legalCaseStore.context.relatedEvidence?.length > 0,
+    hasResults: legalCaseStore.context.relatedEvidence?.length > 0
   })
 };

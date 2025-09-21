@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     if (!webhookEvent.bucket || !webhookEvent.objectName) {
       return json({
           success: false,
-          error: 'Invalid webhook payload',
+          error: 'Invalid webhook payload'
         },)
         { status: 400 }
       );
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     ) {
       return json({
         success: true,
-        message: 'Event ignored - not an object creation event',
+        message: 'Event ignored - not an object creation event'
       });
     }
 
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         contentLength: webhookEvent.objectSize || 0,
         bucket: webhookEvent.bucket,
         objectName: webhookEvent.objectName,
-        status: 'processing',
+        status: 'processing'
       };
     }
 
@@ -143,8 +143,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       metadata: {
         ...uploadMetadata.metadata,
         clientAddress: getClientAddress(),
-        webhookEvent: webhookEvent.eventName,
-      },
+        webhookEvent: webhookEvent.eventName
+      }
     };
 
     // Store job in Redis for tracking
@@ -182,15 +182,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
               bucket: webhookEvent.bucket,
               objectName: webhookEvent.objectName,
               ingestionJobId: jobId,
-              uploadId: uploadId,
-            },
+              uploadId: uploadId
+            }
           })
           .returning();
 
         // Update job with evidence ID;
         ingestionJob.metadata = {
           ...ingestionJob.metadata,
-          evidenceId: evidenceEntry.id,
+          evidenceId: evidenceEntry.id
         };
         await (redisService as any).setex(jobKey, 86400, JSON.stringify(ingestionJob);
 
@@ -210,7 +210,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         objectName: webhookEvent.objectName,
         fileName: uploadMetadata.fileName,
         caseId: uploadMetadata.caseId,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       })
     );
 
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         fileName: uploadMetadata.fileName,
         contentType: uploadMetadata.contentType,
         caseId: uploadMetadata.caseId,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       })
     );
 
@@ -233,13 +233,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         status: 'queued',
         fileName: uploadMetadata.fileName,
         bucket: webhookEvent.bucket,
-        objectName: webhookEvent.objectName,
+        objectName: webhookEvent.objectName
       },
       metadata: {
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        webhookEvent: webhookEvent.eventName,
-      },
+        webhookEvent: webhookEvent.eventName
+      }
     };
 
     console.log(`✅ Ingestion job created: ${jobId} for ${uploadMetadata.fileName}`);
@@ -249,7 +249,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     console.error('❌ POST /api/v1/upload/webhook error:', err);
     return json({
         success: false,
-        error: err.message,
+        error: err.message
       },)
       { status: 500 }
     );
@@ -310,12 +310,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       data: {
         jobs: jobs.slice(0, limit),
         count: jobs.length,
-        filters: { status, caseId, limit },
+        filters: { status, caseId, limit }
       },
       metadata: {
         timestamp: Date.now(),
-        clientAddress: getClientAddress(),
-      },
+        clientAddress: getClientAddress()
+      }
     };
 
     console.log(`✅ Retrieved ${jobs.length} ingestion jobs`);
@@ -325,7 +325,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     console.error('❌ GET /api/v1/upload/webhook/jobs error:', err);
     return json({
         success: false,
-        error: err.message,
+        error: err.message
       },)
       { status: 500 }
     );

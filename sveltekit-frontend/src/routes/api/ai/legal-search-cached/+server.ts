@@ -62,7 +62,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (!query) {
       return json({
         success: false,
-        error: 'Search query is required',
+        error: 'Search query is required'
       }, { status: 400 });
     }
 
@@ -129,11 +129,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         searchTime: searchResults.searchTime,
         embeddingFromCache,
         totalResponseTime: `${totalTime.toFixed(2)}ms`,
-        fromCache: false,
+        fromCache: false
       },
       legalContext: searchResults.legalContext,
       relatedCases: searchResults.relatedCases,
-      practiceAreaInsights: searchResults.practiceAreaInsights,
+      practiceAreaInsights: searchResults.practiceAreaInsights
     };
 
     // Cache the results with legal-specific TTL
@@ -149,7 +149,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       success: false,
       error: error.message,
       responseTime: `${totalTime.toFixed(2)}ms`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -173,11 +173,11 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         cacheStatistics: {
           legalSearchEntries: legalCacheKeys.length,
           caseLawEntries: caseLawKeys.length,
-          totalCachedSearches: legalCacheKeys.length + caseLawKeys.length,
+          totalCachedSearches: legalCacheKeys.length + caseLawKeys.length
         },
         redisMemory: redisInfo?.memory,
         keyspace: redisInfo?.keyspace,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }, 'REALTIME');
 
     case 'health':
@@ -188,9 +188,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         health: {
           redis: isRedisHealthy,
           caching: true,
-          legalSearchOptimized: true,
+          legalSearchOptimized: true
         },
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
 
     case 'clear-cache':;
@@ -208,13 +208,13 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           message: `Cleared ${allKeys.length} legal search cache entries`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
         
       } catch (error: any) {
         return json({
           success: false,
-          error: error.message,
+          error: error.message
         }, { status: 500 });
       }
 
@@ -226,7 +226,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           search: 'POST /api/ai/legal-search-cached',
           stats: 'GET /api/ai/legal-search-cached?action=stats',
           health: 'GET /api/ai/legal-search-cached?action=health',
-          clearCache: 'GET /api/ai/legal-search-cached?action=clear-cache',
+          clearCache: 'GET /api/ai/legal-search-cached?action=clear-cache'
         }
       }, { status: 400 });
   }
@@ -246,7 +246,7 @@ async function generateLegalSearchKey(request: LegalSearchRequest): Promise<stri
       limit: request.options?.limit || 10,
       includeAnalysis: request.options?.includeAnalysis || false,
       includeSimilarCases: request.options?.includeSimilarCases || false,
-      confidenceThreshold: request.options?.confidenceThreshold || 0.7,
+      confidenceThreshold: request.options?.confidenceThreshold || 0.7
     }
   };
   
@@ -271,7 +271,7 @@ async function generateLegalEmbedding(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'nomic-embed-text',
-      prompt: legalContextPrompt,
+      prompt: legalContextPrompt
     })
   });
 
@@ -315,7 +315,7 @@ async function performLegalSearch(params: {
   jurisdiction?: string;
   practiceArea?: string;
   dateRange?: any;
-  options: any;,
+  options: any;
 }): Promise<any> {
   // Simulate legal search with specialized logic
   // In production, this would integrate with your legal database and AI services
@@ -366,7 +366,7 @@ async function performLegalSearch(params: {
     relatedCases: ['Doe v. RemoteCorp (2023)', 'Johnson v. WorkFromHome Inc (2024)'],
     practiceAreaInsights: {
       trendingIssues: ['Remote work disputes', 'Digital privacy rights'],
-      recentDevelopments: 'Increased focus on hybrid work arrangements',
+      recentDevelopments: 'Increased focus on hybrid work arrangements'
     }
   };
 }

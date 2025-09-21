@@ -19,12 +19,12 @@ export interface CacheResourceAllocation {
     l1Memory: number;
     l2Redis: number;  
     l3Storage: number;
-    gpuTexture: number;,
+    gpuTexture: number;
   };
   circuitBreakers: {
     enabled: boolean;
     failureThreshold: number;
-    recoveryTime: number;,
+    recoveryTime: number;
   };
 }
 
@@ -45,14 +45,14 @@ export interface CacheExecutionMetrics {
   resourceUtilization: {
     cpuThreads: number;
     memoryUsedMB: number;
-    gpuUtilizationPercent: number;,
+    gpuUtilizationPercent: number;
   };
   layerPerformance: {
     l1MemoryHits: number;
     l2RedisHits: number;
     l3StorageHits: number;
     gpuTextureHits: number;
-    misses: number;,
+    misses: number;
   };
   circuitBreakerStatus: Record<string, boolean>;
 }
@@ -70,12 +70,12 @@ class ParallelCacheOrchestrator {
       l1Memory: 1000,
       l2Redis: 5000,
       l3Storage: 50000,
-      gpuTexture: 200,
+      gpuTexture: 200
     },
     circuitBreakers: {
       enabled: true,
       failureThreshold: 5,
-      recoveryTime: 30000,
+      recoveryTime: 30000
     }
   };
 
@@ -119,7 +119,7 @@ class ParallelCacheOrchestrator {
         success: true,
         data: allResults.map(r => r.data).filter(Boolean),
         metrics: { ...this.executionMetrics, totalLatency },
-        cacheResults: allResults,
+        cacheResults: allResults
       };
 
     } catch (error) {
@@ -129,7 +129,7 @@ class ParallelCacheOrchestrator {
       return {
         success: false,
         metrics: { ...this.executionMetrics, totalLatency: performance.now() - startTime },
-        cacheResults: [],
+        cacheResults: []
       };
     }
   }
@@ -280,7 +280,7 @@ class ParallelCacheOrchestrator {
           text: key,
           operation: request.type,
           shaderType: 'webgpu',
-          limit: 1,
+          limit: 1
         });
 
         if (searchResults.length > 0) {
@@ -288,7 +288,7 @@ class ParallelCacheOrchestrator {
             key,
             hit: true,
             source: 'gpu_texture',
-            data: searchResults[0],
+            data: searchResults[0]
           });
           this.executionMetrics.layerPerformance.gpuTextureHits++;
         }
@@ -321,7 +321,7 @@ class ParallelCacheOrchestrator {
             key,
             hit: true,
             source: 'xstate_semantic',
-            data: cacheResult.data,
+            data: cacheResult.data
           });
         }
       }
@@ -470,7 +470,7 @@ class ParallelCacheOrchestrator {
     const state = this.circuitBreakerState.get(operation) || { 
       failures: 0, 
       lastFailure: 0, 
-      isOpen: false ,
+      isOpen: false 
     };
 
     state.failures++;
@@ -512,14 +512,14 @@ class ParallelCacheOrchestrator {
       resourceUtilization: {
         cpuThreads: 0,
         memoryUsedMB: 0,
-        gpuUtilizationPercent: 0,
+        gpuUtilizationPercent: 0
       },
       layerPerformance: {
         l1MemoryHits: 0,
         l2RedisHits: 0,
         l3StorageHits: 0,
         gpuTextureHits: 0,
-        misses: 0,
+        misses: 0
       },
       circuitBreakerStatus: Record<string, any>
     };
@@ -561,9 +561,9 @@ class ParallelCacheOrchestrator {
         l2Size: await this.getCacheSize(this.l2Memory), 
         l3Size: await this.getCacheSize(this.l3Storage),
         xstateStats: getCacheStats(),
-        shaderStats: await shaderCacheManager.getShaderStats(),
+        shaderStats: await shaderCacheManager.getShaderStats()
       },
-      systemResources: this.resourceAllocation,
+      systemResources: this.resourceAllocation
     };
   }
 

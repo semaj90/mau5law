@@ -87,7 +87,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 - Potential constitutional issues with search procedures
 - Witness availability concerns
 
-**Success Probability**: Based on current evidence, prosecution has strong foundation but should prepare for vigorous defense.`,
+**Success Probability**: Based on current evidence, prosecution has strong foundation but should prepare for vigorous defense.`
     ];
 
     const response =
@@ -96,7 +96,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json({
       response,
       timestamp: new Date().toISOString(),
-      promptId: Math.random().toString(36).substr(2, 9),
+      promptId: Math.random().toString(36).substr(2, 9)
     });
   } catch (error: any) {
     console.error("Error processing AI prompt:", error);

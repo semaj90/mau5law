@@ -16,7 +16,7 @@ export async function triggerAgentActions(
     .map((r, i) => ({
       todoId: r.todoId || `todo-${i}`,
       action: "code_review",
-      status: "pending",
+      status: "pending"
     });
   // For now, just log
   console.log("[Agent Trigger] Would trigger agent actions for:", triggers);
@@ -36,7 +36,7 @@ export async function triggerAgentAction(auditResult: any): Promise<any> {
   const { createMemoryRelation } = await import("./mcp-helpers");
   await createMemoryRelation(auditResult.id, "needs_fix", libId);
   // TODO: Call CrewAI/Autogen API to trigger code review/fix
-  // e.g., await fetch('/api/agent/trigger', { ... ,})
+  // e.g., await fetch('/api/agent/trigger', { ... })
   return { status: "stubbed", auditResult, libId };
 }
 

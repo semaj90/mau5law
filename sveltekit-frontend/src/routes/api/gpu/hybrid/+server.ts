@@ -16,7 +16,7 @@ const GPU_SERVICES = {
   immediate: 'http://localhost:8096',    // CUDA AI Service - fast responses
   advanced: 'http://localhost:8097',     // GPU Memory Manager - batch processing
   enhanced: 'http://localhost:8099',     // Enhanced CUDA - heavy compute
-  loadBalancer: 'http://localhost:8224'  // Load balancer,
+  loadBalancer: 'http://localhost:8224'  // Load balancer
 } as const;
 
 // Performance thresholds for intelligent routing;
@@ -40,7 +40,7 @@ export interface ServiceHealthStatus {
   service: string;
   healthy: boolean;
   response_time: number;
-  load: number;,
+  load: number;
 }
 
 /*
@@ -53,7 +53,7 @@ async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>
       const start = performance.now();
       const response = await fetch(`${url}/health`, { 
         method: 'GET',
-        signal: AbortSignal.timeout(2000) // 2 second timeout,
+        signal: AbortSignal.timeout(2000) // 2 second timeout
       });
       const end = performance.now();
       
@@ -85,7 +85,7 @@ async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>
           service: name,
           healthy: false,
           response_time: 999999,
-          load: 100,
+          load: 100
         }
       };
     }
@@ -140,7 +140,7 @@ function selectOptimalService(
       return dataSize > 10000 ? GPU_SERVICES.enhanced: GPU_SERVICES.advanced;
 
     default:
-      return GPU_SERVICES[healthyServices[0][0] as keyof typeof GPU_SERVICES];,
+      return GPU_SERVICES[healthyServices[0][0] as keyof typeof GPU_SERVICES];
   }
 }
 
@@ -169,7 +169,7 @@ export const GET: RequestHandler = async () => {
           'intelligent_routing'
         ]
       },
-      routing_config: ROUTING_CONFIG,
+      routing_config: ROUTING_CONFIG
     };
 
     return json(systemStatus);
@@ -222,17 +222,17 @@ export const POST: RequestHandler = async ({ request }) => {
         endpoint = '/api/v2/gpu/tensor-parsing';
         break;
       default:
-        endpoint = '/health';,
+        endpoint = '/health';
     }
 
     // Execute request;
     const response = await fetch(`${selectedService}${endpoint}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(30000) // 30 second timeout,
+      signal: AbortSignal.timeout(30000) // 30 second timeout
     });
 
     const result = await response.json();
@@ -247,7 +247,7 @@ export const POST: RequestHandler = async ({ request }) => {
         execution_time_ms: executionTime,
         operation: gpuRequest.operation,
         priority: gpuRequest.priority,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -256,7 +256,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ 
       success: false, 
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -275,7 +275,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Routing configuration updated',
       config,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
@@ -297,7 +297,7 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Hybrid GPU system shutdown initiated',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {

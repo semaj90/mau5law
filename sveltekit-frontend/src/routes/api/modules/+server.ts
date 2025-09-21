@@ -21,7 +21,7 @@ interface AIModule {
     performance?: {
       throughput: number;
       latency: number;
-      accuracy: number;,
+      accuracy: number;
     };
   };
 }
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!moduleId) {
           return json({
             success: false,
-            error: 'Module ID is required',
+            error: 'Module ID is required'
           }, { status: 400 });
         }
 
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           module,
           loadTime: '1.2s',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!moduleId) {
           return json({
             success: false,
-            error: 'Module ID is required',
+            error: 'Module ID is required'
           }, { status: 400 });
         }
 
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           module,
           unloadTime: '0.3s',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           metadata: {
             userId,
             switchedAt: Date.now(),
-            performance: targetModule.metadata.performance,
+            performance: targetModule.metadata.performance
           }
         });
       }
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, { status: 500 });
   }
 };
@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         module,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }
 
@@ -235,14 +235,14 @@ export const GET: RequestHandler = async ({ url }) => {
         'Performance monitoring',
         'Memory optimization'
       ],
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, { status: 500 });
   }
 };

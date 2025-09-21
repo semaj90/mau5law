@@ -23,7 +23,7 @@ export interface ExtractionResult {
   extractedText?: string;
   metadata?: Record<string, any>;
   error?: string;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export interface FrameExtractionResult extends ExtractionResult {
@@ -94,7 +94,7 @@ export async function extractTextFromImage(buffer: Buffer, options: {
       // Set OCR parameters;
       await worker.setParameters({
         tessedit_pageseg_mode: pageSegMode.toString(),
-        preserve_interword_spaces: preserveInterword ? '1' : '0',
+        preserve_interword_spaces: preserveInterword ? '1' : '0'
       });
 
       const { data } = await worker.recognize(optimizedBuffer);
@@ -107,9 +107,9 @@ export async function extractTextFromImage(buffer: Buffer, options: {
           wordCount: data.words?.length || 0,
           language,
           pageSegMode,
-          imageOptimization: 'greyscale_sharpen',
+          imageOptimization: 'greyscale_sharpen'
         },
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     } finally {
       await worker.terminate();
@@ -118,7 +118,7 @@ export async function extractTextFromImage(buffer: Buffer, options: {
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   }
 }
@@ -139,13 +139,13 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractionResu
 
     return await extractTextFromImage(buffer, {
       language: 'eng',
-      pageSegMode: 6,
+      pageSegMode: 6
     });
   } catch (error) {
     return {
       success: false,
       error: `PDF extraction failed: ${error}`,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   }
 }
@@ -207,11 +207,11 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
         extractedFormat: 'wav',
         sampleRate: audioInfo.sampleRate,
         duration: audioInfo.duration,
-        channels: audioInfo.channels,
+        channels: audioInfo.channels
       },
       duration: audioInfo.duration,
       sampleRate: audioInfo.sampleRate,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   } catch (error) {
     // Cleanup on error
@@ -220,7 +220,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   } finally {
     // Cleanup input file
@@ -303,15 +303,15 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
         originalFormat: extension,
         videoDuration: duration,
         frameTimestamps: timestamps,
-        frameResolution: '1280x720',
+        frameResolution: '1280x720'
       },
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   } finally {
     // Cleanup
@@ -343,7 +343,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
             originalSize: jsonText.length,
             jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length: 0
           },
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         };
       } catch (simdjsonError) {
         // Fallback to native JSON.parse
@@ -362,13 +362,13 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
         originalSize: jsonText.length,
         jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length: 0
       },
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   }
 }
@@ -404,7 +404,7 @@ async function getAudioInfo(filePath: string, ffmpegPath: string): Promise<any> 
         resolve({
           duration: parseFloat(info.format?.duration || '0'),
           sampleRate: parseInt(audioStream?.sample_rate || '16000'),
-          channels: parseInt(audioStream?.channels || '1'),
+          channels: parseInt(audioStream?.channels || '1')
         });
       } catch (error) {
         reject(error);
@@ -443,7 +443,7 @@ async function getVideoInfo(filePath: string, ffmpegPath: string): Promise<any> 
         resolve({
           duration: parseFloat(info.format?.duration || '0'),
           width: parseInt(videoStream?.width || '0'),
-          height: parseInt(videoStream?.height || '0'),
+          height: parseInt(videoStream?.height || '0')
         });
       } catch (error) {
         reject(error);
@@ -476,9 +476,9 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
         extractedText: text,
         metadata: {
           originalSize: buffer.length,
-          encoding: 'utf-8',
+          encoding: 'utf-8'
         },
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     }
 
@@ -495,22 +495,22 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
         metadata: {
           contentType,
           size: buffer.length,
-          requiresSpecialProcessing: true,
+          requiresSpecialProcessing: true
         },
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       };
     }
 
     return {
       success: false,
       error: `Unsupported content type for text extraction: ${contentType}`,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     };
   }
 }

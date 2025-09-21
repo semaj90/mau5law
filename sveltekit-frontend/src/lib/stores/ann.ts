@@ -9,7 +9,7 @@ export async function queryQdrant(vec: number[], limit = 200, temperature = 0.3)
   const r = await fetch(`${import.meta.env.QDRANT}/collections/chunks/points/search`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
   if (!r.ok) throw new Error(`Qdrant search failed: ${r.status} ${await r.text()}`);
   const j = await r.json();
@@ -19,7 +19,7 @@ export async function queryQdrant(vec: number[], limit = 200, temperature = 0.3)
       text: p.payload?.text ?? '',
       metadata: p.payload?.metadata ?? {},
       embedding: p.vector ?? null,
-      score: p.score ?? null,
-    })),
+      score: p.score ?? null
+    }))
   };
 }

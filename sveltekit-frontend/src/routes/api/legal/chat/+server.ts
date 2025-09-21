@@ -36,7 +36,7 @@ export interface LegalChatResponse {
   confidence: number;
   sources: Array<any>;
   recommendations: string[];
-  processingTime: number;,
+  processingTime: number;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
       caseId,
       userId,
       sessionType = "case_analysis",
-      context,
+      context
     }: LegalChatRequest = await request.json();
 
     if (!prompt || !userId) {
@@ -80,11 +80,11 @@ export const POST: RequestHandler = async ({ request }) => {
         type: source.type,
         id: source.id,
         title: source.title || source.caseTitle || source.citation,
-        relevance: source.relevanceScore || 0.85,
+        relevance: source.relevanceScore || 0.85
       })),
       model: "gemma3-legal",
       processingTime: Date.now() - startTime,
-      isActive: true,
+      isActive: true
     };
     const [session] = await db
       .insert(legalAnalysisSessions)
@@ -100,10 +100,10 @@ export const POST: RequestHandler = async ({ request }) => {
         id: source.id,
         title: source.title || source.caseTitle || source.citation,
         relevance: source.relevanceScore || 0.85,
-        excerpt: source.summary || source.content?.substring(0, 200) + "...",
+        excerpt: source.summary || source.content?.substring(0, 200) + "..."
       })),
       recommendations: analysisResult.recommendations,
-      processingTime: session?.processingTime ?? 0,
+      processingTime: session?.processingTime ?? 0
     };
 
     return json(response);
@@ -235,8 +235,8 @@ The case appears to have merit based on the documented evidence and applicable l
         "Verify compliance with procedural notification requirements",
         "Prepare responses to anticipated defense challenges",
         "Consider additional expert witness testimony if needed",
-        "Document all procedural steps for appellate protection",
-      ],
+        "Document all procedural steps for appellate protection"
+      ]
     };
 
     return analysisResult;

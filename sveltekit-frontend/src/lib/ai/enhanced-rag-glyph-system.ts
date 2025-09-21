@@ -21,7 +21,7 @@ interface GlyphRAGConfig {
   compression_preference: 'speed' | 'quality' | 'balanced';
   rag_strategy: 'glyph_first' | 'semantic_first' | 'hybrid' | 'adaptive';
   context_synthesis: 'linear' | 'hierarchical' | 'neural' | 'graph_based';
-  response_optimization: 'coherence' | 'relevance' | 'creativity' | 'accuracy';,
+  response_optimization: 'coherence' | 'relevance' | 'creativity' | 'accuracy';
 }
 
 // Glyph representation for enhanced context;
@@ -37,7 +37,7 @@ interface GlyphContext {
     lod_level: string;
     extraction_confidence: number;
     semantic_clusters: number[];
-    related_glyphs: string[];,
+    related_glyphs: string[];
   };
 }
 
@@ -54,7 +54,7 @@ interface GlyphRAGResponse {
     primary_glyphs: string[];            // Most relevant glyphs
     semantic_clusters: number[];         // Clusters represented
     topology_connections: Array<any>;
-    predictive_insights: string[];       // Predicted follow-up queries,
+    predictive_insights: string[];       // Predicted follow-up queries
   };
 
   // Visual context representation;
@@ -66,7 +66,7 @@ interface GlyphRAGResponse {
       original_context_size: number;
       compressed_context_size: number;
       compression_ratio: number;
-      semantic_preservation: number;,
+      semantic_preservation: number;
     };
   };
 
@@ -78,7 +78,7 @@ interface GlyphRAGResponse {
     total_pipeline_time: number;
     glyphs_processed: number;
     cache_hit_rate: number;
-    semantic_accuracy_score: number;,
+    semantic_accuracy_score: number;
   };
 }
 
@@ -90,7 +90,7 @@ interface QueryAnalysis {
   optimal_lod_level: string;
   predicted_response_length: number;
   complexity_score: number;
-  topic_categories: string[];,
+  topic_categories: string[];
 }
 
 class EnhancedRAGGlyphSystem {
@@ -108,7 +108,7 @@ class EnhancedRAGGlyphSystem {
     average_response_time: 0,
     cache_hit_rate: 0,
     semantic_accuracy_scores: [] as number[],
-    compression_ratios: [] as number[],
+    compression_ratios: [] as number[]
   };
 
   constructor(customConfig?: Partial<GlyphRAGConfig>) {
@@ -155,7 +155,7 @@ class EnhancedRAGGlyphSystem {
       context_synthesis_time: 0,
       llm_processing_time: 0,
       glyphs_processed: 0,
-      cache_hits: 0,
+      cache_hits: 0
     };
 
     try {
@@ -240,14 +240,14 @@ class EnhancedRAGGlyphSystem {
           primary_glyphs: synthesizedContext.primary_glyphs,
           semantic_clusters: synthesizedContext.semantic_clusters,
           topology_connections: synthesizedContext.topology_connections,
-          predictive_insights: predictiveInsights,
+          predictive_insights: predictiveInsights
         },
         visual_context: visualContext || this.createDefaultVisualContext(relevantGlyphs),
         performance_metrics: {
           ...pipelineMetrics,
           total_pipeline_time: totalPipelineTime,
           cache_hit_rate: pipelineMetrics.cache_hits / pipelineMetrics.glyphs_processed,
-          semantic_accuracy_score: optimizedResponse.semantic_accuracy || 0.85,
+          semantic_accuracy_score: optimizedResponse.semantic_accuracy || 0.85
         }
       };
 
@@ -271,7 +271,7 @@ class EnhancedRAGGlyphSystem {
           primary_glyphs: [],
           semantic_clusters: [],
           topology_connections: [],
-          predictive_insights: [],
+          predictive_insights: []
         },
         visual_context: this.createErrorVisualContext(error.message),
         performance_metrics: {
@@ -281,7 +281,7 @@ class EnhancedRAGGlyphSystem {
           total_pipeline_time: Date.now() - startTime,
           glyphs_processed: 0,
           cache_hit_rate: 0,
-          semantic_accuracy_score: 0,
+          semantic_accuracy_score: 0
         }
       };
     }
@@ -360,7 +360,7 @@ class EnhancedRAGGlyphSystem {
       optimal_lod_level: optimalLodLevel,
       predicted_response_length: predictedResponseLength,
       complexity_score: complexityScore,
-      topic_categories: topicCategories,
+      topic_categories: topicCategories
     };
   }
 
@@ -381,7 +381,7 @@ class EnhancedRAGGlyphSystem {
       const vectorResults = await vectorMetadataAutoEncoder.retrieveWithGlyphRAG(query, {
         max_results: Math.floor(maxGlyphs * 0.6),
         lod_preference: (forceLodLevel as any) || queryAnalysis.optimal_lod_level,
-        similarity_threshold: this.config.semantic_clustering_threshold,
+        similarity_threshold: this.config.semantic_clustering_threshold
       });
 
       for (const result of vectorResults.results) {
@@ -395,7 +395,7 @@ class EnhancedRAGGlyphSystem {
       const lodResults = await lodCacheEngine.retrieveWithEnhancedRAG(query, {
         lod_preference: (forceLodLevel as any) || queryAnalysis.optimal_lod_level,
         max_results: Math.floor(maxGlyphs * 0.4),
-        topology_filtering: true,
+        topology_filtering: true
       });
 
       for (const result of lodResults.results) {
@@ -502,7 +502,7 @@ class EnhancedRAGGlyphSystem {
         lod_level: result.lod_match || 'tile',
         extraction_confidence: result.predictive_confidence || 0.7,
         semantic_clusters: [0, 1, 2], // Would extract from actual metadata
-        related_glyphs: [],
+        related_glyphs: []
       }
     };
   }
@@ -634,7 +634,7 @@ class EnhancedRAGGlyphSystem {
           temperature: this.getTemperatureForOptimization(optimization),
           num_predict: Math.min(2048, queryAnalysis.predicted_response_length * 2),
           top_k: optimization === 'creativity' ? 40 : 20,
-          top_p: optimization === 'accuracy' ? 0.8 : 0.9,
+          top_p: optimization === 'accuracy' ? 0.8 : 0.9
         }
       });
 
@@ -642,7 +642,7 @@ class EnhancedRAGGlyphSystem {
         return {
           text: response.response,
           confidence: 0.85, // Would calculate based on response characteristics
-          semantic_accuracy: 0.87 // Would calculate based on context alignment,
+          semantic_accuracy: 0.87 // Would calculate based on context alignment
         };
       } else {
         throw new Error('No response generated from LLM');
@@ -655,7 +655,7 @@ class EnhancedRAGGlyphSystem {
       return {
         text: 'I have relevant context from compressed glyphs, but encountered an issue generating a complete response. Please try rephrasing your question.',
         confidence: 0.3,
-        semantic_accuracy: 0.4,
+        semantic_accuracy: 0.4
       };
     }
   }
@@ -693,7 +693,7 @@ class EnhancedRAGGlyphSystem {
       case 'accuracy': return 0.3;
       case 'creativity': return 0.9;
       case 'coherence': return 0.5;
-      default: return 0.7;,
+      default: return 0.7;
     }
   }
 
@@ -727,7 +727,7 @@ class EnhancedRAGGlyphSystem {
         original_context_size: glyphs.length * 1000,
         compressed_context_size: glyphs.length * 7,
         compression_ratio: 142.8,
-        semantic_preservation: 0.9,
+        semantic_preservation: 0.9
       }
     };
   }
@@ -741,7 +741,7 @@ class EnhancedRAGGlyphSystem {
         original_context_size: 0,
         compressed_context_size: 0,
         compression_ratio: 0,
-        semantic_preservation: 0,
+        semantic_preservation: 0
       }
     };
   }
@@ -816,7 +816,7 @@ class GlyphContextSynthesizer {
             from_glyph: glyphs[i].glyph_id,
             to_glyph: glyphs[j].glyph_id,
             relationship_type: this.determineRelationshipType(glyphs[i], glyphs[j]),
-            strength: similarity,
+            strength: similarity
           });
         }
       }
@@ -900,7 +900,7 @@ class GlyphVisualGenerator {
       glyph_constellation_svg: constellationSVG,
       semantic_heatmap_svg: heatmapSVG,
       topology_graph_svg: topologyGraphSVG,
-      compression_statistics: compressionStats,
+      compression_statistics: compressionStats
     };
   }
 
@@ -975,7 +975,7 @@ class GlyphVisualGenerator {
       const radius = 100;
       nodePositions.set(node, {
         x: width / 2 + Math.cos(angle) * radius,
-        y: height / 2 + Math.sin(angle) * radius,
+        y: height / 2 + Math.sin(angle) * radius
       });
     });
 
@@ -1009,7 +1009,7 @@ class GlyphVisualGenerator {
       original_context_size: originalSize,
       compressed_context_size: compressedSize,
       compression_ratio: originalSize / compressedSize,
-      semantic_preservation: 0.9 // Estimated,
+      semantic_preservation: 0.9 // Estimated
     };
   }
 }
@@ -1053,7 +1053,7 @@ class GlyphTopologyNavigator {
       glyph_id: relatedId,
       compressed_representation: compressedRep,
       visual_signature: seedGlyph.visual_signature.replace(/hsl\(\d+,/, `hsl(${(index * 60) % 360},`),
-      semantic_summary: `Related to: ${seedGlyph.semantic_summary.slice(0, 50)}... (topology distance: ${index + 1,})`,
+      semantic_summary: `Related to: ${seedGlyph.semantic_summary.slice(0, 50)}... (topology distance: ${index + 1})`,
       contextual_weight: Math.max(0.1, seedGlyph.contextual_weight - (index * 0.1)),
       topology_position: new Float32Array([
         seedGlyph.topology_position[0] + (Math.random() - 0.5) * 0.2,
@@ -1065,7 +1065,7 @@ class GlyphTopologyNavigator {
         lod_level: seedGlyph.retrieval_metadata.lod_level,
         extraction_confidence: Math.max(0.3, seedGlyph.retrieval_metadata.extraction_confidence - (index * 0.1)),
         semantic_clusters: seedGlyph.retrieval_metadata.semantic_clusters,
-        related_glyphs: [seedGlyph.glyph_id],
+        related_glyphs: [seedGlyph.glyph_id]
       }
     };
   }
@@ -1162,7 +1162,7 @@ class GlyphPredictiveAnalyzer {
         lod_level: baseGlyph.retrieval_metadata.lod_level,
         extraction_confidence: 0.6, // Lower confidence for predictive
         semantic_clusters: baseGlyph.retrieval_metadata.semantic_clusters,
-        related_glyphs: [baseGlyph.glyph_id],
+        related_glyphs: [baseGlyph.glyph_id]
       }
     };
   }

@@ -24,7 +24,7 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
     model: 'nomic-embed-text',
     total: 0,
     completed: 0,
-    results: [],
+    results: []
   },
   states: {
     idle: {
@@ -65,7 +65,7 @@ export const pipelineMachine = createMachine<Ctx, Ev>({
         CHUNK_EMBED_DONE: {
           actions: assign({
             results: (ctx, e) => (e as any).result.chunkId.startsWith('meta:') ? ctx.results: [...ctx.results, (e as any).result],
-            completed: (ctx) => ctx.completed + 1,
+            completed: (ctx) => ctx.completed + 1
           })
         },
         FAIL: { target: 'failed', actions: assign({ error: (_ctx, e) => (e as any).error }) }

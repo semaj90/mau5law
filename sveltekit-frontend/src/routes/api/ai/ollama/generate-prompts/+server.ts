@@ -74,7 +74,7 @@ Respond in JSON format:;
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: model,
@@ -83,7 +83,7 @@ Respond in JSON format:;
         stream: false,
         options: {
           temperature: 0.6,
-          top_p: 0.9,
+          top_p: 0.9
         }
       })
     });
@@ -138,7 +138,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.95,
         relevance: 0.9,
         actionable: true,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
 
@@ -150,7 +150,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.8,
         relevance: 0.7,
         actionable: true,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
 
@@ -162,7 +162,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.85,
         relevance: 0.8,
         actionable: true,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
   }
@@ -175,7 +175,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       confidence: 0.9,
       relevance: 0.7,
       actionable: false,
-      legalSpecific: true,
+      legalSpecific: true
     });
 
     if (context.files?.length > 5) {
@@ -186,7 +186,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.8,
         relevance: 0.6,
         actionable: false,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
   }
@@ -199,7 +199,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       confidence: 0.9,
       relevance: 0.8,
       actionable: true,
-      legalSpecific: true,
+      legalSpecific: true
     });
 
     if (legalContext?.caseId) {
@@ -210,7 +210,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.85,
         relevance: 0.9,
         actionable: true,
-        legalSpecific: true,
+        legalSpecific: true
       });
     }
 
@@ -221,7 +221,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       confidence: 0.8,
       relevance: 0.7,
       actionable: true,
-      legalSpecific: true,
+      legalSpecific: true
     });
   }
 

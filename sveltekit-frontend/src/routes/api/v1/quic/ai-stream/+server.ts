@@ -20,7 +20,7 @@ const QUIC_AI_STREAM_CONFIG = {
   wsUrl: 'ws://localhost:8447',
   timeout: 60000, // AI operations can take longer
   maxTokens: 4096,
-  defaultModel: 'gemma3-legal',
+  defaultModel: 'gemma3-legal'
 };
 }
 
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     // Check AI stream service health;
     const healthResponse = await fetch(`${QUIC_AI_STREAM_CONFIG.baseUrl}/health`, {
-      signal: AbortSignal.timeout(QUIC_AI_STREAM_CONFIG.timeout),
+      signal: AbortSignal.timeout(QUIC_AI_STREAM_CONFIG.timeout)
     });
 
     let serviceStatus = 'healthy';
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } else {
       // Try fallback HTTP/2;
       const fallbackResponse = await fetch(`${QUIC_AI_STREAM_CONFIG.fallbackUrl}/health`, {
-        signal: AbortSignal.timeout(QUIC_AI_STREAM_CONFIG.timeout),
+        signal: AbortSignal.timeout(QUIC_AI_STREAM_CONFIG.timeout)
       });
 
       if (fallbackResponse.ok) {
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
             : `${QUIC_AI_STREAM_CONFIG.fallbackUrl}/session/${sessionId}`;
 
         const sessionResponse = await fetch(sessionUrl, {
-          signal: AbortSignal.timeout(5000),
+          signal: AbortSignal.timeout(5000)
         });
 
         if (sessionResponse.ok) {
@@ -103,24 +103,24 @@ export const GET: RequestHandler = async ({ url }) => {
         serviceStatus === 'healthy' ? 'HTTP/3' : serviceStatus === 'fallback' ? 'HTTP/2' : 'N/A',
       ports: {
         quic: QUIC_AI_STREAM_CONFIG.primaryPort,
-        fallback: QUIC_AI_STREAM_CONFIG.fallbackPort,
+        fallback: QUIC_AI_STREAM_CONFIG.fallbackPort
       },
       websocketUrl: QUIC_AI_STREAM_CONFIG.wsUrl,
       backends: {
         ollama: 'http://localhost:11434',
-        enhancedRAG: 'http://localhost:8094',
+        enhancedRAG: 'http://localhost:8094'
       },
       features: [
         'Real-time AI Streaming',
         'WebSocket Support',
         'Session Management',
         'Multiple AI Models',
-        'HTTP/3 Acceleration',
+        'HTTP/3 Acceleration'
       ],
       models: responseData.models || ['gemma3-legal', 'nomic-embed-text', 'llama2-legal'],
       session: sessionInfo,
       metrics: responseData.metrics || null,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('QUIC AI Stream health check failed:', err);
@@ -129,7 +129,7 @@ export const GET: RequestHandler = async ({ url }) => {
       service: 'quic-ai-stream',
       status: 'error',
       error: err instanceof Error ? err.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 };
@@ -176,8 +176,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       meta: {
         requestId: crypto.randomUUID(),
         timestamp: Date.now(),
-        protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2',
-      },
+        protocol: useHttp3 ? 'HTTP/3' : 'HTTP/2'
+      }
     };
 
     let response: Response;
@@ -190,10 +190,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           'Content-Type': 'application/json',
           'X-Session-ID': sessionId,
           'X-Enable-Streaming': String(enableStreaming),
-          'X-QUIC-Request': 'true',
+          'X-QUIC-Request': 'true'
         },
         body: JSON.stringify(requestPayload),
-        signal: AbortSignal.timeout(QUIC_AI_STREAM_CONFIG.timeout),
+        signal: AbortSignal.timeout(QUIC_AI_STREAM_CONFIG.timeout)
       });
       protocol = useHttp3 ? 'HTTP/3' : 'HTTP/2';
     } catch (quicError) {
@@ -202,7 +202,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         503,
         ensureError({
           message: 'AI streaming service unavailable',
-          error: quicError instanceof Error ? quicError.message: 'Unknown error',
+          error: quicError instanceof Error ? quicError.message: 'Unknown error'
         })
       );
     }
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       websocketUrl: enableStreaming ? `${QUIC_AI_STREAM_CONFIG.wsUrl}/ws/${sessionId}` : undefined,
       model: responseData?.model || requestPayload?.model || 'unknown',
       tokensUsed: responseData.tokensUsed || 0,
-      executionTime: responseData.executionTime || 0,
+      executionTime: responseData.executionTime || 0
     };
 
     return json({
@@ -235,8 +235,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         promptLength: aiRequest.prompt.length,
         responseLength: aiResponse.response?.length || 0,
         executionTimeMs: aiResponse.executionTime || 0,
-        streaming: enableStreaming,
-      },
+        streaming: enableStreaming
+      }
     });
   } catch (err: any) {
     console.error('QUIC AI Stream error:', err);
@@ -244,7 +244,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       500,
       ensureError({
         message: 'AI streaming failed',
-        error: err instanceof Error ? err.message: 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error'
       })
     );
   }
@@ -270,9 +270,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
       method: 'DELETE',
       headers: {
         'X-Session-ID': sessionId,
-        'X-QUIC-Request': 'true',
+        'X-QUIC-Request': 'true'
       },
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(10000)
     });
 
     if (!response.ok) {
@@ -285,7 +285,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       message: `AI session '${sessionId}' terminated`,
       result,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (err: any) {
     console.error('AI session termination error:', err);
@@ -293,7 +293,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Session termination failed',
-        error: err instanceof Error ? err.message: 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error'
       })
     );
   }
@@ -319,13 +319,13 @@ export const PUT: RequestHandler = async ({ request }) => {
     const updatedConfig = {
       ...QUIC_AI_STREAM_CONFIG,
       ...config,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     };
 
     return json({
       success: true,
       message: 'AI streaming configuration updated',
-      config: updatedConfig,
+      config: updatedConfig
     });
   } catch (err: any) {
     console.error('AI stream configuration update failed:', err);
@@ -333,7 +333,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Configuration update failed',
-        error: err instanceof Error ? err.message: 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error'
       })
     );
   }

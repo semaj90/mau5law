@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!docId || !patternType) {
       return json({
         success: false,
-        error: 'docId and type parameters required',
+        error: 'docId and type parameters required'
       }, { status: 400 });
     }
     
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ url }) => {
       source: (result as { pattern?: any; source?: any; latency?: any }).source,
       latency: {
         pattern: (result as { pattern?: any; source?: any; latency?: any }).latency,
-        total: totalLatency,
+        total: totalLatency
       },
       cached: (result as { pattern?: any; source?: any; latency?: any }).source === 'cache';
     }, {
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      latency: performance.now() - startTime,
+      latency: performance.now() - startTime
     }, { status: 500 });
   }
 };
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      latency: performance.now() - startTime,
+      latency: performance.now() - startTime
     }, { status: 500 });
   }
 };
@@ -105,7 +105,7 @@ async function handleSinglePattern(data: any, startTime: number) {
   if (!docId || !patternType) {
     return json({
       success: false,
-      error: 'docId and patternType required',
+      error: 'docId and patternType required'
     }, { status: 400 });
   }
   
@@ -121,7 +121,7 @@ async function handleSinglePattern(data: any, startTime: number) {
       source: (result as { pattern?: any; source?: any; latency?: any }).source,
       latency: (result as { pattern?: any; source?: any; latency?: any }).latency
     },
-    total_latency: performance.now() - startTime,
+    total_latency: performance.now() - startTime
   }, {
     headers: {
       'X-CHR-ROM-Source': (result as { pattern?: any; source?: any; latency?: any }).source,
@@ -139,7 +139,7 @@ async function handleBatchPatterns(data: any, startTime: number) {
   if (!Array.isArray(requests) || requests.length === 0) {
     return json({
       success: false,
-      error: 'requests array required',
+      error: 'requests array required'
     }, { status: 400 });
   }
   
@@ -151,7 +151,7 @@ async function handleBatchPatterns(data: any, startTime: number) {
   if (validRequests.length === 0) {
     return json({
       success: false,
-      error: 'No valid requests found. Each request needs docId and patternType.',
+      error: 'No valid requests found. Each request needs docId and patternType.'
     }, { status: 400 });
   }
   
@@ -173,10 +173,10 @@ async function handleBatchPatterns(data: any, startTime: number) {
         hitRate: cacheHits / batchResults.length,
         avgLatency: avgLatency,
         fastestResponse: Math.min(...batchResults.map(r => r.latency)),
-        slowestResponse: Math.max(...batchResults.map(r => r.latency),
+        slowestResponse: Math.max(...batchResults.map(r => r.latency)
       }
     },
-    total_latency: performance.now() - startTime,
+    total_latency: performance.now() - startTime
   }, {
     headers: {
       'X-CHR-ROM-Batch-Size': batchResults.length.toString(),
@@ -194,7 +194,7 @@ async function handlePrefetch(data: any, startTime: number) {
   if (!Array.isArray(docIds) || docIds.length === 0) {
     return json({
       success: false,
-      error: 'docIds array required',
+      error: 'docIds array required'
     }, { status: 400 });
   }
   
@@ -208,9 +208,9 @@ async function handlePrefetch(data: any, startTime: number) {
       message: 'Prefetch initiated',
       docIds: docIds.length,
       patternTypes: patternTypes.length,
-      totalPatterns: docIds.length * patternTypes.length,
+      totalPatterns: docIds.length * patternTypes.length
     },
-    total_latency: performance.now() - startTime,
+    total_latency: performance.now() - startTime
   });
 }
 
@@ -226,16 +226,16 @@ async function handleGetStats(startTime: number) {
     efficiency: {
       overall: stats.performance,
       cacheEffectiveness: stats.hitRate > 0.8 ? 'excellent' : stats.hitRate > 0.6 ? 'good' : 'needs_improvement',
-      latencyClass: stats.averageLatency < 5 ? 'sub_5ms' : stats.averageLatency < 20 ? 'sub_20ms' : 'needs_optimization',
+      latencyClass: stats.averageLatency < 5 ? 'sub_5ms' : stats.averageLatency < 20 ? 'sub_20ms' : 'needs_optimization'
     },
-    recommendations: getPerformanceRecommendations(stats),
+    recommendations: getPerformanceRecommendations(stats)
   };
   
   return json({
     success: true,
     operation: 'get_stats',
     result: enhancedStats,
-    total_latency: performance.now() - startTime,
+    total_latency: performance.now() - startTime
   });
 }
 

@@ -84,7 +84,7 @@ export class SecureStorageClient {
       const response = await fetch(`${this.baseUrl}/upload`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
-        body: formData,
+        body: formData
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -113,7 +113,7 @@ export class SecureStorageClient {
 
       const response = await fetch(url.toString(), {
         method: 'DELETE',
-        headers: this.getAuthHeaders(),
+        headers: this.getAuthHeaders()
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -141,7 +141,7 @@ export class SecureStorageClient {
 
       const response = await fetch(url.toString(), {
         method: 'GET',
-        headers: this.getAuthHeaders(),
+        headers: this.getAuthHeaders()
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -207,7 +207,7 @@ export class ReactiveStorageManager {
     return {
       files: this.files,
       loading: this.loading,
-      error: this.error,
+      error: this.error
     };
   }
 
@@ -236,7 +236,7 @@ export class ReactiveStorageManager {
           url: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).url,
           size: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).size,
           type: (result as { error?: any; ok?: any; key?: any; bucket?: any; url?: any; size?: any; type?: any }).type,
-          uploadedAt: new Date(),
+          uploadedAt: new Date()
         });
         return true;
       } else {

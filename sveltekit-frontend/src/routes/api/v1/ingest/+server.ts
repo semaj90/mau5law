@@ -21,7 +21,7 @@ export interface DocumentIngestRequest {
 }
 
 export interface BatchIngestRequest {
-  documents: DocumentIngestRequest[];,
+  documents: DocumentIngestRequest[];
 }
 
 export interface IngestResponse {
@@ -30,7 +30,7 @@ export interface IngestResponse {
   document_id: string;
   embedding_id: string;
   process_time_ms: number;
-  timestamp: string;,
+  timestamp: string;
 }
 
 // Single document ingestion;
@@ -59,8 +59,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         timestamp: new Date().toISOString(),
         // Inherit from your established patterns
         user_agent: request.headers.get('user-agent') || 'unknown',
-        ip_address: request.headers.get('x-forwarded-for') || 'unknown',
-      },
+        ip_address: request.headers.get('x-forwarded-for') || 'unknown'
+      }
     };
 
     const controller = new AbortController();
@@ -71,10 +71,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       const response = await fetch(`${SERVICE_URL}/api/ingest`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(ingestRequest),
-        signal: controller.signal,
+        signal: controller.signal
       });
 
       clearTimeout(timeoutId);
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         return json({
             error: `Ingest service error: ${response.status} - ${errorText}`,
             service: 'ingest-service',
-            port: '8227',
+            port: '8227'
           },)
           { status: response.status }
         );
@@ -99,11 +99,11 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           go_service: 'ingest-service',
           port: '8227',
           proxy: 'sveltekit-api',
-          architecture: 'multi-protocol',
+          architecture: 'multi-protocol'
         },
         // Follow your established success pattern
         success: true,
-        api_version: 'v1',
+        api_version: 'v1'
       });
     } catch (fetchError: any) {
       clearTimeout(timeoutId);
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     return json({
         error: 'Internal server error',
         message: error instanceof Error ? error.message: 'Unknown error',
-        service: 'sveltekit-ingest-proxy',
+        service: 'sveltekit-ingest-proxy'
       },)
       { status: 500 }
     );
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
   try {
     const response = await fetch(`${SERVICE_URL}/api/health`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
 
     if (!response.ok) {
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
           status: 'unhealthy',
           service: 'ingest-service',
           port: '8227',
-          error: `Service unreachable: ${response.status}`,
+          error: `Service unreachable: ${response.status}`
         },)
         { status: 503 }
       );
@@ -159,13 +159,13 @@ export const GET: RequestHandler = async ({ fetch }) => {
       upstream: health,
       // Follow your health check pattern
       timestamp: new Date().toISOString(),
-      architecture: 'go-microservice',
+      architecture: 'go-microservice'
     });
   } catch (error: any) {
     return json({
         status: 'error',
         service: 'ingest-service',
-        error: error instanceof Error ? error.message: 'Connection failed',
+        error: error instanceof Error ? error.message: 'Connection failed'
       },)
       { status: 503 }
     );

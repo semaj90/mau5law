@@ -13,7 +13,7 @@ export type { StandardApiResponse };
 // Base API response wrapper;
 export interface ApiContract<TRequest = any, TResponse = any> {
   request: TRequest;
-  response: StandardApiResponse<TResponse>;,
+  response: StandardApiResponse<TResponse>;
 }
 
 // ==================== CASE API CONTRACTS ====================
@@ -39,12 +39,12 @@ export namespace CaseAPI {
       limit: number;
       total: number;
       hasNext: boolean;
-      hasPrev: boolean;,
+      hasPrev: boolean;
     };
     search?: {
       term: string;
       resultsCount: number;
-      vectorSearchUsed: boolean;,
+      vectorSearchUsed: boolean;
     } | null;
   }
 
@@ -63,7 +63,7 @@ export namespace CaseAPI {
 
   export interface CreateResponse {
     case: Case;
-    message: string;,
+    message: string;
   }
 
   export type Create = ApiContract<CreateRequest, CreateResponse>;
@@ -79,14 +79,14 @@ export namespace CaseAPI {
 
   export interface UpdateResponse {
     case: Case;
-    message: string;,
+    message: string;
   }
 
   export type Update = ApiContract<UpdateRequest, UpdateResponse>;
 
   // GET /api/cases?id=<id> - Get single case;
   export interface GetRequest {
-    id: string;,
+    id: string;
   }
 
   export interface GetResponse {
@@ -123,12 +123,12 @@ export namespace EvidenceAPI {
       limit: number;
       total: number;
       hasNext: boolean;
-      hasPrev: boolean;,
+      hasPrev: boolean;
     };
     search?: {
       term: string;
       resultsCount: number;
-      vectorSearchUsed: boolean;,
+      vectorSearchUsed: boolean;
     } | null;
   }
 
@@ -155,7 +155,7 @@ export namespace EvidenceAPI {
 
   export interface CreateResponse {
     evidence: Evidence;
-    message: string;,
+    message: string;
   }
 
   export type Create = ApiContract<CreateRequest, CreateResponse>;
@@ -172,7 +172,7 @@ export namespace EvidenceAPI {
 
   export interface UpdateResponse {
     evidence: Evidence;
-    message: string;,
+    message: string;
   }
 
   export type Update = ApiContract<UpdateRequest, UpdateResponse>;
@@ -185,7 +185,7 @@ export namespace EvidenceAPI {
 
   export interface DeleteResponse {
     message: string;
-    evidenceId: string;,
+    evidenceId: string;
   }
 
   export type Delete = ApiContract<DeleteRequest, DeleteResponse>;
@@ -316,11 +316,11 @@ export namespace HealthAPI {
       enhancedRAG: ServiceStatus;
       uploadService: ServiceStatus;
       memory: ServiceStatus;
-      cache: ServiceStatus;,
+      cache: ServiceStatus;
     };
     performance: {
       responseTime: number;
-      status: 'healthy' | 'degraded';,
+      status: 'healthy' | 'degraded';
     };
     errors?: string[];
     system?: {
@@ -336,7 +336,7 @@ export namespace HealthAPI {
 
   // POST /api/health - System maintenance;
   export interface MaintenanceRequest {
-    action: 'clear_cache' | 'force_gc' | 'test_database';,
+    action: 'clear_cache' | 'force_gc' | 'test_database';
   }
 
   export interface MaintenanceResponse {
@@ -370,7 +370,7 @@ export type ApiClient<T extends ApiContract<any, any> = (
 export interface ApiEndpoint<T extends ApiContract<any, any> {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   path: string;
-  contract: T;,
+  contract: T;
 }
 
 // ==================== API ENDPOINT DEFINITIONS ====================
@@ -381,7 +381,7 @@ export const API_ENDPOINTS = {
     list: { method: 'GET', path: '/api/cases' } as ApiEndpoint<CaseAPI.List>,
     create: { method: 'POST', path: '/api/cases' } as ApiEndpoint<CaseAPI.Create>,
     update: { method: 'PUT', path: '/api/cases' } as ApiEndpoint<CaseAPI.Update>,
-    get: { method: 'GET', path: '/api/cases' } as ApiEndpoint<CaseAPI.Get>,
+    get: { method: 'GET', path: '/api/cases' } as ApiEndpoint<CaseAPI.Get>
   },
   
   // Evidence endpoints;
@@ -389,24 +389,24 @@ export const API_ENDPOINTS = {
     list: { method: 'GET', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.List>,
     create: { method: 'POST', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Create>,
     update: { method: 'PUT', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Update>,
-    delete: { method: 'DELETE', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Delete>,
+    delete: { method: 'DELETE', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Delete>
   },
   
   // AI/Chat endpoints;
   ai: {
-    chat: { method: 'POST', path: '/api/ai/enhanced-chat' } as ApiEndpoint<ChatAPI.Chat>,
+    chat: { method: 'POST', path: '/api/ai/enhanced-chat' } as ApiEndpoint<ChatAPI.Chat>
   },
   
   // Vector search endpoints;
   vectorSearch: {
-    search: { method: 'POST', path: '/api/vector-search' } as ApiEndpoint<VectorSearchAPI.Search>,
+    search: { method: 'POST', path: '/api/vector-search' } as ApiEndpoint<VectorSearchAPI.Search>
   },
   
   // Health endpoints;
   health: {
     check: { method: 'GET', path: '/api/health' } as ApiEndpoint<HealthAPI.Health>,
-    maintenance: { method: 'POST', path: '/api/health' } as ApiEndpoint<HealthAPI.Maintenance>,
-  },
+    maintenance: { method: 'POST', path: '/api/health' } as ApiEndpoint<HealthAPI.Maintenance>
+  }
 } as const;
 
 // ==================== VALIDATION SCHEMAS ====================

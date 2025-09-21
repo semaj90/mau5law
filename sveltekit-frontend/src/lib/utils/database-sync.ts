@@ -31,7 +31,7 @@ export class DatabaseSyncManager {
       read: "/api/cases",
       update: "/api/cases",
       delete: "/api/cases",
-      patch: "/api/cases",
+      patch: "/api/cases"
     },
     evidence: {
       list: "/api/evidence",
@@ -39,7 +39,7 @@ export class DatabaseSyncManager {
       read: "/api/evidence",
       update: "/api/evidence",
       delete: "/api/evidence",
-      patch: "/api/evidence",
+      patch: "/api/evidence"
     },
     reports: {
       list: "/api/reports",
@@ -47,7 +47,7 @@ export class DatabaseSyncManager {
       read: "/api/reports",
       update: "/api/reports",
       delete: "/api/reports",
-      patch: "/api/reports",
+      patch: "/api/reports"
     },
     criminals: {
       list: "/api/criminals",
@@ -55,7 +55,7 @@ export class DatabaseSyncManager {
       read: "/api/criminals",
       update: "/api/criminals",
       delete: "/api/criminals",
-      patch: "/api/criminals",
+      patch: "/api/criminals"
     },
     activities: {
       list: "/api/activities",
@@ -63,7 +63,7 @@ export class DatabaseSyncManager {
       read: "/api/activities",
       update: "/api/activities",
       delete: "/api/activities",
-      patch: "/api/activities",
+      patch: "/api/activities"
     },
     users: {
       list: "/api/users",
@@ -71,7 +71,7 @@ export class DatabaseSyncManager {
       read: "/api/users",
       update: "/api/users",
       delete: "/api/users",
-      patch: "/api/users",
+      patch: "/api/users"
     },
     canvasStates: {
       list: "/api/canvas-states",
@@ -79,8 +79,8 @@ export class DatabaseSyncManager {
       read: "/api/canvas-states",
       update: "/api/canvas-states",
       delete: "/api/canvas-states",
-      patch: "/api/canvas-states",
-    },
+      patch: "/api/canvas-states"
+    }
   };
 
   public static getInstance(): DatabaseSyncManager {
@@ -372,26 +372,26 @@ export class DatabaseSyncManager {
   private getRequiredFields(entity: string, operation: string): string[] {
     const requiredFields: Record<string, Record<string, string[]> = {
       cases: {
-        create: ["title", "caseNumber"],
+        create: ["title", "caseNumber"]
       },
       evidence: {
-        create: ["title", "evidenceType"],
+        create: ["title", "evidenceType"]
       },
       reports: {
-        create: ["title", "caseId"],
+        create: ["title", "caseId"]
       },
       criminals: {
-        create: ["firstName", "lastName"],
+        create: ["firstName", "lastName"]
       },
       activities: {
-        create: ["caseId", "title", "activityType"],
+        create: ["caseId", "title", "activityType"]
       },
       users: {
-        create: ["email", "password"],
+        create: ["email", "password"]
       },
       canvasStates: {
-        create: ["name", "canvasData"],
-      },
+        create: ["name", "canvasData"]
+      }
     };
 
     return requiredFields[entity]?.[operation] || [];
@@ -406,8 +406,8 @@ export class DatabaseSyncManager {
     const requestOptions: RequestInit = {
       method,
       headers: {
-        "Content-Type": "application/json",
-      },
+        "Content-Type": "application/json"
+      }
     };
 
     if (data && (method === "POST" || method === "PUT" || method === "PATCH")) {
@@ -517,7 +517,7 @@ export const CasesAPI = {
   patch: (id: string, data: any, options?: SyncOptions) =>
     dbSync.patch("cases", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
-    dbSync.delete("cases", id, options),
+    dbSync.delete("cases", id, options)
 };
 
 export const EvidenceAPI = {
@@ -530,7 +530,7 @@ export const EvidenceAPI = {
   update: (id: string, data: any, options?: SyncOptions) =>
     dbSync.patch("evidence", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
-    dbSync.delete("evidence", id, options),
+    dbSync.delete("evidence", id, options)
 };
 
 export const ReportsAPI = {
@@ -545,7 +545,7 @@ export const ReportsAPI = {
   patch: (id: string, data: any, options?: SyncOptions) =>
     dbSync.patch("reports", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
-    dbSync.delete("reports", id, options),
+    dbSync.delete("reports", id, options)
 };
 
 export const CriminalsAPI = {
@@ -560,7 +560,7 @@ export const CriminalsAPI = {
   patch: (id: string, data: any, options?: SyncOptions) =>
     dbSync.patch("criminals", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
-    dbSync.delete("criminals", id, options),
+    dbSync.delete("criminals", id, options)
 };
 
 export const ActivitiesAPI = {
@@ -575,7 +575,7 @@ export const ActivitiesAPI = {
   patch: (id: string, data: any, options?: SyncOptions) =>
     dbSync.patch("activities", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
-    dbSync.delete("activities", id, options),
+    dbSync.delete("activities", id, options)
 };
 
 export const UsersAPI = {
@@ -590,7 +590,7 @@ export const UsersAPI = {
   patch: (id: string, data: any, options?: SyncOptions) =>
     dbSync.patch("users", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
-    dbSync.delete("users", id, options),
+    dbSync.delete("users", id, options)
 };
 
 export const CanvasAPI = {
@@ -605,7 +605,7 @@ export const CanvasAPI = {
   patch: (id: string, data: any, options?: SyncOptions) =>
     dbSync.patch("canvasStates", id, data, options),
   delete: (id: string, options?: SyncOptions) =>
-    dbSync.delete("canvasStates", id, options),
+    dbSync.delete("canvasStates", id, options)
 };
 
 export default DatabaseSyncManager;

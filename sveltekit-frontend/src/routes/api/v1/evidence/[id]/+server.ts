@@ -37,8 +37,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       data: evidenceData,
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error fetching evidence:', err);
@@ -77,7 +77,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const body = await request.json();
     const validatedData = UpdateEvidenceSchema.parse({
       id: evidenceId,
-      ...body,
+      ...body
     }) as UpdateEvidenceData;
 
     // Create service instance
@@ -94,8 +94,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       data: updatedEvidence,
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error updating evidence:', err);
@@ -142,8 +142,8 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       meta: {
         deletedEvidenceId: evidenceId,
         userId: locals.user.id,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error deleting evidence:', err);

@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!initialized) {
       return new Response(JSON.stringify({
         error: 'MinIO service unavailable',
-        initialized: false,
+        initialized: false
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     let bucketDetails = buckets.map(bucket => ({
       name: bucket.name,
-      creationDate: bucket.creationDate,
+      creationDate: bucket.creationDate
     });
 
     // Add file counts if stats requested;
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
               creationDate: bucket.creationDate,
               fileCount: 0,
               totalSize: 0,
-              error: error instanceof Error ? error.message: 'Unknown error',
+              error: error instanceof Error ? error.message: 'Unknown error'
             };
           }
         })
@@ -71,9 +71,9 @@ export const GET: RequestHandler = async ({ url }) => {
         total: buckets.length,
         expected: expectedBuckets.length,
         missing: missingBuckets,
-        allBucketsReady: missingBuckets.length === 0,
+        allBucketsReady: missingBuckets.length === 0
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Bucket listing error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to list buckets',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const initialized = await minioService.initialize();
     if (!initialized) {
       return new Response(JSON.stringify({
-        error: 'MinIO service unavailable',
+        error: 'MinIO service unavailable'
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         action: 'ensure-all',
         results,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request }) => {
         action: 'create',
         bucketName,
         message: created ? 'Bucket created successfully' : 'Bucket creation failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }), {
         status: created ? 200 : 500,
         headers: { 'Content-Type': 'application/json' }
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Bucket management error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to manage buckets',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
@@ -164,7 +164,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
 
     if (!bucketName) {
       return new Response(JSON.stringify({
-        error: 'bucketName is required',
+        error: 'bucketName is required'
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -177,7 +177,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       return new Response(JSON.stringify({
         error: 'Cannot delete standard bucket without force=true',
         bucketName,
-        isStandardBucket: true,
+        isStandardBucket: true
       }), {
         status: 403,
         headers: { 'Content-Type': 'application/json' }
@@ -188,7 +188,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     const initialized = await minioService.initialize();
     if (!initialized) {
       return new Response(JSON.stringify({
-        error: 'MinIO service unavailable',
+        error: 'MinIO service unavailable'
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
@@ -201,7 +201,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       return new Response(JSON.stringify({
         error: 'Bucket is not empty. Use force=true to delete non-empty bucket',
         bucketName,
-        fileCount: files.length,
+        fileCount: files.length
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -216,7 +216,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       action: 'delete',
       bucketName,
       message: deleted ? 'Bucket deleted successfully' : 'Bucket deletion failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: deleted ? 200 : 500,
       headers: { 'Content-Type': 'application/json' }
@@ -226,7 +226,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     console.error('Bucket deletion error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to delete bucket',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

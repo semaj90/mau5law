@@ -20,7 +20,7 @@ export interface NavigationState {
   breadcrumbs: BreadcrumbItem[];
   canGoBack: boolean;
   canGoForward: boolean;
-  isNavigating: boolean;,
+  isNavigating: boolean;
 }
 
 export interface NavigationHistoryEntry {
@@ -35,7 +35,7 @@ export interface BreadcrumbItem {
   label: string;
   path: string;
   routeId?: string;
-  isActive: boolean;,
+  isActive: boolean;
 }
 
 export interface NavigationOptions {
@@ -64,7 +64,7 @@ export class DynamicNavigation {
     breadcrumbs: [],
     canGoBack: false,
     canGoForward: false,
-    isNavigating: false,
+    isNavigating: false
   });
 
   private guards: Map<string, NavigationGuard> = new Map();
@@ -125,7 +125,7 @@ export class DynamicNavigation {
         replaceState: options.replaceState,
         keepFocus: options.noScroll,
         invalidateAll: options.invalidateAll,
-        noScroll: options.noScroll,
+        noScroll: options.noScroll
       });
 
       // Update history if not replacing state;
@@ -203,7 +203,7 @@ export class DynamicNavigation {
     await this.navigate(currentState.currentPath, {
       replaceState: true,
       invalidateAll,
-      keepHistory: false,
+      keepHistory: false
     });
   }
 
@@ -281,7 +281,7 @@ export class DynamicNavigation {
         currentPath: path,
         breadcrumbs,
         canGoBack: this.historyIndex > 0 || state.navigationHistory.length > 1,
-        canGoForward: this.historyIndex < state.navigationHistory.length - 1,
+        canGoForward: this.historyIndex < state.navigationHistory.length - 1
       };
     });
   }
@@ -295,7 +295,7 @@ export class DynamicNavigation {
         path,
         timestamp: Date.now(),
         routeId,
-        state,
+        state
       };
 
       const newHistory = [...navState.navigationHistory];
@@ -319,7 +319,7 @@ export class DynamicNavigation {
         ...navState,
         navigationHistory: newHistory,
         canGoBack: this.historyIndex > 0,
-        canGoForward: false,
+        canGoForward: false
       };
     });
   }
@@ -335,7 +335,7 @@ export class DynamicNavigation {
     breadcrumbs.push({
       label: 'Home',
       path: '/',
-      isActive: path === '/',
+      isActive: path === '/'
     });
 
     // Build breadcrumbs from path segments
@@ -362,7 +362,7 @@ export class DynamicNavigation {
         label,
         path: currentPath,
         routeId: isActive ? routeId : undefined,
-        isActive,
+        isActive
       });
     }
 
@@ -425,7 +425,7 @@ export class DynamicNavigation {
       ...state,
       navigationHistory: [],
       canGoBack: false,
-      canGoForward: false,
+      canGoForward: false
     });
     this.historyIndex = -1;
   }
@@ -532,6 +532,6 @@ export function createRouteAwareNavigation(routeId: string) {
       if (!route) return '#';
 
       return 'route' in route ? route.route: route.path;
-    }),
+    })
   };
 }

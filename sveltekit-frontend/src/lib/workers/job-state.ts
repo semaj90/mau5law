@@ -10,7 +10,7 @@ export type JobRecord = {
   retries?: number;
   lastError?: string | null;
   updatedAt: string;
-  createdAt: string;,
+  createdAt: string;
 };
 
 class JobStore extends EventEmitter {
@@ -29,7 +29,7 @@ class JobStore extends EventEmitter {
       retries: typeof job.retries === 'number' ? job.retries: existing?.retries ?? 0,
       lastError: job.lastError ?? existing?.lastError ?? null,
       createdAt: existing?.createdAt ?? this.nowIso(),
-      updatedAt: this.nowIso(),
+      updatedAt: this.nowIso()
     };
     this.items.set(job.id, record);
     try {

@@ -14,7 +14,7 @@ export interface Context7CategoryAnalysisItem {
 export interface Context7ErrorAnalysisResult {
   total_estimated_errors: number;
   category_analysis: Context7CategoryAnalysisItem[];
-  overall_recommendations: string[];,
+  overall_recommendations: string[];
 }
 
 export async function analyzeCurrentErrors(): Promise<Context7ErrorAnalysisResult> {

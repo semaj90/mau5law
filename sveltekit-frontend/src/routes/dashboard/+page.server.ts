@@ -10,7 +10,7 @@ export const load: ServerLoad = async ({ locals }) => {
     userId: locals.user?.id ?? null,
     sessionId: locals.session?.id ?? null,
     email: locals.user?.email ?? null,
-    isAuthenticated: !!locals.user,
+    isAuthenticated: !!locals.user
   };
   
   // Return mock data for now (keeping existing for backward compatibility)
@@ -29,7 +29,7 @@ export const load: ServerLoad = async ({ locals }) => {
     
     // Existing dashboard data
     recentCases,
-    recentCriminals,
+    recentCriminals
   };
 };
 

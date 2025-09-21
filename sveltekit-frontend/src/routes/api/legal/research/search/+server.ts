@@ -13,7 +13,7 @@ interface SearchRequest {
   };
   sort: string;
   page: number;
-  limit: number;,
+  limit: number;
 }
 
 interface LegalDocument {
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
         total: results.total,
         relatedTopics: results.relatedTopics,
         searchMode: mode,
-        processingTime: results.processingTime,
+        processingTime: results.processingTime
       });
     }
 
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
       total: results.total,
       relatedTopics: results.relatedTopics,
       searchMode: mode,
-      processingTime: results.processingTime,
+      processingTime: results.processingTime
     });
 
   } catch (error) {
@@ -145,7 +145,7 @@ async function performSemanticSearch(
       sql += ` ORDER BY ld.court, relevance_score DESC`;
       break;
     default:
-      sql += ` ORDER BY relevance_score DESC`;,
+      sql += ` ORDER BY relevance_score DESC`;
   }
 
   // Apply pagination
@@ -254,7 +254,7 @@ async function performKeywordSearch(
       sql += ` ORDER BY ld.date_decided DESC`;
       break;
     default:
-      sql += ` ORDER BY relevance_score DESC`;,
+      sql += ` ORDER BY relevance_score DESC`;
   }
 
   sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
@@ -287,7 +287,7 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'nomic-embed-text',
-        prompt: query,
+        prompt: query
       })
     });
 
@@ -377,7 +377,7 @@ function generateMockSemanticResults(query: string, filters: any, page: number, 
 
   return {
     documents: paginatedResults,
-    total: filteredResults.length,
+    total: filteredResults.length
   };
 }
 

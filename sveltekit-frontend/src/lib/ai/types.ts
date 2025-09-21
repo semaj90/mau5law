@@ -63,18 +63,18 @@ export const mockUserHistory: UserHistory = {
 
 export const mockUploadedFile: UploadedFile = {
   name: "evidence.pdf",
-  textContent: "This is the content of the uploaded file.",
+  textContent: "This is the content of the uploaded file."
 };
 
 export const mockMCPServerData: MCPServerData = {
   serverId: "mcp-001",
-  dataSummary: "Server processed 10 documents.",
+  dataSummary: "Server processed 10 documents."
 };
 
 export const mockSynthesisOptions: SynthesisOptions = {
   cacheEnabled: true,
   autoEncode: true,
-  trainOnFeedback: false,
+  trainOnFeedback: false
 };
 
 // --- Phase 10: Context7 Semantic Search, Logging, Agent Integration Types ---
@@ -218,7 +218,7 @@ export class Context7AgentOrchestrator {
         step: `agent_trigger_${trigger.action}`,
         status: "ok",
         message: `Agent completed ${trigger.action} for ${trigger.todoId}`,
-        agentTriggered: true,
+        agentTriggered: true
       });
 
       return completedTrigger;
@@ -235,7 +235,7 @@ export class Context7AgentOrchestrator {
         step: `agent_trigger_${trigger.action}`,
         status: "error",
         message: `Agent failed ${trigger.action} for ${trigger.todoId}: ${error}`,
-        agentTriggered: true,
+        agentTriggered: true
       });
 
       return failedTrigger;
@@ -247,7 +247,7 @@ export class Context7AgentOrchestrator {
     const analysisRequest: MCPToolRequest = {
       tool: "analyze-stack",
       component: "typescript",
-      context: "legal-ai",
+      context: "legal-ai"
     };
 
     const prompt = generateMCPPrompt(analysisRequest);
@@ -280,7 +280,7 @@ export class Context7AgentOrchestrator {
           useCodebase: true,
           useSemanticSearch: true,
           agents: ["autogen", "claude"],
-          synthesizeOutputs: true,
+          synthesizeOutputs: true
         };
 
         const orchestratorResult = await copilotOrchestrator(
@@ -306,7 +306,7 @@ ${orchestratorResult.selfPrompt}`;
         useCodebase: true,
         useSemanticSearch: true,
         agents: ["autogen", "claude"],
-        synthesizeOutputs: true,
+        synthesizeOutputs: true
       };
 
       const result = await copilotOrchestrator(
@@ -333,7 +333,7 @@ ${orchestratorResult.selfPrompt}`;
             filesProcessed: 0,
             filesFixed: 0,
             totalIssues: 0,
-            area: area || "general",
+            area: area || "general"
           },
           fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
           recommendations: [
@@ -347,11 +347,11 @@ ${orchestratorResult.selfPrompt}`;
             filesProcessed: 0,
             filesFixed: 0,
             totalIssues: 0,
-            area: area || "general",
+            area: area || "general"
           },
           fixes: { imports: [], svelte5: [], typeScript: [], performance: [] },
           recommendations: ["Error in auto-fix - manual review required"],
-          configImprovements: ["Manual review required"],
+          configImprovements: ["Manual review required"]
         };
       }
 
@@ -394,7 +394,7 @@ ${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; p
     const searchResults = await performContext7Search({
       query: `Summary for ${todoId}`,
       maxResults: 5,
-      confidenceThreshold: 0.7,
+      confidenceThreshold: 0.7
     });
 
     const summary = searchResults.map((r) => r.content).join("\n\n");
@@ -419,7 +419,7 @@ ${(result as { content?: any; text?: any; score?: any; type?: any; file?: any; p
       drizzle: results[1],
       performance: results[2],
       security: results[3],
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 
@@ -453,7 +453,7 @@ export class Context7SemanticAuditor {
         step: `analyze_${component}`,
         status: "ok",
         message: `Successfully analyzed ${component} using Context7 MCP`,
-        agentTriggered: false,
+        agentTriggered: false
       });
 
       // 2. Check for missing best practices
@@ -466,7 +466,7 @@ export class Context7SemanticAuditor {
             message: issue,
             suggestedFix: "Review and implement suggested best practices",
             todoId: `bp_${component}_${Date.now()}`,
-            agentTriggered: false,
+            agentTriggered: false
           });
         }
       } else {
@@ -474,7 +474,7 @@ export class Context7SemanticAuditor {
           step: `best_practices_${component}`,
           status: "ok",
           message: `${component} follows best practices`,
-          agentTriggered: false,
+          agentTriggered: false
         });
       }
 
@@ -488,7 +488,7 @@ export class Context7SemanticAuditor {
           const trigger: AgentTrigger = {
             todoId: (result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).todoId,
             action: "analyze",
-            status: "pending",
+            status: "pending"
           };
 
           // Trigger agent asynchronously;
@@ -502,7 +502,7 @@ export class Context7SemanticAuditor {
         step: `semantic_audit_${component}`,
         status: "error",
         message: `Semantic audit failed: ${error}`,
-        agentTriggered: false,
+        agentTriggered: false
       });
     }
 
@@ -513,7 +513,7 @@ export class Context7SemanticAuditor {
     const analysisRequest: MCPToolRequest = {
       tool: "analyze-stack",
       component: component,
-      context: "legal-ai",
+      context: "legal-ai"
     };
 
     const prompt = generateMCPPrompt(analysisRequest);
@@ -530,7 +530,7 @@ export class Context7SemanticAuditor {
       try {
         const bestPracticesRequest: MCPToolRequest = {
           tool: "generate-best-practices",
-          area: area,
+          area: area
         };
 
         const prompt = generateMCPPrompt(bestPracticesRequest);
@@ -556,7 +556,7 @@ export class Context7SemanticAuditor {
       const searchResults = await performContext7Search({
         query: `${component} integration semantic search`,
         maxResults: 3,
-        confidenceThreshold: 0.8,
+        confidenceThreshold: 0.8
       });
 
       if (searchResults.length > 0 && !searchResults[0].context.error) {
@@ -564,7 +564,7 @@ export class Context7SemanticAuditor {
           step: `semantic_integration_${component}`,
           status: "ok",
           message: `Semantic search integration working for ${component}`,
-          agentTriggered: false,
+          agentTriggered: false
         };
       } else {
         return {
@@ -573,7 +573,7 @@ export class Context7SemanticAuditor {
           message: `Semantic search integration needs setup for ${component}`,
           suggestedFix: "Configure semantic search indexing and API endpoints",
           todoId: `semantic_${component}_${Date.now()}`,
-          agentTriggered: false,
+          agentTriggered: false
         };
       }
     } catch (error: any) {
@@ -581,7 +581,7 @@ export class Context7SemanticAuditor {
         step: `semantic_integration_${component}`,
         status: "error",
         message: `Semantic integration check failed: ${error}`,
-        agentTriggered: false,
+        agentTriggered: false
       };
     }
   }

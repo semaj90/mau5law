@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
         worker: {
           pid: process.pid,
           memory: process.memoryUsage(),
-          uptime: process.uptime(),
+          uptime: process.uptime()
         }
       }, { status: 503 });
     }
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url }) => {
           pid: process.pid,
           memory: process.memoryUsage(),
           uptime: process.uptime(),
-          cpuUsage: process.cpuUsage(),
+          cpuUsage: process.cpuUsage()
         }
       });
     }
@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ url }) => {
         totalCpus: require('os').cpus().length,
         nodeVersion: process.version,
         platform: process.platform,
-        architecture: process.arch,
+        architecture: process.arch
       }
     });
 
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url }) => {
           cpuUsage: process.cpuUsage(),
           lastHealthCheck: Date.now(),
           errors: 0,
-          uptime: process.uptime(),
+          uptime: process.uptime()
         }]
       }
     }, { status: 200 });

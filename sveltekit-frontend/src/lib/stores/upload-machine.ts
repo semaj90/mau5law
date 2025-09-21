@@ -14,7 +14,7 @@ export interface UploadContext {
     filename: string;
     fileSize: number;
     contentType: string;
-    expiresAt: Date;,
+    expiresAt: Date;
   };
   jobIds: {
     extraction?: string;
@@ -51,7 +51,7 @@ export const uploadMachine = createMachine({
   id: 'upload',
   types: Record<string, any> as {
     context: UploadContext;
-    events: UploadEvent;,
+    events: UploadEvent;
   },
   initial: 'idle',
   context: {
@@ -62,7 +62,7 @@ export const uploadMachine = createMachine({
     totalChunks: 0,
     progress: 0,
     jobIds: Record<string, any>,
-    results: Record<string, any>,
+    results: Record<string, any>
   },
   states: {
     idle: {
@@ -73,10 +73,10 @@ export const uploadMachine = createMachine({
             files: ({ event }) => event.files,
             caseId: ({ event }) => event.caseId,
             progress: 0,
-            error: undefined,
-          }),
-        },
-      },
+            error: undefined
+          })
+        }
+      }
     },
 
     requesting_presign: {
@@ -85,7 +85,7 @@ export const uploadMachine = createMachine({
         src: 'requestPresignedUrls',
         input: ({ context }) => ({
           files: context.files,
-          caseId: context.caseId,
+          caseId: context.caseId
         }),
         onDone: {
           target: 'uploading',
@@ -93,16 +93,16 @@ export const uploadMachine = createMachine({
             uploadId: ({ event }) => event.output.uploadId,
             presignedUrls: ({ event }) => event.output.presignedUrls,
             metadata: ({ event }) => event.output.metadata,
-            totalChunks: ({ event }) => event.output.presignedUrls.length,
-          }),
+            totalChunks: ({ event }) => event.output.presignedUrls.length
+          })
         },
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => (event.error as Error)?.message || 'Unknown error',
-          }),
-        },
-      },
+            error: ({ event }) => (event.error as Error)?.message || 'Unknown error'
+          })
+        }
+      }
     },
 
     uploading: {
@@ -112,30 +112,30 @@ export const uploadMachine = createMachine({
         input: ({ context }) => ({
           files: context.files,
           presignedUrls: context.presignedUrls,
-          uploadId: context.uploadId,
+          uploadId: context.uploadId
         }),
         onDone: {
           target: 'processing',
           actions: assign({
-            progress: 100,
-          }),
+            progress: 100
+          })
         },
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => (event.error as Error)?.message || 'Unknown error',
-          }),
-        },
+            error: ({ event }) => (event.error as Error)?.message || 'Unknown error'
+          })
+        }
       },
       on: {
         CHUNK_UPLOADED: {
           actions: assign({
             uploadedChunks: ({ context, event }) => context.uploadedChunks + 1,
             progress: ({ context, event }) =>
-              Math.round(((context.uploadedChunks + 1) / context.totalChunks) * 100),
-          }),
-        },
-      },
+              Math.round(((context.uploadedChunks + 1) / context.totalChunks) * 100)
+          })
+        }
+      }
     },
 
     processing: {
@@ -148,36 +148,36 @@ export const uploadMachine = createMachine({
             input: ({ context }) => ({
               uploadId: context.uploadId,
               caseId: context.caseId,
-              metadata: context.metadata,
+              metadata: context.metadata
             }),
             onDone: {
               target: 'embedding',
               actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
-                  extraction: event.output.jobId,
+                  extraction: event.output.jobId
                 }),
                 results: ({ context, event }) => ({
                   ...context.results,
-                  extractedText: event.output.extractedText,
-                }),
-              }),
+                  extractedText: event.output.extractedText
+                })
+              })
             },
             onError: {
               target: '#upload.error',
               actions: assign({
-                error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error'}`,
-              }),
-            },
+                error: ({ event }) => `Extraction failed: ${(event.error as any)?.message || 'Unknown error'}`
+              })
+            }
           },
           on: {
             PROCESSING_PROGRESS: {
               guard: ({ event }) => event.stage === 'extraction',
               actions: assign({
-                progress: ({ event }) => event.progress,
-              }),
-            },
-          },
+                progress: ({ event }) => event.progress
+              })
+            }
+          }
         },
 
         embedding: {
@@ -186,36 +186,36 @@ export const uploadMachine = createMachine({
             src: 'generateEmbeddings',
             input: ({ context }) => ({
               uploadId: context.uploadId,
-              extractedText: context.results.extractedText,
+              extractedText: context.results.extractedText
             }),
             onDone: {
               target: 'tensor_processing',
               actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
-                  embedding: event.output.jobId,
+                  embedding: event.output.jobId
                 }),
                 results: ({ context, event }) => ({
                   ...context.results,
-                  embeddings: event.output.embeddings,
-                }),
-              }),
+                  embeddings: event.output.embeddings
+                })
+              })
             },
             onError: {
               target: '#upload.error',
               actions: assign({
-                error: ({ event }) => `Embedding failed: ${(event.error as any)?.message || 'Unknown error'}`,
-              }),
-            },
+                error: ({ event }) => `Embedding failed: ${(event.error as any)?.message || 'Unknown error'}`
+              })
+            }
           },
           on: {
             PROCESSING_PROGRESS: {
               guard: ({ event }) => event.stage === 'embedding',
               actions: assign({
-                progress: ({ event }) => event.progress,
-              }),
-            },
-          },
+                progress: ({ event }) => event.progress
+              })
+            }
+          }
         },
 
         tensor_processing: {
@@ -224,36 +224,36 @@ export const uploadMachine = createMachine({
             src: 'processTensorData',
             input: ({ context }) => ({
               uploadId: context.uploadId,
-              embeddings: context.results.embeddings,
+              embeddings: context.results.embeddings
             }),
             onDone: {
               target: 'indexing',
               actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
-                  tensor: event.output.jobId,
+                  tensor: event.output.jobId
                 }),
                 results: ({ context, event }) => ({
                   ...context.results,
-                  tensorProcessing: event.output.result,
-                }),
-              }),
+                  tensorProcessing: event.output.result
+                })
+              })
             },
             onError: {
               target: '#upload.error',
               actions: assign({
-                error: ({ event }) => `Tensor processing failed: ${(event.error as any)?.message || 'Unknown error'}`,
-              }),
-            },
+                error: ({ event }) => `Tensor processing failed: ${(event.error as any)?.message || 'Unknown error'}`
+              })
+            }
           },
           on: {
             PROCESSING_PROGRESS: {
               guard: ({ event }) => event.stage === 'tensor',
               actions: assign({
-                progress: ({ event }) => event.progress,
-              }),
-            },
-          },
+                progress: ({ event }) => event.progress
+              })
+            }
+          }
         },
 
         indexing: {
@@ -263,52 +263,52 @@ export const uploadMachine = createMachine({
             input: ({ context }) => ({
               uploadId: context.uploadId,
               embeddings: context.results.embeddings,
-              metadata: context.metadata,
+              metadata: context.metadata
             }),
             onDone: {
               target: 'complete',
               actions: assign({
                 jobIds: ({ context, event }) => ({
                   ...context.jobIds,
-                  indexing: event.output.jobId,
+                  indexing: event.output.jobId
                 }),
                 results: ({ context }) => ({
                   ...context.results,
-                  indexingComplete: true,
-                }),
-              }),
+                  indexingComplete: true
+                })
+              })
             },
             onError: {
               target: '#upload.error',
               actions: assign({
-                error: ({ event }) => `Indexing failed: ${(event.error as any)?.message || 'Unknown error'}`,
-              }),
-            },
+                error: ({ event }) => `Indexing failed: ${(event.error as any)?.message || 'Unknown error'}`
+              })
+            }
           },
           on: {
             PROCESSING_PROGRESS: {
               guard: ({ event }) => event.stage === 'indexing',
               actions: assign({
-                progress: ({ event }) => event.progress,
-              }),
-            },
-          },
+                progress: ({ event }) => event.progress
+              })
+            }
+          }
         },
 
         complete: {
-          type: 'final',
-        },
+          type: 'final'
+        }
       },
       onDone: {
-        target: 'completed',
-      },
+        target: 'completed'
+      }
     },
 
     completed: {
       type: 'final',
       entry: () => {
         console.log('🎉 Upload and processing completed successfully!');
-      },
+      }
     },
 
     error: {
@@ -320,8 +320,8 @@ export const uploadMachine = createMachine({
             progress: 0,
             uploadedChunks: 0,
             jobIds: Record<string, any>,
-            results: Record<string, any>,
-          }),
+            results: Record<string, any>
+          })
         },
         RESET: {
           target: 'idle',
@@ -335,12 +335,12 @@ export const uploadMachine = createMachine({
             error: undefined,
             metadata: undefined,
             jobIds: Record<string, any>,
-            results: Record<string, any>,
-          }),
-        },
-      },
-    },
-  },
+            results: Record<string, any>
+          })
+        }
+      }
+    }
+  }
 }, {
   actors: {
     // Presigned URL request actor;
@@ -359,8 +359,8 @@ export const uploadMachine = createMachine({
           fileSize: file.size,
           caseId,
           contentType: file.type,
-          chunkCount,
-        }),
+          chunkCount
+        })
       });
 
       if (!response.ok) {
@@ -389,8 +389,8 @@ export const uploadMachine = createMachine({
           method: 'PUT',
           body: chunk,
           headers: {
-            'Content-Type': file.type,
-          },
+            'Content-Type': file.type
+          }
         });
 
         if (!response.ok) {
@@ -409,8 +409,8 @@ export const uploadMachine = createMachine({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           uploadId,
-          etags: etags.map((etag, index) => ({ ETag: etag, PartNumber: index + 1 })),
-        }),
+          etags: etags.map((etag, index) => ({ ETag: etag, PartNumber: index + 1 }))
+        })
       });
 
       if (!completeResponse.ok) {
@@ -433,8 +433,8 @@ export const uploadMachine = createMachine({
           uploadId,
           caseId,
           filename: metadata.filename,
-          contentType: metadata.contentType,
-        }),
+          contentType: metadata.contentType
+        })
       });
 
       if (!response.ok) {
@@ -455,8 +455,8 @@ export const uploadMachine = createMachine({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           uploadId,
-          text: extractedText,
-        }),
+          text: extractedText
+        })
       });
 
       if (!response.ok) {
@@ -489,10 +489,10 @@ export const uploadMachine = createMachine({
             tile_id: `${uploadId}-main`,
             dimensions: [batchSize, depth, height, width],
             halo_size: 2,
-            data: tensorData,
+            data: tensorData
           },
-          operation: 'som_cluster',
-        }),
+          operation: 'som_cluster'
+        })
       });
 
       if (!response.ok) {
@@ -515,8 +515,8 @@ export const uploadMachine = createMachine({
           uploadId,
           embeddings,
           metadata,
-          indexType: 'pgvector',
-        }),
+          indexType: 'pgvector'
+        })
       });
 
       if (!response.ok) {
@@ -524,8 +524,8 @@ export const uploadMachine = createMachine({
       }
 
       return await response.json();
-    }),
-  },
+    })
+  }
 });
 
 // Types for Svelte components
@@ -544,7 +544,7 @@ function createUploadStore() {
   return {
     subscribe,
     send: actor.send.bind(actor),
-    getSnapshot: actor.getSnapshot.bind(actor),
+    getSnapshot: actor.getSnapshot.bind(actor)
   };
 }
 

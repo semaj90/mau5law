@@ -9,7 +9,7 @@ import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import {
   CasesCRUDService,
   CreateCaseSchema,
-  type CreateCaseData,
+  type CreateCaseData
 } from '$lib/server/services/user-scoped-crud';
 import { queueCaseSynthesis } from '$lib/server/services/background-job-queue';
 import { z } from 'zod';
@@ -21,7 +21,7 @@ const CasesQuerySchema = z.object({
   sortBy: z.enum(['title', 'created_at', 'updated_at', 'status', 'priority']).default('created_at'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   status: z.enum(['open', 'closed', 'pending', 'archived']).optional(),
-  priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']).optional()
 });
 
 /*
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       page: validatedQuery.page,
       limit: validatedQuery.limit,
       sortBy: validatedQuery.sortBy,
-      sortOrder: validatedQuery.sortOrder,
+      sortOrder: validatedQuery.sortOrder
     });
 
     // Map service ListResult<T> => route payload shape
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         priority: z.string().optional(),
         caseNumber: z.string().optional(),
         createdAt: z.string().optional(),
-        updatedAt: z.string().optional(),
+        updatedAt: z.string().optional()
       })
       .passthrough();
 
@@ -80,9 +80,9 @@ export const GET: RequestHandler = async ({ request, locals }) => {
           total: z.number(),
           totalPages: z.number(),
           hasNext: z.boolean(),
-          hasPrev: z.boolean(),
+          hasPrev: z.boolean()
         }),
-        meta: z.record(z.any()).optional(),
+        meta: z.record(z.any()).optional()
       })
       .passthrough();
 
@@ -95,12 +95,12 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         total: (result as { items?: any; pagination?: any }).pagination.totalCount,
         totalPages: (result as { items?: any; pagination?: any }).pagination.totalPages,
         hasNext: (result as { items?: any; pagination?: any }).pagination.hasNext,
-        hasPrev: (result as { items?: any; pagination?: any }).pagination.hasPrev,
+        hasPrev: (result as { items?: any; pagination?: any }).pagination.hasPrev
       },
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
 
     const validated = CasesListResponse.safeParse(payload);
@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         500,
         makeHttpErrorPayload({
           message: 'Invalid response shape',
-          code: 'RESPONSE_VALIDATION_FAILED',
+          code: 'RESPONSE_VALIDATION_FAILED'
         })
       );
     }
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid query parameters',
           code: 'INVALID_QUERY',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to fetch cases',
         code: 'FETCH_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -185,8 +185,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           caseId,
           userId: locals.user.id,
           timestamp: new Date().toISOString(),
-          synthesisQueued: true,
-        },
+          synthesisQueued: true
+        }
       },
       { status: 201 }
     );
@@ -199,7 +199,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid case data',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to create case',
         code: 'CREATE_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }

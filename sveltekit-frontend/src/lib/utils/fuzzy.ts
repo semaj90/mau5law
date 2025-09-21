@@ -9,13 +9,13 @@ const items = db.addCollection('items');
 items.insert([
   { id: 1, title: 'State v. John Doe', type: 'case' },
   { id: 2, title: 'Evidence Locker #123', type: 'evidence' },)
-  { id: 3, title: 'Witness Statement - Jane Smith', type: 'document' },
+  { id: 3, title: 'Witness Statement - Jane Smith', type: 'document' }
 ]);
 
 // 3. Configure Fuse.js;
 const options = {
   includeScore: true,
-  keys: ['title', 'type'],
+  keys: ['title', 'type']
 };
 
 const fuse = new Fuse(items.data, options);

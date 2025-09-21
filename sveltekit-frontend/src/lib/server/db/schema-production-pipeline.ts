@@ -47,13 +47,13 @@ export const crawlJobs = pgTable('crawl_jobs', {
   startedAt: timestamp('started_at'),
   completedAt: timestamp('completed_at'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 }, (table) => ({
   urlIdx: index('crawl_jobs_url_idx').on(table.url),
   statusIdx: index('crawl_jobs_status_idx').on(table.status),
   domainIdx: index('crawl_jobs_domain_idx').on(table.domain),
   priorityIdx: index('crawl_jobs_priority_idx').on(table.priority),
-  createdAtIdx: index('crawl_jobs_created_at_idx').on(table.createdAt),
+  createdAtIdx: index('crawl_jobs_created_at_idx').on(table.createdAt)
 });
 
 /**
@@ -78,13 +78,13 @@ export const crawledPages = pgTable('crawled_pages', {
   ocrRequired: boolean('ocr_required').default(false),
   embeddingRequired: boolean('embedding_required').default(true),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 }, (table) => ({
   urlIdx: uniqueIndex('crawled_pages_url_idx').on(table.url),
   crawlJobIdx: index('crawled_pages_crawl_job_idx').on(table.crawlJobId),
   statusIdx: index('crawled_pages_status_idx').on(table.processingStatus),
   hashIdx: index('crawled_pages_hash_idx').on(table.contentHash),
-  ocrIdx: index('crawled_pages_ocr_idx').on(table.ocrRequired),
+  ocrIdx: index('crawled_pages_ocr_idx').on(table.ocrRequired)
 });
 
 // ===== DOCUMENT PROCESSING TABLES =====
@@ -122,7 +122,7 @@ export const documents = pgTable('documents', {
   embeddingStatus: varchar('embedding_status', { length: 50 }).default('pending'), // pending, processing, completed, failed
   indexStatus: varchar('index_status', { length: 50 }).default('pending'), // pending, indexing, completed, failed
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 }, (table) => ({
   titleIdx: index('documents_title_idx').on(table.title),
   typeIdx: index('documents_type_idx').on(table.documentType),
@@ -132,7 +132,7 @@ export const documents = pgTable('documents', {
   sourceHashIdx: uniqueIndex('documents_source_hash_idx').on(table.sourceHash),
   embeddingStatusIdx: index('documents_embedding_status_idx').on(table.embeddingStatus),
   createdAtIdx: index('documents_created_at_idx').on(table.createdAt),
-  qualityScoreIdx: index('documents_quality_score_idx').on(table.qualityScore),
+  qualityScoreIdx: index('documents_quality_score_idx').on(table.qualityScore)
 });
 
 /**
@@ -161,7 +161,7 @@ export const documentChunks = pgTable('document_chunks', {
   entities: jsonb('entities'), // Entities mentioned in this chunk
   qualityScore: real('quality_score'), // Chunk-specific quality score
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 }, (table) => ({
   documentIdIdx: index('document_chunks_document_id_idx').on(table.documentId),
   chunkIndexIdx: index('document_chunks_chunk_index_idx').on(table.documentId, table.chunkIndex),
@@ -171,7 +171,7 @@ export const documentChunks = pgTable('document_chunks', {
   // pgvector indexes
   embeddingIdx: index('document_chunks_embedding_idx').using('hnsw', table.embedding.op('vector_cosine_ops')),
   embeddingL2Idx: index('document_chunks_embedding_l2_idx').using('hnsw', table.embedding.op('vector_l2_ops')),
-  embeddingIpIdx: index('document_chunks_embedding_ip_idx').using('hnsw', table.embedding.op('vector_ip_ops')),
+  embeddingIpIdx: index('document_chunks_embedding_ip_idx').using('hnsw', table.embedding.op('vector_ip_ops'))
 });
 
 // ===== SEARCH & INDEXING TABLES =====
@@ -197,7 +197,7 @@ export const searchIndex = pgTable('search_index', {
   lastAccessed: timestamp('last_accessed'),
   accessCount: integer('access_count').default(0),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 }, (table) => ({
   documentIdIdx: index('search_index_document_id_idx').on(table.documentId),
   chunkIdIdx: index('search_index_chunk_id_idx').on(table.chunkId),
@@ -206,7 +206,7 @@ export const searchIndex = pgTable('search_index', {
   boostIdx: index('search_index_boost_idx').on(table.boost),
   freshnessIdx: index('search_index_freshness_idx').on(table.freshness),
   popularityIdx: index('search_index_popularity_idx').on(table.popularity),
-  legalWeightIdx: index('search_index_legal_weight_idx').on(table.legalWeight),
+  legalWeightIdx: index('search_index_legal_weight_idx').on(table.legalWeight)
 });
 
 /**
@@ -226,14 +226,14 @@ export const cacheKeys = pgTable('cache_keys', {
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
-  expiresAt: timestamp('expires_at'),
+  expiresAt: timestamp('expires_at')
 }, (table) => ({
   cacheKeyIdx: uniqueIndex('cache_keys_key_idx').on(table.cacheKey),
   typeIdx: index('cache_keys_type_idx').on(table.cacheType),
   documentIdIdx: index('cache_keys_document_id_idx').on(table.documentId),
   queryHashIdx: index('cache_keys_query_hash_idx').on(table.queryHash),
   expiresAtIdx: index('cache_keys_expires_at_idx').on(table.expiresAt),
-  hitCountIdx: index('cache_keys_hit_count_idx').on(table.hitCount),
+  hitCountIdx: index('cache_keys_hit_count_idx').on(table.hitCount)
 });
 
 // ===== PROCESSING & MONITORING TABLES =====
@@ -260,7 +260,7 @@ export const processingJobs = pgTable('processing_jobs', {
   startedAt: timestamp('started_at'),
   completedAt: timestamp('completed_at'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 }, (table) => ({
   jobTypeIdx: index('processing_jobs_job_type_idx').on(table.jobType),
   statusIdx: index('processing_jobs_status_idx').on(table.status),
@@ -268,7 +268,7 @@ export const processingJobs = pgTable('processing_jobs', {
   priorityIdx: index('processing_jobs_priority_idx').on(table.priority),
   queueIdx: index('processing_jobs_queue_idx').on(table.queueName),
   workerIdx: index('processing_jobs_worker_idx').on(table.workerId),
-  createdAtIdx: index('processing_jobs_created_at_idx').on(table.createdAt),
+  createdAtIdx: index('processing_jobs_created_at_idx').on(table.createdAt)
 });
 
 /**
@@ -282,12 +282,12 @@ export const systemMetrics = pgTable('system_metrics', {
   unit: varchar('unit', { length: 50 }), // pages/min, docs/min, ms, mb/s
   tags: jsonb('tags'),
   metadata: jsonb('metadata'),
-  timestamp: timestamp('timestamp').defaultNow(),
+  timestamp: timestamp('timestamp').defaultNow()
 }, (table) => ({
   metricTypeIdx: index('system_metrics_type_idx').on(table.metricType),
   componentIdx: index('system_metrics_component_idx').on(table.component),
   timestampIdx: index('system_metrics_timestamp_idx').on(table.timestamp),
-  typeTimestampIdx: index('system_metrics_type_timestamp_idx').on(table.metricType, table.timestamp),
+  typeTimestampIdx: index('system_metrics_type_timestamp_idx').on(table.metricType, table.timestamp)
 });
 
 // ===== LEGAL-SPECIFIC TABLES =====
@@ -311,14 +311,14 @@ export const legalAuthorities = pgTable('legal_authorities', {
   citationCount: integer('citation_count').default(0),
   documentId: uuid('document_id').references(() => documents.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
 }, (table) => ({
   authorityTypeIdx: index('legal_authorities_type_idx').on(table.authorityType),
   jurisdictionIdx: index('legal_authorities_jurisdiction_idx').on(table.jurisdiction),
   courtIdx: index('legal_authorities_court_idx').on(table.court),
   citationIdx: uniqueIndex('legal_authorities_citation_idx').on(table.citation),
   bindingIdx: index('legal_authorities_binding_idx').on(table.bindingStatus),
-  citationCountIdx: index('legal_authorities_citation_count_idx').on(table.citationCount),
+  citationCountIdx: index('legal_authorities_citation_count_idx').on(table.citationCount)
 });
 
 // ===== UTILITY FUNCTIONS =====

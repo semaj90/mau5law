@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       logs,
-      count: logs.length,
+      count: logs.length
     });
   } catch (error: any) {
     console.error("Failed to get agent logs:", error);
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: "Agent call logged successfully",
-      logId: agentLog.id,
+      logId: agentLog.id
     });
   } catch (error: any) {
     console.error("Failed to log agent call:", error);

@@ -197,14 +197,14 @@ export function validateCaseData(data: any): ValidationResult {
         {
           name: "title-format",
           validate: (value: string) => !value.includes("<script>"),
-          message: "Title contains invalid characters",
-        },
-      ],
+          message: "Title contains invalid characters"
+        }
+      ]
     },
     description: {
       required: true,
       minLength: 10,
-      maxLength: 5000,
+      maxLength: 5000
     },
     status: {
       required: true,
@@ -213,9 +213,9 @@ export function validateCaseData(data: any): ValidationResult {
           name: "valid-status",
           validate: (value: string) =>
             ["Open", "In-Progress", "Closed", "Archived"].includes(value),
-          message: "Invalid status value",
-        },
-      ],
+          message: "Invalid status value"
+        }
+      ]
     },
     priority: {
       required: true,
@@ -224,10 +224,10 @@ export function validateCaseData(data: any): ValidationResult {
           name: "valid-priority",
           validate: (value: string) =>
             ["High", "Medium", "Low"].includes(value),
-          message: "Invalid priority value",
-        },
-      ],
-    },
+          message: "Invalid priority value"
+        }
+      ]
+    }
   };
 
   const errors: string[] = [];
@@ -296,7 +296,7 @@ export function isDangerousFile(filename: string): boolean {
     "php",
     "asp",
     "aspx",
-    "jsp",
+    "jsp"
   ];
 
   const extension = filename.split(".").pop()?.toLowerCase();

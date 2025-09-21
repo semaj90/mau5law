@@ -15,10 +15,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const body = await request.json();
     const {
       query,
-      options = {},
+      options = {}
     }: {
       query: string;
-      options: Partial<VectorSearchOptions>;,
+      options: Partial<VectorSearchOptions>;
     } = body;
 
     if (!query || typeof query !== "string") {
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       threshold: options.threshold || 0.7,
       limit: options.limit || 10,
       includeMetadata: options.includeMetadata !== false,
-      contextFilter: options.contextFilter,
+      contextFilter: options.contextFilter
     };
 
     // Perform enhanced semantic search with vector intelligence
@@ -56,9 +56,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         systemHealth: {
           status: systemHealth.systemHealth,
           confidence: systemHealth.modelConfidence,
-          indexedDocuments: systemHealth.indexedDocuments,
-        },
-      },
+          indexedDocuments: systemHealth.indexedDocuments
+        }
+      }
     });
   } catch (err: any) {
     console.error("❌ Vector intelligence search API error:", err);
@@ -88,14 +88,14 @@ export const GET: RequestHandler = async ({ url }) => {
       endpoints: {
         "POST /api/vector/search":
           "Enhanced semantic search with vector intelligence",
-        "GET /api/vector/search?q=query": "Quick search via query parameter",
+        "GET /api/vector/search?q=query": "Quick search via query parameter"
       },
       parameters: {
         query: "Search query (required)",
         limit: "Max results (default: 10)",
         threshold: "Similarity threshold (default: 0.7)",
         caseId: "Filter by case ID (optional)",
-        evidenceType: "Filter by evidence type (optional)",
+        evidenceType: "Filter by evidence type (optional)"
       },
       systemHealth,
       capabilities: [
@@ -104,8 +104,8 @@ export const GET: RequestHandler = async ({ url }) => {
         "Contextual filtering",
         "Relevance scoring",
         "Intelligent caching",
-        "Real-time health monitoring",
-      ],
+        "Real-time health monitoring"
+      ]
     });
   }
 
@@ -117,9 +117,9 @@ export const GET: RequestHandler = async ({ url }) => {
       limit,
       includeMetadata: true,
       contextFilter: {
-        ...(caseId && { caseId ,}),
-        ...(evidenceType && { evidenceType ,}),
-      },
+        ...(caseId && { caseId }),
+        ...(evidenceType && { evidenceType })
+      }
     };
 
     const results =
@@ -132,8 +132,8 @@ export const GET: RequestHandler = async ({ url }) => {
       metadata: {
         totalResults: results.length,
         processingTime: Date.now(),
-        searchOptions,
-      },
+        searchOptions
+      }
     });
   } catch (err: any) {
     console.error("❌ Vector intelligence GET search error:", err);

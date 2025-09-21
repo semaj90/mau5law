@@ -10,7 +10,7 @@ export interface ComponentInfo {
   svelte5Compatible: boolean;
   legalAIUseCase: string[];
   priority: 'essential' | 'important' | 'optional';
-  implemented: boolean;,
+  implemented: boolean;
 }
 
 /**
@@ -25,7 +25,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-actions', 'form-submission', 'evidence-upload', 'ai-queries'],
     priority: 'essential',
-    implemented: true,
+    implemented: true
   },
   {
     name: 'Dialog',
@@ -33,7 +33,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-details', 'evidence-viewer', 'confirmation-dialogs'],
     priority: 'essential',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Alert Dialog',
@@ -41,7 +41,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-deletion', 'evidence-removal', 'critical-actions'],
     priority: 'essential',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Command',
@@ -49,7 +49,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['global-search', 'case-finder', 'ai-command-palette'],
     priority: 'essential',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Navigation Menu',
@@ -57,7 +57,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['main-navigation', 'case-categories', 'user-menu'],
     priority: 'essential',
-    implemented: false,
+    implemented: false
   },
 
   // === FORM & INPUT COMPONENTS ===;
@@ -67,7 +67,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['evidence-selection', 'case-filters', 'permissions'],
     priority: 'essential',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Select',
@@ -75,7 +75,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-status', 'priority-selection', 'user-roles'],
     priority: 'essential',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Radio Group',
@@ -83,7 +83,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['evidence-type', 'case-category', 'search-filters'],
     priority: 'essential',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Combobox',
@@ -91,7 +91,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-search', 'jurisdiction-selection', 'precedent-finder'],
     priority: 'essential',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'PIN Input',
@@ -99,7 +99,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['secure-access', 'evidence-unlock', 'admin-verification'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Calendar',
@@ -107,7 +107,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['incident-dates', 'court-schedules', 'deadline-tracking'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Time Field',
@@ -115,7 +115,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['incident-times', 'evidence-timestamps', 'hearing-schedules'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
 
   // === DATA DISPLAY & ORGANIZATION ===;
@@ -125,7 +125,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-sections', 'evidence-categories', 'legal-documents'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Tabs',
@@ -133,7 +133,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-views', 'evidence-types', 'document-sections'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Collapsible',
@@ -141,7 +141,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-details', 'evidence-metadata', 'ai-responses'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Pagination',
@@ -149,7 +149,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-lists', 'evidence-galleries', 'search-results'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
 
   // === CONTEXTUAL & INTERACTIVE ===;
@@ -159,7 +159,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['evidence-actions', 'case-operations', 'quick-access'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Dropdown Menu',
@@ -167,7 +167,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-actions', 'user-menu', 'bulk-operations'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Menubar',
@@ -175,7 +175,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['application-menu', 'case-toolbar', 'admin-controls'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Popover',
@@ -183,7 +183,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['evidence-preview', 'case-summary', 'ai-insights'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Tooltip',
@@ -191,7 +191,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['field-help', 'status-info', 'feature-guidance'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
 
   // === FEEDBACK & STATUS ===;
@@ -201,7 +201,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-completion', 'document-processing', 'ai-analysis'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Avatar',
@@ -209,7 +209,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['user-profile', 'case-assignee', 'team-members'],
     priority: 'optional',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Label',
@@ -217,7 +217,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['form-labels', 'evidence-tags', 'case-metadata'],
     priority: 'important',
-    implemented: false,
+    implemented: false
   },
 
   // === ADVANCED CONTROLS ===;
@@ -227,7 +227,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['confidence-levels', 'date-ranges', 'ai-parameters'],
     priority: 'optional',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Switch',
@@ -235,7 +235,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['feature-toggles', 'notifications', 'privacy-settings'],
     priority: 'optional',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Toolbar',
@@ -243,7 +243,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['case-actions', 'document-tools', 'formatting-controls'],
     priority: 'optional',
-    implemented: false,
+    implemented: false
   },
   {
     name: 'Aspect Ratio',
@@ -251,7 +251,7 @@ export const BITS_UI_COMPONENTS: ComponentInfo[] = [
     svelte5Compatible: true,
     legalAIUseCase: ['evidence-images', 'document-preview', 'media-display'],
     priority: 'optional',
-    implemented: false,
+    implemented: false
   }
 ];
 

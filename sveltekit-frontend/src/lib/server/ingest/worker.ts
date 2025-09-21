@@ -41,7 +41,7 @@ interface WorkerJobResult {
   result?: any;
   error?: string;
   processingTime: number;
-  workerId: string;,
+  workerId: string;
 }
 
 const workerId = `worker_${process.pid}_${Date.now()}`;
@@ -119,7 +119,7 @@ async function handleOCR(payload: {
 
 async function handleAudioExtraction(payload: {
   buffer: number[];
-  filename: string;,
+  filename: string;
 }) {
   const buffer = Buffer.from(payload.buffer);
   return await extractAudioFromBuffer(buffer, payload.filename);
@@ -135,7 +135,7 @@ async function handleVideoFrames(payload: {
 }
 
 async function handleJsonParsing(payload: {
-  jsonText: string;,
+  jsonText: string;
 }) {
   return await parseJsonWithSimd(payload.jsonText);
 }
@@ -170,7 +170,7 @@ async function handleImageProcessing(payload: {
       case 'resize':;
         image = image.resize(operation.params?.width, operation.params?.height, {
           fit: operation.params?.fit || 'inside',
-          withoutEnlargement: operation.params?.withoutEnlargement !== false,
+          withoutEnlargement: operation.params?.withoutEnlargement !== false
         });
         break;
 
@@ -179,7 +179,7 @@ async function handleImageProcessing(payload: {
           left: operation.params?.left || 0,
           top: operation.params?.top || 0,
           width: operation.params?.width,
-          height: operation.params?.height,
+          height: operation.params?.height
         });
         break;
 
@@ -210,7 +210,7 @@ async function handleImageProcessing(payload: {
     metadata: {
       originalSize: buffer.length,
       processedSize: processedBuffer.length,
-      operations: payload.operations.length,
+      operations: payload.operations.length
     }
   };
 }

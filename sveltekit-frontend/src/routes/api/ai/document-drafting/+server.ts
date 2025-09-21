@@ -57,7 +57,7 @@ export interface DraftingAssistance {
   legalConsiderations: string[];
   complianceChecklist: string[];
   commonPitfalls: string[];
-  nextSteps: string[];,
+  nextSteps: string[];
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -74,7 +74,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       userRole,
       complexity = 'standard',
       urgency = 'normal',
-      customRequirements,
+      customRequirements
     } = body;
 
     if (!documentType?.trim()) {
@@ -110,9 +110,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         userRole,
         confidence,
         partiesCount: parties.length,
-        templateUsed: templateId || 'auto-generated',
+        templateUsed: templateId || 'auto-generated'
       },
-      recommendations: generateDraftingRecommendations(body, assistance),
+      recommendations: generateDraftingRecommendations(body, assistance)
     };
 
     return json(response);
@@ -123,7 +123,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         error: 'Drafting assistance failed',
         message: error.message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );
@@ -157,7 +157,7 @@ async function generateDraftingAssistance(
     legalConsiderations,
     complianceChecklist,
     commonPitfalls,
-    nextSteps,
+    nextSteps
   };
 }
 
@@ -168,19 +168,19 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         section: 'Title and Parties',
         description: 'Document title and identification of all parties',
         required: true,
-        guidance: ['Use full legal names', 'Include addresses', 'Specify entity types'],
+        guidance: ['Use full legal names', 'Include addresses', 'Specify entity types']
       },
       {
         section: 'Recitals',
         description: 'Background information and purpose',
         required: false,
-        guidance: ['Provide context', 'State purpose', 'Reference relevant facts'],
+        guidance: ['Provide context', 'State purpose', 'Reference relevant facts']
       },
       {
         section: 'Definitions',
         description: 'Key terms and definitions',
         required: true,
-        guidance: ['Define technical terms', 'Avoid ambiguity', 'Use consistent terminology'],
+        guidance: ['Define technical terms', 'Avoid ambiguity', 'Use consistent terminology']
       },
       {
         section: 'Terms and Conditions',
@@ -189,14 +189,14 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: [
           'Clearly state obligations',
           'Include performance standards',
-          'Specify deadlines',
-        ],
+          'Specify deadlines'
+        ]
       },
       {
         section: 'Payment Terms',
         description: 'Payment obligations and schedules',
         required: true,
-        guidance: ['Specify amounts', 'Include due dates', 'Address late payments'],
+        guidance: ['Specify amounts', 'Include due dates', 'Address late payments']
       },
       {
         section: 'Term and Termination',
@@ -205,34 +205,34 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: [
           'State contract period',
           'Include termination events',
-          'Address post-termination obligations',
-        ],
+          'Address post-termination obligations'
+        ]
       },
       {
         section: 'Dispute Resolution',
         description: 'Mechanisms for resolving disputes',
         required: true,
-        guidance: ['Specify governing law', 'Include arbitration clauses', 'Define jurisdiction'],
+        guidance: ['Specify governing law', 'Include arbitration clauses', 'Define jurisdiction']
       },
       {
         section: 'Miscellaneous',
         description: 'General provisions',
         required: true,
-        guidance: ['Include entire agreement clause', 'Address amendments', 'Include signatures'],
-      },
+        guidance: ['Include entire agreement clause', 'Address amendments', 'Include signatures']
+      }
     ],
     motion: [;
       {
         section: 'Caption',
         description: 'Court identification and case information',
         required: true,
-        guidance: ['Include court name', 'Case number', 'Party names and roles'],
+        guidance: ['Include court name', 'Case number', 'Party names and roles']
       },
       {
         section: 'Introduction',
         description: 'Motion purpose and relief sought',
         required: true,
-        guidance: ['State motion type', 'Summarize relief requested', 'Cite applicable rules'],
+        guidance: ['State motion type', 'Summarize relief requested', 'Cite applicable rules']
       },
       {
         section: 'Statement of Facts',
@@ -241,21 +241,21 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: [
           'Present facts chronologically',
           'Include only relevant facts',
-          'Cite to record',
-        ],
+          'Cite to record'
+        ]
       },
       {
         section: 'Legal Argument',
         description: 'Legal basis for relief',
         required: true,
-        guidance: ['Cite applicable law', 'Apply law to facts', 'Address counterarguments'],
+        guidance: ['Cite applicable law', 'Apply law to facts', 'Address counterarguments']
       },
       {
         section: 'Conclusion',
         description: 'Summary and requested relief',
         required: true,
-        guidance: ['Summarize argument', 'Specify relief requested', 'Include prayer for relief'],
-      },
+        guidance: ['Summarize argument', 'Specify relief requested', 'Include prayer for relief']
+      }
     ],
     brief: [;
       {
@@ -265,14 +265,14 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: [
           'Include all major sections',
           'Update page numbers',
-          'Use consistent formatting',
-        ],
+          'Use consistent formatting'
+        ]
       },
       {
         section: 'Table of Authorities',
         description: 'Cases, statutes, and other authorities cited',
         required: true,
-        guidance: ['Alphabetize by type', 'Include pinpoint citations', 'Update before filing'],
+        guidance: ['Alphabetize by type', 'Include pinpoint citations', 'Update before filing']
       },
       {
         section: 'Statement of Issues',
@@ -281,34 +281,34 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: [
           'Frame issues favorably',
           'Be specific and concrete',
-          'Include standard of review',
-        ],
+          'Include standard of review'
+        ]
       },
       {
         section: 'Statement of Facts',
         description: 'Relevant factual and procedural background',
         required: true,
-        guidance: ['Present facts persuasively', 'Cite to record', 'Include procedural history'],
+        guidance: ['Present facts persuasively', 'Cite to record', 'Include procedural history']
       },
       {
         section: 'Summary of Argument',
         description: 'Concise overview of legal arguments',
         required: true,
-        guidance: ['Provide roadmap', 'Highlight key points', 'Keep concise'],
+        guidance: ['Provide roadmap', 'Highlight key points', 'Keep concise']
       },
       {
         section: 'Argument',
         description: 'Detailed legal analysis',
         required: true,
-        guidance: ['Use clear headings', 'Apply law to facts', 'Address opposing arguments'],
+        guidance: ['Use clear headings', 'Apply law to facts', 'Address opposing arguments']
       },
       {
         section: 'Conclusion',
         description: 'Summary and requested relief',
         required: true,
-        guidance: ['Restate key points', 'Specify relief requested', 'End persuasively'],
-      },
-    ],
+        guidance: ['Restate key points', 'Specify relief requested', 'End persuasively']
+      }
+    ]
   };
 
   return commonStructures[documentType.toLowerCase()] || commonStructures['contract'];
@@ -406,7 +406,7 @@ function generateComplianceChecklist(documentType: string, jurisdiction: string)
     'Verify compliance with court rules if applicable',
     'Check signature and notarization requirements',
     'Confirm proper service methods if required',
-    'Review filing deadlines and procedures',
+    'Review filing deadlines and procedures'
   ];
 
   // Document-specific compliance;
@@ -432,7 +432,7 @@ function generateCommonPitfalls(documentType: string, parties: any[]): string[] 
     'Missing essential terms or conditions',
     'Inconsistent terminology throughout document',
     'Failure to consider all relevant parties',
-    'Inadequate dispute resolution provisions',
+    'Inadequate dispute resolution provisions'
   ];
 
   // Document-specific pitfalls;
@@ -463,7 +463,7 @@ function generateNextSteps(documentType: string, complexity: string): string[] {
     'Review and refine draft document',
     'Obtain necessary approvals from stakeholders',
     'Conduct legal review with counsel',
-    'Prepare for execution and implementation',
+    'Prepare for execution and implementation'
   ];
 
   if (complexity === 'complex') {
@@ -506,7 +506,7 @@ Provide specific language suggestions and alternatives for key sections:`;
   try {
     return await ollamaService.generateCompletion(prompt, {
       temperature: 0.4,
-      maxTokens: 800,
+      maxTokens: 800
     });
   } catch (error: any) {
     console.warn('AI content suggestions failed:', error);

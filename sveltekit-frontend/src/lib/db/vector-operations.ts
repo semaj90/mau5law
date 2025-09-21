@@ -31,7 +31,7 @@ export class LegalVectorService {
     originalFilename?: string;
     fileSize?: number;
     mimeType?: string;
-    processingTimeMs: number;,
+    processingTimeMs: number;
   }): Promise<LegalDocument> {
     // Generate document hash for duplicate detection
     const crypto = await import('crypto');
@@ -65,7 +65,7 @@ export class LegalVectorService {
       documentHash,
       originalFilename: document.originalFilename,
       fileSize: document.fileSize,
-      mimeType: document.mimeType,
+      mimeType: document.mimeType
     }).returning();
 
     console.log(`✅ Stored legal document: ${result[0].title} (ID: ${result[0].id})`);
@@ -199,7 +199,7 @@ export class LegalVectorService {
       similarityThreshold: query.similarityThreshold,
       topResults: query.topResults,
       queryIntent: query.queryIntent,
-      userSatisfaction: query.userSatisfaction,
+      userSatisfaction: query.userSatisfaction
     });
   }
 
@@ -225,7 +225,7 @@ export class LegalVectorService {
         .update(legalAnalysisCache);
         .set({
           accessCount: sql`${legalAnalysisCache.accessCount} + 1`,
-          lastAccessedAt: sql`NOW()`,
+          lastAccessedAt: sql`NOW()`
         })
         .where(eq(legalAnalysisCache.id, results[0].id);
 
@@ -344,7 +344,7 @@ export class LegalVectorService {
           .set({
             embedding: sql`${JSON.stringify(newEmbeddings[index])}::vector`,
             modelVersion,
-            updatedAt: sql`NOW()`,
+            updatedAt: sql`NOW()`
           })
           .where(eq(legalDocuments.id, id)
           .returning({ id: legalDocuments.id, title: legalDocuments.title }));

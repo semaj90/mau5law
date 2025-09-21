@@ -92,8 +92,8 @@ export const goMicroserviceMachine = createMachine({
               const start = Date.now();
               const res = await fetch(`${endpoint}${request.path}`, {
                 method: request.method,
-                headers: { 'Content-Type': 'application/json', ...(request.headers || {,}) },
-                body: request.body ? JSON.stringify(request.body) : undefined,
+                headers: { 'Content-Type': 'application/json', ...(request.headers || {}) },
+                body: request.body ? JSON.stringify(request.body) : undefined
               } as RequestInit);
               if (!res.ok) throw new Error(`Request failed: ${res.status}`);
               const data = await res.json().catch(() => ({});
@@ -168,7 +168,7 @@ export const goMicroserviceServices = {
         options: {
           parallel: options?.parallel ?? false,
           chunk_size: options?.chunkSize ?? 1024,
-          compression: true,
+          compression: true
         }
       }
     }
@@ -183,7 +183,7 @@ export const goMicroserviceServices = {
         labels,
         dimensions: { width: options?.width ?? 10, height: options?.height ?? 10 },
         iterations: options?.iterations ?? 1000,
-        learning_rate: options?.learningRate ?? 0.1,
+        learning_rate: options?.learningRate ?? 0.1
       }
     }
   }),
@@ -197,7 +197,7 @@ export const goMicroserviceServices = {
         input,
         batch_size: options?.batchSize ?? 1,
         precision: options?.precision ?? 'fp32',
-        streaming: options?.streaming ?? false,
+        streaming: options?.streaming ?? false
       }
     }
   }),
@@ -217,5 +217,5 @@ export const getConnectionStatus = (state: any) => ({
   lastHealthCheck: state.context.healthCheck.lastCheck,
   healthStatus: state.context.healthCheck.status,
   responseTime: state.context.healthCheck.responseTime,
-  error: state.context.error,
+  error: state.context.error
 });

@@ -63,7 +63,7 @@ export const PUT: RequestHandler = async ({ request, params, locals }) => {
 				status,
 				priority,
 				tags,
-				updatedAt: new Date(),
+				updatedAt: new Date()
 			})
 			.where(eq(cases.id, caseId)
 			.returning();

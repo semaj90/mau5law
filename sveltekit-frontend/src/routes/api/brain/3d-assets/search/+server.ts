@@ -34,13 +34,13 @@ interface Asset3DSearchResult {
   precomputedData?: {
     webgpuTextures: string[];
     animationFrames: Float32Array;
-    compressionRatio: number;,
+    compressionRatio: number;
   };
   semanticTags: string[];
   optimizationHints: {
     enableWebGPU: boolean;
     enableCHRROM: boolean;
-    cacheStrategy: 'immediate' | 'lazy' | 'predictive';,
+    cacheStrategy: 'immediate' | 'lazy' | 'predictive';
   };
 }
 
@@ -97,7 +97,7 @@ const legalAssetDatabase = [;
     renderPriority: 7,
     semanticTags: ['gavel', 'animation', 'decision', 'strike', 'particles'],
     animationUrl: '/assets/3d/animations/gavel_strike.json',
-    particleSystemUrl: '/assets/3d/particles/wood_chips.json',
+    particleSystemUrl: '/assets/3d/particles/wood_chips.json'
   },
   {
     assetId: 'justice_scale_3d',
@@ -109,7 +109,7 @@ const legalAssetDatabase = [;
     renderPriority: 10,
     semanticTags: ['justice', 'scales', 'balance', 'gold', 'dynamic'],
     webglUrl: '/assets/3d/legal/justice_scales.glb',
-    materialUrl: '/assets/3d/materials/gold_metallic.json',
+    materialUrl: '/assets/3d/materials/gold_metallic.json'
   },
   {
     assetId: 'legal_text_particle_3d',
@@ -121,7 +121,7 @@ const legalAssetDatabase = [;
     renderPriority: 5,
     semanticTags: ['text', 'particles', 'flow', 'words', 'transitions'],
     particleSystemUrl: '/assets/3d/particles/legal_text.json',
-    shaderUrl: '/assets/3d/shaders/text_particle.glsl',
+    shaderUrl: '/assets/3d/shaders/text_particle.glsl'
   }
 ];
 
@@ -184,12 +184,12 @@ export const POST: RequestHandler = async ({ request }) => {
         searchTime,
         cacheHits: predictions.length,
         chrRomPatterns: chrRomPatterns.length,
-        totalAssets: rankedResults.length,
+        totalAssets: rankedResults.length
       },
       metadata: {
         query: searchRequest.query,
         predictiveMode: searchRequest.predictiveMode,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       error: 'Asset search failed',
       message: error instanceof Error ? error.message: 'Unknown error',
-      results: [],
+      results: []
     }, { status: 500 });
   }
 };
@@ -243,7 +243,7 @@ async function performSemanticAssetSearch(request: Asset3DSearchRequest): Promis
         optimizationHints: {
           enableWebGPU: asset.complexity === 'high',
           enableCHRROM: score > 5,
-          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy',
+          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy'
         }
       };
       results.push(result);
@@ -289,7 +289,7 @@ async function precomputeAssetAnimations(assets: Asset3DSearchResult[], context:
       asset.precomputedData = {
         webgpuTextures: [`texture_${asset.assetId}_frame_buffer`],
         animationFrames: compressedFrames,
-        compressionRatio: 0.4 // 60% size reduction,
+        compressionRatio: 0.4 // 60% size reduction
       };
 
       console.log(`🎬 Precomputed ${frameCount} animation frames for ${asset.assetId}`);
@@ -307,7 +307,7 @@ async function prepareCHRROMPatterns(assets: Asset3DSearchResult[]): Promise<str
     await reinforcementLearningCache.set(patternId, {
       renderableHTML: `<div class="3d-asset-preview" data-asset="${asset.assetId}">${asset.name}</div>`,
       assetMetadata: asset,
-      compressionRatio: asset.precomputedData?.compressionRatio || 1.0,
+      compressionRatio: asset.precomputedData?.compressionRatio || 1.0
     });
 
     patterns.push(patternId);

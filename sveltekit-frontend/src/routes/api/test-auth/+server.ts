@@ -25,15 +25,15 @@ export const GET: RequestHandler = async ({ request }) => {
         connection: 'OK',
         userSchema: {
           tableName: userSchema.name,
-          columns: Object.keys(userSchema.columns),
+          columns: Object.keys(userSchema.columns)
         },
         sessionSchema: {
           tableName: sessionSchema.name,
-          columns: Object.keys(sessionSchema.columns),
+          columns: Object.keys(sessionSchema.columns)
         },
         counts: {
           users: userCount[0]?.count || 0,
-          sessions: sessionCount[0]?.count || 0,
+          sessions: sessionCount[0]?.count || 0
         }
       }
     });
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ request }) => {
       details: {
         name: error.name,
         code: error.code || 'NO_CODE',
-        cause: error.cause?.message || 'No cause',
+        cause: error.cause?.message || 'No cause'
       }
     }, { status: 500 });
   }

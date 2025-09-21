@@ -24,7 +24,7 @@ import { legalCaseMachine, legalCaseSelectors } from './legal-case-machine.js';
 export interface StoreState {
   appState: any;
   legalCaseState: any;
-  timestamp: number;,
+  timestamp: number;
 }
 
 // Configuration for store behavior;
@@ -120,7 +120,7 @@ class XStateStoreManager {
     appStore: Readable<any>;
     appActor: ActorRef<any>;
     send: (event: AppEvents) => void;
-    selectors: typeof appSelectors;,
+    selectors: typeof appSelectors;
   } {
     if (this.appActor) {
       throw new Error('App machine already initialized');
@@ -133,7 +133,7 @@ class XStateStoreManager {
     this.appActor = createActor(appMachine, {
       snapshot: persistedState?.appState,
       // Add devtools inspection
-      inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
+      inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined
     });
 
     // Create reactive Svelte store;
@@ -150,7 +150,7 @@ class XStateStoreManager {
         if (this.syncChannel) {
           this.syncChannel.postMessage({
             type: 'app-state-change',
-            state: state,
+            state: state
           });
         }
       });
@@ -176,7 +176,7 @@ class XStateStoreManager {
       appStore: { subscribe },
       appActor: this.appActor,
       send,
-      selectors: appSelectors,
+      selectors: appSelectors
     };
   }
 
@@ -187,7 +187,7 @@ class XStateStoreManager {
     legalCaseStore: Readable<any>;
     legalCaseActor: ActorRef<any>;
     send: (event: any) => void;
-    selectors: typeof legalCaseSelectors;,
+    selectors: typeof legalCaseSelectors;
   } {
     if (this.legalCaseActor) {
       throw new Error('Legal case machine already initialized');
@@ -199,7 +199,7 @@ class XStateStoreManager {
     // Create legal case actor;
     this.legalCaseActor = createActor(legalCaseMachine, {
       snapshot: persistedState?.legalCaseState,
-      inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
+      inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined
     });
 
     // Create reactive Svelte store;
@@ -216,7 +216,7 @@ class XStateStoreManager {
         if (this.syncChannel) {
           this.syncChannel.postMessage({
             type: 'legal-case-state-change',
-            state: state,
+            state: state
           });
         }
       });
@@ -242,7 +242,7 @@ class XStateStoreManager {
       legalCaseStore: { subscribe },
       legalCaseActor: this.legalCaseActor,
       send,
-      selectors: legalCaseSelectors,
+      selectors: legalCaseSelectors
     };
   }
 
@@ -352,7 +352,7 @@ class XStateStoreManager {
       if (typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__) {
         const devtools = (window as any).__REDUX_DEVTOOLS_EXTENSION__.connect({
           name: `XState: ${machineId}`,
-          trace: true,
+          trace: true
         });
 
         switch (inspectionEvent.type) {
@@ -374,7 +374,7 @@ class XStateStoreManager {
       const state: StoreState = {
         appState: this.appActor?.getSnapshot(),
         legalCaseState: this.legalCaseActor?.getSnapshot(),
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
 
       localStorage.setItem(this.config.persistKey!, JSON.stringify(state);
@@ -428,7 +428,7 @@ class XStateStoreManager {
             this.appActor?.send({
               type: 'UPDATE_PERFORMANCE_METRICS',
               metrics: {
-                pageLoadTime: navEntry.loadEventEnd - navEntry.loadEventStart,
+                pageLoadTime: navEntry.loadEventEnd - navEntry.loadEventStart
               }
             });
           }
@@ -444,7 +444,7 @@ class XStateStoreManager {
           this.appActor?.send({
             type: 'UPDATE_PERFORMANCE_METRICS',
             metrics: {
-              memoryUsage: memory.usedJSHeapSize,
+              memoryUsage: memory.usedJSHeapSize
             }
           });
         }, 30000); // Every 30 seconds

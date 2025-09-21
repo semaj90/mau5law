@@ -34,7 +34,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json({
       response: response.text,
       suggestions: response.suggestions,
-      actions: response.actions,
+      actions: response.actions
     });
   } catch (error: any) {
     console.error("AI suggestion error:", error);
@@ -58,7 +58,7 @@ async function generateAIResponse(
     // Get response from Ollama;
     const aiResponse = await ollamaService.generate(enhancedPrompt, {
       temperature: getTemperatureForVibe(vibe),
-      maxTokens: 500,
+      maxTokens: 500
     });
 
     // Parse and structure the response
@@ -83,7 +83,7 @@ function createSystemPrompt(vibe: string, context?: unknown): string {
       "Take a thorough, analytical approach with detailed examination.",
     dramatic: "Use engaging, vivid language that brings the case to life.",
     technical: "Provide detailed, precise information with legal specifics.",
-    collaborative: "Use inclusive language that builds on existing work.",
+    collaborative: "Use inclusive language that builds on existing work."
   };
 
   const contextInstruction =
@@ -108,7 +108,7 @@ function getTemperatureForVibe(vibe: string): number {
     investigative: 0.4,
     dramatic: 0.7,
     technical: 0.1,
-    collaborative: 0.5,
+    collaborative: 0.5
   };
 
   return temperatureMap[vibe as keyof typeof temperatureMap] || 0.3;
@@ -121,7 +121,7 @@ function parseAIResponse(aiResponse: string, originalPrompt: string) {
   return {
     text: aiResponse,
     suggestions: suggestions,
-    actions: actions,
+    actions: actions
   };
 }
 function extractSuggestions(response: string, prompt: string): string[] {
@@ -131,7 +131,7 @@ function extractSuggestions(response: string, prompt: string): string[] {
     "Cross-reference witness statements",
     "Document key findings",
     "Identify missing information",
-    "Consider legal precedents",
+    "Consider legal precedents"
   ];
 
   // Try to extract specific suggestions from the AI response
@@ -158,13 +158,13 @@ function extractSuggestions(response: string, prompt: string): string[] {
     return [
       "Organize evidence by category",
       "Create evidence timeline",
-      "Verify evidence authenticity",
+      "Verify evidence authenticity"
     ];
   } else if (prompt.toLowerCase().includes("witness")) {
     return [
       "Map witness locations",
       "Compare testimonies",
-      "Identify testimony gaps",
+      "Identify testimony gaps"
     ];
   } else if (prompt.toLowerCase().includes("timeline")) {
     return ["Create visual timeline", "Mark key events", "Verify chronology"];
@@ -182,7 +182,7 @@ function extractActions(response: string, prompt: string) {
     actions.push({
       type: "highlight",
       text: "Mark important evidence",
-      data: { priority: "high" },
+      data: { priority: "high" }
     });
   }
   if (
@@ -192,7 +192,7 @@ function extractActions(response: string, prompt: string) {
     actions.push({
       type: "annotation",
       text: "Add timeline notes",
-      data: { category: "timeline" },
+      data: { category: "timeline" }
     });
   }
   if (
@@ -202,7 +202,7 @@ function extractActions(response: string, prompt: string) {
     actions.push({
       type: "research",
       text: "Research legal precedents",
-      data: { keywords: extractKeywords(prompt) },
+      data: { keywords: extractKeywords(prompt) }
     });
   }
   // Ensure we always have at least one action;
@@ -210,7 +210,7 @@ function extractActions(response: string, prompt: string) {
     actions.push({
       type: "annotation",
       text: "Add detailed notes",
-      data: { category: "general" },
+      data: { category: "general" }
     });
   }
   return actions.slice(0, 3);
@@ -229,20 +229,20 @@ async function generateMockResponse(
   const vibeResponses = {
     professional: {
       prefix: "Based on my analysis of the case materials,",
-      style: "formal and detailed",
+      style: "formal and detailed"
     },
     creative: {
       prefix: "Looking at this from a fresh perspective,",
-      style: "innovative and exploratory",
+      style: "innovative and exploratory"
     },
     analytical: {
       prefix: "From a systematic examination of the evidence,",
-      style: "logical and methodical",
+      style: "logical and methodical"
     },
     collaborative: {
       prefix: "Building on the team's previous work,",
-      style: "inclusive and building",
-    },
+      style: "inclusive and building"
+    }
   };
 
   const currentVibe =
@@ -274,7 +274,7 @@ async function generateMockResponse(
     "Create a visual timeline of events",
     "Map evidence to witness statements",
     "Identify gaps that need additional research",
-    "Consider alternative interpretations",
+    "Consider alternative interpretations"
   ];
 
   // Generate actionable items
@@ -282,24 +282,24 @@ async function generateMockResponse(
     {
       type: "highlight",
       text: "Mark key evidence for review",
-      data: { priority: "high" },
+      data: { priority: "high" }
     },
     {
       type: "annotation",
       text: "Add detailed notes to timeline",
-      data: { category: "timeline" },
+      data: { category: "timeline" }
     },
     {
       type: "research",
       text: "Search for similar case precedents",
-      data: { keywords: extractKeywords(prompt) },
-    },
+      data: { keywords: extractKeywords(prompt) }
+    }
   ];
 
   return {
     text: responseText,
     suggestions: suggestions.slice(0, 3), // Return top 3 suggestions
-    actions: actions,
+    actions: actions
   };
 }
 function extractKeywords(text: string): string[] {
@@ -318,7 +318,7 @@ function extractKeywords(text: string): string[] {
     "for",
     "of",
     "with",
-    "by",
+    "by"
   ];
   const words = text
     .toLowerCase()

@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         type: 'full_integration_test',
         ...testResults,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
         type: 'specific_orchestrator_test',
         orchestrator,
         ...result,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       });
     }
 
@@ -55,14 +55,14 @@ export const GET: RequestHandler = async ({ url }) => {
           id: req.id,
           type: req.type,
           priority: req.options?.priority,
-          timestamp: req.metadata?.timestamp,
-        })),
+          timestamp: req.metadata?.timestamp
+        }))
       },
       endpoints: {
         fullTest: '/api/ai/test-orchestrator?test=full',
         specificTest: '/api/ai/test-orchestrator?test=specific&orchestrator=server&content=Hello',
-        healthCheck: '/api/ai/test-orchestrator',
-      },
+        healthCheck: '/api/ai/test-orchestrator'
+      }
     });
 
   } catch (error) {
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         type: 'error',
         error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
       orchestrator = 'auto',
       priority = 'normal',
       temperature = 0.3,
-      maxTokens = 200,
+      maxTokens = 200
     } = testRequest;
 
     // Create test request for the bridge;
@@ -100,19 +100,19 @@ export const POST: RequestHandler = async ({ request }) => {
         userId: testRequest.userId || 'test-user',
         sessionId: testRequest.sessionId || 'test-session',
         legalDomain: testRequest.legalDomain,
-        documentType: testRequest.documentType,
+        documentType: testRequest.documentType
       },
       options: {
         model: orchestrator,
         priority,
         temperature,
         maxTokens,
-        useGPU: testRequest.useGPU !== false,
+        useGPU: testRequest.useGPU !== false
       },
       metadata: {
         source: 'custom_test_api',
-        timestamp: Date.now(),
-      },
+        timestamp: Date.now()
+      }
     };
 
     const startTime = Date.now();
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
       request: {
         ...bridgeRequest,
         // Don't return metadata to keep response clean
-        metadata: undefined,
+        metadata: undefined
       },
       result: {
         success: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).success,
@@ -134,16 +134,16 @@ export const POST: RequestHandler = async ({ request }) => {
         confidence: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).confidence,
         executionMetrics: {
           ...result.executionMetrics,
-          apiLatency,
+          apiLatency
         },
-        error: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).error,
+        error: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).error
       },
       analysis: {
         routingReason: getRoutingReason((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).orchestratorUsed, type, orchestrator),
         performanceGrade: getPerformanceGrade((result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics.totalLatency),
-        recommendedOptimizations: getOptimizationRecommendations(result),
+        recommendedOptimizations: getOptimizationRecommendations(result)
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         type: 'custom_test_error',
         error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -221,7 +221,7 @@ export const OPTIONS: RequestHandler = async () => {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
   });
 };

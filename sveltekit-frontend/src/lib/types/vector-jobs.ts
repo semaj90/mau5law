@@ -32,7 +32,7 @@ export interface VectorJobResult {
 		webgpuUsed: boolean;
 		vectorDimension: number;
 		operationType: string;
-		timestamp: number;,
+		timestamp: number;
 	};
 	error?: string;
 }
@@ -51,7 +51,7 @@ export interface WebGPUProcessingOptions {
 	useFloat16: boolean;
 	batchSize: number;
 	workgroupSize: number;
-	fallbackToWebGL: boolean;,
+	fallbackToWebGL: boolean;
 }
 
 export interface VectorOperationRequest {
@@ -88,13 +88,13 @@ export interface RedisStreamGroup {
 	name: string;
 	consumers: RedisStreamConsumer[];
 	pending: number;
-	lastDeliveredId: string;,
+	lastDeliveredId: string;
 }
 
 export interface RedisStreamConsumer {
 	name: string;
 	pending: number;
-	idle: number;,
+	idle: number;
 }
 
 // Outbox pattern types for reliable messaging;
@@ -107,7 +107,7 @@ export interface VectorOutboxEntry {
 	payload?: Record<string, any>;
 	attempts: number;
 	processedAt?: Date;
-	createdAt: Date;,
+	createdAt: Date;
 }
 
 // WebGPU types;
@@ -117,13 +117,13 @@ export interface WebGPUDevice {
 	adapter: GPUAdapter;
 	features: string[];
 	limits: Record<string, number>;
-	isAvailable: boolean;,
+	isAvailable: boolean;
 }
 
 export interface WebGPUComputeShader {
 	module: GPUShaderModule;
 	pipeline: GPUComputePipeline;
-	bindGroupLayout: GPUBindGroupLayout;,
+	bindGroupLayout: GPUBindGroupLayout;
 }
 
 export interface WebGPUVectorOperation {
@@ -143,7 +143,7 @@ export interface WASMLLMConfig {
 	topK: number;
 	topP: number;
 	useGPU: boolean;
-	memoryLimit: number;,
+	memoryLimit: number;
 }
 
 export interface WASMLLMResponse {
@@ -155,7 +155,7 @@ export interface WASMLLMResponse {
 		model: string;
 		promptTokens: number;
 		completionTokens: number;
-		totalTokens: number;,
+		totalTokens: number;
 	};
 }
 
@@ -173,7 +173,7 @@ export interface LegalVectorEmbedding {
 		practiceArea: string[];
 		confidence: number;
 		extractedAt: Date;
-		modelVersion: string;,
+		modelVersion: string;
 	};
 }
 
@@ -184,7 +184,7 @@ export interface LegalSimilarityResult {
 	commonConcepts: string[];
 	legalCitations: string[];
 	relevantStatutes: string[];
-	precedentStrength: 'strong' | 'moderate' | 'weak';,
+	precedentStrength: 'strong' | 'moderate' | 'weak';
 }
 
 // Monitoring and metrics types;
@@ -193,25 +193,25 @@ export interface VectorServiceMetrics {
 		embeddings: number;
 		similarities: number;
 		indexing: number;
-		clustering: number;,
+		clustering: number;
 	};
 	processingStats: {
 		totalProcessed: number;
 		averageProcessingTimeMs: number;
 		successRate: number;
-		errorRate: number;,
+		errorRate: number;
 	};
 	resourceUsage: {
 		cudaUtilization: number;
 		webgpuUtilization: number;
 		memoryUsage: number;
-		redisConnections: number;,
+		redisConnections: number;
 	};
 	performance: {
 		cudaOpsPerSecond: number;
 		webgpuOpsPerSecond: number;
 		vectorsPerSecond: number;
-		throughputMBps: number;,
+		throughputMBps: number;
 	};
 }
 
@@ -222,16 +222,16 @@ export interface VectorHealthStatus {
 		postgres: 'connected' | 'disconnected' | 'error';
 		rabbitmq: 'connected' | 'disconnected' | 'error';
 		cuda: 'available' | 'unavailable' | 'error';
-		webgpu: 'available' | 'unavailable' | 'not_supported';,
+		webgpu: 'available' | 'unavailable' | 'not_supported';
 	};
 	queues: {
 		[queueName: string]: {
 			depth: number;
 			consumers: number;
-			processingRate: number;,
+			processingRate: number;
 		};
 	};
-	lastHealthCheck: Date;,
+	lastHealthCheck: Date;
 }
 
 // Error types for vector processing;

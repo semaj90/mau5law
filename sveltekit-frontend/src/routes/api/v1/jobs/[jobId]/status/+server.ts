@@ -17,7 +17,7 @@ export interface JobStatus {
   progress: {
     stage: string;
     percentage: number;
-    message: string;,
+    message: string;
   };
   fileName: string;
   bucket: string;
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
     if (!jobId) {
       return json({
           success: false,
-          error: 'jobId parameter is required',
+          error: 'jobId parameter is required'
         },)
         { status: 400 }
       );
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
     if (!job) {
       return json({
           success: false,
-          error: 'Job not found',
+          error: 'Job not found'
         },)
         { status: 404 }
       );
@@ -120,14 +120,14 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
         job,
         polling: {
           interval: job.status === 'processing' ? 2000 : 10000, // Poll every 2s when processing, 10s otherwise
-          shouldContinue: job.status === 'queued' || job.status === 'processing',
-        },
+          shouldContinue: job.status === 'queued' || job.status === 'processing'
+        }
       },
       metadata: {
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        endpoint: `/api/v1/jobs/${jobId}/status`,
-      },
+        endpoint: `/api/v1/jobs/${jobId}/status`
+      }
     };
 
     console.log(`✅ Job status retrieved: ${jobId} - ${job.status}`);
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
     console.error(`❌ GET /api/v1/jobs/${params.jobId}/status error:`, error);
     return json({
         success: false,
-        error: error instanceof Error ? error.message: 'Failed to get job status',
+        error: error instanceof Error ? error.message: 'Failed to get job status'
       },)
       { status: 500 }
     );
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     if (!jobId) {
       return json({
           success: false,
-          error: 'jobId parameter is required',
+          error: 'jobId parameter is required'
         },)
         { status: 400 }
       );
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     if (!existingData) {
       return json({
           success: false,
-          error: 'Job not found',
+          error: 'Job not found'
         },)
         { status: 404 }
       );
@@ -240,7 +240,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
         fileName: job.fileName,
         progress: updateData.progress,
         caseId: job.caseId,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       })
     );
 
@@ -254,7 +254,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
           evidenceId: job.metadata?.evidenceId,
           fileName: job.fileName,
           results: updateData.results,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         })
       );
     }
@@ -264,13 +264,13 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
       data: {
         jobId,
         status: job.status,
-        updated: true,
+        updated: true
       },
       metadata: {
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        operation: 'update_status',
-      },
+        operation: 'update_status'
+      }
     };
 
     console.log(`✅ Job status updated: ${jobId} - ${job.status}`);
@@ -279,7 +279,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     console.error(`❌ POST /api/v1/jobs/${params.jobId}/status error:`, error);
     return json({
         success: false,
-        error: error instanceof Error ? error.message: 'Failed to update job status',
+        error: error instanceof Error ? error.message: 'Failed to update job status'
       },)>
       { status: 500 }
     );
@@ -294,7 +294,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     if (!jobId) {
       return json({
           success: false,
-          error: 'jobId parameter is required',
+          error: 'jobId parameter is required'
         },)
         { status: 400 }
       );
@@ -309,7 +309,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     if (!existingData) {
       return json({
           success: false,
-          error: 'Job not found',
+          error: 'Job not found'
         },)
         { status: 404 }
       );
@@ -321,7 +321,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     if (!['queued', 'processing'].includes(job.status)) {
       return json({
           success: false,
-          error: `Cannot cancel job with status: ${job.status}`,
+          error: `Cannot cancel job with status: ${job.status}`
         },)
         { status: 400 }
       );
@@ -359,7 +359,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
       jobId,
       fileName: job.fileName,
       caseId: job.caseId,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     })
   );
 
@@ -368,13 +368,13 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
       data: {
         jobId,
         status: 'cancelled',
-        message: 'Job cancelled successfully',
+        message: 'Job cancelled successfully'
       },
       metadata: {
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        operation: 'cancel_job',
-      },
+        operation: 'cancel_job'
+      }
     };
 
     console.log(`✅ Job cancelled: ${jobId}`);
@@ -383,7 +383,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     console.error(`❌ DELETE /api/v1/jobs/${params.jobId}/status error:`, error);
     return json({
         success: false,
-        error: error instanceof Error ? error.message: 'Failed to cancel job',
+        error: error instanceof Error ? error.message: 'Failed to cancel job'
       },)>
       { status: 500 }
     );

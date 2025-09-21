@@ -17,7 +17,7 @@ export interface CaseCreationContext {
   createdCase: any;
   error: string | null;
   isAutoSaving: boolean;
-  retryCount: number;,
+  retryCount: number;
 }
 
 export const caseCreationMachine = createMachine({
@@ -38,13 +38,13 @@ export const caseCreationMachine = createMachine({
       title: '',
       description: '',
       priority: 'medium',
-      status: 'open',
+      status: 'open'
     },
     validationErrors: Record<string, any>,
     createdCase: null,
     error: null,
     isAutoSaving: false,
-    retryCount: 0,
+    retryCount: 0
   },
   states: {
     idle: {
@@ -53,7 +53,7 @@ export const caseCreationMachine = createMachine({
         UPDATE_FORM: {
           target: 'editing',
           actions: assign({
-            formData: ({ event }) => ({ ...event.data ,})
+            formData: ({ event }) => ({ ...event.data })
           })
         }
       }
@@ -66,8 +66,8 @@ export const caseCreationMachine = createMachine({
             formData: ({ context, event }) => ({
               ...context.formData,
               ...event.data
-            ,}),
-            isAutoSaving: true,
+            }),
+            isAutoSaving: true
           })
         },
         VALIDATE_FORM: {
@@ -76,10 +76,10 @@ export const caseCreationMachine = createMachine({
             formData: ({ context, event }) => ({
               ...context.formData,
               ...event.data
-            ,})
+            })
           })
         },
-        SUBMIT_CASE: 'submitting',
+        SUBMIT_CASE: 'submitting'
       },
       after: {
         2000: {
@@ -97,14 +97,14 @@ export const caseCreationMachine = createMachine({
           target: 'editing',
           actions: assign({
             validationErrors: Record<string, any>,
-            error: null,
+            error: null
           })
         },
         onError: {
           target: 'editing',
           actions: assign({
             validationErrors: ({ event }) => (event as any).error?.validationErrors || {},
-            error: 'Validation failed',
+            error: 'Validation failed'
           })
         }
       }
@@ -121,7 +121,7 @@ export const caseCreationMachine = createMachine({
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(input.formData),
+            body: JSON.stringify(input.formData)
           });
           
           if (!response.ok) {
@@ -137,7 +137,7 @@ export const caseCreationMachine = createMachine({
           actions: assign({
             createdCase: ({ event }) => event.output,
             error: null,
-            retryCount: 0,
+            retryCount: 0
           })
         },
         onError: [;
@@ -159,16 +159,16 @@ export const caseCreationMachine = createMachine({
     },
     retrying: {
       after: {
-        1000: 'submitting',
+        1000: 'submitting'
       },
       on: {
-        RETRY: 'submitting',
+        RETRY: 'submitting'
       }
     },
     completed: {
       type: 'final',
       entry: assign({
-        isAutoSaving: false,
+        isAutoSaving: false
       }),
       on: {
         RESET: {
@@ -178,13 +178,13 @@ export const caseCreationMachine = createMachine({
               title: '',
               description: '',
               priority: 'medium',
-              status: 'open',
+              status: 'open'
             },
             validationErrors: Record<string, any>,
             createdCase: null,
             error: null,
             isAutoSaving: false,
-            retryCount: 0,
+            retryCount: 0
           })
         }
       }
@@ -196,7 +196,7 @@ export const caseCreationMachine = createMachine({
           target: 'idle',
           actions: assign({
             error: null,
-            retryCount: 0,
+            retryCount: 0
           })
         }
       }

@@ -9,7 +9,7 @@ export interface FeedbackSession {
   startTime: Date;
   endTime?: Date;
   interactions: UserInteraction[];
-  context: SessionContext;,
+  context: SessionContext;
 }
 
 export interface UserInteraction {
@@ -26,7 +26,7 @@ export interface SessionContext {
   userAgent: string;
   viewport: {
     width: number;
-    height: number;,
+    height: number;
   };
   [key: string]: any;
 }
@@ -64,7 +64,7 @@ export interface FeedbackMetrics {
   feature_adoption: number;
   error_rate: number;
   response_time: number;
-  completion_rate: number;,
+  completion_rate: number;
 }
 
 export interface FeedbackRecommendation {
@@ -76,7 +76,7 @@ export interface FeedbackRecommendation {
   category: string;
   action?: {
     type: 'navigate' | 'highlight' | 'modal';
-    target: string;,
+    target: string;
   };
 }
 
@@ -93,7 +93,7 @@ export interface UserRating {
   responseEmbedding?: number[];
   context: Record<string, any>;
   metadata: Record<string, any>;
-  timestamp: Date;,
+  timestamp: Date;
 }
 
 export interface UserInteractionPattern {
@@ -106,7 +106,7 @@ export interface UserInteractionPattern {
   embedding?: number[];
   metadata: Record<string, any>;
   firstSeen: Date;
-  lastSeen: Date;,
+  lastSeen: Date;
 }
 
 export interface FeedbackInsight {
@@ -119,7 +119,7 @@ export interface FeedbackInsight {
   embedding?: number[];
   metrics: Record<string, any>;
   recommendations: string[];
-  createdAt: Date;,
+  createdAt: Date;
 }
 
 // Component Props;
@@ -146,7 +146,7 @@ export interface FeedbackBatchResponse extends FeedbackAPIResponse {
   data: {
     processed: number;
     failed: number;
-    insights: FeedbackInsight[];,
+    insights: FeedbackInsight[];
   };
 }
 
@@ -154,7 +154,7 @@ export interface RecommendationsResponse extends FeedbackAPIResponse {
   data: {
     recommendations: FeedbackRecommendation[];
     metrics: FeedbackMetrics;
-    insights: string[];,
+    insights: string[];
   };
 }
 
@@ -164,16 +164,16 @@ export interface AnalyticsResponse extends FeedbackAPIResponse {
       totalRatings: number;
       averageRating: number;
       completionRate: number;
-      trendDirection: 'up' | 'down' | 'stable';,
+      trendDirection: 'up' | 'down' | 'stable';
     };
     breakdown: {
       ratingType: string;
       count: number;
       avgRating: number;
-      improvement: number;,
+      improvement: number;
     }[];
     insights: FeedbackInsight[];
-    recommendations: FeedbackRecommendation[];,
+    recommendations: FeedbackRecommendation[];
   };
 }
 
@@ -183,11 +183,11 @@ export interface FeedbackSubmittedEvent {
   rating: number;
   feedback?: string;
   ratingType: string;
-  timestamp: Date;,
+  timestamp: Date;
 }
 
 export interface FeedbackErrorEvent {
   error: Error;
   context: any;
-  timestamp: Date;,
+  timestamp: Date;
 }

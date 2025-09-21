@@ -24,7 +24,7 @@ export interface ServiceHealth {
   healthy: boolean;
   lastCheck: number;
   responseTime: number;
-  errorCount: number;,
+  errorCount: number;
 }
 
 class GPUServiceManager {
@@ -40,7 +40,7 @@ class GPUServiceManager {
         healthy: true,
         lastCheck: 0,
         responseTime: 0,
-        errorCount: 0,
+        errorCount: 0
       });
     });
 
@@ -66,7 +66,7 @@ class GPUServiceManager {
     try {
       const response = await fetch(`${url}/health`, {
         method: 'GET',
-        timeout: 5000 // 5 second timeout,
+        timeout: 5000 // 5 second timeout
       } as CustomRequestInit);
 
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
@@ -131,7 +131,7 @@ class GPUServiceManager {
       healthy: health.healthy,
       responseTime: health.responseTime,
       errorCount: health.errorCount,
-      lastCheck: health.lastCheck,
+      lastCheck: health.lastCheck
     });
   }
 
@@ -159,7 +159,7 @@ export interface ProcessingStats {
   successfulRequests: number;
   failedRequests: number;
   cacheHits: number;
-  averageProcessingTime: number;,
+  averageProcessingTime: number;
 }
 
 const stats: ProcessingStats = {
@@ -167,7 +167,7 @@ const stats: ProcessingStats = {
   successfulRequests: 0,
   failedRequests: 0,
   cacheHits: 0,
-  averageProcessingTime: 0,
+  averageProcessingTime: 0
 };
 
 // POST: Process tensor with GPU acceleration;
@@ -182,7 +182,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     if (!tensorData.shape || !tensorData.data) {
       stats.failedRequests++;
       throw error(400, ensureError({
-        message: 'Invalid tensor data: missing shape or data fields',
+        message: 'Invalid tensor data: missing shape or data fields'
       });
     }
 
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     if (!Array.isArray(tensorData.shape) || tensorData.shape.some((dim: any) => typeof dim !== 'number' || dim <= 0)) {
       stats.failedRequests++;
       throw error(400, ensureError({
-        message: 'Invalid tensor shape: must be array of positive integers',
+        message: 'Invalid tensor shape: must be array of positive integers'
       });
     }
 
@@ -199,7 +199,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     if (!Array.isArray(tensorData.data) || tensorData.data.length !== expectedSize) {
       stats.failedRequests++;
       throw error(400, ensureError({
-        message: 'Tensor data size mismatch',
+        message: 'Tensor data size mismatch'
       });
     }
 
@@ -217,7 +217,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       context: 'legal-ai-processing',
       dimensions: tensorData.shape.length,
       layout: tensorData.layout || 'standard',
-      lodLevel: tensorData.lodLevel || 0,
+      lodLevel: tensorData.lodLevel || 0
     };
 
     // Select appropriate GPU service
@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     if (!targetService) {
       stats.failedRequests++;
       throw error(503, ensureError({
-        message: 'All GPU services unavailable',
+        message: 'All GPU services unavailable'
       });
     }
 
@@ -255,7 +255,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         totalRequests: stats.totalRequests,
         successRate: (stats.successfulRequests / stats.totalRequests) * 100,
         averageProcessingTime: stats.averageProcessingTime,
-        cacheHitRate: (stats.cacheHits / stats.totalRequests) * 100,
+        cacheHitRate: (stats.cacheHits / stats.totalRequests) * 100
       }
     });
 
@@ -283,7 +283,7 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'health':;
         return json({
           serviceHealth: serviceManager.getHealthStats(),
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
 
       case 'stats':;
@@ -296,10 +296,10 @@ export const GET: RequestHandler = async ({ url }) => {
               (stats.successfulRequests / stats.totalRequests) * 100 : 0,
             cacheHitRate: stats.totalRequests > 0 ?
               (stats.cacheHits / stats.totalRequests) * 100 : 0,
-            averageProcessingTime: stats.averageProcessingTime,
+            averageProcessingTime: stats.averageProcessingTime
           },
           services: serviceManager.getHealthStats(),
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
 
       case 'full':
@@ -320,19 +320,19 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           api: {
             processing: stats,
-            services: serviceManager.getHealthStats(),
+            services: serviceManager.getHealthStats()
           },
           gpuService: serviceStats,
           timestamp: Date.now(),
           uptime: process.uptime(),
-          environment: dev ? 'development' : 'production',
+          environment: dev ? 'development' : 'production'
         });
     }
   } catch (err: any) {
     console.error('Stats retrieval error:', err);
     throw error(500, ensureError({
       message: `Stats retrieval failed: ${err.message}`,
-      code: 'STATS_ERROR',
+      code: 'STATS_ERROR'
     });
   }
 };
@@ -342,7 +342,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   if (!dev) {
     throw error(403, ensureError({
       message: 'Cache clearing only available in development mode',
-      code: 'PRODUCTION_PROTECTION',
+      code: 'PRODUCTION_PROTECTION'
     });
   }
 
@@ -363,7 +363,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       const clearPromises = gpuServicePool.map(async (serviceUrl) => {
         try {
           const response = await fetch(`${serviceUrl}/stats`, {
-            method: 'DELETE',
+            method: 'DELETE'
           });
           return { service: serviceUrl, success: (response as { ok?: any; json?: any; status?: any; statusText?: any }).ok };
         } catch (error: any) {
@@ -378,21 +378,21 @@ export const DELETE: RequestHandler = async ({ url }) => {
         message: `${clearType} cleared successfully`,
         details: {
           clearedType: clearType,
-          serviceResults: results,
+          serviceResults: results
         }
       });
     }
 
     return json({
       success: true,
-      message: 'Operation completed',
+      message: 'Operation completed'
     });
 
   } catch (err: any) {
     console.error('Cache clearing error:', err);
     throw error(500, ensureError({
       message: `Cache clearing failed: ${err.message}`,
-      code: 'CACHE_CLEAR_ERROR',
+      code: 'CACHE_CLEAR_ERROR'
     });
   }
 };
@@ -416,7 +416,7 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
         },
         body: JSON.stringify(tensorData),
         // Add timeout
-        signal: AbortSignal.timeout(30000) // 30 second timeout,
+        signal: AbortSignal.timeout(30000) // 30 second timeout
       });
 
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
@@ -459,7 +459,7 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
           'X-Fallback': 'true'
         },
         body: JSON.stringify(tensorData),
-        signal: AbortSignal.timeout(15000) // Shorter timeout for fallback,
+        signal: AbortSignal.timeout(15000) // Shorter timeout for fallback
       });
 
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {

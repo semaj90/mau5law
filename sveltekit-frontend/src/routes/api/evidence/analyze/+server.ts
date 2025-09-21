@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       message: 'Analysis not found. Please submit evidence for analysis via POST request.',
       evidenceId,
-      status: 'not_found',
+      status: 'not_found'
     }, { status: 404 });
   } catch (err: any) {
     console.error('Failed to fetch analysis:', err);

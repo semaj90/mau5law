@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
             const data = JSON.stringify({
               type: 'token',
               content: chunk,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             });
             
             controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`);
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
           // Send completion event;
           const completeData = JSON.stringify({
             type: 'complete',
-            timestamp: Date.now(),
+            timestamp: Date.now()
           });
           controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`);
           
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
           console.error('Streaming error:', err);
           const errorData = JSON.stringify({
             type: 'error',
-            message: err instanceof Error ? err.message: 'Unknown error',
+            message: err instanceof Error ? err.message: 'Unknown error'
           });
           controller.enqueue(new TextEncoder().encode(`data: ${errorData}\n\n`);
           controller.close();
@@ -102,17 +102,17 @@ export const GET: RequestHandler = async () => {
       status: 'ready',
       gpu: {
         available: typeof navigator !== 'undefined' && 'gpu' in navigator,
-        webgpu: typeof GPUAdapter !== 'undefined',
+        webgpu: typeof GPUAdapter !== 'undefined'
       },
       memory: {
         // Server-side memory info
         heapUsed: process.memoryUsage().heapUsed,
         heapTotal: process.memoryUsage().heapTotal,
-        external: process.memoryUsage().external,
+        external: process.memoryUsage().external
       },
       simd: {
         workers: 4, // Number of SIMD workers
-        supported: true,
+        supported: true
       }
     };
     

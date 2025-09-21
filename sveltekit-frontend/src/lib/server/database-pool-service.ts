@@ -18,7 +18,7 @@ interface DatabasePoolConfig {
   idle_timeout: number;
   connect_timeout: number;
   prepare: boolean;
-  ssl: boolean | 'require' | 'allow' | 'prefer';,
+  ssl: boolean | 'require' | 'allow' | 'prefer';
 }
 
 interface CachedQuery {
@@ -26,7 +26,7 @@ interface CachedQuery {
   params: any[];
   timestamp: number;
   result: any;
-  ttl: number; // seconds,
+  ttl: number; // seconds
 }
 
 class DatabasePoolService {
@@ -55,7 +55,7 @@ class DatabasePoolService {
       idle_timeout: parseInt(process.env.DB_IDLE_TIMEOUT || '30'),
       connect_timeout: parseInt(process.env.DB_CONNECT_TIMEOUT || '10'),
       prepare: process.env.NODE_ENV === 'production',
-      ssl: process.env.DB_SSL === 'true' ? 'require' : false,
+      ssl: process.env.DB_SSL === 'true' ? 'require' : false
     };
   }
 
@@ -79,7 +79,7 @@ class DatabasePoolService {
       ...this.config,
       ...dynamicConfig,
       onnotice: () => {}, // Suppress notices
-      debug: process.env.NODE_ENV === 'development',
+      debug: process.env.NODE_ENV === 'development'
     });
 
     this.pools.set(poolKey, pool);
@@ -147,7 +147,7 @@ class DatabasePoolService {
           params,
           timestamp: Date.now(),
           result,
-          ttl,
+          ttl
         };
 
         await redisService.set(
@@ -196,7 +196,7 @@ class DatabasePoolService {
         totalConnections: parseInt(stats.total || '0'),
         activeConnections: parseInt(stats.active || '0'),
         avgResponseTime: parseFloat(stats.avgResponse || '0'),
-        lastUpdate: parseInt(stats.lastUpdate || '0'),
+        lastUpdate: parseInt(stats.lastUpdate || '0')
       };
     } catch (error) {
       console.warn('Failed to get connection stats:', error);
@@ -220,7 +220,7 @@ class DatabasePoolService {
 
     return {
       max: Math.floor(adjustedSize),
-      idle_timeout: stats.avgResponseTime > 1000 ? 60 : this.config.idle_timeout,
+      idle_timeout: stats.avgResponseTime > 1000 ? 60 : this.config.idle_timeout
     };
   }
 
@@ -299,7 +299,7 @@ class DatabasePoolService {
       totalPools: this.pools.size,
       totalDrizzleInstances: this.drizzleInstances.size,
       cacheSize: this.queryCache.size,
-      pools: Record<string, any>,
+      pools: Record<string, any>
     };
 
     for (const [key, pool] of this.pools) {

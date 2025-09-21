@@ -55,8 +55,8 @@ export const POST: RequestHandler = async (event) => {
           model: model,
           temperature: temperature,
           max_tokens: requestData.max_tokens || 1024,
-          stream: false,
-        }),
+          stream: false
+        })
       });
 
       if (!bridgeResponse.ok) {
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async (event) => {
         return json({
           error: "TensorRT bridge failed",
           detail: errorText,
-          bridge_status: bridgeResponse.status,
+          bridge_status: bridgeResponse.status
         }, { status: 500 });
       }
 
@@ -81,15 +81,15 @@ export const POST: RequestHandler = async (event) => {
         choices: [{
           message: {
             role: "assistant",
-            content: bridgeData.response || bridgeData.output || "No response generated",
+            content: bridgeData.response || bridgeData.output || "No response generated"
           },
           finish_reason: "stop",
-          index: 0,
+          index: 0
         }],
         usage: {
           total_tokens: Math.ceil((fullPrompt + (bridgeData.output || "")).length / 4),
           prompt_tokens: Math.ceil(fullPrompt.length / 4),
-          completion_tokens: Math.ceil((bridgeData.output || "").length / 4),
+          completion_tokens: Math.ceil((bridgeData.output || "").length / 4)
         },
         model: model,
         object: "chat.completion",
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async (event) => {
           bridge_url: TENSORRT_BRIDGE_URL,
           model_used: model,
           gpu_accelerated: true,
-          response_time_ms: totalTime,
+          response_time_ms: totalTime
         }
       });
 
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async (event) => {
         error: "TensorRT bridge connection failed",
         detail: bridgeError.message,
         suggestion: "Ensure Ollama-TensorRT bridge is running on port 8100",
-        fallback_available: false,
+        fallback_available: false
       }, { status: 503 });
     }
 
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async (event) => {
     return json({
       error: "Failed to generate response",
       detail: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

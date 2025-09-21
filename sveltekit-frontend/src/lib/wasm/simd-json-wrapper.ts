@@ -25,7 +25,7 @@ export interface SIMDParsingMetrics {
   validationTime: number;
   compressionTime: number;
   compressionRatio: number;
-  throughput: number; // documents per second,
+  throughput: number; // documents per second
 }
 
 export class SIMDJSONAccelerator {
@@ -47,7 +47,7 @@ export class SIMDJSONAccelerator {
     validationTime: 0,
     compressionTime: 0,
     compressionRatio: 0,
-    throughput: 0,
+    throughput: 0
   };
 
   async initialize(): Promise<void> {
@@ -55,7 +55,7 @@ export class SIMDJSONAccelerator {
       // Create memory instance (1MB initial, 16MB max);
       this.memory = new WebAssembly.Memory({ 
         initial: 16, // 16 * 64KB = 1MB
-        maximum: 256 // 256 * 64KB = 16MB,
+        maximum: 256 // 256 * 64KB = 16MB
       });
 
       // Set up imports for WebAssembly module;
@@ -198,7 +198,7 @@ export class SIMDJSONAccelerator {
       console.warn('⚠️ SIMD compression not available');
       return {
         compressed: new Uint8Array(embeddings),
-        compressionRatio: 1.0,
+        compressionRatio: 1.0
       };
     }
 
@@ -227,7 +227,7 @@ export class SIMDJSONAccelerator {
       console.error('❌ SIMD compression failed:', error);
       return {
         compressed: new Uint8Array(embeddings),
-        compressionRatio: 1.0,
+        compressionRatio: 1.0
       };
     }
   }
@@ -274,7 +274,7 @@ export class SIMDJSONAccelerator {
       validationTime: 0,
       compressionTime: 0,
       compressionRatio: 0,
-      throughput: 0,
+      throughput: 0
     };
   }
 
@@ -304,7 +304,7 @@ export class SIMDJSONAccelerator {
         practiceArea: ['corporate'],
         jurisdiction: 'federal',
         dateCreated: '2024-01-01',
-        parties: [],
+        parties: []
       }
     };
   }
@@ -317,7 +317,7 @@ export class SIMDJSONAccelerator {
       practiceArea: ['corporate'],
       jurisdiction: 'federal',
       dateCreated: '2024-01-01',
-      parties: [],
+      parties: []
     };
   }
 
@@ -341,7 +341,7 @@ export class SIMDJSONAccelerator {
         practiceArea: [],
         jurisdiction: '',
         dateCreated: '',
-        parties: [],
+        parties: []
       };
     }
   }

@@ -13,7 +13,7 @@ interface BodyParseMetrics {
   contentLength: number;
   parseTime: number;
   simdUsed: boolean;
-  timestamp: number;,
+  timestamp: number;
 }
 
 class SIMDBodyParser {
@@ -41,7 +41,7 @@ class SIMDBodyParser {
     if (dev) {
       console.log('🚀 SIMD Body Parser initialized:', {
         simdEnabled: this.simdEnabled,
-        hotEndpoints: this.hotEndpoints.size,
+        hotEndpoints: this.hotEndpoints.size
       });
     }
   }
@@ -86,7 +86,7 @@ class SIMDBodyParser {
         contentLength: body.length,
         parseTime,
         simdUsed: shouldUseSIMD,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
 
       return parsed;
@@ -103,7 +103,7 @@ class SIMDBodyParser {
           contentLength: body.length,
           parseTime,
           simdUsed: false,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
         
         return fallbackResult;
@@ -151,7 +151,7 @@ class SIMDBodyParser {
         contentLength: body.length,
         parseTime,
         simdUsed: shouldUseSIMD,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
 
       return results;
@@ -262,7 +262,7 @@ class SIMDBodyParser {
     document: any;
     entities: Array<any>;
     citations: Array<any>;
-    parseTime: number;,
+    parseTime: number;
   } | null> {
     const startTime = performance.now();
     
@@ -347,7 +347,7 @@ class SIMDBodyParser {
       case 'S.Ct.': return 'Supreme Court';
       case 'F.2d':
       case 'F.3d': return 'Federal Circuit';
-      default: return 'Unknown';,
+      default: return 'Unknown';
     }
   }
 
@@ -422,7 +422,7 @@ class SIMDBodyParser {
       simdRequests: simdMetrics.length,
       averageParseTime: total > 0 ? this.metrics.reduce((sum, m) => sum + m.parseTime, 0) / total : 0,
       simdSpeedup: speedup,
-      hotEndpointUsage: endpointUsage,
+      hotEndpointUsage: endpointUsage
     };
   }
 

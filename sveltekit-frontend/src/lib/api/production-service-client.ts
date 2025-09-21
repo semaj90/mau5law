@@ -32,7 +32,7 @@ class ProductionServiceClient {
           'Content-Type': 'application/json',
           ...options.headers
         },
-        signal: AbortSignal.timeout(options.timeout || 5000),
+        signal: AbortSignal.timeout(options.timeout || 5000)
       };
 
       // Handle body data;
@@ -55,7 +55,7 @@ class ProductionServiceClient {
         data = {
           error: 'Non-JSON response',
           text: await (response as { json?: any; text?: any; status?: any; headers?: any }).text(),
-          parseError: parseError.message,
+          parseError: parseError.message
         };
       }
 
@@ -76,7 +76,7 @@ class ProductionServiceClient {
         data: {
           error: error.message,
           type: error.name,
-          code: 'NETWORK_ERROR',
+          code: 'NETWORK_ERROR'
         },
         status: 0, // Indicates network failure
         headers: Record<string, any>,

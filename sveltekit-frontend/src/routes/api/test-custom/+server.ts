@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         message: 'Custom adapter worked!',
-        result: result,
+        result: result
       });
     } catch (error: any) {
       console.error("Custom adapter error:", error.message);
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: error.message,
-        query: error.query || 'No query available',
+        query: error.query || 'No query available'
       }, { status: 500 });
     }
     
@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      stack: error.stack,
+      stack: error.stack
     }, { status: 500 });
   }
 };

@@ -5,7 +5,7 @@ import {
   text,
   integer,
   real,
-  blob,
+  blob
 } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 
@@ -23,7 +23,7 @@ export const users = sqliteTable("users", {
   role: text("role").default("prosecutor").notNull(),
   isActive: integer("is_active", { mode: "boolean" }).default(true).notNull(),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
-  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull(),
+  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull()
 });
 
 // === CASE MANAGEMENT ===
@@ -51,7 +51,7 @@ export const cases = sqliteTable("cases", {
   createdBy: text("created_by"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
   updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull(),
-  closedAt: text("closed_at"),
+  closedAt: text("closed_at")
 });
 
 // === CRIMINAL RECORDS ===
@@ -83,7 +83,7 @@ export const criminals = sqliteTable("criminals", {
   aiTags: text("ai_tags").default("[]").notNull(), // JSON string
   createdBy: text("created_by"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
-  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull(),
+  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull()
 });
 
 // === EVIDENCE MANAGEMENT ===
@@ -121,7 +121,7 @@ export const evidence = sqliteTable("evidence", {
   canvasPosition: text("canvas_position").default("{}").notNull(), // JSON string
   uploadedBy: text("uploaded_by"),
   uploadedAt: text("uploaded_at").default("CURRENT_TIMESTAMP").notNull(),
-  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull(),
+  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull()
 });
 
 // === CASE ACTIVITIES & TIMELINE ===
@@ -142,7 +142,7 @@ export const caseActivities = sqliteTable("case_activities", {
   metadata: text("metadata").default("{}").notNull(), // JSON string
   createdBy: text("created_by"),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
-  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull(),
+  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull()
 });
 
 // === RELATIONSHIPS ===
@@ -153,56 +153,56 @@ export const usersRelations = relations(users, ({ many }) => ({
   evidenceUploaded: many(evidence),
   activitiesAssigned: many(caseActivities, { relationName: "assignedTo" }),
   activitiesCreated: many(caseActivities, { relationName: "createdBy" }),
-  criminalsCreated: many(criminals),
+  criminalsCreated: many(criminals)
 });
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
     references: [users.id],
-    relationName: "leadProsecutor",
+    relationName: "leadProsecutor"
   }),
   createdBy: one(users, {
     fields: [cases.createdBy],
     references: [users.id],
-    relationName: "createdBy",
+    relationName: "createdBy"
   }),
   evidence: many(evidence),
-  activities: many(caseActivities),
+  activities: many(caseActivities)
 });
 
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
-    references: [users.id],
+    references: [users.id]
   }),
-  evidence: many(evidence),
+  evidence: many(evidence)
 });
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
-    references: [users.id],
+    references: [users.id]
   }),
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id],
-  }),
+    references: [cases.id]
+  })
 });
 
 export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
   case: one(cases, {
     fields: [caseActivities.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   assignedTo: one(users, {
     fields: [caseActivities.assignedTo],
     references: [users.id],
-    relationName: "assignedTo",
+    relationName: "assignedTo"
   }),
   createdBy: one(users, {
     fields: [caseActivities.createdBy],
     references: [users.id],
-    relationName: "createdBy",
-  }),
+    relationName: "createdBy"
+  })
 });

@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           fileSize: evidence.fileSize,
           uploadedAt: evidence.uploadedAt,
           caseName: cases.name,
-          caseNumber: cases.caseNumber,
+          caseNumber: cases.caseNumber
         })
         .from(evidence)
         .leftJoin(cases, eq(evidence.caseId, cases.id)
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         return {
           hash,
           found: found.length > 0,
-          evidence: found,
+          evidence: found
         };
       });
     }
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         fileName: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).fileName,
         storedHash: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash,
         hasHash: !!(item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash,
-        uploadedAt: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).uploadedAt,
+        uploadedAt: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).uploadedAt
       });
 
       results = verificationResults;
@@ -69,20 +69,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       totalProcessed: results.length,
       verified: results.filter((r) => r.found || r.hasHash).length,
       missing: results.filter((r) => !r.found && !r.hasHash).length,
-      processedAt: new Date().toISOString(),
+      processedAt: new Date().toISOString()
     };
 
     return json({
       success: true,
       results,
       stats,
-      message: `Processed ${results.length} item(s) for bulk hash operations`,
+      message: `Processed ${results.length} item(s) for bulk hash operations`
     });
   } catch (error: any) {
     console.error("Bulk hash operation failed:", error);
     return json({
         error: "Bulk operation failed",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         id: evidence.id,
         fileName: evidence.fileName,
         hash: evidence.hash,
-        uploadedAt: evidence.uploadedAt,
+        uploadedAt: evidence.uploadedAt
       })
       .from(evidence)
       .orderBy(evidence.uploadedAt)
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
               100
             ).toFixed(1)
           : "0",
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: new Date().toISOString()
     };
 
     return json({
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     console.error("Failed to get bulk hash status:", error);
     return json({
         error: "Failed to get hash status",
-        details: error instanceof Error ? error.message: "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );

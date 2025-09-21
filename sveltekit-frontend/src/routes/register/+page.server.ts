@@ -22,10 +22,10 @@ export const load: PageServerLoad = async ({ locals }) => {
         confirmPassword: { type: "string" },
         name: { type: "string" },
         role: { type: "string" },
-        terms: { type: "boolean" },
+        terms: { type: "boolean" }
       },
-      required: ["email", "password", "confirmPassword", "name", "role"],
-    } as JSONSchema7,
+      required: ["email", "password", "confirmPassword", "name", "role"]
+    } as JSONSchema7
   });
   return { form };
 };
@@ -42,10 +42,10 @@ export const actions: Actions = {
           confirmPassword: { type: "string" },
           name: { type: "string" },
           role: { type: "string" },
-          terms: { type: "boolean" },
+          terms: { type: "boolean" }
         },
-        required: ["email", "password", "confirmPassword", "name", "role"],
-      } as JSONSchema7,
+        required: ["email", "password", "confirmPassword", "name", "role"]
+      } as JSONSchema7
     });
 
     if (!form.valid) {
@@ -68,7 +68,7 @@ export const actions: Actions = {
 
       if (existingUser.length > 0) {
         return message(form, "An account with this email already exists.", {
-          status: 400,
+          status: 400
         });
       }
 
@@ -84,7 +84,7 @@ export const actions: Actions = {
           first_name: nameValue.split(" ")[0] || "",
           last_name: nameValue.split(" ").slice(1).join(" ") || "",
           role: form.data.role,
-          is_active: true,
+          is_active: true
         })
         .returning();
 
@@ -94,8 +94,8 @@ export const actions: Actions = {
       console.error("[Register] Error:", error);
       if (error instanceof Response) throw error;
       return message(form, "Registration failed. Please try again.", {
-        status: 500,
+        status: 500
       });
     }
-  },
+  }
 };

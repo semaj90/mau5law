@@ -21,12 +21,12 @@ export interface FetchWithTimeoutOptions extends Omit<RequestInit, 'signal'> {
 export interface FetchTimeoutError extends Error {
   name: 'TimeoutError';
   code: 'FETCH_TIMEOUT';
-  duration: number;,
+  duration: number;
 }
 
 export interface FetchAbortError extends Error {
   name: 'AbortError';
-  code: 'FETCH_ABORTED';,
+  code: 'FETCH_ABORTED';
 }
 
 export interface FetchNetworkError extends Error {
@@ -66,7 +66,7 @@ export async function fetchWithTimeout(
 
       const response = await fetch(url, {
         ...fetchOptions,
-        signal: combinedSignal,
+        signal: combinedSignal
       });
 
       // Clear timeout on successful response;
@@ -143,7 +143,7 @@ export async function fetchLegalAI(
     retry: {
       attempts: 3,
       delay: 1000,
-      backoff: 'exponential',
+      backoff: 'exponential'
     },
     headers: {
       'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ export async function fetchLegalAI(
       ...options.headers
     },
     ...options
-  ,});
+  });
 }
 
 /**
@@ -166,14 +166,14 @@ export async function fetchOllama(
     retry: {
       attempts: 2,
       delay: 2000,
-      backoff: 'linear',
+      backoff: 'linear'
     },
     headers: {
       'Content-Type': 'application/json',
       ...options.headers
     },
     ...options
-  ,});
+  });
 }
 
 /**
@@ -188,10 +188,10 @@ export async function fetchDatabase(
     retry: {
       attempts: 2,
       delay: 500,
-      backoff: 'linear',
+      backoff: 'linear'
     },
     ...options
-  ,});
+  });
 }
 
 /**
@@ -257,7 +257,7 @@ export function isNetworkError(error: any): error is FetchNetworkError {
 export function createTimeoutController(timeout: number): {
   controller: AbortController;
   timeoutId: NodeJS.Timeout | number;
-  clear: () => void;,
+  clear: () => void;
 } {
   const controller = new AbortController();
   
@@ -268,6 +268,6 @@ export function createTimeoutController(timeout: number): {
   return {
     controller,
     timeoutId,
-    clear: () => clearTimeout(timeoutId),
+    clear: () => clearTimeout(timeoutId)
   };
 }

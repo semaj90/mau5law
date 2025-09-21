@@ -11,7 +11,7 @@ export interface User {
   isActive: boolean;
   emailVerified: Date | null;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface UserSession {

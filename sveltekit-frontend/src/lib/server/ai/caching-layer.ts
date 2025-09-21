@@ -37,7 +37,7 @@ export interface CacheStats {
   misses: number;
   evictions: number;
   size: number;
-  memoryUsage: number;,
+  memoryUsage: number;
 }
 
 class CachingLayer {
@@ -59,7 +59,7 @@ class CachingLayer {
       misses: 0,
       evictions: 0,
       size: 0,
-      memoryUsage: 0,
+      memoryUsage: 0
     };
     this.hotCache = new Map();
   }
@@ -309,7 +309,7 @@ class CachingLayer {
       hotCacheSize: this.hotCache.size,
       lruCacheSize: this.lruCache.size,
       redisConnected: !!this.redis,
-      redisStats: redisInfo,
+      redisStats: redisInfo
     };
   }
 
@@ -325,7 +325,7 @@ class CachingLayer {
       this.hotCache.set(key, {
         data,
         hits: accessCount,
-        lastAccess: Date.now(),
+        lastAccess: Date.now()
       });
 
       // Limit hot cache size;
@@ -390,7 +390,7 @@ class CachingLayer {
 
       return {
         dbSize,
-        memory: info,
+        memory: info
       };
     } catch (error: any) {
       return null;

@@ -168,7 +168,7 @@ declare module '@xenova/transformers' {
     backends: {
       onnx: {
         wasm: {
-          numThreads: number;,
+          numThreads: number;
         };
       };
     };
@@ -192,7 +192,7 @@ declare module 'lokijs' {
     meta: {
       revision: number;
       created: number;
-      version: number;,
+      version: number;
     };
   }
 
@@ -211,7 +211,7 @@ declare module 'lokijs' {
     chain(): LokiCollectionChain<T>;
     simplesort(prop: keyof (T & LokiObj), desc?: boolean): LokiCollection<T>;
     compoundsort(sorts: Array<[keyof (T & LokiObj), boolean?]>): LokiCollection<T>;
-    data: (T & LokiObj)[];,
+    data: (T & LokiObj)[];
   }
 
   export interface LokiCollectionChain<T = any> {
@@ -241,7 +241,7 @@ declare module 'lokijs' {
     getName(): string;
     close(callback?: () => void): void;
     filename: string;
-    options: any;,
+    options: any;
   }
 
   export interface LokiMemoryAdapter {

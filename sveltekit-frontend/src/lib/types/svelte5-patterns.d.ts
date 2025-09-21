@@ -60,7 +60,7 @@ export interface UserState {
   profile?: {
     avatarUrl?: string;
     role: 'attorney' | 'paralegal' | 'investigator' | 'admin';
-    specializations: string[];,
+    specializations: string[];
   };
 }
 
@@ -91,7 +91,7 @@ export interface EvidenceState {
   metadata?: {
     extractedText?: string;
     ocrConfidence?: number;
-    tags: string[];,
+    tags: string[];
   };
 }
 
@@ -134,7 +134,7 @@ export interface AIResponse<T = unknown> {
     model: string;
     tokens?: {
       input: number;
-      output: number;,
+      output: number;
     };
   };
 }
@@ -148,9 +148,9 @@ export interface WorkerStatus {
   performance: {
     averageResponseTime: number;
     successRate: number;
-    totalProcessed: number;,
+    totalProcessed: number;
   };
-  lastActivity: Date;,
+  lastActivity: Date;
 }
 
 // === API REQUEST/RESPONSE TYPES ===
@@ -175,7 +175,7 @@ export interface CaseSearchRequest {
   assignedTo?: string;
   dateRange?: {
     start: Date;
-    end: Date;,
+    end: Date;
   };
   limit?: number;
   offset?: number;
@@ -187,7 +187,7 @@ export interface CaseSearchResponse {
   hasMore: boolean;
   pagination: {
     limit: number;
-    offset: number;,
+    offset: number;
   };
 }
 
@@ -207,7 +207,7 @@ export interface EvidenceSearchRequest {
   fileTypes?: EvidenceState['fileType'][];
   dateRange?: {
     start: Date;
-    end: Date;,
+    end: Date;
   };
   limit?: number;
   offset?: number;
@@ -283,7 +283,7 @@ export interface SharedState<T> {
   value: T;
   subscribe: (callback: (value: T) => void) => () => void;
   update: (updater: (value: T) => T) => void;
-  set: (value: T) => void;,
+  set: (value: T) => void;
 }
 
 // Store State Types;
@@ -293,7 +293,7 @@ export interface StoreState {
     theme: 'light' | 'dark' | 'system';
     sidebarOpen: boolean;
     loading: boolean;
-    notifications: Array<any>;,
+    notifications: Array<any>;
   };
   cases: {
     current?: CaseState;

@@ -23,7 +23,7 @@ export interface GuardResult {
   redirect?: string;
   error?: {
     status: number;
-    message: string;,
+    message: string;
   };
   data?: Record<string, any>;
 }
@@ -104,7 +104,7 @@ export class RouteGuards {
     if (!user) {
       return {
         allowed: false,
-        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname),
+        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
       };
     }
 
@@ -124,7 +124,7 @@ export class RouteGuards {
     if (!user) {
       return {
         allowed: false,
-        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname),
+        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
       };
     }
 
@@ -133,7 +133,7 @@ export class RouteGuards {
         allowed: false,
         error: {
           status: 403,
-          message: 'Admin access required',
+          message: 'Admin access required'
         }
       };
     }
@@ -153,7 +153,7 @@ export class RouteGuards {
         allowed: false,
         error: {
           status: 404,
-          message: 'Page not found',
+          message: 'Page not found'
         }
       };
     }
@@ -181,7 +181,7 @@ export class RouteGuards {
         allowed: false,
         error: {
           status: 404,
-          message: 'Feature not available',
+          message: 'Feature not available'
         }
       };
     }
@@ -207,7 +207,7 @@ export class RouteGuards {
         allowed: false,
         error: {
           status: 429,
-          message: 'Too many requests',
+          message: 'Too many requests'
         }
       };
     }
@@ -227,7 +227,7 @@ export class RouteGuards {
     if (isMaintenanceMode && !isMaintenancePage && !isAdmin) {
       return {
         allowed: false,
-        redirect: '/maintenance',
+        redirect: '/maintenance'
       };
     }
 
@@ -282,7 +282,7 @@ export function createGuardedLoader(
       route: route as any,
       params,
       user: (event.locals as any).user,
-      session: (event.locals as any).session,
+      session: (event.locals as any).session
     };
 
     // Execute guards
@@ -302,12 +302,12 @@ export function createGuardedLoader(
       const loaderResult = await loader(event);
       return {
         ...loaderResult,
-        guardData: guardResult.data,
+        guardData: guardResult.data
       };
     }
 
     return {
-      guardData: guardResult.data,
+      guardData: guardResult.data
     };
   };
 }
@@ -345,7 +345,7 @@ export function createRouteGuardMiddleware(globalGuards: string[] = []) {
       route: route as any,
       params,
       user: (event.locals as any).user,
-      session: (event.locals as any).session,
+      session: (event.locals as any).session
     };
 
     // Execute global guards;
@@ -429,7 +429,7 @@ export async function checkRoutePermission(
     route: { id: routeId } as any,
     params,
     user,
-    session: user?.sessionId,
+    session: user?.sessionId
   };
 
   const result = await routeGuards.executeGuards(config.guards, context);

@@ -33,7 +33,7 @@ export interface AIAgentState {
   vectorStore: {
     isIndexed: boolean;
     documentCount: number;
-    lastIndexUpdate: Date | null;,
+    lastIndexUpdate: Date | null;
   };
   similarDocuments: SimilarDocument[];
   citationSources: CitationSource[];
@@ -51,7 +51,7 @@ export interface AIAgentState {
   responseTimeMs: number;
   averageResponseTime: number;
   totalRequests: number;
-  successRate: number;,
+  successRate: number;
 }
 
 export interface ProcessingJob {
@@ -63,7 +63,7 @@ export interface ProcessingJob {
   startTime: Date;
   endTime?: Date;
   error?: string;
-  retryCount: number;,
+  retryCount: number;
 }
 
 export interface SimilarDocument {
@@ -80,7 +80,7 @@ export interface CitationSource {
   url?: string;
   content: string;
   relevance: number;
-  type: "document" | "case" | "statute" | "evidence";,
+  type: "document" | "case" | "statute" | "evidence";
 }
 
 export interface AIError {
@@ -90,7 +90,7 @@ export interface AIError {
   timestamp: Date;
   context?: unknown;
   resolved: boolean;
-  retryable: boolean;,
+  retryable: boolean;
 }
 
 // Main AI Agent Store;
@@ -110,7 +110,7 @@ const createAIAgentStore = () => {
     vectorStore: {
       isIndexed: false,
       documentCount: 0,
-      lastIndexUpdate: null,
+      lastIndexUpdate: null
     },
     similarDocuments: [],
     citationSources: [],
@@ -122,7 +122,7 @@ const createAIAgentStore = () => {
     responseTimeMs: 0,
     averageResponseTime: 0,
     totalRequests: 0,
-    successRate: 100,
+    successRate: 100
   });
 
   return {
@@ -147,7 +147,7 @@ const createAIAgentStore = () => {
           currentModel: connectionResult?.model || "unknown" // @ts-ignore - Model property access,
           availableModels: connectionResult.availableModels,
           lastHeartbeat: new Date(),
-          systemHealth: "healthy",
+          systemHealth: "healthy"
         });
 
         // Start heartbeat
@@ -156,14 +156,14 @@ const createAIAgentStore = () => {
         this.addError({
           type: "connection",
           message: (error as Error).message,
-          retryable: true,
+          retryable: true
         });
 
         update((state) => ({
           ...state,
           isConnected: false,
           isProcessing: false,
-          systemHealth: "critical",
+          systemHealth: "critical"
         });
       }
     },
@@ -174,7 +174,7 @@ const createAIAgentStore = () => {
         isConnected: false,
         systemHealth: "degraded",
         currentConversation: [],
-        activeSessionId: null,
+        activeSessionId: null
       });
     },
 
@@ -189,7 +189,7 @@ const createAIAgentStore = () => {
         id: crypto.randomUUID(),
         content: message,
         role: "user",
-        timestamp: new Date(),
+        timestamp: new Date()
       };
 
       update((state) => ({
@@ -197,7 +197,7 @@ const createAIAgentStore = () => {
         currentConversation: [...state.currentConversation, userMessage],
         activeSessionId: sessionId,
         isProcessing: true,
-        typingIndicator: true,
+        typingIndicator: true
       });
 
       // Add processing job;
@@ -207,12 +207,12 @@ const createAIAgentStore = () => {
         status: "pending",
         input: { message, context, sessionId },
         startTime: new Date(),
-        retryCount: 0,
+        retryCount: 0
       };
 
       update((state) => ({
         ...state,
-        processingQueue: [...state.processingQueue, job],
+        processingQueue: [...state.processingQueue, job]
       });
 
       try {
@@ -222,11 +222,11 @@ const createAIAgentStore = () => {
           sessionId,
           context: {
             conversationHistory: [],
-            ...context,
+            ...context
           },
           options: {
             stream: true,
-            useRAG: true,
+            useRAG: true
           }
         });
 
@@ -243,14 +243,14 @@ const createAIAgentStore = () => {
             (state.totalRequests + 1),
           totalRequests: state.totalRequests + 1,
           isProcessing: false,
-          typingIndicator: false,
+          typingIndicator: false
         });
       } catch (error: any) {
         this.addError({
           type: "processing",
           message: (error as Error).message,
           context: { jobId, message: message.substring(0, 100) },
-          retryable: true,
+          retryable: true
         });
 
         update((state) => ({
@@ -262,7 +262,7 @@ const createAIAgentStore = () => {
               ? (((state.totalRequests * state.successRate) / 100 - 1) /
                   state.totalRequests) *
                 100
-              : 0,
+              : 0
         });
 
         this.failJob(jobId, (error as Error).message);
@@ -278,7 +278,7 @@ const createAIAgentStore = () => {
       update((state) => ({
         ...state,
         isStreaming: true,
-        streamingResponse: "",
+        streamingResponse: ""
       });
 
       try {
@@ -298,7 +298,7 @@ const createAIAgentStore = () => {
 
                   update((state) => ({
                     ...state,
-                    streamingResponse: assistantMessage,
+                    streamingResponse: assistantMessage
                   });
                 }
 
@@ -317,7 +317,7 @@ const createAIAgentStore = () => {
         update((state) => ({
           ...state,
           isStreaming: false,
-          streamingResponse: "",
+          streamingResponse: ""
         });
       }
     },
@@ -333,15 +333,15 @@ const createAIAgentStore = () => {
           model: data?.model || "unknown" // @ts-ignore - Model property access,
           confidence: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).confidence,
           executionTime: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).executionTime,
-          fromCache: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).fromCache || false,
-        },
+          fromCache: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).fromCache || false
+        }
       };
 
       update((state) => ({
         ...state,
         currentConversation: [...state.currentConversation, assistantMessage],
         similarDocuments: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).sources || [],
-        citationSources: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).citations || [],
+        citationSources: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).citations || []
       });
 
       this.completeJob(jobId, { message: assistantMessage });
@@ -353,12 +353,12 @@ const createAIAgentStore = () => {
         // Use real AI service for document search;
         const documents = await realAIService.searchSimilarDocuments(query, {
           limit,
-          threshold: 0.7,
+          threshold: 0.7
         });
 
         update((state) => ({
           ...state,
-          similarDocuments: documents,
+          similarDocuments: documents
         });
 
         return documents;
@@ -366,7 +366,7 @@ const createAIAgentStore = () => {
         this.addError({
           type: "processing",
           message: `Search failed: ${(error as Error).message}`,
-          retryable: true,
+          retryable: true
         });
         return [];
       }
@@ -395,8 +395,8 @@ const createAIAgentStore = () => {
             ...state.vectorStore,
             documentCount: state.vectorStore.documentCount + 1,
             lastIndexUpdate: new Date(),
-            isIndexed: true,
-          },
+            isIndexed: true
+          }
         });
 
         return { success: true };
@@ -404,7 +404,7 @@ const createAIAgentStore = () => {
         this.addError({
           type: "processing",
           message: `Indexing failed: ${(error as Error).message}`,
-          retryable: true,
+          retryable: true
         });
         throw error;
       }
@@ -432,7 +432,7 @@ const createAIAgentStore = () => {
         this.addError({
           type: "model",
           message: (error as Error).message,
-          retryable: true,
+          retryable: true
         });
 
         update((state) => ({ ...state, isProcessing: false });
@@ -447,7 +447,7 @@ const createAIAgentStore = () => {
         activeSessionId: null,
         streamingResponse: "",
         similarDocuments: [],
-        citationSources: [],
+        citationSources: []
       });
     },
 
@@ -456,10 +456,10 @@ const createAIAgentStore = () => {
         ...state,
         conversationHistory: [
           ...state.conversationHistory,
-          [...state.currentConversation],
+          [...state.currentConversation]
         ],
         currentConversation: [],
-        activeSessionId: null,
+        activeSessionId: null
       });
     },
 
@@ -469,7 +469,7 @@ const createAIAgentStore = () => {
           return {
             ...state,
             currentConversation: [...state.conversationHistory[index]],
-            activeSessionId: crypto.randomUUID(),
+            activeSessionId: crypto.randomUUID()
           };
         }
         return state;
@@ -482,14 +482,14 @@ const createAIAgentStore = () => {
         id: crypto.randomUUID(),
         timestamp: new Date(),
         resolved: false,
-        ...error,
+        ...error
       };
 
       update((state) => ({
         ...state,
         errors: [...state.errors, newError],
         systemHealth:
-          state.systemHealth === "healthy" ? "degraded" : state.systemHealth,
+          state.systemHealth === "healthy" ? "degraded" : state.systemHealth
       });
     },
 
@@ -498,7 +498,7 @@ const createAIAgentStore = () => {
         ...state,
         errors: state.errors.map((error) =>
           error.id === errorId ? { ...error, resolved: true } : error
-        ),
+        )
       });
     },
 
@@ -506,7 +506,7 @@ const createAIAgentStore = () => {
       update((state) => ({
         ...state,
         errors: [],
-        systemHealth: state.isConnected ? "healthy" : "degraded",
+        systemHealth: state.isConnected ? "healthy" : "degraded"
       });
     },
 
@@ -520,13 +520,13 @@ const createAIAgentStore = () => {
           ...job,
           status: "completed",
           output: result,
-          endTime: new Date(),
+          endTime: new Date()
         };
 
         return {
           ...state,
           processingQueue: state.processingQueue.filter((j) => j.id !== jobId),
-          completedJobs: [...state.completedJobs, completedJob],
+          completedJobs: [...state.completedJobs, completedJob]
         };
       });
     },
@@ -540,13 +540,13 @@ const createAIAgentStore = () => {
           ...job,
           status: "failed",
           error,
-          endTime: new Date(),
+          endTime: new Date()
         };
 
         return {
           ...state,
           processingQueue: state.processingQueue.filter((j) => j.id !== jobId),
-          completedJobs: [...state.completedJobs, failedJob],
+          completedJobs: [...state.completedJobs, failedJob]
         };
       });
     },
@@ -563,20 +563,20 @@ const createAIAgentStore = () => {
             lastHeartbeat: new Date(),
             systemHealth: health.overall ? "healthy" : "critical",
             availableModels: health.models.map(m => m.name),
-            isConnected: health.overall,
+            isConnected: health.overall
           });
         } catch (error: any) {
           update((state) => ({
             ...state,
             systemHealth: "critical",
-            isConnected: false,
+            isConnected: false
           });
         }
       }, 30000); // Every 30 seconds
 
       // Store interval ID for cleanup
       return interval;
-    },
+    }
   };
 };
 
@@ -595,7 +595,7 @@ export const performanceMetrics = derived(aiAgentStore, (state) => ({
   responseTime: state.responseTimeMs,
   averageResponseTime: state.averageResponseTime,
   totalRequests: state.totalRequests,
-  successRate: state.successRate,
+  successRate: state.successRate
 });
 
 // Auto-connect on store initialization;

@@ -80,7 +80,7 @@ async function performHealthChecks(): Promise<any> {
 
   try {
     const ollamaResponse = await fetch('http://localhost:11434/api/version', {
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(3000)
     });
     results.ollama = ollamaResponse.ok;
   } catch {
@@ -128,7 +128,7 @@ function validateChatRequest(body: any): { valid: boolean; error?: string } {
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
-  content: string;,
+  content: string;
 }
 
 export interface EnhancedChatRequest {
@@ -161,7 +161,7 @@ export interface ChatResponse {
     vectorSearchUsed: boolean;
     sourcesCount: number;
     requestId: string;
-    timestamp: string;,
+    timestamp: string;
   };
   error?: string;
 }
@@ -181,7 +181,7 @@ function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
     case 'planning':
       return 'application';
     default:
-      return undefined;,
+      return undefined;
   }
 }
 
@@ -215,17 +215,17 @@ export const GET: RequestHandler = async ({ url, request }) => {
             vectorCache: true,
             rateLimiting: true,
             structuredLogging: true,
-            productionReady: true,
+            productionReady: true
           },
           health: {
             ollama: healthChecks.ollama,
             database: healthChecks.database,
-            overall: overallHealth,
+            overall: overallHealth
           },
           performance: {
-            responseTimeMs: Date.now() - startTime,
+            responseTimeMs: Date.now() - startTime
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         };
 
         requestLogger.info(
@@ -235,7 +235,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         );
 
         return json(response, {
-          status: overallHealth ? 200 : 503,
+          status: overallHealth ? 200 : 503
         });
       }
 
@@ -267,9 +267,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
           results,
           count: results.length,
           performance: {
-            searchTimeMs: Date.now() - startTime,
+            searchTimeMs: Date.now() - startTime
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
 
@@ -284,7 +284,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     } catch (error: any) {
       requestLogger.error('GET request failed', 'chat-api-v3', error, {
         duration: Date.now() - startTime,
-        url: url.toString(),
+        url: url.toString()
       });
 
       return json({
@@ -292,7 +292,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         status: 'error',
         error: 'Internal server error',
         requestId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }, { status: 503 });
     }
   });
@@ -317,7 +317,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Invalid JSON in request body',
           requestId,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }, { status: 400 });
       }
 
@@ -329,7 +329,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: validation.error,
           requestId,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }, { status: 400 });
       }
 
@@ -386,7 +386,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 useGrpoRecommendations,
                 enableThinkingCapture,
                 thinkingType: sanitizeThinkingType(thinkingType),
-                context: messages || [],
+                context: messages || []
               });
 
               let sources: VectorSearchResult[] = [];
@@ -398,7 +398,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     type: 'sources',
                     sources,
                     requestId,
-                    timestamp: new Date().toISOString(),
+                    timestamp: new Date().toISOString()
                   };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`);
                 } else if (chunk.metadata?.type === 'recommendations') {
@@ -408,7 +408,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     recommendations,
                     count: recommendations.length,
                     requestId,
-                    timestamp: new Date().toISOString(),
+                    timestamp: new Date().toISOString()
                   };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`);
                 } else if (chunk.metadata?.type === 'text') {
@@ -436,7 +436,7 @@ export const POST: RequestHandler = async ({ request }) => {
               controller.close();
 
               conversationLogger.info('Streaming completed', 'chat-api-v3', {
-                duration: Date.now() - startTime,
+                duration: Date.now() - startTime
               });
 
             } catch (error: any) {
@@ -446,7 +446,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 type: 'error',
                 error: 'An error occurred while processing your request',
                 requestId,
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toISOString()
               };
               controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`);
               controller.close();
@@ -485,7 +485,7 @@ export const POST: RequestHandler = async ({ request }) => {
         useGrpoRecommendations,
         enableThinkingCapture,
         thinkingType: sanitizeThinkingType(thinkingType),
-        context: messages || [],
+        context: messages || []
       });
 
       for await (const chunk of streamGenerator) {
@@ -506,7 +506,7 @@ export const POST: RequestHandler = async ({ request }) => {
           responseLength: fullResponse.length,
           vectorSearchUsed,
           sourcesFound: sources.length,
-          duration: processingTime,
+          duration: processingTime
         }
       );
 
@@ -523,7 +523,7 @@ export const POST: RequestHandler = async ({ request }) => {
           vectorSearchUsed,
           sourcesCount: sources.length,
           requestId,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }
       };
 
@@ -545,7 +545,7 @@ export const POST: RequestHandler = async ({ request }) => {
         requestId,
         metadata: {
           processingTimeMs: processingTime,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }
       }, { status: 500 });
     }

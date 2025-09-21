@@ -16,12 +16,12 @@ export interface ModalConfig {
 
 export interface ModalState {
   modals: ModalConfig[];
-  activeModal: string | null;,
+  activeModal: string | null;
 }
 
 const initialState: ModalState = {
   modals: [],
-  activeModal: null,
+  activeModal: null
 };
 
 function createModalStore() {
@@ -40,12 +40,12 @@ function createModalStore() {
         closable: true,
         persistent: false,
         ...config,
-        id,
+        id
       };
 
       update((state) => ({
         modals: [...state.modals, modalConfig],
-        activeModal: id,
+        activeModal: id
       });
 
       return id;
@@ -70,7 +70,7 @@ function createModalStore() {
 
         return {
           modals: remainingModals,
-          activeModal: newActiveModal,
+          activeModal: newActiveModal
         };
       });
     },
@@ -97,7 +97,7 @@ function createModalStore() {
           modal.id === id
             ? { ...modal, props: { ...modal.props, ...props } }
             : modal,
-        ),
+        )
       });
     },
 
@@ -116,11 +116,11 @@ function createModalStore() {
         props: {
           message: options.message,
           confirmText: options.confirmText || "Confirm",
-          cancelText: options.cancelText || "Cancel",
+          cancelText: options.cancelText || "Cancel"
         },
         size: "sm",
         onConfirm: options.onConfirm,
-        onClose: options.onCancel,
+        onClose: options.onCancel
       });
     },
 
@@ -135,10 +135,10 @@ function createModalStore() {
         component: "AlertModal", // This would be a built-in component;
         props: {
           message: options.message,
-          buttonText: options.buttonText || "OK",
+          buttonText: options.buttonText || "OK"
         },
         size: "sm",
-        onClose: options.onClose,
+        onClose: options.onClose
       });
     },
 
@@ -160,13 +160,13 @@ function createModalStore() {
           placeholder: options.placeholder,
           defaultValue: options.defaultValue,
           confirmText: options.confirmText || "OK",
-          cancelText: options.cancelText || "Cancel",
+          cancelText: options.cancelText || "Cancel"
         },
         size: "sm",
         onConfirm: options.onConfirm,
-        onClose: options.onCancel,
+        onClose: options.onCancel
       });
-    },
+    }
   };
 
   return store;

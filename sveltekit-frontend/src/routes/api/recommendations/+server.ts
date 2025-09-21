@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           query,
           userContext,
           neo4jContext,
-          limit = 5,
+          limit = 5
         } = body;
         
         // Run enhanced search with Neo4j context
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!userId) {
           return json({
             success: false,
-            error: 'userId is required',
+            error: 'userId is required'
           }, { status: 400 });
         }
 
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           userPattern: {
             complexity: patterns.queryComplexity,
             frequency: patterns.usageFrequency,
-            activeHours: patterns.timePatterns.mostActiveHours,
+            activeHours: patterns.timePatterns.mostActiveHours
           }
         });
       }
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             'privacy compliance regulations'
           ],
           period: '24h',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           message: 'Feedback recorded successfully',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     return json({ 
         success: false,
-        error: error.message || "Failed to generate recommendations" ,
+        error: error.message || "Failed to generate recommendations" 
       },)
       { status: 500 }
     );
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ url }) => {
           complexity: patterns.queryComplexity,
           frequency: patterns.usageFrequency,
           topTopics: patterns.preferredTopics.slice(0, 3),
-          activeHours: patterns.timePatterns.mostActiveHours,
+          activeHours: patterns.timePatterns.mostActiveHours
         }
       });
     }
@@ -190,16 +190,16 @@ export const GET: RequestHandler = async ({ url }) => {
         userPatterns: true,
         contextAware: true,
         graphEnhanced: true,
-        machineLearning: true,
+        machineLearning: true
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     }, { status: 500 });
   }
 };

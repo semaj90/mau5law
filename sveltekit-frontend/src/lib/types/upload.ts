@@ -135,7 +135,7 @@ export interface UploadProcessingResult {
   ocrResults?: OCRResult[];
   legalAnalysis?: UploadAnalysisResult;
   processingTime: number;
-  processingSteps: CompletedStep[];,
+  processingSteps: CompletedStep[];
 }
 
 export interface DetectedObject {
@@ -152,7 +152,7 @@ export interface OCRResult {
   text: string;
   confidence: number;
   words: OCRWord[];
-  processingTime: number;,
+  processingTime: number;
 }
 
 export interface OCRWord {
@@ -168,13 +168,13 @@ export interface UploadAnalysisResult {
   obligations: string[];
   risks: string[];
   compliance: ComplianceCheck[];
-  summary: string;,
+  summary: string;
 }
 
 export interface ComplianceCheck {
   rule: string;
   status: 'compliant' | 'non-compliant' | 'unclear';
-  details: string;,
+  details: string;
 }
 
 export interface CompletedStep {
@@ -256,7 +256,7 @@ export type ProcessingStageType = ProcessingStage['current'];
 export interface UploadEventDetail<T = any> {
   fileId?: string;
   data: T;
-  timestamp: Date;,
+  timestamp: Date;
 }
 
 export type UploadEventMap = {

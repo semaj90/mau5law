@@ -15,7 +15,7 @@ export interface SSRCacheConfig {
   staleWhileRevalidate: number;
   quantizeResponses: boolean;
   enableRAG: boolean;
-  legalOptimizations: boolean;,
+  legalOptimizations: boolean;
 }
 
 export interface LegalAPIResponse {
@@ -35,7 +35,7 @@ export interface LegalAPIResponse {
     total: number;
     totalPages: number;
     hasNext: boolean;
-    hasPrev: boolean;,
+    hasPrev: boolean;
   };
 }
 
@@ -57,7 +57,7 @@ class SSRLegalAPICache {
     staleWhileRevalidate: 86400, // 24 hours
     quantizeResponses: true,
     enableRAG: true,
-    legalOptimizations: true,
+    legalOptimizations: true
   };
 
   private responseQuantizer = new ResponseQuantizer();
@@ -86,7 +86,7 @@ class SSRLegalAPICache {
         type: options.ragContext ? 'rag' : 'hybrid',
         priority: this.determinePriority(endpoint),
         keys: [cacheKey],
-        ttl: options.ttl || this.config.defaultTTL,
+        ttl: options.ttl || this.config.defaultTTL
       };
 
       // Execute parallel cache lookup
@@ -153,7 +153,7 @@ class SSRLegalAPICache {
         etag: this.generateETag(processedResponse),
         contentType: 'application/json',
         quantized: options.quantize !== false && this.config.quantizeResponses,
-        ragContext: options.ragContext,
+        ragContext: options.ragContext
       };
 
       // Store across cache tiers
@@ -164,7 +164,7 @@ class SSRLegalAPICache {
           tier: this.selectOptimalTier(endpoint, processedResponse),
           ttl: cacheEntry.ttl,
           priority: this.determinePriority(endpoint) as 'low' | 'normal' | 'high',
-          type: 'ssr_legal_api',
+          type: 'ssr_legal_api'
         }
       );
 
@@ -302,7 +302,7 @@ class SSRLegalAPICache {
       avgResponseTime: perfStats.currentMetrics.totalLatency,
       cacheSize: perfStats.cacheStats.l1Size + perfStats.cacheStats.l2Size + perfStats.cacheStats.l3Size,
       quantizedResponses: 0, // Would need to track this
-      ragContextEntries: this.ragContextCache.size,
+      ragContextEntries: this.ragContextCache.size
     };
   }
 
@@ -392,7 +392,7 @@ class SSRLegalAPICache {
         'Content-Type': 'application/json',
         ...options.headers
       },
-      body: options.body ? JSON.stringify(options.body) : undefined,
+      body: options.body ? JSON.stringify(options.body) : undefined
     });
 
     if (!(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).ok) {

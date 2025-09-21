@@ -57,11 +57,11 @@ export const GET: RequestHandler = async () => {
         const testEmbedding = new Array(384).fill(0).map(() => Math.random();
         const searchResults = await unifiedDb.vectorSearch(testEmbedding, {
           limit: 2,
-          threshold: 0.1,
+          threshold: 0.1
         });
         vectorSearchTest = {
           resultsCount: searchResults.results.length,
-          performance: searchResults.performance,
+          performance: searchResults.performance
         };
         console.log('✅ Vector Search Test:', vectorSearchTest);
       } catch (error) {
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async () => {
         database: health.postgresql ? '✅ Connected' : '❌ Failed',
         pgvector: vectorSupport ? '✅ Available' : '⚠️ Not Available',
         qdrant: qdrantSupport ? '✅ Connected' : '⚠️ Not Connected',
-        overallHealth: health.overallHealth ? '✅ Healthy' : '❌ Unhealthy',
+        overallHealth: health.overallHealth ? '✅ Healthy' : '❌ Unhealthy'
       }
     };
 
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'error',
       error: String(error),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

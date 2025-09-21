@@ -117,13 +117,13 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
             .limit(1));
           return {
             ...report,
-            canvasState: canvasState[0] || null,
+            canvasState: canvasState[0] || null
           };
         } catch (error: any) {
           console.warn("Error fetching canvas state:", error);
           return {
             ...report,
-            canvasState: null,
+            canvasState: null
           };
         }
       })
@@ -136,7 +136,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
       pagination: {
         limit,
         offset,
-        total: totalCount,
+        total: totalCount
       },
       // TODO: In future, unify aiReports and reports schemas for easier querying
       // TODO: Add GraphQL endpoint for flexible querying
@@ -180,7 +180,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
       isPublic: data.isPublic || false,
       tags: data.tags || [],
       metadata: {
-        ...(data.metadata || {,}),
+        ...(data.metadata || {}),
         wordCount,
         estimatedReadTime: Math.ceil(wordCount / 200),
         summary: data.summary || "",
@@ -189,9 +189,9 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
         sections: data.sections || [],
         aiSummary: data.aiSummary || null,
         aiTags: data.aiTags || [],
-        templateId: data.templateId || null,
+        templateId: data.templateId || null
       },
-      createdBy: locals.user.id,
+      createdBy: locals.user.id
     };
 
     const [newReport] = await db.insert(reports).values(reportData).returning();
@@ -234,7 +234,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
       .filter((word: string) => word.length > 0).length;
 
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Only update provided fields
@@ -250,9 +250,9 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
       const currentMetadata = (existingReport[0].metadata as any) || {};
       updateData.metadata = {
         ...currentMetadata,
-        ...(data.metadata || {,}),
+        ...(data.metadata || {}),
         wordCount,
-        estimatedReadTime: Math.ceil(wordCount / 200),
+        estimatedReadTime: Math.ceil(wordCount / 200)
       };
     }
     const [updatedReport] = await db
@@ -327,7 +327,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
       return json({ error: "Report not found" }, { status: 404 });
     }
     const updateData: Record<string, any> = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     // Handle specific patch operations;

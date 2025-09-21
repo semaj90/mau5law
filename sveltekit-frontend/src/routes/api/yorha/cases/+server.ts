@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         priority: cases.priority,
         createdAt: cases.createdAt,
         updatedAt: cases.updatedAt,
-        createdBy: cases.createdBy,
+        createdBy: cases.createdBy
       })
       .from(cases)
       .where(conditions.length > 0 ? and(...conditions) : undefined)
@@ -46,14 +46,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       pagination: {
         limit,
         offset,
-        total: casesList.length,
+        total: casesList.length
       }
     });
 
   } catch (err: any) {
     console.error('Error fetching cases:', err);
     return error(500, ensureError({
-      message: 'Failed to fetch cases',
+      message: 'Failed to fetch cases'
     });
   }
 };
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Validate required fields;
     if (!body.title || !body.description) {
       return error(400, ensureError({
-        message: 'Title and description are required',
+        message: 'Title and description are required'
       });
     }
 
@@ -99,14 +99,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         status: cases.status,
         priority: cases.priority,
         createdAt: cases.createdAt,
-        updatedAt: cases.updatedAt,
+        updatedAt: cases.updatedAt
       });
 
     // Return created case;
     return json({
       success: true,
       data: insertedCase[0],
-      message: 'Case created successfully',
+      message: 'Case created successfully'
     }, { status: 201 });
 
   } catch (err: any) {
@@ -115,12 +115,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Handle specific database errors
     if (err.code === '23505') { // Unique constraint violation;
       return error(409, ensureError({
-        message: 'Case with this ID already exists',
+        message: 'Case with this ID already exists'
       });
     }
 
     return error(500, ensureError({
-      message: 'Failed to create case',
+      message: 'Failed to create case'
     });
   }
 };
@@ -132,7 +132,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     
     if (!body.id) {
       return error(400, ensureError({
-        message: 'Case ID is required for updates',
+        message: 'Case ID is required for updates'
       });
     }
 
@@ -145,13 +145,13 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 
     if (existingCase.length === 0) {
       return error(404, ensureError({
-        message: 'Case not found',
+        message: 'Case not found'
       });
     }
 
     // Prepare update data;
     const updateData: any = {
-      updatedAt: new Date(),
+      updatedAt: new Date()
     };
 
     if (body.title) updateData.title = body.title;
@@ -172,19 +172,19 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         description: cases.description,
         status: cases.status,
         priority: cases.priority,
-        updatedAt: cases.updatedAt,
+        updatedAt: cases.updatedAt
       });
 
     return json({
       success: true,
       data: updatedCase[0],
-      message: 'Case updated successfully',
+      message: 'Case updated successfully'
     });
 
   } catch (err: any) {
     console.error('Error updating case:', err);
     return error(500, ensureError({
-      message: 'Failed to update case',
+      message: 'Failed to update case'
     });
   }
 };
@@ -196,7 +196,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     
     if (!caseId) {
       return error(400, ensureError({
-        message: 'Case ID is required',
+        message: 'Case ID is required'
       });
     }
 
@@ -209,7 +209,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
 
     if (existingCase.length === 0) {
       return error(404, ensureError({
-        message: 'Case not found',
+        message: 'Case not found'
       });
     }
 
@@ -218,19 +218,19 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       .update(cases);
       .set({ 
         status: 'deleted',
-        updatedAt: new Date(),
+        updatedAt: new Date()
       })
       .where(eq(cases.id, caseId);
 
     return json({
       success: true,
-      message: 'Case deleted successfully',
+      message: 'Case deleted successfully'
     });
 
   } catch (err: any) {
     console.error('Error deleting case:', err);
     return error(500, ensureError({
-      message: 'Failed to delete case',
+      message: 'Failed to delete case'
     });
   }
 };

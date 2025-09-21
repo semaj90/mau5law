@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ params }) => {
         status: 'processing',
         progress: {
           stage: activeJob.stage || 'processing',
-          percentage: activeJob.progress || 0,
+          percentage: activeJob.progress || 0
         }
       } as JobStatusResponse);
     }
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ params }) => {
         contentType: userDocuments.contentType,
         embedding: userDocuments.embedding,
         metadata: userDocuments.metadata,
-        createdAt: userDocuments.createdAt,
+        createdAt: userDocuments.createdAt
       })
       .from(userDocuments)
       .where(like(userDocuments.source, `%${jobId}%`)
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ params }) => {
           metadata
         },
         createdAt: doc.createdAt?.toISOString(),
-        completedAt: metadata.completedAt || doc.createdAt?.toISOString(),
+        completedAt: metadata.completedAt || doc.createdAt?.toISOString()
       } as JobStatusResponse);
     }
 
@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ params }) => {
         status: 'queued',
         progress: {
           stage: 'queued',
-          percentage: 0,
+          percentage: 0
         }
       } as JobStatusResponse);
     }
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ params }) => {
       success: true,
       jobId,
       status: 'not-found',
-      error: 'Job not found in queue or database',
+      error: 'Job not found in queue or database'
     } as JobStatusResponse);
 
   } catch (err) {
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ params }) => {
       success: false,
       jobId: params.jobId || 'unknown',
       status: 'failed',
-      error: err instanceof Error ? err.message: String(err),
+      error: err instanceof Error ? err.message: String(err)
     } as JobStatusResponse, { status: 500 });
   }
 };

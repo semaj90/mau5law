@@ -27,7 +27,7 @@ type GPUConfig = {
 type FetchResult = {
   ok: true;
   source: 'go';
-  config: GPUConfig;,
+  config: GPUConfig;
 } | {
   ok: false;
   source: 'shim' | 'cache';

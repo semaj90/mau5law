@@ -6,7 +6,7 @@ import type {
   DocumentChunk,
   LegalDocument,
   AnalysisResult,
-  UserQuery,
+  UserQuery
 } from './types.js';
 import type { SelfPromptingSuggestion } from '../../ai/intelligent-model-orchestrator.js';
 
@@ -36,7 +36,7 @@ class EnhancedOllamaService extends EventEmitter {
         'gemma3:legal-latest',
         'gemma-270m-fast',
         'legal-bert-onnx',
-        'nomic-embed-text',
+        'nomic-embed-text'
       ];
     }
   }
@@ -82,7 +82,7 @@ class EnhancedOllamaService extends EventEmitter {
     const resp: OllamaResponse = {
       model,
       response: `Stub response: ${prompt.slice(0, 200)}`,
-      done: true,
+      done: true
     } as OllamaResponse;
 
     if (OLLAMA_CONFIG.performance?.cacheEnabled) {
@@ -117,7 +117,7 @@ class EnhancedOllamaService extends EventEmitter {
         sentiment: 'neutral',
         riskFactors: [],
         recommendations: [],
-        citations: [],
+        citations: []
       },
       model
     );
@@ -150,13 +150,13 @@ class EnhancedOllamaService extends EventEmitter {
         organizations: [],
         dates: [],
         locations: [],
-        legalConcepts: [],
+        legalConcepts: []
       },
       sentiment: analysis.sentiment || 'neutral',
       riskFactors: analysis.riskFactors || [],
       recommendations: analysis.recommendations || [],
       citations: analysis.citations || [],
-      metadata: { modelUsed: modelUsed || 'unknown', timestamp: new Date().toISOString() },
+      metadata: { modelUsed: modelUsed || 'unknown', timestamp: new Date().toISOString() }
     } as AnalysisResult;
   }
 
@@ -173,8 +173,8 @@ class EnhancedOllamaService extends EventEmitter {
       fallbackChain: {
         legal: ['gemma:legal'],
         general: this.availableModels,
-        embedding: ['nomic-embed-text'],
-      },
+        embedding: ['nomic-embed-text']
+      }
     };
   }
 
@@ -185,14 +185,14 @@ class EnhancedOllamaService extends EventEmitter {
         status: available ? 'healthy' : 'unhealthy',
         service: 'ollama',
         timestamp: new Date().toISOString(),
-        details: { models: this.availableModels.length, cache: this.cache.size },
+        details: { models: this.availableModels.length, cache: this.cache.size }
       };
     } catch (err: any) {
       return {
         status: 'error',
         service: 'ollama',
         timestamp: new Date().toISOString(),
-        error: err?.message ?? 'unknown',
+        error: err?.message ?? 'unknown'
       };
     }
   }

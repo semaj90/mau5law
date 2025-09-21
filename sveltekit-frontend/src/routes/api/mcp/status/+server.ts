@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 				successRate: 0.923,
 				averageResponseTime: 226.52,
 				workerCount: 2,
-				lastTestTime: new Date().toISOString(),
+				lastTestTime: new Date().toISOString()
 			};
 		} catch (error: any) {
 			console.log('Cluster metrics not available:', error.message);
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 			ollamaModelsLoaded: ollamaStatus === 'online' && ollamaModels.length > 0,
 			clusterSystemOnline: clusterStatus === 'validated',
 			vsCodeExtensionActive: false, // Would need to be detected differently
-			contextualAnalysisReady: mcpServerStatus === 'online' && clusterStatus === 'validated',
+			contextualAnalysisReady: mcpServerStatus === 'online' && clusterStatus === 'validated'
 		};
 		
 		const overallStatus = Object.values(integrationReadiness).filter(item => item.length) >= 3 
@@ -101,16 +101,16 @@ export const GET: RequestHandler = async ({ url, request }) => {
 				mcpServer: {
 					status: mcpServerStatus,
 					metrics: mcpMetrics,
-					url: 'http://localhost:40000',
+					url: 'http://localhost:40000'
 				},
 				ollama: {
 					status: ollamaStatus,
 					models: ollamaModels,
-					url: 'http://localhost:11434',
+					url: 'http://localhost:11434'
 				},
 				cluster: {
 					status: clusterStatus,
-					metrics: clusterMetrics,
+					metrics: clusterMetrics
 				}
 			},
 			mcpTools: mcpToolsStatus,
@@ -122,7 +122,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 				realtimeUpdates: mcpServerStatus === 'online',
 				clusterProcessing: clusterStatus === 'validated',
 				semanticCaching: ollamaStatus === 'online',
-				performanceMetrics: true,
+				performanceMetrics: true
 			},
 			recommendations: generateRecommendations(integrationReadiness, mcpServerStatus, ollamaStatus, clusterStatus)
 		});
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 			success: false,
 			error: error.message,
 			timestamp: new Date().toISOString(),
-			overallStatus: 'error',
+			overallStatus: 'error'
 		}, { status: 500 });
 	}
 };

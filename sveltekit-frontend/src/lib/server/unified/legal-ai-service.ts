@@ -62,11 +62,11 @@ export class UnifiedLegalAIService {
           ? await minioStorage.uploadEvidence(upload.file, upload.fileName, {
               contentType: upload.contentType,
               caseId: upload.caseId,
-              documentType: upload.documentType,
+              documentType: upload.documentType
             });
           : await minioStorage.uploadDocument(upload.file, upload.fileName, {
               contentType: upload.contentType,
-              documentType: upload.documentType,
+              documentType: upload.documentType
             });
 
       // Step 3: Generate embeddings and store in Qdrant
@@ -79,14 +79,14 @@ export class UnifiedLegalAIService {
               file_name: upload.fileName,
               document_type: upload.documentType,
               minio_object: minioResult.objectName,
-              ...upload.metadata,
+              ...upload.metadata
             });
           : await qdrant.upsertCase(documentId, embedding, {
               // Note: using upsertCase as fallback
               file_name: upload.fileName,
               document_type: upload.documentType,
               minio_object: minioResult.objectName,
-              ...upload.metadata,
+              ...upload.metadata
             });
 
       // Step 4: Store metadata in PostgreSQL
@@ -105,7 +105,7 @@ export class UnifiedLegalAIService {
                 minio_url: minioResult.url,
                 qdrant_id: documentId,
                 created_at: new Date(),
-                updated_at: new Date(),
+                updated_at: new Date()
               })
               .returning()
           : await db
@@ -121,7 +121,7 @@ export class UnifiedLegalAIService {
                 qdrant_id: documentId,
                 document_type: upload.documentType,
                 created_at: new Date(),
-                updated_at: new Date(),
+                updated_at: new Date()
               })
               .returning();
 
@@ -135,7 +135,7 @@ export class UnifiedLegalAIService {
           textContent: textContent.substring(0, 500), // Cache first 500 chars
           minioUrl: minioResult.url,
           embedding: embedding.slice(0, 10), // Cache first 10 dimensions for quick similarity checks
-          metadata: upload.metadata,
+          metadata: upload.metadata
         },
         24 * 60 * 60 * 1000
       ); // Cache for 24 hours
@@ -149,7 +149,7 @@ export class UnifiedLegalAIService {
         id: documentId,
         fileUrl: minioResult.url,
         embeddingId: documentId, // Use documentId since vectorResult doesn't have id
-        cached: true,
+        cached: true
       };
     } catch (error) {
       console.error('Document upload pipeline failed:', error);
@@ -174,7 +174,7 @@ export class UnifiedLegalAIService {
           results: any[];
           recommendations?: any[];
           cached: boolean;
-          sources: string[];,
+          sources: string[];
         };
       }
     }
@@ -202,7 +202,7 @@ export class UnifiedLegalAIService {
               ...result,
               ...dbRecord[0],
               type: 'evidence',
-              source: 'qdrant+postgresql',
+              source: 'qdrant+postgresql'
             });
           }
         }
@@ -228,7 +228,7 @@ export class UnifiedLegalAIService {
               ...result,
               ...dbRecord[0],
               type: 'document',
-              source: 'qdrant+postgresql',
+              source: 'qdrant+postgresql'
             });
           }
         }
@@ -246,7 +246,7 @@ export class UnifiedLegalAIService {
         results: results.slice(0, options.limit || 20),
         recommendations,
         cached: false,
-        sources,
+        sources
       };
 
       // Cache results;
@@ -275,7 +275,7 @@ export class UnifiedLegalAIService {
         fileUrl: string;
         textContent: string;
         similarDocuments: any[];
-        recommendations: any[];,
+        recommendations: any[];
       };
     }
 
@@ -312,7 +312,7 @@ export class UnifiedLegalAIService {
         fileUrl,
         textContent: record.ocr_content || record.content || '',
         similarDocuments: similarDocs,
-        recommendations,
+        recommendations
       };
 
       // Cache the result
@@ -366,7 +366,7 @@ export class UnifiedLegalAIService {
       redis: false,
       minio: false,
       qdrant: false,
-      neo4j: false,
+      neo4j: false
     };
 
     try {

@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js';
 import type {
   OptimizedFixRequest,
   OptimizedFixResponse,
-  GPUProcessingStats,
+  GPUProcessingStats
 } from '$lib/types/typescript-optimizer';
 
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!body.errors || !Array.isArray(body.errors)) {
       return json({
           success: false,
-          error: 'Invalid GPU request: errors array required',
+          error: 'Invalid GPU request: errors array required'
         },)
         { status: 400 }
       );
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'GPU processing requires minimum 5 errors for efficiency',
           recommendation: 'Use /api/v1/typescript-optimizer for smaller batches',
-          provided_count: body.errors.length,
+          provided_count: body.errors.length
         },)
         { status: 400 }
       );
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
       max_concurrency: Math.min(errorCount, 16), // Higher concurrency for GPU
       target_latency: 2, // Aggressive 2ms target per error
       quality_threshold: body.quality_threshold ?? 0.85,
-      strategy: 'gpu_first',
+      strategy: 'gpu_first'
     };
 
     // Check GPU availability first
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'GPU acceleration not available',
           details: 'NVIDIA GPU service is not responding',
-          fallback: 'Use /api/v1/typescript-optimizer for CPU processing',
+          fallback: 'Use /api/v1/typescript-optimizer for CPU processing'
         },)
         { status: 503 }
       );
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'GPU not available for processing',
           gpu_status: gpuStatus,
-          fallback: 'Use /api/v1/typescript-optimizer for CPU processing',
+          fallback: 'Use /api/v1/typescript-optimizer for CPU processing'
         },)>
         { status: 503 }
       );
@@ -90,9 +90,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(`${ENHANCED_API_BASE_URL}/api/gpu/batch-process`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(gpuOptimizedRequest),
+      body: JSON.stringify(gpuOptimizedRequest)
     });
 
     if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
         errorCount,
         (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count
       ),
-      performance_vs_cpu_multiplier: estimateSpeedupVsCPU(errorCount),
+      performance_vs_cpu_multiplier: estimateSpeedupVsCPU(errorCount)
     };
 
     console.log(
@@ -133,14 +133,14 @@ export const POST: RequestHandler = async ({ request }) => {
         memory_pooling: true,
         template_matching: true,
         concurrent_processing: gpuOptimizedRequest.max_concurrency,
-        endpoint_used: '/api/gpu/batch-process',
+        endpoint_used: '/api/gpu/batch-process'
       },
       performance: {
         grade: calculatePerformanceGrade(gpuStats.gpu_efficiency_score),
         tier: 'gpu_accelerated',
         speedup_vs_cpu: `${gpuStats.performance_vs_cpu_multiplier.toFixed(1)}x`,
         target_achieved: gpuOptimizedRequest.target_latency
-          ? gpuStats.throughput_errors_per_second >= 1000 / gpuOptimizedRequest.target_latency: false,
+          ? gpuStats.throughput_errors_per_second >= 1000 / gpuOptimizedRequest.target_latency: false
       },
       metadata: {
         ...result.optimization_meta,
@@ -149,8 +149,8 @@ export const POST: RequestHandler = async ({ request }) => {
         gpu_accelerated: true,
         hardware: 'NVIDIA RTX 3060 Ti',
         cuda_version: gpuStatus.cuda_version,
-        sveltekit_gpu_processor: true,
-      },
+        sveltekit_gpu_processor: true
+      }
     };
 
     return json(enhancedResult);
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
         gpu_processing: true,
         fallback_available: true,
-        fallback_endpoint: '/api/v1/typescript-optimizer',
+        fallback_endpoint: '/api/v1/typescript-optimizer'
       },
       { status: 500 }
     );
@@ -189,21 +189,21 @@ export const GET: RequestHandler = async () => {
         concurrent_processing: 16,
         cuda_acceleration: true,
         memory_optimization: true,
-        template_matching: true,
+        template_matching: true
       },
       performance: {
         expected_throughput: '500+ errors/second',
         gpu_speedup: '3-8x vs CPU',
         memory_usage: '~4.2GB VRAM',
-        optimization_layers: ['cuda_kernels', 'memory_pooling', 'template_cache'],
+        optimization_layers: ['cuda_kernels', 'memory_pooling', 'template_cache']
       },
       requirements: {
         nvidia_gpu: true,
         cuda_version: '12.8+',
         minimum_vram: '4GB',
-        supported_architectures: ['Ampere', 'Ada Lovelace', 'Hopper'],
+        supported_architectures: ['Ampere', 'Ada Lovelace', 'Hopper']
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
@@ -212,7 +212,7 @@ export const GET: RequestHandler = async () => {
         gpu_available: false,
         error: 'Unable to check GPU status',
         details: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

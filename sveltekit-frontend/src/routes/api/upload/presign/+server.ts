@@ -19,7 +19,7 @@ export interface PresignResponse {
     filename: string;
     caseId: string;
     uploadId: string;
-    expiresAt: Date;,
+    expiresAt: Date;
   };
 }
 
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       chunkCount,
       status: 'pending',
       createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 3600 * 1000) // 1 hour,
+      expiresAt: new Date(Date.now() + 3600 * 1000) // 1 hour
     };
 
     // TODO: Store in PostgreSQL using Drizzle
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         filename,
         caseId,
         uploadId,
-        expiresAt: metadata.expiresAt,
+        expiresAt: metadata.expiresAt
       }
     };
 
@@ -136,7 +136,7 @@ async function triggerProcessingPipeline(uploadId: string): Promise<any> {
     const jobData = {
       uploadId,
       timestamp: new Date().toISOString(),
-      priority: 'normal',
+      priority: 'normal'
     };
 
     // TODO: Send to Redis/BullMQ

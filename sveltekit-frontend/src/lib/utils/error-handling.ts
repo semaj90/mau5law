@@ -75,7 +75,7 @@ export function safeJsonParse<T = unknown>(
     return {
       data: fallback,
       error: errorMessage,
-      success: false,
+      success: false
     };
   }
 }

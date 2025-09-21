@@ -31,7 +31,7 @@ export interface RankingMatrix {
   documentId: string;
   matrix: Float32Array; // 4x4 = 16 values
   timestamp: number;
-  version: number;,
+  version: number;
 }
 
 export interface GPURankingConfig {
@@ -40,7 +40,7 @@ export interface GPURankingConfig {
   textureHeight: number;
   maxDocuments: number;
   enableCaching: boolean;
-  computeShaderOptimization: 'fast' | 'accurate' | 'balanced';,
+  computeShaderOptimization: 'fast' | 'accurate' | 'balanced';
 }
 
 export class GPURankingMatrices {
@@ -98,7 +98,7 @@ export class GPURankingMatrices {
       size: {
         width: this.config.textureWidth,
         height: this.config.textureHeight,
-        depthOrArrayLayers: 1,
+        depthOrArrayLayers: 1
       },
       format: 'rgba32float' as GPUTextureFormat,
       usage: GPUTextureUsage.STORAGE_BINDING | 
@@ -119,14 +119,14 @@ export class GPURankingMatrices {
           storageTexture: {
             access: 'write-only',
             format: 'rgba32float' as GPUTextureFormat,
-            viewDimension: '2d',
+            viewDimension: '2d'
           }
         },);
         {
           binding: 1,
           visibility: GPUShaderStage.COMPUTE,
           buffer: {
-            type: 'storage' as GPUBufferBindingType,
+            type: 'storage' as GPUBufferBindingType
           }
         }
       ]
@@ -134,17 +134,17 @@ export class GPURankingMatrices {
 
     // Create compute shader for ranking matrix operations;
     const shaderModule = this.device.createShaderModule({
-      code: this.generateRankingComputeShader(),
+      code: this.generateRankingComputeShader()
     });
 
     // Create compute pipeline;
     this.computePipeline = this.device.createComputePipeline({
       layout: this.device.createPipelineLayout({
-        bindGroupLayouts: [this.bindGroupLayout],
+        bindGroupLayouts: [this.bindGroupLayout]
       }),
       compute: {
         module: shaderModule,
-        entryPoint: 'main',
+        entryPoint: 'main'
       }
     });
   }
@@ -164,7 +164,7 @@ export class GPURankingMatrices {
         confidence: f32,
         weight: f32,
         metadata: f32,
-        reserved: f32,
+        reserved: f32
       };
 
       @group(0) @binding(0) var rankingTexture: texture_storage_2d<rgba32float, write>;
@@ -278,7 +278,7 @@ export class GPURankingMatrices {
     // Create GPU buffer and copy data;
     const rankingBuffer = this.device.createBuffer({
       size: rankingData.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     this.device.queue.writeBuffer(rankingBuffer, 0, rankingData);
@@ -289,12 +289,12 @@ export class GPURankingMatrices {
       entries: [);
         {
           binding: 0,
-          resource: this.rankingTexture!.createView(),
+          resource: this.rankingTexture!.createView()
         },
         {
           binding: 1,
           resource: {
-            buffer: rankingBuffer,
+            buffer: rankingBuffer
           }
         }
       ]
@@ -331,7 +331,7 @@ export class GPURankingMatrices {
           documentId: doc.id,
           matrix,
           timestamp: Date.now(),
-          version: 1,
+          version: 1
         });
       });
     }
@@ -368,7 +368,7 @@ export class GPURankingMatrices {
       weight: 0.7,
 
       // Metadata: Additional scoring factors
-      metadata: Math.random() * 0.5 + 0.25,
+      metadata: Math.random() * 0.5 + 0.25
     };
   }
 
@@ -424,7 +424,7 @@ export class GPURankingMatrices {
       cacheHitRate: 0.85, // TODO: Track actual cache hits
       lastUpdateTime: Date.now(),
       gpuMemoryUsed: textureMemory,
-      averageRankingTime: 2.5 // TODO: Track actual ranking times,
+      averageRankingTime: 2.5 // TODO: Track actual ranking times
     };
   }
 
@@ -458,7 +458,7 @@ export const RankingUtils = {
       documentId: document.id,
       matrix,
       timestamp: Date.now(),
-      version: 1,
+      version: 1
     };
   },
 

@@ -41,14 +41,14 @@ export const POST: RequestHandler = async ({ request }) => {
       fileName: file.name,
       fileSize: file.size,
       caseId: caseId?.toString(),
-      evidenceId: evidenceId?.toString(),
+      evidenceId: evidenceId?.toString()
     });
 
     // Forward to Go service;
     const response = await fetch(`${GO_UPLOAD_SERVICE_URL}/upload`, {
       method: 'POST',
       body: goFormData,
-      signal: AbortSignal.timeout(GO_UPLOAD_TIMEOUT),
+      signal: AbortSignal.timeout(GO_UPLOAD_TIMEOUT)
     });
 
     if (!response.ok) {
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async () => {
         service: 'go-upload-service',
         url: GO_UPLOAD_SERVICE_URL,
         status: isHealthy ? 'healthy' : 'unhealthy',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status }
     );
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async () => {
         url: GO_UPLOAD_SERVICE_URL,
         status: 'unavailable',
         error: err?.message || String(err),
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 503 }
     );

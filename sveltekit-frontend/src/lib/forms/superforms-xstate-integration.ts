@@ -74,12 +74,12 @@ export function createDocumentUploadForm(
       if ((form as any).valid) {
         actor.send({
           type: 'VALIDATE_FORM',
-          data: (form as any).data || form,
+          data: (form as any).data || form
         } as any);
       } else {
         actor.send({
           type: 'UPDATE_FORM',
-          data: (form as any).data || form,
+          data: (form as any).data || form
         } as any);
       }
     },
@@ -91,7 +91,7 @@ export function createDocumentUploadForm(
       } else {
         actor.send({
           type: 'SUBMIT',
-          data: formData,
+          data: formData
         } as any);
       }
     }
@@ -201,7 +201,7 @@ export function createCaseCreationForm(
     onUpdated: ({ form }) => {
       actor.send({
         type: 'UPDATE_FORM',
-        data: (form as any).data || form,
+        data: (form as any).data || form
       } as any);
     },
     onSubmit: async ({ formData, cancel }) => {
@@ -211,7 +211,7 @@ export function createCaseCreationForm(
       } else {
         actor.send({
           type: 'SUBMIT_CASE',
-          data: formData,
+          data: formData
         } as any);
       }
     }
@@ -316,7 +316,7 @@ export function createSearchForm(
       } else {
         actor.send({
           type: 'SEARCH',
-          data: formData,
+          data: formData
         } as any);
       }
     }
@@ -371,7 +371,7 @@ export function createSearchForm(
     if (stateValue === 'results' && options.onSuccess) {
       options.onSuccess({
         results: contextValue?.results,
-        analytics: contextValue?.analytics,
+        analytics: contextValue?.analytics
       });
     } else if (stateValue === 'error' && options.onError) {
       options.onError(contextValue?.error || 'Search failed');
@@ -418,7 +418,7 @@ export function createAIAnalysisForm(
       } else {
         actor.send({
           type: 'START_ANALYSIS',
-          data: formData,
+          data: formData
         } as any);
       }
     }
@@ -475,7 +475,7 @@ export function createAIAnalysisForm(
         results: contextValue?.analysisResults,
         confidence: contextValue?.confidence,
         processingTime: contextValue?.processingTime,
-        tokensUsed: contextValue?.tokensUsed,
+        tokensUsed: contextValue?.tokensUsed
       });
     } else if (stateValue === 'error' && options.onError) {
       options.onError(contextValue?.error || 'Analysis failed');
@@ -563,7 +563,7 @@ export class FormStatePersistence {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify({
         data,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     } catch (error: any) {
       console.warn('Failed to save form state:', error);
@@ -614,12 +614,12 @@ export const formValidators = {
   documentUpload: createFormValidator(DocumentUploadSchema),
   caseCreation: createFormValidator(CaseCreationSchema),
   searchQuery: createFormValidator(SearchQuerySchema),
-  aiAnalysis: createFormValidator(AIAnalysisSchema),
+  aiAnalysis: createFormValidator(AIAnalysisSchema)
 };
 
 export const FORM_STORAGE_KEYS = {
   DOCUMENT_UPLOAD: 'legal-ai:document-upload',
   CASE_CREATION: 'legal-ai:case-creation',
   SEARCH_QUERY: 'legal-ai:search-query',
-  AI_ANALYSIS: 'legal-ai:ai-analysis',
+  AI_ANALYSIS: 'legal-ai:ai-analysis'
 } as const;

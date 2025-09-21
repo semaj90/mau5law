@@ -61,7 +61,7 @@ export function withRedisOrchestrator(
           ...aiQuery.context,
           requiresFresh: config.requiresFresh,
           priority: calculatePriority(config.cacheStrategy, config.endpointName),
-          memoryBank: config.memoryBank,
+          memoryBank: config.memoryBank
         }
       );
       
@@ -78,7 +78,7 @@ export function withRedisOrchestrator(
             cache_strategy: config.cacheStrategy,
             memory_bank: config.memoryBank,
             session_id: sessionId,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         });
       }
@@ -105,7 +105,7 @@ export function withRedisOrchestrator(
         processing_time: performance.now() - startTime,
         cache_strategy: config.cacheStrategy,
         memory_bank: config.memoryBank,
-        session_id: sessionId,
+        session_id: sessionId
       });
       
     } catch (err) {
@@ -133,7 +133,7 @@ export const redisOptimized = {
       context: {
         caseId: body.caseId,
         userId: body.userId,
-        useRAG: body.useRAG !== false,
+        useRAG: body.useRAG !== false
       }
     } : null
   }),
@@ -148,7 +148,7 @@ export const redisOptimized = {
       context: {
         analysisType: body.analysisType || 'general',
         caseId: body.caseId,
-        evidenceId: body.evidenceId,
+        evidenceId: body.evidenceId
       }
     } : null
   }),
@@ -163,7 +163,7 @@ export const redisOptimized = {
       context: {
         searchType: body.searchType || 'semantic',
         filters: body.filters || {},
-        maxResults: body.maxResults || 10,
+        maxResults: body.maxResults || 10
       }
     } : null
   }),
@@ -179,7 +179,7 @@ export const redisOptimized = {
       context: {
         documentType: body.documentType,
         caseId: body.caseId,
-        processingMode: body.mode || 'standard',
+        processingMode: body.mode || 'standard'
       }
     } : null
   }),
@@ -194,7 +194,7 @@ export const redisOptimized = {
       context: {
         evidenceId: body.evidenceId,
         analysisType: body.analysisType,
-        caseId: body.caseId,
+        caseId: body.caseId
       }
     } : null
   }),
@@ -218,7 +218,7 @@ export const redisOptimized = {
   generic: (endpointName: string, handler: RequestHandler) => withRedisOrchestrator(handler, {
     endpointName,
     cacheStrategy: 'conservative',
-    memoryBank: 'PRG_ROM',
+    memoryBank: 'PRG_ROM'
   })
 };
 
@@ -270,7 +270,7 @@ function recreateRequest(originalRequest: Request, body: any): Request {
   return new Request(originalRequest.url, {
     method: originalRequest.method,
     headers: originalRequest.headers,
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
 }
 
@@ -358,7 +358,7 @@ async function cacheOriginalResult(
       endpoint: `${config.endpointName}_cache_store`,
       priority: 50, // Low priority for cache storage
       useRAG: false,
-      requiresFresh: false,
+      requiresFresh: false
     });
   } catch (error) {
     console.warn('🎮 Failed to cache original result:', error);
@@ -371,7 +371,7 @@ function addRedisMetadata(response: Response, metadata: any): Response {
     ...(response as any), // This needs proper handling in real implementation;
     _redis_optimization: {
       ...metadata,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }
   });
 }

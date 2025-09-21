@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       activeTasks: 0,
       totalTasks: 1234,
       completedTasks: 1230,
-      failedTasks: 4,
+      failedTasks: 4
     };
 
     // Generate initial graph data
@@ -33,7 +33,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       multicoreStatus,
       graphData,
       initialLoad: true,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (error: any) {
     console.error('Error loading dashboard data:', error);
@@ -45,7 +45,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       graphData: generateSystemGraphData(),
       initialLoad: false,
       timestamp: new Date().toISOString(),
-      error: 'Failed to load system data',
+      error: 'Failed to load system data'
     };
   }
 };
@@ -56,25 +56,25 @@ function generateMockSystemStatus() {
       connected: true,
       latency: Math.floor(Math.random() * 50) + 15,
       activeConnections: Math.floor(Math.random() * 15) + 8,
-      queryCount: Math.floor(Math.random() * 5000) + 10000,
+      queryCount: Math.floor(Math.random() * 5000) + 10000
     },
     backend: {
       healthy: true,
       uptime: Math.floor(Date.now() / 1000) - (Math.random() * 86400),
       activeServices: 8,
       cpuUsage: Math.floor(Math.random() * 30) + 35,
-      memoryUsage: Math.floor(Math.random() * 25) + 55,
+      memoryUsage: Math.floor(Math.random() * 25) + 55
     },
     frontend: {
       renderFPS: Math.floor(Math.random() * 10) + 55,
       componentCount: 778,
       activeComponents: Math.floor(Math.random() * 50) + 150,
-      webGPUEnabled: true,
+      webGPUEnabled: true
     },
     timestamp: new Date().toISOString(),
     systemLoad: Math.floor(Math.random() * 30) + 45,
     gpuUtilization: Math.floor(Math.random() * 20) + 78,
-    networkLatency: Math.floor(Math.random() * 30) + 20,
+    networkLatency: Math.floor(Math.random() * 30) + 20
   };
 }
 
@@ -87,7 +87,7 @@ function generateSystemGraphData() {
         label: 'PostgreSQL + pgvector',
         position: { x: 0, y: 0, z: 0 },
         metrics: { connections: 12, queries: 15847 },
-        status: 'healthy',
+        status: 'healthy'
       },
       {
         id: 'redis',
@@ -95,7 +95,7 @@ function generateSystemGraphData() {
         label: 'Redis Cache',
         position: { x: 2, y: 0, z: 0 },
         metrics: { memory: '2.1GB', keys: 45823 },
-        status: 'healthy',
+        status: 'healthy'
       },
       {
         id: 'neo4j',
@@ -103,7 +103,7 @@ function generateSystemGraphData() {
         label: 'Neo4j Graph',
         position: { x: 1, y: 0, z: 1 },
         metrics: { nodes: 15847, relationships: 89423 },
-        status: 'healthy',
+        status: 'healthy'
       },
       {
         id: 'ollama',
@@ -111,7 +111,7 @@ function generateSystemGraphData() {
         label: 'Ollama Cluster',
         position: { x: 0, y: 1, z: 0 },
         metrics: { models: 5, requests: 1847 },
-        status: 'healthy',
+        status: 'healthy'
       },
       {
         id: 'enhanced-rag',
@@ -119,7 +119,7 @@ function generateSystemGraphData() {
         label: 'Enhanced RAG',
         position: { x: 1, y: 1, z: 0 },
         metrics: { port: 8094, uptime: '99.9%' },
-        status: 'healthy',
+        status: 'healthy'
       },
       {
         id: 'upload-service',
@@ -127,7 +127,7 @@ function generateSystemGraphData() {
         label: 'Upload Service',
         position: { x: 2, y: 1, z: 0 },
         metrics: { port: 8093, files: 2847 },
-        status: 'healthy',
+        status: 'healthy'
       },
       {
         id: 'sveltekit',
@@ -135,7 +135,7 @@ function generateSystemGraphData() {
         label: 'SvelteKit Frontend',
         position: { x: 1, y: 2, z: 0 },
         metrics: { components: 778, fps: 60 },
-        status: 'healthy',
+        status: 'healthy'
       },
       {
         id: 'context7',
@@ -143,7 +143,7 @@ function generateSystemGraphData() {
         label: 'Context7 Multicore',
         position: { x: 0, y: 1, z: 1 },
         metrics: { workers: 4, tasks: 1234 },
-        status: 'healthy',
+        status: 'healthy'
       }
     ],
     edges: [;
@@ -152,49 +152,49 @@ function generateSystemGraphData() {
         to: 'postgres',
         type: 'api',
         traffic: 85,
-        latency: 23,
+        latency: 23
       },
       {
         from: 'sveltekit',
         to: 'redis',
         type: 'api',
         traffic: 65,
-        latency: 12,
+        latency: 12
       },
       {
         from: 'enhanced-rag',
         to: 'postgres',
         type: 'data',
         traffic: 90,
-        latency: 15,
+        latency: 15
       },
       {
         from: 'enhanced-rag',
         to: 'ollama',
         type: 'grpc',
         traffic: 75,
-        latency: 8,
+        latency: 8
       },
       {
         from: 'upload-service',
         to: 'postgres',
         type: 'data',
         traffic: 45,
-        latency: 18,
+        latency: 18
       },
       {
         from: 'context7',
         to: 'ollama',
         type: 'api',
         traffic: 55,
-        latency: 25,
+        latency: 25
       },
       {
         from: 'postgres',
         to: 'neo4j',
         type: 'data',
         traffic: 30,
-        latency: 35,
+        latency: 35
       }
     ]
   };

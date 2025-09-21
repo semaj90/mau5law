@@ -22,16 +22,20 @@ Provides drag-drop positioning, zoom, selection, and object management
     export default fabric;
   }
 
-  // Props (Svelte standard)
-  export let caseId: string;
-  export let readonly: boolean = false;
+  // Svelte 5 props
+  interface Props {
+    caseId: string;
+    readonly?: boolean;
+  }
 
-  // Component state (avoid Svelte 5 runes)
-  let canvas: any;
-  let canvasElement: HTMLCanvasElement;
-  let fabric: any;
-  let fabricObjects = new Map<string, any>();
-  let isInitialized = false;
+  let { caseId, readonly = false }: Props = $props();
+
+  // Component state using Svelte 5 runes
+  let canvas = $state<any>(null);
+  let canvasElement = $state<HTMLCanvasElement>();
+  let fabric = $state<any>(null);
+  let fabricObjects = $state(new Map<string, any>());
+  let isInitialized = $state(false);
 
   // Initialize Fabric.js dynamically to avoid static import/type errors
   onMount(async () => {
@@ -167,15 +171,19 @@ Provides drag-drop positioning, zoom, selection, and object management
     opt.e.stopPropagation();
   }
 
-  // React to board objects changes using Svelte reactive statement
-  $: if (isInitialized && $boardObjects) {
-    updateCanvasObjects($boardObjects);
-  }
+  // React to board objects changes using Svelte 5 $effect
+  $effect(() => {
+    if (isInitialized && $boardObjects) {
+      updateCanvasObjects($boardObjects);
+    }
+  });
 
-  // React to canvas size changes using Svelte reactive statement
-  $: if (canvas && $canvasSize) {
-    canvas.setDimensions({ width: $canvasSize.width, height: $canvasSize.height });
-  }
+  // React to canvas size changes using Svelte 5 $effect
+  $effect(() => {
+    if (canvas && $canvasSize) {
+      canvas.setDimensions({ width: $canvasSize.width, height: $canvasSize.height });
+    }
+  });
 
   // Update canvas objects based on store
   function updateCanvasObjects(objects: BoardObject[]) {
@@ -358,15 +366,15 @@ Provides drag-drop positioning, zoom, selection, and object management
   <div class="board-header">
     <div class="board-controls">
       {#if !readonly}
-        <button class="nes-btn is-primary" on:click={autoArrange}>
+        <button class="nes-btn is-primary" onclick={autoArrange}>
           Auto Arrange
         </button>
-        <button class="nes-btn is-success" on:click={saveBoard}>
+        <button class="nes-btn is-success" onclick={saveBoard}>
           Save Board
         </button>
       {/if}
 
-      <button class="nes-btn" on:click={exportAsImage}>
+      <button class="nes-btn" onclick={exportAsImage}>
         Export PNG
       </button>
 

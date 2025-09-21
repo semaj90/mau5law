@@ -10,11 +10,11 @@
 
 // Rune types;
 export interface StateRune<T> {
-  current: T;,
+  current: T;
 }
 
 export interface DerivedRune<T> {
-  current: T;,
+  current: T;
 }
 
 export interface EffectRune {
@@ -138,7 +138,7 @@ export interface PageStore {
   data: Record<string, any>;
   error: any;
   state: Record<string, any>;
-  form: any;,
+  form: any;
 }
 
 export type NavigatingStore = {
@@ -161,7 +161,7 @@ export interface SQL<T = unknown> {
   params: readonly unknown[];
   typings?: { [key: string]: string };
   shouldInlineParams?: boolean;
-  sql: string;,
+  sql: string;
 }
 
 export interface QueryResult<T = any> {
@@ -246,7 +246,7 @@ export interface DrizzleColumnHelpers {
   and: any;
   or: any;
   not: any;
-  sql: any;,
+  sql: any;
 }
 
 export interface DrizzleTable<T extends Record<string, any> = Record<string, any> {
@@ -254,7 +254,7 @@ export interface DrizzleTable<T extends Record<string, any> = Record<string, any
     name: string;
     columns: T;
     schema?: string;
-    baseName: string;,
+    baseName: string;
   };
 }
 
@@ -337,7 +337,7 @@ export interface OllamaEmbeddingRequest {
 }
 
 export interface OllamaEmbeddingResponse {
-  embedding: number[];,
+  embedding: number[];
 }
 
 export interface OllamaModel {
@@ -462,7 +462,7 @@ export interface CachePolicy {
   evictionStrategy?: 'lru' | 'lfu' | 'fifo' | 'ttl';
   maxSize: number;
   ttl: number;
-  compressionEnabled: boolean;,
+  compressionEnabled: boolean;
 }
 
 // ===== LOKIJS ENHANCED TYPES =====
@@ -477,7 +477,7 @@ export interface Collection<T = any> {
   chain(): any;
   count(query?: any): number;
   data: T[];
-  name: string;,
+  name: string;
 }
 
 export interface LokiMemoryAdapter {
@@ -528,7 +528,7 @@ export interface TestContext {
 
 export interface ExpectationResult {
   pass: boolean;
-  message: string;,
+  message: string;
 }
 
 export interface MockFunction<T extends (...args: any[]) => any = (...args: any[]) => any> {

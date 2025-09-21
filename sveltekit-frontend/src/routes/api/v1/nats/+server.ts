@@ -23,7 +23,7 @@ function getNATSService(): EnhancedNATSMessagingService {
 			user: 'legal_ai_client',
 			pass: 'legal_ai_2024',
 			name: 'SvelteKit Legal AI Client',
-			max_reconnect_attempts: -1,
+			max_reconnect_attempts: -1
 		});
 		
 		// Auto-connect on first use;
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'NATS operation failed',
-			details: error instanceof Error ? error.message: 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async () => {
 		
 		const [metrics, systemStatus] = await Promise.all([
 			nats.getMetrics(),
-			nats.getSystemStatus(),
+			nats.getSystemStatus()
 		]);
 
 		return json({
@@ -118,7 +118,7 @@ export const GET: RequestHandler = async () => {
 				system_monitoring: [
 					'system.health',
 					'system.metrics'
-				],
+				]
 			},
 			capabilities: {
 				message_publishing: true,
@@ -128,15 +128,15 @@ export const GET: RequestHandler = async () => {
 				durable_consumers: true,
 				wildcard_subscriptions: true,
 				message_persistence: true,
-				real_time_streaming: true,
-			},
+				real_time_streaming: true
+			}
 		});
 	} catch (error: any) {
 		return json({
 			service: 'Enhanced NATS Messaging',
 			status: 'degraded',
 			error: 'Unable to get NATS status',
-			details: error instanceof Error ? error.message: 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 503 });
 	}
 };
@@ -155,7 +155,7 @@ async function handlePublish(nats: EnhancedNATSMessagingService, body: any): Pro
 		action: 'publish',
 		subject: body.subject,
 		message_id: body.options?.correlation_id || 'auto-generated',
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -170,7 +170,7 @@ async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: any)
 		success: true,
 		action: 'publish_batch',
 		message_count: body.messages.length,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -187,7 +187,7 @@ async function handleRequest(nats: EnhancedNATSMessagingService, body: any): Pro
 		action: 'request',
 		subject: body.subject,
 		response,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -202,7 +202,7 @@ async function handleSubscribe(nats: EnhancedNATSMessagingService, body: any): P
 		success: false,
 		error: 'HTTP subscriptions not supported',
 		suggestion: 'Use WebSocket endpoint for real-time subscriptions',
-		websocket_url: '/api/v1/nats/ws',
+		websocket_url: '/api/v1/nats/ws'
 	}, { status: 400 });
 }
 
@@ -217,7 +217,7 @@ async function handleUnsubscribe(nats: EnhancedNATSMessagingService, body: any):
 		success: true,
 		action: 'unsubscribe',
 		subject: body.subject,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -233,7 +233,7 @@ async function handleCreateStream(nats: EnhancedNATSMessagingService, body: any)
 		action: 'create_stream',
 		stream_name: body.stream_config.name,
 		subjects: body.stream_config.subjects,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }
 
@@ -249,6 +249,6 @@ async function handleCreateConsumer(nats: EnhancedNATSMessagingService, body: an
 		action: 'create_consumer',
 		stream_name: body.stream_name,
 		consumer_name: body.consumer_config.name,
-		timestamp: new Date().toISOString(),
+		timestamp: new Date().toISOString()
 	});
 }

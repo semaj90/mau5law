@@ -20,7 +20,7 @@ export interface LLMResponse {
   tokensUsed?: number;
   model: string;
   duration?: number;
-  success: boolean;,
+  success: boolean;
 }
 
 // Placeholder implementations for missing dependencies;
@@ -97,7 +97,7 @@ export class OllamaRetryWrapper {
                 num_predict: maxTokens,
                 num_ctx: LOCAL_LLM_CONFIG.MAX_CONTEXT_LENGTH,
                 num_gpu: useGPU ? -1 : 0, // -1 = use all GPU layers
-                num_thread: useGPU ? 1 : 4 // Fewer threads when using GPU,
+                num_thread: useGPU ? 1 : 4 // Fewer threads when using GPU
               }
             })
           });
@@ -131,7 +131,7 @@ export class OllamaRetryWrapper {
             tokensUsed: (data as { eval_count?: any; response?: any; models?: any }).eval_count || 0,
             model,
             duration,
-            success: true,
+            success: true
           };
 
         } catch (error: any) {
@@ -145,7 +145,7 @@ export class OllamaRetryWrapper {
             await todoAutogen.logPerformanceIssue('timeout', {
               model,
               timeout,
-              promptLength: prompt.length,
+              promptLength: prompt.length
             });
             throw new Error(`LLM call timed out after ${timeout}ms`);
           }
@@ -154,7 +154,7 @@ export class OllamaRetryWrapper {
             await todoAutogen.logPerformanceIssue('gpu', {
               model,
               error: error.message,
-              gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION,
+              gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION
             });
           }
 
@@ -199,7 +199,7 @@ export class OllamaRetryWrapper {
         missingModels,
         lastSuccessTime: this.lastSuccessTime,
         failureCount: this.failureCount,
-        url: this.baseUrl,
+        url: this.baseUrl
       };
 
       if (status === 'degraded') {
@@ -216,7 +216,7 @@ export class OllamaRetryWrapper {
         model: 'health-check',
         prompt: 'health check request',
         error: error.message,
-        retryCount: 0,
+        retryCount: 0
       });
 
       return {
@@ -224,7 +224,7 @@ export class OllamaRetryWrapper {
         details: {
           error: error.message,
           url: this.baseUrl,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }
       };
     }
@@ -241,7 +241,7 @@ export class OllamaRetryWrapper {
       baseUrl: this.baseUrl,
       memoryConfig: {
         maxOldSpaceSize: (import.meta as any).env?.NODE_OPTIONS?.includes('max-old-space-size'),
-        gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION,
+        gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION
       }
     };
   }
@@ -261,7 +261,7 @@ export async function promptLLM(
   const result = await ollamaWrapper.callLLM(prompt, {
     model,
     ...options
-  ,});
+  });
 
   return (result as { response?: any }).response;
 }
@@ -328,7 +328,7 @@ export async function* streamLLM(
       model,
       prompt: prompt.substring(0, 200) + '...',
       error: error.message,
-      retryCount: 0,
+      retryCount: 0
     });
     throw error;
   } finally {

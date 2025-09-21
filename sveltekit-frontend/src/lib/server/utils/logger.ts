@@ -25,7 +25,7 @@ interface LogEntry {
   };
   performance?: {
     duration: number;
-    memoryUsage: number;,
+    memoryUsage: number;
   };
 }
 
@@ -34,7 +34,7 @@ interface LoggerConfig {
   enableConsole: boolean;
   enableFile: boolean;
   enableDatabase: boolean;
-  maxRetries: number;,
+  maxRetries: number;
 }
 
 class Logger {
@@ -215,7 +215,7 @@ class Logger {
       const usage = process.memoryUsage();
       entry.performance = {
         duration: metadata?.duration || 0,
-        memoryUsage: usage.heapUsed,
+        memoryUsage: usage.heapUsed
       };
     }
 
@@ -265,7 +265,7 @@ class Logger {
       error: error ? {
         name: error.name,
         message: error.message,
-        stack: error.stack,
+        stack: error.stack
       } : undefined
     };
 
@@ -289,7 +289,7 @@ class Logger {
       error: error ? {
         name: error.name,
         message: error.message,
-        stack: error.stack,
+        stack: error.stack
       } : undefined
     };
 
@@ -392,7 +392,7 @@ export const logger = new Logger({
   level: LogLevel.INFO,
   enableConsole: true,
   enableDatabase: true,
-  enableFile: false,
+  enableFile: false
 });
 
 // Initialize logs table on startup

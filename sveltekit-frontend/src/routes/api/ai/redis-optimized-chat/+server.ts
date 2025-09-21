@@ -33,12 +33,12 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
         },);
         {
           role: 'user', 
-          content: message,
+          content: message
         }
       ],
       options: {
         temperature: 0.7,
-        max_tokens: 1000,
+        max_tokens: 1000
       }
     });
     
@@ -53,7 +53,7 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
       userId,
       processing_time: 2000, // Simulated slow processing
       cached: false,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (err) {

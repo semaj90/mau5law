@@ -12,11 +12,11 @@ export interface Notification {
 }
 
 export interface NotificationState {
-  notifications: Notification[];,
+  notifications: Notification[];
 }
 
 const initialState: NotificationState = {
-  notifications: [],
+  notifications: []
 };
 
 function createNotificationStore() {
@@ -31,11 +31,11 @@ function createNotificationStore() {
       const newNotification: Notification = {
         ...notification,
         id,
-        duration: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).duration ?? 5000,
+        duration: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).duration ?? 5000
       };
 
       update((state) => ({
-        notifications: [...state.notifications, newNotification],
+        notifications: [...state.notifications, newNotification]
       });
 
       // Auto-remove after duration (unless duration is 0);
@@ -50,7 +50,7 @@ function createNotificationStore() {
     // Remove a notification;
     remove: (id: string) => {
       update((state) => ({
-        notifications: state.notifications.filter((n) => n.id !== id),
+        notifications: state.notifications.filter((n) => n.id !== id)
       });
     },
 
@@ -65,7 +65,7 @@ function createNotificationStore() {
       message?: string,
       options?: Partial<Notification>,
     ) => {
-      return store.add({ type: "success", title, message, ...options ,});
+      return store.add({ type: "success", title, message, ...options });
     },
 
     error: (
@@ -78,7 +78,7 @@ function createNotificationStore() {
         title,
         message,
         duration: 0,
-        ...options,
+        ...options
       });
     },
 
@@ -87,7 +87,7 @@ function createNotificationStore() {
       message?: string,
       options?: Partial<Notification>,
     ) => {
-      return store.add({ type: "warning", title, message, ...options ,});
+      return store.add({ type: "warning", title, message, ...options });
     },
 
     info: (
@@ -95,7 +95,7 @@ function createNotificationStore() {
       message?: string,
       options?: Partial<Notification>,
     ) => {
-      return store.add({ type: "info", title, message, ...options ,});
+      return store.add({ type: "info", title, message, ...options });
     },
 
     // Legacy compatibility methods that accept objects without title;
@@ -111,9 +111,9 @@ function createNotificationStore() {
         type: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).type,
         title,
         message: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).message,
-        duration: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).timeout || (notification as { duration?: any; type?: any; message?: any; timeout?: any }).duration,
+        duration: (notification as { duration?: any; type?: any; message?: any; timeout?: any }).timeout || (notification as { duration?: any; type?: any; message?: any; timeout?: any }).duration
       });
-    },
+    }
   };
 
   return store;

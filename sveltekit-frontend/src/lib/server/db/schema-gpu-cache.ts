@@ -63,7 +63,7 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
   
   // MinIO integration for large assets
   minioPath: text('minio_path'), // Optional path for large shader assets
-  assetBundle: jsonb('asset_bundle'),
+  assetBundle: jsonb('asset_bundle')
 }, (table) => ({
   // Primary indexes for fast retrieval
   shaderKeyIdx: index('shader_key_idx').on(table.shaderKey),
@@ -144,7 +144,7 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
   // Performance indexes
   cacheHitIdx: index('cache_hit_idx').on(table.cacheHit),
   latencyIdx: index('load_latency_idx').on(table.loadLatencyMs),
-  rewardIdx: index('reward_idx').on(table.reward),
+  rewardIdx: index('reward_idx').on(table.reward)
 });
 
 /**
@@ -193,7 +193,7 @@ export const shaderPreloadRules = pgTable('shader_preload_rules', {
   
   // Performance indexes
   triggerCountIdx: index('trigger_count_idx').on(table.triggerCount),
-  lastTriggeredIdx: index('last_triggered_idx').on(table.lastTriggered),
+  lastTriggeredIdx: index('last_triggered_idx').on(table.lastTriggered)
 });
 
 /**
@@ -226,7 +226,7 @@ export const shaderDependencies = pgTable('shader_dependencies', {
   dependencyTypeIdx: index('dependency_type_idx').on(table.dependencyType),
   dependencyStrengthIdx: index('dependency_strength_idx').on(table.dependencyStrength),
   loadOrderIdx: index('load_order_idx').on(table.loadOrder),
-  coUsageFrequencyIdx: index('co_usage_frequency_idx').on(table.coUsageFrequency),
+  coUsageFrequencyIdx: index('co_usage_frequency_idx').on(table.coUsageFrequency)
 });
 
 /**
@@ -305,12 +305,12 @@ export const shaderRecommendationsView = pgTable('shader_recommendations_view', 
   // Performance tracking
   timesRecommended: integer('times_recommended').default(0),
   timesAccepted: integer('times_accepted').default(0),
-  averageUserSatisfaction: real('average_user_satisfaction'),
+  averageUserSatisfaction: real('average_user_satisfaction')
 }, (table) => ({
   userRecommendationIdx: index('user_recommendation_idx').on(table.userId, table.recommendationType),
   confidenceIdx: index('recommendation_confidence_idx').on(table.confidence),
   validityIdx: index('recommendation_validity_idx').on(table.validUntil),
-  shaderKeyIdx: index('recommendation_shader_key_idx').on(table.shaderKey),
+  shaderKeyIdx: index('recommendation_shader_key_idx').on(table.shaderKey)
 });
 
 // ============================================================================

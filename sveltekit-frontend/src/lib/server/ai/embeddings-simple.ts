@@ -106,12 +106,12 @@ async function generateOpenAIEmbedding(text: string): Promise<number[]> {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       input: text,
       model: 'text-embedding-3-small', // 1536 dimensions, fast and cost-effective
-    }),
+    })
   });
 
   if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
@@ -130,12 +130,12 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
     const response = await fetch(`${ollamaUrl}/api/embeddings`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: 'nomic-embed-text',
         prompt: text, // Ollama embeddings expect 'prompt'
-      }),
+      })
     });
 
     if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
@@ -227,12 +227,12 @@ async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[]
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       input: texts,
-      model: 'text-embedding-3-small',
-    }),
+      model: 'text-embedding-3-small'
+    })
   });
 
   if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
@@ -255,12 +255,12 @@ async function generateNomicBatchEmbeddings(
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           model: "nomic-embed-text",
-          prompt: text,
-        }),
+          prompt: text
+        })
       });
 
       if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
@@ -295,11 +295,11 @@ async function generateNomicBatchEmbeddings(
 // Export object for easier importing and better organization;
 export const embeddings = {
   generate: generateEmbedding,
-  generateBatch: generateBatchEmbeddings,
+  generateBatch: generateBatchEmbeddings
 };
 
 // For backward compatibility;
 export const embedAndSearch = {
   generateEmbedding,
-  generateBatchEmbeddings,
+  generateBatchEmbeddings
 };

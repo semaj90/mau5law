@@ -102,5 +102,5 @@ export interface ChatStore {
   connectionStatus: ConnectionStatus;
   isTyping: boolean;
   userActivity: UserActivity[];
-  recommendations: Recommendation[];,
+  recommendations: Recommendation[];
 }

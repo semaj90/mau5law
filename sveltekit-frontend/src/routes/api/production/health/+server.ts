@@ -22,7 +22,7 @@ export interface HealthResponse {
   system_info: {
     nodejs_version: string;
     memory_usage: NodeJS.MemoryUsage;
-    uptime: number;,
+    uptime: number;
   };
 }
 
@@ -76,7 +76,7 @@ async function checkDatabase(): Promise<ServiceStatus> {
       response_time: Date.now() - startTime,
       details: {
         database: 'evidence_processing',
-        connection: 'active',
+        connection: 'active'
       }
     };
   } catch (error: any) {
@@ -85,7 +85,7 @@ async function checkDatabase(): Promise<ServiceStatus> {
       status: 'error',
       response_time: Date.now() - startTime,
       details: {
-        error: error.message,
+        error: error.message
       }
     };
   }
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ url }) => {
       checkService('Qdrant Vector', 'http://localhost:6333/health'),
       checkService('Redis', 'http://localhost:6379'), // Will fail but shows service check
       checkService('Enhanced RAG', 'http://localhost:8094/health'),
-      checkService('Production Upload', `${url.origin}/api/production-upload`, 2000),
+      checkService('Production Upload', `${url.origin}/api/production-upload`, 2000)
     ]);
     
     // Determine overall status
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url }) => {
       system_info: {
         nodejs_version: process.version,
         memory_usage: process.memoryUsage(),
-        uptime: process.uptime(),
+        uptime: process.uptime()
       }
     };
     
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url }) => {
       system_info: {
         nodejs_version: process.version,
         memory_usage: process.memoryUsage(),
-        uptime: process.uptime(),
+        uptime: process.uptime()
       }
     }, { status: 500 });
   }

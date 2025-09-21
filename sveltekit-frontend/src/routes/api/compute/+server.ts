@@ -18,7 +18,7 @@ const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:1
 const db = drizzle(sql);
 
 const redis = createClient({ 
-  url: import.meta.env.REDIS_URL || 'redis://localhost:6379' ,
+  url: import.meta.env.REDIS_URL || 'redis://localhost:6379' 
 });
 
 let redisConnected = false;
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
       event: type as 'upsert' | 'delete' | 'reembed',
       vector: null, // Will be filled by CUDA worker
       payload: data,
-      attempts: 0,
+      attempts: 0
     }).returning();
 
     // Step 2: Create job tracking entry;
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ownerId,
       event: type as 'upsert' | 'delete' | 'reembed',
       status: 'enqueued',
-      progress: 0,
+      progress: 0
     }).returning();
 
     // Step 3: Enqueue to Redis Streams for Go microservice consumption
@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ownerId,
       event: type,
       payload: JSON.stringify(data || {}),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     const streamId = await redis.xAdd(
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'enqueued',
       message: 'Job enqueued for CUDA processing',
       progress: 0,
-      estimatedTime: getEstimatedTime(type, data),
+      estimatedTime: getEstimatedTime(type, data)
     });
 
   } catch (error: any) {
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      message: 'Failed to enqueue compute job',
+      message: 'Failed to enqueue compute job'
     }, { status: 500 });
   }
 };
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     if (!jobId) {
       return json({ 
-        error: 'Missing jobId parameter' ,
+        error: 'Missing jobId parameter' 
       }, { status: 400 });
     }
 
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!job) {
       return json({ 
-        error: 'Job not found' ,
+        error: 'Job not found' 
       }, { status: 404 });
     }
 
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ url }) => {
         id: vector.id,
         embeddingDimensions: vector.embedding ? 768 : 0,
         hasEmbedding: !!vector.embedding,
-        lastUpdated: vector.lastUpdated,
+        lastUpdated: vector.lastUpdated
       } : null;
     }
 
@@ -173,15 +173,15 @@ export const GET: RequestHandler = async ({ url }) => {
         result: job.result,
         startedAt: job.startedAt,
         completedAt: job.completedAt,
-        createdAt: job.createdAt,
+        createdAt: job.createdAt
       },
       outbox: outbox ? {
         id: outbox.id,
         attempts: outbox.attempts,
         processedAt: outbox.processedAt,
-        hasVector: !!outbox.vector,
+        hasVector: !!outbox.vector
       } : null,
-      vector: vectorResult,
+      vector: vectorResult
     });
 
   } catch (error: any) {
@@ -189,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -209,6 +209,6 @@ function getEstimatedTime(type: string, data: any): number {
       return 100; // Deletion is fast
     
     default:
-      return 1000; // Default 1 second,
+      return 1000; // Default 1 second
   }
 }

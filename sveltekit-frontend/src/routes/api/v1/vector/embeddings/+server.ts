@@ -36,7 +36,7 @@ interface EmbeddingResponse {
     cudaTime?: number;
     chunksProcessed: number;
     tokensProcessed: number;
-    parallelWorkers: number;,
+    parallelWorkers: number;
   };
 }
 
@@ -90,7 +90,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
       chunkSize,
       chunkOverlap,
       preserveParagraphs: true,
-      extractMetadata: true,
+      extractMetadata: true
     });
 
     processedTexts = chunkedResult.chunks;
@@ -98,7 +98,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
     metadata = {
       ...documentResult.metadata,
       ...chunkedResult.metadata,
-      originalUrl: minioUrl,
+      originalUrl: minioUrl
     };
   } else {
     // Chunk provided texts if they're large
@@ -184,13 +184,13 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
         textAlignment: true,
         tokenCacheOptimized: true,
         embeddingQuantization: embeddings.length > 100,
-        batchCoalescing: processedTexts.length > 1,
+        batchCoalescing: processedTexts.length > 1
       },
       gemmaSpecific: {
         modelOptimizations: shouldUseCUDA,
         legalVocabularyCache: true,
         contextWindowOptimization: true,
-        attentionPatternCaching: processedTexts.some(t => t.length > 512),
+        attentionPatternCaching: processedTexts.some(t => t.length > 512)
       }
     }
   });
@@ -221,7 +221,7 @@ async function handleChunking(request: Request, requestId: string, apiStartTime:
   return json({
     success: true,
     ...result
-  ,});
+  });
 }
 
 async function processCUDAEmbeddings(params: {
@@ -229,7 +229,7 @@ async function processCUDAEmbeddings(params: {
   model: string;
   normalize: boolean;
   batchSize: number;
-  requestId: string;,
+  requestId: string;
 }): Promise<{ embeddings: number[][]; gpuTime: number; parallelWorkers: number }> {
   const { texts, model, normalize, batchSize, requestId } = params;
 
@@ -248,7 +248,7 @@ async function processCUDAEmbeddings(params: {
       memory_optimization: 'CHR_ROM_aligned',
       parallel_workers: PGVECTOR_CONFIG.performance.maxParallelWorkers,
       gemma_optimizations: true,
-      legal_text_specialized: true,
+      legal_text_specialized: true
     },
     gpu_config: {
       model: PGVECTOR_CONFIG.cuda.gpu.model,
@@ -257,23 +257,23 @@ async function processCUDAEmbeddings(params: {
       memory_gb: PGVECTOR_CONFIG.cuda.gpu.memoryGB,
       compute_capability: PGVECTOR_CONFIG.cuda.gpu.computeCapability,
       memory_bandwidth_optimization: true,
-      mixed_precision: 'fp16_fp32_adaptive',
+      mixed_precision: 'fp16_fp32_adaptive'
     },
     performance_hints: {
       text_type: 'legal_documents',
       expected_token_density: 'high',
       semantic_complexity: 'legal_terminology',
       batch_coherence: 'document_sections',
-      cache_strategy: 'embedding_reuse',
+      cache_strategy: 'embedding_reuse'
     }
   };
 
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload)
   });
 
   if (!response.ok) {
@@ -285,7 +285,7 @@ async function processCUDAEmbeddings(params: {
   return {
     embeddings: result.embeddings || [],
     gpuTime: result.gpu_time || 0,
-    parallelWorkers: result.parallel_workers || 1,
+    parallelWorkers: result.parallel_workers || 1
   };
 }
 
@@ -293,7 +293,7 @@ async function processOllamaEmbeddings(params: {
   texts: string[];
   model: string;
   normalize: boolean;
-  batchSize: number;,
+  batchSize: number;
 }): Promise<number[][]> {
   const { texts, model, batchSize } = params;
   const ollamaUrl = PGVECTOR_CONFIG.ollama.url;
@@ -308,12 +308,12 @@ async function processOllamaEmbeddings(params: {
       const response = await fetch(`${ollamaUrl}/api/embeddings`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           model,
-          prompt: text,
-        }),
+          prompt: text
+        })
       });
 
       if (!response.ok) {
@@ -455,9 +455,9 @@ function generateEmbeddingClientHints(texts: string[], complexity: number) {
     tokenizer_hints: {
       expected_tokens: texts.reduce((acc, text) => acc + estimateTokens(text), 0),
       vocabulary_size: 'legal_specialized',
-      subword_optimization: true,
+      subword_optimization: true
     },
     shader_workgroup_size: Math.min(256, Math.max(32, Math.floor(avgTextLength / 10))),
-    precision_requirements: complexity > 75 ? 'high' : 'medium',
+    precision_requirements: complexity > 75 ? 'high' : 'medium'
   };
 }

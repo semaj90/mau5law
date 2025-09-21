@@ -60,14 +60,14 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
       arguments: {
         'x-message-ttl': 3600000, // 1 hour TTL
         'x-max-length': 10000, // Max 10k messages
-      },
+      }
     });
 
     const message = JSON.stringify(payload);
     const sent = ch.sendToQueue(queueName, Buffer.from(message), {
       persistent: true,
       timestamp: Date.now(),
-      messageId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      messageId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     });
 
     if (!sent) {
@@ -76,7 +76,7 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
 
     console.log(`📤 Published to queue ${queueName}:`, {
       messageId: payload.sessionId || 'unknown',
-      queueName,
+      queueName
     });
   } catch (error: any) {
     console.error(`❌ Failed to publish to queue ${queueName}:`, error);
@@ -95,8 +95,8 @@ export async function consumeFromQueue(
       durable: true,
       arguments: {
         'x-message-ttl': 3600000,
-        'x-max-length': 10000,
-      },
+        'x-max-length': 10000
+      }
     });
 
     console.log(`🔄 Starting consumer for queue: ${queueName}`);
@@ -132,7 +132,7 @@ export async function setupQueues(): Promise<void> {
       'evidence.process.control',
       'evidence.ocr.queue',
       'evidence.embedding.queue',
-      'evidence.rag.queue',
+      'evidence.rag.queue'
     ];
 
     for (const queueName of queues) {
@@ -140,8 +140,8 @@ export async function setupQueues(): Promise<void> {
         durable: true,
         arguments: {
           'x-message-ttl': 3600000,
-          'x-max-length': 10000,
-        },
+          'x-max-length': 10000
+        }
       });
       console.log(`✅ Queue setup: ${queueName}`);
     }
@@ -152,7 +152,7 @@ export async function setupQueues(): Promise<void> {
       durable: true,
       arguments: {
         'x-message-ttl': 86400000, // 24 hours
-      },
+      }
     });
     await ch.bindQueue('evidence.failed', 'evidence.dlx', 'failed');
 
@@ -197,17 +197,17 @@ export const QUEUES = {
   evidence: {
     process: 'evidence.process.queue',
     analyze: 'evidence.analyze.queue',
-    response: 'evidence.response.queue',
+    response: 'evidence.response.queue'
   },
   ai: {
     analysis: 'ai.analysis.queue',
     embedding: 'ai.embedding.queue',
-    response: 'ai.response.queue',
+    response: 'ai.response.queue'
   },
   notification: {
     email: '(notification as { email?: any; webhook?: any }).email.queue',
-    webhook: '(notification as { email?: any; webhook?: any }).webhook.queue',
-  },
+    webhook: '(notification as { email?: any; webhook?: any }).webhook.queue'
+  }
 };
 
 // Service wrapper for consistency with other services;
@@ -218,5 +218,5 @@ export const rabbitmqService = {
   publishToQueue,
   consumeFromQueue,
   healthCheck,
-  QUEUES,
+  QUEUES
 };

@@ -21,16 +21,16 @@ export interface AIAssistantState {
   ollamaClusterHealth: {
     primary: boolean;
     secondary: boolean;
-    embeddings: boolean;,
+    embeddings: boolean;
   };
   context7Analysis?: Context7Analysis;
   usage: {
     totalQueries: number;
     totalTokens: number;
-    averageResponseTime: number;,
+    averageResponseTime: number;
   };
   streamingActive: boolean;
-  streamBuffer: string;,
+  streamBuffer: string;
 }
 
 export interface ConversationEntry {
@@ -43,7 +43,7 @@ export interface ConversationEntry {
     temperature: number;
     responseTime: number;
     tokenCount: number;
-    context7Used: boolean;,
+    context7Used: boolean;
   };
 }
 
@@ -51,7 +51,7 @@ export interface Context7Analysis {
   suggestions: string[];
   codeExamples: any[];
   documentation: string;
-  confidence: number;,
+  confidence: number;
 }
 
 // Create reactive AI assistant state using $state rune;
@@ -68,21 +68,21 @@ const aiAssistantState = $state<AIAssistantState>({
   ollamaClusterHealth: {
     primary: false,
     secondary: false,
-    embeddings: false,
+    embeddings: false
   },
   usage: {
     totalQueries: 0,
     totalTokens: 0,
-    averageResponseTime: 0,
+    averageResponseTime: 0
   },
   streamingActive: false,
-  streamBuffer: '',
+  streamBuffer: ''
 });
 
 // Create XState actor for AI assistant;
 const aiAssistantActor = browser ? createActor(aiAssistantMachine, {
   services: aiAssistantServices,
-  actions: aiAssistantActions,
+  actions: aiAssistantActions
 }) : null;
 
 export class AIAssistantManager {
@@ -210,7 +210,7 @@ export class AIAssistantManager {
         this.actor.send({
           type: 'SEND_MESSAGE',
           message: message.trim(),
-          useContext7: options?.useContext7 || false,
+          useContext7: options?.useContext7 || false
         });
       }
 
@@ -239,7 +239,7 @@ export class AIAssistantManager {
         useContext: options?.useContext7,
         model: options?.model || aiAssistantState.model || 'unknown',
         temperature: options?.temperature || aiAssistantState.temperature,
-        maxTokens: aiAssistantState.maxTokens,
+        maxTokens: aiAssistantState.maxTokens
       });
 
       // Update conversation history;
@@ -253,7 +253,7 @@ export class AIAssistantManager {
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: 0,
           tokenCount: message.split(' ').length * 1.5,
-          context7Used: options?.useContext7 || false,
+          context7Used: options?.useContext7 || false
         }
       };
 
@@ -267,7 +267,7 @@ export class AIAssistantManager {
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: response.metadata.processingTime,
           tokenCount: response.metadata.tokensGenerated,
-          context7Used: false,
+          context7Used: false
         }
       };
 
@@ -287,7 +287,7 @@ export class AIAssistantManager {
         tokensGenerated: response.metadata.tokensGenerated,
         processingTime: response.metadata.processingTime,
         fromCache: response.metadata.fromCache,
-        confidence: response.metadata.confidence,
+        confidence: response.metadata.confidence
       });
 
     } catch (error: any) {
@@ -303,7 +303,7 @@ export class AIAssistantManager {
         this.actor.send({
           type: 'SEND_MESSAGE',
           message: message.trim(),
-          useContext7: options?.useContext7 || false,
+          useContext7: options?.useContext7 || false
         });
       }
     }
@@ -327,7 +327,7 @@ export class AIAssistantManager {
         verbose: options?.verbose,
         maxRetrievedDocs: 5,
         useCompression: true,
-        confidenceThreshold: 0.7,
+        confidenceThreshold: 0.7
       });
 
       // Update conversation history;
@@ -341,7 +341,7 @@ export class AIAssistantManager {
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: 0,
           tokenCount: message.split(' ').length * 1.5,
-          context7Used: options?.useContext7 || false,
+          context7Used: options?.useContext7 || false
         }
       };
 
@@ -355,7 +355,7 @@ export class AIAssistantManager {
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: ragResult.metadata.processingTime,
           tokenCount: ragResult.answer.split(' ').length * 1.3,
-          context7Used: false,
+          context7Used: false
         }
       };
 
@@ -377,7 +377,7 @@ export class AIAssistantManager {
         retrievedChunks: ragResult.metadata.retrievedChunks,
         confidence: ragResult.confidence,
         usedWebAssembly: ragResult.metadata.usedWebAssembly,
-        sourceDocuments: ragResult.sourceDocuments.length,
+        sourceDocuments: ragResult.sourceDocuments.length
       });
 
     } catch (error: any) {
@@ -396,7 +396,7 @@ export class AIAssistantManager {
         this.actor.send({
           type: 'SEND_MESSAGE',
           message: message.trim(),
-          useContext7: options?.useContext7 || false,
+          useContext7: options?.useContext7 || false
         });
       }
     }
@@ -474,7 +474,7 @@ export class AIAssistantManager {
     }
 
     this.actor.send({
-      type: 'START_STREAMING',
+      type: 'START_STREAMING'
     });
 
     // Then send the message
@@ -537,11 +537,11 @@ export class AIAssistantManager {
       temperature: aiAssistantState.temperature,
       conversation: aiAssistantState.conversationHistory,
       statistics: stats,
-      usage: aiAssistantState.usage,
+      usage: aiAssistantState.usage
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json',
+      type: 'application/json'
     });
 
     const url = URL.createObjectURL(blob);
@@ -569,7 +569,7 @@ export class AIAssistantManager {
         // Restore conversation history;
         aiAssistantState.conversationHistory = data.conversation.map((entry: any) => ({
           ...entry,
-          timestamp: new Date(entry.timestamp),
+          timestamp: new Date(entry.timestamp)
         });
 
         // Restore settings if available;
@@ -602,7 +602,7 @@ export class AIAssistantManager {
       totalCount,
       status: healthyCount === totalCount ? 'all_healthy' : 
               healthyCount > 0 ? 'partial' : 'all_down',
-      details: health,
+      details: health
     };
   }
 
@@ -658,7 +658,7 @@ export class AIAssistantManager {
         keyTerms: analysis.keyTerms.length,
         entities: analysis.entities.length,
         risks: analysis.risks.length,
-        processingTime: analysis.processingTime,
+        processingTime: analysis.processingTime
       });
 
       return analysis;

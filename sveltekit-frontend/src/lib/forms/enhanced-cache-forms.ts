@@ -19,18 +19,18 @@ export const EnhancedCaseFormSchema = CaseSchema.extend({
   clientContact: z.object({
     name: z.string().min(1, 'Contact name required'),
     email: z.string().email('Valid email required'),
-    phone: z.string().optional(),
+    phone: z.string().optional()
   }),
   // Form state
   step: z.number().min(1).max(4).default(1),
-  isDraft: z.boolean().default(true),
+  isDraft: z.boolean().default(true)
 }).omit({ 
   id: true, 
   createdAt: true, 
   updatedAt: true, 
   _cached: true, 
   _lastSync: true, 
-  _dirty: true ,
+  _dirty: true 
 });
 
 export type EnhancedCaseForm = z.infer<typeof EnhancedCaseFormSchema>;
@@ -46,7 +46,7 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
     timestamp: z.date(),
     handler: z.string(),
     action: z.string(),
-    notes: z.string().optional(),
+    notes: z.string().optional()
   })).default([]);
 }).omit({ 
   id: true, 
@@ -55,7 +55,7 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
   fileSize: true,
   _cached: true, 
   _lastSync: true, 
-  _dirty: true ,
+  _dirty: true 
 });
 
 export type EvidenceUploadForm = z.infer<typeof EvidenceUploadFormSchema>;
@@ -89,7 +89,7 @@ export class CacheFirstFormManager {
       clientContact: {
         name: '',
         email: '',
-        phone: '',
+        phone: ''
       },
       step: 1,
       isDraft: true,
@@ -329,7 +329,7 @@ export class CacheFirstFormManager {
         // Save to localStorage as backup;
         localStorage.setItem(`draft-${formId}`, JSON.stringify({
           data: formData,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
         
         console.log(`Draft saved for form ${formId}`);

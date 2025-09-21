@@ -30,7 +30,7 @@ export class AIAssistantStore {
     model: 'gemma3-legal',
     systemPrompt: 'You are a specialized legal AI assistant focusing on deeds, contracts, and legal analysis.',
     autoSwitchBackend: true,
-    persistHistory: true,
+    persistHistory: true
   });
 
   // Client-side caching and search (simplified)
@@ -106,7 +106,7 @@ export class AIAssistantStore {
         sessionId: this.sessionId,
         metadata: {
           backend,
-          legalContext: options?.legalContext,
+          legalContext: options?.legalContext
         }
       };
 
@@ -154,7 +154,7 @@ export class AIAssistantStore {
           console.log(`🔄 Trying fallback backend: ${fallbackBackend}`);
           return await this.sendMessage(content, { 
             ...options, 
-            backend: fallbackBackend ,
+            backend: fallbackBackend 
           });
         } catch (fallbackError) {
           console.error(`❌ Fallback ${fallbackBackend} failed:`, fallbackError);
@@ -217,7 +217,7 @@ export class AIAssistantStore {
         results.push({
           item: message,
           score: 0.5, // Simple scoring
-          matches: [],
+          matches: []
         });
       }
     }
@@ -235,7 +235,7 @@ export class AIAssistantStore {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
 
     if (!(response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).ok) {
@@ -266,7 +266,7 @@ export class AIAssistantStore {
     const basePayload = {
       messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
       temperature: this.config.temperature,
-      model: this.config?.model || "unknown" // @ts-ignore - Model property access,
+      model: this.config?.model || "unknown" // @ts-ignore - Model property access
     };
 
     switch (backend) {
@@ -277,7 +277,7 @@ export class AIAssistantStore {
       case 'go-micro':
         return { ...basePayload, service: 'legal-analysis', priority: 'high' };
       default:
-        return basePayload;,
+        return basePayload;
     }
   }
 
@@ -313,7 +313,7 @@ export class AIAssistantStore {
           processingNodes: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).processingNodes
         };
       default:
-        return baseResponse;,
+        return baseResponse;
     }
   }
 
@@ -474,7 +474,7 @@ export class AIAssistantStore {
       messages: this.messages,
       exportedAt: new Date().toISOString(),
       totalMessages: this.messages.length,
-      backends: [...new Set(this.messages.map(m => m.metadata?.backend).filter(Boolean))],
+      backends: [...new Set(this.messages.map(m => m.metadata?.backend).filter(Boolean))]
     };
 
     switch (format) {
@@ -485,7 +485,7 @@ export class AIAssistantStore {
       case 'pdf':
         return this.generatePDF(conversation);
       default:
-        return conversation;,
+        return conversation;
     }
   }
 

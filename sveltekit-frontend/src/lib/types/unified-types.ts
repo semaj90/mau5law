@@ -37,9 +37,9 @@ export interface OllamaModel {
     family: string;
     families?: string[];
     parameter_size: string;
-    quantization_level: string;,
+    quantization_level: string;
   };
-  modified_at: string;,
+  modified_at: string;
 }
 
 export interface OllamaHealthCheck {
@@ -92,7 +92,7 @@ export interface RAGSearchResponse {
   query: string;
   totalResults: number;
   processingTime: number;
-  model: string;,
+  model: string;
 }
 
 // ===== LEGAL DOMAIN TYPES =====;
@@ -201,12 +201,12 @@ export interface User {
   preferences?: UserPreferences;
   createdAt: Date;
   lastLogin?: Date;
-  isActive: boolean;,
+  isActive: boolean;
 }
 
 export interface Permission {
   resource: string;
-  actions: ('read' | 'write' | 'delete' | 'admin')[];,
+  actions: ('read' | 'write' | 'delete' | 'admin')[];
 }
 
 export interface UserPreferences {
@@ -216,11 +216,11 @@ export interface UserPreferences {
   notifications: {
     email: boolean;
     push: boolean;
-    sms: boolean;,
+    sms: boolean;
   };
   ui: {
     density: 'compact' | 'comfortable' | 'spacious';
-    sidebarCollapsed: boolean;,
+    sidebarCollapsed: boolean;
   };
 }
 
@@ -232,7 +232,7 @@ export interface AuthSession {
   expiresAt: Date;
   ipAddress?: string;
   userAgent?: string;
-  isActive: boolean;,
+  isActive: boolean;
 }
 
 // ===== API & RESPONSE TYPES =====;
@@ -255,7 +255,7 @@ export interface PaginatedResponse<T = any> {
     total: number;
     pages: number;
     hasNext: boolean;
-    hasPrev: boolean;,
+    hasPrev: boolean;
   };
 }
 
@@ -283,11 +283,11 @@ export interface SearchOptions {
   filters?: Record<string, any>;
   sort?: {
     field: string;
-    direction: 'asc' | 'desc';,
+    direction: 'asc' | 'desc';
   };
   pagination?: {
     page: number;
-    limit: number;,
+    limit: number;
   };
 }
 
@@ -329,7 +329,7 @@ export interface CacheStats {
   hitRate: number;
   missRate: number;
   evictionCount: number;
-  averageAccessTime: number;,
+  averageAccessTime: number;
 }
 
 // ===== AI ANALYSIS TYPES =====;
@@ -360,7 +360,7 @@ export interface AIAnalysisResponse {
     entities?: LegalEntity[];
     sentiment?: {
       score: number;
-      label: 'positive' | 'negative' | 'neutral';,
+      label: 'positive' | 'negative' | 'neutral';
     };
     riskScore?: number;
     tags?: string[];
@@ -385,7 +385,7 @@ export interface WorkflowEvent {
   type: string;
   payload?: unknown;
   timestamp: Date;
-  userId: string;,
+  userId: string;
 }
 
 // ===== MCP & INTEGRATION TYPES =====;
@@ -413,7 +413,7 @@ export interface Context7Integration {
   bestPractices: boolean;
   integrationSuggestions: boolean;
   libraryDocs: boolean;
-  performanceOptimization: boolean;,
+  performanceOptimization: boolean;
 }
 
 // ===== FORM & VALIDATION TYPES =====;

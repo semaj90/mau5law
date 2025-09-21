@@ -15,7 +15,7 @@ const typeDefs = /* GraphQL */ `;
     score: Float!
     intent: String,
     timeOfDay: String,
-    position: String,
+    position: String
   }
   type Query {
     recommendations(
@@ -53,13 +53,13 @@ const resolvers = {
             score,
             intent: (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).intent,
             timeOfDay: (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).timeOfDay,
-            position: (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).position,
+            position: (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).position
           };
         })
         .sort((a, b) => b.score - a.score)
         .slice(0, limit);
-    },
-  },
+    }
+  }
 };
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });

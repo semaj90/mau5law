@@ -19,7 +19,7 @@ export function apiSuccess<T>(data: T, status = 200): Response {
     {
       success: true,
       data,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     },
     { status }
   );
@@ -31,7 +31,7 @@ export function apiError(error: string | object, status: number, requestId?: str
       success: false,
       error,
       timestamp: Date.now(),
-      requestId,
+      requestId
     },
     { status }
   );
@@ -169,7 +169,7 @@ export function paginatedResponse<T>(
       total,
       pages: Math.ceil(total / limit),
       hasNext: page * limit < total,
-      hasPrev: page > 1,
+      hasPrev: page > 1
     }
   });
 }

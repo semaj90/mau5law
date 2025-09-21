@@ -36,7 +36,7 @@ export interface EnhancedSearchOptions {
   documentTypes?: string[];
   dateRange?: {
     from: Date;
-    to: Date;,
+    to: Date;
   };
   maxResults?: number;
   limit?: number;
@@ -72,7 +72,7 @@ export interface EnhancedSearchResult {
   };
   highlights?: {
     field: string;
-    matches: string[];,
+    matches: string[];
   }[];
   confidence: number;
   relevanceScore: number;
@@ -90,7 +90,7 @@ export interface AIAnalysisResult {
   citations: string[];
   recommendations: string[];
   confidence: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export interface VectorSearchOptions {
@@ -151,13 +151,13 @@ export interface LegalDocumentAnalysis {
     organizations: string[];
     locations: string[];
     dates: string[];
-    amounts: string[];,
+    amounts: string[];
   };
   legalConcepts: string[];
   citations: string[];
   riskFactors: string[];
   recommendations: string[];
-  confidenceScore: number;,
+  confidenceScore: number;
 }
 
 export interface CaseAnalysis {
@@ -169,5 +169,5 @@ export interface CaseAnalysis {
   outcome: string;
   significance: number;
   practiceArea: PracticeArea;
-  jurisdiction: Jurisdiction;,
+  jurisdiction: Jurisdiction;
 }

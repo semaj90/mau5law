@@ -26,7 +26,7 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
     stream: false,
     options: {
       num_predict: opts.maxTokens ?? 512,
-      temperature: opts.temperature ?? 0.0,
+      temperature: opts.temperature ?? 0.0
     }
   };
 
@@ -34,7 +34,7 @@ export async function queryGemma(prompt: string, opts: GemmaOptions = {}): Promi
     const res = await fetch(`${API}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
 
     if (!res.ok) {
@@ -63,14 +63,14 @@ export async function* streamGemma(prompt: string, opts: GemmaOptions = {}): Asy
     stream: true,
     options: {
       num_predict: opts.maxTokens ?? 512,
-      temperature: opts.temperature ?? 0.0,
+      temperature: opts.temperature ?? 0.0
     }
   };
 
   const res = await fetch(`${API}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
 
   if (!res.ok) {

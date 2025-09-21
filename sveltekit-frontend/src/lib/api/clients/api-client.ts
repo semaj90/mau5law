@@ -48,9 +48,9 @@ export async function apiFetch<T = unknown>(
     try {
       const res = await fetch(`${url}${qs}`, {
         method,
-        headers: { "Content-Type": "application/json", ...(headers || {,}) },
+        headers: { "Content-Type": "application/json", ...(headers || {}) },
         body: body !== undefined ? JSON.stringify(body) : undefined,
-        signal: controller?.signal,
+        signal: controller?.signal
       } as RequestInit);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const ct = res.headers.get("content-type") || "";
@@ -64,7 +64,7 @@ export async function apiFetch<T = unknown>(
       if (out && typeof out === 'object') {
         Object.defineProperty(out as any, '__requestMeta', {
           value: { url, method, attempt: i + 1, ok: true },
-          enumerable: false,
+          enumerable: false
         });
       }
       return out;
@@ -74,7 +74,7 @@ export async function apiFetch<T = unknown>(
         try {
           Object.defineProperty(err, '__apiRequest', {
         value: { url, method, attempt: i + 1, remaining: attempts - (i + 1) },
-        enumerable: false,
+        enumerable: false
           });
         } catch {}
       }

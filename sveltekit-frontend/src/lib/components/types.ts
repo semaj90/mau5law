@@ -17,7 +17,7 @@ export interface ComponentEvidence {
   content: string;
   metadata: Record<string, any>;
   uploadedAt: string;
-  userId: string;,
+  userId: string;
 }
 
 export interface CanvasState {
@@ -32,12 +32,12 @@ export interface SearchResult {
   source: string;
   score: number;
   content: string;
-  relevanceScore: number;,
+  relevanceScore: number;
 }
 
 export interface WebSocketMessage {
   type: string;
   payload: any;
   userId: string;
-  timestamp: number;,
+  timestamp: number;
 }

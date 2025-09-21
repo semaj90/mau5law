@@ -27,3 +27,19 @@
 
   The system works - you can now use
   TensorRT-LLM for 2-10x faster legal AI inference on Ubuntu
+
+## TensorRT-LLM Requirements
+- **CRITICAL**: TensorRT-LLM is built for Python 3.10 ONLY
+- Python 3.12 does NOT work with TensorRT-LLM
+- Must use Python 3.10 environment for safetensor conversion to .plan engines
+- Use: `python3.10` specifically, not `python3` or `python3.12`
+
+## Working TensorRT Environment
+- **Location**: `~/trt_env_310/bin/activate`
+- **Python Version**: 3.10.18 ✅
+- **Packages Installed**:
+  - safetensors 0.6.2 ✅
+  - tensorrt-llm 1.1.0rc5 ✅
+  - tensorrt 10.11.0.33 ✅
+- **Activation Command**: `wsl bash -c "source ~/trt_env_310/bin/activate"`
+- **Status**: Ready for safetensor → .plan engine conversion

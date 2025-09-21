@@ -30,7 +30,7 @@ export const GET: RequestHandler = async () => {
         priority: "low",
         createdAt: new Date(Date.now() - 604800000).toISOString(), // 1 week ago
         lastActivity: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-      },
+      }
     ];
 
     return json(recentCases);

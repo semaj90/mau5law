@@ -47,7 +47,7 @@ interface SearchResult {
   content: string;
   similarity: number;
   metadata: Record<string, any>;
-  score: number;,
+  score: number;
 }
 
 /**
@@ -59,7 +59,7 @@ interface SearchMetrics {
   postProcessTime: number;
   cacheHit: boolean;
   resultsCount: number;
-  gpuAccelerated: boolean;,
+  gpuAccelerated: boolean;
 }
 
 /**
@@ -70,7 +70,7 @@ interface AdvancedSearchResult {
   results: SearchResult[];
   searchStrategy: SearchStrategy;
   totalTime: number;
-  metrics: SearchMetrics;,
+  metrics: SearchMetrics;
 }
 
 /**
@@ -86,7 +86,7 @@ interface DocumentSearchResult {
   content: string;
   similarity: number;
   metadata: Record<string, any>;
-  searchTime: number;,
+  searchTime: number;
 }
 
 /**
@@ -99,12 +99,12 @@ interface SemanticSearchResult {
     content: string;
     similarity: number;
     metadata: Record<string, any>;
-    source_collection: string;,
+    source_collection: string;
   }>;
   total_results: number;
   collections_searched: string[];
   search_time: number;
-  cache_hit: boolean;,
+  cache_hit: boolean;
 }
 
 /**
@@ -118,12 +118,12 @@ interface FullTextSearchResult {
     snippet: string;
     rank: number;
     metadata: Record<string, any>;
-    source_collection: string;,
+    source_collection: string;
   }>;
   total_results: number;
   collections_searched: string[];
   search_time: number;
-  cache_hit: boolean;,
+  cache_hit: boolean;
 }
 
 /**
@@ -147,9 +147,9 @@ interface HybridSearchResult {
   weights: {
     vectorWeight: number;
     textWeight: number;
-    keywordWeight: number;,
+    keywordWeight: number;
   };
-  cache_hit: boolean;,
+  cache_hit: boolean;
 }
 
 // SIMD JSON parser interface (using simdjson or similar)
@@ -163,7 +163,7 @@ interface ParsedVectorBatch {
   vectors: Float32Array[];
   metadata: VectorMetadata[];
   parseTime: number;
-  vectorsPerSecond: number;,
+  vectorsPerSecond: number;
 }
 
 interface VectorMetadata {
@@ -171,7 +171,7 @@ interface VectorMetadata {
   embeddingHash: string;
   dimensions: number;
   norm: number;
-  timestamp: number;,
+  timestamp: number;
 }
 
 interface IndexBuildProgress {
@@ -200,7 +200,7 @@ export class MultiCoreMCPVectorServer {
     avgProcessingTime: 0,
     cacheHitRate: 0,
     errorCount: 0,
-    startTime: 0,
+    startTime: 0
   };
 
   constructor(config: {
@@ -244,9 +244,9 @@ export class MultiCoreMCPVectorServer {
           idColumnName: 'document_id',
           vectorColumnName: 'gemma_embedding',
           contentColumnName: 'document_content',
-          metadataColumnName: 'document_metadata',
+          metadataColumnName: 'document_metadata'
         },
-        distanceStrategy: 'cosine',
+        distanceStrategy: 'cosine'
       });
 
       console.log('🦜 LangChain PGVector store initialized');
@@ -268,7 +268,7 @@ export class MultiCoreMCPVectorServer {
         workerData: {
           workerId: i,
           coreCount: numCores,
-          simdEnabled: true,
+          simdEnabled: true
         }
       });
 
@@ -326,7 +326,7 @@ export class MultiCoreMCPVectorServer {
         progressPercent: 0,
         estimatedTimeRemaining: 0,
         currentThroughput: 0,
-        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
       });
 
       const parseStartTime = performance.now();
@@ -344,7 +344,7 @@ export class MultiCoreMCPVectorServer {
         progressPercent: 15,
         estimatedTimeRemaining: this.estimateRemainingTime(parseTime, parsedBatch.vectors.length),
         currentThroughput: parsedBatch.vectorsPerSecond,
-        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
       });
 
       const processedVectors = await this.processVectorsParallel(parsedBatch);
@@ -357,7 +357,7 @@ export class MultiCoreMCPVectorServer {
         progressPercent: 60,
         estimatedTimeRemaining: this.estimateRemainingTime(parseTime, processedVectors.length),
         currentThroughput: processedVectors.length / ((performance.now() - parseStartTime) / 1000),
-        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
       });
 
       const indexResults = await this.createDatabaseIndexes(table, algorithm, processedVectors);
@@ -371,7 +371,7 @@ export class MultiCoreMCPVectorServer {
           progressPercent: 85,
           estimatedTimeRemaining: this.estimateRemainingTime(parseTime, processedVectors.length),
           currentThroughput: processedVectors.length / ((performance.now() - parseStartTime) / 1000),
-          memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+          memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
         });
 
         await this.cacheProcessedVectors(processedVectors);
@@ -386,7 +386,7 @@ export class MultiCoreMCPVectorServer {
         progressPercent: 100,
         estimatedTimeRemaining: 0,
         currentThroughput: processedVectors.length / (totalTime / 1000),
-        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024,
+        memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
       });
 
       const result: IndexBuildResult = {
@@ -397,7 +397,7 @@ export class MultiCoreMCPVectorServer {
         throughput: processedVectors.length / (totalTime / 1000),
         memoryPeak: process.memoryUsage().heapUsed / 1024 / 1024,
         cacheHitRate: this.metrics.cacheHitRate,
-        metrics: this.metrics,
+        metrics: this.metrics
       };
 
       console.log(`✅ Vector index build completed: ${processedVectors.length} vectors in ${totalTime.toFixed(2)}ms`);
@@ -424,7 +424,7 @@ export class MultiCoreMCPVectorServer {
         const chunk = {
           vectors: batch.vectors.slice(start, end),
           metadata: batch.metadata.slice(start, end),
-          chunkId: i,
+          chunkId: i
         };
 
         const promise = this.processVectorChunk(this.workers[i], chunk);
@@ -616,7 +616,7 @@ export class MultiCoreMCPVectorServer {
         embedding: Array.from(vector.embedding),
         metadata: vector.metadata,
         norm: vector.norm,
-        cached_at: Date.now(),
+        cached_at: Date.now()
       };
 
       pipeline.setex(cacheKey, 3600, JSON.stringify(cacheData); // 1 hour TTL
@@ -641,7 +641,7 @@ export class MultiCoreMCPVectorServer {
         const message = {
           ...progress,
           timestamp: Date.now(),
-          serverId: process.pid,
+          serverId: process.pid
         };
 
         await this.rabbitChannel.publish(
@@ -700,7 +700,7 @@ export class MultiCoreMCPVectorServer {
       avgThroughput: this.metrics.totalVectorsProcessed / (uptime / 1000),
       memoryUsage: process.memoryUsage(),
       cpuUsage: process.cpuUsage(),
-      workerCount: this.workers.length,
+      workerCount: this.workers.length
     };
   }
 
@@ -751,7 +751,7 @@ export class MultiCoreMCPVectorServer {
         content: row.content,
         similarity: row.similarity,
         metadata: row.metadata || {},
-        searchTime: performance.now() - startTime,
+        searchTime: performance.now() - startTime
       });
 
       // Cache results;
@@ -862,7 +862,7 @@ export class MultiCoreMCPVectorServer {
             content: row.content,
             similarity: row.similarity,
             metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
-            source_collection: row.source_collection,
+            source_collection: row.source_collection
           });
 
         } catch (error) {
@@ -897,7 +897,7 @@ export class MultiCoreMCPVectorServer {
         total_results: finalResults.length,
         collections_searched: collections,
         search_time: performance.now() - startTime,
-        cache_hit: false,
+        cache_hit: false
       };
 
       // Cache the result;
@@ -972,7 +972,7 @@ export class MultiCoreMCPVectorServer {
             snippet: row.snippet,
             rank: row.rank,
             metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata || '{}') : row.metadata,
-            source_collection: row.source_collection,
+            source_collection: row.source_collection
           });
 
         } catch (error) {
@@ -1003,7 +1003,7 @@ export class MultiCoreMCPVectorServer {
         total_results: finalResults.length,
         collections_searched: collections,
         search_time: performance.now() - startTime,
-        cache_hit: false,
+        cache_hit: false
       };
 
       // Cache result;
@@ -1075,7 +1075,7 @@ export class MultiCoreMCPVectorServer {
           text_score: 0,
           keyword_score: 0,
           combined_score: 0,
-          search_types: [],
+          search_types: []
         };
 
         existing.vector_score = result.similarity;
@@ -1093,7 +1093,7 @@ export class MultiCoreMCPVectorServer {
           text_score: 0,
           keyword_score: 0,
           combined_score: 0,
-          search_types: [],
+          search_types: []
         };
 
         existing.text_score = result.rank;
@@ -1142,7 +1142,7 @@ export class MultiCoreMCPVectorServer {
         total_results: finalResults.length,
         search_time: performance.now() - startTime,
         weights: { vectorWeight, textWeight, keywordWeight },
-        cache_hit: false,
+        cache_hit: false
       };
 
       // Cache result;
@@ -1248,7 +1248,7 @@ export class MultiCoreMCPVectorServer {
           postProcessTime: 0,
           cacheHit: false,
           resultsCount: filteredResults.length,
-          gpuAccelerated: false,
+          gpuAccelerated: false
         }
       };
 
@@ -1296,7 +1296,7 @@ export class MultiCoreMCPVectorServer {
       content: row.document_content,
       similarity: row.similarity,
       metadata: row.document_metadata,
-      score: row.similarity,
+      score: row.similarity
     });
   }
 
@@ -1328,7 +1328,7 @@ export class MultiCoreMCPVectorServer {
       content: row.document_content,
       similarity: row.similarity,
       metadata: row.document_metadata,
-      score: row.similarity,
+      score: row.similarity
     });
   }  /**
    * Search using LangChain PGVector
@@ -1513,10 +1513,10 @@ if (!isMainThread) {
         metadata: {
           ...metadata,
           workerId,
-          processedAt: Date.now(),
+          processedAt: Date.now()
         },
         norm,
-        hash: hashVector(quantizedVector),
+        hash: hashVector(quantizedVector)
       });
 
       // Report progress periodically;
@@ -1525,7 +1525,7 @@ if (!isMainThread) {
           type: 'PROGRESS',
           workerId,
           vectorsProcessed: i,
-          totalVectors: chunk.vectors.length,
+          totalVectors: chunk.vectors.length
         });
       }
     }
@@ -1562,7 +1562,7 @@ if (!isMainThread) {
 interface VectorChunk {
   vectors: Float32Array[];
   metadata: VectorMetadata[];
-  chunkId: number;,
+  chunkId: number;
 }
 
 interface ProcessedVector {
@@ -1570,7 +1570,7 @@ interface ProcessedVector {
   embedding: Float32Array;
   metadata: any;
   norm: number;
-  hash: string;,
+  hash: string;
 }
 
 interface IndexCreationResult {
@@ -1580,7 +1580,7 @@ interface IndexCreationResult {
   vectorCount: number;
   creationTime: number;
   estimatedSize: number;
-  useCase: string;,
+  useCase: string;
 }
 
 interface IndexBuildResult {
@@ -1591,7 +1591,7 @@ interface IndexBuildResult {
   throughput: number;
   memoryPeak: number;
   cacheHitRate: number;
-  metrics: any;,
+  metrics: any;
 }
 
 interface SystemMetrics {
@@ -1604,7 +1604,7 @@ interface SystemMetrics {
   avgThroughput: number;
   memoryUsage: NodeJS.MemoryUsage;
   cpuUsage: NodeJS.CpuUsage;
-  workerCount: number;,
+  workerCount: number;
 }
 
 export {

@@ -5,7 +5,7 @@ class SimpleCacheManager {
   async set(key: string, data: any, options: { ttl: number } = { ttl: 24 * 3600 * 1000 }): Promise<void> {
     this.cache.set(key, {
       data,
-      expires: Date.now() + options.ttl,
+      expires: Date.now() + options.ttl
     });
   }
 

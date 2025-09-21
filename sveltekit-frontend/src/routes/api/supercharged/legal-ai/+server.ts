@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
               cost_savings: "70% reduction in compute costs",
               user_experience: "Sub-second responses for all operations",
               scaling: "10x more concurrent users on same hardware",
-              competitive_advantage: "Industry-leading performance",
+              competitive_advantage: "Industry-leading performance"
             }
           }
         });
@@ -120,13 +120,13 @@ export const GET: RequestHandler = async ({ url }) => {
             endpoints: {
               status: "/api/supercharged/legal-ai?demo=status",
               benchmark: "/api/supercharged/legal-ai?demo=benchmark", 
-              showcase: "/api/supercharged/legal-ai?demo=showcase",
+              showcase: "/api/supercharged/legal-ai?demo=showcase"
             },
             operations: {
               legal_document: "POST with legal document JSON for analysis",
               vector_similarity: "POST with query vector and candidates",
               intelligent_todos: "POST with NPM error output for SOM analysis",
-              batch_operations: "POST with array of mixed operations",
+              batch_operations: "POST with array of mixed operations"
             }
           }
         });
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error.message,
+      error: error.message
     }, { status: 500 });
   }
 };
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             useCache: options.useCache !== false,
             pipeline: options.pipeline || ['document-analysis', 'entity-extraction', 'risk-assessment'],
-            priority: options.priority || 2,
+            priority: options.priority || 2
           }
         );
         
@@ -164,7 +164,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'legal_document',
           result: docResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
         
       case 'vector_similarity':
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!Array.isArray(queryVector) || !Array.isArray(candidateVectors)) {
           return json({
             success: false,
-            error: 'queryVector and candidateVectors must be arrays',
+            error: 'queryVector and candidateVectors must be arrays'
           }, { status: 400 });
         }
         
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             algorithm,
             useCache: options.useCache !== false,
-            threshold: options.threshold || 0.8,
+            threshold: options.threshold || 0.8
           }
         );
         
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'vector_similarity',
           result: simResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
         
       case 'intelligent_todos':
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (typeof npmOutput !== 'string') {
           return json({
             success: false,
-            error: 'npmOutput must be a string',
+            error: 'npmOutput must be a string'
           }, { status: 400 });
         }
         
@@ -208,7 +208,7 @@ export const POST: RequestHandler = async ({ request }) => {
           npmOutput,);
           {
             useCache: options.useCache !== false,
-            webgpuRanking: options.webgpuRanking !== false,
+            webgpuRanking: options.webgpuRanking !== false
           }
         );
         
@@ -216,7 +216,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'intelligent_todos',
           result: todosResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
         
       case 'batch_operations':
@@ -225,7 +225,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!Array.isArray(operations)) {
           return json({
             success: false,
-            error: 'operations must be an array',
+            error: 'operations must be an array'
           }, { status: 400 });
         }
         
@@ -235,7 +235,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'batch_operations',
           result: batchResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
         
       case 'performance_test':
@@ -246,7 +246,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'performance_test',
           result: perfResult,
-          total_time: performance.now() - startTime,
+          total_time: performance.now() - startTime
         });
         
       default:;
@@ -270,7 +270,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: false,
       error: {
         message: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -361,7 +361,7 @@ async function runPerformanceBenchmark(): Promise<any> {
       average_improvement: "25-100x faster across operations",
       memory_usage: "60% reduction",
       server_resources: "70% less CPU usage",
-      user_experience: "Sub-second responses",
+      user_experience: "Sub-second responses"
     }
   };
 }
@@ -379,7 +379,7 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
   
   const results: any = {
     workload: { documentCount, vectorDimensions, candidateCount, iterations },
-    phases: [],
+    phases: []
   };
   
   // Phase 1: Document Processing Test;
@@ -412,7 +412,7 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
     documentsProcessed: docResults.length,
     averageTime: (performance.now() - docProcessingStart) / docResults.length,
     cacheHits: docResults.filter(item => item.length),
-    processingPaths: docResults.map(r => r.processingPath),
+    processingPaths: docResults.map(r => r.processingPath)
   });
   
   // Phase 2: Vector Similarity Test
@@ -424,7 +424,7 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
   
   const vectorResult = await computeVectorSimilarityOptimized(queryVec, candidates, {
     algorithm: 'cosine',
-    useCache: true,
+    useCache: true
   });
   
   results.phases.push({
@@ -434,7 +434,7 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
     candidatesProcessed: candidates.length,
     topSimilarity: Math.max(...(vectorResult.similarities || [])),
     processingPath: vectorResult.processingPath,
-    cacheHit: vectorResult.performance?.cacheHit,
+    cacheHit: vectorResult.performance?.cacheHit
   });
   
   // Phase 3: System Resource Usage
@@ -446,7 +446,7 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
     cacheEfficiency: systemMetrics.efficiency,
     memoryUsage: typeof (performance as any).memory !== 'undefined' ? {
       used: Math.round(((performance as any).memory.usedJSHeapSize / 1024 / 1024)),
-      total: Math.round(((performance as any).memory.totalJSHeapSize / 1024 / 1024),
+      total: Math.round(((performance as any).memory.totalJSHeapSize / 1024 / 1024)
     } : 'not_available'
   };
   

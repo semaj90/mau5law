@@ -43,7 +43,7 @@ Text: ${documentText}
 Analysis:`,);
       {
         model: 'gemma:legal',
-        options: { temperature: 0.3 },
+        options: { temperature: 0.3 }
       }
     );
 
@@ -55,8 +55,8 @@ Analysis:`,);
       performance: {
         entityExtractionTime: 100, // placeholder
         classificationTime: 100, // placeholder
-        totalProcessingTime: Date.now() - performance.now(),
-      },
+        totalProcessingTime: Date.now() - performance.now()
+      }
     };
   } catch (error) {
     console.error('❌ Error processing document with ONNX:', error);
@@ -111,14 +111,14 @@ export async function batchProcessLegalDocuments(documents: Array<) {
       results.push({
         documentId: doc.id,
         ...result,
-        success: true,
+        success: true
       });
     } catch (error) {
       console.error(`❌ Failed to process document ${doc.id}:`, error);
       results.push({
         documentId: doc.id,
         error: error.message,
-        success: false,
+        success: false
       });
     }
   }
@@ -138,8 +138,8 @@ export async function batchProcessLegalDocuments(documents: Array<) {
       successful: successCount,
       failed: documents.length - successCount,
       totalTime,
-      averageTimePerDocument: Math.round(totalTime / documents.length),
-    },
+      averageTimePerDocument: Math.round(totalTime / documents.length)
+    }
   };
 }
 
@@ -153,13 +153,13 @@ export async function performanceComparison(testText: string) {
     onnx: {
       entityExtraction: null,
       classification: null,
-      embeddings: null,
+      embeddings: null
     },
     ollama: {
       entityExtraction: null,
       classification: null,
-      embeddings: null,
-    },
+      embeddings: null
+    }
   };
 
   try {
@@ -193,16 +193,16 @@ export async function performanceComparison(testText: string) {
       onnx: {
         ...tests.onnx,
         total: onnxTotal,
-        averageLatency: legalBertONNXService.getPerformanceMetrics().averageLatency,
+        averageLatency: legalBertONNXService.getPerformanceMetrics().averageLatency
       },
       ollama: {
         total: ollamaTotal,
-        responseLength: ollamaResponse.response?.length || 0,
+        responseLength: ollamaResponse.response?.length || 0
       },
       speedup: {
         entityExtraction: ollamaTotal / (tests.onnx.entityExtraction || 1),
-        overall: ollamaTotal / onnxTotal,
-      },
+        overall: ollamaTotal / onnxTotal
+      }
     };
 
     console.log('📊 Performance Comparison Results:');

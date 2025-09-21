@@ -28,14 +28,14 @@ export const POST: RequestHandler = async ({ request }) => {
       dimensions: body.dimensions || [512, 512],
       seed: body.seed,
       conditioning_tensors: body.conditioning_tensors,
-      neural_sprite_config: body.neural_sprite_config,
+      neural_sprite_config: body.neural_sprite_config
     };
 
     // Validate required fields;
     if (!glyphRequest.evidence_id || !glyphRequest.prompt) {
       return json({
         success: false,
-        error: 'evidence_id and prompt are required',
+        error: 'evidence_id and prompt are required'
       }, { status: 400 });
     }
 
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (width < 64 || width > 2048 || height < 64 || height > 2048) {
       return json({
         success: false,
-        error: 'dimensions must be between 64x64 and 2048x2048',
+        error: 'dimensions must be between 64x64 and 2048x2048'
       }, { status: 400 });
     }
 
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
       prompt: glyphRequest.prompt,
       style: glyphRequest.style,
       dimensions: glyphRequest.dimensions,
-      grpmo_enabled: hasExtendedThinking,
+      grpmo_enabled: hasExtendedThinking
     });
 
     let result: any;
@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request }) => {
         similar_context_used: grpmoContext.similar_results?.length || 0,
         glyph_embedding_dimensions: grpmoContext.glyph_embedding?.length || 0,
         enhancement_applied: true,
-        context_integration_time_ms: Date.now() - startTime,
+        context_integration_time_ms: Date.now() - startTime
       };
       
       console.log(`🧠 GRPMO context applied: ${grpmoMetadata.similar_context_used} similar items, ${grpmoMetadata.thinking_stages.length} thinking stages`);
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
         console.log('🧬 Creating portable artifact with Neural Sprite metadata...');
 
         // Fetch the generated glyph image
-        const glyphResponse = await fetch((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any ,}).glyph_url);
+        const glyphResponse = await fetch((result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).glyph_url);
         const glyphBuffer = await glyphResponse.arrayBuffer();
 
         // Create comprehensive legal AI metadata with GRPMO integration;
@@ -138,17 +138,17 @@ export const POST: RequestHandler = async ({ request }) => {
               {
                 type: 'style',
                 value: glyphRequest.style,
-                confidence: 1.0,
+                confidence: 1.0
               },
               {
                 type: 'dimensions',
                 value: `${glyphRequest.dimensions[0]}x${glyphRequest.dimensions[1]}`,
-                confidence: 1.0,
+                confidence: 1.0
               },
               ...(hasExtendedThinking ? [{
                 type: 'grpmo_context',
                 value: `${grpmoMetadata?.similar_context_used || 0} similar items`,
-                confidence: 0.9,
+                confidence: 0.9
               }] : [])
             ],
             risk_assessment: 'low',
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request }) => {
               success: true,
               metadata: { 
                 prompt: glyphRequest.prompt,
-                grpmo_enhanced: hasExtendedThinking,
+                grpmo_enhanced: hasExtendedThinking
               }
             },
             {
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
               metadata: {
                 cache_hits: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).cache_hits,
                 tensor_count: (result as { generation_time_ms?: any; cache_hits?: any; glyph_url?: any; neural_sprite_results?: any; tensor_ids?: any; preview_with_tensors?: any }).tensor_ids.length,
-                grpmo_conditioning: hasExtendedThinking,
+                grpmo_conditioning: hasExtendedThinking
               }
             },
             {
@@ -214,7 +214,7 @@ export const POST: RequestHandler = async ({ request }) => {
           legalMetadata.analysis_results,
           {
             neural_sprite_data: legalMetadata.neural_sprite_data,
-            processing_chain: legalMetadata.processing_chain,
+            processing_chain: legalMetadata.processing_chain
           }
         );
 
@@ -248,7 +248,7 @@ export const POST: RequestHandler = async ({ request }) => {
           neural_sprite_enabled: !!glyphRequest.neural_sprite_config?.enable_compression,
           grpmo_enhanced: hasExtendedThinking,
           generated_at: new Date().toISOString(),
-          total_processing_time_ms: Date.now() - startTime,
+          total_processing_time_ms: Date.now() - startTime
         }
       }
     });
@@ -259,7 +259,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error occurred',
-      grpmo_context_provided: !!body.grpmo_context,
+      grpmo_context_provided: !!body.grpmo_context
     }, { status: 500 });
   }
 };
@@ -326,25 +326,25 @@ export const GET: RequestHandler = async () => {
         extended_thinking: 'Multi-stage AI reasoning with hot/warm/cold caching',
         reinforcement_learning: 'PPO-based optimization of generation quality',
         contextual_enhancement: 'Similar content integration for improved results',
-        cache_orchestration: 'Intelligent cache layer management for performance',
+        cache_orchestration: 'Intelligent cache layer management for performance'
       },
       neural_sprite_capabilities: {
         tensor_compression: 'AI-powered compression with configurable ratios',
         predictive_frames: 'Generate 0-10 interpolated animation frames',
         ui_layout_compression: 'Demo compression of UI layout states',
-        metadata_embedding: 'Legal AI metadata embedded in PNG files',
+        metadata_embedding: 'Legal AI metadata embedded in PNG files'
       }
     };
 
     return json({
       success: true,
-      data: stats,
+      data: stats
     });
 
   } catch (error) {
     return json({
       success: false,
-      error: 'Service unavailable',
+      error: 'Service unavailable'
     }, { status: 503 });
   }
 };

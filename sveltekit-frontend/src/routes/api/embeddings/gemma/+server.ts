@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           return json();
             {
               error: 'Text is required and must be a string',
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             },
             { status: 400 }
           );
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           metadata: (result as { success?: any; embedding?: any; metadata?: any; error?: any }).metadata,
           error: (result as { success?: any; embedding?: any; metadata?: any; error?: any }).error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'batch':
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           return json();
             {
               error: 'Documents array is required',
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             },
             { status: 400 }
           );
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           results: batchResult.results,
           summary: batchResult.summary,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'store':
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           return json();
             {
               error: 'documentId and content are required',
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             },
             { status: 400 }
           );
@@ -84,14 +84,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Generate embedding;
         const embeddingResult = await gemmaEmbeddingService.generateEmbedding(content, {
           documentId,
-          ...docMetadata,
+          ...docMetadata
         });
 
         if (!embeddingResult.success) {
           return json();
             {
               error: `Embedding generation failed: ${embeddingResult.error}`,
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             },
             { status: 500 }
           );
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           finalEmbedding!,);
           {
             ...docMetadata,
-            embeddingMetadata: embeddingResult.metadata,
+            embeddingMetadata: embeddingResult.metadata
           }
         );
 
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           embeddingMetadata: embeddingResult.metadata,
           storageError: storeResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'health':
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           version: healthResult.version,
           error: healthResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'model-info':
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           modelInfo: infoResult.modelInfo,
           error: infoResult.error,
           responseTime: `${Date.now() - startTime}ms`,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       default:
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           {
             error: `Unknown action: ${action}`,
             availableActions: ['generate', 'batch', 'store', 'health', 'model-info'],
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },>
           { status: 400 }
         );
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       error: `Request processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`,
       action,
       responseTime: `${Date.now() - startTime}ms`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 }
@@ -193,7 +193,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'gemma_health_check',
           ...healthResult,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       case 'model-info':
@@ -204,21 +204,21 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'gemma_model_info',
           ...infoResult,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
 
       default:;
         return json({
           error: `Unknown GET action: ${action}`,
           availableActions: ['health', 'model-info'],
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         }, { status: 400 });
     }
 
   } catch (error) {
     return json({
       error: `GET request failed: ${error instanceof Error ? error.message: 'Unknown error'}`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

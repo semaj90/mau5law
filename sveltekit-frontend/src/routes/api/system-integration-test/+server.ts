@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
     testType,
     results: Record<string, any>,
     errors: [],
-    performance: Record<string, any>,
+    performance: Record<string, any>
   };
 
   try {
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
           version: dbVersion.rows[0].version,
           pgvectorWorking: true,
           vectorDistance: vectorTest.rows[0].distance,
-          documentsCount: docCount[0].count,
+          documentsCount: docCount[0].count
         };
 
         results.performance.database = Date.now() - dbStartTime;
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
           status: 'connected',
           healthy,
           dataIntegrity: !!retrieved && (retrieved as any).test === true,
-          stats,
+          stats
         };
 
         results.performance.redis = Date.now() - redisStartTime;
@@ -110,7 +110,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const healthCheck = await natsQuicSearchService.healthCheck();
         const testSearch = await natsQuicSearchService.searchSimple('test legal document', {
           type: 'hybrid',
-          limit: 5,
+          limit: 5
         });
         results.results.nats = {
           status: 'success',
@@ -118,9 +118,9 @@ export const GET: RequestHandler = async ({ url }) => {
           searchTest: {
             resultCount: testSearch.results?.length || 0,
             processingTime: testSearch.analytics?.processingTime || 0,
-            lowLatency: (testSearch.analytics?.processingTime || 0) < 100,
+            lowLatency: (testSearch.analytics?.processingTime || 0) < 100
           },
-          quicEnabled: healthCheck.quicEnabled,
+          quicEnabled: healthCheck.quicEnabled
         };
 
         results.performance.nats = Date.now() - natsStartTime;
@@ -144,7 +144,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.results.loki = {
           status: 'initialized',
           healthy: lokiRedisCache.isHealthy,
-          stats: lokiRedisCache.getStats(),
+          stats: lokiRedisCache.getStats()
         };
 
         results.performance.loki = Date.now() - lokiStartTime;
@@ -165,7 +165,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         results.results.instantSearch = {
           status: 'initialized',
-          stats,
+          stats
         };
 
         results.performance.instantSearch = Date.now() - searchStartTime;
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.results.ragPipeline = {
           status: 'available',
           stats,
-          features: ['pgvector', 'gemma_embeddings', 'legal_reranker', 'redis_caching'],
+          features: ['pgvector', 'gemma_embeddings', 'legal_reranker', 'redis_caching']
         };
 
         results.performance.ragPipeline = Date.now() - ragStartTime;
@@ -211,7 +211,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testsPassed: passedTests,
       testsFailed: results.errors.length,
       overallStatus: results.status,
-      totalTime: totalTime,
+      totalTime: totalTime
     };
 
     console.log(
@@ -229,7 +229,7 @@ export const GET: RequestHandler = async ({ url }) => {
         error: msg,
         results: Record<string, any>,
         errors: [msg],
-        performance: { total: Date.now() - startTime },
+        performance: { total: Date.now() - startTime }
       },
       { status: 500 }
     );
@@ -280,9 +280,9 @@ async function runStressTest(options: any = {}): Promise<Response> {
         avgResponseTime:
           workerResults.reduce((sum, r) => sum + r.avgTime, 0) / workerResults.length,
         totalErrors: workerResults.reduce((sum, r) => sum + r.errors, 0),
-        opsPerSecond: iterations / (Math.max(...workerResults.map((r) => r.totalTime)) / 1000),
-      },
-    },
+        opsPerSecond: iterations / (Math.max(...workerResults.map((r) => r.totalTime)) / 1000)
+      }
+    }
   });
 }
 
@@ -312,7 +312,7 @@ async function stressTestWorker(iterations: number, workerId: number): Promise<a
     iterations,
     errors,
     totalTime: Date.now() - startTime,
-    avgTime: totalResponseTime / iterations,
+    avgTime: totalResponseTime / iterations
   };
 }
 
@@ -321,7 +321,7 @@ async function runEndToEndTest(options: any = {}): Promise<Response> {
   const results: { steps: string[]; errors: string[]; success: boolean } = {
     steps: [],
     errors: [],
-    success: true,
+    success: true
   };
 
   try {
@@ -334,7 +334,7 @@ async function runEndToEndTest(options: any = {}): Promise<Response> {
       content:
         'This is a comprehensive test of the legal AI system integration. It includes contract terms, liability clauses, and termination provisions.',
       isActive: true,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     };
 
     await db.insert(schema.legalDocuments).values(testDoc);
@@ -366,9 +366,9 @@ async function runEndToEndTest(options: any = {}): Promise<Response> {
           documentCreated: true,
           indexedChunks: indexResult.chunksCreated,
           searchResults: searchResults.length,
-          cleanedUp: true,
-        },
-      },
+          cleanedUp: true
+        }
+      }
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message: 'Unknown end-to-end test error';
@@ -385,7 +385,7 @@ async function runEndToEndTest(options: any = {}): Promise<Response> {
 
     return json({
       success: false,
-      endToEnd: results,
+      endToEnd: results
     });
   }
 }
@@ -416,8 +416,8 @@ async function cleanupTestData(): Promise<Response> {
       cleanup: {
         deletedDocuments: deletedDocs.length,
         deletedChunks: deletedChunks.length,
-        deletedRedisKeys: testKeys.length,
-      },
+        deletedRedisKeys: testKeys.length
+      }
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message: 'Unknown cleanup error';

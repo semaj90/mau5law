@@ -18,9 +18,9 @@ export const S3 = new S3Client({
   region: "us-east-1",
   credentials: {
     accessKeyId: process.env.MINIO_KEY!,
-    secretAccessKey: process.env.MINIO_SECRET!,
+    secretAccessKey: process.env.MINIO_SECRET!
   },
-  forcePathStyle: true,
+  forcePathStyle: true
 });
 
 /**
@@ -55,7 +55,7 @@ export async function fetchMinioObject(minioUrl: string) {
   try {
     const response = await S3.send(new GetObjectCommand({
       Bucket: bucket,
-      Key: key,
+      Key: key
     });
 
     const body = (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Body as Readable;
@@ -82,7 +82,7 @@ export async function listMinioPrefix(bucket: string, prefix: string) {
     const response = await S3.send(new ListObjectsV2Command({
       Bucket: bucket,
       Prefix: prefix,
-      MaxKeys: 1000,
+      MaxKeys: 1000
     });
 
     return ((response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Contents ?? []).map(obj => ({
@@ -205,7 +205,7 @@ export function detectContentType(buffer: Buffer, filename?: string): string {
 export function validateContentForIngestion(contentType: string, size: number): {
   valid: boolean;
   reason?: string;
-  type: 'text' | 'image' | 'audio' | 'video' | 'json' | 'other';,
+  type: 'text' | 'image' | 'audio' | 'video' | 'json' | 'other';
 } {
   // Size limits (in bytes)
   const MAX_TEXT_SIZE = 50 * 1024 * 1024; // 50MB

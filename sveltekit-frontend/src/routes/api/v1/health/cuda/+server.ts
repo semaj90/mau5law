@@ -10,7 +10,7 @@ export interface CudaHealthCheck {
 	checks: {
 		database: boolean;
 		redis: boolean;
-		cuda_worker: boolean;,
+		cuda_worker: boolean;
 	};
 }
 
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
 					redis: health.checks.redis,
 					cuda_worker: health.checks.cuda_worker,
 					gpu_available: health.checks.cuda_worker,
-					service_version: '1.0.0',
+					service_version: '1.0.0'
 				}
 			});
 		} else {
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
 						serviceStatus = 'online';
 						details = {
 							models: data.models?.length || 0,
-							available: true,
+							available: true
 						};
 					}
 					break;
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
 			service_available: cudaService?.status === 'online',
 			worker_available: cudaWorkerAvailable,
 			gpu_ready: cudaWorkerAvailable,
-			response_time: cudaService?.responseTime || null,
+			response_time: cudaService?.responseTime || null
 		},
 		services: healthChecks,
 		summary: {
@@ -167,9 +167,9 @@ export const GET: RequestHandler = async ({ fetch }) => {
 				['cuda-service', 'enhanced-rag', 'postgres'].includes(s.name) && s.status !== 'online'
 			).map(s => s.name),
 			degraded_services: healthChecks.filter(item => item.map)(s => s.name),
-			offline_services: healthChecks.filter(item => item.map)(s => s.name),
+			offline_services: healthChecks.filter(item => item.map)(s => s.name)
 		},
-		recommendations: generateRecommendations(healthChecks),
+		recommendations: generateRecommendations(healthChecks)
 	});
 };
 

@@ -27,7 +27,7 @@ export interface GPUResult {
 	status: 'success' | 'error' | 'processing';
 	process_time: number;
 	error?: string;
-	timestamp: string;,
+	timestamp: string;
 }
 
 export interface GPUStatus {
@@ -38,7 +38,7 @@ export interface GPUStatus {
 	uptime: string;
 	cuda_available: boolean;
 	load_balancer: boolean;
-	services_managed: number;,
+	services_managed: number;
 }
 
 export interface GPUMetrics {
@@ -51,7 +51,7 @@ export interface GPUMetrics {
 	gpu_utilization: number;
 	memory_usage: number;
 	start_time: string;
-	last_update: string;,
+	last_update: string;
 }
 
 export interface WorkerStatus {
@@ -69,7 +69,7 @@ export interface ServiceInfo {
 	gpu_enabled: boolean;
 	status: 'running' | 'stopped' | 'pending' | 'error';
 	last_health_check: string;
-	protocols: string[];,
+	protocols: string[];
 }
 
 export interface ServiceRegistry {
@@ -82,13 +82,13 @@ export interface GPUHealth {
 	gpu: boolean;
 	redis: 'healthy' | 'unhealthy';
 	workers: number;
-	queue_size: number;,
+	queue_size: number;
 }
 
 export interface LoadBalancerStatus {
 	enabled: boolean;
 	status: 'active' | 'inactive' | 'error';
-	services_managed: number;,
+	services_managed: number;
 }
 
 export interface RouteRequest {
@@ -129,7 +129,7 @@ export interface LegalSimilarityTask extends GPUTask {
 		query_document_id: string;
 		comparison_document_id: string;
 		similarity_threshold: number;
-		practice_area: string;,
+		practice_area: string;
 	};
 }
 
@@ -146,19 +146,19 @@ export interface ServiceProtocolConfig {
 	http: {
 		base_url: string;
 		timeout: number;
-		retry_attempts: number;,
+		retry_attempts: number;
 	};
 	grpc?: {
 		address: string;
-		tls_enabled: boolean;,
+		tls_enabled: boolean;
 	};
 	quic?: {
 		address: string;
-		certificate_path: string;,
+		certificate_path: string;
 	};
 	websocket?: {
 		url: string;
-		reconnect_attempts: number;,
+		reconnect_attempts: number;
 	};
 }
 
@@ -169,7 +169,7 @@ export interface GPUServiceClient {
 	getMetrics: () => Promise<GPUMetrics>;
 	getHealth: () => Promise<GPUHealth>;
 	getWorkers: () => Promise<WorkerStatus[]>;
-	getServices: () => Promise<ServiceRegistry>;,
+	getServices: () => Promise<ServiceRegistry>;
 }
 
 // Performance Monitoring Types;
@@ -177,24 +177,24 @@ export interface GPUPerformanceMetrics {
 	throughput: {
 		tasks_per_second: number;
 		embeddings_per_second: number;
-		similarity_queries_per_second: number;,
+		similarity_queries_per_second: number;
 	};
 	latency: {
 		p50: number;
 		p95: number;
 		p99: number;
-		average: number;,
+		average: number;
 	};
 	resource_usage: {
 		gpu_utilization: number;
 		memory_usage: number;
 		worker_utilization: number;
-		queue_utilization: number;,
+		queue_utilization: number;
 	};
 	error_rates: {
 		task_failure_rate: number;
 		service_error_rate: number;
-		timeout_rate: number;,
+		timeout_rate: number;
 	};
 }
 
@@ -206,7 +206,7 @@ export interface GPUOrchestratorConfig {
 	max_cuda_workers: number;
 	worker_pool_size: number;
 	health_check_interval: number;
-	load_balancer_enabled: boolean;,
+	load_balancer_enabled: boolean;
 }
 
 // Error Types;

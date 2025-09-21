@@ -50,7 +50,7 @@ export interface CompilationResult {
   memoryUsage: number;
   optimizations: string[];
   warnings: string[];
-  error: string | null;,
+  error: string | null;
 }
 
 // WebAssembly Module Interface;
@@ -99,14 +99,14 @@ export interface WebGPUDevice {
   adapter: GPUAdapter;
   features: string[];
   limits: Record<string, number>;
-  isAvailable: boolean;,
+  isAvailable: boolean;
 }
 
 // WebGPU Compute Shader;
 export interface WebGPUComputeShader {
   module: GPUShaderModule;
   pipeline: GPUComputePipeline;
-  bindGroupLayout: GPUBindGroupLayout;,
+  bindGroupLayout: GPUBindGroupLayout;
 }
 
 // Vector Operation Types;
@@ -144,7 +144,7 @@ export interface LegalDocumentProcessor {
     citationExtraction: boolean;
     entityRecognition: boolean;
     riskAssessment: boolean;
-    complianceCheck: boolean;,
+    complianceCheck: boolean;
   };
 }
 
@@ -214,7 +214,7 @@ export interface WASMResourceLimits {
   maxExports: number;
   maxDataSegments: number;
   maxElementSegments: number;
-  executionTimeoutMs: number;,
+  executionTimeoutMs: number;
 }
 
 // Legal-specific WASM Configuration;
@@ -233,14 +233,14 @@ export interface LegalWASMConfig {
     optimizationLevel: number;
     memoryPoolSizeMB: number;
     maxConcurrentOperations: number;
-    cacheEnabled: boolean;,
+    cacheEnabled: boolean;
   };
 
   security: {
     sandboxEnabled: boolean;
     allowFileAccess: boolean;
     allowNetworkAccess: boolean;
-    maxExecutionTime: number;,
+    maxExecutionTime: number;
   };
 }
 

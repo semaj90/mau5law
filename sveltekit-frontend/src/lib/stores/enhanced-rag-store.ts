@@ -26,11 +26,11 @@ export interface SearchResult {
     procedural: number;
     precedential: number;
     jurisdictional: number;
-    confidence: number;,
+    confidence: number;
   };
   relevanceScore: number;
   rank: number;
-  snippet: string;,
+  snippet: string;
 }
 
 export interface RAGSystemStatus {
@@ -44,7 +44,7 @@ export interface RAGSystemStatus {
   memoryUsage: {
     current: number;
     peak: number;
-    limit: number;,
+    limit: number;
   };
   isInitialized: boolean;
   isIndexing: boolean;
@@ -52,7 +52,7 @@ export interface RAGSystemStatus {
   documentsCount: number;
   lastUpdate: number;
   cacheHitRate: number;
-  errorCount: number;,
+  errorCount: number;
 }
 
 export interface MLCachingMetrics {
@@ -70,7 +70,7 @@ export interface MLCachingMetrics {
   clusterCount: number;
   averageSearchTime: number;
   cacheSize: number;
-  recommendations: string[];,
+  recommendations: string[];
 }
 
 export interface RAGStoreState {
@@ -88,7 +88,7 @@ export interface RAGStoreState {
   somClusters: any[];
   neuralPredictions: any[];
   cachingLayers: Record<string, any>;
-  autoOptimization: boolean;,
+  autoOptimization: boolean;
 }
 
 // Mock classes for missing dependencies;
@@ -129,7 +129,7 @@ class NeuralMemoryManager {
     return {
       recommendations: ['compress'],
       suggestedQueries: [],
-      confidence: 0.8,
+      confidence: 0.8
     };
   }
 
@@ -139,7 +139,7 @@ class NeuralMemoryManager {
     return {
       memoryEfficiency: 0.8,
       predictions: { confidence: 0.8 },
-      clusterCount: 5,
+      clusterCount: 5
     };
   }
 }
@@ -148,7 +148,7 @@ class NeuralMemoryManager {
 function createActor(machine: any, options: any) {
   return {
     start: () => {},
-    send: (event: any) => {},
+    send: (event: any) => {}
   };
 }
 
@@ -163,14 +163,14 @@ export function createEnhancedRAGStore() {
     learningRate: 0.1,
     neighborhoodRadius: 3,
     maxEpochs: 100,
-    clusterCount: 5,
+    clusterCount: 5
   });
 
   const neuralMemory = new NeuralMemoryManager(512);
 
   // Initialize XState machine;
   const ragActor = createActor(ragStateMachine, {
-    input: { query: '', documents: [] },
+    input: { query: '', documents: [] }
   });
   ragActor.start();
 
@@ -196,7 +196,7 @@ export function createEnhancedRAGStore() {
       documentsCount: 0,
       lastUpdate: 0,
       cacheHitRate: 0,
-      errorCount: 0,
+      errorCount: 0
     },
     cacheMetrics: {
       hitRate: 0,
@@ -213,7 +213,7 @@ export function createEnhancedRAGStore() {
       clusterCount: 0,
       averageSearchTime: 0,
       cacheSize: 0,
-      recommendations: [],
+      recommendations: []
     },
     recommendations: [],
     didYouMean: [],
@@ -222,7 +222,7 @@ export function createEnhancedRAGStore() {
     somClusters: [],
     neuralPredictions: [],
     cachingLayers: Record<string, any>,
-    autoOptimization: true,
+    autoOptimization: true
   });
 
   // Performance metrics;
@@ -232,7 +232,7 @@ export function createEnhancedRAGStore() {
     cacheHits: 0,
     cacheSize: 0,
     memoryEfficiency: 0,
-    throughputQPS: 0,
+    throughputQPS: 0
   });
 
   // Multi-layer caching system;
@@ -262,7 +262,7 @@ export function createEnhancedRAGStore() {
         state.update((s) => ({
           ...s,
           searchResults: cachedResult.results,
-          recommendations: cachedResult.recommendations,
+          recommendations: cachedResult.recommendations
         });
 
         performanceMetrics.update((p) => ({ ...p, cacheHits: p.cacheHits + 1 });
@@ -270,7 +270,7 @@ export function createEnhancedRAGStore() {
 
         return {
           results: cachedResult.results,
-          recommendations: cachedResult.recommendations,
+          recommendations: cachedResult.recommendations
         };
       }
 
@@ -300,9 +300,9 @@ export function createEnhancedRAGStore() {
             lastModified: new Date(docEmbedding.metadata?.timestamp || Date.now()),
             fileSize: docEmbedding.content?.length || 0,
             language: 'en',
-            tags: [],
+            tags: []
           },
-          version: '1.0',
+          version: '1.0'
         },
         score: 0.8,
         relevantChunks: [],
@@ -314,11 +314,11 @@ export function createEnhancedRAGStore() {
           procedural: 0.6,
           precedential: 0.8,
           jurisdictional: 0.9,
-          confidence: docEmbedding.metadata?.confidence || 0.8,
+          confidence: docEmbedding.metadata?.confidence || 0.8
         },
         relevanceScore: 0.8,
         rank: index + 1,
-        snippet: docEmbedding.content?.substring(0, 200) || '',
+        snippet: docEmbedding.content?.substring(0, 200) || ''
       });
 
       // Update state
@@ -332,7 +332,7 @@ export function createEnhancedRAGStore() {
         somClusters: clusters,
         neuralPredictions: [memoryPrediction],
         recommendations,
-        didYouMean,
+        didYouMean
       });
 
       // Cache results in multiple layers;
@@ -340,7 +340,7 @@ export function createEnhancedRAGStore() {
         results: optimizedResults,
         clusters,
         predictions: [memoryPrediction],
-        recommendations,
+        recommendations
       });
 
       // Update performance metrics
@@ -351,7 +351,7 @@ export function createEnhancedRAGStore() {
 
       return {
         results: optimizedResults,
-        recommendations,
+        recommendations
       };
     } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message: 'Search failed';
@@ -360,7 +360,7 @@ export function createEnhancedRAGStore() {
 
       return {
         results: [],
-        recommendations: [],
+        recommendations: []
       };
     } finally {
       state.update((s) => ({ ...s, isLoading: false });
@@ -382,7 +382,7 @@ export function createEnhancedRAGStore() {
       state.update((s) => ({
         ...s,
         documents: [...s.documents, document],
-        embeddings: { ...s.embeddings, [document.id]: embeddings },
+        embeddings: { ...s.embeddings, [document.id]: embeddings }
       });
 
       // Update caching layers
@@ -399,7 +399,7 @@ export function createEnhancedRAGStore() {
       documents: s.documents.filter((doc) => doc.id !== documentId),
       embeddings: Object.fromEntries(
         Object.entries(s.embeddings).filter(([id]) => id !== documentId)
-      ),
+      )
     });
 
     // Clear from all cache layers;
@@ -434,8 +434,8 @@ export function createEnhancedRAGStore() {
               (key) => cachingLayers[key as keyof typeof cachingLayers].size > 0
             ),
             clusterCount: optimization.clusterCount,
-            averageSearchTime: p.averageResponseTime,
-          },
+            averageSearchTime: p.averageResponseTime
+          }
         });
       });
     } catch (error: any) {
@@ -458,7 +458,7 @@ export function createEnhancedRAGStore() {
       somClusters: (currentState as RAGStoreState).somClusters,
       cacheMetrics: (currentState as RAGStoreState).cacheMetrics,
       performanceMetrics: currentMetrics,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 
@@ -514,7 +514,7 @@ export function createEnhancedRAGStore() {
       const hitRate = p.totalQueries > 0 ? p.cacheHits / p.totalQueries: 0;
       state.update((s) => ({
         ...s,
-        cacheMetrics: { ...s.cacheMetrics, hitRate },
+        cacheMetrics: { ...s.cacheMetrics, hitRate }
       });
     });
   }
@@ -528,7 +528,7 @@ export function createEnhancedRAGStore() {
 
       performanceMetrics.update((p) => ({
         ...p,
-        throughputQPS: p.totalQueries / timeDiff,
+        throughputQPS: p.totalQueries / timeDiff
       });
     });
   }
@@ -570,7 +570,7 @@ export function createEnhancedRAGStore() {
     // Direct access to subsystems for advanced usage
     somRAG,
     neuralMemory,
-    cachingLayers,
+    cachingLayers
   };
 }
 

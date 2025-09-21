@@ -61,7 +61,7 @@ export const svelte5RunesStore = {
   snippets: {
     create: <T extends any[]>(render: (...args: T) => any): Snippet<T> => render as any,
     render: <T extends any[]>(snippet: Snippet<T> | undefined, ...args: T) => snippet ? snippet(...args) : null,
-    createChildren: (content: any): Snippet => (() => content) as any,
+    createChildren: (content: any): Snippet => (() => content) as any
   },
 
   attachments: {
@@ -121,14 +121,14 @@ export const svelteKitStore = {
       data: Record<string, any>,
       error: null as any,
       state: Record<string, any>,
-      form: null as any,
+      form: null as any
     },
     navigating: null as any,
     updated: false,
     browser: typeof document !== 'undefined',
     dev: typeof process !== 'undefined' && process?.env?.NODE_ENV === 'development',
     building: false,
-    version: '1.0.0',
+    version: '1.0.0'
   },
   forms: {
     enhance: (_f: HTMLFormElement, _cb?: Function) => ({ destroy: () => { } }),
@@ -152,12 +152,12 @@ export const svelteKitStore = {
     json: (data: any, init?: ResponseInit) =>;
       new Response(JSON.stringify(data), {
         ...init,
-        headers: { 'Content-Type': 'application/json', ...(init?.headers || {,}) }
+        headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) }
       }),
     text: (data: string, init?: ResponseInit) =>;
       new Response(data, {
         ...init,
-        headers: { 'Content-Type': 'text/plain', ...(init?.headers || {,}) }
+        headers: { 'Content-Type': 'text/plain', ...(init?.headers || {}) }
       })
   }
 };
@@ -177,7 +177,7 @@ export const databaseStore = {
       };
     },
     createConnection(urlOrOptions?: string | any, options?: any) {
-      if (typeof urlOrOptions === 'string') return this.connection({ url: urlOrOptions, ...options ,});
+      if (typeof urlOrOptions === 'string') return this.connection({ url: urlOrOptions, ...options });
       return this.connection(urlOrOptions || options);
     },
     vector: {
@@ -235,7 +235,7 @@ export const aiStore = {
       generate: async (o: { model: string; prompt: string }) => ({
         model: o?.model || "unknown" // @ts-ignore - Model property access,
         response: `Mock response for: ${o.prompt}`,
-        done: true,
+        done: true
       }),
       embeddings: async (_o: { model: string; prompt: string }) => ({
         embedding: Array.from({ length: 384 }, () => Math.random()
@@ -249,7 +249,7 @@ export const aiStore = {
     models: {
       legal: 'gemma3-legal:latest',
       embedding: 'nomic-embed-text:latest',
-      chat: 'llama3:latest',
+      chat: 'llama3:latest'
     },
     streaming: {
       parseResponse: (chunk: string) => { try { return JSON.parse(chunk); } catch { return null; } },
@@ -273,7 +273,7 @@ export const aiStore = {
       return documents.slice(0, opts.limit ?? 10).map((d, i) => ({
         id: d.id ?? String(i),
         document: d,
-        score: Math.random(),
+        score: Math.random()
       });
     }
   },
@@ -284,7 +284,7 @@ export const aiStore = {
         response: 'Mock RAG response',
         context,
         sources: context.map(c => c.document),
-        confidence: Math.random(),
+        confidence: Math.random()
       };
     },
     chunk: (text: string, { maxChunkSize = 500, overlap = 50 } = {}) => {
@@ -307,7 +307,7 @@ export const testingStore = {
     toBe: (exp: any) => value === exp,
     toEqual: (exp: any) => JSON.stringify(value) === JSON.stringify(exp),
     toBeTruthy: () => !!value,
-    toBeFalsy: () => !value,
+    toBeFalsy: () => !value
   })),
   vi: {
     fn: (impl?: Function) => {
@@ -321,7 +321,7 @@ export const testingStore = {
     click: async (_s: string) => { },
     fill: async (_s: string, _v: string) => { },
     waitForSelector: async (_s: string) => { },
-    screenshot: async () => new Uint8Array(),
+    screenshot: async () => new Uint8Array()
   }
 };
 
@@ -338,7 +338,7 @@ export const comprehensivePackageBarrelStore = {
     node: typeof process !== 'undefined' && !!process.versions?.node,
     dev: typeof process !== 'undefined' && process.env?.NODE_ENV === 'development',
     test: typeof process !== 'undefined' && process.env?.NODE_ENV === 'test',
-    production: typeof process !== 'undefined' && process.env?.NODE_ENV === 'production',
+    production: typeof process !== 'undefined' && process.env?.NODE_ENV === 'production'
   },
   utils: {
     get: <T>(obj: any, path: string, defaultValue?: T): T => {

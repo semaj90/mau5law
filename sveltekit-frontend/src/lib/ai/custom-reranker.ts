@@ -12,7 +12,7 @@ export interface RerankResult {
   intent?: string;
   timeOfDay?: string;
   position?: string;
-  confidence: number;,
+  confidence: number;
 }
 
 export interface UserContext {
@@ -22,7 +22,7 @@ export interface UserContext {
   currentCase?: string;
   recentActions: string[];
   userRole: "prosecutor" | "detective" | "admin" | "user";
-  workflowState: "draft" | "review" | "approved" | "archived";,
+  workflowState: "draft" | "review" | "approved" | "archived";
 }
 
 export class LegalAIReranker {
@@ -33,7 +33,7 @@ export class LegalAIReranker {
     role: 1.8,
     workflow: 1.2,
     recency: 0.8,
-    confidence: 1.5,
+    confidence: 1.5
   };
 
   /**
@@ -77,7 +77,7 @@ export class LegalAIReranker {
 
         return {
           ...result,
-          rerankScore: score,
+          rerankScore: score
         };
       })
       .sort((a, b) => b.rerankScore - a.rerankScore);
@@ -91,18 +91,18 @@ export class LegalAIReranker {
       prosecutor: {
         "evidence-analysis": 2.0,
         "case-precedent": 1.8,
-        "witness-testimony": 1.5,
+        "witness-testimony": 1.5
       },
       detective: {
         "forensic-data": 2.0,
         "timeline-analysis": 1.8,
-        "suspect-profile": 1.5,
+        "suspect-profile": 1.5
       },
       admin: {
         "case-management": 2.0,
         "user-activity": 1.5,
-        "system-reports": 1.3,
-      },
+        "system-reports": 1.3
+      }
     };
 
     const boosts = roleBoosts[role as keyof typeof roleBoosts];
@@ -121,7 +121,7 @@ export class LegalAIReranker {
     const workflowBoosts = {
       draft: { templates: 1.5, examples: 1.3 },
       review: { checklist: 1.8, validation: 1.5 },
-      approved: { archive: 1.2, export: 1.5 },
+      approved: { archive: 1.2, export: 1.5 }
     };
 
     const boosts = workflowBoosts[workflowState as keyof typeof workflowBoosts];
@@ -224,11 +224,11 @@ export async function enhancedSearchWithNeo4j(
       relatedCases: neo4jContext?.relatedCases || [],
       userFrequency: neo4jContext
         ? calculateFrequencyScore(result, neo4jContext)
-        : 0,
+        : 0
     },
     originalScore: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).score || 0,
     rerankScore: 0,
-    confidence: ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).score || 0) * 100,
+    confidence: ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).score || 0) * 100
   });
 
   // Apply custom reranking with Neo4j context
@@ -304,7 +304,7 @@ import type {
   UserHistory,
   UploadedFile,
   MCPServerData,
-  SynthesisOptions,
+  SynthesisOptions
 } from './types.js';
 
 export async function synthesizeMultiLLMOutput({
@@ -312,7 +312,7 @@ export async function synthesizeMultiLLMOutput({
   userHistory,
   uploadedFiles,
   mcpServers,
-  options,
+  options
 }: {
   llmOutputs: AIModelOutput[];
   userHistory: UserHistory;
@@ -329,7 +329,7 @@ export async function synthesizeMultiLLMOutput({
     ...llmOutputs.map((o) => o.content),
     ...userHistory.actions,
     ...uploadedFiles.map((f) => f.textContent || f.name),
-    ...mcpServers.map((s) => s.dataSummary),
+    ...mcpServers.map((s) => s.dataSummary)
   ];
 
   // 3. Synthesize extra "thinking" tokens from all sources
@@ -364,6 +364,6 @@ export async function synthesizeMultiLLMOutput({
     summary,
     nextSteps,
     generativeAutocomplete,
-    selfPrompt,
+    selfPrompt
   };
 }

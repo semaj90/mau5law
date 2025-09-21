@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       case: caseRecord,
       evidence: evidenceData,
       generatedAt: new Date().toISOString(),
-      generatedBy: locals.user.id,
+      generatedBy: locals.user.id
     };
 
     // Create report record
@@ -57,13 +57,13 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         caseId: caseRecord.id,
         reportType,
         status: "completed",
-        createdBy: locals.user.id,
+        createdBy: locals.user.id
       })
       .returning();
 
     return json({
       success: true,
-      report: newReport[0],
+      report: newReport[0]
     });
   } catch (error: any) {
     console.error("Report generation failed:", error);

@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
       postgresql: { status: 'pending', entries: 0, errors: [] },
       qdrant: { status: 'pending', entries: 0, errors: [] },
       neo4j: { status: 'pending', entries: 0, errors: [] },
-      indexeddb: { status: 'pending', entries: 0, errors: [] },
+      indexeddb: { status: 'pending', entries: 0, errors: [] }
     };
 
     for (const db of databases) {
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json();
       {
         error: 'Failed to synchronize databases',
-        details: dev ? (error instanceof Error ? error.message: String(error)) : undefined,
+        details: dev ? (error instanceof Error ? error.message: String(error)) : undefined
       },
       { status: 500 }
     );

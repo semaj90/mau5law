@@ -32,7 +32,7 @@ export interface AutogenRequest {
   caseId?: string;
   evidenceIds: string[];
   analysisType: string;
-  priority: string;,
+  priority: string;
 }
 
 export interface WorkflowResult {
@@ -53,7 +53,7 @@ class AutogenLegalTeam {
       finalAnalysis: `Autogen analysis for: ${request.query}`,
       confidence: 0.8,
       recommendations: ['Review evidence chain', 'Check procedural compliance'],
-      processingTime: 1500,
+      processingTime: 1500
     };
   }
   
@@ -72,7 +72,7 @@ class CrewAILegalTeam {
       results: [{ confidence: 0.75 }],
       finalDeliverable: `CrewAI analysis for: ${context.query}`,
       recommendations: ['Schedule follow-up', 'Prepare documentation'],
-      totalTime: 2000,
+      totalTime: 2000
     };
   }
   
@@ -116,10 +116,10 @@ export interface MultiAgentResponse {
     totalTime: number;
     memoryUsage: string;
     tokensGenerated: number;
-    confidence: number;,
+    confidence: number;
   };
   recommendations: string[];
-  nextSteps: string[];,
+  nextSteps: string[];
 }
 
 // Initialize AI systems with memory-optimized configurations
@@ -131,30 +131,30 @@ let crewaiTeam: CrewAILegalTeam | null = null;
 const lowMemoryConfigs = {
   ultra_low_memory: {
     max_tokens: 512,
-    batch_size: 1,
+    batch_size: 1
   },
   low_memory: {
     max_tokens: 1024,
-    batch_size: 2,
+    batch_size: 2
   },
   low_memory_profiles: {
     ultra_low_memory: {
       max_tokens: 512,
-      batch_size: 1,
+      batch_size: 1
     },
     low_memory: {
       max_tokens: 1024,
-      batch_size: 2,
+      batch_size: 2
     },
     balanced: {
       max_tokens: 2048,
-      batch_size: 4,
+      batch_size: 4
     },
     high_performance: {
       max_tokens: 4096,
-      batch_size: 8,
-    },
-  },
+      batch_size: 8
+    }
+  }
 };
 
 function initializeAISystems(memoryProfile: string, useVLLM: boolean = false) {
@@ -167,13 +167,13 @@ function initializeAISystems(memoryProfile: string, useVLLM: boolean = false) {
   if (!autogenTeam) {
     autogenTeam = new AutogenLegalTeam({
       ollamaEndpoint,
-      useGPU: true,
+      useGPU: true
     });
   }
 
   if (!crewaiTeam) {
     crewaiTeam = new CrewAILegalTeam({
-      aiEndpoint: vllmEndpoint || ollamaEndpoint,
+      aiEndpoint: vllmEndpoint || ollamaEndpoint
     });
   }
 }
@@ -227,7 +227,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           // Run multiple systems in parallel for comprehensive analysis
           const [autogenResult, crewaiResult] = await Promise.all([
             runAutogenAnalysis(requestData, sessionId),
-            runCrewAIWorkflow(requestData, sessionId),
+            runCrewAIWorkflow(requestData, sessionId)
           ]);
 
           results.autogen = autogenResult;
@@ -265,10 +265,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           totalTime,
           memoryUsage: requestData.memoryProfile,
           tokensGenerated: totalTokens,
-          confidence: overallConfidence,
+          confidence: overallConfidence
         },
         recommendations: Array.from(new Set(allRecommendations)).slice(0, 10), // Remove duplicates, limit to 10
-        nextSteps: generateNextSteps(results, requestData),
+        nextSteps: generateNextSteps(results, requestData)
       };
 
       return json(response);
@@ -279,7 +279,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           details:
             analysisError instanceof Error
               ? analysisError.message: "Unknown error",
-          sessionId,
+          sessionId
         },)
         { status: 500 },
       );
@@ -303,7 +303,7 @@ async function runAutogenAnalysis(
     caseId: request.caseId,
     evidenceIds: request.evidenceIds || [],
     analysisType: mapToAutogenAnalysisType(request.workflowType),
-    priority: request.priority === "critical" ? "urgent" : request.priority,
+    priority: request.priority === "critical" ? "urgent" : request.priority
   };
 
   return await autogenTeam.analyzeCase(autogenRequest);
@@ -323,7 +323,7 @@ async function runCrewAIWorkflow(
     caseId: request.caseId,
     evidenceIds: request.evidenceIds || [],
     priority: request.priority,
-    sessionId,
+    sessionId
   };
 
   return await crewaiTeam.executeWorkflow(
@@ -347,8 +347,8 @@ async function runVLLMAnalysis(request: MultiAgentRequest, sessionId: string): P
         analysis_type: request.workflowType || "general",
         max_tokens: 2048,
         temperature: 0.3,
-        stream: false,
-      }),
+        stream: false
+      })
     });
 
     if (!response.ok) {
@@ -397,7 +397,7 @@ Combined Confidence: ${((autogenResult.confidence + (crewaiResult.results?.reduc
       (autogenResult.confidence +
         (crewaiResult.results?.reduce((acc: number, r: any) => acc + r.confidence, 0) /
           (crewaiResult.results?.length || 1) || 0)) /
-      2,
+      2
   };
 }
 
@@ -419,7 +419,7 @@ function findCommonThemes(
     "liability",
     "prosecution",
     "defense",
-    "witness",
+    "witness"
   ];
 
   return commonKeywords.filter(
@@ -437,7 +437,7 @@ function findComplementaryInsights(
 
   return [
     `Autogen specialized insights: ${autogenRecommendations.slice(0, 3).join(", ")}`,
-    `CrewAI workflow insights: ${crewaiRecommendations.slice(0, 3).join(", ")}`,
+    `CrewAI workflow insights: ${crewaiRecommendations.slice(0, 3).join(", ")}`
   ];
 }
 
@@ -449,7 +449,7 @@ function findDivergentViews(
   return [
     "Risk assessment methodology differences",
     "Procedural emphasis variations",
-    "Strategic priority rankings",
+    "Strategic priority rankings"
   ];
 }
 
@@ -488,7 +488,7 @@ function mapToAutogenAnalysisType(
     case "appeal_analysis":
       return "legal_research";
     default:
-      return "evidence_analysis";,
+      return "evidence_analysis";
   }
 }
 
@@ -533,9 +533,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         available_workflows: [
           "case_investigation",
           "trial_preparation",
-          "appeal_analysis",
+          "appeal_analysis"
         ],
-        available_analysis_types: ["autogen", "crewai", "hybrid"],
+        available_analysis_types: ["autogen", "crewai", "hybrid"]
       });
 
     case "memory_profiles":
@@ -545,14 +545,14 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       const agentInfo = {
         autogen_agents: autogenTeam?.getAgents() || [],
         crewai_crews: crewaiTeam?.getCrews() || [],
-        active_workflows: crewaiTeam?.getActiveWorkflows() || [],
+        active_workflows: crewaiTeam?.getActiveWorkflows() || []
       };
       return json(agentInfo);
 
     default:;
       return json({
           error:
-            "Invalid action. Available actions: status, memory_profiles, agents",
+            "Invalid action. Available actions: status, memory_profiles, agents"
         },)
         { status: 400 },
       );

@@ -18,7 +18,7 @@ interface WorkerConfig {
   poolType: string;
   threadId: number;
   rtxOptimizations: boolean;
-  simdEnabled: boolean;,
+  simdEnabled: boolean;
 }
 
 class CacheWorker {
@@ -85,7 +85,7 @@ class CacheWorker {
         type: 'result',
         id,
         result,
-        success: true,
+        success: true
       });
 
     } catch (error) {
@@ -93,7 +93,7 @@ class CacheWorker {
         type: 'error',
         id,
         error: error instanceof Error ? error.message: String(error),
-        success: false,
+        success: false
       });
     }
   }
@@ -284,14 +284,14 @@ class CacheWorker {
     if (value instanceof Float32Array) {
       return {
         __type: 'Float32Array',
-        __data: Array.from(value),
+        __data: Array.from(value)
       };
     }
     
     if (value instanceof ArrayBuffer) {
       return {
         __type: 'ArrayBuffer',
-        __data: Array.from(new Uint8Array(value),
+        __data: Array.from(new Uint8Array(value)
       };
     }
     
@@ -318,7 +318,7 @@ class CacheWorker {
         case 'ArrayBuffer':
           return new Uint8Array(value.__data).buffer;
         default:
-          return value;,
+          return value;
       }
     }
     return value;

@@ -12,31 +12,31 @@ export const GET: RequestHandler = async () => {
 				svelteKit: {
 					status: 'healthy',
 					uptime: process.uptime(),
-					memory: process.memoryUsage(),
+					memory: process.memoryUsage()
 				},
 				database: {
 					status: 'unknown',
-					message: 'PostgreSQL connection check not implemented',
+					message: 'PostgreSQL connection check not implemented'
 				},
 				redis: {
 					status: 'unknown',
-					message: 'Redis connection check not implemented',
+					message: 'Redis connection check not implemented'
 				},
 				storage: {
 					status: 'degraded',
-					message: 'MinIO service unavailable - running in degraded mode',
+					message: 'MinIO service unavailable - running in degraded mode'
 				}
 			},
 			metadata: {
 				nodeVersion: process.version,
 				platform: process.platform,
 				arch: process.arch,
-				pid: process.pid,
+				pid: process.pid
 			},
 			performance: {
 				memoryUsage: process.memoryUsage(),
 				cpuUsage: process.cpuUsage(),
-				loadAverage: process.platform !== 'win32' ? require('os').loadavg() : 'N/A (Windows)',
+				loadAverage: process.platform !== 'win32' ? require('os').loadavg() : 'N/A (Windows)'
 			}
 		};
 
@@ -68,7 +68,7 @@ export const GET: RequestHandler = async () => {
 			status: 'unhealthy',
 			timestamp: new Date().toISOString(),
 			error: 'Health check failed',
-			message: error instanceof Error ? error.message: 'Unknown error',
+			message: error instanceof Error ? error.message: 'Unknown error'
 		}, { 
 			status: 503,
 			headers: {

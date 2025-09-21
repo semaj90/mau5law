@@ -32,7 +32,7 @@ export interface LegalDocumentContext {
     keyFindings: string[];
     complianceStatus: any;
     recommendedActions: string[];
-    legalPrecedents: any[];,
+    legalPrecedents: any[];
   };
   
   // Context7 MCP results
@@ -56,7 +56,7 @@ export interface LegalDocumentContext {
     generateEmbedding: boolean;
     storeInQdrant: boolean;
     useContext7: boolean;
-    useSemanticSearch: boolean;,
+    useSemanticSearch: boolean;
   };
 }
 
@@ -89,7 +89,7 @@ const services = {
       keyFindings: ['Contract terms identified', 'Liability clauses present'],
       complianceStatus: { gdpr: 'Under Review', contractLaw: 'Requires Review' },
       recommendedActions: ['Legal review recommended', 'Compliance verification needed'],
-      legalPrecedents: [],
+      legalPrecedents: []
     };
     
     await new Promise((resolve: any) => setTimeout(resolve, 2000);
@@ -104,7 +104,7 @@ const services = {
       monetary: ['$50,000', '$10,000'],
       clauses: ['Section 3.1', 'Clause 7.2'],
       jurisdictions: [context.jurisdiction],
-      caseTypes: [context.caseType],
+      caseTypes: [context.caseType]
     };
     
     await new Promise((resolve: any) => setTimeout(resolve, 1500);
@@ -155,7 +155,7 @@ const services = {
     await new Promise((resolve: any) => setTimeout(resolve, 1200);
     return {
       mcpAnalysis: mockMCPAnalysis,
-      recommendations: mockMCPAnalysis.legalSpecificRecommendations,
+      recommendations: mockMCPAnalysis.legalSpecificRecommendations
     };
   },
 
@@ -173,7 +173,7 @@ export const legalDocumentProcessingMachine = createMachine({
   id: 'legalDocumentProcessing',
   types: Record<string, any> as {
     context: LegalDocumentContext;
-    events: LegalDocumentEvent;,
+    events: LegalDocumentEvent;
   },
   context: {
     caseId: '',
@@ -191,7 +191,7 @@ export const legalDocumentProcessingMachine = createMachine({
       generateEmbedding: true,
       storeInQdrant: true,
       useContext7: true,
-      useSemanticSearch: false,
+      useSemanticSearch: false
     }
   },
   initial: 'idle',
@@ -209,10 +209,10 @@ export const legalDocumentProcessingMachine = createMachine({
             options: ({ context, event }) => ({
               ...context.options,
               ...event.options
-            ,}),
+            }),
             startTime: () => Date.now(),
             errors: () => [],
-            retryCount: () => 0,
+            retryCount: () => 0
           })
         }
       }
@@ -455,7 +455,7 @@ export const legalDocumentProcessingMachine = createMachine({
           guard: ({ context }) => context.options.storeInQdrant
         },
         {
-          target: 'completed',
+          target: 'completed'
         }
       ]
     },
@@ -501,21 +501,21 @@ export const legalDocumentProcessingMachine = createMachine({
             })
           },
           {
-            target: 'failed',
+            target: 'failed'
           }
         ],
         CANCEL: {
-          target: 'cancelled',
+          target: 'cancelled'
         }
       }
     },
 
     failed: {
-      type: 'final',
+      type: 'final'
     },
 
     cancelled: {
-      type: 'final',
+      type: 'final'
     }
   }
 }, {
@@ -545,7 +545,7 @@ export function createLegalDocumentProcessor(initialContext?: Partial<LegalDocum
   }).withContext({
     ...legalDocumentProcessingMachine.context,
     ...initialContext
-  ,});
+  });
 }
 
 // State selectors for UI components;
@@ -590,7 +590,7 @@ export const selectors = {
       summaryGeneration: state.context.summary ? 'completed' : 'processing',
       embeddingGeneration: state.context.embedding ? 'completed' : 'processing',
       riskAssessment: state.context.riskScore !== undefined ? 'completed' : 'processing',
-      mcpAnalysis: state.context.mcpAnalysis ? 'completed' : 'processing',
+      mcpAnalysis: state.context.mcpAnalysis ? 'completed' : 'processing'
     };
   }
 };

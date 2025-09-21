@@ -20,13 +20,13 @@ interface SIMDParserConfig {
   batchSize: number;
   enabledInstructions: SIMDInstructionSet[];
   memoryAlignment: number;
-  parallelParsers: number;,
+  parallelParsers: number;
 }
 
 interface VectorParseResult {
   vectors: Float32Array[];
   metadata: ParsedMetadata[];
-  parseStatistics: ParseStatistics;,
+  parseStatistics: ParseStatistics;
 }
 
 interface ParsedMetadata {
@@ -35,7 +35,7 @@ interface ParsedMetadata {
   dimensions: number;
   norm: number;
   timestamp: number;
-  parseTime: number;,
+  parseTime: number;
 }
 
 interface ParseStatistics {
@@ -44,7 +44,7 @@ interface ParseStatistics {
   vectorsPerSecond: number;
   memoryUsed: number;
   simdUtilization: number;
-  cacheHitRate: number;,
+  cacheHitRate: number;
 }
 
 export class SIMDVectorJsonParser {
@@ -107,7 +107,7 @@ export class SIMDVectorJsonParser {
         vectorsPerSecond,
         memoryUsed: process.memoryUsage().heapUsed / 1024 / 1024,
         simdUtilization: this.calculateSIMDUtilization(chunkResults),
-        cacheHitRate: this.calculateCacheHitRate(totalVectors),
+        cacheHitRate: this.calculateCacheHitRate(totalVectors)
       };
 
       console.log(`⚡ SIMD JSON Parse: ${totalVectors} vectors in ${parseTime.toFixed(2)}ms`);
@@ -369,7 +369,7 @@ export class SIMDVectorJsonParser {
       dimensions: vector.length,
       norm: this.calculateNorm(vector),
       timestamp: Date.now(),
-      parseTime: 0 // Would be measured per vector in production,
+      parseTime: 0 // Would be measured per vector in production
     };
   }
 
@@ -455,7 +455,7 @@ export class SIMDVectorJsonParser {
         vectorsPerSecond: 0, // Will be filled by caller
         memoryUsed: 0, // Will be filled by caller
         simdUtilization: 0, // Will be filled by caller
-        cacheHitRate: 0 // Will be filled by caller,
+        cacheHitRate: 0 // Will be filled by caller
       }
     };
   }
@@ -504,7 +504,7 @@ export class SIMDVectorJsonParser {
       enabledSIMD: this.config.enabledInstructions,
       vectorDimensions: this.config.vectorDimensions,
       batchSize: this.config.batchSize,
-      parallelParsers: this.config.parallelParsers,
+      parallelParsers: this.config.parallelParsers
     };
   }
 
@@ -540,7 +540,7 @@ interface ChunkParseResult {
   metadata: ParsedMetadata[];
   parseTime: number;
   simdOperations: number;
-  chunkIndex: number;,
+  chunkIndex: number;
 }
 
 interface SIMDParserStatistics {
@@ -549,7 +549,7 @@ interface SIMDParserStatistics {
   enabledSIMD: SIMDInstructionSet[];
   vectorDimensions: number;
   batchSize: number;
-  parallelParsers: number;,
+  parallelParsers: number;
 }
 
 export {

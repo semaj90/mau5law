@@ -21,7 +21,7 @@ export {
   timestamp,
   boolean,
   json,
-  index,
+  index
 } from 'drizzle-orm/pg-core';
 
 // Load schema pieces (many routes import tables directly from these)
@@ -36,7 +36,7 @@ if (CONNECTION) {
   // Combine schemas so Drizzle has knowledge of both sets;
   const combinedSchema = {
     ...(pgSchema as Record<string, unknown>),
-    ...(domainSchema as Record<string, unknown>),
+    ...(domainSchema as Record<string, unknown>)
   };
   db = drizzle(pool, { schema: combinedSchema });
 }

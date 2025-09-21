@@ -21,7 +21,7 @@ declare global {
     createShaderModule(descriptor: GPUShaderModuleDescriptor): GPUShaderModule;
     createComputePipeline(descriptor: GPUComputePipelineDescriptor): GPUComputePipeline;
     createCommandEncoder(): GPUCommandEncoder;
-    queue: GPUQueue;,
+    queue: GPUQueue;
   }
 
   interface GPUBuffer {
@@ -52,7 +52,7 @@ declare global {
 }
   interface GPUBufferDescriptor {
     size: number;
-    usage: GPUBufferUsageFlags;,
+    usage: GPUBufferUsageFlags;
   }
   interface GPUShaderModuleDescriptor {
   [key: string]: any;
@@ -67,11 +67,11 @@ declare global {
   const GPUBufferUsage: {
     STORAGE: number;
     COPY_SRC: number;
-    COPY_DST: number;,
+    COPY_DST: number;
   };
 
   const GPUMapMode: {
-    READ: number;,
+    READ: number;
   };
 }
 

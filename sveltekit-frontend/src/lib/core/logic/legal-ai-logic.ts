@@ -26,7 +26,7 @@ export interface AIAnalysis {
   confidence: number;
   entities: Array<any>;
   themes: Array<any>;
-  summary: string;,
+  summary: string;
 }
 
 // Pure logic functions - no UI dependencies;

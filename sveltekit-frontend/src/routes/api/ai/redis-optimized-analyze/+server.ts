@@ -35,7 +35,7 @@ const originalAnalysisHandler: RequestHandler = async ({ request }) => {
       messages: [{ role: 'user', content: analysisPrompt }],
       options: {
         temperature: 0.3, // Lower temperature for more consistent analysis
-        max_tokens: 1500,
+        max_tokens: 1500
       }
     });
     
@@ -55,7 +55,7 @@ const originalAnalysisHandler: RequestHandler = async ({ request }) => {
       model,
       processing_time: 3000, // Analysis typically takes longer
       confidence: analysis.confidence || 0.8,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (err) {
@@ -105,14 +105,14 @@ function parseAnalysisResponse(response: string, analysisType: string): any {
       risks: extractRisks(response),
       recommendations: extractRecommendations(response),
       confidence: calculateConfidence(response, analysisType),
-      raw_analysis: response,
+      raw_analysis: response
     };
   } catch (error) {
     return {
       summary: response.substring(0, 200) + '...',
       raw_analysis: response,
       confidence: 0.7,
-      parsing_error: error instanceof Error ? error.message: 'Unknown parsing error',
+      parsing_error: error instanceof Error ? error.message: 'Unknown parsing error'
     };
   }
 }
@@ -172,7 +172,7 @@ function calculateConfidence(response: string, analysisType: string): number {
     contract: 1.1, // Contract analysis is typically more structured
     evidence: 0.9, // Evidence analysis can be more subjective
     case_law: 1.2, // Case law analysis benefits from precedent
-    document: 1.0,
+    document: 1.0
   };
   
   confidence *= typeMultipliers[analysisType as keyof typeof typeMultipliers] || 1.0;

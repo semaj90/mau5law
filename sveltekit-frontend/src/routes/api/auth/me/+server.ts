@@ -30,7 +30,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
       httpOnly: false,
       secure: false,
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7 // 7 days,
+      maxAge: 60 * 60 * 24 * 7 // 7 days
     });
 
     const mockUser = {
@@ -54,15 +54,15 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         emailVerified: true,
         metadata: Record<string, any>,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       },
       activity: {
         totalCases: 5,
         activeCases: 2,
-        totalEvidence: 15,
+        totalEvidence: 15
       },
       authenticated: true,
-      loadSource: 'development',
+      loadSource: 'development'
     };
 
     return createSSRResponse(mockUser);
@@ -90,7 +90,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
       return createSSRResponse({
         ...cachedUserData.content,
         authenticated: true,
-        loadSource: 'cache',
+        loadSource: 'cache'
       }, { cached: true });
     }
 
@@ -115,7 +115,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         emailVerified: users.email_verified,
         metadata: users.metadata,
         createdAt: users.created_at,
-        updatedAt: users.updated_at,
+        updatedAt: users.updated_at
       }).from(users).where(eq(users.id, userId)).limit(1),
 
       db.select({
@@ -154,21 +154,21 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         emailVerified: profile.emailVerified,
         metadata: profile.metadata || {},
         createdAt: profile.createdAt,
-        updatedAt: profile.updatedAt,
+        updatedAt: profile.updatedAt
       },
       activity: {
         totalCases: stats?.totalCases || 0,
         activeCases: stats?.activeCases || 0,
-        totalEvidence: stats?.totalEvidence || 0,
+        totalEvidence: stats?.totalEvidence || 0
       },
       authenticated: true,
-      loadSource: 'database',
+      loadSource: 'database'
     };
 
     // Cache the user data for future requests;
     await cognitiveCache.storeJsonbDocument(cacheKey, userData, {
       documentType: 'user-profile',
-      cached: true,
+      cached: true
     });
 
     return createSSRResponse(userData);

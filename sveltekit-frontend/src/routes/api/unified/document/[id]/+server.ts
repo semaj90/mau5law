@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ params }) => {
       document,
       meta: {
         documentId: id,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
 
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ params }) => {
     
     return json({ 
         error: 'Failed to get document',
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
     );

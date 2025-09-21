@@ -21,7 +21,7 @@ export interface Gemma3ModelConfig {
   ollamaModel?: string;
   fallbackModel?: string;
   format: string;
-  size: string;,
+  size: string;
 }
 
 const projectRoot = process.cwd();
@@ -55,7 +55,7 @@ export const GEMMA3_MODELS: Gemma3ModelConfig[] = [;
     ollamaModel: "gemma3-legal:latest",
     fallbackModel: "gemma3-legal:latest",
     format: "gguf",
-    size: "8B",
+    size: "8B"
 }
 ];
 
@@ -103,28 +103,28 @@ export const GEMMA3_INFERENCE_SETTINGS = {
     topP: 0.8,
     topK: 20,
     repeatPenalty: 1.05,
-    maxTokens: 512,
+    maxTokens: 512
 },
   balanced: {
     temperature: 0.7,
     topP: 0.9,
     topK: 40,
     repeatPenalty: 1.1,
-    maxTokens: 1024,
+    maxTokens: 1024
 },
   creative: {
     temperature: 0.9,
     topP: 0.95,
     topK: 60,
     repeatPenalty: 1.15,
-    maxTokens: 2048,
+    maxTokens: 2048
 },
   precise: {
     temperature: 0.1,
     topP: 0.7,
     topK: 10,
     repeatPenalty: 1.05,
-    maxTokens: 512,
+    maxTokens: 512
 }
 };
 
@@ -165,7 +165,7 @@ export function getSystemPromptForContext(
       case "evidence_analysis":
         return LEGAL_SYSTEM_PROMPTS.evidence_analysis;
       default:
-        return LEGAL_SYSTEM_PROMPTS.general;,
+        return LEGAL_SYSTEM_PROMPTS.general;
     }
   }
   return LEGAL_SYSTEM_PROMPTS.general;

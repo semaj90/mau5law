@@ -98,7 +98,7 @@ export function createAbortController() {
   return {
     signal: controller.signal,
     abort: () => controller.abort(),
-    cleanup: () => controller.abort(),
+    cleanup: () => controller.abort()
   };
 }
 

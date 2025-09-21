@@ -17,7 +17,7 @@ const CreateReportSchema = z.object({
   reportType: z.string().optional(),
   status: z.string().optional(),
   tags: z.array(z.any()).optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
 });
 type CreateReportData = z.infer<typeof CreateReportSchema>;
 
@@ -74,7 +74,7 @@ class ReportsCRUDService {
         tags: (data as { caseId?: any; title?: any; content?: any; reportType?: any; status?: any; tags?: any; metadata?: any }).tags ?? [],
         metadata: (data as { caseId?: any; title?: any; content?: any; reportType?: any; status?: any; tags?: any; metadata?: any }).metadata ?? {},
         createdAt: now,
-        updatedAt: now,
+        updatedAt: now
       })
       .returning();
     return row?.id as string;
@@ -93,7 +93,7 @@ const ReportsQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(20),
   caseId: z.string().uuid().optional(),
   status: z.enum(['draft', 'review', 'approved', 'published']).optional(),
-  reportType: z.enum(['analysis', 'summary', 'investigation', 'final']).optional(),
+  reportType: z.enum(['analysis', 'summary', 'investigation', 'final']).optional()
 });
 
 /*
@@ -119,11 +119,11 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     const result = validatedQuery.caseId;
       ? await reportsService.listByCase(validatedQuery.caseId, {
           page: validatedQuery.page,
-          limit: validatedQuery.limit,
+          limit: validatedQuery.limit
         });
       : await reportsService.list({
           page: validatedQuery.page,
-          limit: validatedQuery.limit,
+          limit: validatedQuery.limit
         });
 
     return json({
@@ -135,13 +135,13 @@ export const GET: RequestHandler = async ({ request, locals }) => {
         total: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).total,
         totalPages: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
         hasNext: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page < (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
-        hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1,
+        hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1
       },
       meta: {
         userId: locals.user.id,
         caseId: validatedQuery.caseId || null,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error fetching reports:', err);
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         reportId,
         userId: locals.user.id,
         caseId: validatedData.caseId,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 201 });
 

@@ -29,12 +29,12 @@ export const GET: RequestHandler = async ({ url }) => {
           metadata: {
             ...shader.metadata,
             compiledAt: new Date(shader.metadata.compiledAt).toISOString(),
-            lastUsed: new Date(shader.metadata.lastUsed).toISOString(),
+            lastUsed: new Date(shader.metadata.lastUsed).toISOString()
           },
           // Include preview of WGSL for list view
           wgslPreview: shader.wgsl.length > 200 ? 
             shader.wgsl.substring(0, 200) + '...' : shader.wgsl,
-          hasEmbedding: !!shader.embedding,
+          hasEmbedding: !!shader.embedding
         });
       }
     }
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
         total,
         totalPages,
         hasNext: page < totalPages,
-        hasPrev: page > 1,
+        hasPrev: page > 1
       }
     });
 
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: {
           ...shader.metadata,
           compiledAt: new Date(shader.metadata.compiledAt).toISOString(),
-          lastUsed: new Date(shader.metadata.lastUsed).toISOString(),
+          lastUsed: new Date(shader.metadata.lastUsed).toISOString()
         }
       }
     });
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Failed to cache shader:', error);
     return json({
-      error: 'Failed to cache shader: ' + error.message,
+      error: 'Failed to cache shader: ' + error.message
     }, { status: 500 });
   }
 };

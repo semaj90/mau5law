@@ -22,8 +22,8 @@ const initialData: CaseStoreData = {
     status: "all",
     priority: "all",
     sort: "openedAt",
-    order: "desc",
-  },
+    order: "desc"
+  }
 };
 
 export const casesStore = writable<CaseStoreData>(initialData);
@@ -49,35 +49,35 @@ export const casesActions = {
       ...store,
       cases: store.cases.map((c) =>
         c.id === caseId ? { ...c, ...updates } : c,
-      ),
+      )
     });
   },
 
   addCase: (newCase: any) => {
     casesStore.update((store) => ({
       ...store,
-      cases: [newCase, ...store.cases],
+      cases: [newCase, ...store.cases]
     });
   },
 
   removeCase: (caseId: string) => {
     casesStore.update((store) => ({
       ...store,
-      cases: store.cases.filter((c) => c.id !== caseId),
+      cases: store.cases.filter((c) => c.id !== caseId)
     });
   },
 
   updateFilters: (newFilters: Partial<CaseStoreData["filters"]>) => {
     casesStore.update((store) => ({
       ...store,
-      filters: { ...store.filters, ...newFilters },
+      filters: { ...store.filters, ...newFilters }
     });
   },
 
   setCases: (cases: any[]) => {
     casesStore.update((store) => ({
       ...store,
-      cases,
+      cases
     });
-  },
+  }
 };

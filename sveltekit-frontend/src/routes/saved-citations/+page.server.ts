@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) {
     return {
       savedCitations: [],
-      user: null,
+      user: null
     };
   }
   try {
@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         isFavorite: true,
         notes: "Key precedent for evidence admissibility",
         savedAt: new Date("2024-01-15"),
-        contextData: { reportId: "report-123", caseId: "case-456" },
+        contextData: { reportId: "report-123", caseId: "case-456" }
       },
       {
         id: "2",
@@ -40,20 +40,20 @@ export const load: PageServerLoad = async ({ locals }) => {
         isFavorite: false,
         notes: "Must be read before custodial interrogation",
         savedAt: new Date("2024-01-10"),
-        contextData: { reportId: "report-124", caseId: "case-456" },
-      },
+        contextData: { reportId: "report-124", caseId: "case-456" }
+      }
     ];
 
     return {
       savedCitations: mockCitations,
-      user: locals.user,
+      user: locals.user
     };
   } catch (error: any) {
     console.error("Error loading saved citations:", error);
     return {
       savedCitations: [],
       user: locals.user,
-      error: "Failed to load saved citations",
+      error: "Failed to load saved citations"
     };
   }
 };

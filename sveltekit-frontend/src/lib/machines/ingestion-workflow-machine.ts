@@ -67,7 +67,7 @@ export interface IngestionContext {
     failedJobs: number;
     averageProcessingTime: number;
     totalEmbeddings: number;
-    cacheHitRate: number;,
+    cacheHitRate: number;
   };
   
   // Worker configuration
@@ -76,7 +76,7 @@ export interface IngestionContext {
   
   // Error handling
   error: string | null;
-  isRetrying: boolean;,
+  isRetrying: boolean;
 }
 
 export type IngestionEvent =
@@ -107,18 +107,18 @@ const initialContext: IngestionContext = {
     failedJobs: 0,
     averageProcessingTime: 0,
     totalEmbeddings: 0,
-    cacheHitRate: 0,
+    cacheHitRate: 0
   },
   concurrency: 3,
   batchSize: 10,
   error: null,
-  isRetrying: false,
+  isRetrying: false
 };
 
 export const ingestionWorkflowMachine = setup({
   types: Record<string, any> as {
     context: IngestionContext;
-    events: IngestionEvent;,
+    events: IngestionEvent;
   },
   actions: {
     // Job queue management;
@@ -130,7 +130,7 @@ export const ingestionWorkflowMachine = setup({
       },
       stats: ({ context }) => ({
         ...context.stats,
-        totalJobs: context.stats.totalJobs + 1,
+        totalJobs: context.stats.totalJobs + 1
       })
     }),
     
@@ -138,7 +138,7 @@ export const ingestionWorkflowMachine = setup({
       currentJob: ({ context }) => context.jobQueue[0] || null,
       jobQueue: ({ context }) => context.jobQueue.slice(1),
       currentChunk: () => 0,
-      processedChunks: () => [],
+      processedChunks: () => []
     }),
     
     updateJobProgress: assign({
@@ -147,7 +147,7 @@ export const ingestionWorkflowMachine = setup({
         return {
           ...context.currentJob,
           progress: (event as any).progress || context.currentJob.progress,
-          state: (event as any).state || context.currentJob.state,
+          state: (event as any).state || context.currentJob.state
         };
       }
     }),
@@ -160,7 +160,7 @@ export const ingestionWorkflowMachine = setup({
           state: 'completed' as const,
           progress: 100,
           completedAt: new Date().toISOString(),
-          results: (event as any).results,
+          results: (event as any).results
         };
       },
       completedJobs: ({ context }) => {
@@ -169,7 +169,7 @@ export const ingestionWorkflowMachine = setup({
       stats: ({ context }) => ({
         ...context.stats,
         completedJobs: context.stats.completedJobs + 1,
-        totalEmbeddings: context.stats.totalEmbeddings + (context.processedChunks.length || 0),
+        totalEmbeddings: context.stats.totalEmbeddings + (context.processedChunks.length || 0)
       })
     }),
     
@@ -180,7 +180,7 @@ export const ingestionWorkflowMachine = setup({
           ...context.currentJob,
           state: 'failed' as const,
           error: (event as any).error || 'Processing failed',
-          completedAt: new Date().toISOString(),
+          completedAt: new Date().toISOString()
         };
       },
       failedJobs: ({ context }) => {
@@ -188,7 +188,7 @@ export const ingestionWorkflowMachine = setup({
       },
       stats: ({ context }) => ({
         ...context.stats,
-        failedJobs: context.stats.failedJobs + 1,
+        failedJobs: context.stats.failedJobs + 1
       }),
       error: ({ event }) => (event as any).error || 'Job failed'
     }),
@@ -202,7 +202,7 @@ export const ingestionWorkflowMachine = setup({
       stats: ({ context, event }) => ({
         ...context.stats,
         ...(event as any).stats
-      ,})
+      })
     }),
     
     setConcurrency: assign({
@@ -211,11 +211,11 @@ export const ingestionWorkflowMachine = setup({
     
     clearError: assign({
       error: () => null,
-      isRetrying: () => false,
+      isRetrying: () => false
     }),
     
     setRetrying: assign({
-      isRetrying: () => true,
+      isRetrying: () => true
     })
   },
   
@@ -255,7 +255,7 @@ export const ingestionWorkflowMachine = setup({
             // Generate embedding
             console.log(`🔄 Generating embedding for chunk ${chunkId}`);
             const result = await getEmbeddingViaGate(fetch, text, {
-              model: process.env.EMBEDDING_MODEL,
+              model: process.env.EMBEDDING_MODEL
             });
             
             // Cache the embedding
@@ -272,7 +272,7 @@ export const ingestionWorkflowMachine = setup({
                 backend: (result as { embedding?: any; backend?: any; inserted?: any; errors?: any; results?: any }).backend,
                 model: result?.model || "unknown" // @ts-ignore - Model property access,
                 chunkId,
-                confidence: Math.random() * 0.3 + 0.7 // Mock confidence score,
+                confidence: Math.random() * 0.3 + 0.7 // Mock confidence score
               }
             };
           })
@@ -316,7 +316,7 @@ export const ingestionWorkflowMachine = setup({
               chunk_index: chunk.chunkIndex,
               chunk_text: chunk.text,
               embedding: chunk.embedding,
-              metadata: chunk.metadata,
+              metadata: chunk.metadata
             })
           })
         });
@@ -347,7 +347,7 @@ export const ingestionWorkflowMachine = setup({
         const { publishToQueue } = await import('$lib/server/rabbitmq.js');
         await publishToQueue('ingestion.jobs', {
           ...job,
-          queuedAt: new Date().toISOString(),
+          queuedAt: new Date().toISOString()
         });
         
         console.log(`📤 Published job ${job.id} to RabbitMQ`);
@@ -358,7 +358,7 @@ export const ingestionWorkflowMachine = setup({
         // Fallback to Redis;
         await cache.rpush('ingestion:jobs', JSON.stringify({
           ...job,
-          queuedAt: new Date().toISOString(),
+          queuedAt: new Date().toISOString()
         });
         
         console.log(`📤 Published job ${job.id} to Redis`);
@@ -385,7 +385,7 @@ export const ingestionWorkflowMachine = setup({
           body: JSON.stringify({
             embedding: queryEmbedding,
             limit: 5,
-            threshold: 0.7,
+            threshold: 0.7
           })
         });
         
@@ -423,24 +423,24 @@ export const ingestionWorkflowMachine = setup({
       on: {
         QUEUE_JOB: {
           target: 'checkingQueue',
-          actions: 'queueJob',
+          actions: 'queueJob'
         },
         PROCESS_NEXT_JOB: {
           target: 'checkingQueue',
-          guard: 'hasJobsInQueue',
+          guard: 'hasJobsInQueue'
         },
         SET_CONCURRENCY: {
-          actions: 'setConcurrency',
+          actions: 'setConcurrency'
         },
         CLEAR_COMPLETED: {
           actions: assign({
             completedJobs: () => [],
-            failedJobs: () => [],
+            failedJobs: () => []
           })
         },
         RESET_STATS: {
           actions: assign({
-            stats: () => initialContext.stats,
+            stats: () => initialContext.stats
           })
         }
       }
@@ -451,10 +451,10 @@ export const ingestionWorkflowMachine = setup({
         {
           target: 'processingJob',
           guard: 'hasJobsInQueue',
-          actions: 'setCurrentJob',
+          actions: 'setCurrentJob'
         },
         {
-          target: 'idle',
+          target: 'idle'
         }
       ]
     },
@@ -465,7 +465,7 @@ export const ingestionWorkflowMachine = setup({
         currentJob: ({ context }) => context.currentJob ? {
           ...context.currentJob,
           state: 'processing' as const,
-          startedAt: new Date().toISOString(),
+          startedAt: new Date().toISOString()
         } : null
       }),
       
@@ -481,7 +481,7 @@ export const ingestionWorkflowMachine = setup({
                   ...context.currentJob,
                   metadata: {
                     ...context.currentJob.metadata,
-                    queueBackend: (event as any).output.backend,
+                    queueBackend: (event as any).output.backend
                   }
                 } : null
               })
@@ -493,7 +493,7 @@ export const ingestionWorkflowMachine = setup({
                   ...context.currentJob,
                   metadata: {
                     ...context.currentJob.metadata,
-                    queueBackend: 'direct',
+                    queueBackend: 'direct'
                   }
                 } : null
               })
@@ -506,7 +506,7 @@ export const ingestionWorkflowMachine = setup({
             src: 'processJob',
             input: ({ context }) => ({ 
               job: context.currentJob,
-              batchSize: context.batchSize,
+              batchSize: context.batchSize
             }),
             onDone: {
               target: 'storing',
@@ -520,27 +520,27 @@ export const ingestionWorkflowMachine = setup({
                     embeddedChunks: (event as any).output.embeddedChunks,
                     totalChunks: (event as any).output.totalChunks,
                     averageConfidence: (event as any).output.averageConfidence,
-                    processingTime: (event as any).output.processingTime,
+                    processingTime: (event as any).output.processingTime
                   }
                 } : null
               })
             },
             onError: {
               target: '#ingestionWorkflow.retrying',
-              actions: 'failJob',
+              actions: 'failJob'
             }
           }
         },
         
         chunking: {
           after: {
-            100: 'processing',
+            100: 'processing'
           },
           entry: assign({
             currentJob: ({ context }) => context.currentJob ? {
               ...context.currentJob,
               state: 'chunking' as const,
-              progress: 10,
+              progress: 10
             } : null
           })
         },
@@ -550,7 +550,7 @@ export const ingestionWorkflowMachine = setup({
             src: 'storeChunks',
             input: ({ context }) => ({ 
               chunks: context.processedChunks,
-              jobId: context.currentJob?.id,
+              jobId: context.currentJob?.id
             }),
             onDone: {
               target: 'findingSimilar',
@@ -558,13 +558,13 @@ export const ingestionWorkflowMachine = setup({
                 currentJob: ({ context }) => context.currentJob ? {
                   ...context.currentJob,
                   state: 'caching' as const,
-                  progress: 95,
+                  progress: 95
                 } : null
               })
             },
             onError: {
               target: '#ingestionWorkflow.retrying',
-              actions: 'failJob',
+              actions: 'failJob'
             }
           }
         },
@@ -580,13 +580,13 @@ export const ingestionWorkflowMachine = setup({
                   ...context.currentJob,
                   results: {
                     ...context.currentJob.results!,
-                    similarDocuments: (event as any).output,
+                    similarDocuments: (event as any).output
                   }
                 } : null
               })
             },
             onError: {
-              target: 'completed' // Continue even if similarity search fails,
+              target: 'completed' // Continue even if similarity search fails
             }
           }
         },
@@ -596,7 +596,7 @@ export const ingestionWorkflowMachine = setup({
           always: {
             target: '#ingestionWorkflow.checkingQueue',
             actions: assign({
-              currentJob: () => null,
+              currentJob: () => null
             })
           }
         }
@@ -625,7 +625,7 @@ export const ingestionWorkflowMachine = setup({
               currentJob: ({ context }) => context.currentJob ? {
                 ...context.currentJob,
                 retryCount: context.currentJob.retryCount + 1,
-                state: 'processing' as const,
+                state: 'processing' as const
               } : null
             })
           ]
@@ -644,7 +644,7 @@ export const ingestionWorkflowMachine = setup({
       on: {
         RESUME_PROCESSING: 'checkingQueue',
         QUEUE_JOB: {
-          actions: 'queueJob',
+          actions: 'queueJob'
         }
       }
     }
@@ -652,7 +652,7 @@ export const ingestionWorkflowMachine = setup({
   
   on: {
     PAUSE_PROCESSING: {
-      target: 'paused',
+      target: 'paused'
     }
   }
 });
@@ -695,7 +695,7 @@ export function createIngestionJob(
     state: 'queued',
     progress: 0,
     retryCount: 0,
-    maxRetries: 3,
+    maxRetries: 3
   };
 }
 

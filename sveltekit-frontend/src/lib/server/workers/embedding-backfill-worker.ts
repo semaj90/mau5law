@@ -70,7 +70,7 @@ export class EmbeddingBackfillWorker {
         processed: 0,
         success: 0,
         failed: 0,
-        errors: [],
+        errors: []
       };
 
       // Process in batches to avoid overwhelming the system;
@@ -203,7 +203,7 @@ export class EmbeddingBackfillWorker {
       body: JSON.stringify({
         text: text.substring(0, 50000), // Limit text length
         model: 'mock', // Use mock for testing - change to 'openai' or 'nomic' when ready
-        dimensions: 768,
+        dimensions: 768
       })
     });
 
@@ -255,7 +255,7 @@ export class EmbeddingBackfillWorker {
       total,
       withEmbeddings,
       withoutEmbeddings,
-      percentage: Math.round(percentage * 100) / 100,
+      percentage: Math.round(percentage * 100) / 100
     };
   }
 }
@@ -264,5 +264,5 @@ export class EmbeddingBackfillWorker {
 export const embeddingBackfillWorker = new EmbeddingBackfillWorker({
   batchSize: 10,
   retryCount: 3,
-  enableTextExtraction: true,
+  enableTextExtraction: true
 });

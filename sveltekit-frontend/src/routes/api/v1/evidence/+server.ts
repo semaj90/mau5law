@@ -15,7 +15,7 @@ const EvidenceQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(20),
   caseId: z.string().uuid().optional(),
   evidenceType: z.string().optional(),
-  isPublic: z.coerce.boolean().optional(),
+  isPublic: z.coerce.boolean().optional()
 });
 
 /*
@@ -41,11 +41,11 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     const result = validatedQuery.caseId;
       ? await evidenceService.listByCase(validatedQuery.caseId, {
           page: validatedQuery.page,
-          limit: validatedQuery.limit,
+          limit: validatedQuery.limit
         });
       : await evidenceService.list({
           page: validatedQuery.page,
-          limit: validatedQuery.limit,
+          limit: validatedQuery.limit
         });
 
     return json({
@@ -67,13 +67,13 @@ export const GET: RequestHandler = async ({ request, locals }) => {
             .totalPages,
         hasPrev:
           (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page >
-          1,
+          1
       },
       meta: {
         userId: locals.user.id,
         caseId: validatedQuery.caseId || null,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
   } catch (err: any) {
     console.error('Error fetching evidence:', err);
@@ -136,8 +136,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           userId: locals.user.id,
           caseId: validatedData.caseId,
           timestamp: new Date().toISOString(),
-          analysisQueued: true,
-        },
+          analysisQueued: true
+        }
       },
       { status: 201 }
     );

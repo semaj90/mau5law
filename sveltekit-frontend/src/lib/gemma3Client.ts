@@ -7,7 +7,7 @@
 
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
-  content: string;,
+  content: string;
 }
 
 export interface ChatCompletionRequest {
@@ -28,7 +28,7 @@ export interface ChatCompletionResponse {
   usage?: {
     prompt_tokens: number;
     completion_tokens: number;
-    total_tokens: number;,
+    total_tokens: number;
   };
 }
 
@@ -50,7 +50,7 @@ export interface CompletionResponse {
   usage?: {
     prompt_tokens: number;
     completion_tokens: number;
-    total_tokens: number;,
+    total_tokens: number;
   };
 }
 
@@ -76,7 +76,7 @@ export class Gemma3Client {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
         method: "GET",
-        signal: AbortSignal.timeout(10000),
+        signal: AbortSignal.timeout(10000)
       });
       return response.ok;
     } catch (error: any) {
@@ -91,7 +91,7 @@ export class Gemma3Client {
   async getServerInfo(): Promise<any> {
     const response = await fetch(`${this.baseUrl}/health`, {
       method: "GET",
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(10000)
     });
 
     if (!response.ok) {
@@ -107,7 +107,7 @@ export class Gemma3Client {
   async listModels(): Promise<any> {
     const response = await fetch(`${this.baseUrl}/v1/models`, {
       method: "GET",
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(10000)
     });
 
     if (!response.ok) {
@@ -129,16 +129,16 @@ export class Gemma3Client {
       temperature: request.temperature ?? 0.1,
       top_p: request.top_p ?? 0.9,
       max_tokens: request.max_tokens ?? 1024,
-      stream: request.stream ?? false,
+      stream: request.stream ?? false
     };
 
     const response = await fetch(`${this.baseUrl}/v1/chat/completions`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(this.timeout),
+      signal: AbortSignal.timeout(this.timeout)
     });
 
     if (!response.ok) {
@@ -163,16 +163,16 @@ export class Gemma3Client {
       temperature: request.temperature ?? 0.1,
       top_p: request.top_p ?? 0.9,
       max_tokens: request.max_tokens ?? 1024,
-      stream: request.stream ?? false,
+      stream: request.stream ?? false
     };
 
     const response = await fetch(`${this.baseUrl}/v1/completions`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(this.timeout),
+      signal: AbortSignal.timeout(this.timeout)
     });
 
     if (!response.ok) {
@@ -192,18 +192,18 @@ export class Gemma3Client {
     const messages: ChatMessage[] = [;
       {
         role: "system",
-        content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : ""}`,
+        content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : ""}`
       },
       {
         role: "user",
-        content: question,
-      },
+        content: question
+      }
     ];
 
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.05, // Low temperature for legal accuracy
-      max_tokens: 1024,
+      max_tokens: 1024
     });
 
     return response.choices[0]?.message?.content || "";
@@ -219,18 +219,18 @@ export class Gemma3Client {
     const messages: ChatMessage[] = [;
       {
         role: "system",
-        content: `You are a specialized Legal AI Assistant for document analysis. Analyze the provided legal document and provide insights on key terms, potential issues, recommendations, and legal compliance. Focus on ${analysisType} analysis.`,
+        content: `You are a specialized Legal AI Assistant for document analysis. Analyze the provided legal document and provide insights on key terms, potential issues, recommendations, and legal compliance. Focus on ${analysisType} analysis.`
       },
       {
         role: "user",
-        content: `Please analyze this legal document:\n\n${documentText}`,
-      },
+        content: `Please analyze this legal document:\n\n${documentText}`
+      }
     ];
 
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.05,
-      max_tokens: 2048,
+      max_tokens: 2048
     });
 
     return response.choices[0]?.message?.content || "";
@@ -246,18 +246,18 @@ export class Gemma3Client {
     const messages: ChatMessage[] = [;
       {
         role: "system",
-        content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : ""}`,
+        content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : ""}`
       },
       {
         role: "user",
-        content: `Please review this contract:\n\n${contractText}`,
-      },
+        content: `Please review this contract:\n\n${contractText}`
+      }
     ];
 
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.05,
-      max_tokens: 2048,
+      max_tokens: 2048
     });
 
     return response.choices[0]?.message?.content || "";
@@ -273,18 +273,18 @@ export class Gemma3Client {
     const messages: ChatMessage[] = [;
       {
         role: "system",
-        content: `You are a specialized Legal AI Assistant for document generation. Create professional legal document templates with proper structure, standard clauses, and placeholders for customization.`,
+        content: `You are a specialized Legal AI Assistant for document generation. Create professional legal document templates with proper structure, standard clauses, and placeholders for customization.`
       },
       {
         role: "user",
-        content: `Generate a ${documentType} template with these requirements:\n\n${requirements}`,
-      },
+        content: `Generate a ${documentType} template with these requirements:\n\n${requirements}`
+      }
     ];
 
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.1,
-      max_tokens: 2048,
+      max_tokens: 2048
     });
 
     return response.choices[0]?.message?.content || "";
@@ -300,18 +300,18 @@ export class Gemma3Client {
     const messages: ChatMessage[] = [;
       {
         role: "system",
-        content: `You are a specialized Legal AI Assistant for content summarization. Provide concise, accurate summaries that capture the key points, legal implications, and important details. Focus on ${type} summarization.`,
+        content: `You are a specialized Legal AI Assistant for content summarization. Provide concise, accurate summaries that capture the key points, legal implications, and important details. Focus on ${type} summarization.`
       },
       {
         role: "user",
-        content: `Please summarize this content:\n\n${content}`,
-      },
+        content: `Please summarize this content:\n\n${content}`
+      }
     ];
 
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.05,
-      max_tokens: 1024,
+      max_tokens: 1024
     });
 
     return response.choices[0]?.message?.content || "";
@@ -325,7 +325,7 @@ export const gemma3Client = new Gemma3Client();
 export async function detectAvailableServer(): Promise<any> {
   const servers = [
     { url: "http://localhost:11434", name: "Ollama Server" },
-    { url: "http://localhost:8000", name: "llama.cpp Server" },
+    { url: "http://localhost:8000", name: "llama.cpp Server" }
   ];
 
   for (const server of servers) {
@@ -336,7 +336,7 @@ export async function detectAvailableServer(): Promise<any> {
         const info = await client.getServerInfo();
         return {
           url: server.url,
-          backend: info.backend || server.name,
+          backend: info.backend || server.name
         };
       }
     } catch (error: any) {
@@ -357,7 +357,7 @@ export function createGemma3Store() {
       askQuestion: async () => "",
       analyzeDocument: async () => "",
       reviewContract: async () => "",
-      generateTemplate: async () => "",
+      generateTemplate: async () => ""
     };
   }
 
@@ -401,6 +401,6 @@ export function createGemma3Store() {
 
     async generateTemplate(type: string, requirements: string) {
       return client.generateDocumentTemplate(type, requirements);
-    },
+    }
   };
 }

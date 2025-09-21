@@ -26,7 +26,7 @@ export interface NodePolyfills {
   crypto: Crypto;
   util: any;
   stream: any;
-  events: any;,
+  events: any;
 }
 
 class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
@@ -44,7 +44,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
     webWorkers: false,
     sharedArrayBuffer: false,
     atomics: false,
-    streams: false,
+    streams: false
   };
 
   async initialize(): Promise<boolean> {
@@ -85,7 +85,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
         webWorkers: typeof Worker !== 'undefined',
         sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
         atomics: typeof Atomics !== 'undefined',
-        streams: typeof ReadableStream !== 'undefined',
+        streams: typeof ReadableStream !== 'undefined'
       };
     }
     
@@ -157,7 +157,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
           isArray: Array.isArray,
           isString: (val: any) => typeof val === 'string',
           isNumber: (val: any) => typeof val === 'number',
-          isObject: (val: any) => typeof val === 'object' && val !== null,
+          isObject: (val: any) => typeof val === 'object' && val !== null
         };
       }
 
@@ -361,7 +361,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
                   openCursor: () => ({ onsuccess: null, onerror: null })
                 }),
                 oncomplete: null,
-                onerror: null,
+                onerror: null
               }),
               close: () => {}
             }
@@ -403,7 +403,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       // Register service worker with WASM caching support;
       const registration = await navigator.serviceWorker.register('/service-worker.js', {
         scope: '/',
-        type: 'module',
+        type: 'module'
       });
 
       // Enhanced service worker messaging for legal AI;
@@ -431,7 +431,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
             enableWASMCache: true,
             enableVectorCache: true,
             enableDocumentProcessing: true,
-            cacheStrategy: 'legal-optimized',
+            cacheStrategy: 'legal-optimized'
           }
         });
       }
@@ -491,7 +491,7 @@ class SvelteKit2UniversalPolyfill implements SvelteKitWASMPolyfill {
       serviceWorkerReady: this.serviceWorkerReady,
       webgpu: this.capabilities.webgpu ? webgpuPolyfill.getPerformanceStats() : null,
       wasm: this.capabilities.webassembly ? llvmWasmBridge.getModuleStats() : null,
-      cache: browser ? lokiRedisCache.getStats() : null,
+      cache: browser ? lokiRedisCache.getStats() : null
     };
   }
 

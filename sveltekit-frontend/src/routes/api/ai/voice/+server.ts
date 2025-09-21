@@ -35,14 +35,14 @@ export async function POST({ request }): Promise<any> {
     return json({
       success: true,
       transcript,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Voice API error:', error);
     return json({
       success: false,
       error: 'Failed to transcribe audio',
-      message: error instanceof Error ? error.message: 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 }

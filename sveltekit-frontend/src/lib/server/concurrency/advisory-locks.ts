@@ -15,7 +15,7 @@ export const LOCK_TYPES = {
   WORKFLOW: 'workflow',
   ANALYSIS: 'analysis',
   VECTOR_INDEX: 'vector_index',
-  CHAIN_OF_CUSTODY: 'chain_of_custody',
+  CHAIN_OF_CUSTODY: 'chain_of_custody'
 } as const;
 
 export type LockType = typeof LOCK_TYPES[keyof typeof LOCK_TYPES];

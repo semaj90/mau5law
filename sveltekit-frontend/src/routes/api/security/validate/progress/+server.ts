@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ request }) => {
   if (upgrade !== 'websocket') {
     return json({ 
         error: 'This endpoint requires WebSocket upgrade',
-        info: 'Use WebSocket connection to receive real-time progress updates',
+        info: 'Use WebSocket connection to receive real-time progress updates'
       }, )
       { status: 400 }
     );
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ request }) => {
   return json({ 
       message: 'WebSocket endpoint ready',
       endpoint: '/api/security/validate/progress',
-      usage: 'Connect via WebSocket for real-time validation progress updates',
+      usage: 'Connect via WebSocket for real-time validation progress updates'
     }, )
     { status: 200 }
   );

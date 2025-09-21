@@ -12,7 +12,7 @@ interface OllamaResponse {
   model: string;
   created_at: string;
   response: string;
-  done: boolean;,
+  done: boolean;
 }
 
 // POST: Anonymous chat without database persistence;
@@ -57,7 +57,7 @@ Legal Analysis:`;
           options: {
             temperature: 0.7,
             top_p: 0.9,
-            top_k: 40,
+            top_k: 40
           }
         })
       });
@@ -81,7 +81,7 @@ Legal Analysis:`;
         metadata: {
           timestamp: new Date().toISOString(),
           analysisType: 'legal-query',
-          wordCount: ollamaData.response.split(' ').length,
+          wordCount: ollamaData.response.split(' ').length
         }
       });
 
@@ -113,7 +113,7 @@ Currently running in demo mode. For detailed legal analysis, please ensure the O
         metadata: {
           timestamp: new Date().toISOString(),
           analysisType: 'demo-response',
-          mode: 'fallback',
+          mode: 'fallback'
         }
       });
     }
@@ -122,7 +122,7 @@ Currently running in demo mode. For detailed legal analysis, please ensure the O
     console.error('Anonymous chat error:', error);
     return json({ 
         error: 'Failed to process chat request', 
-        details: error instanceof Error ? error.message: 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error'
       }, )
       { status: 500 }
     );

@@ -88,7 +88,7 @@ class EvidenceProcessingService {
       error: null,
       startTime: new Date(),
       processingTime: 0,
-      gpuAccelerated: !!request.options?.useGPUAcceleration,
+      gpuAccelerated: !!request.options?.useGPUAcceleration
     };
 
     this.processingJobs.set(jobId, processingResult);
@@ -208,7 +208,7 @@ class EvidenceProcessingService {
     return {
       summary: (evidenceData.description || evidenceData.title || '').slice(0, 200),
       keywords: evidenceData.tags || [],
-      confidence: 0.8,
+      confidence: 0.8
     };
   }
 
@@ -219,7 +219,7 @@ class EvidenceProcessingService {
       weight: 'circumstantial',
       admissibility: 'questionable',
       priority: 'routine',
-      categories: [],
+      categories: []
     };
   }
 
@@ -295,7 +295,7 @@ export const POST: RequestHandler = async ({ request }) => {
         priority: options.priority ?? 'normal',
         notify: !!options.notify,
         saveIntermediateResults: !!options.saveIntermediateResults,
-        overrideExisting: !!options.overrideExisting,
+        overrideExisting: !!options.overrideExisting
       }
     };
 
@@ -306,7 +306,7 @@ export const POST: RequestHandler = async ({ request }) => {
       jobId,
       status: 'started',
       steps: processingRequest.steps,
-      options: processingRequest.options,
+      options: processingRequest.options
     });
   } catch (err: any) {
     console.error('POST processing error:', err);
@@ -345,7 +345,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       cancelled,
       jobId,
-      message: cancelled ? 'Processing cancelled' : 'Job not found or not cancellable',
+      message: cancelled ? 'Processing cancelled' : 'Job not found or not cancellable'
     });
   } catch (err: any) {
     console.error('DELETE error:', err);

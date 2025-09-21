@@ -32,7 +32,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (!inputText || inputText.trim() === "") {
       return json({ 
         error: "Text or content is required",
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }, { status: 400 });
     }
 
@@ -43,7 +43,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json({ 
         error: (result as { success?: any; error?: any; embedding?: any; metadata?: any; processingTime?: any }).error,
         model: result?.model || "unknown" // @ts-ignore - Model property access,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }, { status: 500 });
     }
 
@@ -53,14 +53,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       model: result?.model || "unknown" // @ts-ignore - Model property access,
       processingTime: (result as { success?: any; error?: any; embedding?: any; metadata?: any; processingTime?: any }).processingTime,
       responseTime: `${Date.now() - startTime}ms`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
     return json({ 
       error: `Failed to get embedding: ${error.message}`,
       responseTime: `${Date.now() - startTime}ms`,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -72,7 +72,7 @@ const originalGETHandler: RequestHandler = async () => {
     return json({
       service: "AI Embedding API",
       ...healthResult,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
@@ -80,7 +80,7 @@ const originalGETHandler: RequestHandler = async () => {
       service: "AI Embedding API", 
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

@@ -22,7 +22,7 @@ export interface DeploymentConfig {
   models: {
     primary: 'gemma3-legal';
     embedding: 'nomic-embed-text';
-    blocked: string[];,
+    blocked: string[];
   };
 }
 
@@ -33,12 +33,12 @@ export interface DeploymentStatus {
   mcp: 'connected' | 'disconnected' | 'error';
   models: {
     gemma3Legal: 'available' | 'missing' | 'loading';
-    nomicEmbed: 'available' | 'missing' | 'loading';,
+    nomicEmbed: 'available' | 'missing' | 'loading';
   };
   gpu: {
     device: string;
     memory: string;
-    utilization: number;,
+    utilization: number;
   };
 }
 
@@ -124,7 +124,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
       message: 'GPU-accelerated orchestration system deployed successfully',
       config: deploymentConfig,
       status,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (deployError) {
@@ -132,7 +132,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
     return json({
       success: false,
       error: deployError.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 }
@@ -270,25 +270,25 @@ async function updateDeploymentReport(config: DeploymentConfig): Promise<any> {
       timestamp: new Date().toISOString(),
       version: '2.0.0',
       config,
-      status: 'deployed',
+      status: 'deployed'
     },
     orchestration: {
       nodeJSOrchestrator: 'active',
       mcpIntegration: 'configured',
       modelEnforcement: 'active',
-      flashAttention: 'enabled',
+      flashAttention: 'enabled'
     },
     models: {
       primary: config.models.primary,
       embedding: config.models.embedding,
       blocked: config.models.blocked,
-      validated: true,
+      validated: true
     },
     gpu: {
       device: 'RTX3060Ti',
       flashAttentionEnabled: config.enableFlashAttention,
       memoryOptimization: 'balanced',
-      errorProcessing: 'active',
+      errorProcessing: 'active'
     }
   };
 
@@ -318,13 +318,13 @@ async function startOrchestrationSystem(): Promise<any> {
     for (const service of services) {
       try {
         const response = await fetch(`http://localhost:${service.port}/health`, { 
-          signal: AbortSignal.timeout(2000) ,
+          signal: AbortSignal.timeout(2000) 
         });
         serviceStatus.push({
           name: service.name,
           port: service.port,
           status: response.ok ? 'running' : 'error',
-          available: true,
+          available: true
         });
       } catch (error: any) {
         serviceStatus.push({
@@ -332,7 +332,7 @@ async function startOrchestrationSystem(): Promise<any> {
           port: service.port,
           status: 'stopped',
           available: existsSync(service.path),
-          path: service.path,
+          path: service.path
         });
       }
     }
@@ -341,7 +341,7 @@ async function startOrchestrationSystem(): Promise<any> {
       success: true,
       message: 'Orchestration system startup initiated',
       services: serviceStatus,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
 
   } catch (error: any) {
@@ -349,7 +349,7 @@ async function startOrchestrationSystem(): Promise<any> {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 }
@@ -363,7 +363,7 @@ async function stopOrchestrationSystem(): Promise<any> {
   return json({
     success: true,
     message: 'Orchestration system stop initiated',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 }
 
@@ -378,19 +378,19 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
     mcp: 'disconnected',
     models: {
       gemma3Legal: 'missing',
-      nomicEmbed: 'missing',
+      nomicEmbed: 'missing'
     },
     gpu: {
       device: 'RTX3060Ti',
       memory: '8GB',
-      utilization: 0,
+      utilization: 0
     }
   };
 
   try {
     // Check NodeJS orchestrator;
     const orchestratorResponse = await fetch('http://localhost:8094/health', { 
-      signal: AbortSignal.timeout(2000) ,
+      signal: AbortSignal.timeout(2000) 
     });
     status.orchestrator = orchestratorResponse.ok ? 'running' : 'error';
   } catch {
@@ -400,7 +400,7 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
   try {
     // Check error processor;
     const errorProcessorResponse = await fetch('http://localhost:8095/health', { 
-      signal: AbortSignal.timeout(2000) ,
+      signal: AbortSignal.timeout(2000) 
     });
     status.errorProcessor = errorProcessorResponse.ok ? 'running' : 'error';
   } catch {
@@ -521,7 +521,7 @@ export const deployComplete = async (): Promise<any> => {
       results.push({ 
         step: step.name, 
         status: 'error', 
-        error: error.message ,
+        error: error.message 
       });
     }
   }
@@ -534,6 +534,6 @@ export const deployComplete = async (): Promise<any> => {
     completedSteps: successCount,
     totalSteps,
     results,
-    status: await getOrchestrationStatus(),
+    status: await getOrchestrationStatus()
   };
 };

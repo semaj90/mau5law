@@ -14,7 +14,7 @@ export interface IngestionServiceConfig {
   enableRedisQueues: boolean;
   maxConcurrency: number;
   retryAttempts: number;
-  jobTimeout: number;,
+  jobTimeout: number;
 }
 
 export class IngestionService {
@@ -100,7 +100,7 @@ export class IngestionService {
         chunksCount: chunks.length,
         priority: job.metadata.priority,
         userId: job.metadata.userId,
-        messageQueue: this.config.enableRabbitMQ ? 'rabbitmq' : 'redis',
+        messageQueue: this.config.enableRabbitMQ ? 'rabbitmq' : 'redis'
       });
 
       const workflowState = this.workflowActor.getSnapshot();
@@ -116,7 +116,7 @@ export class IngestionService {
       console.error('❌ Failed to submit document:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error)
       };
     }
   }
@@ -134,7 +134,7 @@ export class IngestionService {
             ...job.metadata,
             totalChunks: job.chunks.length,
             priority: job.metadata.priority,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         };
 
@@ -168,7 +168,7 @@ export class IngestionService {
             ...job.metadata,
             totalChunks: job.chunks.length,
             priority: job.metadata.priority,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           }
         };
 
@@ -204,7 +204,7 @@ export class IngestionService {
         metadata: {
           ...currentJob.metadata,
           workflowState: state.value,
-          lastUpdated: new Date().toISOString(),
+          lastUpdated: new Date().toISOString()
         }
       });
     }
@@ -247,7 +247,7 @@ export class IngestionService {
       currentJobId: context.currentJob?.id,
       concurrency: context.concurrency,
       stats: context.stats,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 
@@ -275,13 +275,13 @@ export class IngestionService {
           isCurrentJob,
           currentState: (workflowState as any).value,
           queuePosition:
-            (workflowState.context as any).jobQueue.findIndex((j: any) => j.id === jobId) + 1,
-        },
+            (workflowState.context as any).jobQueue.findIndex((j: any) => j.id === jobId) + 1
+        }
       };
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error)
       };
     }
   }
@@ -300,8 +300,8 @@ export class IngestionService {
           retryCount: (currentJob.retryCount || 0) + 1,
           metadata: {
             ...currentJob.metadata,
-            retriedAt: new Date().toISOString(),
-          } as any,
+            retriedAt: new Date().toISOString()
+          } as any
         });
 
         // Re-publish to queue;
@@ -319,7 +319,7 @@ export class IngestionService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error)
       };
     }
   }
@@ -333,7 +333,7 @@ export class IngestionService {
       jobTracker.updateJob(jobId, {
         state: 'failed',
         error: 'Cancelled by user',
-        completedAt: new Date().toISOString(),
+        completedAt: new Date().toISOString()
       });
 
       return {
@@ -343,7 +343,7 @@ export class IngestionService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error),
+        error: error instanceof Error ? error.message: String(error)
       };
     }
   }
@@ -363,7 +363,7 @@ export class IngestionService {
     if (concurrency < 1 || concurrency > 10) {
       return {
         success: false,
-        error: 'Concurrency must be between 1 and 10',
+        error: 'Concurrency must be between 1 and 10'
       };
     }
 
@@ -387,8 +387,8 @@ export class IngestionService {
           currentJob: (workflowState.context as any).currentJob,
           queueLength: (workflowState.context as any).jobQueue.length,
           stats: (workflowState.context as any).stats,
-          concurrency: (workflowState.context as any).concurrency,
-        },
+          concurrency: (workflowState.context as any).concurrency
+        }
       },
       system: {
         uptime: process.uptime(),
@@ -397,9 +397,9 @@ export class IngestionService {
         config: {
           enableRabbitMQ: this.config.enableRabbitMQ,
           enableRedisQueues: this.config.enableRedisQueues,
-          maxConcurrency: this.config.maxConcurrency,
-        },
-      },
+          maxConcurrency: this.config.maxConcurrency
+        }
+      }
     };
   }
 
@@ -420,7 +420,7 @@ export class IngestionService {
 
     return {
       success: true,
-      message: 'Statistics reset',
+      message: 'Statistics reset'
     };
   }
 

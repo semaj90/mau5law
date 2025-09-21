@@ -33,12 +33,12 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       services: {
         ollama: getHealthResult(ollamaHealth),
         enhancedRAG: getHealthResult(ragHealth),
-        protobufGRPC: getHealthResult(grpcHealth),
+        protobufGRPC: getHealthResult(grpcHealth)
       },
       overall: {
         healthy: 0,
         degraded: 0,
-        down: 0,
+        down: 0
       }
     };
 
@@ -95,7 +95,7 @@ async function checkOllamaService(): Promise<any> {
   } catch (error: any) {
     return {
       status: 'down',
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -115,7 +115,7 @@ async function checkEnhancedRAGService(): Promise<any> {
   } catch (error: any) {
     return {
       status: 'down',
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -128,12 +128,12 @@ async function checkGRPCService(): Promise<any> {
     return {
       status: isHealthy ? 'healthy' : 'down',
       connected: status.connected,
-      serviceUrl: status.serviceUrl,
+      serviceUrl: status.serviceUrl
     };
   } catch (error: any) {
     return {
       status: 'down',
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -144,7 +144,7 @@ function getHealthResult(promiseResult: PromiseSettledResult<any>) {
   } else {
     return {
       status: 'down',
-      error: promiseResult.reason?.message || 'Service check failed',
+      error: promiseResult.reason?.message || 'Service check failed'
     };
   }
 }

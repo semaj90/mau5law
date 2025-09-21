@@ -41,7 +41,7 @@ export interface CaseResponse {
   caseType?: string;
   createdBy?: string;
   createdAt: string;
-  updatedAt: string;,
+  updatedAt: string;
 }
 
 export interface WorkerTriggerResponse {
@@ -56,7 +56,7 @@ export interface WorkerTriggerResponse {
   metadata: {
     timestamp: string;
     worker: string;
-    version: string;,
+    version: string;
   };
 }
 
@@ -105,7 +105,7 @@ export class EnhancedCaseAPI {
       return {
         success: false,
         error: error instanceof Error ? error.message: String(error),
-        data: undefined,
+        data: undefined
       };
     }
   }
@@ -137,7 +137,7 @@ export class EnhancedCaseAPI {
             location: 'not_specified',
             jurisdiction: 'not_specified',
             clientName: 'not_specified',
-            assignedTo: formData.assignedTo,
+            assignedTo: formData.assignedTo
           }
         }
       });
@@ -155,7 +155,7 @@ export class EnhancedCaseAPI {
       return {
         success: false,
         error: error instanceof Error ? error.message: String(error),
-        data: undefined,
+        data: undefined
       };
     }
   }
@@ -233,7 +233,7 @@ export class EnhancedCaseAPI {
     includeClusterData?: boolean;
   } = {}): Promise<APIResponse<{
       daily: Array<any>;
-      weekly: Array<any>;,
+      weekly: Array<any>;
   }>> {
     const searchParams = new URLSearchParams();
     
@@ -268,12 +268,12 @@ export class EnhancedCaseAPI {
   }): Promise<APIResponse<{
     clusters: Array<any>;
     silhouetteScore: number;
-    totalCases: number;,
+    totalCases: number;
   }>> {
     return restClient.post('/cases/cluster', {
       ...params,
       algorithm: params.algorithm || 'kmeans',
-      k: params.k || 5,
+      k: params.k || 5
     });
   }
 }

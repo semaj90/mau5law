@@ -10,16 +10,16 @@ export interface SessionUser {
   email: string;
   name: string | null;
   role: string;
-  isActive: boolean;,
+  isActive: boolean;
 }
 
 export interface UserSession {
-  user: SessionUser | null;,
+  user: SessionUser | null;
 }
 
 export interface SessionValidationResult {
   user: SessionUser | null;
-  isValid: boolean;,
+  isValid: boolean;
 }
 
 // Type guards for safe type checking;
@@ -51,14 +51,14 @@ export function validateUserSession(locals: { user?: unknown } & Record<string, 
 // Additional types for full CRUD system;
 export interface LoginCredentials {
   email: string;
-  password: string;,
+  password: string;
 }
 
 export interface RegisterData {
   email: string;
   password: string;
   firstName: string;
-  lastName: string;,
+  lastName: string;
 }
 
 export interface Case {
@@ -69,7 +69,7 @@ export interface Case {
   caseNumber: string;
   status: string;
   createdAt: string;
-  updatedAt: string;,
+  updatedAt: string;
 }
 
 export interface DocumentMetadata {
@@ -85,7 +85,7 @@ export interface DocumentMetadata {
   summary?: string;
   uploadStatus: string;
   processingStatus: string;
-  createdAt: string;,
+  createdAt: string;
 }
 
 export interface Evidence {
@@ -96,5 +96,5 @@ export interface Evidence {
   title: string;
   description: string;
   relevanceScore: number;
-  createdAt: string;,
+  createdAt: string;
 }

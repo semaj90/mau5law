@@ -52,13 +52,13 @@ export interface ModelInstance {
   memoryFootprint: {
     gpuMemoryMB: number;
     ddrRAMCacheMB: number;
-    wasmHeapMB: number;,
+    wasmHeapMB: number;
   };
   performanceMetrics: {
     averageLatency: number;
     throughput: number;
     qualityScore: number;
-    lastUsed: number;,
+    lastUsed: number;
   };
   worker?: Worker;
   wasmModule?: WebAssembly.Instance;
@@ -75,18 +75,18 @@ export interface InferenceResult {
     modelSwitchTime?: number;
     cacheHitRate: number;
     memoryUsed: number;
-    qualityScore: number;,
+    qualityScore: number;
   };
   rlMetrics?: {
     reward: number;
     action: any;
-    stateEmbedding: number[];,
+    stateEmbedding: number[];
   };
   contextSwitching?: {
     switchOccurred: boolean;
     fromModel: string;
     toModel: string;
-    switchReason: string;,
+    switchReason: string;
   };
 }
 
@@ -131,7 +131,7 @@ class UnifiedClientLLMOrchestrator {
             totalLatency: performance.now() - startTime,
             cacheHitRate: 1.0,
             memoryUsed: 0,
-            qualityScore: cacheResult.data.qualityScore,
+            qualityScore: cacheResult.data.qualityScore
           }
         };
       }
@@ -167,15 +167,15 @@ class UnifiedClientLLMOrchestrator {
           modelSwitchTime: contextSwitch.required ? contextSwitch.switchTime: undefined,
           cacheHitRate: 0.0,
           memoryUsed: selectedModel.memoryFootprint.gpuMemoryMB + selectedModel.memoryFootprint.ddrRAMCacheMB,
-          qualityScore: inferenceResult.qualityScore,
+          qualityScore: inferenceResult.qualityScore
         },
         rlMetrics: inferenceResult.rlMetrics,
         contextSwitching: contextSwitch.required && contextSwitch.fromModel && contextSwitch.toModel && contextSwitch.reason ? {
           switchOccurred: true,
           fromModel: contextSwitch.fromModel,
           toModel: contextSwitch.toModel,
-          switchReason: contextSwitch.reason,
-        } : undefined,
+          switchReason: contextSwitch.reason
+        } : undefined
       };
 
     } catch (error) {
@@ -194,7 +194,7 @@ class UnifiedClientLLMOrchestrator {
             totalLatency: performance.now() - startTime,
             cacheHitRate: 0,
             memoryUsed: 0,
-            qualityScore: 0,
+            qualityScore: 0
           }
         };
       }
@@ -244,7 +244,7 @@ class UnifiedClientLLMOrchestrator {
         config: {
           modelVariant: 'gemma-270m',
           modelSize: '270m',
-          architecture: 'llama',
+          architecture: 'llama'
         }
       });
 
@@ -266,16 +266,16 @@ class UnifiedClientLLMOrchestrator {
         memoryFootprint: {
           gpuMemoryMB: 1024, // 1GB for 270M model
           ddrRAMCacheMB: 512,
-          wasmHeapMB: 256,
+          wasmHeapMB: 256
         },
         performanceMetrics: {
           averageLatency: 150,
           throughput: 20, // tokens/sec
           qualityScore: 0.85,
-          lastUsed: 0,
+          lastUsed: 0
         },
         worker,
-        modelVariant: 'gemma-270m',
+        modelVariant: 'gemma-270m'
       };
 
       this.models.set('gemma270m', model);
@@ -304,16 +304,16 @@ class UnifiedClientLLMOrchestrator {
         memoryFootprint: {
           gpuMemoryMB: 2048,
           ddrRAMCacheMB: 1024,
-          wasmHeapMB: 384,
+          wasmHeapMB: 384
         },
         performanceMetrics: {
           averageLatency: 280,
           throughput: 18,
           qualityScore: 0.9,
-          lastUsed: 0,
+          lastUsed: 0
         },
         worker,
-        modelVariant: 'gemma:legal',
+        modelVariant: 'gemma:legal'
       };
 
       this.models.set('gemma-legal', model);
@@ -344,15 +344,15 @@ class UnifiedClientLLMOrchestrator {
         memoryFootprint: {
           gpuMemoryMB: 512, // Smaller model
           ddrRAMCacheMB: 256,
-          wasmHeapMB: 128,
+          wasmHeapMB: 128
         },
         performanceMetrics: {
           averageLatency: 50, // Very fast for context switching
           throughput: 100,
           qualityScore: 0.92, // High quality for legal domain
-          lastUsed: 0,
+          lastUsed: 0
         },
-        onnxSession: session,
+        onnxSession: session
       };
 
       this.models.set('legal-bert', model);
@@ -383,15 +383,15 @@ class UnifiedClientLLMOrchestrator {
         memoryFootprint: {
           gpuMemoryMB: 256,
           ddrRAMCacheMB: 128,
-          wasmHeapMB: 64,
+          wasmHeapMB: 64
         },
         performanceMetrics: {
           averageLatency: 25, // Very fast embeddings
           throughput: 200,
           qualityScore: 0.88,
-          lastUsed: 0,
+          lastUsed: 0
         },
-        onnxSession: embeddingSession,
+        onnxSession: embeddingSession
       };
 
       this.models.set('onnx-embeddings', model);
@@ -457,7 +457,7 @@ class UnifiedClientLLMOrchestrator {
         id: `llm-inference:${request.id}`,
         type: 'context',
   priority: request.priority === 'realtime' ? 'high' : request.priority,
-        keys: [cacheKey],
+        keys: [cacheKey]
       });
 
       if (cacheResult.success && cacheResult.cacheResults.length > 0) {
@@ -515,7 +515,7 @@ class UnifiedClientLLMOrchestrator {
         prompt: request.prompt,
         maxTokens: 256,
         temperature: 0.7,
-        context: request.context,
+        context: request.context
       }
     });
 
@@ -542,7 +542,7 @@ class UnifiedClientLLMOrchestrator {
 
     return {
       response: `Legal context analysis: ${contextAnalysis.contextType} (confidence: ${contextAnalysis.confidence})`,
-      qualityScore: contextAnalysis.confidence || 0.92,
+      qualityScore: contextAnalysis.confidence || 0.92
     };
   }
 
@@ -562,7 +562,7 @@ class UnifiedClientLLMOrchestrator {
         temperature: 0.4,
         legalContext: {
           domain: request.context.legalDomain || 'general',
-          documentType: request.context.documentType || 'generic',
+          documentType: request.context.documentType || 'generic'
         }
       }
     });
@@ -582,7 +582,7 @@ class UnifiedClientLLMOrchestrator {
       type: 'RL_INFERENCE',
       data: {
         prompt: request.prompt,
-        context: request.context.previousContext || [],
+        context: request.context.previousContext || []
       }
     });
 
@@ -624,12 +624,12 @@ class UnifiedClientLLMOrchestrator {
         response: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).response,
         modelUsed: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).modelUsed,
         qualityScore: (result as { confidence?: any; response?: any; modelUsed?: any; qualityScore?: any }).qualityScore,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       }, {
         tier: 'l1',
         ttl: 10 * 60 * 1000, // 10 minutes
         priority: 'normal',
-        type: 'llm_inference',
+        type: 'llm_inference'
       });
     } catch (error) {
       console.warn('Failed to cache inference result:', error);
@@ -734,7 +734,7 @@ class UnifiedClientLLMOrchestrator {
       totalDDRRAMCacheMB: this.totalDDRRAMCacheMB,
       activeModels,
       memoryUtilization: this.totalGPUMemoryMB / this.maxGPUMemoryMB,
-      cacheStats: cacheStats.currentMetrics,
+      cacheStats: cacheStats.currentMetrics
     };
   }
 }
@@ -766,7 +766,7 @@ class ONNXInferenceEngine {
     return {
       output: `ONNX inference result for: ${input}`,
       confidence: 0.88,
-      contextType: options.task,
+      contextType: options.task
     };
   }
 }

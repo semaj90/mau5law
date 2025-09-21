@@ -30,7 +30,7 @@ export interface FinalResultEntry {
 	id: string;
 	llmResult?: unknown; // Domain-specific shape not enforced here
 	context?: unknown;
-	ts: number;,
+	ts: number;
 }
 
 export const connectionStatus = writable<string>('disconnected');
@@ -146,7 +146,7 @@ function handleEvent(wrapper: any) {
 					id,
 					llmResult: msg.llmResult,
 					context: msg.context,
-					ts: Date.now(),
+					ts: Date.now()
 				},
 				...arr
 			].slice(0, 50);

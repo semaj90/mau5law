@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: status,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
         
       case 'health':
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: health,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
         
       case 'autosolve':
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: autosolveResult,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
         
       default:;
@@ -54,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!content || typeof content !== 'string') {
       return json({
         success: false,
-        error: 'Content is required and must be a string',
+        error: 'Content is required and must be a string'
       }, { status: 400 });
     }
     
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
       enableAutosolve: options.enableAutosolve === true,
       generateSuggestions: options.generateSuggestions !== false,
       ...options
-    ,});
+    });
     
     return json({
       success: true,
@@ -87,10 +87,10 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: {
           contentLength: content.length,
           quicEnabled: options.useQuic !== false,
-          processingMode: 'ultra_fast_quic',
+          processingMode: 'ultra_fast_quic'
         }
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Document processing failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -118,9 +118,9 @@ export const PUT: RequestHandler = async ({ request }) => {
       data: {
         message: 'Configuration update received',
         current: currentStatus.config,
-        requested: config,
+        requested: config
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
     
   } catch (error: any) {
@@ -128,7 +128,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Config update failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };

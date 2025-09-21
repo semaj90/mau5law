@@ -13,7 +13,7 @@ export interface LangChainState {
   isProcessing: boolean;
   isAvailable: boolean;
   error: string | null;
-  models: string[];,
+  models: string[];
 }
 
 export interface DocumentProcessingState {
@@ -22,7 +22,7 @@ export interface DocumentProcessingState {
   result: ProcessedDocument | null;
   error: string | null;
   sessionId: string | null;
-  documentId: string | null;,
+  documentId: string | null;
 }
 
 export interface ProcessedDocument {
@@ -33,13 +33,13 @@ export interface ProcessedDocument {
   contractTerms: any[];
   processingTime: number;
   cacheHit: boolean;
-  sessionId: string;,
+  sessionId: string;
 }
 
 export interface ChatState {
   messages: Array<any>;
   isTyping: boolean;
-  error: string | null;,
+  error: string | null;
 }
 
 // Internal reactive stores;
@@ -47,7 +47,7 @@ const langchainState = writable<LangChainState>({
   isProcessing: false,
   isAvailable: false,
   error: null,
-  models: [],
+  models: []
 });
 
 const documentProcessingState = writable<DocumentProcessingState>({
@@ -56,13 +56,13 @@ const documentProcessingState = writable<DocumentProcessingState>({
   result: null,
   error: null,
   sessionId: null,
-  documentId: null,
+  documentId: null
 });
 
 const chatState = writable<ChatState>({
   messages: [],
   isTyping: false,
-  error: null,
+  error: null
 });
 
 /**
@@ -104,7 +104,7 @@ class LangChainServiceLogic {
         isProcessing: false,
         isAvailable: false,
         error: error instanceof Error ? error.message: 'Initialization failed',
-        models: [],
+        models: []
       });
     }
   }
@@ -121,7 +121,7 @@ class LangChainServiceLogic {
       ...state, 
       isProcessing: true, 
       progress: 0, 
-      error: null ,
+      error: null 
     });
 
     try {
@@ -131,7 +131,7 @@ class LangChainServiceLogic {
       const response = await fetch('/api/legal-processing', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           text,
@@ -169,7 +169,7 @@ class LangChainServiceLogic {
         result: null,
         error: error instanceof Error ? error.message: 'Document processing failed',
         sessionId: null,
-        documentId: null,
+        documentId: null
       });
     }
   }
@@ -180,7 +180,7 @@ class LangChainServiceLogic {
     documentProcessingState.update(state => ({ 
       ...state, 
       isProcessing: true, 
-      error: null ,
+      error: null 
     });
 
     try {
@@ -206,7 +206,7 @@ class LangChainServiceLogic {
           contractTerms: [],
           processingTime: 0,
           cacheHit: true,
-          sessionId: sessionData.id,
+          sessionId: sessionData.id
         } : null
       });
 
@@ -214,7 +214,7 @@ class LangChainServiceLogic {
       documentProcessingState.update(state => ({
         ...state,
         isProcessing: false,
-        error: error instanceof Error ? error.message: 'Failed to load session',
+        error: error instanceof Error ? error.message: 'Failed to load session'
       });
     }
   }
@@ -224,7 +224,7 @@ class LangChainServiceLogic {
 
     try {
       const response = await fetch(`/api/legal-processing/${documentId}`, {
-        method: 'DELETE',
+        method: 'DELETE'
       });
 
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).ok) {
@@ -237,7 +237,7 @@ class LangChainServiceLogic {
           return {
             ...state,
             result: null,
-            documentId: null,
+            documentId: null
           };
         }
         return state;
@@ -246,7 +246,7 @@ class LangChainServiceLogic {
     } catch (error) {
       documentProcessingState.update(state => ({
         ...state,
-        error: error instanceof Error ? error.message: 'Failed to delete document',
+        error: error instanceof Error ? error.message: 'Failed to delete document'
       });
     }
   }
@@ -256,7 +256,7 @@ class LangChainServiceLogic {
       ...state, 
       messages: [...state.messages, { role: 'user', content: message }],
       isTyping: true,
-      error: null ,
+      error: null 
     });
 
     try {
@@ -266,14 +266,14 @@ class LangChainServiceLogic {
       chatState.update(state => ({
         ...state,
         messages: [...state.messages, { role: 'assistant', content: (response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).summary }],
-        isTyping: false,
+        isTyping: false
       });
 
     } catch (error) {
       chatState.update(state => ({
         ...state,
         isTyping: false,
-        error: error instanceof Error ? error.message: 'Chat message failed',
+        error: error instanceof Error ? error.message: 'Chat message failed'
       });
     }
   }
@@ -283,7 +283,7 @@ class LangChainServiceLogic {
       isProcessing: false,
       progress: 0,
       result: null,
-      error: null,
+      error: null
     });
   }
 
@@ -291,7 +291,7 @@ class LangChainServiceLogic {
     chatState.set({
       messages: [],
       isTyping: false,
-      error: null,
+      error: null
     });
   }
 }
@@ -301,15 +301,15 @@ export const langchainServiceLogic = new LangChainServiceLogic();
 
 // Read-only stores for UI consumption;
 export const langchainService: Readable<LangChainState> = {
-  subscribe: langchainState.subscribe,
+  subscribe: langchainState.subscribe
 };
 
 export const documentProcessing: Readable<DocumentProcessingState> = {
-  subscribe: documentProcessingState.subscribe,
+  subscribe: documentProcessingState.subscribe
 };
 
 export const chatService: Readable<ChatState> = {
-  subscribe: chatState.subscribe,
+  subscribe: chatState.subscribe
 };
 
 // Derived computed states

@@ -24,7 +24,7 @@ export class RabbitMQServiceWorker {
     messagesProcessed: 0,
     errors: 0,
     startTime: Date.now(),
-    avgProcessingTime: 0,
+    avgProcessingTime: 0
   };
 
   constructor(config: ServiceWorkerConfig = {}) {
@@ -32,7 +32,7 @@ export class RabbitMQServiceWorker {
       enableLogging: config.enableLogging ?? true,
       maxRetries: config.maxRetries ?? 3,
       processingTimeout: config.processingTimeout ?? 30000,
-      enableN64Logging: config.enableN64Logging ?? false,
+      enableN64Logging: config.enableN64Logging ?? false
     };
   }
 
@@ -141,7 +141,7 @@ export class RabbitMQServiceWorker {
           handler(message, originalMessage),
           new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Processing timeout')), this.config.processingTimeout)
-          ),
+          )
         ]);
 
         const processingTime = Date.now() - startTime;
@@ -175,7 +175,7 @@ export class RabbitMQServiceWorker {
       await publishToQueue({}.VECTOR_EMBEDDING, {
         ...message,
         stage: 'embedding_ready',
-        processedAt: Date.now(),
+        processedAt: Date.now()
       });
     });
 
@@ -191,7 +191,7 @@ export class RabbitMQServiceWorker {
           evidenceId: message.evidenceId,
           fileName: message.fileName,
           stage: 'analysis_ready',
-          cudaAccelerated: message.cudaAccelerated || false,
+          cudaAccelerated: message.cudaAccelerated || false
         });
       }
     });
@@ -206,7 +206,7 @@ export class RabbitMQServiceWorker {
       await publishToQueue({}.SEARCH_INDEXING, {
         ...message,
         embeddings: 'generated',
-        stage: 'indexing_ready',
+        stage: 'indexing_ready'
       });
     });
 
@@ -224,8 +224,8 @@ export class RabbitMQServiceWorker {
         insights: {
           confidence: 0.85,
           keyEntities: ['contract', 'signature', 'date'],
-          summary: 'Legal document analysis completed',
-        },
+          summary: 'Legal document analysis completed'
+        }
       });
     });
 
@@ -282,7 +282,7 @@ export class RabbitMQServiceWorker {
     return {
       ...this.processingStats,
       uptime: Date.now() - this.processingStats.startTime,
-      isRunning: this.isRunning,
+      isRunning: this.isRunning
     };
   }
 
@@ -296,7 +296,7 @@ export class RabbitMQServiceWorker {
     return {
       status: this.isRunning && rabbitmqHealth.status === 'healthy' ? 'healthy' : 'unhealthy',
       stats,
-      rabbitmq: rabbitmqHealth,
+      rabbitmq: rabbitmqHealth
     };
   }
 
@@ -311,7 +311,7 @@ export class RabbitMQServiceWorker {
         {
           ...message,
           publishedAt: Date.now(),
-          workerVersion: '1.0.0',
+          workerVersion: '1.0.0'
         }
       );
 

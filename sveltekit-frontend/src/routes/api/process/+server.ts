@@ -11,9 +11,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = await fetch(`${GO_MICROSERVICE_URL}/api/process`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(documentRequest),
+      body: JSON.stringify(documentRequest)
     });
 
     if (!response.ok) {
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
         success: false,
         message: `Processing failed: ${error.message}`,
-        error: error.message,
+        error: error.message
       },)
       { status: 500 }
     );

@@ -63,7 +63,7 @@ async function* streamQLoRAResponse(
         minAccuracy: accuracyTarget * 0.9,
         maxLatency: 5000,
         memoryBudget: 512,
-        qualityLevel: 'production',
+        qualityLevel: 'production'
       },
       context: {
         userSession: { userId: 'websocket_user', sessionId: 'ws_session', preferences: Record<string, any> } as any,
@@ -83,15 +83,15 @@ async function* streamQLoRAResponse(
           compressed: false,
           metadata: {
             caseId: 'websocket_session',
-            aiGenerated: true,
-          },
+            aiGenerated: true
+          }
         },
         renderingNeeded: streamBinary,
-        realTimeRequired: true,
+        realTimeRequired: true
       },
       metadata: {
         timestamp: Date.now(),
-        clientCapabilities: { webgpu: true, streaming: true },
+        clientCapabilities: { webgpu: true, streaming: true }
       },
       cachePreferences: {
         enableMultiTierCache: true,
@@ -100,7 +100,7 @@ async function* streamQLoRAResponse(
         enableRabbitMQCache: false,
         cacheStrategy: 'adaptive',
         maxLatencyMs: 5000,
-        minAccuracyThreshold: accuracyTarget * 0.9,
+        minAccuracyThreshold: accuracyTarget * 0.9
       },
       optimization: {
         predictiveAccuracy: 0.75,
@@ -108,8 +108,8 @@ async function* streamQLoRAResponse(
         learningRate: 0.05,
         useReinforcementLearning: true,
         useWebGPUAcceleration: true,
-        useAsyncOrchestration: true,
-      },
+        useAsyncOrchestration: true
+      }
     });
 
     const processingTime = Date.now() - startTime;
@@ -130,14 +130,14 @@ async function* streamQLoRAResponse(
         topology: {
           nodes: (result as any).topology?.nodes || 10,
           edges: (result as any).topology?.edges || 15,
-          connectivity: (result as any).topology?.connectivity || 0.75,
-        },
+          connectivity: (result as any).topology?.connectivity || 0.75
+        }
       },
       accuracy: (result as any).accuracy,
       topology: {
         structure: (result as any).topology?.structure || 'hierarchical',
         complexity: (result as any).topology?.complexity || 0.68,
-        patternMatch: (result as any).topology?.patternMatch || 0.82,
+        patternMatch: (result as any).topology?.patternMatch || 0.82
       },
       cacheHit: (result as { cacheMetrics?: any }).cacheMetrics.totalCacheHitRate > 0,
       processingTime,
@@ -148,14 +148,14 @@ async function* streamQLoRAResponse(
         cacheEfficiency: cacheStats.hitRate,
         tensorOperations: 45000,
         memoryUsage: 128,
-        gpuUtilization: metrics.webgpuEnabled ? 85 : 0,
+        gpuUtilization: metrics.webgpuEnabled ? 85 : 0
       },
       binaryMetadata: {
         compressionRatio: 1,
         originalSize: 0,
         compressedSize: 0,
-        encoding: 'gzip',
-      },
+        encoding: 'gzip'
+      }
     };
 
     if (streamBinary) {
@@ -168,7 +168,7 @@ async function* streamQLoRAResponse(
       // Update metadata;
       qloraResponse.binaryMetadata = {
         ...compressionStats,
-        encoding: 'gzip',
+        encoding: 'gzip'
       };
 
       yield {
@@ -179,8 +179,8 @@ async function* streamQLoRAResponse(
           originalSize: compressionStats.originalSize,
           compressedSize: compressionStats.compressedSize,
           cacheHit: (result as { cacheMetrics?: any }).cacheMetrics.totalCacheHitRate > 0,
-          processingTime,
-        },
+          processingTime
+        }
       };
     } else {
       // Stream as JSON tokens for demonstration
@@ -197,20 +197,20 @@ async function* streamQLoRAResponse(
     yield {
       type: 'end',
       message: 'QLoRA processing complete',
-      metadata: { accuracy: (result as any).accuracy, processingTime },
+      metadata: { accuracy: (result as any).accuracy, processingTime }
     };
   } catch (error: any) {
     console.error('[WebSocket] QLoRA streaming error:', error);
     yield {
       type: 'error',
-      message: `QLoRA processing failed: ${(error as any)?.message || 'Unknown error'}`,
+      message: `QLoRA processing failed: ${(error as any)?.message || 'Unknown error'}`
     };
   }
 }
 
 export function createWebSocketServer() {
   console.log('🚀 Creating Binary QLoRA WebSocket server...');
-  const wss = new WebSocketServer({ noServer: true ,});
+  const wss = new WebSocketServer({ noServer: true });
 
   wss.on('connection', (ws: WebSocket, request: IncomingMessage) => {
     console.log('🔌 WebSocket client connected');
@@ -228,7 +228,7 @@ export function createWebSocketServer() {
             // Send binary data directly;
             ws.send(JSON.stringify({
                 type: 'binary_metadata',
-                metadata: event.metadata,
+                metadata: event.metadata
               })
             );
             ws.send(event.data);
@@ -241,7 +241,7 @@ export function createWebSocketServer() {
         console.error('[WebSocket] Message processing error:', error);
         ws.send(JSON.stringify({
             type: 'error',
-            message: 'Failed to process request: ' + error.message,
+            message: 'Failed to process request: ' + error.message
           })
         );
       }
@@ -258,7 +258,7 @@ export function createWebSocketServer() {
     // Send welcome message;
     ws.send(JSON.stringify({
         type: 'status',
-        message: 'Connected to Binary QLoRA WebSocket server',
+        message: 'Connected to Binary QLoRA WebSocket server'
       })
     );
   });

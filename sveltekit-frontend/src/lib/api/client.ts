@@ -102,7 +102,7 @@ class EnhancedApiClient {
             ...this.config.defaultHeaders,
             ...options.headers
           },
-          signal: abortController.signal,
+          signal: abortController.signal
         };
         
         if (data) {
@@ -130,7 +130,7 @@ class EnhancedApiClient {
         if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
           const errorData = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json().catch(() => ({
             message: `HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}: ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).statusText}`,
-            code: 'HTTP_ERROR',
+            code: 'HTTP_ERROR'
           });
           
           throw new ApiClientError(
@@ -330,7 +330,7 @@ export const api = {
     list: (params: RequestOf<CaseAPI.List>) => apiClient.listCases(params),
     create: (data: RequestOf<CaseAPI.Create>) => apiClient.createCase(data),
     update: (id: string, data: RequestOf<CaseAPI.Update>) => apiClient.updateCase(id, data),
-    get: (id: string) => apiClient.getCase(id),
+    get: (id: string) => apiClient.getCase(id)
   },
   evidence: {
     list: (params: RequestOf<EvidenceAPI.List>) => apiClient.listEvidence(params),
@@ -340,10 +340,10 @@ export const api = {
     delete: (id: string, reason?: string) => apiClient.deleteEvidence(id, reason)
   },
   ai: {
-    chat: (data: RequestOf<ChatAPI.Chat>) => apiClient.chat(data),
+    chat: (data: RequestOf<ChatAPI.Chat>) => apiClient.chat(data)
   },
   vectorSearch: {
-    search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data),
+    search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data)
   },
   health: {
     check: (detailed = false) => apiClient.healthCheck(detailed),

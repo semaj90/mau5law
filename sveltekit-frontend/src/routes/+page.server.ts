@@ -14,7 +14,7 @@ interface SystemHealth {
     healthScore: number;
     healthyServices: number;
     totalServices: number;
-    timestamp: string;,
+    timestamp: string;
   };
   services: {
     databases: Record<string, { host: string; port: number; status: string }>;
@@ -29,7 +29,7 @@ interface SystemHealth {
       heapUsed: number;
       heapTotal: number;
       external: number;
-      rss: number;,
+      rss: number;
     };
   };
   architecture: {
@@ -38,7 +38,7 @@ interface SystemHealth {
     gpuArchitecture: string;
     microservices: number;
     protocols: string[];
-    features: string[];,
+    features: string[];
   };
 }
 
@@ -49,7 +49,7 @@ interface SystemInfo {
   gpuInfo: string;
   memoryUsage: string;
   nodeVersion: string;
-  uptime: number;,
+  uptime: number;
 }
 
 export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
@@ -63,7 +63,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
     userId: locals.session?.user?.id ?? null,
     sessionId: locals.session?.id ?? null,
     email: locals.session?.user?.email ?? null,
-    isAuthenticated: !!locals.session?.user,
+    isAuthenticated: !!locals.session?.user
   };
 
   try {
@@ -74,7 +74,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         healthScore: 100,
         healthyServices: 8,
         totalServices: 8,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       services: {
         databases: { postgres: { host: 'localhost', port: 5432, status: 'mocked' } },
@@ -89,7 +89,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
           heapUsed: 50 * 1024 * 1024,
           heapTotal: 100 * 1024 * 1024,
           external: 10 * 1024 * 1024,
-          rss: 200 * 1024 * 1024,
+          rss: 200 * 1024 * 1024
         }
       },
       architecture: {
@@ -109,7 +109,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       gpuInfo: 'RTX 3060 Ti (8GB VRAM)',
       memoryUsage: '16GB',
       nodeVersion: '22.17.1',
-      uptime: Date.now() - 1000 * 60 * 60,
+      uptime: Date.now() - 1000 * 60 * 60
     };
 
     // Initialize server-only cognitive subsystems (lightweight stubs)
@@ -125,7 +125,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       gpuUtilization: physicsAwareGPUOrchestrator.getGPUUtilization() * 100,
       consciousnessLevel: 12,
       quantumCoherence: 50,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     // Dashboard metrics - simulated for demo (augmented with cognitive metrics);
@@ -134,32 +134,32 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       evidenceItems: 1337,
       aiAnalyses: 89,
       systemUptime: systemHealth?.performance.systemUptime || 0,
-      cognitive: cognitiveMetrics,
+      cognitive: cognitiveMetrics
     };
 
     // Recent activities - YoRHa themed data
-    const recentActivities = [;
+    const recentActivities = [
       {
         id: '001',
         type: 'case_created',
         title: 'Corporate Espionage Investigation',
         timestamp: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
-        priority: 'high',
+        priority: 'high'
       },
       {
         id: '002',
         type: 'evidence_uploaded',
         title: 'Financial Records - Anomaly Detected',
         timestamp: new Date(Date.now() - 1000 * 60 * 45), // 45 minutes ago
-        priority: 'medium',
+        priority: 'medium'
       },
       {
         id: '003',
         type: 'ai_analysis',
         title: 'Pattern Recognition Complete',
         timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago
-        priority: 'low',
-      },
+        priority: 'low'
+      }
     ];
 
     return {
@@ -174,7 +174,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       metrics: cognitiveMetrics,
 
       // Meta information
-      loadedAt: new Date().toISOString(),
+      loadedAt: new Date().toISOString()
     };
   } catch (err) {
     console.error('Failed to load dashboard data:', err);
@@ -188,11 +188,11 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         activeCases: 0,
         evidenceItems: 0,
         aiAnalyses: 0,
-        systemUptime: 0,
+        systemUptime: 0
       },
       recentActivities: [],
       loadedAt: new Date().toISOString(),
-      error: 'Failed to load system data',
+      error: 'Failed to load system data'
     };
   }
 };
@@ -218,7 +218,7 @@ export const actions: Actions = {
 
     try {
       // Mock case creation - in real app would call API
-      await new Promise(resolve => setTimeout(resolve, 500); // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
 
       return {
         success: true,
@@ -227,14 +227,14 @@ export const actions: Actions = {
           title,
           priority,
           status: 'open',
-          created_at: new Date().toISOString(),
-        },
+          created_at: new Date().toISOString()
+        }
       };
     } catch (err) {
       console.error('Case creation failed:', err);
       return fail(500, {
         title,
-        error: 'Failed to create case. Please try again.',
+        error: 'Failed to create case. Please try again.'
       });
     }
   },
@@ -249,13 +249,13 @@ export const actions: Actions = {
 
       return {
         success: true,
-        refreshedAt: new Date().toISOString(),
+        refreshedAt: new Date().toISOString()
       };
     } catch (err) {
       console.error('System refresh failed:', err);
       return fail(500, {
-        error: 'Failed to refresh system status.',
+        error: 'Failed to refresh system status.'
       });
     }
-  },
+  }
 };

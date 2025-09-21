@@ -15,7 +15,7 @@ const determinismEvaluationService = {
       accuracy: 0.95,
       responseTime: 250,
       determinismScore: 0.87,
-      consistency: 0.92,
+      consistency: 0.92
     };
   },
 
@@ -33,7 +33,7 @@ const determinismEvaluationService = {
       temperature: 0.1,
       maxTokens: 2048,
       seed: 12345,
-      model: 'gemma3-legal',
+      model: 'gemma3-legal'
     };
   },
 
@@ -50,7 +50,7 @@ const determinismEvaluationService = {
       features: {
         queryComplexity: 0.7,
         contextRelevance: 0.8,
-        responseCoherence: 0.9,
+        responseCoherence: 0.9
       }
     };
   }
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
           response: data.response,
           rating: data.rating,
           feedback: data.feedback,
-          metadata: data.metadata,
+          metadata: data.metadata
         });
         return json({ success: true, feedbackId, message: "User feedback recorded successfully" });
 
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
           score: data.score,
           duration: data.duration,
           details: data.details,
-          agentInvolved: data.agentInvolved,
+          agentInvolved: data.agentInvolved
         });
         return json({ success: true, testId, message: "Test result recorded successfully" });
 
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request }) => {
           context: data.context,
           agentChain: data.agentChain,
           responseTime: data.responseTime,
-          userRating: data.userRating,
+          userRating: data.userRating
         });
         return json({ success: true, features });
 

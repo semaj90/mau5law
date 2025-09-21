@@ -65,7 +65,7 @@ export const cases = pgTable(
     // Audit fields
     createdBy: uuid('created_by'),
     modifiedBy: uuid('modified_by'),
-    version: integer('version').notNull().default(1),
+    version: integer('version').notNull().default(1)
   },
   (table) => ({
     caseNumberIdx: uniqueIndex('cases_case_number_idx').on(table.caseNumber),
@@ -73,7 +73,7 @@ export const cases = pgTable(
     priorityIdx: index('cases_priority_idx').on(table.priority),
     detectiveModeIdx: index('cases_detective_mode_idx').on(table.detectiveMode),
     dateCreatedIdx: index('cases_date_created_idx').on(table.dateCreated),
-    assignedToIdx: index('cases_assigned_to_idx').on(table.assignedTo),
+    assignedToIdx: index('cases_assigned_to_idx').on(table.assignedTo)
   })
 );
 
@@ -144,7 +144,7 @@ export const evidence = pgTable(
     
     // Audit fields
     createdBy: uuid('created_by'),
-    modifiedBy: uuid('modified_by'),
+    modifiedBy: uuid('modified_by')
   },
   (table) => ({
     caseIdIdx: index('evidence_case_id_idx').on(table.caseId),
@@ -153,7 +153,7 @@ export const evidence = pgTable(
     analyzedIdx: index('evidence_analyzed_idx').on(table.analyzed),
     dateCreatedIdx: index('evidence_date_created_idx').on(table.dateCreated),
     confidentialityIdx: index('evidence_confidentiality_idx').on(table.confidentialityLevel),
-    checksumIdx: index('evidence_checksum_idx').on(table.checksum),
+    checksumIdx: index('evidence_checksum_idx').on(table.checksum)
   })
 );
 
@@ -200,7 +200,7 @@ export const caseTimeline = pgTable(
     caseIdIdx: index('timeline_case_id_idx').on(table.caseId),
     eventDateIdx: index('timeline_event_date_idx').on(table.eventDate),
     eventTypeIdx: index('timeline_event_type_idx').on(table.eventType),
-    importanceIdx: index('timeline_importance_idx').on(table.importance),
+    importanceIdx: index('timeline_importance_idx').on(table.importance)
   })
 );
 
@@ -259,14 +259,14 @@ export const citations = pgTable(
     
     // Audit
     createdBy: uuid('created_by'),
-    modifiedBy: uuid('modified_by'),
+    modifiedBy: uuid('modified_by')
   },
   (table) => ({
     caseIdIdx: index('citations_case_id_idx').on(table.caseId),
     citationTypeIdx: index('citations_type_idx').on(table.citationType),
     relevanceIdx: index('citations_relevance_idx').on(table.relevanceScore),
     verifiedIdx: index('citations_verified_idx').on(table.verified),
-    publicationDateIdx: index('citations_pub_date_idx').on(table.publicationDate),
+    publicationDateIdx: index('citations_pub_date_idx').on(table.publicationDate)
   })
 );
 
@@ -322,14 +322,14 @@ export const caseNotes = pgTable(
     
     // Audit
     createdBy: uuid('created_by'),
-    modifiedBy: uuid('modified_by'),
+    modifiedBy: uuid('modified_by')
   },
   (table) => ({
     caseIdIdx: index('notes_case_id_idx').on(table.caseId),
     noteTypeIdx: index('notes_type_idx').on(table.noteType),
     statusIdx: index('notes_status_idx').on(table.status),
     priorityIdx: index('notes_priority_idx').on(table.priority),
-    dateCreatedIdx: index('notes_date_created_idx').on(table.dateCreated),
+    dateCreatedIdx: index('notes_date_created_idx').on(table.dateCreated)
   })
 );
 
@@ -338,40 +338,40 @@ export const casesRelations = relations(cases, ({ many }) => ({
   evidence: many(evidence),
   timeline: many(caseTimeline),
   citations: many(citations),
-  notes: many(caseNotes),
+  notes: many(caseNotes)
 });
 
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
-  timelineEvents: many(caseTimeline),
+  timelineEvents: many(caseTimeline)
 });
 
 export const timelineRelations = relations(caseTimeline, ({ one }) => ({
   case: one(cases, {
     fields: [caseTimeline.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   evidence: one(evidence, {
     fields: [caseTimeline.evidenceId],
-    references: [evidence.id],
-  }),
+    references: [evidence.id]
+  })
 });
 
 export const citationsRelations = relations(citations, ({ one }) => ({
   case: one(cases, {
     fields: [citations.caseId],
-    references: [cases.id],
-  }),
+    references: [cases.id]
+  })
 });
 
 export const notesRelations = relations(caseNotes, ({ one }) => ({
   case: one(cases, {
     fields: [caseNotes.caseId],
-    references: [cases.id],
-  }),
+    references: [cases.id]
+  })
 });
 
 // Export all types for use in application

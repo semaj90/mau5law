@@ -212,7 +212,7 @@ export function getCategoryDisplayName(category: string): string {
     precedents: 'Precedents',
     statutes: 'Statutes',
     criminals: 'Persons',
-    documents: 'Documents',
+    documents: 'Documents'
   };
 
   return displayNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
@@ -224,7 +224,7 @@ export function getCategoryDisplayName(category: string): string {
 export function validateSearchQuery(query: string): {
   isValid: boolean;
   errors: string[];
-  suggestions: string[];,
+  suggestions: string[];
 } {
   const errors: string[] = [];
   const suggestions: string[] = [];

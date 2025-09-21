@@ -33,7 +33,7 @@ const vector = customType({
   },
   toDriver(value: number[]): string {
     return `[${value.join(',')}]`;
-  },
+  }
 });
 import { relations } from 'drizzle-orm/relations';
 
@@ -96,14 +96,14 @@ export const sessions = pgTable("sessions", {
     .references(() => users.id, { onDelete: "cascade" }),
   expiresAt: timestamp("expires_at", {
     withTimezone: true,
-    mode: "date",
+    mode: "date"
   }).notNull(),
   ipAddress: varchar("ip_address", { length: 45 }),
   userAgent: text("user_agent"),
   sessionContext: jsonb("session_context").default({}),
   createdAt: timestamp("created_at", {
     withTimezone: true,
-    mode: "date",
+    mode: "date"
   }).defaultNow().notNull()
 });
 
@@ -185,7 +185,7 @@ export const evidence = pgTable(
 
     // Timestamps
     createdAt: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull()
   },
   (table) => ({
     // Indexes for performance
@@ -201,7 +201,7 @@ export const evidence = pgTable(
     contentEmbeddingIdx: index('evidence_content_embedding_idx').using(
       'hnsw',
       table.contentEmbedding.op('vector_cosine_ops')
-    ),
+    )
   })
 );
 
@@ -229,7 +229,7 @@ export const documentMetadata = pgTable("document_metadata", {
   filenameIdx: index("doc_metadata_filename_idx").on(table.originalFilename),
   statusIdx: index("doc_metadata_status_idx").on(table.processingStatus),
   typeIdx: index("doc_metadata_type_idx").on(table.documentType),
-  priorityIdx: index("doc_metadata_priority_idx").on(table.priority),
+  priorityIdx: index("doc_metadata_priority_idx").on(table.priority)
 });
 
 // === VECTOR TABLES FOR ENHANCED SEARCH ===
@@ -284,7 +284,7 @@ export const caseActivities = pgTable("case_activities", {
 }, (table) => ({
   caseIdIdx: index("case_activities_case_id_idx").on(table.caseId),
   userIdIdx: index("case_activities_user_id_idx").on(table.userId),
-  createdAtIdx: index("case_activities_created_at_idx").on(table.createdAt),
+  createdAtIdx: index("case_activities_created_at_idx").on(table.createdAt)
 });
 
 // === CHAT RECOMMENDATION TABLES ===
@@ -298,7 +298,7 @@ export const chatSessions = pgTable("chat_sessions", {
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull();
 }, (table) => ({
-  userIdIdx: index("chat_sessions_user_id_idx").on(table.userId),
+  userIdIdx: index("chat_sessions_user_id_idx").on(table.userId)
 });
 
 export const chatMessages = pgTable("chat_messages", {
@@ -328,7 +328,7 @@ export const chatRecommendations = pgTable("chat_recommendations", {
 }, (table) => ({
   userIdIdx: index("chat_recommendations_user_id_idx").on(table.userId),
   messageIdIdx: index("chat_recommendations_message_id_idx").on(table.messageId),
-  confidenceIdx: index("chat_recommendations_confidence_idx").on(table.confidence),
+  confidenceIdx: index("chat_recommendations_confidence_idx").on(table.confidence)
 });
 
 // === RELATIONS ===
@@ -339,55 +339,55 @@ export const usersRelations = relations(users, ({ many }) => ({
   evidence: many(evidence),
   caseActivities: many(caseActivities),
   chatSessions: many(chatSessions),
-  chatRecommendations: many(chatRecommendations),
+  chatRecommendations: many(chatRecommendations)
 });
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   user: one(users, {
     fields: [cases.userId],
-    references: [users.id],
+    references: [users.id]
   }),
   evidence: many(evidence),
   activities: many(caseActivities),
-  embeddings: many(caseEmbeddings),
+  embeddings: many(caseEmbeddings)
 });
 
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id],
+    references: [cases.id]
   }),
   user: one(users, {
     fields: [evidence.userId],
-    references: [users.id],
+    references: [users.id]
   }),
-  documentEmbeddings: many(documentEmbeddings),
+  documentEmbeddings: many(documentEmbeddings)
 });
 
 export const chatSessionsRelations = relations(chatSessions, ({ one, many }) => ({
   user: one(users, {
     fields: [chatSessions.userId],
-    references: [users.id],
+    references: [users.id]
   }),
-  messages: many(chatMessages),
+  messages: many(chatMessages)
 });
 
 export const chatMessagesRelations = relations(chatMessages, ({ one, many }) => ({
   session: one(chatSessions, {
     fields: [chatMessages.sessionId],
-    references: [chatSessions.id],
+    references: [chatSessions.id]
   }),
-  recommendations: many(chatRecommendations),
+  recommendations: many(chatRecommendations)
 });
 
 export const chatRecommendationsRelations = relations(chatRecommendations, ({ one }) => ({
   user: one(users, {
     fields: [chatRecommendations.userId],
-    references: [users.id],
+    references: [users.id]
   }),
   message: one(chatMessages, {
     fields: [chatRecommendations.messageId],
-    references: [chatMessages.id],
+    references: [chatMessages.id]
   })
 });
 

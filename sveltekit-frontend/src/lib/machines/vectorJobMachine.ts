@@ -32,7 +32,7 @@ export interface VectorJobContext {
 	
 	// WebGPU fallback
 	useWebGPU: boolean;
-	webGPUAvailable: boolean;,
+	webGPUAvailable: boolean;
 }
 
 export type VectorJobEvent =
@@ -63,13 +63,13 @@ const vectorJobServices = {
 				...context.payload
 			},
 			priority: context.priority,
-			use_webgpu_fallback: context.useWebGPU,
+			use_webgpu_fallback: context.useWebGPU
 		};
 
 		const response = await fetch('/api/v1/vector/jobs', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(jobData),
+			body: JSON.stringify(jobData)
 		});
 
 		if (!response.ok) {
@@ -105,7 +105,7 @@ const vectorJobServices = {
 				operation: context.operation,
 				data: context.inputData,
 				vector: context.vector,
-				payload: context.payload,
+				payload: context.payload
 			})
 		});
 
@@ -146,7 +146,7 @@ const vectorJobServices = {
 export const vectorJobMachine = createMachine({
 	types: {
 		context: Record<string, any> as VectorJobContext,
-		events: Record<string, any> as VectorJobEvent,
+		events: Record<string, any> as VectorJobEvent
 	},
 	
 	id: 'vectorJob',
@@ -162,7 +162,7 @@ export const vectorJobMachine = createMachine({
 		attempts: 0,
 		maxAttempts: 3,
 		useWebGPU: false,
-		webGPUAvailable: false,
+		webGPUAvailable: false
 	},
 
 	states: {
@@ -180,7 +180,7 @@ export const vectorJobMachine = createMachine({
 						startTime: new Date(),
 						attempts: 0,
 						error: undefined,
-						result: undefined,
+						result: undefined
 					})
 				}
 			}
@@ -194,13 +194,13 @@ export const vectorJobMachine = createMachine({
 				onDone: {
 					target: 'queued',
 					actions: assign(({ event }) => ({
-						jobId: event.output.job_id,
+						jobId: event.output.job_id
 					})
 				},
 				onError: {
 					target: 'failed',
 					actions: assign(({ event }) => ({
-						error: (event as any).error?.message || 'Failed to submit job',
+						error: (event as any).error?.message || 'Failed to submit job'
 					})
 				}
 			}
@@ -210,7 +210,7 @@ export const vectorJobMachine = createMachine({
 			entry: [
 				// Check WebGPU availability;
 				assign(() => ({
-					webGPUAvailable: typeof navigator !== 'undefined' && 'gpu' in navigator,
+					webGPUAvailable: typeof navigator !== 'undefined' && 'gpu' in navigator
 				})
 			],
 			
@@ -223,7 +223,7 @@ export const vectorJobMachine = createMachine({
 					actions: assign(({ event }) => ({
 						result: event.output,
 						endTime: new Date(),
-						processingTimeMs: Date.now() - (new Date().getTime(),
+						processingTimeMs: Date.now() - (new Date().getTime()
 					})
 				},
 				onError: [;
@@ -237,14 +237,14 @@ export const vectorJobMachine = createMachine({
 						guard: ({ context }) => context.attempts < context.maxAttempts,
 						actions: assign(({ context, event }) => ({
 							attempts: context.attempts + 1,
-							error: (event as any).error?.message || 'Processing failed',
+							error: (event as any).error?.message || 'Processing failed'
 						})
 					},
 					{
 						target: 'failed',
 						actions: assign(({ event }) => ({
 							error: (event as any).error?.message || 'Job processing failed after max retries',
-							endTime: new Date(),
+							endTime: new Date()
 						})
 					}
 				]
@@ -252,7 +252,7 @@ export const vectorJobMachine = createMachine({
 
 			on: {
 				PROCESSING_STARTED: 'processing',
-				CANCEL: 'cancelled',
+				CANCEL: 'cancelled'
 			}
 		},
 
@@ -261,7 +261,7 @@ export const vectorJobMachine = createMachine({
 				CUDA_PROCESSING: {
 					actions: assign(({ event }) => ({
 						// Store CUDA processing updates
-						cudaResponse: event,
+						cudaResponse: event
 					})
 				},
 				WEBGPU_FALLBACK: 'webgpuFallback',
@@ -270,7 +270,7 @@ export const vectorJobMachine = createMachine({
 					actions: assign(({ event }) => ({
 						result: event.result,
 						endTime: new Date(),
-						processingTimeMs: Date.now() - (new Date().getTime(),
+						processingTimeMs: Date.now() - (new Date().getTime()
 					})
 				},
 				PROCESSING_FAILED: {
@@ -278,10 +278,10 @@ export const vectorJobMachine = createMachine({
 					guard: ({ context }) => context.attempts < context.maxAttempts,
 					actions: assign(({ context, event }) => ({
 						attempts: context.attempts + 1,
-						error: event.error,
+						error: event.error
 					})
 				},
-				CANCEL: 'cancelled',
+				CANCEL: 'cancelled'
 			}
 		},
 
@@ -297,20 +297,20 @@ export const vectorJobMachine = createMachine({
 					actions: assign(({ event }) => ({
 						result: event.output,
 						endTime: new Date(),
-						processingTimeMs: Date.now() - (new Date().getTime(),
+						processingTimeMs: Date.now() - (new Date().getTime()
 					})
 				},
 				onError: {
 					target: 'failed',
 					actions: assign(({ event }) => ({
 						error: `WebGPU fallback failed: ${(event as any).error?.message}`,
-						endTime: new Date(),
+						endTime: new Date()
 					})
 				}
 			},
 
 			on: {
-				CANCEL: 'cancelled',
+				CANCEL: 'cancelled'
 			}
 		},
 
@@ -319,14 +319,14 @@ export const vectorJobMachine = createMachine({
 				2000: {
 					target: 'submitting',
 					actions: assign(() => ({
-						error: undefined,
+						error: undefined
 					})
 				}
 			},
 
 			on: {
 				RETRY: 'submitting',
-				CANCEL: 'cancelled',
+				CANCEL: 'cancelled'
 			}
 		},
 
@@ -346,7 +346,7 @@ export const vectorJobMachine = createMachine({
 								ownerId: context.ownerId,
 								result: context.result,
 								processingTime: context.processingTimeMs,
-								usedWebGPU: context.useWebGPU,
+								usedWebGPU: context.useWebGPU
 							}
 						});
 					}
@@ -354,7 +354,7 @@ export const vectorJobMachine = createMachine({
 			],
 
 			on: {
-				RESET: 'idle',
+				RESET: 'idle'
 			}
 		},
 
@@ -370,7 +370,7 @@ export const vectorJobMachine = createMachine({
 								jobId: context.jobId,
 								error: context.error,
 								attempts: context.attempts,
-								usedWebGPU: context.useWebGPU,
+								usedWebGPU: context.useWebGPU
 							}
 						});
 					}
@@ -383,7 +383,7 @@ export const vectorJobMachine = createMachine({
 					guard: ({ context }) => context.attempts < context.maxAttempts,
 					actions: assign(() => ({ error: undefined })
 				},
-				RESET: 'idle',
+				RESET: 'idle'
 			}
 		},
 
@@ -395,7 +395,7 @@ export const vectorJobMachine = createMachine({
 			],
 			
 			on: {
-				RESET: 'idle',
+				RESET: 'idle'
 			}
 		}
 	}

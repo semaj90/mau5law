@@ -19,7 +19,7 @@ class GPULiveProcessor {
       status: 'running',
       config,
       startTime: new Date(),
-      progress: 0,
+      progress: 0
     };
     
     this.processes.set(processId, process);
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const stopped = gpuProcessor.stopProcess(data.processId);
         return json({
           success: stopped,
-          message: stopped ? 'Process stopped' : 'Process not found',
+          message: stopped ? 'Process stopped' : 'Process not found'
         });
 
       case 'errors':
@@ -102,14 +102,14 @@ export const POST: RequestHandler = async ({ request }) => {
       default:;
         return json({
           success: false,
-          error: 'Invalid action',
+          error: 'Invalid action'
         }, { status: 400 });
     }
   } catch (error: any) {
     console.error('GPU Live Processing error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!process) {
         return json({
           success: false,
-          error: 'Process not found',
+          error: 'Process not found'
         }, { status: 404 });
       }
 
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('GPU Live Processing GET error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

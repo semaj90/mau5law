@@ -36,10 +36,10 @@ export interface FlashAttentionMulticoreResponse {
     confidence: {
       attention: number;
       multicore: number;
-      overall: number;,
+      overall: number;
     };
   };
-  performanceOptimizations: string[];,
+  performanceOptimizations: string[];
 }
 
 export interface ErrorAnalysisWithAttention {
@@ -63,7 +63,7 @@ export class FlashAttentionMulticoreBridge {
       enableGPU: true,
       enableLegalBert: true,
       enableGoLlama: true,
-      maxConcurrentTasks: 30,
+      maxConcurrentTasks: 30
     });
   }
 
@@ -178,7 +178,7 @@ export class FlashAttentionMulticoreBridge {
       context: 'TypeScript/Svelte error analysis with attention weights',
       errorType: 'compilation_errors',
       codeSnippet: errorText.substring(0, 1000),
-      priority: 'critical',
+      priority: 'critical'
     });
 
     const multicoreResult = await this.multicoreService.waitForTask(errorAnalysisTask.id, 30000);
@@ -258,7 +258,7 @@ export class FlashAttentionMulticoreBridge {
         context: 'Error analysis with FlashAttention2 integration',
         errorType: 'compilation_errors',
         codeSnippet: JSON.stringify(request.options.errorData).substring(0, 1000),
-        priority: request.options?.priority || 'high',
+        priority: request.options?.priority || 'high'
       });
       tasks.push(errorTask);
     }
@@ -276,14 +276,14 @@ export class FlashAttentionMulticoreBridge {
       context: {
         attentionWeights: Array.from(attentionResult.result.attentionWeights),
         legalAnalysis: attentionResult.legalAnalysis,
-        multicoreTaskCount: multicoreTasks.length,
+        multicoreTaskCount: multicoreTasks.length
       },
       options: {
         agents: ['claude', 'crewai'],
         priority: request.options?.priority || 'medium',
         analysisType: request.options?.analysisType === 'error_analysis' ? 'document_processing' : 'legal_research',
         useMulticoreAnalysis: true,
-        includeContext7: true,
+        includeContext7: true
       }
     };
 
@@ -428,7 +428,7 @@ export class FlashAttentionMulticoreBridge {
         error: errorStr.substring(0, 200),
         attention_score: attentionScore,
         fix_complexity: fixComplexity,
-        suggested_fix: suggestedFix,
+        suggested_fix: suggestedFix
       });
     });
 

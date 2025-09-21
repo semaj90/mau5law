@@ -6,7 +6,7 @@
 import type { ComponentType } from 'svelte';
 
 type LazyComponent<T extends Record<string, unknown> = {}> = {
-  default: ComponentType<T>;,
+  default: ComponentType<T>;
 };
 
 export function lazy<T extends Record<string, unknown> = {}>(

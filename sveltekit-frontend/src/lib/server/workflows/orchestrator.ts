@@ -55,8 +55,8 @@ class WorkflowOrchestrator {
       input: {
         documentId,
         content,
-        metadata,
-      },
+        metadata
+      }
     });
 
     const workflow: WorkflowInstance = {
@@ -74,8 +74,8 @@ class WorkflowOrchestrator {
       tags: ['document', 'processing', 'embeddings'],
       metadata: {
         documentId,
-        ...metadata,
-      },
+        ...metadata
+      }
     };
 
     this.workflows.set(workflowId, workflow);
@@ -91,7 +91,7 @@ class WorkflowOrchestrator {
       type: 'START_PROCESSING',
       documentId,
       content,
-      metadata,
+      metadata
     });
 
     workflow.status = 'running';
@@ -104,7 +104,7 @@ class WorkflowOrchestrator {
       type: 'WORKFLOW_STARTED',
       workflowId,
       payload: { type: 'document-processing', documentId },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     return workflowId;
@@ -142,8 +142,8 @@ class WorkflowOrchestrator {
         title,
         caseType,
         jurisdiction,
-        createdBy,
-      },
+        createdBy
+      }
     };
 
     this.workflows.set(workflowId, workflow);
@@ -161,7 +161,7 @@ class WorkflowOrchestrator {
       description,
       caseType,
       jurisdiction,
-      createdBy,
+      createdBy
     });
 
     workflow.status = 'running';
@@ -174,7 +174,7 @@ class WorkflowOrchestrator {
       type: 'WORKFLOW_STARTED',
       workflowId,
       payload: { type: 'legal-case-management', title, caseType },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     return workflowId;
@@ -200,7 +200,7 @@ class WorkflowOrchestrator {
         type: 'EVENT_SENT',
         workflowId,
         payload: event,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
       
       return true;
@@ -261,7 +261,7 @@ class WorkflowOrchestrator {
       type: 'WORKFLOW_PAUSED',
       workflowId,
       payload: Record<string, any>,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     return true;
@@ -281,7 +281,7 @@ class WorkflowOrchestrator {
       type: 'WORKFLOW_RESUMED',
       workflowId,
       payload: Record<string, any>,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     return true;
@@ -305,7 +305,7 @@ class WorkflowOrchestrator {
       type: 'WORKFLOW_CANCELLED',
       workflowId,
       payload: Record<string, any>,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     return true;
@@ -384,7 +384,7 @@ class WorkflowOrchestrator {
         type: 'WORKFLOW_COMPLETED',
         workflowId,
         payload: { finalContext: snapshot.context },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     } else if (snapshot.matches('error') || snapshot.matches('failed') || snapshot.matches('validationError') || snapshot.matches('creationError')) {
       workflow.status = 'failed';
@@ -393,7 +393,7 @@ class WorkflowOrchestrator {
         type: 'WORKFLOW_FAILED',
         workflowId,
         payload: { error: snapshot.context.errors },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     } else if (workflow.status === 'paused') {
       // Keep paused status;
@@ -408,9 +408,9 @@ class WorkflowOrchestrator {
       payload: { 
         progress: workflow.progress,
         stage: snapshot.context.processingStage || snapshot.context.workflowStage,
-        state: snapshot.value ,
+        state: snapshot.value 
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
     // Auto-persist on significant changes
@@ -482,7 +482,7 @@ class WorkflowOrchestrator {
       // Restore workflow;
       const workflow: WorkflowInstance = {
         ...cached,
-        actor,
+        actor
       };
 
       this.workflows.set(workflowId, workflow);
@@ -505,7 +505,7 @@ class WorkflowOrchestrator {
     byType: Record<string, number>;
     byStatus: Record<string, number>;
     averageProgress: number;
-    totalEvents: number;,
+    totalEvents: number;
   } {
     const workflows = this.getAllWorkflows();
     
@@ -524,7 +524,7 @@ class WorkflowOrchestrator {
       byType,
       byStatus,
       averageProgress: workflows.length > 0 ? totalProgress / workflows.length: 0,
-      totalEvents: this.eventQueue.length,
+      totalEvents: this.eventQueue.length
     };
   }
 

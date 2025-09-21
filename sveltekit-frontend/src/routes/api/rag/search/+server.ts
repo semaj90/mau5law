@@ -24,7 +24,7 @@ async function generateQueryEmbedding(
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: fastStringify({ text: query, model: model || 'embeddinggemma:latest', save: false }),
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(30000)
     });
 
     if (!resp.ok) {
@@ -79,7 +79,7 @@ async function vectorSearch(
         similarity:
           sql<number>`1 - (${embeddings.embedding} <=> ${fastStringify(queryEmbedding)}::vector)`.as(
             'similarity'
-          ),
+          )
       })
       .from(embeddings)
       .innerJoin(documents, eq(embeddings.documentId, documents.id)
@@ -143,7 +143,7 @@ async function textSearch(
         createdAt: documents.createdAt,
         rank: sql<number>`ts_rank(to_tsvector('english', ${documents.content}), plainto_tsquery('english', ${query}))`.as(
           'rank'
-        ),
+        )
       })
       .from(documents)
       .where(
@@ -174,7 +174,7 @@ async function textSearch(
       ...r,
       similarity: Math.min(r.rank * 2, 1.0),
       searchType: 'text',
-      score: r.rank,
+      score: r.rank
     });
   } catch (err: any) {
     console.error('Text search failed:', err);
@@ -187,7 +187,7 @@ async function textSearch(
           metadata: documents.metadata,
           confidence: documents.confidence,
           legalAnalysis: documents.legalAnalysis,
-          createdAt: documents.createdAt,
+          createdAt: documents.createdAt
         })
         .from(documents)
         .where(sql`${documents.content} ILIKE ${`%${query}%`}`)
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       confidenceMin,
       model,
       includeMetadata = true,
-      includeContent = true,
+      includeContent = true
     } = await readBodyFastWithMetrics(request);
 
     if (!query) return json({ error: 'Query is required' }, { status: 400 });
@@ -259,7 +259,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
           metadata: includeMetadata ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).metadata: undefined,
           legalAnalysis: includeMetadata ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).legalAnalysis: undefined,
           createdAt: (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).createdAt,
-          rank: results.indexOf(result) + 1,
+          rank: results.indexOf(result) + 1
         };
       })
       .sort((a, b) => b.score - a.score)
@@ -274,7 +274,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
           queryEmbedding,
           results: uniqueResults,
           searchType,
-          resultCount: uniqueResults.length,
+          resultCount: uniqueResults.length
         });
       } catch (e) {
         console.error('Failed to save search session:', e);
@@ -289,9 +289,9 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
         totalResults: uniqueResults.length,
         searchType,
         processingTime: `${processingTime}ms`,
-        hasEmbedding: !!queryEmbedding,
+        hasEmbedding: !!queryEmbedding
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     console.error('Enhanced RAG search error:', error);
@@ -300,7 +300,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
         error: 'Search failed',
         details: error instanceof Error ? error.message: 'Unknown error',
         query: 'unknown',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -323,9 +323,9 @@ export const GET: RequestHandler = async ({ url }) => {
           database: {
             connected: true,
             documentsCount: dbTest[0]?.count || 0,
-            responseTime: `${processingTime}ms`,
+            responseTime: `${processingTime}ms`
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       }
 
@@ -333,13 +333,13 @@ export const GET: RequestHandler = async ({ url }) => {
         const [docStats, embeddingStats, sessionStats] = await Promise.all([
           db.select({ count: sql<number>`count(*)` }).from(documents),
           db.select({ count: sql<number>`count(*)` }).from(embeddings),
-          db.select({ count: sql<number>`count(*)` }).from(searchSessions),
+          db.select({ count: sql<number>`count(*)` }).from(searchSessions)
         ]);
 
         return json({
           docCount: docStats[0]?.count || 0,
           embeddingCount: embeddingStats[0]?.count || 0,
-          sessionCount: sessionStats[0]?.count || 0,
+          sessionCount: sessionStats[0]?.count || 0
         });
       }
 

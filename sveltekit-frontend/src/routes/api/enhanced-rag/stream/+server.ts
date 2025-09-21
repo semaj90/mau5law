@@ -9,7 +9,7 @@ const StreamQuerySchema = z.object({
   options: z.object({
     maxResults: z.number().min(1).max(50).optional().default(10),
     includeGraph: z.boolean().optional().default(true),
-    confidenceThreshold: z.number().min(0).max(1).optional().default(0.7),
+    confidenceThreshold: z.number().min(0).max(1).optional().default(0.7)
   }).optional().default({})
 });
 
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'status',
             message: 'Processing query through Enhanced RAG pipeline...',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\n\n`);
 
           // Process query and stream results
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
             type: 'progress',
             stage: 'query_analysis',
             message: 'Analyzing query intent with ML classifier...',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\n\n`);
 
           await new Promise(resolve => setTimeout(resolve, 100); // Brief pause for UX
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
             type: 'progress',
             stage: 'vector_search',
             message: 'Searching multiple vector databases...',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\n\n`);
 
           await new Promise(resolve => setTimeout(resolve, 150);
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
             type: 'progress',
             stage: 'graph_analysis',
             message: 'Analyzing knowledge graph relationships...',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\n\n`);
 
           await new Promise(resolve => setTimeout(resolve, 100);
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
             metadata: {
               timestamp: new Date().toISOString(),
               queryId: response.queryId,
-              systemVersion: '2.0.0-enhanced-rag-stream',
+              systemVersion: '2.0.0-enhanced-rag-stream'
             }
           })}\n\n`);
 
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
             type: 'complete',
             message: 'Enhanced RAG processing complete',
             processingTime,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\n\n`);
 
           controller.close();
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
             type: 'error',
             error: error.message || 'Enhanced RAG streaming failed',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           })}\n\n`);
 
           controller.close();
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(JSON.stringify({
       success: false,
       error: error.message || 'Enhanced RAG stream setup failed',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }), { 
       status: 500,
       headers: { 'Content-Type': 'application/json' }

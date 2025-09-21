@@ -14,7 +14,7 @@ export interface VSCodeMCPContext {
   errors: DiagnosticError[];
   userIntent: 'debugging' | 'feature-development' | 'optimization' | 'documentation';
   recentPrompts: string[];
-  projectType: 'sveltekit-legal-ai' | 'react-nextjs' | 'vue-nuxt' | 'generic';,
+  projectType: 'sveltekit-legal-ai' | 'react-nextjs' | 'vue-nuxt' | 'generic';
 }
 
 export interface DiagnosticError {
@@ -31,14 +31,14 @@ export interface AutoMCPSuggestion {
   reasoning: string;
   args: Record<string, any>;
   priority: 'high' | 'medium' | 'low';
-  expectedOutput: string;,
+  expectedOutput: string;
 }
 
 export interface MCPContextAnalysis {
   detectedStack: string[];
   currentErrors: DiagnosticError[];
   suggestedActions: AutoMCPSuggestion[];
-  contextConfidence: number;,
+  contextConfidence: number;
 }
 
 // Extension-specific MCP tool suggestions;
@@ -46,7 +46,7 @@ export interface ContextTriggers {
   onFileOpen: string[];           // Detect stack from open files
   onNpmErrors: string[];          // Parse `npm run check` output  
   onPromptAnalysis: string[];     // Analyze user comments/prompts
-  onWorkspaceChange: string;      // Detect project type,
+  onWorkspaceChange: string;      // Detect project type
 }
 
 // ============================================================================
@@ -92,7 +92,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'XState error detected - suggesting library documentation',
         args: { context7CompatibleLibraryID: 'xstate', topic: 'v5-migration' },
         priority: 'high',
-        expectedOutput: 'XState v5 migration guide and best practices',
+        expectedOutput: 'XState v5 migration guide and best practices'
       });
     }
     
@@ -103,7 +103,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'Drizzle ORM error detected - analyzing database stack',
         args: { component: 'drizzle', context: 'legal-ai' },
         priority: 'high',
-        expectedOutput: 'Drizzle ORM setup analysis and recommendations',
+        expectedOutput: 'Drizzle ORM setup analysis and recommendations'
       });
     }
     
@@ -114,7 +114,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'SvelteKit error detected - suggesting best practices',
         args: { area: 'performance' },
         priority: 'medium',
-        expectedOutput: 'SvelteKit performance optimization guidelines',
+        expectedOutput: 'SvelteKit performance optimization guidelines'
       });
     }
     
@@ -125,7 +125,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'Environment configuration error detected',
         args: { feature: 'environment-setup', requirements: 'sveltekit server-side' },
         priority: 'medium',
-        expectedOutput: 'Environment variable setup recommendations',
+        expectedOutput: 'Environment variable setup recommendations'
       });
     }
   });
@@ -182,7 +182,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         reasoning: 'User explicitly mentioned best practices or optimization',
         args: { area: detectArea(lowerPrompt) },
         priority: 'high',
-        expectedOutput: 'Customized best practices for current context',
+        expectedOutput: 'Customized best practices for current context'
       });
     }
     
@@ -193,7 +193,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         reasoning: 'User asking for integration guidance',
         args: { feature: extractFeature(lowerPrompt) },
         priority: 'high',
-        expectedOutput: 'Integration patterns and implementation guide',
+        expectedOutput: 'Integration patterns and implementation guide'
       });
     }
     
@@ -204,7 +204,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         reasoning: 'User requesting documentation',
         args: { context7CompatibleLibraryID: extractLibrary(lowerPrompt) },
         priority: 'medium',
-        expectedOutput: 'Relevant library documentation and examples',
+        expectedOutput: 'Relevant library documentation and examples'
       });
     }
   });
@@ -272,8 +272,8 @@ export async function resolveLibraryId(libraryName: string): Promise<string> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         tool: "resolve-library-id",
-        arguments: { libraryName },
-      }),
+        arguments: { libraryName }
+      })
     });
     const data = await response.json();
     // Parse the selected library ID from the response text
@@ -298,8 +298,8 @@ export async function getLibraryDocs(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         tool: "get-library-docs",
-        arguments: { context7CompatibleLibraryID, topic, tokens },
-      }),
+        arguments: { context7CompatibleLibraryID, topic, tokens }
+      })
     });
     const data = await response.json();
     return data?.content?.[0]?.text || "No documentation found.";
@@ -315,7 +315,7 @@ export async function semanticSearch(query: string): Promise<any[]> {
     const response = await fetch("http://localhost:3000/api/semantic-search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query })
     });
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -346,10 +346,10 @@ export async function callContext7Tool(
           // Inject Copilot architecture context if requested;
           ...(options.includeCopilotContext && {
             copilotArchitecture: true,
-            legalAIContext: true,
-          }),
-        },
-      }),
+            legalAIContext: true
+          })
+        }
+      })
     });
 
     if (!response.ok) {
@@ -376,7 +376,7 @@ export async function getLibraryDocsWithContext(
       context7CompatibleLibraryID,
       topic,
       tokens,
-      includeCopilotPatterns,
+      includeCopilotPatterns
     });
 
     return response?.content?.[0]?.text || "No documentation found.";
@@ -396,7 +396,7 @@ export async function createMemoryRelation(
     await callContext7Tool("create-memory-relation", {
       entityId,
       relation,
-      targetId,
+      targetId
     });
   } catch (err: any) {
     console.error("createMemoryRelation error:", err);

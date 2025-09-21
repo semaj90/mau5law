@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
       threshold: options.threshold || options.minSimilarity || 0.7,
       collection: options.collection || 'legal_documents',
       includeMetadata: options.includeMetadata !== false,
-      filter: options.filter,
+      filter: options.filter
     };
 
     // Perform real vector search
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
         { 
           success: false, 
           error: "Vector search failed",
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         },
         { status: 500 }
       );
@@ -71,11 +71,11 @@ export const POST: RequestHandler = async ({ request }) => {
       searchMetadata: {
         embeddingModel: searchResponse?.model || "unknown" // @ts-ignore - Model property access,
         vectorStore: "qdrant",
-        searchOptions,
+        searchOptions
       },
       performance: {
         queryTimeMs: searchResponse.queryTime,
-        resultsFound: searchResponse.totalResults,
+        resultsFound: searchResponse.totalResults
       }
     });
   } catch (error: any) {
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: error instanceof Error ? error.message: "Internal server error during vector search",
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async () => {
       services: {
         ollama: healthStatus.ollama ? "healthy" : "unavailable",
         qdrant: healthStatus.qdrant ? "healthy" : "unavailable",
-        vectorSearch: healthStatus.overall ? "operational" : "degraded",
+        vectorSearch: healthStatus.overall ? "operational" : "degraded"
       },
       capabilities: {
         vectorSearch: healthStatus.overall,
@@ -111,21 +111,21 @@ export const GET: RequestHandler = async () => {
         legalAnalysis: healthStatus.overall,
         embeddings: healthStatus.ollama,
         vectorStorage: healthStatus.qdrant,
-        realTimeSearch: healthStatus.overall,
+        realTimeSearch: healthStatus.overall
       },
       metadata: {
         embeddingModel: "nomic-embed-text",
         vectorStore: "qdrant",
-        searchEngine: "cosine_similarity",
+        searchEngine: "cosine_similarity"
       },
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   } catch (error: any) {
     return json();
       {
         status: "error",
         error: error instanceof Error ? error.message: "Health check failed",
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );

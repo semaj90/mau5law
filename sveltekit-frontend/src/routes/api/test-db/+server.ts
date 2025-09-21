@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
       results.tests.simpleQuery = {
         success: true,
         message: 'Simple query executed successfully',
-        tableCount: queryResult[0]?.table_count,
+        tableCount: queryResult[0]?.table_count
       };
     } catch (error) {
       results.tests.simpleQuery = {
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
       results.tests.casesTable = {
         success: true,
         message: 'Cases table accessible',
-        count: casesResult[0]?.count || 0,
+        count: casesResult[0]?.count || 0
       };
     } catch (error) {
       results.tests.casesTable = {
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
       results.tests.evidenceTable = {
         success: true,
         message: 'Evidence table accessible',
-        count: evidenceResult[0]?.count || 0,
+        count: evidenceResult[0]?.count || 0
       };
     } catch (error) {
       results.tests.evidenceTable = {
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
       results.tests.legalDocuments = {
         success: true,
         message: 'Legal documents table accessible',
-        count: docsResult[0]?.count || 0,
+        count: docsResult[0]?.count || 0
       };
     } catch (error) {
       results.tests.legalDocuments = {
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const vectorResult = await db.execute(sql`SELECT extname FROM pg_extension WHERE extname = 'vector'`);
       results.tests.pgvector = {
         success: vectorResult.length > 0,
-        message: vectorResult.length > 0 ? 'pgvector extension available' : 'pgvector extension not found',
+        message: vectorResult.length > 0 ? 'pgvector extension available' : 'pgvector extension not found'
       };
     } catch (error) {
       results.tests.pgvector = {
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
     results.overall = {
       success: successfulTests === totalTests,
       message: `${successfulTests}/${totalTests} tests passed`,
-      readyForCRUD: successfulTests >= 4 // Need at least PostgreSQL + main tables working,
+      readyForCRUD: successfulTests >= 4 // Need at least PostgreSQL + main tables working
     };
 
     console.log(`Database tests completed: ${successfulTests}/${totalTests} passed`);
@@ -120,13 +120,13 @@ export const GET: RequestHandler = async ({ url }) => {
     results.tests.connectionError = {
       success: false,
       message: `Connection error: ${(error as Error).message}`,
-      stack: (error as Error).stack,
+      stack: (error as Error).stack
     };
 
     results.overall = {
       success: false,
       message: 'Database connection failed',
-      readyForCRUD: false,
+      readyForCRUD: false
     };
 
     return json(results, { status: 500 });

@@ -44,7 +44,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter,
+        retryAfter: rateLimitResult.retryAfter
       }, { status: 429 });
     }
 
@@ -58,7 +58,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       return json({
         success: false,
         error: 'Query parameter "q" is required and must be at least 2 characters',
-        query: query,
+        query: query
       }, { status: 400 });
     }
 
@@ -102,7 +102,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       success: false,
       error: 'Search service temporarily unavailable',
       details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -117,7 +117,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter,
+        retryAfter: rateLimitResult.retryAfter
       }, { status: 429 });
     }
 
@@ -150,7 +150,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       maxResults: Math.min(maxResults, 50), // Cap at 50 results
       useAI,
       ...advancedOptions
-    ,});
+    });
 
     const searchTime = Date.now() - startTime;
 
@@ -188,7 +188,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       success: false,
       error: 'Search service temporarily unavailable',
       details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     }, { status: 500 });
   }
 };
@@ -203,7 +203,7 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
       jurisdictions: Record<string, any>,
       categories: Record<string, any>,
       searchTime,
-      resultCount: 0,
+      resultCount: 0
     };
   }
 
@@ -235,7 +235,7 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
     resultCount: results.length,
     topScore: Math.max(...results.map(r => r.score)),
     queryLength: query.length,
-    queryTerms: query.split(' ').length,
+    queryTerms: query.split(' ').length
   };
 }
 
@@ -253,7 +253,7 @@ function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string,
     semantic: 0,
     exact_match: 0,
     jurisdiction_match: 0,
-    category_match: 0,
+    category_match: 0
   });
 
   const count = results.length;
@@ -269,7 +269,7 @@ function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string,
     vectorSearchUsed: results.some(r => r.searchType === 'vector'),
     hybridSearchUsed: results.some(r => r.searchType === 'hybrid'),
     fallbackUsed: results.some(r => r.searchType === 'fallback'),
-    requestSize: JSON.stringify(requestBody).length,
+    requestSize: JSON.stringify(requestBody).length
   };
 }
 
@@ -311,7 +311,7 @@ export const OPTIONS: RequestHandler = async () => {
       'pgvector-support',
       'ai-enhancement'
     ],
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };
 

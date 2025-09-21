@@ -20,19 +20,19 @@ export async function integrateLegalChatWithWebGPU() {
       id: 'contract-001',
       title: 'Software License Agreement',
       embeddings: new Float32Array(768).fill(0.1),
-      type: 'contract' as const,
+      type: 'contract' as const
     },
     {
       id: 'brief-002',
       title: 'Motion to Dismiss',
       embeddings: new Float32Array(768).fill(0.2),
-      type: 'brief' as const,
+      type: 'brief' as const
     },
     {
       id: 'case-003',
       title: 'Smith vs. Jones Precedent',
       embeddings: new Float32Array(768).fill(0.3),
-      type: 'case-law' as const,
+      type: 'case-law' as const
     }
   ];
 
@@ -45,7 +45,7 @@ export async function integrateLegalChatWithWebGPU() {
         const result = await legalAIBridge.processLegalDocumentEmbeddings(doc.embeddings, {
           documentType: doc.type,
           enableCaching: true,
-          debugMode: true,
+          debugMode: true
         }));
         return {
           ...doc,
@@ -108,7 +108,7 @@ export async function enhanceLegalSimilaritySearchWithQuantization() {
     console.log('✅ Enhanced legal similarity search ready:', {
       queryBufferReady: !!searchSetup.queryBuffer,
       corpusBuffersCount: searchSetup.corpusBuffers.length,
-      processingStats: searchSetup.processingStats,
+      processingStats: searchSetup.processingStats
     });
 
     // In a real application, you would now dispatch GPU compute shaders
@@ -135,25 +135,25 @@ export async function integrateLegalDocumentUploadWorkflow() {
       filename: 'merger-agreement.pdf',
       type: 'contract' as const,
       priority: 'high' as const,
-      embeddings: generateLegalEmbeddings(1024) // Large contract,
+      embeddings: generateLegalEmbeddings(1024) // Large contract
     },
     {
       filename: 'discovery-motion.pdf',
       type: 'brief' as const,
       priority: 'medium' as const,
-      embeddings: generateLegalEmbeddings(512) // Standard brief,
+      embeddings: generateLegalEmbeddings(512) // Standard brief
     },
     {
       filename: 'evidence-photos.pdf',
       type: 'evidence' as const,
       priority: 'medium' as const,
-      embeddings: generateLegalEmbeddings(256) // Evidence documentation,
+      embeddings: generateLegalEmbeddings(256) // Evidence documentation
     },>;
     {
       filename: 'case-citations.pdf',
       type: 'citation' as const,
       priority: 'low' as const,
-      embeddings: generateLegalEmbeddings(768) // Citation references,
+      embeddings: generateLegalEmbeddings(768) // Citation references
     }
   ];
 
@@ -164,11 +164,11 @@ export async function integrateLegalDocumentUploadWorkflow() {
     const processingResults = await legalAIBridge.batchProcessLegalDocuments(uploadedDocuments.map(doc => ({
         embeddings: doc.embeddings,
         type: doc.type,
-        priority: doc.priority,
+        priority: doc.priority
       })),
       {
         enableCaching: true,
-        debugMode: true,
+        debugMode: true
       }
     );
 
@@ -176,7 +176,7 @@ export async function integrateLegalDocumentUploadWorkflow() {
     const enhancedDocuments = uploadedDocuments.map((doc, index) => ({
       ...doc,
       webgpuProcessing: processingResults[index],
-      optimizationScore: calculateOptimizationScore(processingResults[index]),
+      optimizationScore: calculateOptimizationScore(processingResults[index])
     });
 
     console.log('✅ Legal document upload workflow enhanced:', {
@@ -232,13 +232,13 @@ export async function enableRealTimeLegalAnalysis() {
       textSamplesProcessed: legalTextSamples.length,
       webgpuBuffersCreated: processedEmbeddings.filter(item => item.length),
       cpuFallbacks: processedEmbeddings.filter(item => item.length),
-      performanceMetrics: LegalAIIntegration.getLegalAIPerformanceMetrics(),
+      performanceMetrics: LegalAIIntegration.getLegalAIPerformanceMetrics()
     });
 
     return {
       originalTexts: legalTextSamples,
       processedEmbeddings,
-      isWebGPUAccelerated: processedEmbeddings.some(e => !(e instanceof Float32Array),
+      isWebGPUAccelerated: processedEmbeddings.some(e => !(e instanceof Float32Array)
     };
 
   } catch (error) {
@@ -263,7 +263,7 @@ export async function setupLegalAIPerformanceMonitoring() {
     const testDocuments = Array.from({ length: 10 }, (_, i) => ({
       embeddings: generateLegalEmbeddings(384 + i * 64), // Varying sizes
       type: legalDocTypes[i % legalDocTypes.length],
-      priority: legalPriorities[i % legalPriorities.length],
+      priority: legalPriorities[i % legalPriorities.length]
     });
 
     await legalAIBridge.batchProcessLegalDocuments(testDocuments);
@@ -277,7 +277,7 @@ export async function setupLegalAIPerformanceMonitoring() {
     const monitoringData = {
       timestamp: new Date().toISOString(),
       stats: performanceStats,
-      recommendations: generatePerformanceRecommendations(performanceStats),
+      recommendations: generatePerformanceRecommendations(performanceStats)
     };
 
     return monitoringData;
@@ -337,7 +337,7 @@ export class ProgressiveLegalAIEnhancement {
     return {
       webgpuAvailable: this.webgpuAvailable,
       fallbackMode: this.fallbackMode,
-      enhancementActive: this.webgpuAvailable && !this.fallbackMode,
+      enhancementActive: this.webgpuAvailable && !this.fallbackMode
     };
   }
 }

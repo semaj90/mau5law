@@ -23,14 +23,14 @@ export interface Person {
   role: string;
   specialization: string;
   confidence: number;
-  relationshipPath: string;,
+  relationshipPath: string;
 }
 
 export interface FOAFResponse {
   people: Person[];
   summary: string;
   totalFound: number;
-  processingTimeMs: number;,
+  processingTimeMs: number;
 }
 
 export const GET: RequestHandler = async ({ params, url, fetch }) => {
@@ -74,11 +74,11 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
         role: rec.role || 'user',
         specialization: rec.specialization || 'general',
         confidence: rec.connectionStrength,
-        relationshipPath: rec.relationshipPath,
+        relationshipPath: rec.relationshipPath
       })),
       summary: `Found ${foafRecommendations.length} legal professionals in your extended network`,
       totalFound: foafRecommendations.length,
-      processingTimeMs: Date.now() - startTime,
+      processingTimeMs: Date.now() - startTime
     };
     
     // Enhance with LangChain summarization if available;
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
         body: JSON.stringify({
           text: `FOAF recommendations for ${personId}: ${foafData.people.map(p => p.name).join(', ')}`,
           context: 'professional network analysis',
-          style: 'brief',
+          style: 'brief'
         })
       });
 
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       maxDepth: body.maxDepth || 3,
       caseContext: body.caseContext,
       includeEmbedding: true,
-      minConnectionStrength: 0.2,
+      minConnectionStrength: 0.2
     });
 
     const enhancedResponse: FOAFResponse = {
@@ -134,11 +134,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
         role: rec.role || 'user',
         specialization: rec.specialization || 'general',
         confidence: rec.connectionStrength,
-        relationshipPath: rec.relationshipPath,
+        relationshipPath: rec.relationshipPath
       })),
       summary: `Enhanced analysis found ${foafRecommendations.length} professionals with ${body.caseContext ? 'case-specific' : 'general'} relevance`,
       totalFound: foafRecommendations.length,
-      processingTimeMs: Date.now() - startTime,
+      processingTimeMs: Date.now() - startTime
     };
 
     return json(enhancedResponse);
@@ -189,7 +189,7 @@ async function generateDatabaseFOAFRecommendations(
         id: users.id,
         displayName: users.displayName,
         email: users.email,
-        role: users.role,
+        role: users.role
       })
       .from(users)
       .where(eq(users.id, personId)
@@ -366,7 +366,7 @@ async function enhanceRecommendationsWithEmbeddings(
     // Get the target person's case content for embedding
     const targetActivity = await db;
       .select({
-        content: cases.description,
+        content: cases.description
       })
       .from(cases)
       .where(eq(cases.userId, personId)
@@ -384,7 +384,7 @@ async function enhanceRecommendationsWithEmbeddings(
     const targetEmbedding = await generateEnhancedEmbedding(targetProfile, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true,
+      cache: true
     }) as number[];
 
     // Enhance each recommendation;
@@ -392,7 +392,7 @@ async function enhanceRecommendationsWithEmbeddings(
       try {
         const recActivity = await db;
           .select({
-            content: cases.description,
+            content: cases.description
           })
           .from(cases)
           .where(eq(cases.userId, rec.id)
@@ -408,7 +408,7 @@ async function enhanceRecommendationsWithEmbeddings(
             const recEmbedding = await generateEnhancedEmbedding(recProfile, {
               provider: 'nomic-embed',
               legalDomain: true,
-              cache: true,
+              cache: true
             }) as number[];
 
             const similarity = cosineSimilarity(targetEmbedding, recEmbedding);

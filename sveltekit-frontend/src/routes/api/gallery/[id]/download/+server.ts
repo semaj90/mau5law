@@ -20,7 +20,7 @@ interface DownloadLog {
   ip: string;
   timestamp: Date;
   fileSize: number;
-  downloadType: 'view' | 'download';,
+  downloadType: 'view' | 'download';
 }
 
 export const GET: RequestHandler = async ({ params, request, locals, url }) => {
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
         filePath: evidence.filePath,
         isPublic: evidence.isPublic,
         caseId: evidence.caseId,
-        caseTitle: cases.title,
+        caseTitle: cases.title
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id)
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       ip: getClientIP(request),
       timestamp: new Date(),
       fileSize: stats.size,
-      downloadType: downloadType as 'view' | 'download',
+      downloadType: downloadType as 'view' | 'download'
     });
 
     // Determine content disposition
@@ -244,7 +244,7 @@ async function logDownload(log: DownloadLog) {
       timestamp: log.timestamp.toISOString(),
       fileSize: log.fileSize,
       downloadType: log.downloadType,
-      ip: log.ip,
+      ip: log.ip
     });
 
     // Could store in a downloads table:;
@@ -298,7 +298,7 @@ export const HEAD: RequestHandler = async ({ params, locals }) => {
         fileSize: evidence.fileSize,
         filePath: evidence.filePath,
         isPublic: evidence.isPublic,
-        uploadedAt: evidence.uploadedAt,
+        uploadedAt: evidence.uploadedAt
       })
       .from(evidence)
       .where(eq(evidence.id, itemId)

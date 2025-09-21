@@ -24,7 +24,7 @@ export interface GPUCapabilities {
   supportsInt32: boolean;
   maxWorkgroupSize?: number; // WebGPU only
   maxVertexAttributes: number;
-  extensions: string[];,
+  extensions: string[];
 }
 
 export interface HybridRenderingOptions {
@@ -33,7 +33,7 @@ export interface HybridRenderingOptions {
   allowWebGL1: boolean;
   requireCompute: boolean;
   lodSystemIntegration: boolean;
-  nesMemoryOptimization: boolean;,
+  nesMemoryOptimization: boolean;
 }
 
 export class HybridGPUContext {
@@ -54,7 +54,7 @@ export class HybridGPUContext {
       allowWebGL1: true,
       requireCompute: false,
       lodSystemIntegration: true,
-      nesMemoryOptimization: true,
+      nesMemoryOptimization: true
     }
   ) {
     this.canvas = canvas;
@@ -102,7 +102,7 @@ export class HybridGPUContext {
       }
 
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
 
       if (!adapter) {
@@ -123,7 +123,7 @@ export class HybridGPUContext {
       context.configure({
         device: this.gpuDevice,
         format,
-        alphaMode: 'premultiplied',
+        alphaMode: 'premultiplied'
       });
 
       // Update capabilities;
@@ -136,7 +136,7 @@ export class HybridGPUContext {
         supportsInt32: true,
         maxWorkgroupSize: adapter.limits.maxComputeWorkgroupSizeX,
         maxVertexAttributes: 16,
-        extensions: [],
+        extensions: []
       };
 
       // Initialize LOD system with WebGPU;
@@ -158,7 +158,7 @@ export class HybridGPUContext {
         alpha: true,
         depth: true,
         stencil: true,
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
 
       if (!this.webgl2Context) return false;
@@ -186,7 +186,7 @@ export class HybridGPUContext {
         supportsFloat32: availableExtensions.includes('EXT_color_buffer_float'),
         supportsInt32: true,
         maxVertexAttributes: gl.getParameter(gl.MAX_VERTEX_ATTRIBS),
-        extensions: availableExtensions,
+        extensions: availableExtensions
       };
 
       // Initialize LOD system with WebGL2;
@@ -208,7 +208,7 @@ export class HybridGPUContext {
         alpha: true,
         depth: true,
         stencil: true,
-        powerPreference: 'high-performance',
+        powerPreference: 'high-performance'
       });
 
       if (!this.webglContext) return false;
@@ -223,7 +223,7 @@ export class HybridGPUContext {
         supportsFloat32: !!gl.getExtension('OES_texture_float'),
         supportsInt32: false,
         maxVertexAttributes: gl.getParameter(gl.MAX_VERTEX_ATTRIBS),
-        extensions: [],
+        extensions: []
       };
 
       return true;
@@ -269,7 +269,7 @@ export class HybridGPUContext {
         layout: 'auto',
         compute: {
           module: shaderModule,
-          entryPoint: 'main',
+          entryPoint: 'main'
         }
       });
 
@@ -359,17 +359,17 @@ export class HybridGPUContext {
     // Create buffers;
     const inputBuffer = this.gpuDevice.createBuffer({
       size: inputData.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const outputBuffer = this.gpuDevice.createBuffer({
       size: outputSize * 4, // 4 bytes per float32
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     const readBuffer = this.gpuDevice.createBuffer({
       size: outputSize * 4,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
 
     // Upload input data
@@ -558,7 +558,7 @@ export class HybridGPUContext {
       PRG_RAM_SIZE: 2048,  // 2KB PRG-RAM  
       PATTERN_TABLES: 2,   // 2 pattern tables
       SPRITE_LIMIT: 64,    // 64 sprites max
-      TILE_SIZE: 8         // 8x8 pixel tiles,
+      TILE_SIZE: 8         // 8x8 pixel tiles
     };
 
     // Apply constraints based on active context;
@@ -597,7 +597,7 @@ export class HybridGPUContext {
       supportsFloat32: false,
       supportsInt32: false,
       maxVertexAttributes: 4,
-      extensions: [],
+      extensions: []
     };
   }
 
@@ -650,7 +650,7 @@ export async function createHybridGPUContext(
     lodSystemIntegration: true,
     nesMemoryOptimization: true,
     ...options
-  ,});
+  });
 
   await context.initialize();
   return context;

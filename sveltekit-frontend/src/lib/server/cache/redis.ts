@@ -10,7 +10,7 @@ const CACHE_TTL = 60 * 60 * 1000; // 1 hour default;
 export interface CacheItem<T> {
   data: T;
   timestamp: number;
-  ttl: number;,
+  ttl: number;
 }
 
 class CacheService {

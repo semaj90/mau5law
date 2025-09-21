@@ -16,7 +16,7 @@ export async function GET() {
     const command = 'node scripts/export-routes-map.mjs --analytics --format=json';
     const { stdout, stderr } = await execAsync(command, {
       cwd: frontendRoot,
-      maxBuffer: 1024 * 1024 * 2 // 2MB buffer for large route data,
+      maxBuffer: 1024 * 1024 * 2 // 2MB buffer for large route data
     });
 
     if (stderr) {
@@ -48,7 +48,7 @@ export async function GET() {
       {
         error: 'Failed to load route data',
         message: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -151,9 +151,9 @@ function generateEnhancedAnalytics(routeData: any) {
       staticPages,
       deepestNesting,
       totalConfiguredRoutes: totalRoutes,
-      totalFileRoutes: fileRoutes.length,
+      totalFileRoutes: fileRoutes.length
     },
     recommendations,
-    lastUpdated: new Date().toISOString(),
+    lastUpdated: new Date().toISOString()
   };
 }

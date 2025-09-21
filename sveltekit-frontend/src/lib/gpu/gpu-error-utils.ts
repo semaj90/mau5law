@@ -5,7 +5,7 @@ export interface ClassifiedGPUError {
   category: GPUErrorCategory;
   message: string;
   original: unknown;
-  retryable: boolean;,
+  retryable: boolean;
 }
 
 const COMPILE_HINTS = ['compile', 'shader', 'program link', 'link failed'];
@@ -40,14 +40,14 @@ export interface RetryPolicyConfig {
   maxAttempts: number;
   baseDelayMs: number;
   maxDelayMs: number;
-  jitter: boolean;,
+  jitter: boolean;
 }
 
 export const DEFAULT_RETRY_POLICY: RetryPolicyConfig = {
   maxAttempts: 3,
   baseDelayMs: 40,
   maxDelayMs: 500,
-  jitter: true,
+  jitter: true
 };
 
 export function computeBackoff(attempt: number, policy: RetryPolicyConfig = DEFAULT_RETRY_POLICY): number {

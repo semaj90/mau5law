@@ -27,7 +27,7 @@ export class MCPApiClient {
         uptime: 0,
         workers: 0,
         version: 'unknown',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
   }
@@ -48,7 +48,7 @@ export class MCPApiClient {
         errorCount: 0,
         avgProcessingTime: 0,
         throughput: 0,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
     }
   }
@@ -79,7 +79,7 @@ export class MCPApiClient {
 
       const response = await fetch(`${this.baseUrl}/process`, {
         method: 'POST',
-        body: formData,
+        body: formData
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -118,7 +118,7 @@ export class MCPApiClient {
   async cancelJob(jobId: string): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/jobs/${jobId}/cancel`, {
-        method: 'POST',
+        method: 'POST'
       });
       return response.ok;
     } catch (error) {
@@ -224,7 +224,7 @@ export class MCPApiClient {
         memoryTotal: 0,
         powerUsage: 0,
         utilization: 0,
-        name: 'Unknown',
+        name: 'Unknown'
       };
     }
   }
@@ -236,7 +236,7 @@ export interface MCPHealthStatus {
   uptime: number;
   workers: number;
   version: string;
-  timestamp: string;,
+  timestamp: string;
 }
 
 export interface MCPMetrics {
@@ -247,7 +247,7 @@ export interface MCPMetrics {
   errorCount: number;
   avgProcessingTime: number;
   throughput: number;
-  timestamp: string;,
+  timestamp: string;
 }
 
 export interface MCPWorker {
@@ -258,7 +258,7 @@ export interface MCPWorker {
   avgResponseTime: number;
   lastActivity?: string;
   memoryUsage: number;
-  cpuUsage: number;,
+  cpuUsage: number;
 }
 
 export interface ProcessingOptions {
@@ -274,7 +274,7 @@ export interface MCPJobSubmission {
   status: 'submitted';
   estimatedTime: number;
   queuePosition: number;
-  workers: number[];,
+  workers: number[];
 }
 
 export interface MCPJob {
@@ -299,13 +299,13 @@ export interface MCPJobResult {
     compliance: ComplianceCheck[];
     precedents: LegalPrecedent[];
     recommendations: string[];
-    confidence: number;,
+    confidence: number;
   };
   metadata: {
     processingTime: number;
     workerId: number;
     modelVersion: string;
-    documentType: string;,
+    documentType: string;
   };
 }
 
@@ -313,7 +313,7 @@ export interface LegalEntity {
   name: string;
   type: 'person' | 'organization' | 'location' | 'date' | 'amount';
   confidence: number;
-  context: string;,
+  context: string;
 }
 
 export interface RiskAssessment {
@@ -322,29 +322,29 @@ export interface RiskAssessment {
     financial: number;
     legal: number;
     operational: number;
-    regulatory: number;,
+    regulatory: number;
   };
-  factors: string[];,
+  factors: string[];
 }
 
 export interface ComplianceCheck {
   regulation: string;
   status: 'compliant' | 'non-compliant' | 'unclear';
   confidence: number;
-  notes: string;,
+  notes: string;
 }
 
 export interface LegalPrecedent {
   case: string;
   relevance: number;
   summary: string;
-  citation: string;,
+  citation: string;
 }
 
 export interface MCPRealtimeEvent {
   type: 'job_update' | 'worker_status' | 'metrics' | 'log' | 'alert';
   timestamp: string;
-  data: any;,
+  data: any;
 }
 
 export interface MCPLogEntry {
@@ -362,7 +362,7 @@ export interface MCPGPUStatus {
   memoryUsed: number;
   memoryTotal: number;
   powerUsage: number;
-  utilization: number;,
+  utilization: number;
 }
 
 // Singleton instance for easy import

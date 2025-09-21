@@ -31,14 +31,14 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       ...result,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error) {
     console.error('Embeddings API error:', error);
     return json({ 
         error: 'Failed to generate embeddings',
-        message: error instanceof Error ? error.message: 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -60,27 +60,27 @@ export const GET: RequestHandler = async () => {
         generate: 'POST /api/v1/embeddings',
         search: 'POST /api/v1/embeddings/search',
         rag: 'POST /api/v1/embeddings/rag',
-        status: 'GET /api/v1/embeddings',
+        status: 'GET /api/v1/embeddings'
       },
       models: {
         default: 'nomic-embed-text:latest',
         dimensions: 384,
-        supportsBatch: true,
+        supportsBatch: true
       },
       features: {
         gpuAcceleration: status.gpuAvailable,
         semanticSearch: true,
         ragIntegration: true,
-        telemetryEnabled: true,
+        telemetryEnabled: true
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
 
   } catch (error) {
     console.error('Embeddings status error:', error);
     return json({ 
         error: 'Failed to get service status',
-        message: error instanceof Error ? error.message: 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );

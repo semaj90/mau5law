@@ -24,31 +24,31 @@ export interface ServiceConfig {
   neo4j: {
     uri: string;
     user: string;
-    password: string;,
+    password: string;
   };
   postgres: {
     host: string;
     port: number;
     database: string;
     user: string;
-    password: string;,
+    password: string;
   };
   redis: {
     host: string;
-    port: number;,
+    port: number;
   };
   goMicroservices: {
     rag: string;
     gpu: string;
-    llama: string;,
+    llama: string;
   };
   ollama: {
     baseUrl: string;
-    model: string;,
+    model: string;
   };
   mcp: {
     context7: string;
-    synthesis: string;,
+    synthesis: string;
   };
 }
 
@@ -73,7 +73,7 @@ export interface AutoSolveResult {
     processingTime: number;
     model: string;
     tokensUsed: number;
-    cacheHit: boolean;,
+    cacheHit: boolean;
   };
 }
 
@@ -82,32 +82,32 @@ const serviceConfig: ServiceConfig = {
   neo4j: {
     uri: import.meta.env.NEO4J_URI || 'bolt://localhost:7687',
     user: import.meta.env.NEO4J_USER || 'neo4j',
-    password: import.meta.env.NEO4J_PASSWORD || 'password',
+    password: import.meta.env.NEO4J_PASSWORD || 'password'
   },
   postgres: {
     host: import.meta.env.POSTGRES_HOST || 'localhost',
     port: parseInt(import.meta.env.POSTGRES_PORT || '5433'),
     database: import.meta.env.POSTGRES_DB || 'legal_ai_db',
     user: import.meta.env.POSTGRES_USER || 'legal_admin',
-    password: import.meta.env.POSTGRES_PASSWORD || '123456',
+    password: import.meta.env.POSTGRES_PASSWORD || '123456'
   },
   redis: {
     host: import.meta.env.REDIS_HOST || 'localhost',
-    port: parseInt(import.meta.env.REDIS_PORT || '6379'),
+    port: parseInt(import.meta.env.REDIS_PORT || '6379')
   },
   goMicroservices: {
     rag: import.meta.env.ENHANCED_RAG_URL || 'http://localhost:8094',
     gpu: import.meta.env.GPU_ORCHESTRATOR_URL || 'http://localhost:8095',
-    llama: import.meta.env.GO_LLAMA_URL || 'http://localhost:8096',
+    llama: import.meta.env.GO_LLAMA_URL || 'http://localhost:8096'
   },
   ollama: {
     baseUrl: import.meta.env.OLLAMA_URL || 'http://localhost:11434',
-    model: 'gemma3-legal:latest',
+    model: 'gemma3-legal:latest'
   },
   mcp: {
     context7: import.meta.env.CONTEXT7_URL || 'http://localhost:4000',
-    synthesis: import.meta.env.AI_SYNTHESIS_URL || 'http://localhost:8200',
-  },
+    synthesis: import.meta.env.AI_SYNTHESIS_URL || 'http://localhost:8200'
+  }
 };
 
 // Database connection with Drizzle ORM (TypeScript-safe);
@@ -119,7 +119,7 @@ const pgConnection = postgres({
   password: serviceConfig.postgres.password,
   max: 20, // Connection pool size
   idle_timeout: 20,
-  connect_timeout: 60,
+  connect_timeout: 60
 });
 
 export const db = drizzle(pgConnection);
@@ -129,7 +129,7 @@ const redis = new Redis({
   host: serviceConfig.redis.host,
   port: serviceConfig.redis.port,
   maxRetriesPerRequest: 3,
-  retryStrategy: (times: number) => Math.min(times * 50, 2000),
+  retryStrategy: (times: number) => Math.min(times * 50, 2000)
 });
 
 // XState machine definition for orchestration flow;
@@ -146,16 +146,16 @@ const orchestrationMachine = createMachine({
     legalBertAnalysis: null as any | null,
     ollamaResponse: null as string | null,
     finalSynthesis: null as AutoSolveResult | null,
-    error: null as Error | null,
+    error: null as Error | null
   },
   states: {
     idle: {
       on: {
         START: {
           target: 'processing',
-          actions: 'resetContext',
-        },
-      },
+          actions: 'resetContext'
+        }
+      }
     },
     processing: {
       initial: 'checkingCache',
@@ -167,49 +167,49 @@ const orchestrationMachine = createMachine({
               {
                 guard: 'cacheHit',
                 target: 'complete',
-                actions: 'storeCachedResult',
+                actions: 'storeCachedResult'
               },);
               {
-                target: 'analyzingQuery',
-              },
+                target: 'analyzingQuery'
+              }
             ],
-            onError: 'analyzingQuery',
-          },
+            onError: 'analyzingQuery'
+          }
         },
         analyzingQuery: {
           invoke: {
             src: 'analyzeWithLegalBERT',
             onDone: {
               target: 'generatingEmbeddings',
-              actions: 'storeLegalBertAnalysis',
+              actions: 'storeLegalBertAnalysis'
             },
             onError: {
               target: 'fallbackAnalysis',
-              actions: 'logError',
-            },
-          },
+              actions: 'logError'
+            }
+          }
         },
         fallbackAnalysis: {
           invoke: {
             src: 'basicAnalysis',
             onDone: {
               target: 'generatingEmbeddings',
-              actions: 'storeLegalBertAnalysis',
-            },
-          },
+              actions: 'storeLegalBertAnalysis'
+            }
+          }
         },
         generatingEmbeddings: {
           invoke: {
             src: 'generateEmbeddings',
             onDone: {
               target: 'searchingKnowledgeBase',
-              actions: 'storeEmbeddings',
+              actions: 'storeEmbeddings'
             },
             onError: {
               target: 'error',
-              actions: 'logError',
-            },
-          },
+              actions: 'logError'
+            }
+          }
         },
         searchingKnowledgeBase: {
           type: 'parallel',
@@ -218,108 +218,108 @@ const orchestrationMachine = createMachine({
               invoke: {
                 src: 'searchNeo4j',
                 onDone: {
-                  actions: 'storeNeo4jResults',
+                  actions: 'storeNeo4jResults'
                 },
                 onError: {
-                  actions: 'logSearchError',
-                },
-              },
+                  actions: 'logSearchError'
+                }
+              }
             },
             pgVectorSearch: {
               invoke: {
                 src: 'searchPGVector',
                 onDone: {
-                  actions: 'storePGVectorResults',
+                  actions: 'storePGVectorResults'
                 },
                 onError: {
-                  actions: 'logSearchError',
-                },
-              },
+                  actions: 'logSearchError'
+                }
+              }
             },
             ragPipeline: {
               invoke: {
                 src: 'runRAGPipeline',
                 onDone: {
-                  actions: 'storeRAGResults',
+                  actions: 'storeRAGResults'
                 },
                 onError: {
-                  actions: 'logSearchError',
-                },
-              },
+                  actions: 'logSearchError'
+                }
+              }
             },
             context7Search: {
               invoke: {
                 src: 'searchContext7',
                 onDone: {
-                  actions: 'storeContext7Results',
+                  actions: 'storeContext7Results'
                 },
                 onError: {
-                  actions: 'logSearchError',
-                },
-              },
-            },
+                  actions: 'logSearchError'
+                }
+              }
+            }
           },
-          onDone: 'rankingResults',
+          onDone: 'rankingResults'
         },
         rankingResults: {
           invoke: {
             src: 'rankWithCrossEncoder',
             onDone: {
               target: 'generatingResponse',
-              actions: 'storeRankedResults',
-            },
-          },
+              actions: 'storeRankedResults'
+            }
+          }
         },
         generatingResponse: {
           invoke: {
             src: 'generateWithGemma3Legal',
             onDone: {
               target: 'synthesizing',
-              actions: 'storeOllamaResponse',
+              actions: 'storeOllamaResponse'
             },
             onError: {
               target: 'fallbackGeneration',
-              actions: 'logError',
-            },
-          },
+              actions: 'logError'
+            }
+          }
         },
         fallbackGeneration: {
           invoke: {
             src: 'generateFallbackResponse',
             onDone: {
               target: 'synthesizing',
-              actions: 'storeOllamaResponse',
-            },
-          },
+              actions: 'storeOllamaResponse'
+            }
+          }
         },
         synthesizing: {
           invoke: {
             src: 'performFinalSynthesis',
             onDone: {
               target: 'cachingResult',
-              actions: 'storeFinalSynthesis',
-            },
-          },
+              actions: 'storeFinalSynthesis'
+            }
+          }
         },
         cachingResult: {
           invoke: {
             src: 'cacheResult',
             onDone: 'complete',
             onError: 'complete', // Still complete even if caching fails
-          },
+          }
         },
         complete: {
-          type: 'final',
-        },
-      },
+          type: 'final'
+        }
+      }
     },
     error: {
       on: {
         RETRY: 'processing',
-        RESET: 'idle',
-      },
-    },
-  },
+        RESET: 'idle'
+      }
+    }
+  }
 });
 
 // Main orchestrator class;
@@ -339,13 +339,13 @@ export class EnhancedAISynthesisOrchestrator {
     this.ollama = new ChatOllama({
       baseUrl: serviceConfig.ollama.baseUrl,
       model: serviceConfig.ollama?.model || "unknown" // @ts-ignore - Model property access,
-      temperature: 0.3,
+      temperature: 0.3
     });
 
     // Use nomic-embed-text for embeddings as requested;
     this.embeddings = new OllamaEmbeddings({
       baseUrl: serviceConfig.ollama.baseUrl,
-      model: 'nomic-embed-text',
+      model: 'nomic-embed-text'
     });
 
     // Create alias for compatibility
@@ -356,7 +356,7 @@ export class EnhancedAISynthesisOrchestrator {
       cache: new Map(),
       get: async (key: string) => this.cacheService.cache.get(key),
       set: async (key: string, value: any) => this.cacheService.cache.set(key, value),
-      delete: async (key: string) => this.cacheService.cache.delete(key),
+      delete: async (key: string) => this.cacheService.cache.delete(key)
     };
   }
 
@@ -375,7 +375,7 @@ export class EnhancedAISynthesisOrchestrator {
           password: serviceConfig.neo4j.password,
           indexName: 'legal_documents',
           textNodeProperty: 'text',
-          embeddingNodeProperty: 'embedding',
+          embeddingNodeProperty: 'embedding'
         });
       } catch {
         this.neo4jStore = null;
@@ -393,7 +393,7 @@ export class EnhancedAISynthesisOrchestrator {
         database: serviceConfig.postgres.database,
         user: serviceConfig.postgres.user,
         password: serviceConfig.postgres.password,
-        max: 20,
+        max: 20
       };
 
       // Initialize PGVector store with fallback;
@@ -405,8 +405,8 @@ export class EnhancedAISynthesisOrchestrator {
             idColumnName: 'id',
             vectorColumnName: 'embedding',
             contentColumnName: 'content',
-            metadataColumnName: 'metadata',
-          },
+            metadataColumnName: 'metadata'
+          }
         });
       } catch {
         this.pgVectorStore = null;
@@ -435,7 +435,7 @@ export class EnhancedAISynthesisOrchestrator {
       guards: {
         cacheHit: ({ context, event }) => {
           return event.data && event.data.cached === true;
-        },
+        }
       },
       actors: {
         checkCache: fromPromise(async ({ input }) => {
@@ -455,7 +455,7 @@ export class EnhancedAISynthesisOrchestrator {
           entities: [],
           concepts: [],
           complexity: { legalComplexity: 0.5 },
-          jurisdiction: 'general',
+          jurisdiction: 'general'
         })),
         searchNeo4j: (async ({ context }) => {
           if (!this.neo4jStore || !context.query) return [];
@@ -488,8 +488,8 @@ export class EnhancedAISynthesisOrchestrator {
                 query: context.query,
                 limit: 10,
                 useGPU: true,
-                model: 'gemma3-legal:latest',
-              }),
+                model: 'gemma3-legal:latest'
+              })
             });
 
             if (!(response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).ok) throw new Error(`RAG failed: ${(response as { ok?: any; statusText?: any; json?: any; content?: any; status?: any }).statusText}`);
@@ -527,8 +527,8 @@ export class EnhancedAISynthesisOrchestrator {
               enableRAG: true,
               maxSources: 10,
               similarityThreshold: 0.7,
-              diversityLambda: 0.5,
-            },
+              diversityLambda: 0.5
+            }
           });
 
           // Add metadata;
@@ -537,7 +537,7 @@ export class EnhancedAISynthesisOrchestrator {
             confidence: 0.8,
             strategies: ['legal-bert', 'rag', 'cross-encoder'],
             qualityScore: 0.85,
-            recommendations: ['Review sources', 'Verify legal citations'],
+            recommendations: ['Review sources', 'Verify legal citations']
           };
 
           return result;
@@ -590,8 +590,8 @@ export class EnhancedAISynthesisOrchestrator {
         logError: ({ context, event }) => {
           context.error = event.data;
           logger.error('[Orchestrator] Error:', event.data);
-        },
-      },
+        }
+      }
     });
 
     this.service = createActor(this.machine).start();
@@ -639,8 +639,8 @@ TEMPLATE """{{ if .System }}<|system|>
           body: JSON.stringify({
             name: 'gemma3-legal:latest',
             modelfile,
-            stream: false,
-          }),
+            stream: false
+          })
         });
 
         logger.info('[Orchestrator] ✅ gemma3-legal:latest model created successfully');
@@ -657,8 +657,8 @@ TEMPLATE """{{ if .System }}<|system|>
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: 'nomic-embed-text',
-            stream: false,
-          }),
+            stream: false
+          })
         });
         logger.info('[Orchestrator] ✅ nomic-embed-text model ready');
       }
@@ -678,7 +678,7 @@ TEMPLATE """{{ if .System }}<|system|>
       { name: 'GPU Orchestrator', url: `${serviceConfig.goMicroservices.gpu}/health` },
       { name: 'Ollama', url: `${serviceConfig.ollama.baseUrl}/api/tags` },
       { name: 'Context7 MCP', url: `${serviceConfig.mcp.context7}/health` },
-      { name: 'AI Synthesis MCP', url: `${serviceConfig.mcp.synthesis}/health` },
+      { name: 'AI Synthesis MCP', url: `${serviceConfig.mcp.synthesis}/health` }
     ];
 
     for (const service of services) {
@@ -728,7 +728,7 @@ ${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)
 ${content.substring(0, 500)}...
 
 `;
-      ,});
+      });
     }
 
     prompt += `Please provide a comprehensive legal analysis that:
@@ -819,8 +819,8 @@ RESPONSE:`;
         const service = createActor(this.machine, {
           input: {
             query,
-            ...(options || {,}),
-          },
+            ...(options || {})
+          }
         }).start();
 
         // Subscribe to state changes;
@@ -862,8 +862,8 @@ RESPONSE:`;
       input: {
         query,
         stream: true,
-        ...(options || {,}),
-      },
+        ...(options || {})
+      }
     }).start();
 
     // Setup streaming
@@ -873,7 +873,7 @@ RESPONSE:`;
       stateChanges.push({
         type: 'state',
         state: (snapshot as any).value || (snapshot as any).status,
-        context: (snapshot as any).context,
+        context: (snapshot as any).context
       });
     });
 
@@ -896,7 +896,7 @@ RESPONSE:`;
     if (finalSnapshot.context && finalSnapshot.context.finalSynthesis) {
       yield {
         type: 'complete',
-        result: finalSnapshot.context.finalSynthesis,
+        result: finalSnapshot.context.finalSynthesis
       };
     }
   }
@@ -945,7 +945,7 @@ RESPONSE:`;
       status: 'operational',
       initialized: this.initialized,
       services,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   }
 }

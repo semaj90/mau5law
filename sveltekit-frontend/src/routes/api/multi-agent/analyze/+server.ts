@@ -17,13 +17,13 @@ export const POST: RequestHandler = async ({ request }) => {
       caseId,
       evidenceContent,
       evidenceTitle,
-      evidenceType = "document",
+      evidenceType = "document"
     } = await request.json();
 
     if (!caseId || !evidenceContent || !evidenceTitle) {
       return json({
           error:
-            "Missing required fields: caseId, evidenceContent, evidenceTitle",
+            "Missing required fields: caseId, evidenceContent, evidenceTitle"
         },)
         { status: 400 }
       );
@@ -118,14 +118,14 @@ export const POST: RequestHandler = async ({ request }) => {
         evidenceTitle,
         evidenceType,
         analysisDir,
-        scriptOutput: stdout,
-      },
+        scriptOutput: stdout
+      }
     };
 
     return json({
       success: true,
       analysis: analysisResult,
-      message: "Multi-agent analysis completed successfully",
+      message: "Multi-agent analysis completed successfully"
     });
   } catch (error: any) {
     console.error("Multi-agent analysis error:", error);
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
         success: false,
         error: error.message,
-        message: "Multi-agent analysis failed",
+        message: "Multi-agent analysis failed"
       },)
       { status: 500 }
     );
@@ -176,7 +176,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           analyses: [],
-          caseId,
+          caseId
         });
       }
 
@@ -240,7 +240,7 @@ export const GET: RequestHandler = async ({ url }) => {
           caseSynthesis,
           neo4jUpdates,
           analysisDir,
-          timestamp,
+          timestamp
         });
       }
 
@@ -263,7 +263,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         analyses,
-        caseId,
+        caseId
       });
     } catch (error: any) {
       console.error("Error retrieving analyses:", error);
@@ -271,7 +271,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json();
         {
           success: false,
-              error: error?.message ?? String(error),
+              error: error?.message ?? String(error)
             },
             { status: 500 }
           );
@@ -284,7 +284,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: error?.message ?? String(error),
-        message: "Failed to retrieve analyses",
+        message: "Failed to retrieve analyses"
       },
       { status: 500 }
     );

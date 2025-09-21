@@ -9,7 +9,7 @@ export interface CachePerformanceMeta {
   promptTokens: number;
   tokensPerSecond: number | string;
   modelUsed: string;
-  fallbackUsed: boolean;,
+  fallbackUsed: boolean;
 }
 
 export interface SummarizeCacheEntry {
@@ -21,7 +21,7 @@ export interface SummarizeCacheEntry {
   ts: number;               // creation timestamp
   lastAccess: number;        // last access timestamp (for LRU)
   perf: CachePerformanceMeta;
-  ttlMs: number;             // ttl applied when stored,
+  ttlMs: number;             // ttl applied when stored
 }
 
 const MAX_ITEMS = Number((import.meta as any).env?.SUMMARIZE_CACHE_MAX_ITEMS || import.meta.env.SUMMARIZE_CACHE_MAX_ITEMS || 200);
@@ -133,7 +133,7 @@ export function memoryStats() {
     size: memoryCache.size,
     keys: Array.from(memoryCache.keys()).slice(0, 20),
     maxItems: MAX_ITEMS,
-    ttlMs: TTL_MS,
+    ttlMs: TTL_MS
   };
 }
 

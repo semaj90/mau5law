@@ -35,9 +35,9 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
       body: JSON.stringify({
         text: input.text,
         documentId: input.documentId,
-        caseId: input.caseId,
+        caseId: input.caseId
       }),
-      timeout: 30000,
+      timeout: 30000
     });
 
     if (!response.ok) {
@@ -51,7 +51,7 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
       dimensions: data.dimensions || 768,
       model: data?.model || 'nomic-embed-text',
       processingTime: Date.now() - startTime,
-      tokenCount: data.tokenCount,
+      tokenCount: data.tokenCount
     } as EmbeddingActorOutput;
   } catch (error: any) {
     throw new Error(`Embedding actor failed: ${error.message}`);
@@ -74,7 +74,7 @@ export interface DocumentProcessingOutput {
   entities?: Array<any>;
   embeddings?: { chunks: number; dimensions: number };
   processingTime: number;
-  success: boolean;,
+  success: boolean;
 }
 
 export const documentProcessingActor = fromPromise(async ({ input }: { input: DocumentProcessingInput }) => {
@@ -100,7 +100,7 @@ export const documentProcessingActor = fromPromise(async ({ input }: { input: Do
         entities: data.entities,
         embeddings: data.embeddings,
         processingTime: Date.now() - startTime,
-        success: data.success || true,
+        success: data.success || true
       } as DocumentProcessingOutput;
     } catch (error: any) {
       throw new Error(`Document processing actor failed: ${error.message}`);
@@ -124,7 +124,7 @@ export interface LegalAnalysisOutput {
   recommendations: string[];
   precedents: Array<any>;
   confidence: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
@@ -135,7 +135,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
-      timeout: 45000,
+      timeout: 45000
     });
 
     if (!response.ok) {
@@ -150,7 +150,7 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
       recommendations: data.recommendations || [],
       precedents: data.precedents || [],
       confidence: data.confidence || 0.5,
-      processingTime: Date.now() - startTime,
+      processingTime: Date.now() - startTime
     } as LegalAnalysisOutput;
   } catch (error: any) {
     throw new Error(`Legal analysis actor failed: ${error.message}`);
@@ -172,7 +172,7 @@ export interface RAGSearchOutput {
   results: Array<any>;
   totalResults: number;
   processingTime: number;
-  model: string;,
+  model: string;
 }
 
 export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchInput }) => {
@@ -183,7 +183,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
-      timeout: 30000,
+      timeout: 30000
     });
 
     if (!response.ok) {
@@ -196,7 +196,7 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
       results: data.results || [],
       totalResults: data.totalResults || 0,
       processingTime: Date.now() - startTime,
-      model: data?.model || 'unknown',
+      model: data?.model || 'unknown'
     } as RAGSearchOutput;
   } catch (error: any) {
     throw new Error(`RAG search actor failed: ${error.message}`);
@@ -239,7 +239,7 @@ export interface WorkflowOutput {
   results: Record<string, any>;
   totalTime: number;
   success: boolean;
-  errors: Array<any>;,
+  errors: Array<any>;
 }
 
 export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInput }) => {
@@ -342,7 +342,7 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
       results,
       totalTime: Date.now() - startTime,
       success: errors.length === 0,
-      errors,
+      errors
     } as WorkflowOutput;
   } catch (error: any) {
     throw new Error(`Workflow actor failed: ${error.message}`);
@@ -367,7 +367,7 @@ export async function runActor<T>(actor: ActorRefFrom<any>): Promise<T> {
       error: (error) => {
         subscription.unsubscribe();
         reject(error);
-      },
+      }
     });
     actor.start();
   });

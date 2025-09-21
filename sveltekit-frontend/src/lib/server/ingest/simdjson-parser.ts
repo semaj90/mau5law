@@ -65,7 +65,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
         parser,
         originalSize,
         textFields: textFields.length,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       }
     };
 
@@ -77,7 +77,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
         parser: 'native',
         originalSize,
         textFields: 0,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       }
     };
   }
@@ -126,7 +126,7 @@ export async function parseJsonStream(
     return {
       success: true,
       extractedTexts: extractedTexts.slice(0, 1000), // Limit results
-      totalChunks: chunks.length,
+      totalChunks: chunks.length
     };
 
   } catch (error) {
@@ -134,7 +134,7 @@ export async function parseJsonStream(
       success: false,
       extractedTexts: [],
       totalChunks: 0,
-      error: error instanceof Error ? error.message: String(error),
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }

@@ -41,7 +41,7 @@ if (!browser) {
         get: async () => null,
         set: async () => {},
         getSearchResults: async () => null,
-        setSearchResults: async () => {},
+        setSearchResults: async () => {}
       };
     }
     try {
@@ -68,7 +68,7 @@ export interface VectorSearchResult {
   score: number;
   metadata: Record<string, any>;
   source: "pgvector" | "qdrant" | "cache";
-  type: "case" | "evidence" | "document";,
+  type: "case" | "evidence" | "document";
 }
 // Search options interface
 interface VectorSearchOptions {
@@ -109,17 +109,17 @@ async function initializeLocalDb(): Promise<any> {
 
       if (!casesCollection) {
         casesCollection = lokiDb.addCollection("cases", {
-          indices: ["title", "description"],
+          indices: ["title", "description"]
         });
       }
       if (!evidenceCollection) {
         evidenceCollection = lokiDb.addCollection("evidence", {
-          indices: ["title", "description"],
+          indices: ["title", "description"]
         });
       }
     },
     autosave: true,
-    autosaveInterval: 4000,
+    autosaveInterval: 4000
   });
 }
 // --- Legal documents pgvector search (uses Ollama 768-dim embeddings) ---;
@@ -177,7 +177,7 @@ export async function getQueryEmbeddingLegal(
         body: JSON.stringify({ texts: [query], model }),
         signal: (AbortSignal as any)?.timeout
           ? (AbortSignal as any).timeout(4000)
-          : undefined,
+          : undefined
       });
       if (resp?.ok) {
         const data = await resp.json();
@@ -253,7 +253,7 @@ export async function searchLegalDocumentsPgvector(
           ? row.similarity: parseFloat(String(row.similarity ?? 0)),
       metadata: row.case_id ? { caseId: row.case_id } : Record<string, any>,
       source: "pgvector",
-      type: "document",
+      type: "document"
     });
   } catch (error: any) {
     console.error("legal_documents pgvector search error:", error);
@@ -285,7 +285,7 @@ export async function searchLegalDocumentsText(
       score: 0.5,
       metadata: Record<string, any>,
       source: "pgvector",
-      type: "document",
+      type: "document"
     });
   } catch (e: any) {
     console.error("legal_documents text search error:", e);
@@ -300,7 +300,7 @@ async function initializeFuzzySearch(cases: any[], evidence: any[]): Promise<any
     keys: ["title", "description", "content"],
     threshold: 0.3,
     includeScore: true,
-    includeMatches: true,
+    includeMatches: true
   };
 
   fuseCases = new Fuse(cases, fuseOptions);
@@ -321,7 +321,7 @@ async function searchWithFuzzy(
     // Search cases with Fuse.js;
     if (fuseCases) {
       const caseResults = fuseCases.search(query, {
-        limit: Math.floor(limit / 2),
+        limit: Math.floor(limit / 2)
       });
 
       caseResults.forEach((result: any) => {
@@ -332,14 +332,14 @@ async function searchWithFuzzy(
           score: 1 - ((result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score || 0), // Convert Fuse score to similarity score
           metadata: { type: "case", matches: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).matches },
           source: "pgvector", // Keep consistent with other sources
-          type: "case",
+          type: "case"
         });
       });
     }
     // Search evidence with Fuse.js;
     if (fuseEvidence) {
       const evidenceResults = fuseEvidence.search(query, {
-        limit: Math.floor(limit / 2),
+        limit: Math.floor(limit / 2)
       });
 
       evidenceResults.forEach((result: any) => {
@@ -350,7 +350,7 @@ async function searchWithFuzzy(
           score: 1 - ((result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score || 0),
           metadata: { type: "evidence", matches: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).matches },
           source: "pgvector",
-          type: "evidence",
+          type: "evidence"
         });
       });
     }
@@ -384,8 +384,8 @@ async function searchWithLoki(
         .find({
           $or: [)
             { title: { $regex: new RegExp(query, "i") } },
-            { description: { $regex: new RegExp(query, "i") } },
-          ],
+            { description: { $regex: new RegExp(query, "i") } }
+          ]
         })
         .limit(Math.floor(limit / 2)
         .data();
@@ -398,7 +398,7 @@ async function searchWithLoki(
           score: 0.9 - index * 0.1, // Mock relevance score
           metadata: { type: "case" },
           source: "pgvector",
-          type: "case",
+          type: "case"
         });
       });
     }
@@ -409,8 +409,8 @@ async function searchWithLoki(
         .find({
           $or: [)
             { title: { $regex: new RegExp(query, "i") } },
-            { description: { $regex: new RegExp(query, "i") } },
-          ],
+            { description: { $regex: new RegExp(query, "i") } }
+          ]
         })
         .limit(Math.floor(limit / 2)
         .data();
@@ -423,7 +423,7 @@ async function searchWithLoki(
           score: 0.85 - index * 0.1,
           metadata: { type: "evidence" },
           source: "pgvector",
-          type: "evidence",
+          type: "evidence"
         });
       });
     }
@@ -458,7 +458,7 @@ export async function vectorSearch(
         results: cached,
         executionTime: Date.now() - startTime,
         source: "cache",
-        totalResults: cached.length,
+        totalResults: cached.length
       };
     }
   }
@@ -472,7 +472,7 @@ export async function vectorSearch(
         const semanticResponse = await fetch('/api/rag/semantic-search', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             query,
@@ -483,9 +483,9 @@ export async function vectorSearch(
               // Convert our search filters to semantic search format
               category: filters.documentType || filters.category,
               jurisdiction: filters.jurisdiction,
-              parties: filters.parties ? [filters.parties].flat() : undefined,
-            },
-          }),
+              parties: filters.parties ? [filters.parties].flat() : undefined
+            }
+          })
         });
 
         if (semanticResponse.ok) {
@@ -505,11 +505,11 @@ export async function vectorSearch(
                 document_type: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).document_type,
                 distance: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
                 semantic_score: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score,
-                source: 'enhanced_semantic_search',
+                source: 'enhanced_semantic_search'
               },
               similarity: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).semantic_score || 1 - (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).distance,
               created_at: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).created_at,
-              url: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).metadata?.url,
+              url: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).metadata?.url
             });
 
             source = 'enhanced_semantic_search';
@@ -523,7 +523,7 @@ export async function vectorSearch(
               results: results.slice(offset, offset + limit),
               executionTime: Date.now() - startTime,
               source,
-              totalResults: results.length,
+              totalResults: results.length
             };
           }
         }
@@ -537,7 +537,7 @@ export async function vectorSearch(
     if (isPostgreSQL) {
       const legalResults = await searchLegalDocumentsPgvector(query, {
         ...options,
-        limit,
+        limit
       });
       results = legalResults;
       if (!results || results.length === 0) {
@@ -606,7 +606,7 @@ export async function vectorSearch(
       results,
       executionTime: Date.now() - startTime,
       source,
-      totalResults: results.length,
+      totalResults: results.length
     };
   } catch (error: any) {
     console.error("Vector search error:", error);
@@ -614,7 +614,7 @@ export async function vectorSearch(
       results: [],
       executionTime: Date.now() - startTime,
       source: "error",
-      totalResults: 0,
+      totalResults: 0
     };
   }
 }
@@ -670,7 +670,7 @@ async function searchWithPgVector(
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
         metadata: { type: 'case' },
         source: 'pgvector',
-        type: 'case',
+        type: 'case'
       });
     });
 
@@ -699,7 +699,7 @@ async function searchWithPgVector(
         score: typeof row.score === 'number' ? row.score: parseFloat(String(row.score ?? 0)),
         metadata: { type: 'evidence' },
         source: 'pgvector',
-        type: 'evidence',
+        type: 'evidence'
       });
     });
 
@@ -723,14 +723,14 @@ async function searchWithQdrant(
     const caseResults = await qdrant.searchCases(query, {
       limit: Math.floor(limit / 2),
       scoreThreshold: threshold,
-      filter: filters,
+      filter: filters
     });
 
     // Search evidence in Qdrant;
     const evidenceResults = await qdrant.searchEvidence(query, {
       limit: Math.floor(limit / 2),
       scoreThreshold: threshold,
-      filter: filters,
+      filter: filters
     });
 
     const results: VectorSearchResult[] = [];
@@ -744,7 +744,7 @@ async function searchWithQdrant(
         score: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score,
         metadata: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).payload || {},
         source: "qdrant",
-        type: "case",
+        type: "case"
       });
     });
 
@@ -757,7 +757,7 @@ async function searchWithQdrant(
         score: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).score,
         metadata: (result as { item?: any; score?: any; matches?: any; id?: any; content?: any; title?: any; semantic_score?: any; distance?: any; relevance_level?: any; metadata?: any; document_type?: any; created_at?: any; payload?: any; description?: any }).payload || {},
         source: "qdrant",
-        type: "evidence",
+        type: "evidence"
       });
     });
 
@@ -815,7 +815,7 @@ async function searchWithTextFallback(
         score: 0.9 - index * 0.1, // Mock relevance score
         metadata: { type: "case" },
         source: "pgvector", // Pretend it's pgvector for consistency
-        type: "case",
+        type: "case"
       });
     });
 
@@ -827,7 +827,7 @@ async function searchWithTextFallback(
         score: 0.85 - index * 0.1,
         metadata: { type: "evidence" },
         source: "pgvector",
-        type: "evidence",
+        type: "evidence"
       });
     });
 
@@ -863,5 +863,5 @@ export const search = {
   vector: vectorSearch,
   pgvector: searchWithPgVector,
   qdrant: searchWithQdrant,
-  textFallback: searchWithTextFallback,
+  textFallback: searchWithTextFallback
 };

@@ -11,7 +11,7 @@ export interface TableState {
   searchQuery: string;
   columnFilters: Map<string, string>;
   columnWidths: Map<string, number>;
-  expandedRows: Set<string | number>;,
+  expandedRows: Set<string | number>;
 }
 
 export interface TableNotification {
@@ -72,7 +72,7 @@ class TableManager {
         ...state,
         sortColumn: column,
         sortDirection: newDirection,
-        currentPage: 1 // Reset to first page when sorting,
+        currentPage: 1 // Reset to first page when sorting
       };
     });
   }
@@ -95,7 +95,7 @@ class TableManager {
 
       return {
         ...state,
-        selectedRows: newSelection,
+        selectedRows: newSelection
       };
     });
   }
@@ -114,7 +114,7 @@ class TableManager {
 
       return {
         ...state,
-        selectedRows: newSelection,
+        selectedRows: newSelection
       };
     });
   }
@@ -126,7 +126,7 @@ class TableManager {
     table.update(state => ({
       ...state,
       searchQuery: query,
-      currentPage: 1 // Reset to first page when searching,
+      currentPage: 1 // Reset to first page when searching
     });
   }
 
@@ -145,7 +145,7 @@ class TableManager {
       return {
         ...state,
         columnFilters: newFilters,
-        currentPage: 1 // Reset to first page when filtering,
+        currentPage: 1 // Reset to first page when filtering
       };
     });
   }
@@ -157,7 +157,7 @@ class TableManager {
     table.update(state => ({
       ...state,
       currentPage: page,
-      pageSize: pageSize || state.pageSize,
+      pageSize: pageSize || state.pageSize
     });
   }
 
@@ -170,7 +170,7 @@ class TableManager {
       newWidths.set(column, width);
       return {
         ...state,
-        columnWidths: newWidths,
+        columnWidths: newWidths
       };
     });
   }
@@ -189,7 +189,7 @@ class TableManager {
 
       return {
         ...state,
-        expandedRows: newExpanded,
+        expandedRows: newExpanded
       };
     });
   }
@@ -200,7 +200,7 @@ class TableManager {
     const fullNotification: TableNotification = {
       ...notification,
       id,
-      timestamp: new Date(),
+      timestamp: new Date()
     };
 
     this.notifications.update(notifications => [...notifications, fullNotification]);
@@ -236,7 +236,7 @@ class TableManager {
       type: 'info',
       title: caseId ? `Case ${caseId}` : 'Case Update',
       message,
-      duration: 7000,
+      duration: 7000
     });
   }
 
@@ -245,7 +245,7 @@ class TableManager {
       type: 'success',
       title: evidenceId ? `Evidence ${evidenceId}` : 'Evidence Update',
       message,
-      duration: 6000,
+      duration: 6000
     });
   }
 
@@ -254,7 +254,7 @@ class TableManager {
       type: 'error',
       title,
       message,
-      duration: 10000,
+      duration: 10000
     });
   }
 
@@ -263,7 +263,7 @@ class TableManager {
       type: 'success',
       title: 'Bulk Operation',
       message: `${operation} completed for ${count} items`,
-      duration: 5000,
+      duration: 5000
     });
   }
 
@@ -272,7 +272,7 @@ class TableManager {
       type: 'success',
       title: 'Export Complete',
       message: `Exported ${rowCount} rows to ${filename}`,
-      duration: 8000,
+      duration: 8000
     });
   }
 }
@@ -293,7 +293,7 @@ export function createTableStats(tableId: string) {
     hasSearch: $table.searchQuery.length > 0,
     hasFilters: $table.columnFilters.size > 0,
     totalFilters: $table.columnFilters.size,
-    expandedCount: $table.expandedRows.size,
+    expandedCount: $table.expandedRows.size
   });
 }
 
@@ -305,27 +305,27 @@ export const legalAITableConfigs = {
   cases: {
     pageSize: 25,
     sortColumn: 'created_at',
-    sortDirection: 'desc' as const,
+    sortDirection: 'desc' as const
   },
   evidence: {
     pageSize: 50,
     sortColumn: 'date_collected',
-    sortDirection: 'desc' as const,
+    sortDirection: 'desc' as const
   },
   documents: {
     pageSize: 20,
     sortColumn: 'upload_date',
-    sortDirection: 'desc' as const,
+    sortDirection: 'desc' as const
   },
   users: {
     pageSize: 30,
     sortColumn: 'last_login',
-    sortDirection: 'desc' as const,
+    sortDirection: 'desc' as const
   },
   auditLog: {
     pageSize: 100,
     sortColumn: 'timestamp',
-    sortDirection: 'desc' as const,
+    sortDirection: 'desc' as const
   }
 };
 

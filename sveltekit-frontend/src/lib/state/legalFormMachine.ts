@@ -21,7 +21,7 @@ export interface LegalFormContext {
   aiRecommendations: {
     nextAction: string;
     reasoning: string;
-    confidence: number;,
+    confidence: number;
   }[];
 }
 
@@ -33,7 +33,7 @@ export type LegalFormEvent =
   | { type: "UPDATE_CASE_DETAILS"; title: string; description: string }
   | {
       type: "SET_EVIDENCE_TYPE";
-      evidenceType: LegalFormContext["evidenceType"];,
+      evidenceType: LegalFormContext["evidenceType"];
     }
   | { type: "SET_PRIORITY"; priority: LegalFormContext["priority"] }
   | { type: "AI_SUGGESTION"; suggestions: string[] }
@@ -45,7 +45,7 @@ export type LegalFormEvent =
 export const legalFormMachine = setup({
   types: {
     context: Record<string, any> as LegalFormContext,
-    events: Record<string, any> as LegalFormEvent,
+    events: Record<string, any> as LegalFormEvent
   },
   actors: {
     submitCaseService: fromPromise(async ({ input }: { input: LegalFormContext }) => {
@@ -60,11 +60,11 @@ export const legalFormMachine = setup({
               ? crypto.randomUUID()
               : Math.random().toString(36).slice(2),
           success: true,
-          message: "Case submitted successfully",
+          message: "Case submitted successfully"
         };
       }
-    ),
-  },
+    )
+  }
 }).createMachine({
   id: "legalForm",
   initial: "evidenceUpload",
@@ -80,7 +80,7 @@ export const legalFormMachine = setup({
     currentStep: 1,
     totalSteps: 4,
     validationErrors: Record<string, any>,
-    aiRecommendations: [],
+    aiRecommendations: []
   },
 
   states: {
@@ -89,7 +89,7 @@ export const legalFormMachine = setup({
         description: "Upload and classify evidence files",
         aiContext: "evidence_management",
         requiredFields: ["evidenceFiles"],
-        suggestedHelp: "Upload evidence files to begin case analysis",
+        suggestedHelp: "Upload evidence files to begin case analysis"
       },
 
       on: {
@@ -104,8 +104,8 @@ export const legalFormMachine = setup({
               return hasDigitalEvidence
                 ? Math.min(context.confidence + 30, 100)
                 : context.confidence + 10;
-            },
-          }),
+            }
+          })
         },
 
         SET_EVIDENCE_TYPE: {
@@ -117,27 +117,27 @@ export const legalFormMachine = setup({
                 digital: [
                   "Consider OCR analysis",
                   "Check metadata integrity",
-                  "Verify timestamps",
+                  "Verify timestamps"
                 ],
                 physical: [
                   "Document chain of custody",
                   "Photograph all angles",
-                  "Note condition",
+                  "Note condition"
                 ],
                 testimony: [
                   "Schedule witness interview",
                   "Prepare statement template",
-                  "Verify identity",
+                  "Verify identity"
                 ],
                 forensic: [
                   "Lab analysis required",
                   "Expert testimony needed",
-                  "Technical validation",
-                ],
+                  "Technical validation"
+                ]
               };
               return suggestions[event.evidenceType] || [];
-            },
-          }),
+            }
+          })
         },
 
         NEXT: {
@@ -145,8 +145,8 @@ export const legalFormMachine = setup({
           guard: ({ context }) => context.evidenceFiles.length > 0,
           actions: assign({
             currentStep: 2,
-            confidence: ({ context }) => Math.min(context.confidence + 20, 100),
-          }),
+            confidence: ({ context }) => Math.min(context.confidence + 20, 100)
+          })
         },
 
         REQUEST_AI_HELP: {
@@ -155,12 +155,12 @@ export const legalFormMachine = setup({
               {
                 nextAction: "Upload evidence files",
                 reasoning: "Evidence is required to proceed with case analysis",
-                confidence: 95,
-              },
-            ],
-          }),
-        },
-      },
+                confidence: 95
+              }
+            ]
+          })
+        }
+      }
     },
 
     caseDetails: {
@@ -168,7 +168,7 @@ export const legalFormMachine = setup({
         description: "Enter case title, description, and priority",
         aiContext: "case_management",
         requiredFields: ["caseTitle", "caseDescription", "priority"],
-        suggestedHelp: "Provide case details for proper categorization",
+        suggestedHelp: "Provide case details for proper categorization"
       },
 
       entry: assign({
@@ -181,7 +181,7 @@ export const legalFormMachine = setup({
               nextAction: "Set priority to HIGH",
               reasoning:
                 "Forensic evidence typically requires urgent processing",
-              confidence: 85,
+              confidence: 85
             });
           }
 
@@ -190,12 +190,12 @@ export const legalFormMachine = setup({
             recommendations.push({
               nextAction: "Consider bulk processing workflow",
               reasoning: "Large evidence sets benefit from automated analysis",
-              confidence: 78,
+              confidence: 78
             });
           }
 
           return recommendations;
-        },
+        }
       }),
 
       on: {
@@ -222,8 +222,8 @@ export const legalFormMachine = setup({
                   : context.confidence + 5;
               }
               return context.confidence;
-            },
-          }),
+            }
+          })
         },
 
         SET_PRIORITY: {
@@ -238,12 +238,12 @@ export const legalFormMachine = setup({
                 return [
                   "Enable real-time monitoring",
                   "Assign senior analyst",
-                  "Fast-track processing",
+                  "Fast-track processing"
                 ];
               }
               return context.aiSuggestions;
-            },
-          }),
+            }
+          })
         },
 
         VALIDATE_STEP: {
@@ -257,8 +257,8 @@ export const legalFormMachine = setup({
                 errors.caseDescription = "Case description is required";
               }
               return errors;
-            },
-          }),
+            }
+          })
         },
 
         NEXT: {
@@ -269,13 +269,13 @@ export const legalFormMachine = setup({
             Object.keys(context.validationErrors).length === 0,
           actions: assign({
             currentStep: 3,
-            confidence: ({ context }) => Math.min(context.confidence + 25, 100),
-          }),
+            confidence: ({ context }) => Math.min(context.confidence + 25, 100)
+          })
         },
 
         BACK: {
           target: "evidenceUpload",
-          actions: assign({ currentStep: 1 }),
+          actions: assign({ currentStep: 1 })
         },
 
         REQUEST_AI_HELP: {
@@ -284,12 +284,12 @@ export const legalFormMachine = setup({
               {
                 nextAction: "Use case templates",
                 reasoning: `For ${context.evidenceType} evidence, consider using predefined templates`,
-                confidence: 82,
-              },
-            ],
-          }),
-        },
-      },
+                confidence: 82
+              }
+            ]
+          })
+        }
+      }
     },
 
     review: {
@@ -297,7 +297,7 @@ export const legalFormMachine = setup({
         description: "Review all case details before submission",
         aiContext: "quality_assurance",
         requiredFields: [],
-        suggestedHelp: "Review and verify all case information",
+        suggestedHelp: "Review and verify all case information"
       },
 
       entry: assign({
@@ -322,7 +322,7 @@ export const legalFormMachine = setup({
             recommendations.push({
               nextAction: "Add more evidence details",
               reasoning: "Case confidence is below optimal threshold",
-              confidence: 90,
+              confidence: 90
             });
           }
 
@@ -333,12 +333,12 @@ export const legalFormMachine = setup({
             recommendations.push({
               nextAction: "Attach witness statement document",
               reasoning: "Testimony cases benefit from written statements",
-              confidence: 85,
+              confidence: 85
             });
           }
 
           return recommendations;
-        },
+        }
       }),
 
       on: {
@@ -346,24 +346,24 @@ export const legalFormMachine = setup({
           target: "submitting",
           actions: assign({
             currentStep: 4,
-            confidence: ({ context }) => Math.min(context.confidence + 10, 100),
-          }),
+            confidence: ({ context }) => Math.min(context.confidence + 10, 100)
+          })
         },
 
         BACK: {
           target: "caseDetails",
-          actions: assign({ currentStep: 2 }),
+          actions: assign({ currentStep: 2 })
         },
 
         APPLY_AI_RECOMMENDATION: {
           actions: assign({
             aiSuggestions: ({ context, event }) => [
               ...context.aiSuggestions,
-              `Applied: ${event.recommendation}`,
-            ],
-          }),
-        },
-      },
+              `Applied: ${event.recommendation}`
+            ]
+          })
+        }
+      }
     },
 
     submitting: {
@@ -371,7 +371,7 @@ export const legalFormMachine = setup({
         description: "Submitting case to system",
         aiContext: "case_submission",
         requiredFields: [],
-        suggestedHelp: "Case is being processed...",
+        suggestedHelp: "Case is being processed..."
       },
 
       invoke: {
@@ -383,26 +383,26 @@ export const legalFormMachine = setup({
             confidence: 100,
             aiSuggestions: [
               "Case submitted successfully",
-              "Track progress in dashboard",
-            ],
-          }),
+              "Track progress in dashboard"
+            ]
+          })
         },
         onError: {
           target: "error",
           actions: assign({
             validationErrors: {
-              submit: "Case submission failed. Please try again.",
-            },
-          }),
-        },
-      },
+              submit: "Case submission failed. Please try again."
+            }
+          })
+        }
+      }
     },
 
     success: {
       meta: {
         description: "Case successfully submitted",
         aiContext: "completion",
-        suggestedHelp: "Case has been created successfully",
+        suggestedHelp: "Case has been created successfully"
       },
 
       on: {
@@ -419,24 +419,24 @@ export const legalFormMachine = setup({
             confidence: 0,
             currentStep: 1,
             validationErrors: Record<string, any>,
-            aiRecommendations: [],
-          }),
-        },
-      },
+            aiRecommendations: []
+          })
+        }
+      }
     },
     error: {
       meta: {
         description: "Error occurred during submission",
         aiContext: "error_handling",
-        suggestedHelp: "Please review the error and try again",
+        suggestedHelp: "Please review the error and try again"
       },
       on: {
         BACK: {
           target: "review",
           actions: assign({
             currentStep: 3,
-            validationErrors: Record<string, any>,
-          }),
+            validationErrors: Record<string, any>
+          })
         },
         REQUEST_AI_HELP: {
           actions: assign({
@@ -444,14 +444,14 @@ export const legalFormMachine = setup({
               {
                 nextAction: "Check network connection",
                 reasoning: "Submission errors are often connectivity related",
-                confidence: 75,
-              },
-            ],
-          }),
-        },
-      },
-    },
-  },
+                confidence: 75
+              }
+            ]
+          })
+        }
+      }
+    }
+  }
 });
 
 // Helper functions for AI-aware state management;
@@ -462,7 +462,7 @@ export function getStateDescription(state: StateValue): string {
     review: "Reviewing case details",
     submitting: "Submitting case to system",
     success: "Case submitted successfully",
-    error: "Error occurred during submission",
+    error: "Error occurred during submission"
   };
 
   return descriptions[state as keyof typeof descriptions] || "Unknown state";
@@ -478,14 +478,14 @@ export function getAISuggestions(
   const stateSuggestions = {
     evidenceUpload: [
       "Drag and drop files here",
-      "Supported formats: PDF, JPG, PNG, DOC",
+      "Supported formats: PDF, JPG, PNG, DOC"
     ],
     caseDetails: [
       "Be specific in descriptions",
-      "Include relevant case law if available",
+      "Include relevant case law if available"
     ],
     review: ["Double-check evidence classification", "Verify priority level"],
-    submitting: ["Do not close this window", "Submission in progress..."],
+    submitting: ["Do not close this window", "Submission in progress..."]
   };
 
   const stateSpecific =
@@ -503,19 +503,19 @@ export function getNextPossibleActions(state: StateValue): string[] {
       "UPLOAD_EVIDENCE",
       "SET_EVIDENCE_TYPE",
       "NEXT",
-      "REQUEST_AI_HELP",
+      "REQUEST_AI_HELP"
     ],
     caseDetails: [
       "UPDATE_CASE_DETAILS",
       "SET_PRIORITY",
       "VALIDATE_STEP",
       "NEXT",
-      "BACK",
+      "BACK"
     ],
     review: ["SUBMIT", "BACK", "APPLY_AI_RECOMMENDATION"],
     submitting: [],
     success: ["RESET_FORM"],
-    error: ["BACK", "REQUEST_AI_HELP"],
+    error: ["BACK", "REQUEST_AI_HELP"]
   };
 
   return actions[state as keyof typeof actions] || [];
@@ -558,7 +558,7 @@ export async function generateBestPractices(
     "Ensure all required fields are filled before submission.",
     "Log all state transitions and user actions for auditability.",
     "Utilize semantic search to suggest relevant legal precedents or templates.",
-    "Provide clear user feedback on submission status and errors.",
+    "Provide clear user feedback on submission status and errors."
   ];
   // Combine static and dynamic recommendations, deduplicated
   return Array.from(new Set([...dynamicPractices, ...basePractices]);

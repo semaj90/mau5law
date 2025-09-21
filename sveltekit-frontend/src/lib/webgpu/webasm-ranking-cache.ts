@@ -13,7 +13,7 @@ export interface WASMRankingEntry {
   rankings: Uint16Array;
   confidence: number;
   timestamp: number;
-  crc32: number;,
+  crc32: number;
 }
 
 export interface WASMCacheConfig {
@@ -49,7 +49,7 @@ export interface CacheMetrics {
   avgWasmTime: number;
   avgServiceWorkerTime: number;
   cacheSize: number;
-  memoryUsage: number;,
+  memoryUsage: number;
 }
 
 /**
@@ -69,7 +69,7 @@ export class WebASMRankingCache {
     avgWasmTime: 0,
     avgServiceWorkerTime: 0,
     cacheSize: 0,
-    memoryUsage: 0,
+    memoryUsage: 0
   };
 
   constructor(private config: WASMCacheConfig) {}
@@ -117,7 +117,7 @@ export class WebASMRankingCache {
             id: request.id,
             rankings: this.deserializeRankings(cached.rankings, cached.summary),
             cached: true,
-            processingTime: performance.now() - startTime,
+            processingTime: performance.now() - startTime
           };
         }
       }
@@ -194,7 +194,7 @@ export class WebASMRankingCache {
           'X-Cache-Key': hash,
           'X-Rankings-Count': rankings.rankings.length.toString()
         },
-        body: payload,
+        body: payload
       });
 
       if (response.ok) {
@@ -355,7 +355,7 @@ export class WebASMRankingCache {
         if (type === 'batch-ranking-complete') {
           const results = data.map((result: any) => ({
             ...result,
-            serviceWorkerTime: performance.now() - swStartTime,
+            serviceWorkerTime: performance.now() - swStartTime
           });
           resolve(results);
         } else if (type === 'batch-ranking-error') {
@@ -369,7 +369,7 @@ export class WebASMRankingCache {
         data: {
           requests,
           wasmModule: this.wasmModule,
-          config: this.config,
+          config: this.config
         }
       }, [channel.port2]);
     });
@@ -415,7 +415,7 @@ export class WebASMRankingCache {
       for (let i = 0; i < resultCount; i++) {
         results.push({
           index: Math.floor(resultData[i * 2]),
-          score: resultData[i * 2 + 1],
+          score: resultData[i * 2 + 1]
         });
       }
 
@@ -501,7 +501,7 @@ export class WebASMRankingCache {
       rankings: rankingsArray,
       confidence: rankings.length > 0 ? rankings[0].score: 0,
       timestamp: Date.now(),
-      crc32: this.calculateCRC32(rankingsArray.buffer),
+      crc32: this.calculateCRC32(rankingsArray.buffer)
     };
   }
 
@@ -545,7 +545,7 @@ export class WebASMRankingCache {
     for (let i = 0; i < rankings.length; i += 2) {
       results.push({
         index: rankings[i],
-        score: rankings[i + 1] / 10000,
+        score: rankings[i + 1] / 10000
       });
     }
 
@@ -593,7 +593,7 @@ export class WebASMRankingCache {
     for (let i = 0; i < rankingsCount; i++) {
       rankings.push({
         index: Math.floor(rankingDataView[i * 2]),
-        score: rankingDataView[i * 2 + 1],
+        score: rankingDataView[i * 2 + 1]
       });
     }
 
@@ -653,7 +653,7 @@ export class WebASMRankingCache {
         vectors: testVectors,
         topK: 2,
         threshold: 0.0,
-        useCache: false,
+        useCache: false
       };
 
       await this.rank(testRequest);
@@ -694,7 +694,7 @@ export const webASMRankingCache = new WebASMRankingCache({
   maxEntries: 1000,
   ttlSeconds: 300, // 5 minutes
   enableServiceWorker: true,
-  wasmModulePath: '/webasm/ranking-cache.wasm',
+  wasmModulePath: '/webasm/ranking-cache.wasm'
 });
 
 // Auto-initialize on client side;

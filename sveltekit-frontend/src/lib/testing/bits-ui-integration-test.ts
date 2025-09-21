@@ -8,7 +8,7 @@ export interface BitsUITestResult {
   component: string;
   status: 'pass' | 'fail' | 'warning';
   message: string;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export class BitsUIIntegrationTester {
@@ -147,7 +147,7 @@ export class BitsUIIntegrationTester {
       component,
       status,
       message,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
   }
 

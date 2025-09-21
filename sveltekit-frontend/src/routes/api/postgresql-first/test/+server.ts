@@ -105,13 +105,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
           ingestStatus: 'pending',
           tags: ['contract', 'legal-agreement'],
           isAdmissible: true,
-          confidentialityLevel: 'internal',
+          confidentialityLevel: 'internal'
         }).returning();
 
         results.postgresql = {
           status: 'success',
           evidenceId: evidenceId,
-          createdAt: createdEvidence.createdAt,
+          createdAt: createdEvidence.createdAt
         };
 
         results.steps.push({
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (testType === 'full') {
           try {
             const redisClient = createClient({
-              url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+              url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
             });
             
             await redisClient.connect();
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               userId: userId,
               correlationId: correlationId,
               priority: 'high',
-              timestamp: new Date().toISOString(),
+              timestamp: new Date().toISOString()
             };
 
             await redisClient.xAdd('autotag:requests', '*', eventData);
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             results.redis = {
               status: 'success',
               streamName: 'autotag:requests',
-              eventId: 'published',
+              eventId: 'published'
             };
 
             results.steps.push({
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           } catch (error: any) {
             results.redis = {
               status: 'error',
-              error: error.message,
+              error: error.message
             };
             results.summary.errors.push(`Redis event publishing failed: ${error.message}`);
             console.error(`❌ Step 2 failed:`, error);
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               metadata: {
                 evidence_id: evidenceId,
                 source: 'test_workflow',
-                correlation_id: correlationId,
+                correlation_id: correlationId
               }
             };
 
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 'Content-Type': 'application/json',
                 'X-Correlation-ID': correlationId
               },
-              body: JSON.stringify(ingestPayload),
+              body: JSON.stringify(ingestPayload)
             });
 
             if (ingestResponse.ok) {
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 status: 'success',
                 documentId: ingestResult.document_id,
                 embeddingId: ingestResult.embedding_id,
-                processTime: ingestResult.process_time_ms,
+                processTime: ingestResult.process_time_ms
               };
 
               // Link document to evidence;
@@ -214,7 +214,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 step: 'go_ingest_service',
                 status: 'success',
                 timestamp: new Date().toISOString(),
-                details: ingestResult,
+                details: ingestResult
               });
 
               console.log(`✅ Step 3: Go ingest service processed document ${ingestResult.document_id}`);
@@ -224,7 +224,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           } catch (error: any) {
             results.ingestService = {
               status: 'error',
-              error: error.message,
+              error: error.message
             };
             results.summary.errors.push(`Ingest service failed: ${error.message}`);
             console.error(`❌ Step 3 failed:`, error);
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
               results.qdrantSync = {
                 status: 'success',
                 synced: true,
-                evidenceId: evidenceId,
+                evidenceId: evidenceId
               };
 
               results.steps.push({
@@ -260,7 +260,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           } catch (error: any) {
             results.qdrantSync = {
               status: 'error',
-              error: error.message,
+              error: error.message
             };
             results.summary.errors.push(`Qdrant sync failed: ${error.message}`);
             console.error(`❌ Step 4 failed:`, error);
@@ -270,7 +270,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       } catch (error: any) {
         results.postgresql = {
           status: 'error',
-          error: error.message,
+          error: error.message
         };
         results.summary.errors.push(`PostgreSQL operation failed: ${error.message}`);
         console.error(`❌ PostgreSQL step failed:`, error);
@@ -292,7 +292,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       message: results.summary.success 
         ? 'PostgreSQL-first workflow test completed successfully'
         : 'PostgreSQL-first workflow test completed with errors',
-      data: results,
+      data: results
     });
 
   } catch (error: any) {
@@ -317,7 +317,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           message: 'System health check completed',
-          data: health,
+          data: health
         });
 
       case 'stats':
@@ -326,7 +326,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           message: 'PostgreSQL statistics retrieved',
-          data: stats,
+          data: stats
         });
 
       case 'sync-stats':
@@ -335,7 +335,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           message: 'Qdrant sync statistics retrieved',
-          data: syncStats,
+          data: syncStats
         });
 
       default:;
@@ -362,7 +362,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       message: 'Failed to process request',
-      error: error.message,
+      error: error.message
     }, { status: 500 });
   }
 };
@@ -373,7 +373,7 @@ async function checkSystemHealth(): Promise<any> {
     redis: { status: 'unknown', details: null },
     ingestService: { status: 'unknown', details: null },
     qdrant: { status: 'unknown', details: null },
-    overall: 'unknown',
+    overall: 'unknown'
   };
 
   // Check PostgreSQL;
@@ -417,7 +417,7 @@ async function checkSystemHealth(): Promise<any> {
     const qdrantHealth = await postgresqlQdrantSync.healthCheck();
     health.qdrant = { 
       status: qdrantHealth.status === 'healthy' ? 'healthy' : 'unhealthy', 
-      details: qdrantHealth ,
+      details: qdrantHealth 
     };
   } catch (error: any) {
     health.qdrant = { status: 'unhealthy', details: { error: error.message } };
@@ -470,7 +470,7 @@ async function getPostgreSQLStats(): Promise<any> {
       evidence: evidenceStats,
       documents: documentStats,
       embeddings: embeddingStats,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
   } catch (error: any) {
     throw new Error(`Failed to get PostgreSQL stats: ${error.message}`);

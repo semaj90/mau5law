@@ -95,7 +95,7 @@ export class GlobalLokiStore {
 
   async updateJob(jobId: string, patch: any) {
     const existing = (this.jobs as any).by('id', jobId);
-    const merged = { ...(existing || { id: jobId ,}), ...patch };
+    const merged = { ...(existing || { id: jobId }), ...patch };
     this.upsertLocal(merged);
     this.publish(merged);
   }

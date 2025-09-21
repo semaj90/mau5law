@@ -11,7 +11,7 @@ export interface BaseMachineContext {
   sessionId: string;
   error?: string;
   retryCount: number;
-  timestamp: number;,
+  timestamp: number;
 }
 
 // AI Processing Context;
@@ -39,7 +39,7 @@ export interface AITaskResult {
   metrics?: {
     processingTime: number;
     memoryUsed: string;
-    throughput: number;,
+    throughput: number;
   };
 }
 
@@ -48,7 +48,7 @@ export interface DocumentContext extends BaseMachineContext {
   document: DocumentInfo;
   extractedFields?: ExtractedField[];
   ocrResult?: OCRResult;
-  processingStage: 'upload' | 'ocr' | 'extraction' | 'validation' | 'complete';,
+  processingStage: 'upload' | 'ocr' | 'extraction' | 'validation' | 'complete';
 }
 
 export interface DocumentInfo {
@@ -63,13 +63,13 @@ export interface ExtractedField {
   name: string;
   value: string;
   confidence: number;
-  type: 'text' | 'date' | 'number' | 'email' | 'phone';,
+  type: 'text' | 'date' | 'number' | 'email' | 'phone';
 }
 
 export interface OCRResult {
   text: string;
   confidence: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 // Go Microservice Context;
@@ -96,7 +96,7 @@ export interface GoServiceResponse {
   status: number;
   data: any;
   headers: Record<string, string>;
-  duration: number;,
+  duration: number;
 }
 
 // RAG Context;
@@ -104,7 +104,7 @@ export interface RAGContext extends BaseMachineContext {
   query: RAGQuery;
   results?: RAGResult[];
   searchStage: 'analyzing' | 'searching' | 'ranking' | 'synthesizing' | 'complete';
-  enhancedMode: boolean;,
+  enhancedMode: boolean;
 }
 
 export interface RAGQuery {

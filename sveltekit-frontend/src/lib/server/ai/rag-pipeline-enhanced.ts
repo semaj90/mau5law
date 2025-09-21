@@ -48,7 +48,7 @@ export interface RAGConfig {
   redis: RedisConfig;
   ollama: OllamaConfig;
   rag: RAGSettings;
-  security: SecuritySettings;,
+  security: SecuritySettings;
 }
 
 /**
@@ -63,7 +63,7 @@ export interface DatabaseConfig {
   max: number;
   idle_timeout: number;
   ssl: boolean | string;
-  connect_timeout: number;,
+  connect_timeout: number;
 }
 
 /**
@@ -76,7 +76,7 @@ export interface RedisConfig {
   maxRetriesPerRequest: number;
   cacheTtl: number;
   enableReadyCheck: boolean;
-  lazyConnect: boolean;,
+  lazyConnect: boolean;
 }
 
 /**
@@ -90,7 +90,7 @@ export interface OllamaConfig {
   timeout: number;
   temperature: number;
   numCtx: number;
-  numPredict: number;,
+  numPredict: number;
 }
 
 /**
@@ -105,7 +105,7 @@ export interface RAGSettings {
   enableMetrics: boolean;
   enableAutoTagging: boolean;
   enableCaching: boolean;
-  batchSize: number;,
+  batchSize: number;
 }
 
 /**
@@ -114,17 +114,17 @@ export interface RAGSettings {
 export interface SecuritySettings {
   rateLimit: {
     perMinute: number;
-    windowMs: number;,
+    windowMs: number;
   };
   validation: {
     maxInputLength: number;
     maxDocumentSize: number;
-    allowedDocumentTypes: string[];,
+    allowedDocumentTypes: string[];
   };
   sanitization: {
     removeHtmlTags: boolean;
     removeSqlChars: boolean;
-    maxLineLength: number;,
+    maxLineLength: number;
   };
 }
 
@@ -141,7 +141,7 @@ const createDefaultConfig = (): RAGConfig => ({
     max: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '20'),
     idle_timeout: parseInt(process.env.DATABASE_IDLE_TIMEOUT || '20'),
     ssl: process.env.NODE_ENV === 'production' ? 'require' : false,
-    connect_timeout: parseInt(process.env.DATABASE_CONNECT_TIMEOUT || '10'),
+    connect_timeout: parseInt(process.env.DATABASE_CONNECT_TIMEOUT || '10')
   },
   redis: {
     host: (process.env.REDIS_HOST as any) || 'localhost',
@@ -150,7 +150,7 @@ const createDefaultConfig = (): RAGConfig => ({
     maxRetriesPerRequest: parseInt(process.env.REDIS_MAX_RETRIES || '3'),
     cacheTtl: parseInt(process.env.RAG_CACHE_TTL || '86400'), // 24 hours
     enableReadyCheck: true,
-    lazyConnect: false,
+    lazyConnect: false
   },
   ollama: {
     baseUrl: ENV_CONFIG.OLLAMA_URL,
@@ -160,7 +160,7 @@ const createDefaultConfig = (): RAGConfig => ({
     timeout: parseInt(process.env.OLLAMA_TIMEOUT || '30000'),
     temperature: parseFloat(process.env.OLLAMA_TEMPERATURE || '0.3'),
     numCtx: parseInt(process.env.OLLAMA_NUM_CTX || '8192'),
-    numPredict: parseInt(process.env.OLLAMA_NUM_PREDICT || '2048'),
+    numPredict: parseInt(process.env.OLLAMA_NUM_PREDICT || '2048')
   },
   rag: {
     chunkSize: parseInt(process.env.RAG_CHUNK_SIZE || '1500'),
@@ -171,26 +171,26 @@ const createDefaultConfig = (): RAGConfig => ({
     enableMetrics: process.env.RAG_ENABLE_METRICS !== 'false',
     enableAutoTagging: process.env.RAG_ENABLE_AUTO_TAGGING !== 'false',
     enableCaching: process.env.RAG_ENABLE_CACHING !== 'false',
-    batchSize: parseInt(process.env.RAG_BATCH_SIZE || '10'),
+    batchSize: parseInt(process.env.RAG_BATCH_SIZE || '10')
   },
   security: {
     rateLimit: {
       perMinute: parseInt(process.env.RAG_RATE_LIMIT_PER_MINUTE || '60'),
-      windowMs: parseInt(process.env.RAG_RATE_LIMIT_WINDOW_MS || '60000'),
+      windowMs: parseInt(process.env.RAG_RATE_LIMIT_WINDOW_MS || '60000')
     },
     validation: {
       maxInputLength: parseInt(process.env.RAG_MAX_INPUT_LENGTH || '10000'),
       maxDocumentSize: parseInt(process.env.RAG_MAX_DOCUMENT_SIZE || '10485760'), // 10MB
       allowedDocumentTypes: (
         process.env.RAG_ALLOWED_DOC_TYPES || 'contract,statute,case_law,brief,memo'
-      ).split(','),
+      ).split(',')
     },
     sanitization: {
       removeHtmlTags: process.env.RAG_REMOVE_HTML_TAGS !== 'false',
       removeSqlChars: process.env.RAG_REMOVE_SQL_CHARS !== 'false',
-      maxLineLength: parseInt(process.env.RAG_MAX_LINE_LENGTH || '2000'),
-    },
-  },
+      maxLineLength: parseInt(process.env.RAG_MAX_LINE_LENGTH || '2000')
+    }
+  }
 });
 
 // ===== INTERFACES & TYPES =====
@@ -266,7 +266,7 @@ export interface AnswerResult {
   legalPrecedents?: string[];
   riskAssessment?: {
     level: 'low' | 'medium' | 'high';
-    factors: string[];,
+    factors: string[];
   };
 }
 
@@ -511,7 +511,7 @@ class LegalChunker {
         '\n\nFACTS', '\n\nHOLDING', '\n\nANALYSIS', // Case law
         '\n\n', '\n', '.', '!', '?', ';', ':', ' ', ''
       ],
-      keepSeparator: true,
+      keepSeparator: true
     });
   }
 
@@ -597,20 +597,20 @@ class LegalChunker {
         parties: /(?:PARTIES|Party|Parties to this Agreement)[^\n]*\n([\s\S]*?)(?=\n(?:RECITALS|WHEREAS|BACKGROUND|TERMS|$))/i,
         recitals: /(?:RECITALS|WHEREAS)[^\n]*\n([\s\S]*?)(?=\n(?:NOW THEREFORE|TERMS|AGREEMENT|$))/i,
         terms: /(?:TERMS|AGREEMENT|NOW THEREFORE)[^\n]*\n([\s\S]*?)(?=\n(?:SIGNATURES|EXECUTION|$))/i,
-        signatures: /(?:SIGNATURES|EXECUTION|IN WITNESS WHEREOF)[^\n]*\n([\s\S]*?)$/i,
+        signatures: /(?:SIGNATURES|EXECUTION|IN WITNESS WHEREOF)[^\n]*\n([\s\S]*?)$/i
       },
       case_law: {
         facts: /(?:FACTS|BACKGROUND|PROCEDURAL HISTORY)[^\n]*\n([\s\S]*?)(?=\n(?:ISSUE|HOLDING|ANALYSIS|$))/i,
         issues: /(?:ISSUE|ISSUES|QUESTION)[^\n]*\n([\s\S]*?)(?=\n(?:HOLDING|ANALYSIS|RULE|$))/i,
         holding: /(?:HOLDING|RULE|RULING)[^\n]*\n([\s\S]*?)(?=\n(?:ANALYSIS|REASONING|CONCLUSION|$))/i,
         analysis: /(?:ANALYSIS|REASONING|DISCUSSION)[^\n]*\n([\s\S]*?)(?=\n(?:CONCLUSION|DISSENT|$))/i,
-        conclusion: /(?:CONCLUSION|DISPOSITION)[^\n]*\n([\s\S]*?)$/i,
+        conclusion: /(?:CONCLUSION|DISPOSITION)[^\n]*\n([\s\S]*?)$/i
       },
       statute: {
         title: /(?:TITLE|CHAPTER|ACT)[^\n]*\n([\s\S]*?)(?=\n(?:SECTION|§|DEFINITIONS|$))/i,
         definitions: /(?:DEFINITIONS|TERMS)[^\n]*\n([\s\S]*?)(?=\n(?:SECTION|§|PROVISIONS|$))/i,
         provisions: /(?:PROVISIONS|REQUIREMENTS)[^\n]*\n([\s\S]*?)(?=\n(?:PENALTIES|ENFORCEMENT|$))/i,
-        enforcement: /(?:ENFORCEMENT|PENALTIES|SANCTIONS)[^\n]*\n([\s\S]*?)$/i,
+        enforcement: /(?:ENFORCEMENT|PENALTIES|SANCTIONS)[^\n]*\n([\s\S]*?)$/i
       }
     };
 
@@ -739,7 +739,7 @@ export class EnhancedLegalRAGPipeline {
           console.warn('Redis reconnect on error:', err.message);
           return err.message.includes('READONLY');
         },
-        lazyConnect: this.config.redis.lazyConnect,
+        lazyConnect: this.config.redis.lazyConnect
       });
 
       // Test connection
@@ -761,8 +761,8 @@ export class EnhancedLegalRAGPipeline {
         model: this.config.ollama.embeddingModel,
         requestOptions: {
           useMMap: true,
-          numThread: 8,
-        },
+          numThread: 8
+        }
       });
 
       // Initialize LLM;
@@ -788,9 +788,9 @@ export class EnhancedLegalRAGPipeline {
             handleLLMError: async (err) => {
               console.error('[RAG] LLM Error:', err);
               this.metrics.incrementCounter('llm_errors');
-            },
-          },
-        ],
+            }
+          }
+        ]
       });
 
       console.log('[RAG] Ollama components initialized successfully');
@@ -886,7 +886,7 @@ export class EnhancedLegalRAGPipeline {
               ...metadata,
               ingestionDate: new Date().toISOString(),
               version: '1.0',
-              source: 'rag_pipeline',
+              source: 'rag_pipeline'
             }
           })
           .returning();
@@ -936,8 +936,8 @@ export class EnhancedLegalRAGPipeline {
                     totalChunks: chunks.length,
                     confidentialityLevel,
                     legalSections: Object.keys(legalSections),
-                    ...metadata,
-                  },
+                    ...metadata
+                  }
                 };
               } catch (error: any) {
                 const errorMsg = `Failed to process chunk ${i + idx}: ${error}`;
@@ -976,7 +976,7 @@ export class EnhancedLegalRAGPipeline {
               tag: tag.tag,
               confidence: tag.confidence.toString(),
               source: 'ai_analysis',
-              model: this.config.ollama.llmModel,
+              model: this.config.ollama.llmModel
             });
           }
         } catch (error: any) {
@@ -994,7 +994,7 @@ export class EnhancedLegalRAGPipeline {
       this.metrics.incrementCounter('documents_ingested');
       this.metrics.recordTiming('ingestion_time', processingTime, {
         document_type: documentType,
-        confidentiality_level: confidentialityLevel,
+        confidentiality_level: confidentialityLevel
       });
 
       return {
@@ -1008,7 +1008,7 @@ export class EnhancedLegalRAGPipeline {
           documentType,
           confidentialityLevel,
           legalSections: Object.keys(legalSections),
-          totalChunks: chunks.length,
+          totalChunks: chunks.length
         },
         confidentialityLevel
       };
@@ -1159,13 +1159,13 @@ export class EnhancedLegalRAGPipeline {
         textRank: r.text_rank || 0,
         metadata: includeMetadata ? r.metadata: Record<string, any>,
         confidentialityLevel: r.confidentiality_level,
-        highlights: r.highlights,
+        highlights: r.highlights
       });
 
       this.metrics.incrementCounter('searches_performed');
       this.metrics.recordTiming('search_time', Date.now() - startTime, {
         document_type: documentType || 'all',
-        sort_by: sortBy,
+        sort_by: sortBy
       });
 
       return searchResults;
@@ -1214,7 +1214,7 @@ export class EnhancedLegalRAGPipeline {
         limit: maxSources,
         threshold: 0.6,
         userId,
-        sortBy: 'relevance',
+        sortBy: 'relevance'
       });
 
       if (requireSources && relevantDocs.length === 0) {
@@ -1223,7 +1223,7 @@ export class EnhancedLegalRAGPipeline {
           sources: [],
           confidence: 0,
           keyPoints: [],
-          processingTime: Date.now() - startTime,
+          processingTime: Date.now() - startTime
         };
       }
 
@@ -1261,18 +1261,18 @@ Answer:
       const chain = RunnableSequence.from([);
         {
           context: () => context,
-          question: new RunnablePassthrough(),
+          question: new RunnablePassthrough()
         },
         promptTemplate,
         this.llm!,
-        new StringOutputParser(),
+        new StringOutputParser()
       ]);
 
       const llmResponse = await Promise.race([
         chain.invoke(question),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('LLM response timed out')), this.config.rag.timeoutMs)
-        ),
+        )
       ]);
 
       // Handle streaming response or direct string
@@ -1311,8 +1311,8 @@ Answer:
             confidentialityLevel,
             citations: citations.length,
             legalPrecedents: legalPrecedents.length,
-            riskLevel: riskAssessment.level,
-          },
+            riskLevel: riskAssessment.level
+          }
         });
       } catch (error: any) {
         console.warn('Failed to log query:', error);
@@ -1326,7 +1326,7 @@ Answer:
           title: d.title,
           score: d.score,
           excerpt: d.content.substring(0, 200) + '...',
-          confidentialityLevel: d.confidentialityLevel,
+          confidentialityLevel: d.confidentialityLevel
         })),
         confidence: analysis.confidence,
         keyPoints: analysis.keyPoints,
@@ -1339,7 +1339,7 @@ Answer:
       this.metrics.incrementCounter('questions_answered');
       this.metrics.recordTiming('qa_time', (result as { processingTime?: any; status?: any; reason?: any }).processingTime, {
         confidentiality_level: confidentialityLevel || 'general',
-        sources_count: relevantDocs.length.toString(),
+        sources_count: relevantDocs.length.toString()
       });
 
       return result;
@@ -1360,7 +1360,7 @@ Answer:
           model: this.config.ollama.llmModel,
           isSuccessful: false,
           errorMessage: error instanceof Error ? error.message: 'Unknown error',
-          processingTime,
+          processingTime
         });
       } catch (logError) {
         console.warn('Failed to log error query:', logError);
@@ -1438,14 +1438,14 @@ Provide specific clause references and line numbers where applicable. Focus on p
       const chain = RunnableSequence.from([
         contractPrompt,
         this.llm!,
-        new StringOutputParser(),
+        new StringOutputParser()
       ]);
 
       const llmResponse = await Promise.race([
         chain.invoke({ contract: sanitizedText }),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('Contract analysis timed out')), this.config.rag.timeoutMs)
-        ),
+        )
       ]);
 
       // Handle streaming response or direct string
@@ -1459,7 +1459,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
 
       this.metrics.incrementCounter('contracts_analyzed');
       this.metrics.recordTiming('contract_analysis_time', processingTime, {
-        jurisdiction: jurisdiction || 'general',
+        jurisdiction: jurisdiction || 'general'
       });
 
       return {
@@ -1538,18 +1538,18 @@ Limit to 10 most relevant tags.
     const chain = RunnableSequence.from([
       tagPrompt,
       this.llm!,
-      new StringOutputParser(),
+      new StringOutputParser()
     ]);
 
     try {
       const llmResponse = await Promise.race([;
         chain.invoke({
           documentType,
-          content: content.substring(0, 3000),
+          content: content.substring(0, 3000)
         }),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('Auto-tagging timed out')), this.config.rag.timeoutMs / 2)
-        ),
+        )
       ]);
 
       // Handle streaming response or direct string
@@ -1594,7 +1594,7 @@ Limit to 10 most relevant tags.
 
     return {
       confidence: Math.max(0.1, baseConfidence),
-      keyPoints,
+      keyPoints
     };
   }
 
@@ -1714,7 +1714,7 @@ Limit to 10 most relevant tags.
       keyTerms: [] as string[],
       risks: [] as Array<any>,
       legalIssues: [] as string[],
-      recommendations: [] as string[],
+      recommendations: [] as string[]
     };
 
     const lines = analysis.split('\n');
@@ -1811,7 +1811,7 @@ Limit to 10 most relevant tags.
     const checks = await Promise.allSettled([
       this.checkDatabaseHealth(),
       this.checkRedisHealth(),
-      this.checkOllamaHealth(),
+      this.checkOllamaHealth()
     ]);
 
     const services = ['Database', 'Redis', 'Ollama'];
@@ -1819,7 +1819,7 @@ Limit to 10 most relevant tags.
       service: services[index],
       status: (result as { processingTime?: any; status?: any; reason?: any }).status === 'fulfilled' ? 'healthy' : 'unhealthy',
       error: (result as { processingTime?: any; status?: any; reason?: any }).status === 'rejected' ? (result as { processingTime?: any; status?: any; reason?: any }).reason?.message: undefined,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 
@@ -1852,11 +1852,11 @@ Limit to 10 most relevant tags.
         chunkSize: this.config.rag.chunkSize,
         maxSources: this.config.rag.maxSources,
         enableCaching: this.config.rag.enableCaching,
-        enableAutoTagging: this.config.rag.enableAutoTagging,
+        enableAutoTagging: this.config.rag.enableAutoTagging
       },
       rateLimiting: {
         perMinute: this.config.security.rateLimit.perMinute,
-        windowMs: this.config.security.rateLimit.windowMs,
+        windowMs: this.config.security.rateLimit.windowMs
       }
     };
   }
@@ -1868,7 +1868,7 @@ Limit to 10 most relevant tags.
     return {
       remaining: this.rateLimiter.getRemainingRequests(userId),
       resetTime: this.rateLimiter.getTimeUntilReset(userId),
-      limit: this.config.security.rateLimit.perMinute,
+      limit: this.config.security.rateLimit.perMinute
     };
   }
 
@@ -1881,7 +1881,7 @@ Limit to 10 most relevant tags.
     try {
       await Promise.allSettled([
         this.redis ? (this.redis as any).quit() : Promise.resolve(),
-        this.sql?.end(),
+        this.sql?.end()
       ]);
 
       this.initialized = false;

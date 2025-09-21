@@ -24,7 +24,7 @@ export interface APIResponse<T = any> {
   performance?: {
     executionTime: number;
     cacheHit?: boolean;
-    servicesUsed: string[];,
+    servicesUsed: string[];
   };
 }
 
@@ -61,23 +61,23 @@ export const GET: RequestHandler = async ({ url }) => {
           services: {
             redis: {
               status: 'healthy',
-              connected: true,
+              connected: true
             },
             minio: { status: 'healthy', initialized: true },
             rabbitmq: { status: 'healthy', connected: true },
             postgresql: { status: 'healthy', connected: true },
             xstate: {
               status: 'healthy',
-              workflows: workflowOrchestrator.getActiveWorkflowsCount(),
-            },
+              workflows: workflowOrchestrator.getActiveWorkflowsCount()
+            }
           },
           uptime: process.uptime(),
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         };
 
         return json(createResponse(true, healthStatus, undefined, {
           executionTime: Date.now() - startTime,
-          servicesUsed: ['all'],
+          servicesUsed: ['all']
         });
 
       case 'search':
@@ -93,12 +93,12 @@ export const GET: RequestHandler = async ({ url }) => {
             { id: 1, title: 'Legal Document 1', score: 0.95, type: 'document' },
             { id: 2, title: 'Case Evidence 2', score: 0.87, type: 'evidence' }
           ],
-          total: 2,
+          total: 2
         };
 
         return json(createResponse(true, searchResults, undefined, {
             executionTime: Date.now() - startTime,
-            servicesUsed: ['postgresql', 'redis'],
+            servicesUsed: ['postgresql', 'redis']
           })
         );
 
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (error: any) {
     return json(createResponse(false, null, error instanceof Error ? error.message: 'Unknown error'), {
-      status: 500,
+      status: 500
     });
   }
 };
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
         return json(createResponse(true, ragResponse, undefined, {
             executionTime: Date.now() - startTime,
-            servicesUsed: ['postgresql', 'redis', 'rabbitmq'],
+            servicesUsed: ['postgresql', 'redis', 'rabbitmq']
           })
         );
 
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   } catch (error: any) {
     return json(createResponse(false, null, error instanceof Error ? error.message: 'Unknown error'), {
-      status: 500,
+      status: 500
     });
   }
 };

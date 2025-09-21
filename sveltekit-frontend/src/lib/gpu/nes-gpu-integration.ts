@@ -51,7 +51,7 @@ const GPUBufferUsage = {
   UNIFORM: 0x0040,
   STORAGE: 0x0080,
   INDIRECT: 0x0100,
-  QUERY_RESOLVE: 0x0200,
+  QUERY_RESOLVE: 0x0200
 };
 
 const GPUTextureUsage = {
@@ -59,12 +59,12 @@ const GPUTextureUsage = {
   COPY_DST: 0x02,
   TEXTURE_BINDING: 0x04,
   STORAGE_BINDING: 0x08,
-  RENDER_ATTACHMENT: 0x10,
+  RENDER_ATTACHMENT: 0x10
 };
 
 const GPUMapMode = {
   READ: 0x0001,
-  WRITE: 0x0002,
+  WRITE: 0x0002
 };
 
 // Local LegalDocument type definition (avoiding module resolution issues);
@@ -111,7 +111,7 @@ const webgpuPolyfill = {
 };
 const wasmAccelerator = {
   process: () => Promise.resolve(new ArrayBuffer(1024)),
-  computeEmbeddingsSIMD: () => Promise.resolve(new Float32Array(384),
+  computeEmbeddingsSIMD: () => Promise.resolve(new Float32Array(384)
 };
 const multiLayerCache = {
   get: (key?: any, namespace?: any) => null,
@@ -129,7 +129,7 @@ const gpuRankingMatrices = {
     cacheHitRate: 0.95,
     lastUpdateTime: Date.now(),
     gpuMemoryUsed: 1024,
-    averageRankingTime: 10,
+    averageRankingTime: 10
   })
 };
 type RankingMatrix = Float32Array;
@@ -144,7 +144,7 @@ export interface LegalDocumentBinary {
   embedding: Float32Array;   // 384*4 = 1536 bytes
   rankingMatrix: Float32Array; // 4x4 = 64 bytes
   metadata: Uint8Array;      // Variable length
-  contentHash: Uint32Array;  // 4 bytes for quick comparisons,
+  contentHash: Uint32Array;  // 4 bytes for quick comparisons
 }
 
 // GPU texture layout for legal document graph;
@@ -152,7 +152,7 @@ export interface GPULegalGraphTexture {
   nodeDataTexture: GPUTexture;        // Node positions + metadata
   adjacencyTexture: GPUTexture;       // Graph connections
   rankingMatrixTexture: GPUTexture;   // 4x4 ranking matrices per node
-  embeddingTexture: GPUTexture;       // High-dimensional embeddings,
+  embeddingTexture: GPUTexture;       // High-dimensional embeddings
 }
 
 // Performance tracking;
@@ -162,7 +162,7 @@ export interface PipelineStats {
   wasmProcessTime: number;
   totalPipelineTime: number;
   documentsProcessed: number;
-  cacheHitRatio: number;,
+  cacheHitRatio: number;
 }
 
 export class NESGPUIntegration {
@@ -175,7 +175,7 @@ export class NESGPUIntegration {
     wasmProcessTime: 0,
     totalPipelineTime: 0,
     documentsProcessed: 0,
-    cacheHitRatio: 0,
+    cacheHitRatio: 0
   };
 
   constructor() {
@@ -270,7 +270,7 @@ export class NESGPUIntegration {
         {
           compress: true,
           compressionLevel: 2,
-          preferredBank: this.selectOptimalNESBank(document),
+          preferredBank: this.selectOptimalNESBank(document)
         }
       );
     }
@@ -390,28 +390,28 @@ export class NESGPUIntegration {
       const nodeDataTexture = this.device.createTexture({
         size: [documentCount, 1, 1],
         format: 'rgba32float',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
       });
 
       // Create adjacency texture (graph connections);
       const adjacencyTexture = this.device.createTexture({
         size: [documentCount * 8, 1, 1], // Max 8 connections per node
         format: 'r32uint',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
       });
 
       // Create ranking matrix texture (4x4 matrices);
       const rankingMatrixTexture = this.device.createTexture({
         size: [documentCount * 4, 4, 1], // 4x4 matrix per document
         format: 'rgba32float',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
       });
 
       // Create embedding texture (high-dimensional);
       const embeddingTexture = this.device.createTexture({
         size: [384, Math.ceil(documentCount / 4), 1], // Pack 4 embeddings per row
         format: 'rgba32float',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
       });
 
       this.graphTextures = {
@@ -441,7 +441,7 @@ export class NESGPUIntegration {
     // Create staging buffer;
     const stagingBuffer = this.device.createBuffer({
       size: binaryBuffer.byteLength,
-      usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.MAP_WRITE,
+      usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.MAP_WRITE
     });
 
     // Map and copy data
@@ -610,17 +610,17 @@ export class NESGPUIntegration {
       // Step 5: Create buffers for GPU computation;
       const queryBuffer = this.device.createBuffer({
         size: queryEmbedding.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const rankingBuffer = this.device.createBuffer({
         size: rankingScores.length * 4, // Float32 per score
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
       });
 
       const resultsBuffer = this.device.createBuffer({
         size: limit * 32, // id + similarity + ranking + combined score per result
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
       });
 
       // Step 6: Upload data to GPU - ensure proper ArrayBuffer
@@ -704,12 +704,12 @@ export class NESGPUIntegration {
     // Create buffers for query and results;
     const queryBuffer = this.device.createBuffer({
       size: queryEmbedding.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
     });
 
     const resultsBuffer = this.device.createBuffer({
       size: limit * 16, // id + similarity score per result
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
     // Upload query embedding - ensure proper ArrayBuffer
@@ -801,7 +801,7 @@ export class NESGPUIntegration {
         documentId: u32,
         similarity: f32,
         rankingScore: f32,
-        combinedScore: f32,
+        combinedScore: f32
       };
 
       @group(0) @binding(0) var<storage, read> queryEmbedding: array<f32>;
@@ -900,13 +900,13 @@ export class NESGPUIntegration {
           caseId: `case-${docId}`,
           jurisdiction: 'US',
           documentClass: 'contract',
-          aiGenerated: false,
-        },
+          aiGenerated: false
+        }
       } as any as LegalDocument & {
         // Additional computed properties for the UI
         combinedScore: number;
         rankingScore: number;
-        similarityScore: number;,
+        similarityScore: number;
       };
 
       // Add the extra properties after creating the base object
@@ -965,7 +965,7 @@ export class NESGPUIntegration {
       cacheHitRate: number;
       lastUpdateTime: number;
       gpuMemoryUsed: number;
-      averageRankingTime: number;,
+      averageRankingTime: number;
     }
   }> {
     try {

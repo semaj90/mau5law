@@ -1,4 +1,5 @@
 {
+  "architecture": "GemmaForCausalLM",
   "architectures": [
     "Gemma3ForCausalLM"
   ],
@@ -31,6 +32,7 @@
   "sliding_window": 1024,
   "sliding_window_pattern": 6,
   "torch_dtype": "float16",
+  "dtype": "float16",
   "transformers_version": "4.51.3",
   "use_cache": true,
   "vocab_size": 262208

@@ -33,7 +33,7 @@ export interface AILLMOutput {
   model: string;
   confidence: number;
   tokens: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 // Basic shape for vector search results (loose to accommodate both services);
@@ -52,7 +52,7 @@ export interface EnhancedRAGOutput {
   searchMetrics: {
     vectorSearchTime: number;
     documentsRetrieved: number;
-    averageRelevance: number;,
+    averageRelevance: number;
   };
 }
 
@@ -62,9 +62,9 @@ export interface UserActivityContext {
   interactionPatterns: {
     timeOfDay: string;
     commonActions: string[];
-    focusAreas: string[];,
+    focusAreas: string[];
   };
-  recommendations: string[];,
+  recommendations: string[];
 }
 
 export interface SynthesizedOutput {
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // Initialize XState machine with request context;
     summaryService.send({
-      type: 'GENERATE_SUMMARY' as any,
+      type: 'GENERATE_SUMMARY' as any
     });
 
     if (summaryRequest.enableStreaming) {
@@ -104,7 +104,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error('Summaries API error:', error);
     return json({
         error: 'Failed to generate summary',
-        details: error.message,
+        details: error.message
       },)
       { status: 500 }
     );
@@ -128,7 +128,7 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
     llmOutput,
     ragOutput,
     userActivity,
-    request,
+    request
   });
 
   const totalTime = Date.now() - startTime;
@@ -140,8 +140,8 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
       processingTime: totalTime,
       request: request,
       timestamp: new Date().toISOString(),
-      version: '1.0.0',
-    },
+      version: '1.0.0'
+    }
   });
 }
 
@@ -157,7 +157,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Starting AI summary generation...',
-              progress: 0,
+              progress: 0
             })}\n\n`
           )
         );
@@ -168,7 +168,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
             encoder.encode(`data: ${JSON.stringify({
                 type: 'llm_chunk',
                 content: chunk,
-                progress: 33,
+                progress: 33
               })}\n\n`
             )
           );
@@ -179,7 +179,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Retrieving relevant documents...',
-              progress: 50,
+              progress: 50
             })}\n\n`
           )
         );
@@ -191,7 +191,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Analyzing user activity patterns...',
-              progress: 75,
+              progress: 75
             })}\n\n`
           )
         );
@@ -205,7 +205,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Synthesizing final summary...',
-              progress: 90,
+              progress: 90
             })}\n\n`
           )
         );
@@ -214,7 +214,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           llmOutput,
           ragOutput,
           userActivity,
-          request,
+          request
         });
 
         // Send final result
@@ -222,7 +222,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           encoder.encode(`data: ${JSON.stringify({
               type: 'complete',
               result: synthesizedResult,
-              progress: 100,
+              progress: 100
             })}\n\n`
           )
         );
@@ -232,13 +232,13 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         controller.enqueue(;
           encoder.encode(`data: ${JSON.stringify({
               type: 'error',
-              error: error.message,
+              error: error.message
             })}\n\n`
           )
         );
         controller.close();
       }
-    },
+    }
   });
 
   return new Response(stream, {
@@ -247,8 +247,8 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control',
-    },
+      'Access-Control-Allow-Headers': 'Cache-Control'
+    }
   });
 }
 
@@ -285,7 +285,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
   const depthPrompts = {
     quick: 'Provide a concise 2-3 sentence summary of:',
     comprehensive: 'Provide a detailed analysis and comprehensive summary of:',
-    forensic: 'Conduct a thorough forensic analysis with legal implications for:',
+    forensic: 'Conduct a thorough forensic analysis with legal implications for:'
   };
 
   const prompt = `${depthPrompts[request.depth]} ${sourceContent}`;
@@ -308,7 +308,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
       temperature: 0.3,
       // top_p: 0.9, // Not supported in GenerateOptions interface
       // num_predict: request.depth === "forensic" ? 1000 : 500, // Not supported, use maxTokens instead
-      maxTokens: request.depth === 'forensic' ? 1000 : 500,
+      maxTokens: request.depth === 'forensic' ? 1000 : 500
     });
 
     combinedResponse += (response as { content?: any; tokens?: any }).content + '\n\n';
@@ -322,7 +322,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
     model: 'gemma3:7b-instruct-q4_K_M',
     confidence: 0.85, // Based on model reliability
     tokens: totalTokens,
-    processingTime,
+    processingTime
   };
 }
 
@@ -351,13 +351,13 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
   const [pgResults, qdrantResults] = await Promise.all([
     // Use internal vector service (pgvector backed) and external qdrant service
     vectorService.search(searchQuery, { limit: 10, threshold: 0.7 }).catch(() => []),
-    qdrantService.searchSimilar(searchQuery, { limit: 10, threshold: 0.7 }).catch(() => []),
+    qdrantService.searchSimilar(searchQuery, { limit: 10, threshold: 0.7 }).catch(() => [])
   ]);
 
   // Combine and deduplicate results
   const allResults = [...pgResults, ...qdrantResults];
   const uniqueResults = Array.from(
-    new Map(allResults.map((item) => [(item as { id?: any ,}).id, item])).values()
+    new Map(allResults.map((item) => [(item as { id?: any }).id, item])).values()
   );
 
   // Rank results by relevance
@@ -368,7 +368,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
       id: doc.id,
       content: doc.content || doc.payload?.content || '',
       relevance: doc.score || doc.relevance || 0,
-      source: doc.source || 'vector_db',
+      source: doc.source || 'vector_db'
     });
 
   // Generate context summary using the most relevant docs
@@ -378,7 +378,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
     {
       model: 'gemma3:7b-instruct-q4_K_M',
       temperature: 0.2,
-      maxTokens: 300,
+      maxTokens: 300
     }
   );
 
@@ -391,8 +391,8 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
       vectorSearchTime: processingTime,
       documentsRetrieved: uniqueResults.length,
       averageRelevance:
-        relevantDocs.reduce((sum, doc) => sum + doc.relevance, 0) / relevantDocs.length,
-    },
+        relevantDocs.reduce((sum, doc) => sum + doc.relevance, 0) / relevantDocs.length
+    }
   };
 }
 
@@ -420,18 +420,18 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
   // Extract activity patterns
   const recentQueries = [
     ...recentCases.map((c) => c.title),
-    ...recentEvidence.map((e: any) => e.title),
+    ...recentEvidence.map((e: any) => e.title)
   ].slice(0, 5);
 
   const preferredTopics = extractTopics([
     ...recentCases.map((c) => c.description || ''),
-    ...recentEvidence.map((e: any) => e.description || ''),
+    ...recentEvidence.map((e: any) => e.description || '')
   ]);
 
   // Generate recommendations using Fuse.js fuzzy search;
   const fuse = new Fuse(recentQueries, {
     threshold: 0.6,
-    keys: ['title', 'description'],
+    keys: ['title', 'description']
   });
 
   const recommendations = generateRecommendations(preferredTopics, fuse);
@@ -442,9 +442,9 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
     interactionPatterns: {
       timeOfDay: 'morning', // TODO: Extract from actual activity logs
       commonActions: ['case_analysis', 'evidence_upload', 'report_generation'],
-      focusAreas: preferredTopics.slice(0, 3),
+      focusAreas: preferredTopics.slice(0, 3)
     },
-    recommendations,
+    recommendations
   };
 }
 
@@ -453,23 +453,23 @@ async function synthesizeOutputs({
   llmOutput,
   ragOutput,
   userActivity,
-  request,
+  request
 }: {
   llmOutput: AILLMOutput;
   ragOutput: EnhancedRAGOutput | null;
   userActivity: UserActivityContext | null;
-  request: SummaryRequest;,
+  request: SummaryRequest;
 }): Promise<SynthesizedOutput> {
   // Update XState machine with collected data;
   summaryService.send({
-    type: 'SYNTHESIZE_INSIGHTS' as any,
+    type: 'SYNTHESIZE_INSIGHTS' as any
   });
 
   // Weighted synthesis based on source reliability;
   const weights = {
     llm: 0.6,
     rag: ragOutput ? 0.3 : 0,
-    userActivity: userActivity ? 0.1 : 0,
+    userActivity: userActivity ? 0.1 : 0
   };
 
   // Normalize weights if some sources are missing
@@ -482,7 +482,7 @@ async function synthesizeOutputs({
   const allContent = [
     llmOutput.content,
     ragOutput?.contextSummary || '',
-    userActivity?.recentQueries.join(' ') || '',
+    userActivity?.recentQueries.join(' ') || ''
   ].filter(Boolean);
 
   const keyInsights = await extractKeyInsights(allContent);
@@ -515,8 +515,8 @@ async function synthesizeOutputs({
         details: {
           model: llmOutput?.model || 'unknown',
           tokens: llmOutput.tokens,
-          processingTime: llmOutput.processingTime,
-        },
+          processingTime: llmOutput.processingTime
+        }
       },
       ...(ragOutput
         ? [;
@@ -525,9 +525,9 @@ async function synthesizeOutputs({
               contribution: weights.rag,
               details: {
                 documentsUsed: ragOutput.relevantDocs.length,
-                averageRelevance: ragOutput.searchMetrics.averageRelevance,
-              },
-            },
+                averageRelevance: ragOutput.searchMetrics.averageRelevance
+              }
+            }
           ]
         : []),
       ...(userActivity
@@ -537,15 +537,15 @@ async function synthesizeOutputs({
               contribution: weights.userActivity,
               details: {
                 recentQueries: userActivity.recentQueries.length,
-                preferences: userActivity.preferredTopics.length,
-              },
-            },
+                preferences: userActivity.preferredTopics.length
+              }
+            }
           ]
-        : []),
+        : [])
     ],
     nextSteps,
     relatedCases,
-    warnings: generateWarnings(confidence, ragOutput?.searchMetrics.documentsRetrieved || 0),
+    warnings: generateWarnings(confidence, ragOutput?.searchMetrics.documentsRetrieved || 0)
   };
 }
 
@@ -571,7 +571,7 @@ async function getLocalLLMOutputStreaming(
 function extractTopics(texts: string[]): string[] {
   // Simple topic extraction - in production would use more sophisticated NLP
   const allText = texts.join(' ').toLowerCase();
-  const keywords = allText.match(/\b\w{4,}\b/g) || [];
+  const keywords = allText.match(/\b\w{4}\b/g) || [];
   const frequency: Record<string, number> = {};
 
   keywords.forEach((word) => {
@@ -665,7 +665,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       status: 'completed', // TODO: Implement actual status tracking
       summaryId,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 
@@ -679,9 +679,9 @@ export const GET: RequestHandler = async ({ url }) => {
       'User Activity Analysis (Loki.js simulation)',
       'XState Synthesis Engine',
       'Streaming Support',
-      'Chunking & Async Processing',
+      'Chunking & Async Processing'
     ],
     version: '1.0.0',
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 };

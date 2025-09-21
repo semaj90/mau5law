@@ -58,7 +58,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       includeSentiment: true,
       includeComplexity: true,
       includeRecommendations: true,
-      ...options,
+      ...options
     };
 
     // Perform deep legal analysis
@@ -87,8 +87,8 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         userRole,
         caseId,
         analysisOptions,
-        confidence,
-      },
+        confidence
+      }
     };
 
     return json(result);
@@ -99,7 +99,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         error: 'Analysis failed',
         message: error.message,
-        processingTime: Date.now() - startTime,
+        processingTime: Date.now() - startTime
       },
       { status: 500 }
     );

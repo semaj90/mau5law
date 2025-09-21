@@ -9,7 +9,7 @@ import type {
   ServiceConfig,
   OrchestrationRequest,
   HealthCheckReport,
-  ServiceTier,
+  ServiceTier
 } from '$lib/types/orchestration';
 
 // Initialize the service orchestrator
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
       action: body.action,
       result,
       timestamp: new Date().toISOString(),
-      orchestration_id: generateOrchestrationId(),
+      orchestration_id: generateOrchestrationId()
     });
   } catch (error: any) {
     console.error('Orchestration Error:', error);
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: 'Service orchestration failed',
         details: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async () => {
 			capabilities,
 			managed_services: orchestrator.getManagedServices(),
 			performance_metrics: await orchestrator.getPerformanceMetrics(),
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		});
 
 	} catch (error: any) {
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async () => {
 			status: 'degraded',
 			error: 'Unable to get system status',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 503 });
 	}
 };
@@ -111,7 +111,7 @@ export const GET_HEALTH: RequestHandler = async () => {
           ? 200
           : healthReport.overall_health === 'degraded'
             ? 206
-            : 503,
+            : 503
     });
 
 	} catch (error: any) {
@@ -119,7 +119,7 @@ export const GET_HEALTH: RequestHandler = async () => {
 			overall_health: 'critical',
 			error: 'Health check system failure',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 503 });
 	}
 };
@@ -153,7 +153,7 @@ export const POST_EMERGENCY: RequestHandler = async ({ request }) => {
 			success: true,
 			emergency_action: body.emergency_action,
 			result,
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		});
 
 	} catch (error: any) {
@@ -163,7 +163,7 @@ export const POST_EMERGENCY: RequestHandler = async ({ request }) => {
 			success: false,
 			error: 'Emergency orchestration failed',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString(),
+			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
 };

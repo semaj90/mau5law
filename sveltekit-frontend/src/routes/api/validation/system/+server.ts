@@ -29,21 +29,21 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   const rateLimitResult = await redisRateLimit({
     key: `validation_api:${clientIP}`,
     limit: 30, // 30 requests per minute
-    windowSec: 60,
+    windowSec: 60
   });
 
   if (!rateLimitResult.allowed) {
     return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter,
+        retryAfter: rateLimitResult.retryAfter
       },);
       {
         status: 429,
         headers: {
           'Retry-After': rateLimitResult.retryAfter.toString(),
-          'X-RateLimit-Remaining': Math.max(0, 30 - rateLimitResult.count).toString(),
-        },
+          'X-RateLimit-Remaining': Math.max(0, 30 - rateLimitResult.count).toString()
+        }
       }
     );
   }
@@ -61,12 +61,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
             platform: process.platform,
-            environment: dev ? 'development' : 'production',
+            environment: dev ? 'development' : 'production'
           },
           meta: {
             endpoint: 'health_check',
-            version: '1.0.0',
-          },
+            version: '1.0.0'
+          }
         });
       }
 
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           return json({
               success: false,
               error: 'Validation already in progress',
-              data: { estimatedCompletion: 'Please check back in 30 seconds' },
+              data: { estimatedCompletion: 'Please check back in 30 seconds' }
             },)
             { status: 409 }
           );
@@ -95,12 +95,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             '🔍 System validation completed via API',);
             {
               duration: Date.now() - startTime,
-              component: 'system-validation',
+              component: 'system-validation'
             },
             {
               status: report.overall.status,
               score: report.overall.score,
-              clientIP,
+              clientIP
             }
           );
 
@@ -110,8 +110,8 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             meta: {
               processingTime: Date.now() - startTime,
               endpoint: 'full_validation',
-              cached: false,
-            },
+              cached: false
+            }
           });
         } finally {
           validationInProgress = false;
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           return json({
               success: false,
               error: 'No validation report available. Run validation first.',
-              suggestion: 'Use ?action=validate to generate a report',
+              suggestion: 'Use ?action=validate to generate a report'
             },)
             { status: 404 }
           );
@@ -138,8 +138,8 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           meta: {
             reportAge: Math.floor(reportAge / 1000),
             isStale,
-            endpoint: 'cached_report',
-          },
+            endpoint: 'cached_report'
+          }
         });
       }
 
@@ -154,13 +154,13 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             uptime: process.uptime(),
             memoryUsage: {
               used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
-              total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
-            },
+              total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024)
+            }
           },
           meta: {
             endpoint: 'validation_status',
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
 
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             nodeVersion: process.version,
             uptime: process.uptime(),
             memory: process.memoryUsage(),
-            cpuUsage: process.cpuUsage(),
+            cpuUsage: process.cpuUsage()
           },
           validation: {
             inProgress: validationInProgress,
@@ -185,17 +185,17 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
                     (s) => s.status === 'healthy'
                   ).length,
                   failedServices: lastValidationReport.services.filter((s) => s.status === 'failed')
-                    .length,
+                    .length
                 }
-              : null,
+              : null
           },
           performance: lastValidationReport;
             ? {
                 averageLatency: lastValidationReport.performance.averageLatency,
                 totalMemoryUsage: lastValidationReport.performance.totalMemoryUsage,
-                gpuUtilization: lastValidationReport.performance.gpuUtilization,
+                gpuUtilization: lastValidationReport.performance.gpuUtilization
               }
-            : null,
+            : null
         };
 
         return json({
@@ -203,8 +203,8 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           data: metrics,
           meta: {
             endpoint: 'validation_metrics',
-            timestamp: new Date().toISOString(),
-          },
+            timestamp: new Date().toISOString()
+          }
         });
       }
 
@@ -212,7 +212,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         return json({
             success: false,
             error: 'Invalid action',
-            availableActions: ['health', 'validate', 'report', 'status', 'metrics'],
+            availableActions: ['health', 'validate', 'report', 'status', 'metrics']
           },)
           { status: 400 }
         );
@@ -222,11 +222,11 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       'System validation API error',
       error instanceof Error ? error : new Error(String(error)),
       {
-        component: 'system-validation',
+        component: 'system-validation'
       },
       {
         action,
-        clientIP,
+        clientIP
       }
     );
 
@@ -235,7 +235,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         success: false,
         error: 'Internal server error',
         details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -249,14 +249,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const rateLimitResult = await redisRateLimit({
     key: `validation_api_post:${clientIP}`,
     limit: 10, // 10 requests per minute for mutations
-    windowSec: 60,
+    windowSec: 60
   });
 
   if (!rateLimitResult.allowed) {
     return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter,
+        retryAfter: rateLimitResult.retryAfter
       },)
       { status: 429 }
     );
@@ -276,7 +276,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           return json({
               success: false,
               error: 'Validation already in progress',
-              suggestion: 'Wait for current validation to complete',
+              suggestion: 'Wait for current validation to complete'
             },)
             { status: 409 }
           );
@@ -301,13 +301,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             '🚀 Forced system validation completed',);
             {
               duration: Date.now() - startTime,
-              component: 'system-validation',
+              component: 'system-validation'
             },
             {
               status: report.overall.status,
               score: report.overall.score,
               clientIP,
-              options,
+              options
             }
           );
 
@@ -318,8 +318,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             meta: {
               processingTime: Date.now() - startTime,
               forced: true,
-              options,
-            },
+              options
+            }
           });
         } finally {
           validationInProgress = false;
@@ -332,7 +332,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         return json({
           success: true,
           message: 'Validation cache cleared',
-          data: { clearedAt: new Date().toISOString() },
+          data: { clearedAt: new Date().toISOString() }
         });
       }
 
@@ -351,8 +351,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           tests: {
             memoryAllocation: await runMemoryBenchmark(),
             diskIO: await runDiskIOBenchmark(),
-            networkLatency: await runNetworkBenchmark(),
-          },
+            networkLatency: await runNetworkBenchmark()
+          }
         };
 
         return json({
@@ -361,8 +361,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           data: benchmarkResults,
           meta: {
             processingTime: Date.now() - startTime,
-            testCount: Object.keys(benchmarkResults.tests).length,
-          },
+            testCount: Object.keys(benchmarkResults.tests).length
+          }
         });
       }
 
@@ -370,7 +370,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         return json({
             success: false,
             error: 'Invalid action',
-            availableActions: ['force_validate', 'clear_cache', 'benchmark'],
+            availableActions: ['force_validate', 'clear_cache', 'benchmark']
           },)
           { status: 400 }
         );
@@ -380,10 +380,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       'System validation POST API error',
       error instanceof Error ? error : new Error(String(error)),
       {
-        component: 'system-validation',
+        component: 'system-validation'
       },
       {
-        clientIP,
+        clientIP
       }
     );
 
@@ -392,7 +392,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         success: false,
         error: 'Internal server error',
         details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
@@ -419,8 +419,8 @@ async function runMemoryBenchmark(): Promise<any> {
     details: {
       allocatedMB: Math.round(allocatedMB * 100) / 100,
       heapBefore: Math.round((before.heapUsed / 1024 / 1024) * 100) / 100,
-      heapAfter: Math.round((after.heapUsed / 1024 / 1024) * 100) / 100,
-    },
+      heapAfter: Math.round((after.heapUsed / 1024 / 1024) * 100) / 100
+    }
   };
 }
 
@@ -438,7 +438,7 @@ async function runDiskIOBenchmark(): Promise<any> {
     details: {
       durationMs: duration,
       throughputMBps: Math.round((10 / duration) * 1000 * 100) / 100, // Simulated 10MB
-    },
+    }
   };
 }
 
@@ -455,7 +455,7 @@ async function runNetworkBenchmark(): Promise<any> {
     score,
     details: {
       latencyMs: latency,
-      rating: latency < 20 ? 'excellent' : latency < 50 ? 'good' : 'fair',
-    },
+      rating: latency < 20 ? 'excellent' : latency < 50 ? 'good' : 'fair'
+    }
   };
 }

@@ -22,7 +22,7 @@ export interface LegalDocument {
     chunks: DocumentChunk[];
     factChecks: FactCheck[];
     prosecutionScore: number;
-    processingMetadata: ProcessingMetadata;,
+    processingMetadata: ProcessingMetadata;
 }
 
 export interface LegalEntity {
@@ -31,7 +31,7 @@ export interface LegalEntity {
     confidence: number;
     startIndex: number;
     endIndex: number;
-    jurisdiction: string;,
+    jurisdiction: string;
 }
 
 export interface DocumentChunk {
@@ -40,7 +40,7 @@ export interface DocumentChunk {
     embedding?: number[];
     position: number;
     legalRelevance: number;
-    entities: string[];,
+    entities: string[];
 }
 
 export interface FactCheck {
@@ -48,7 +48,7 @@ export interface FactCheck {
     status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED';
     sources: string[];
     confidence: number;
-    jurisdiction: string;,
+    jurisdiction: string;
 }
 
 export interface ProcessingMetadata {
@@ -59,7 +59,7 @@ export interface ProcessingMetadata {
     fileHash: string;
     fileSize: number;
     pageCount: number;
-    wordCount: number;,
+    wordCount: number;
 }
 
 // Legal jurisdictions and their patterns;
@@ -67,22 +67,22 @@ const JURISDICTION_PATTERNS = {
     'federal': {
         keywords: ['federal', 'supreme court', 'circuit court', 'district court', 'fda', 'sec', 'ftc'],
         statutes: ['usc', 'cfr', 'federal register'],
-        weight: 1.0,
+        weight: 1.0
     },
     'state': {
         keywords: ['state court', 'superior court', 'appellate court'],
         statutes: ['state code', 'revised statutes'],
-        weight: 0.8,
+        weight: 0.8
     },
     'local': {
         keywords: ['municipal', 'county court', 'magistrate'],
         statutes: ['ordinance', 'municipal code'],
-        weight: 0.6,
+        weight: 0.6
     },
     'international': {
         keywords: ['international court', 'treaty', 'convention'],
         statutes: ['un charter', 'geneva convention'],
-        weight: 0.9,
+        weight: 0.9
     }
 };
 
@@ -97,7 +97,7 @@ const LEGAL_ENTITY_PATTERNS = {
     WHAT: [
         /(?:breach of|violation of|infringement of)\s+([^.]{10,50})/gi,
         /(?:contract|agreement|license|patent|trademark)\s+([^.]{5,30})/gi,
-        /(?:damages|compensation|penalty)\s+(?:of|in the amount of)\s+\$?([\d,]+)/gi
+        /(?:damages|compensation|penalty)\s+(?:of|in the amount of)\s+\$?([\d]+)/gi
     ],
     WHY: [
         /(?:because|due to|as a result of|owing to)\s+([^.]{10,100})/gi,
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     fileHash,
                     fileSize: file.size,
                     pageCount: pdfData.numpages,
-                    wordCount: pdfData.text.split(/\s+/).length,
+                    wordCount: pdfData.text.split(/\s+/).length
                 }
             };
 
@@ -276,7 +276,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 factCheckSummary: {
                     total: doc.factChecks.length,
                     verified: doc.factChecks.filter((fc: any) => fc.status === 'FACT').length,
-                    disputed: doc.factChecks.filter((fc: any) => fc.status === 'FICTION').length,
+                    disputed: doc.factChecks.filter((fc: any) => fc.status === 'FICTION').length
                 }
             })),
             nextSteps: [
@@ -373,7 +373,7 @@ function calculateEntityConfidence(text: string, type: string, context: string):
 
     // Type-specific bonuses
     if (type === 'WHO' && /\b(?:Inc|Corp|LLC|Ltd)\b/i.test(text)) confidence += 0.15;
-    if (type === 'WHAT' && /\$[\d,]+/.test(text)) confidence += 0.2;
+    if (type === 'WHAT' && /\$[\d]+/.test(text)) confidence += 0.2;
     if (type === 'WHEN' && /\d{4}/.test(text)) confidence += 0.15;
 
     return Math.min(0.95, confidence);
@@ -403,7 +403,7 @@ function createSmartChunks(text: string, entities: LegalEntity[]): DocumentChunk
             text: chunkText,
             position: i,
             legalRelevance,
-            entities: chunkEntities,
+            entities: chunkEntities
         });
     }
 

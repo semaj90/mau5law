@@ -10,7 +10,7 @@ export const evidenceSchema = z.object({
   tags: z.array(z.string()).optional(),
   caseId: z.string().uuid().optional(),
   fileUrl: z.string().url().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
 });
 
 export type EvidenceFormData = z.infer<typeof evidenceSchema>;
@@ -29,7 +29,7 @@ export const caseSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
   status: z.enum(['active', 'pending', 'closed']).optional(),
-  priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+  priority: z.enum(['low', 'medium', 'high', 'critical']).optional()
 });
 
 export type CaseFormData = z.infer<typeof caseSchema>;

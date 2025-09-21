@@ -26,7 +26,7 @@ async function getAuthenticatedUser(locals: App.Locals) {
       401,
       makeHttpErrorPayload({
         message: 'Authentication required',
-        code: 'UNAUTHENTICATED',
+        code: 'UNAUTHENTICATED'
       })
     );
   }
@@ -44,7 +44,7 @@ const createCaseSchema = z.object({
   category: z.string().default('general'),
   assignedAttorney: z.string().optional(),
   tags: z.array(z.string()).default([]),
-  metadata: z.record(z.any()).default({}),
+  metadata: z.record(z.any()).default({})
 });
 
 // Validation schema for case updates;
@@ -56,7 +56,7 @@ const updateCaseSchema = z.object({
   category: z.string().optional(),
   assignedAttorney: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.any()).optional()
 });
 
 // GET: Retrieve cases (authenticated users only see their own cases or cases assigned to them);
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           createdBy: cases.createdBy,
           createdAt: cases.created_at,
           updatedAt: cases.updated_at,
-          metadata: cases.metadata,
+          metadata: cases.metadata
         })
         .from(cases)
         .where(
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           404,
           makeHttpErrorPayload({
             message: 'Case not found or access denied',
-            code: 'CASE_NOT_FOUND',
+            code: 'CASE_NOT_FOUND'
           })
         );
       }
@@ -137,14 +137,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           ...caseData[0],
           documents,
           activities,
-          timeline,
-        },
+          timeline
+        }
       });
     }
 
     // Build query for cases the user has access to
     const whereConditions = [
-      or(eq(cases.createdBy, user.id), eq(cases.assigned_attorney, user.id)),
+      or(eq(cases.createdBy, user.id), eq(cases.assigned_attorney, user.id))
     ];
 
     if (status) {
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         createdBy: cases.createdBy,
         createdAt: cases.created_at,
         updatedAt: cases.updated_at,
-        metadata: cases.metadata,
+        metadata: cases.metadata
       })
       .from(cases)
       .where(and(...whereConditions)
@@ -194,13 +194,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         offset,
         hasMore: offset + limit < total,
         currentPage: Math.floor(offset / limit) + 1,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limit)
       },
       user: {
         id: user.id,
         email: user.email,
-        role: user.role,
-      },
+        role: user.role
+      }
     });
   } catch (err: any) {
     if (err.status) {
@@ -213,7 +213,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       500,
       makeHttpErrorPayload({
         message: 'Failed to fetch cases',
-        code: 'FETCH_ERROR',
+        code: 'FETCH_ERROR'
       })
     );
   }
@@ -257,7 +257,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         400,
         makeHttpErrorPayload({
           message: 'Case number already exists',
-          code: 'DUPLICATE_CASE_NUMBER',
+          code: 'DUPLICATE_CASE_NUMBER'
         })
       );
     }
@@ -283,7 +283,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           embedding: caseEmbedding ? true : false, // Flag if embedding was generated
         },
         created_at: now,
-        updated_at: now,
+        updated_at: now
       })
       .returning();
 
@@ -299,8 +299,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         title: validatedData.title,
         priority: validatedData.priority,
         category: validatedData.category,
-        userEmail: user.email,
-      },
+        userEmail: user.email
+      }
     });
 
     // Create initial timeline event;
@@ -314,8 +314,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       metadata: {
         createdBy: user.id,
         createdByEmail: user.email,
-        priority: validatedData.priority,
-      },
+        priority: validatedData.priority
+      }
     });
 
     // If embedding was generated, store it in the embedding cache for future use;
@@ -356,9 +356,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           createdBy: {
             id: user.id,
             email: user.email,
-            name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
-          },
-        },
+            name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email
+          }
+        }
       },
       { status: 201 }
     );
@@ -376,7 +376,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({
           message: 'Validation failed',
           code: 'VALIDATION_ERROR',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -424,7 +424,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         id: cases.id,
         title: cases.title,
         createdBy: cases.createdBy,
-        assigned_attorney: cases.assigned_attorney,
+        assigned_attorney: cases.assigned_attorney
       })
       .from(cases)
       .where(eq(cases.id, caseId)
@@ -445,7 +445,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         403,
         makeHttpErrorPayload({
           message: 'Access denied - you can only update cases you created or are assigned to',
-          code: 'ACCESS_DENIED',
+          code: 'ACCESS_DENIED'
         })
       );
     }
@@ -468,7 +468,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
 
     // Build update object with only provided fields;
     const updateData: any = {
-      updated_at: now,
+      updated_at: now
     };
 
     if (validatedData.title) updateData.title = validatedData.title;
@@ -484,11 +484,11 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       updateData.metadata = {
         ...(caseRecord as any).metadata,
         ...validatedData.metadata,
-        ...(validatedData.tags && { tags: validatedData.tags ,}),
-        ...(newEmbedding && { embedding: true ,}),
+        ...(validatedData.tags && { tags: validatedData.tags }),
+        ...(newEmbedding && { embedding: true }),
         updatedBy: user.id,
         updatedByEmail: user.email,
-        lastUpdated: now.toISOString(),
+        lastUpdated: now.toISOString()
       };
     }
 
@@ -516,8 +516,8 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         changedFields,
         updatedBy: user.id,
         updatedByEmail: user.email,
-        hasNewEmbedding: !!newEmbedding,
-      },
+        hasNewEmbedding: !!newEmbedding
+      }
     });
 
     // Update embedding cache if embedding was regenerated;
@@ -540,7 +540,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
               entityType: 'case',
               entityId: caseId,
               content: newContent.substring(0, 500),
-              action: 'updated',
+              action: 'updated'
             },
             created_at: now,
             expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
@@ -549,8 +549,8 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
             target: [embeddingCache.content_hash],
             set: {
               embedding: newEmbedding,
-              updated_at: now,
-            },
+              updated_at: now
+            }
           });
       } catch (cacheError) {
         console.warn('Failed to update embedding cache:', cacheError);
@@ -566,10 +566,10 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         updatedBy: {
           id: user.id,
           email: user.email,
-          name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+          name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email
         },
-        changedFields,
-      },
+        changedFields
+      }
     });
   } catch (err: any) {
     if (err.status) {
@@ -584,7 +584,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         makeHttpErrorPayload({
           message: 'Validation failed',
           code: 'VALIDATION_ERROR',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -619,7 +619,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         caseNumber: cases.caseNumber,
         createdBy: cases.createdBy,
         assigned_attorney: cases.assigned_attorney,
-        status: cases.status,
+        status: cases.status
       })
       .from(cases)
       .where(eq(cases.id, caseId)
@@ -639,7 +639,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         403,
         makeHttpErrorPayload({
           message: 'Access denied - only case creators or administrators can delete cases',
-          code: 'DELETE_ACCESS_DENIED',
+          code: 'DELETE_ACCESS_DENIED'
         })
       );
     }
@@ -651,7 +651,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     400,
     makeHttpErrorPayload({
       message: `Cannot delete case with status '${caseRecord.status}'. Please close the case first or contact an administrator.`,
-      code: 'CASE_STATUS_PROTECTED',
+      code: 'CASE_STATUS_PROTECTED'
     })
   );
     }
@@ -671,11 +671,11 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
           id: caseRecord.id,
           title: caseRecord.title,
           caseNumber: caseRecord.caseNumber,
-          status: caseRecord.status,
+          status: caseRecord.status
         },
         deletedBy: user.id,
         deletedByEmail: user.email,
-        isAdmin: user.role === 'admin',
+        isAdmin: user.role === 'admin'
       }
     });
 
@@ -705,7 +705,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         500,
         makeHttpErrorPayload({
           message: 'Failed to delete case from database',
-          code: 'DELETE_FAILED',
+          code: 'DELETE_FAILED'
         })
       );
     }
@@ -737,7 +737,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         relatedDataDeleted: {
           timeline: deleteResults[0].status === 'fulfilled',
           activities: deleteResults[1].status === 'fulfilled',
-          documents: deleteResults[2].status === 'fulfilled',
+          documents: deleteResults[2].status === 'fulfilled'
         }
       }
     });

@@ -65,7 +65,7 @@ export async function runPattern(id: string, input: any = {}) {
     patternName: p.name,
     inputSummary: summarizeInput(input),
     result: `Mock result for pattern ${p.name}`,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
   return { success: true, output };
 }
@@ -77,7 +77,7 @@ export async function processFile(fileName: string, bytes: Uint8Array) {
   return {
     text: `Mock extracted text from ${fileName} (${bytes.length} bytes)`,
     mime: inferMime(fileName),
-    size: bytes.length,
+    size: bytes.length
   };
 }
 
@@ -88,7 +88,7 @@ export async function fetchAndProcessUrl(url: string) {
     url,
     title: `Mock title for ${url}`,
     text: `Mocked scraped text for ${url}`,
-    fetchedAt: new Date().toISOString(),
+    fetchedAt: new Date().toISOString()
   };
 }
 
@@ -126,5 +126,5 @@ export default {
   listPatterns,
   runPattern,
   processFile,
-  fetchAndProcessUrl,
+  fetchAndProcessUrl
 };

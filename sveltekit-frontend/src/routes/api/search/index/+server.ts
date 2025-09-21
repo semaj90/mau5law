@@ -104,7 +104,7 @@ async function buildPostgreSQLIndex() {
         uploadDate: legalDocuments.createdAt,
         metadata: legalDocuments.metadata,
         // pgvector similarity (would be calculated dynamically)
-  embedding: sql<number[]>`NULL`.as('embedding'),
+  embedding: sql<number[]>`NULL`.as('embedding')
       })
       .from(legalDocuments)
       .orderBy(desc(legalDocuments.createdAt)
@@ -142,7 +142,7 @@ async function buildPostgreSQLIndex() {
           caseId: 'case_pg_001',
           uploadDate: new Date().toISOString(),
           source: 'postgresql',
-          hasEmbedding: true,
+          hasEmbedding: true
         }
       }
     ];
@@ -176,7 +176,7 @@ async function buildVectorIndex() {
             practiceArea: 'Contract Law',
             documentType: 'PDF',
             confidence: 0.92,
-            embedding_model: 'nomic-embed-text',
+            embedding_model: 'nomic-embed-text'
           }
         }
       },
@@ -190,7 +190,7 @@ async function buildVectorIndex() {
             practiceArea: 'Criminal Law',
             documentType: 'Audio',
             confidence: 0.87,
-            embedding_model: 'nomic-embed-text',
+            embedding_model: 'nomic-embed-text'
           }
         }
       }
@@ -206,7 +206,7 @@ async function buildVectorIndex() {
         source: 'qdrant',
         vectorId: point.id,
         hasVector: true,
-        vectorDimensions: point.vector.length,
+        vectorDimensions: point.vector.length
       }
     });
 
@@ -307,13 +307,13 @@ async function buildLokiIndex() {
         labels: {
           job: 'legal-platform',
           service: 'evidence-upload',
-          case_id: 'case_123',
+          case_id: 'case_123'
         },
         metadata: {
           document_id: 'doc_upload_001',
           file_name: 'contract_evidence.pdf',
           file_size: 1024000,
-          processing_time: '2.3s',
+          processing_time: '2.3s'
         }
       },
       {
@@ -323,12 +323,12 @@ async function buildLokiIndex() {
         labels: {
           job: 'legal-platform',
           service: 'document-processor',
-          case_id: 'case_124',
+          case_id: 'case_124'
         },
         metadata: {
           document_id: 'doc_slow_001',
           processing_time: '45.7s',
-          reason: 'large_file_size',
+          reason: 'large_file_size'
         }
       }
     ];

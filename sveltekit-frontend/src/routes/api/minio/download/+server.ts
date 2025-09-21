@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
 
     // Check if object exists
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ url }) => {
       bucket: bucketName,
       object_path: objectPath,
       expires_in: 3600,
-      generated_at: new Date().toISOString(),
+      generated_at: new Date().toISOString()
     });
 
   } catch (error) {
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
       port: parseInt(minioEndpoint.split(':')[1]) || 9000,
       useSSL,
       accessKey,
-      secretKey,
+      secretKey
     });
 
     // Get object and stream it
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
         'Content-Disposition': `attachment; filename="${objectPath.split('/').pop()}"`,
         'x-amz-meta-original-name': stat.metaData['x-amz-meta-original-name'] || '',
         'x-amz-meta-case-id': stat.metaData['x-amz-meta-case-id'] || '',
-        'x-amz-meta-document-type': stat.metaData['x-amz-meta-document-type'] || '',
+        'x-amz-meta-document-type': stat.metaData['x-amz-meta-document-type'] || ''
       }
     });
 

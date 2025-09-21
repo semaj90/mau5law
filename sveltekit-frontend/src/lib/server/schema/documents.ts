@@ -56,7 +56,7 @@ export const documents = pgTable('documents', {
   // Flags
   is_active: boolean('is_active').default(true).notNull(),
   is_public: boolean('is_public').default(false).notNull(),
-  is_indexed: boolean('is_indexed').default(false).notNull(),
+  is_indexed: boolean('is_indexed').default(false).notNull()
 });
 
 // Document chunks for large documents (enhanced RAG);
@@ -84,7 +84,7 @@ export const document_chunks = pgTable('document_chunks', {
   chunk_summary: text('chunk_summary'),
   key_points: jsonb('key_points'),
 
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()
 });
 
 // Cases table (legal case management);
@@ -111,7 +111,7 @@ export const cases = pgTable('cases', {
 
   // Ownership
   created_by: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
-  assigned_to: uuid('assigned_to').references(() => users.id, { onDelete: 'set null' }),
+  assigned_to: uuid('assigned_to').references(() => users.id, { onDelete: 'set null' })
 });
 
 // Users table (for reference);
@@ -127,7 +127,7 @@ export const users = pgTable('users', {
   is_active: boolean('is_active').default(true).notNull(),
 
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull()
 });
 
 // Vector storage table for unified search across entities;
@@ -143,44 +143,44 @@ export const vectors = pgTable('vectors', {
   model_name: varchar('model_name', { length: 100 }).default('nomic-embed-text'),
   model_version: varchar('model_version', { length: 50 }),
 
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()
 });
 
 // Relations for joins;
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case: one(cases, {
     fields: [documents.case_id],
-    references: [cases.id],
+    references: [cases.id]
   }),
   creator: one(users, {
     fields: [documents.created_by],
-    references: [users.id],
+    references: [users.id]
   }),
-  chunks: many(document_chunks),
+  chunks: many(document_chunks)
 });
 
 export const documentChunksRelations = relations(document_chunks, ({ one }) => ({
   document: one(documents, {
     fields: [document_chunks.document_id],
-    references: [documents.id],
-  }),
+    references: [documents.id]
+  })
 });
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users, {
     fields: [cases.created_by],
-    references: [users.id],
+    references: [users.id]
   }),
   assignee: one(users, {
     fields: [cases.assigned_to],
-    references: [users.id],
+    references: [users.id]
   }),
-  documents: many(documents),
+  documents: many(documents)
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
   cases: many(cases),
-  documents: many(documents),
+  documents: many(documents)
 });
 
 // Type exports for use in application

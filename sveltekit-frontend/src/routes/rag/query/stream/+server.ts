@@ -17,7 +17,7 @@ async function* modelPipeline(query: string, signal: AbortSignal) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query }),
-      signal,
+      signal
     });
     if (resp.ok && resp.body) {
       const reader = resp.body.getReader();
@@ -57,7 +57,7 @@ async function externalSummarize(text: string, fetchFn: typeof fetch): Promise<s
     const res = await fetchFn(EXTERNAL_SUMMARIZE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, length: 'short' }),
+      body: JSON.stringify({ text, length: 'short' })
     });
     if (!res.ok) return undefined;
     const j = await res.json();
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       'Content-Type': 'text/event-stream; charset=utf-8',
       'Cache-Control': 'no-cache, no-transform',
       Connection: 'keep-alive',
-      'x-stream-id': stream.id,
+      'x-stream-id': stream.id
     });
 
     const readable = new ReadableStream({
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           removeStream(stream.id);
           controller.close();
         }
-      },
+      }
     });
 
     return new Response(readable, { status: 200, headers });

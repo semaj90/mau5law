@@ -39,20 +39,20 @@ interface SIMDLangExtractResponse {
       instant_render: boolean;
       component_data: string; // Base64 encoded
       rendering_instructions: string;
-      css_optimized: string;,
+      css_optimized: string;
     };
     processing_stats: {
       compression_time: number;
       total_compression_ratio: number;
       gpu_utilization: number;
       cache_hits: number;
-      semantic_preservation_score: number;,
+      semantic_preservation_score: number;
     };
   };
   
   // Cache optimization
   vertex_buffer_key?: string;
-  redis_keys: string[];,
+  redis_keys: string[];
 }
 
 // POST - Enhanced text processing with SIMD tiling;
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         ...cachedResult,
         cached: true,
         vertex_buffer_key: vertexKey,
-        redis_keys: redisKeys,
+        redis_keys: redisKeys
       });
     }
 
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const simdResult = await simdTextTilingEngine.processText(text, {
       type: type as any,
       context: `${model} embedding`,
-      uiTarget: ui_target,
+      uiTarget: ui_target
     });
     
     // Phase 3: Create enhanced response with SIMD data;
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             token_count: tile.tileMetadata.tokenCount,
             semantic_density: tile.tileMetadata.semanticDensity,
             pattern_id: tile.tileMetadata.patternId,
-            categories: tile.tileMetadata.categories,
+            categories: tile.tileMetadata.categories
           }
         })),
         gpu_buffer_data: Array.from(simdResult.gpuBufferData),
@@ -146,13 +146,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           instant_render: simdResult.uiComponents.instantRender,
           component_data: btoa(String.fromCharCode(...new Uint8Array(simdResult.uiComponents.componentData))),
           rendering_instructions: simdResult.uiComponents.renderingInstructions,
-          css_optimized: simdResult.uiComponents.cssOptimized,
+          css_optimized: simdResult.uiComponents.cssOptimized
         },
-        processing_stats: simdResult.processingStats,
+        processing_stats: simdResult.processingStats
       },
       
       vertex_buffer_key: vertexKey,
-      redis_keys: redisKeys,
+      redis_keys: redisKeys
     };
 
     // Phase 4: Cache results with optimized expiration
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     console.error('SIMD LangExtract error:', error);
     return json({ 
       error: 'SIMD LangExtract processing failed', 
-      details: error.message ,
+      details: error.message 
     }, { status: 500 });
   }
 };
@@ -215,20 +215,20 @@ export const GET: RequestHandler = async () => {
         tile_cache_size: stats.cacheSize,
         semantic_patterns: stats.semanticPatterns,
         gpu_buffer_pool: stats.gpuBufferPoolSize,
-        default_config: stats.config,
+        default_config: stats.config
       },
       endpoints: {
         process: 'POST - Process text with SIMD tiling and vertex caching',
         benchmark: 'POST with benchmark: true - Performance testing',
-        batch: 'POST with texts: [] - Batch processing',
+        batch: 'POST with texts: [] - Batch processing'
       },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     
   } catch (error) {
     return json({
       success: false,
-      error: 'Failed to get SIMD LangExtract status',
+      error: 'Failed to get SIMD LangExtract status'
     }, { status: 500 });
   }
 };
@@ -245,13 +245,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'SIMD configuration updated',
       config,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     });
     
   } catch (error) {
     return json({
       success: false,
-      error: 'Failed to update SIMD configuration',
+      error: 'Failed to update SIMD configuration'
     }, { status: 500 });
   }
 };
@@ -270,7 +270,7 @@ async function getStandardEmbedding(
       const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ text, model }),
+        body: JSON.stringify({ text, model })
       });
       
       if (resp.ok) {
@@ -288,7 +288,7 @@ async function getStandardEmbedding(
         documentId: `temp-${Date.now()}`,
         data: [],
         options: { timeout: 5000 }
-      }),
+      })
     });
     
     if (goResp.ok) {
@@ -347,14 +347,14 @@ export async function handleBenchmarkTesting(
     benchmark_config: {
       iterations,
       compression_targets: compressionTargets,
-      sample_texts: sampleTexts.length,
+      sample_texts: sampleTexts.length
     },
     compression_results: Record<string, any>,
     performance_stats: {
       total_processing_time: 0,
       avg_compression_ratio: 0,
       best_compression_ratio: 0,
-      avg_gpu_utilization: 0,
+      avg_gpu_utilization: 0
     }
   };
   

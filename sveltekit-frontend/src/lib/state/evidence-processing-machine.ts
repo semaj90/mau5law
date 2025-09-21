@@ -19,12 +19,12 @@ export interface EvidenceProcessingContext {
     classifications: string[];
     entities: Array<any>;
     risk_assessment: 'low' | 'medium' | 'high' | 'critical';
-    summary: string;,
+    summary: string;
   };
   glyphGeneration?: {
     request: GlyphRequest;
     result?: GlyphResponse;
-    neuralSpriteEnabled: boolean;,
+    neuralSpriteEnabled: boolean;
   };
   portableArtifact?: {
     enhancedPngUrl: string;
@@ -34,7 +34,7 @@ export interface EvidenceProcessingContext {
   minioStorage?: {
     artifactId: string;
     storageUrl: string;
-    indexed: boolean;,
+    indexed: boolean;
   };
   errors: string[];
   processingTimeMs: number;
@@ -90,7 +90,7 @@ const analyzeEvidenceService = fromPromise(async ({ input }: {
           { type: 'amount', value: '$75,000', confidence: 0.91 }
         ],
         risk_assessment: 'medium' as const,
-        summary: 'Employment contract with standard terms and moderate risk factors',
+        summary: 'Employment contract with standard terms and moderate risk factors'
       });
     }, 2500);
   });
@@ -108,7 +108,7 @@ const generateGlyphService = fromPromise(async ({ input }: {
       prompt: `Legal evidence visualization: ${input.analysisResults.summary}`,
       style: 'legal',
       dimensions: [512, 512],
-      neural_sprite_config: input.neuralSpriteConfig,
+      neural_sprite_config: input.neuralSpriteConfig
     })
   });
 
@@ -132,7 +132,7 @@ const embedPNGService = fromPromise(async ({ input }: {
       created_at: new Date().toISOString(),
       evidence_id: input.evidenceId,
       analysis_results: input.analysisResults,
-      neural_sprite_data: input.glyphResult.neural_sprite_results,
+      neural_sprite_data: input.glyphResult.neural_sprite_results
     } as LegalAIMetadata
   };
 });
@@ -147,7 +147,7 @@ const storeInMinIOService = fromPromise(async ({ input }: {
       resolve({
         artifactId: `artifact_${input.evidenceId}_${Date.now()}`,
         storageUrl: `/artifacts/${input.evidenceId}`,
-        indexed: true,
+        indexed: true
       });
     }, 800);
   });
@@ -160,14 +160,14 @@ export const evidenceProcessingMachine = createMachine();
     initial: 'idle',
     types: {
       context: Record<string, any> as EvidenceProcessingContext,
-      events: Record<string, any> as EvidenceProcessingEvent,
+      events: Record<string, any> as EvidenceProcessingEvent
     },
     context: {
       evidenceId: '',
       uploadProgress: 0,
       errors: [],
       processingTimeMs: 0,
-      streamingUpdates: [],
+      streamingUpdates: []
     },
     states: {
       idle: {
@@ -187,7 +187,7 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'in_progress' as const,
                   progress: 0,
                   message: 'Starting file upload...',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
@@ -210,14 +210,14 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'completed' as const,
                   progress: 100,
                   message: 'File upload completed successfully',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 },
                 {
                   step: 'analysis',
                   status: 'in_progress' as const,
                   progress: 0,
                   message: 'Starting AI analysis...',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
@@ -236,14 +236,14 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'error' as const,
                   progress: 0,
                   message: 'File upload failed',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
           }
         },
         on: {
-          CANCEL_PROCESSING: 'cancelled',
+          CANCEL_PROCESSING: 'cancelled'
         }
       },
 
@@ -252,7 +252,7 @@ export const evidenceProcessingMachine = createMachine();
           src: analyzeEvidenceService,
           input: ({ context }) => ({ 
             file: context.file!, 
-            evidenceId: context.evidenceId ,
+            evidenceId: context.evidenceId 
           }),
           onDone: {
             target: 'generatingGlyph',
@@ -265,14 +265,14 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'completed' as const,
                   progress: 100,
                   message: 'AI analysis completed successfully',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 },
                 {
                   step: 'glyph_generation',
                   status: 'in_progress' as const,
                   progress: 0,
                   message: 'Generating legal evidence visualization...',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
@@ -291,7 +291,7 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'error' as const,
                   progress: 0,
                   message: 'AI analysis failed',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
@@ -307,7 +307,7 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'in_progress' as const,
                   progress: event.progress,
                   message: event.message,
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
@@ -321,13 +321,13 @@ export const evidenceProcessingMachine = createMachine();
                   prompt: context.analysisResults?.summary || 'Legal evidence visualization',
                   style: 'legal' as const,
                   dimensions: [512, 512] as [number, number],
-                  neural_sprite_config: event.config,
+                  neural_sprite_config: event.config
                 },
-                neuralSpriteEnabled: !!event.config?.enable_compression,
+                neuralSpriteEnabled: !!event.config?.enable_compression
               })
             })
           },
-          CANCEL_PROCESSING: 'cancelled',
+          CANCEL_PROCESSING: 'cancelled'
         }
       },
 
@@ -337,14 +337,14 @@ export const evidenceProcessingMachine = createMachine();
           input: ({ context }) => ({
             analysisResults: context.analysisResults!,
             evidenceId: context.evidenceId,
-            neuralSpriteConfig: context.glyphGeneration?.request.neural_sprite_config,
+            neuralSpriteConfig: context.glyphGeneration?.request.neural_sprite_config
           }),
           onDone: {
             target: 'embeddingPNG',
             actions: assign({
               glyphGeneration: ({ context, event }) => ({
                 ...context.glyphGeneration!,
-                result: event.output,
+                result: event.output
               }),
               streamingUpdates: ({ context }) => [
                 ...context.streamingUpdates,
@@ -353,14 +353,14 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'completed' as const,
                   progress: 100,
                   message: 'Legal visualization generated with Neural Sprite optimization',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 },
                 {
                   step: 'png_embedding',
                   status: 'in_progress' as const,
                   progress: 0,
                   message: 'Creating portable artifact with embedded metadata...',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
@@ -379,7 +379,7 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'error' as const,
                   progress: 0,
                   message: 'Glyph generation failed',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
@@ -395,12 +395,12 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'in_progress' as const,
                   progress: event.progress,
                   message: event.message,
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
           },
-          CANCEL_PROCESSING: 'cancelled',
+          CANCEL_PROCESSING: 'cancelled'
         }
       },
 
@@ -410,7 +410,7 @@ export const evidenceProcessingMachine = createMachine();
           input: ({ context }) => ({
             glyphResult: context.glyphGeneration!.result!,
             analysisResults: context.analysisResults!,
-            evidenceId: context.evidenceId,
+            evidenceId: context.evidenceId
           }),
           onDone: {
             target: 'storingInMinIO',
@@ -418,7 +418,7 @@ export const evidenceProcessingMachine = createMachine();
               portableArtifact: ({ event }) => ({
                 enhancedPngUrl: event.output.enhancedPngUrl,
                 metadata: event.output.metadata,
-                compressionRatio: event.output.metadata.neural_sprite_data?.compression_ratio,
+                compressionRatio: event.output.metadata.neural_sprite_data?.compression_ratio
               }),
               streamingUpdates: ({ context }) => [
                 ...context.streamingUpdates,
@@ -427,14 +427,14 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'completed' as const,
                   progress: 100,
                   message: 'Portable artifact created with embedded legal metadata',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 },
                 {
                   step: 'minio_storage',
                   status: 'in_progress' as const,
                   progress: 0,
                   message: 'Storing artifact in secure cloud storage...',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
@@ -453,14 +453,14 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'error' as const,
                   progress: 0,
                   message: 'PNG embedding failed',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
           }
         },
         on: {
-          CANCEL_PROCESSING: 'cancelled',
+          CANCEL_PROCESSING: 'cancelled'
         }
       },
 
@@ -470,7 +470,7 @@ export const evidenceProcessingMachine = createMachine();
           input: ({ context }) => ({
             enhancedPngUrl: context.portableArtifact!.enhancedPngUrl,
             metadata: context.portableArtifact!.metadata,
-            evidenceId: context.evidenceId,
+            evidenceId: context.evidenceId
           }),
           onDone: {
             target: 'completed',
@@ -484,7 +484,7 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'completed' as const,
                   progress: 100,
                   message: 'Evidence artifact stored and indexed successfully',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
@@ -503,14 +503,14 @@ export const evidenceProcessingMachine = createMachine();
                   status: 'error' as const,
                   progress: 0,
                   message: 'Storage and indexing failed',
-                  timestamp: Date.now(),
+                  timestamp: Date.now()
                 }
               ]
             })
           }
         },
         on: {
-          CANCEL_PROCESSING: 'cancelled',
+          CANCEL_PROCESSING: 'cancelled'
         }
       },
 
@@ -520,7 +520,7 @@ export const evidenceProcessingMachine = createMachine();
           processingTimeMs: ({ context }) => Date.now() - context.processingTimeMs
         }),
         on: {
-          RESET: 'idle',
+          RESET: 'idle'
         }
       },
 
@@ -529,16 +529,16 @@ export const evidenceProcessingMachine = createMachine();
           RETRY_CURRENT_STEP: {
             target: 'analyzing', // Could be smarter about which state to retry;
             actions: assign({
-              errors: [],
+              errors: []
             })
           },
-          RESET: 'idle',
+          RESET: 'idle'
         }
       },
 
       cancelled: {
         on: {
-          RESET: 'idle',
+          RESET: 'idle'
         }
       }
     }

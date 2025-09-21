@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           data: status,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
         
       case 'health':
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url }) => {
             rabbitmq: healthStatus.connected,
             cuda: healthStatus.cudaHealthy,
             capabilities: healthStatus.capabilities,
-            activeJobs: healthStatus.activeJobs,
+            activeJobs: healthStatus.activeJobs
           }
         });
         
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
             recommended_batch_sizes: {
               vector_similarity: caps.cudaHealthy ? 1000 : 100,
               tensor_compute: caps.cudaHealthy ? 500 : 50,
-              embedding_normalize: caps.cudaHealthy ? 500 : 100,
+              embedding_normalize: caps.cudaHealthy ? 500 : 100
             }
           }
         });
@@ -71,14 +71,14 @@ export const GET: RequestHandler = async ({ url }) => {
             endpoints: {
               status: '/api/cuda-rabbitmq-test?action=status',
               health: '/api/cuda-rabbitmq-test?action=health',
-              capabilities: '/api/cuda-rabbitmq-test?action=capabilities',
+              capabilities: '/api/cuda-rabbitmq-test?action=capabilities'
             },
             operations: {
               initialize: 'POST /api/cuda-rabbitmq-test (action: initialize)',
               tensor_job: 'POST /api/cuda-rabbitmq-test (action: tensor_job)',
               similarity_job: 'POST /api/cuda-rabbitmq-test (action: similarity_job)',
               normalize_job: 'POST /api/cuda-rabbitmq-test (action: normalize_job)',
-              benchmark: 'POST /api/cuda-rabbitmq-test (action: benchmark)',
+              benchmark: 'POST /api/cuda-rabbitmq-test (action: benchmark)'
             }
           }
         });
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       error: {
         message: error.message || 'Bridge test API error',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
             : '❌ Bridge initialization failed',
           data: {
             initialized,
-            status: getBridgeStatus(),
+            status: getBridgeStatus()
           }
         });
         
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
             jobId: tensorJobId,
             priority,
             estimated_processing_time: '50-200ms',
-            submitted_at: new Date().toISOString(),
+            submitted_at: new Date().toISOString()
           }
         });
         
@@ -199,7 +199,7 @@ export const POST: RequestHandler = async ({ request }) => {
             embeddingCount: embeddings.length,
             batchSize,
             dimensions: embeddings[0]?.length || 0,
-            processing_mode: getBridgeStatus().cudaHealthy ? 'cuda' : 'webassembly',
+            processing_mode: getBridgeStatus().cudaHealthy ? 'cuda' : 'webassembly'
           }
         });
         
@@ -240,9 +240,9 @@ export const POST: RequestHandler = async ({ request }) => {
               query_dimensions: 768,
               vector_count: 1000,
               embedding_count: 500,
-              expected_cuda_acceleration: getBridgeStatus().cudaHealthy,
+              expected_cuda_acceleration: getBridgeStatus().cudaHealthy
             },
-            estimated_total_time: getBridgeStatus().cudaHealthy ? '500-800ms' : '2-5s',
+            estimated_total_time: getBridgeStatus().cudaHealthy ? '500-800ms' : '2-5s'
           }
         });
         
@@ -275,7 +275,7 @@ export const POST: RequestHandler = async ({ request }) => {
             vectors_per_job: 500,
             total_vectors: 5000,
             expected_cuda_utilization: '60-90%',
-            jobs: stressJobs,
+            jobs: stressJobs
           }
         });
         
@@ -294,7 +294,7 @@ export const POST: RequestHandler = async ({ request }) => {
       error: {
         message: error.message || 'CUDA-RabbitMQ operation failed',
         timestamp: new Date().toISOString(),
-        stack: error.stack,
+        stack: error.stack
       }
     }, { status: 500 });
   }
@@ -313,7 +313,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       data: {
         note: 'Configuration updates will be implemented in future version',
         receivedConfig: config,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     });
     
@@ -322,7 +322,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: false,
       error: {
         message: error.message || 'Configuration update failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }
@@ -341,7 +341,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
           success: true,
           message: 'Enhanced RabbitMQ-CUDA Bridge shutdown completed',
           data: {
-            shutdown_at: new Date().toISOString(),
+            shutdown_at: new Date().toISOString()
           }
         });
         
@@ -351,7 +351,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
           success: true,
           message: 'Bridge reset initiated (simulation)',
           data: {
-            reset_at: new Date().toISOString(),
+            reset_at: new Date().toISOString()
           }
         });
         
@@ -367,7 +367,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: false,
       error: {
         message: error.message || 'Delete operation failed',
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       }
     }, { status: 500 });
   }

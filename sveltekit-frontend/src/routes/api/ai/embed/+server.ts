@@ -49,7 +49,7 @@ async function getOpenAIEmbedding(text: string): Promise<any> {
     body: JSON.stringify({
       model: 'text-embedding-3-small', // 1536 dimensions, good for legal text
       input: text,
-      encoding_format: 'float',
+      encoding_format: 'float'
     })
   });
 
@@ -81,7 +81,7 @@ async function getNomicEmbedding(text: string): Promise<any> {
       model: 'nomic-embed-text-v1.5',
       texts: [text],
       task_type: 'search_document',
-      dimensionality_reduction: 768 // Reduce from 8192 to 768 for better performance,
+      dimensionality_reduction: 768 // Reduce from 8192 to 768 for better performance
     })
   });
 
@@ -133,7 +133,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         result = {
           embedding,
           model: 'nomic-embed-text-v1.5',
-          dimensions: embedding.length,
+          dimensions: embedding.length
         };
         break;
       }
@@ -148,7 +148,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           embedding,
           model: 'mock-embeddings',
           dimensions: targetDim,
-          tokens: text.split(' ').length,
+          tokens: text.split(' ').length
         };
         break;
       }
@@ -199,7 +199,7 @@ const originalGETHandler: RequestHandler = async () => {
     message: 'Embedding API endpoint',
     methods: ['POST'],
     models: ['openai', 'nomic', 'mock'],
-    maxTextLength: 50000,
+    maxTextLength: 50000
   });
 };
 

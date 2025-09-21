@@ -30,7 +30,7 @@ const SEARCH_TOPICS = {
   SEARCH_RESPONSE: 'legal.search.response',
   SEARCH_SUGGESTIONS: 'legal.search.suggestions',
   SEARCH_ANALYTICS: 'legal.search.analytics',
-  SEARCH_CACHE_INVALIDATE: 'legal.search.cache.invalidate',
+  SEARCH_CACHE_INVALIDATE: 'legal.search.cache.invalidate'
 } as const;
 
 // Search Request/Response Types;
@@ -54,7 +54,7 @@ export interface SearchRequest {
   };
   userId?: string;
   sessionId?: string;
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface SearchResponse {
@@ -67,17 +67,17 @@ export interface SearchResponse {
     processingTime: number;
     cacheHit: boolean;
     searchType: string;
-    hasEmbedding: boolean;,
+    hasEmbedding: boolean;
   };
   suggestions?: string[];
-  timestamp: number;,
+  timestamp: number;
 }
 
 export interface SearchSuggestion {
   query: string;
   score: number;
   frequency: number;
-  lastUsed: number;,
+  lastUsed: number;
 }
 
 export class NatsQuicSearchService {
@@ -93,7 +93,7 @@ export class NatsQuicSearchService {
     avgResponseTime: 0,
     cacheHitRate: 0,
     activeConnections: 0,
-    suggestionsGenerated: 0,
+    suggestionsGenerated: 0
   };
 
   constructor() {
@@ -116,7 +116,7 @@ export class NatsQuicSearchService {
       query,
       searchType: options.type || 'hybrid',
       options: { limit: options.limit, threshold: options.threshold },
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
     return this.performSearch(request, Date.now();
   }
@@ -209,7 +209,7 @@ export class NatsQuicSearchService {
               processingTime: Date.now() - startTime,
               cacheHit: true,
               searchType: cachedResponse.analytics?.searchType ?? request.searchType,
-              hasEmbedding: cachedResponse.analytics?.hasEmbedding ?? false,
+              hasEmbedding: cachedResponse.analytics?.hasEmbedding ?? false
             }
           };
 
@@ -249,7 +249,7 @@ export class NatsQuicSearchService {
             id: 'error',
             success: false,
             error: error instanceof Error ? error.message: 'Search processing failed',
-            timestamp: Date.now(),
+            timestamp: Date.now()
           };
           this.nats.publish(msg.reply, this.codec.encode(errorResponse);
         }
@@ -303,9 +303,9 @@ export class NatsQuicSearchService {
           processingTime: Date.now() - startTime,
           cacheHit: false,
           searchType: request.searchType,
-          hasEmbedding: !!queryEmbedding,
+          hasEmbedding: !!queryEmbedding
         },
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
 
     } catch (error) {
@@ -314,7 +314,7 @@ export class NatsQuicSearchService {
         id: request.id,
         success: false,
         error: error instanceof Error ? error.message: 'Search execution failed',
-        timestamp: Date.now(),
+        timestamp: Date.now()
       };
     }
   }
@@ -329,9 +329,9 @@ export class NatsQuicSearchService {
         headers: { 'Content-Type': 'application/json' },
         body: fastStringify({
           model: model || 'embeddinggemma:latest',
-          prompt: query.slice(0, 2048),
+          prompt: query.slice(0, 2048)
         }),
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(15000)
       });
 
       if (!response.ok) {
@@ -357,7 +357,7 @@ export class NatsQuicSearchService {
       options: {
         limit: request.options?.limit,
         threshold: request.options?.threshold,
-        model: request.options?.model || 'unknown',
+        model: request.options?.model || 'unknown'
       }
     };
 
@@ -392,7 +392,7 @@ export class NatsQuicSearchService {
         case 'high': ttl = 300; break;         // 5 minutes
         case 'normal': ttl = 1800; break;      // 30 minutes
         case 'low': ttl = 3600; break;         // 1 hour
-        default: ttl = 1800;,
+        default: ttl = 1800;
       }
 
       await redisService.set(`search:${cacheKey}`, response, ttl);
@@ -423,7 +423,7 @@ export class NatsQuicSearchService {
           query,
           score: 1.0,
           frequency: 1,
-          lastUsed: Date.now(),
+          lastUsed: Date.now()
         });
       }
 
@@ -445,7 +445,7 @@ export class NatsQuicSearchService {
         this.nats.publish(SEARCH_TOPICS.SEARCH_SUGGESTIONS, this.codec.encode({
           prefix,
           suggestions: suggestions.map(s => s.query),
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
 
@@ -469,7 +469,7 @@ export class NatsQuicSearchService {
     const searchRequest: SearchRequest = {
       ...request,
       id: createHash('md5').update(`${Date.now()}-${Math.random()}`).digest('hex'),
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     // Publish search request
@@ -530,7 +530,7 @@ export class NatsQuicSearchService {
       isInitialized: this.isInitialized,
       cacheSize: this.suggestionCache.size,
       activeSearches: this.searchQueue.size,
-      uptime: process.uptime(),
+      uptime: process.uptime()
     };
   }
 
@@ -544,7 +544,7 @@ export class NatsQuicSearchService {
       this.nats.publish(SEARCH_TOPICS.SEARCH_ANALYTICS, this.codec.encode({
         type: 'analytics',
         ...data,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     } catch (error) {
       console.warn('⚠️ publishAnalytics failed:', error);
@@ -561,7 +561,7 @@ export class NatsQuicSearchService {
       this.nats.publish(SEARCH_TOPICS.SEARCH_ANALYTICS, this.codec.encode({
         type: 'chat-context',
         ...context,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     } catch (error) {
       console.warn('⚠️ publishChatContext failed:', error);
@@ -610,7 +610,7 @@ export class NatsQuicSearchService {
       if (this.nats) {
         this.nats.publish(SEARCH_TOPICS.SEARCH_ANALYTICS, this.codec.encode({
           metrics: this.getMetrics(),
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
     }, 30 * 1000);

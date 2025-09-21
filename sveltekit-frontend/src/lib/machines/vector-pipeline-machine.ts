@@ -42,7 +42,7 @@ export interface VectorPipelineContext {
     totalJobs: number;
     completedJobs: number;
     failedJobs: number;
-    progress: number;,
+    progress: number;
   };
 
   // Pipeline status;
@@ -52,7 +52,7 @@ export interface VectorPipelineContext {
     goMicroservice: boolean;
     cudaWorker: boolean;
     qdrant: boolean;
-    webgpu: boolean;,
+    webgpu: boolean;
   };
 
   // Error tracking
@@ -65,7 +65,7 @@ export interface VectorPipelineContext {
     averageProcessingTime: number;
     totalJobsProcessed: number;
     throughputPerMinute: number;
-    lastProcessedAt: Date | null;,
+    lastProcessedAt: Date | null;
   };
 }
 
@@ -88,7 +88,7 @@ const initialContext: VectorPipelineContext = {
     totalJobs: 0,
     completedJobs: 0,
     failedJobs: 0,
-    progress: 0,
+    progress: 0
   },
   pipeline: {
     postgresql: false,
@@ -96,7 +96,7 @@ const initialContext: VectorPipelineContext = {
     goMicroservice: false,
     cudaWorker: false,
     qdrant: false,
-    webgpu: false,
+    webgpu: false
   },
   errors: [],
   retryAttempts: 0,
@@ -105,19 +105,19 @@ const initialContext: VectorPipelineContext = {
     averageProcessingTime: 0,
     totalJobsProcessed: 0,
     throughputPerMinute: 0,
-    lastProcessedAt: null,
-  },
+    lastProcessedAt: null
+  }
 };
 
 export const vectorPipelineMachine = setup({
   types: Record<string, any> as {
     context: VectorPipelineContext;
-    events: VectorPipelineEvent;,
+    events: VectorPipelineEvent;
   },
   actions: {
     // Job management actions;
     setCurrentJob: assign({
-      currentJob: ({ event }) => (event as any).job || null,
+      currentJob: ({ event }) => (event as any).job || null
     }),
 
     addJobToBatch: assign({
@@ -126,9 +126,9 @@ export const vectorPipelineMachine = setup({
         return {
           ...context.batch,
           jobs: [...context.batch.jobs, ...jobs],
-          totalJobs: context.batch.totalJobs + jobs.length,
+          totalJobs: context.batch.totalJobs + jobs.length
         };
-      },
+      }
     }),
 
     updateJobProgress: assign({
@@ -149,9 +149,9 @@ export const vectorPipelineMachine = setup({
           jobs,
           completedJobs,
           failedJobs,
-          progress: overallProgress,
+          progress: overallProgress
         };
-      },
+      }
     }),
 
     completeJob: assign({
@@ -164,14 +164,14 @@ export const vectorPipelineMachine = setup({
         return {
           ...context.batch,
           jobs,
-          completedJobs: context.batch.completedJobs + 1,
+          completedJobs: context.batch.completedJobs + 1
         };
       },
       metrics: ({ context }) => ({
         ...context.metrics,
         totalJobsProcessed: context.metrics.totalJobsProcessed + 1,
-        lastProcessedAt: new Date(),
-      }),
+        lastProcessedAt: new Date()
+      })
     }),
 
     failJob: assign({
@@ -184,42 +184,42 @@ export const vectorPipelineMachine = setup({
         return {
           ...context.batch,
           jobs,
-          failedJobs: context.batch.failedJobs + 1,
+          failedJobs: context.batch.failedJobs + 1
         };
       },
-      errors: ({ context, event }) => [...context.errors, (event as any).error],
+      errors: ({ context, event }) => [...context.errors, (event as any).error]
     }),
 
     // Pipeline status actions;
     updatePipelineStatus: assign({
-      pipeline: ({ event }) => (event as any).status || {},
+      pipeline: ({ event }) => (event as any).status || {}
     }),
 
     enableWebGPU: assign({
       pipeline: ({ context }) => ({
         ...context.pipeline,
-        webgpu: true,
-      }),
+        webgpu: true
+      })
     }),
 
     disableWebGPU: assign({
       pipeline: ({ context }) => ({
         ...context.pipeline,
-        webgpu: false,
-      }),
+        webgpu: false
+      })
     }),
 
     // Error handling actions;
     incrementRetry: assign({
-      retryAttempts: ({ context }) => context.retryAttempts + 1,
+      retryAttempts: ({ context }) => context.retryAttempts + 1
     }),
 
     resetRetries: assign({
-      retryAttempts: () => 0,
+      retryAttempts: () => 0
     }),
 
     clearErrors: assign({
-      errors: () => [],
+      errors: () => []
     }),
 
     // Reset actions;
@@ -229,8 +229,8 @@ export const vectorPipelineMachine = setup({
         totalJobs: 0,
         completedJobs: 0,
         failedJobs: 0,
-        progress: 0,
-      }),
+        progress: 0
+      })
     }),
 
     resetPipeline: assign(() => initialContext),
@@ -251,10 +251,10 @@ export const vectorPipelineMachine = setup({
         return {
           ...context.metrics,
           averageProcessingTime: averageTime,
-          throughputPerMinute: recentJobs.length,
+          throughputPerMinute: recentJobs.length
         };
-      },
-    }),
+      }
+    })
   },
 
   guards: {
@@ -267,7 +267,7 @@ export const vectorPipelineMachine = setup({
     pipelineHealthy: ({ context }) => 
       context.pipeline.postgresql && 
       context.pipeline.redis && 
-      context.pipeline.goMicroservice,
+      context.pipeline.goMicroservice
   },
 
   actors: {
@@ -277,7 +277,7 @@ export const vectorPipelineMachine = setup({
       return {
         jobId: `job_${Date.now()}`,
         status: 'enqueued',
-        progress: 0,
+        progress: 0
       };
     }),
 
@@ -287,7 +287,7 @@ export const vectorPipelineMachine = setup({
       return jobs.map((job: any, index: number) => ({
         jobId: `batch_job_${Date.now()}_${index}`,
         status: 'enqueued',
-        progress: 0,
+        progress: 0
       });
     }),
 
@@ -299,7 +299,7 @@ export const vectorPipelineMachine = setup({
         goMicroservice: true,
         cudaWorker: true,
         qdrant: true,
-        webgpu: false,
+        webgpu: false
       };
     }),
 
@@ -311,7 +311,7 @@ export const vectorPipelineMachine = setup({
           return await vectorPipeline.submitJob({
             ownerType: job.ownerType,
             ownerId: job.ownerId,
-            event: job.event,
+            event: job.event
           }));
         })
       );
@@ -319,14 +319,14 @@ export const vectorPipelineMachine = setup({
       return retryResults.map((result, index) => ({
         job: failedJobs[index],
         success: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled',
-        result: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason,
+        result: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason
       });
     }),
 
     loadWebGPUModel: fromPromise(async () => {
       return await webgpuWASMExtended.loadModel();
-    }),
-  },
+    })
+  }
 }).createMachine({
   id: 'vectorPipeline',
   initial: 'initializing',
@@ -338,39 +338,39 @@ export const vectorPipelineMachine = setup({
         src: 'healthCheck',
         onDone: {
           target: 'idle',
-          actions: ['updatePipelineStatus', 'clearErrors'],
+          actions: ['updatePipelineStatus', 'clearErrors']
         },
         onError: {
           target: 'error',
-          actions: ['failJob'],
-        },
-      },
+          actions: ['failJob']
+        }
+      }
     },
 
     idle: {
       on: {
         SUBMIT_JOB: {
           target: 'processingJob',
-          actions: ['setCurrentJob'],
+          actions: ['setCurrentJob']
         },
         SUBMIT_BATCH: {
           target: 'processingBatch',
-          actions: ['addJobToBatch'],
+          actions: ['addJobToBatch']
         },
         HEALTH_CHECK: 'healthCheck',
         ENABLE_WEBGPU: {
           target: 'loadingWebGPU',
           actions: ['enableWebGPU'],
-          guard: 'webgpuAvailable',
+          guard: 'webgpuAvailable'
         },
         DISABLE_WEBGPU: {
-          actions: ['disableWebGPU'],
+          actions: ['disableWebGPU']
         },
         RESET_PIPELINE: {
           target: 'initializing',
-          actions: ['resetPipeline'],
-        },
-      },
+          actions: ['resetPipeline']
+        }
+      }
     },
 
     processingJob: {
@@ -379,25 +379,25 @@ export const vectorPipelineMachine = setup({
         input: ({ context }) => ({ job: context.currentJob }),
         onDone: {
           target: 'idle',
-          actions: ['completeJob', 'updateMetrics'],
+          actions: ['completeJob', 'updateMetrics']
         },
         onError: [;
           {
             target: 'retrying',
             guard: 'canRetry',
-            actions: ['failJob', 'incrementRetry'],
+            actions: ['failJob', 'incrementRetry']
           },
           {
             target: 'idle',
-            actions: ['failJob', 'resetRetries'],
-          },
-        ],
+            actions: ['failJob', 'resetRetries']
+          }
+        ]
       },
       on: {
         JOB_PROGRESS: {
-          actions: ['updateJobProgress'],
-        },
-      },
+          actions: ['updateJobProgress']
+        }
+      }
     },
 
     processingBatch: {
@@ -408,57 +408,57 @@ export const vectorPipelineMachine = setup({
           {
             target: 'idle',
             guard: 'allJobsCompleted',
-            actions: ['updateMetrics', 'resetBatch'],
+            actions: ['updateMetrics', 'resetBatch']
           },
           {
             target: 'retrying',
             guard: 'hasFailedJobs',
-            actions: ['updateMetrics'],
+            actions: ['updateMetrics']
           },
           {
             target: 'idle',
-            actions: ['updateMetrics', 'resetBatch'],
-          },
+            actions: ['updateMetrics', 'resetBatch']
+          }
         ],
         onError: {
           target: 'error',
-          actions: ['failJob'],
-        },
+          actions: ['failJob']
+        }
       },
       on: {
         JOB_PROGRESS: {
-          actions: ['updateJobProgress'],
+          actions: ['updateJobProgress']
         },
         JOB_COMPLETED: {
-          actions: ['completeJob'],
+          actions: ['completeJob']
         },
         JOB_FAILED: {
-          actions: ['failJob'],
-        },
-      },
+          actions: ['failJob']
+        }
+      }
     },
 
     retrying: {
       invoke: {
         src: 'retryFailedJobs',
         input: ({ context }) => ({
-          failedJobs: context.batch.jobs.filter(j => j.status === 'failed'),
+          failedJobs: context.batch.jobs.filter(j => j.status === 'failed')
         }),
         onDone: {
           target: 'idle',
-          actions: ['resetRetries', 'clearErrors'],
+          actions: ['resetRetries', 'clearErrors']
         },
         onError: {
           target: 'error',
-          actions: ['incrementRetry'],
-        },
+          actions: ['incrementRetry']
+        }
       },
       on: {
         RETRY_FAILED_JOBS: {
           target: 'retrying',
-          reenter: true,
-        },
-      },
+          reenter: true
+        }
+      }
     },
 
     loadingWebGPU: {
@@ -466,13 +466,13 @@ export const vectorPipelineMachine = setup({
         src: 'loadWebGPUModel',
         onDone: {
           target: 'idle',
-          actions: ['enableWebGPU'],
+          actions: ['enableWebGPU']
         },
         onError: {
           target: 'idle',
-          actions: ['disableWebGPU'],
-        },
-      },
+          actions: ['disableWebGPU']
+        }
+      }
     },
 
     healthCheck: {
@@ -480,35 +480,35 @@ export const vectorPipelineMachine = setup({
         src: 'healthCheck',
         onDone: {
           target: 'idle',
-          actions: ['updatePipelineStatus'],
+          actions: ['updatePipelineStatus']
         },
         onError: {
           target: 'error',
-          actions: ['failJob'],
-        },
-      },
+          actions: ['failJob']
+        }
+      }
     },
 
     error: {
       on: {
         RETRY_FAILED_JOBS: {
           target: 'retrying',
-          guard: 'canRetry',
+          guard: 'canRetry'
         },
         HEALTH_CHECK: 'healthCheck',
         RESET_PIPELINE: {
           target: 'initializing',
-          actions: ['resetPipeline'],
-        },
+          actions: ['resetPipeline']
+        }
       },
       after: {
         5000: {
           target: 'healthCheck',
-          actions: ['clearErrors'],
-        },
-      },
-    },
-  },
+          actions: ['clearErrors']
+        }
+      }
+    }
+  }
 });
 
 // Create and export the actor
@@ -553,7 +553,7 @@ export const vectorPipelineActions = {
 
   reset: () => {
     vectorPipelineActor.send({ type: 'RESET_PIPELINE' });
-  },
+  }
 };
 
 export default vectorPipelineActor;

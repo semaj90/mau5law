@@ -16,7 +16,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   // Merge with custom options if provided;
   const finalConfig: RedisOptions = {
     ...config,
-    ...options,
+    ...options
   };
 
   const client = new Redis(finalConfig);
@@ -26,7 +26,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
     console.log('✅ Redis connected successfully', {
       host: finalConfig.host,
       port: finalConfig.port,
-      db: finalConfig.db,
+      db: finalConfig.db
     });
   });
 
@@ -48,7 +48,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
 
   client.on('reconnecting', (delay) => {
     console.log(`🔄 Redis reconnecting in ${delay}ms...`);
-  ,});
+  });
 
   client.on('close', () => {
     console.log('🔌 Redis connection closed');
@@ -81,7 +81,7 @@ export async function checkRedisHealth(): Promise<boolean> {
       client.ping(),
       new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Health check timeout')), HEALTH_CHECK_CONFIG.timeout)
-      ),
+      )
     ]);
 
     const responseTime = Date.now() - start;
@@ -112,14 +112,14 @@ export async function getRedisInfo(): Promise<any> {
     const [info, memory, stats] = await Promise.all([
       (client as any).info?.() ?? '',
       (client as any).info?.('memory') ?? '',
-      (client as any).info?.('stats') ?? '',
+      (client as any).info?.('stats') ?? ''
     ]);
 
     return {
       connected: true,
       info: parseRedisInfo(info),
       memory: parseRedisInfo(memory),
-      stats: parseRedisInfo(stats),
+      stats: parseRedisInfo(stats)
     };
   } catch (error) {
     console.error('❌ Failed to get Redis info:', error);

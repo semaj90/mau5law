@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
 
 const logger = {
   info: (message: string, data?: any) => console.log(`[ENHANCED-API] ${message}`, data || ''),
-  error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data || ''),
+  error: (message: string, data?: any) => console.error(`[ERROR] ${message}`, data || '')
 };
 
 export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
     return json({
       error: 'Component generation failed',
       slug,
-      details: error.message,
+      details: error.message
     }, { status: 500 });
   }
 };
@@ -105,7 +105,7 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     type: evidenceTable.type,
     metadata: evidenceTable.metadata,
     created_at: evidenceTable.created_at,
-    embedding_similarity: evidenceTable.embedding // This would need proper vector similarity calculation,
+    embedding_similarity: evidenceTable.embedding // This would need proper vector similarity calculation
   }).from(evidenceTable);
 
   // Apply filters
@@ -141,7 +141,7 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     meta: {
       generated_at: new Date().toISOString(),
       cache_key: `evidence-board:${variant}`,
-      query_time_ms: Date.now() - Date.now(),
+      query_time_ms: Date.now() - Date.now()
     }
   };
 }
@@ -166,10 +166,10 @@ async function generateLegalTimeline(variant: string, searchParams: URLSearchPar
     data: {
       events,
       milestones: events.filter(e => e.is_milestone),
-      range: timeRange,
+      range: timeRange
     },
     meta: {
-      generated_at: new Date().toISOString(),
+      generated_at: new Date().toISOString()
     }
   };
 }
@@ -205,11 +205,11 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
     data: {
       results,
       query,
-      suggestions: await generateSearchSuggestions(query),
+      suggestions: await generateSearchSuggestions(query)
     },
     meta: {
       generated_at: new Date().toISOString(),
-      query_embedding_dims: queryEmbedding?.length || 0,
+      query_embedding_dims: queryEmbedding?.length || 0
     }
   };
 }
@@ -240,10 +240,10 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
       case: caseData,
       related_cases: relatedCases,
       insights,
-      risk_assessment: await calculateRiskScore(caseId),
+      risk_assessment: await calculateRiskScore(caseId)
     },
     meta: {
-      generated_at: new Date().toISOString(),
+      generated_at: new Date().toISOString()
     }
   };
 }
@@ -267,7 +267,7 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
     variant,
     data: insights,
     meta: {
-      generated_at: new Date().toISOString(),
+      generated_at: new Date().toISOString()
     }
   };
 }
@@ -306,7 +306,7 @@ async function generateCaseInsights(caseId: string) {
   return {
     key_points: [],
     risk_factors: [],
-    recommendations: [],
+    recommendations: []
   };
 }
 
@@ -315,7 +315,7 @@ async function calculateRiskScore(caseId: string) {
   return {
     score: 0.5,
     factors: [],
-    confidence: 0.8,
+    confidence: 0.8
   };
 }
 
@@ -325,6 +325,6 @@ async function analyzeDocument(docId: string) {
     summary: '',
     entities: [],
     key_phrases: [],
-    sentiment: 0.0,
+    sentiment: 0.0
   };
 }

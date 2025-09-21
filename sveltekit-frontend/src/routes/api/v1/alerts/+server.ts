@@ -4,10 +4,10 @@ import { URL } from "url";
 // Local placeholder implementations (replace with real module imports when available);
 interface Alert {
   message: string;
-  timestamp: string;,
+  timestamp: string;
 }
 interface Baseline {
-  generatedAt: string;,
+  generatedAt: string;
 }
 
 const alertHistory: Alert[] = [];
@@ -24,7 +24,7 @@ function diffBaselines(prev: Baseline, curr: Baseline) {
   return {
     changed: prev.generatedAt !== curr.generatedAt,
     previous: prev,
-    current: curr,
+    current: curr
   };
 }
 

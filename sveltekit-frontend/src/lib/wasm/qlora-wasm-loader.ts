@@ -31,7 +31,7 @@ interface QLoRAWasmModule {
   
   // Performance
   setThreadCount: (threads: number) => void;
-  enableGPU: (enable: boolean) => boolean;,
+  enableGPU: (enable: boolean) => boolean;
 }
 
 // Model Configuration;
@@ -41,7 +41,7 @@ interface QLoRAModelConfig {
     path: string;
     size: number; // in MB
     contextLength: number;
-    vocabulary: number;,
+    vocabulary: number;
   };
   adapter: {
     name: string;
@@ -49,18 +49,18 @@ interface QLoRAModelConfig {
     rank: number;
     alpha: number;
     targetModules: string[];
-    size: number; // in MB,
+    size: number; // in MB
   };
   quantization: {
     enabled: boolean;
     bits: 4 | 8;
-    groupSize: number;,
+    groupSize: number;
   };
   runtime: {
     maxThreads: number;
     memoryLimit: number; // in MB
     enableStreaming: boolean;
-    batchSize: number;,
+    batchSize: number;
   };
 }
 
@@ -72,14 +72,14 @@ interface QLoRAInferenceResult {
   timings: {
     promptEval: number;
     generation: number;
-    tokensPerSecond: number;,
+    tokensPerSecond: number;
   };
   metadata: {
     modelId: number;
     adapterId?: number;
     temperature: number;
     topP: number;
-    contextUsed: number;,
+    contextUsed: number;
   };
 }
 
@@ -97,13 +97,13 @@ export class QLoRAWasmLoader {
     quantization: {
       enabled: true,
       bits: 4,
-      groupSize: 128,
+      groupSize: 128
     },
     runtime: {
       maxThreads: navigator.hardwareConcurrency || 4,
       memoryLimit: 1024, // 1GB limit for browser
       enableStreaming: true,
-      batchSize: 1,
+      batchSize: 1
     }
   };
 
@@ -212,7 +212,7 @@ export class QLoRAWasmLoader {
         path: config.baseModel?.path || '/models/gemma3-legal-distilled.q4_0.bin',
         size: config.baseModel?.size || 256, // 256MB distilled model
         contextLength: config.baseModel?.contextLength || 2048,
-        vocabulary: config.baseModel?.vocabulary || 32000,
+        vocabulary: config.baseModel?.vocabulary || 32000
       },
       adapter: {
         name: config.adapter?.name || 'legal-qlora-adapter',
@@ -220,7 +220,7 @@ export class QLoRAWasmLoader {
         rank: config.adapter?.rank || 16,
         alpha: config.adapter?.alpha || 32,
         targetModules: config.adapter?.targetModules || ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
-        size: config.adapter?.size || 8 // 8MB adapter,
+        size: config.adapter?.size || 8 // 8MB adapter
       },
       ...this.defaultConfig,
       ...config
@@ -351,7 +351,7 @@ export class QLoRAWasmLoader {
           modelId,
           temperature,
           topP,
-          contextUsed: prompt.length + generatedText.length,
+          contextUsed: prompt.length + generatedText.length
         }
       };
 
@@ -404,7 +404,7 @@ export class QLoRAWasmLoader {
     inferenceCount: number;
     averageSpeed: number;
     modelSize: number;
-    adapterSize: number;,
+    adapterSize: number;
   } | null {
     const modelId = this.loadedModels.get(modelKey);
     if (!modelId || !this.wasmModule) return null;
@@ -417,7 +417,7 @@ export class QLoRAWasmLoader {
       inferenceCount: 0, // Would track in real implementation
       averageSpeed: 15.2, // tokens/second
       modelSize: config.baseModel.size,
-      adapterSize: config.adapter.size,
+      adapterSize: config.adapter.size
     };
   }
 
@@ -566,17 +566,17 @@ export async function prepareDistilledModels(): Promise<void> {
     {
       name: 'gemma3-legal-distilled-q4',
       url: '/models/gemma3-legal-distilled.q4_0.bin',
-      size: 256 // MB,
+      size: 256 // MB
     },
     {
       name: 'legal-contract-adapter',
       url: '/models/legal-contract-qlora.bin', 
-      size: 8 // MB,
+      size: 8 // MB
     },
     {
       name: 'legal-litigation-adapter',
       url: '/models/legal-litigation-qlora.bin',
-      size: 8 // MB,
+      size: 8 // MB
     }
   ];
   

@@ -11,7 +11,7 @@ import {
   real,
   boolean,
   varchar,
-  bigint,
+  bigint
 } from "drizzle-orm/pg-core";
 import { vector } from "pgvector/drizzle-orm";
 import { relations } from "drizzle-orm";
@@ -33,13 +33,13 @@ export const documents = pgTable(
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
-    processedAt: timestamp('processed_at'),
+    processedAt: timestamp('processed_at')
   },
   (table) => ({
     statusIdx: index('idx_documents_status').on(table.processingStatus),
     caseIdx: index('idx_documents_case').on(table.caseId),
     filenameIdx: index('idx_documents_filename').on(table.filename),
-    createdAtIdx: index('idx_documents_created').on(table.createdAt),
+    createdAtIdx: index('idx_documents_created').on(table.createdAt)
   })
 );
 
@@ -64,14 +64,14 @@ export const documentChunks = pgTable(
     confidence: real('confidence'), // Extraction/chunking confidence
     metadata: jsonb('metadata').default({}),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
   (table) => ({
     // HNSW index for vector similarity search
     embeddingHnswIdx: index('idx_chunks_embedding_hnsw').on(table.embedding),
     documentIdx: index('idx_chunks_document').on(table.documentId, table.chunkIndex),
     hierarchyIdx: index('idx_chunks_hierarchy').on(table.parentChunkId, table.level),
-    createdAtIdx: index('idx_chunks_created').on(table.createdAt),
+    createdAtIdx: index('idx_chunks_created').on(table.createdAt)
   })
 );
 
@@ -92,15 +92,15 @@ export const searchQueries = pgTable(
       chunks: [],
       documents: [],
       totalFound: 0,
-      searchStrategy: 'semantic',
+      searchStrategy: 'semantic'
     }),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull()
   },
   (table) => ({
     userIdx: index('idx_search_user').on(table.userId, table.createdAt),
     sessionIdx: index('idx_search_session').on(table.sessionId),
     queryEmbeddingIdx: index('idx_search_embedding').on(table.queryEmbedding),
-    createdAtIdx: index('idx_search_created').on(table.createdAt),
+    createdAtIdx: index('idx_search_created').on(table.createdAt)
   })
 );
 
@@ -120,12 +120,12 @@ export const embeddingModels = pgTable(
     isActive: boolean('is_active').notNull().default(true),
     isDefault: boolean('is_default').notNull().default(false),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
   (table) => ({
     nameIdx: index('idx_models_name').on(table.name),
     providerIdx: index('idx_models_provider').on(table.provider),
-    activeIdx: index('idx_models_active').on(table.isActive, table.isDefault),
+    activeIdx: index('idx_models_active').on(table.isActive, table.isDefault)
   })
 );
 
@@ -146,14 +146,14 @@ export const processingJobs = pgTable(
     failedAt: timestamp('failed_at'),
     nextRetryAt: timestamp('next_retry_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
   (table) => ({
     statusPriorityIdx: index('idx_jobs_status_priority').on(table.status, table.priority),
     typeStatusIdx: index('idx_jobs_type_status').on(table.jobType, table.status),
     documentIdx: index('idx_jobs_document').on(table.documentId),
     retryIdx: index('idx_jobs_retry').on(table.nextRetryAt),
-    createdAtIdx: index('idx_jobs_created').on(table.createdAt),
+    createdAtIdx: index('idx_jobs_created').on(table.createdAt)
   })
 );
 
@@ -174,43 +174,43 @@ export const entityNodes = pgTable(
     chunkIds: jsonb('chunk_ids').default([]),
     lastSyncedAt: timestamp('last_synced_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
   },
   (table) => ({
     typeNameIdx: index('idx_entities_type_name').on(table.entityType, table.normalizedName),
     neo4jIdx: index('idx_entities_neo4j').on(table.neo4jId),
     embeddingIdx: index('idx_entities_embedding').on(table.embedding),
-    syncIdx: index('idx_entities_sync').on(table.lastSyncedAt),
+    syncIdx: index('idx_entities_sync').on(table.lastSyncedAt)
   })
 );
 
 // Relations;
 export const documentsRelations = relations(documents, ({ many }) => ({
   chunks: many(documentChunks),
-  jobs: many(processingJobs),
+  jobs: many(processingJobs)
 });
 
 export const documentChunksRelations = relations(documentChunks, ({ one, many }) => ({
   document: one(documents, {
     fields: [documentChunks.documentId],
-    references: [documents.id],
+    references: [documents.id]
   }),
   parent: one(documentChunks, {
     fields: [documentChunks.parentChunkId],
-    references: [documentChunks.id],
+    references: [documentChunks.id]
   }),
-  children: many(documentChunks),
+  children: many(documentChunks)
 });
 
 export const processingJobsRelations = relations(processingJobs, ({ one }) => ({
   document: one(documents, {
     fields: [processingJobs.documentId],
-    references: [documents.id],
+    references: [documents.id]
   }),
   chunk: one(documentChunks, {
     fields: [processingJobs.chunkId],
-    references: [documentChunks.id],
-  }),
+    references: [documentChunks.id]
+  })
 });
 
 // Export types
@@ -270,5 +270,5 @@ export const vectorOperations = {
   normalize: (vec: number[]): number[] => {
     const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0);
     return magnitude > 0 ? vec.map((val) => val / magnitude) : vec;
-  },
+  }
 };

@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           ready: await startupFlagService.isReady(),
           summary: startupFlagService.getServiceSummary(),
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
 
       case 'health':
@@ -41,13 +41,13 @@ export const GET: RequestHandler = async ({ url }) => {
                 acc[name] = {
                   status: service.status,
                   health: service.health,
-                  startupTime: service.startupTime,
+                  startupTime: service.startupTime
                 };
                 return acc;
               },
               {}
             ),
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
 
       case 'diff':;
@@ -57,19 +57,19 @@ export const GET: RequestHandler = async ({ url }) => {
             const diffContent = await readFile(diffPath, 'utf-8');
             return json({
               diff: JSON.parse(diffContent),
-              timestamp: Date.now(),
+              timestamp: Date.now()
             });
           } else {
             return json({
               diff: null,
               message: 'No startup diff available',
-              timestamp: Date.now(),
+              timestamp: Date.now()
             });
           }
         } catch (error) {
           return json({
               error: 'Failed to load startup diff',
-              message: error instanceof Error ? error.message: 'Unknown error',
+              message: error instanceof Error ? error.message: 'Unknown error'
             },)
             { status: 500 }
           );
@@ -83,20 +83,20 @@ export const GET: RequestHandler = async ({ url }) => {
             return json({
               flag: JSON.parse(flagContent),
               exists: true,
-              timestamp: Date.now(),
+              timestamp: Date.now()
             });
           } else {
             return json({
               flag: null,
               exists: false,
               message: 'Ready flag not set',
-              timestamp: Date.now(),
+              timestamp: Date.now()
             });
           }
         } catch (error) {
           return json({
               error: 'Failed to read ready flag',
-              message: error instanceof Error ? error.message: 'Unknown error',
+              message: error instanceof Error ? error.message: 'Unknown error'
             },)
             { status: 500 }
           );
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
       default:;
         return json({
             error: 'Invalid action',
-            availableActions: ['status', 'health', 'diff', 'flag'],
+            availableActions: ['status', 'health', 'diff', 'flag']
           },)
           { status: 400 }
         );
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Startup API error:', error);
     return json({
         error: 'Failed to get startup status',
-        message: error instanceof Error ? error.message: 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'Startup monitoring initiated',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
 
       case 'shutdown':
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           message: 'Startup monitoring shutdown',
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
 
       case 'check-ready':
@@ -156,13 +156,13 @@ export const POST: RequestHandler = async ({ request }) => {
           readyServices: summary.readyServices,
           totalServices: summary.totalServices,
           startupDuration: summary.startupDuration,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
 
       default:;
         return json({
             error: 'Invalid action',
-            availableActions: ['start', 'shutdown', 'check-ready'],
+            availableActions: ['start', 'shutdown', 'check-ready']
           },)
           { status: 400 }
         );
@@ -171,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Startup control error:', error);
     return json({
         error: 'Failed to control startup monitoring',
-        message: error instanceof Error ? error.message: 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error'
       },)
       { status: 500 }
     );

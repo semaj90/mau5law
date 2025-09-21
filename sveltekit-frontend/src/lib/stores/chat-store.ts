@@ -56,7 +56,7 @@ export const processingMetrics = writable({
   somCluster: -1,
   embeddingTime: 0,
   searchTime: 0,
-  generationTime: 0,
+  generationTime: 0
 });
 
 // Error handling
@@ -67,7 +67,7 @@ export const errorHistory = writable<Array<any>([]);
 export const userAttention = writable<AttentionData>({
   messageId: '',
   attentionWeights: [],
-  focusPoints: [],
+  focusPoints: []
 });
 
 export const userActivities = writable<UserActivity[]>([]);
@@ -81,7 +81,7 @@ export const chatConfig = writable({
   autoScroll: true,
   showTypingIndicators: true,
   enableRecommendations: true,
-  streamingEnabled: true,
+  streamingEnabled: true
 });
 
 // Derived stores for computed values
@@ -105,7 +105,7 @@ export const conversationSummary = derived(chatMessages, ($messages) => {
     userMessages,
     aiMessages,
     totalTokens,
-    avgTokensPerMessage: $messages.length > 0 ? Math.round(totalTokens / $messages.length) : 0,
+    avgTokensPerMessage: $messages.length > 0 ? Math.round(totalTokens / $messages.length) : 0
   };
 });
 
@@ -121,7 +121,7 @@ export const sessionMetrics = derived([currentSession, chatMessages], ([$session
     messageCount: sessionMessages.length,
     tokensUsed: sessionMessages.reduce((sum, m) => sum + (m.token_count || 0), 0),
     duration: Date.now() - new Date($session.start_time).getTime(),
-    lastActivity: $session.last_activity,
+    lastActivity: $session.last_activity
   };
 });
 
@@ -259,7 +259,7 @@ export const chatActions = {
         role: 'assistant',
         content: response,
         timestamp: Date.now(),
-        token_count: Math.ceil(response.length / 4) // Rough estimate,
+        token_count: Math.ceil(response.length / 4) // Rough estimate
       };
 
       chatActions.addMessage(aiMessage);
@@ -279,7 +279,7 @@ export const chatActions = {
     processingMetrics.update(metrics => ({
       ...metrics,
       confidenceScore: analysis.confidence,
-      somCluster: typeof analysis.som_cluster === 'string' ? parseInt(analysis.som_cluster) : -1,
+      somCluster: typeof analysis.som_cluster === 'string' ? parseInt(analysis.som_cluster) : -1
     });
   },
 
@@ -296,7 +296,7 @@ export const chatActions = {
       sessionId,
       isTyping,
       lastSeen: Date.now(),
-      status: 'online',
+      status: 'online'
     };
 
     userActivities.update(activities => {
@@ -309,7 +309,7 @@ export const chatActions = {
     userAttention.update(attention => ({
       ...attention,
       lastActivity: Date.now(),
-      interactionCount: attention.interactionCount + 1,
+      interactionCount: attention.interactionCount + 1
     });
   },
 
@@ -317,7 +317,7 @@ export const chatActions = {
     userAttention.update(current => ({
       ...current,
       ...updates,
-      lastActivity: Date.now(),
+      lastActivity: Date.now()
     });
   },
 
@@ -366,7 +366,7 @@ export const chatActions = {
 
   // Configuration;
   updateConfig: (updates: Partial): void => {
-    chatConfig.update(current => ({ ...current, ...updates ,});
+    chatConfig.update(current => ({ ...current, ...updates });
     
     // Save to localStorage if available;
     if (browser) {
@@ -386,7 +386,7 @@ export const chatActions = {
       messages,
       analysis,
       context,
-      exportedAt: new Date().toISOString(),
+      exportedAt: new Date().toISOString()
     }, null, 2);
   },
 

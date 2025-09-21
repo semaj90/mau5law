@@ -13,7 +13,7 @@ export interface MachineState<TContext = any> {
   context: TContext;
   matches: (value: string) => boolean;
   can: (event: string) => boolean;
-  hasTag: (tag: string) => boolean;,
+  hasTag: (tag: string) => boolean;
 }
 
 export interface MachineService<TContext = any> {
@@ -21,7 +21,7 @@ export interface MachineService<TContext = any> {
   send: (event: AnyEventObject | string) => void;
   start: () => void;
   stop: () => void;
-  isRunning: Readable<boolean>;,
+  isRunning: Readable<boolean>;
 }
 
 /**
@@ -65,7 +65,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
         context: snapshot.context,
         matches: (value: string) => snapshot.matches(value),
         can: (event: string) => snapshot.can({ type: event }),
-        hasTag: (tag: string) => snapshot.hasTag(tag),
+        hasTag: (tag: string) => snapshot.hasTag(tag)
       };
       
       this.stateStore.set(simpleState);
@@ -93,7 +93,7 @@ export interface ChatMachineContext {
   session: any;
   error: string;
   confidence: number;
-  model: string;,
+  model: string;
 }
 
 export interface SearchMachineContext {
@@ -102,7 +102,7 @@ export interface SearchMachineContext {
   loading: boolean;
   error: any;
   confidence: number;
-  sources: any[];,
+  sources: any[];
 }
 
 export interface UploadMachineContext {
@@ -117,7 +117,7 @@ export interface UploadMachineContext {
     qdrant: boolean;
     redis: boolean;
     rabbitmq: boolean;
-    ollama: boolean;,
+    ollama: boolean;
   };
 }
 
@@ -191,7 +191,7 @@ export const migrationHelpers = {
         value: $state.value,
         context: $state.context,
         matches: $state.matches,
-        can: $state.can,
+        can: $state.can
       })
     };
   }

@@ -29,7 +29,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       caseId,
       reportId,
       analysisType = "comprehensive",
-      model = "gemma3-legal",
+      model = "gemma3-legal"
     } = await request.json();
 
     if (!content || content.trim().length === 0) {
@@ -105,7 +105,7 @@ Comprehensive Analysis:`;
     const response = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         model: model,
@@ -116,8 +116,8 @@ Comprehensive Analysis:`;
           top_p: 0.9,
           top_k: 40,
           max_tokens: 1000, // Longer responses for detailed analysis
-        },
-      }),
+        }
+      })
     });
 
     if (!response.ok) {
@@ -162,8 +162,8 @@ Comprehensive Analysis:`;
         confidence: enhancedAnalysis.confidence,
         validationScore: enhancedAnalysis.validationScore,
         riskLevel: enhancedAnalysis.riskLevel,
-        complexityLevel: enhancedAnalysis.complexityLevel,
-      },
+        complexityLevel: enhancedAnalysis.complexityLevel
+      }
     });
   } catch (error: any) {
     console.error("AI analysis error:", error);
@@ -172,7 +172,7 @@ Comprehensive Analysis:`;
     if (error instanceof Error && error.message.includes("fetch")) {
       return json({
           error:
-            "Unable to connect to local AI service. Please ensure Ollama is running.",
+            "Unable to connect to local AI service. Please ensure Ollama is running."
         },)
         { status: 503 },
       );
@@ -181,7 +181,7 @@ Comprehensive Analysis:`;
     return json({
         error:
           error instanceof Error
-            ? error.message: "Failed to generate analysis",
+            ? error.message: "Failed to generate analysis"
       },)
       { status: 500 },
     );
@@ -232,7 +232,7 @@ function parseAnalysisResponse(analysisText: string, analysisType: string) {
     recommendations: recommendations.slice(0, 5),
     risks: risks.slice(0, 3),
     findings: findings.slice(0, 5),
-    confidence: calculateConfidence(analysisText),
+    confidence: calculateConfidence(analysisText)
   };
 }
 
@@ -251,7 +251,7 @@ function calculateConfidence(text: string): number {
     "violation",
     "compliance",
     "analysis",
-    "finding",
+    "finding"
   ];
 
   const lowerText = text.toLowerCase();
@@ -306,7 +306,7 @@ function createEnhancedAnalysis(parsedAnalysis: any, analysisText: string, conte
     confidenceDistribution: {
       high: confidence > 0.8 ? 1 : 0,
       medium: confidence > 0.6 && confidence <= 0.8 ? 1 : 0,
-      low: confidence <= 0.6 ? 1 : 0,
+      low: confidence <= 0.6 ? 1 : 0
     }
   };
 
@@ -320,7 +320,7 @@ function createEnhancedAnalysis(parsedAnalysis: any, analysisText: string, conte
     model: context?.model || "unknown" // @ts-ignore - Model property access,
     processingTime: context.processingTime,
     analyzedAt: new Date().toISOString(),
-    version: 1,
+    version: 1
   };
 }
 

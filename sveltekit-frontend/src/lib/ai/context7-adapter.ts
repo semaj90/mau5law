@@ -63,7 +63,7 @@ export const context7SemanticAuditor = {
     if (!impl || typeof (impl as any).performSemanticAudit !== 'function') {
       // return a small mocked audit result set
       return [
-        { id: 'mock-1', step: 'init-scan', status: 'ok', message: 'Mocked audit step', suggestedFix: null },
+        { id: 'mock-1', step: 'init-scan', status: 'ok', message: 'Mocked audit step', suggestedFix: null }
       ];
     }
     return (impl as any).performSemanticAudit(component);

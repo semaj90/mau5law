@@ -10,28 +10,28 @@ export interface OllamaConfig {
   fallbackModel?: string;
   fallbackModels?: {
     legal: string;
-    general: string;,
+    general: string;
   };
   timeout: number;
   maxRetries: number;
   streamEnabled: boolean;
   gpu: GpuConfig;
   performance: PerformanceConfig;
-  features: FeaturesConfig;,
+  features: FeaturesConfig;
 }
 
 export interface GpuConfig {
   enabled: boolean;
   layers: number;
   mainGpu: number;
-  tensorSplit: number[] | null;,
+  tensorSplit: number[] | null;
 }
 
 export interface PerformanceConfig {
   batchSize: number;
   parallelRequests: number;
   cacheEnabled: boolean;
-  cacheTTL: number;,
+  cacheTTL: number;
 }
 
 export interface FeaturesConfig {
@@ -86,7 +86,7 @@ export interface OllamaGenerateRequest {
 
 export interface OllamaEmbeddingRequest {
   model: string;
-  prompt: string;,
+  prompt: string;
 }
 
 export interface OllamaResponse {
@@ -129,7 +129,7 @@ export interface SOMNode {
   weight: number[];
   documents: string[];
   topic?: string;
-  density: number;,
+  density: number;
 }
 
 export interface ProcessingPipeline {
@@ -141,7 +141,7 @@ export interface ProcessingPipeline {
     embedding: boolean;
     indexing: boolean;
     somTraining: boolean;
-    caching: boolean;,
+    caching: boolean;
   };
   error?: string;
   startTime: Date;
@@ -150,7 +150,7 @@ export interface ProcessingPipeline {
     documentsProcessed: number;
     chunksGenerated: number;
     embeddingsCreated: number;
-    processingTimeMs: number;,
+    processingTimeMs: number;
   };
 }
 
@@ -184,7 +184,7 @@ export interface AnalysisResult {
     organizations: string[];
     dates: string[];
     locations: string[];
-    legalConcepts: string[];,
+    legalConcepts: string[];
   };
   sentiment: 'positive' | 'negative' | 'neutral';
   riskFactors?: string[];
@@ -192,7 +192,7 @@ export interface AnalysisResult {
   citations?: {
     text: string;
     source: string;
-    confidence: number;,
+    confidence: number;
   }[];
   metadata?: {
     modelUsed?: string;
@@ -209,13 +209,13 @@ export interface UserQuery {
   context?: {
     previousQueries?: string[];
     activeDocument?: string;
-    sessionId: string;,
+    sessionId: string;
   };
   response?: {
     text: string;
     sources: string[];
     confidence: number;
-    processingTimeMs: number;,
+    processingTimeMs: number;
   };
 }
 
@@ -226,7 +226,7 @@ export interface CacheEntry {
   created: Date;
   lastAccessed: Date;
   accessCount: number;
-  priority: 'low' | 'medium' | 'high' | 'critical';,
+  priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
 // RAG Configuration;
@@ -240,6 +240,6 @@ export interface SimpleRAGConfiguration {
   maxRetries: number;
   timeoutMs: number;
   cacheEnabled: boolean;
-  cacheTtl: number;,
+  cacheTtl: number;
 }
 export type RAGConfiguration = SimpleRAGConfiguration; // compatibility alias for config.ts

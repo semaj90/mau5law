@@ -10,7 +10,7 @@ export interface BrowserCacheConfig {
   cachePrefix: string;
   maxCacheSize: number; // bytes
   enableCompression: boolean;
-  enableServiceWorkerIntegration: boolean;,
+  enableServiceWorkerIntegration: boolean;
 }
 
 export interface CachedSprite {
@@ -19,7 +19,7 @@ export interface CachedSprite {
   compressed: boolean;
   timestamp: number;
   accessCount: number;
-  size: number;,
+  size: number;
 }
 
 export class BrowserCacheManager {
@@ -126,7 +126,7 @@ export class BrowserCacheManager {
         compressed: true,
         timestamp: Date.now(),
         accessCount: 1,
-        size: JSON.stringify(idbCached).length,
+        size: JSON.stringify(idbCached).length
       };
       this.memoryCache.set(cacheKey, cached);
       return this.decompressData(idbCached, true);
@@ -157,7 +157,7 @@ export class BrowserCacheManager {
       compressed: this.config.enableCompression,
       timestamp: Date.now(),
       accessCount: 1,
-      size,
+      size
     };
 
     // Store in memory cache
@@ -192,7 +192,7 @@ export class BrowserCacheManager {
       this.serviceWorkerRegistration!.active!.postMessage();
         {
           type: "GET_SPRITE",
-          spriteId,
+          spriteId
         },
         [messageChannel.port2],
       );
@@ -209,7 +209,7 @@ export class BrowserCacheManager {
 
     this.serviceWorkerRegistration.active.postMessage({
       type: "CACHE_SPRITE",
-      sprite,
+      sprite
     });
   }
 
@@ -323,7 +323,7 @@ export class BrowserCacheManager {
         complexity: "c",
         triggers: "t",
         usageCount: "u",
-        createdAt: "ca",
+        createdAt: "ca"
       };
       return shortcuts[key] ? `"${shortcuts[key]}"` : match;
     });
@@ -353,7 +353,7 @@ export class BrowserCacheManager {
           '"c"': '"complexity"',
           '"t"': '"triggers"',
           '"u"': '"usageCount"',
-          '"ca"': '"createdAt"',
+          '"ca"': '"createdAt"'
         };
 
         for (const [short, long] of Object.entries(shortcuts)) {
@@ -420,7 +420,7 @@ export class BrowserCacheManager {
           compressed: sprite.compressed,
           timestamp: sprite.timestamp,
           accessCount: sprite.accessCount,
-          size: sprite.size,
+          size: sprite.size
         };
       }
 
@@ -437,7 +437,7 @@ export class BrowserCacheManager {
     memorySprites: number;
     totalSize: number;
     compressionRatio: number;
-    hitRate: number;,
+    hitRate: number;
   } {
     const cacheValues = Array.from(this.memoryCache.values();
     const totalAccess = cacheValues.reduce(
@@ -453,7 +453,7 @@ export class BrowserCacheManager {
       hitRate:
         totalAccess > 0
           ? (totalAccess - this.memoryCache.size) / totalAccess
-          : 0,
+          : 0
     };
   }
 
@@ -478,7 +478,7 @@ export class BrowserCacheManager {
     // Clear Service Worker cache;
     if (this.serviceWorkerRegistration?.active) {
       this.serviceWorkerRegistration.active.postMessage({
-        type: "CLEAR_CACHE",
+        type: "CLEAR_CACHE"
       });
     }
   }

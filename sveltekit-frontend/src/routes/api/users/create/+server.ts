@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Validate required fields;
     if (!userData.email || !userData.name) {
       return json({
-          error: "Email and name are required fields",
+          error: "Email and name are required fields"
         },)
         { status: 400 },
       );
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       lastName: userData.lastName,
       role: userData.role || "prosecutor",
       password: userData.password || "password123",
-      avatarUrl: userData.avatarUrl,
+      avatarUrl: userData.avatarUrl
     } as const;
 
     const result = await db.insert(users).values(newUser as any).returning();
@@ -39,13 +39,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({
         success: true,
         message: "User created successfully",
-        user: result[0],
+        user: result[0]
       });
     } else {
       return json({
           success: false,
           message: "Failed to create user",
-          error: "Database insertion failed",
+          error: "Database insertion failed"
         },)
         { status: 500 },
       );
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
         success: false,
         message: "Failed to create user",
-        error: error instanceof Error ? error.message: "Unknown error",
+        error: error instanceof Error ? error.message: "Unknown error"
       },)
       { status: 500 },
     );
@@ -79,8 +79,8 @@ export const GET: RequestHandler = async ({ locals }) => {
         lastName: "Last (optional)",
         role: "prosecutor|detective|analyst|admin (optional, defaults to prosecutor)",
         password: "password (optional, defaults to password123)",
-        avatarUrl: "URL to avatar image (optional)",
-      },
+        avatarUrl: "URL to avatar image (optional)"
+      }
     },
     examples: [;
       {
@@ -88,8 +88,8 @@ export const GET: RequestHandler = async ({ locals }) => {
         body: {
           email: "prosecutor@example.com",
           name: "John Prosecutor",
-          role: "prosecutor",
-        },
+          role: "prosecutor"
+        }
       },
       {
         description: "Create a detective",
@@ -97,8 +97,8 @@ export const GET: RequestHandler = async ({ locals }) => {
           email: "detective@example.com",
           name: "Sarah Detective",
           role: "detective",
-          password: "customPassword123",
-        },
+          password: "customPassword123"
+        }
       },
       {
         description: "Create an analyst",
@@ -107,9 +107,9 @@ export const GET: RequestHandler = async ({ locals }) => {
           name: "Mike Analyst",
           firstName: "Mike",
           lastName: "Analyst",
-          role: "analyst",
-        },
-      },
-    ],
+          role: "analyst"
+        }
+      }
+    ]
   });
 };

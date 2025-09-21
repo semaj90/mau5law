@@ -21,7 +21,7 @@ export interface SecurityValidationResponseClient {
   status: 'allow' | 'review' | 'deny';
   modelVersion: string;
   durationMs: number;
-  timestamp: string;,
+  timestamp: string;
 }
 
 export async function validateSecurity(payload: SecurityValidationRequestClient): Promise<SecurityValidationResponseClient> {
@@ -37,7 +37,7 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
       department: payload.user.department,
       jurisdiction: payload.user.jurisdiction,
       badgeNumber: payload.user.badgeNumber,
-      deviceInfo: payload.fingerprint,
+      deviceInfo: payload.fingerprint
     })
   });
   
@@ -60,7 +60,7 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
             apiResponse.riskLevel === 'high' ? 'review' : 'allow',
     modelVersion: 'enhanced-rag-v1',
     durationMs: apiResponse.processingTime || 0,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 

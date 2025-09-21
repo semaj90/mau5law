@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
   const {
     queryText,
     enableMultiLLM,
-    complexityLevel = 3,
+    complexityLevel = 3
   } = await request.json();
 
   if (!queryText) {
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     const embeddingResponse = await fetch(`${NLP_SERVICE_URL}/embed`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: queryText }),
+      body: JSON.stringify({ text: queryText })
     });
 
     if (!embeddingResponse.ok) {
@@ -80,14 +80,14 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
           vector: queryEmbedding,
           limit: 3,
           filter: { must: [{ key: "caseId", match: { value: caseId } }] },
-          with_payload: true,
+          with_payload: true
         }),
         qdrantClient.search("prosecutor_evidence", {
           vector: queryEmbedding,
           limit: 3,
           filter: { must: [{ key: "caseId", match: { value: caseId } }] },
-          with_payload: true,
-        }),
+          with_payload: true
+        })
       ]);
 
     const relevantFragments =
@@ -152,7 +152,7 @@ ws ::= ([ \t\n]*)
             '\n\nReturn your analysis as a valid JSON object with "summary" and "recommendations" keys.',
           max_tokens: 1024,
           grammar: jsonGrammar, // Pass the grammar to constrain the output
-        }),
+        })
       }).then((res) =>
         res.json().then((data) => ({ source: "firm_ai", data, ok: res.ok })
       )
@@ -164,13 +164,13 @@ ws ::= ([ \t\n]*)
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            Authorization: `Bearer ${OPENAI_API_KEY}`
           },
           body: JSON.stringify({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: basePrompt }],
-            max_tokens: 512,
-          }),
+            max_tokens: 512
+          })
         }).then((res) =>
           res.json().then((data) => ({ source: "openai", data, ok: res.ok })
         )
@@ -189,7 +189,7 @@ ws ::= ([ \t\n]*)
             const parsedResponse = JSON.parse((data as { response?: any; choices?: any; detail?: any }).response);
             analysisResults.firm_ai = {
               output: parsedResponse,
-              source: "Local LLM (JSON)",
+              source: "Local LLM (JSON)"
             };
           } catch (e: any) {
             // Fallback if JSON parsing fails despite the grammar (very unlikely)
@@ -199,13 +199,13 @@ ws ::= ([ \t\n]*)
             );
             analysisResults.firm_ai = {
               output: (data as { response?: any; choices?: any; detail?: any }).response,
-              source: "Local LLM (Raw)",
+              source: "Local LLM (Raw)"
             };
           }
         } else if (source === "openai") {
           analysisResults.openai = {
             output: (data as { response?: any; choices?: any; detail?: any }).choices[0].message.content,
-            source: "OpenAI API",
+            source: "OpenAI API"
           };
         }
       } else if ((result as { status?: any; value?: any; reason?: any }).status === "fulfilled") {

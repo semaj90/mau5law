@@ -158,7 +158,7 @@ export class YoRHaUIExample {
       glow: {
         enabled: true,
         color: YORHA_COLORS.accent.gold,
-        intensity: 0.3,
+        intensity: 0.3
       }
     });
 
@@ -171,14 +171,14 @@ export class YoRHaUIExample {
       text: 'System Status: OPERATIONAL',
       variant: 'ghost',
       size: 'small',
-      textColor: YORHA_COLORS.status.success,
+      textColor: YORHA_COLORS.status.success
     });
 
     const settingsButton = new YoRHaButton3D({
       text: 'Settings',
       variant: 'secondary',
       size: 'small',
-      icon: 'gear',
+      icon: 'gear'
     });
 
     headerLayout.addChild(statusButton);
@@ -195,7 +195,7 @@ export class YoRHaUIExample {
       width: 8,
       height: 4.5,
       scrollable: true,
-      resizable: true,
+      resizable: true
     });
 
     // Form layout
@@ -210,7 +210,7 @@ export class YoRHaUIExample {
       icon: 'user',
       iconPosition: 'left',
       clearable: true,
-      width: 6,
+      width: 6
     });
 
     const passwordInput = new YoRHaInput3D({
@@ -220,7 +220,7 @@ export class YoRHaUIExample {
       size: 'medium',
       icon: 'lock',
       iconPosition: 'left',
-      width: 6,
+      width: 6
     });
 
     const emailInput = new YoRHaInput3D({
@@ -231,7 +231,7 @@ export class YoRHaUIExample {
       icon: 'email',
       iconPosition: 'left',
       clearable: true,
-      width: 6,
+      width: 6
     });
 
     const messageInput = new YoRHaInput3D({
@@ -240,7 +240,7 @@ export class YoRHaUIExample {
       multiline: true,
       rows: 3,
       maxLength: 500,
-      width: 6,
+      width: 6
     });
 
     // Add inputs to form
@@ -267,20 +267,20 @@ export class YoRHaUIExample {
       variant: 'primary',
       size: 'large',
       icon: 'play',
-      iconPosition: 'left',
+      iconPosition: 'left'
     });
 
     const cancelButton = new YoRHaButton3D({
       text: 'Abort',
       variant: 'danger',
-      size: 'large',
+      size: 'large'
     });
 
     const helpButton = new YoRHaButton3D({
       text: 'System Manual',
       variant: 'secondary',
       size: 'medium',
-      icon: 'help',
+      icon: 'help'
     });
 
     // Add event listeners;
@@ -313,7 +313,7 @@ export class YoRHaUIExample {
       glow: {
         enabled: true,
         color: YORHA_COLORS.accent.gold,
-        intensity: 0.5,
+        intensity: 0.5
       }
     });
 
@@ -335,7 +335,7 @@ export class YoRHaUIExample {
       size: 'medium',
       closable: true,
       showHeader: true,
-      showFooter: true,
+      showFooter: true
     });
 
     // Add content to modal
@@ -344,19 +344,19 @@ export class YoRHaUIExample {
     const messagePanel = new YoRHaPanel3D({
       variant: 'glass',
       width: 4,
-      height: 1.5,
+      height: 1.5
     });
 
     const confirmButton = new YoRHaButton3D({
       text: 'Confirm Execution',
       variant: 'primary',
-      size: 'medium',
+      size: 'medium'
     });
 
     const cancelButton = new YoRHaButton3D({
       text: 'Cancel',
       variant: 'secondary',
-      size: 'medium',
+      size: 'medium'
     });
 
     confirmButton.addEventListener('click', () => {
@@ -390,7 +390,7 @@ export class YoRHaUIExample {
       title: 'Abort Operation',
       variant: 'alert',
       size: 'small',
-      closable: true,
+      closable: true
     });
 
     const modalLayout = YoRHaLayoutPresets.createDialog();
@@ -398,7 +398,7 @@ export class YoRHaUIExample {
     const confirmButton = new YoRHaButton3D({
       text: 'Abort',
       variant: 'danger',
-      size: 'medium',
+      size: 'medium'
     });
 
     confirmButton.addEventListener('click', () => {
@@ -424,7 +424,7 @@ export class YoRHaUIExample {
       title: 'System Documentation',
       variant: 'terminal',
       size: 'large',
-      closable: true,
+      closable: true
     });
 
     const modalLayout = YoRHaLayoutPresets.createForm();
@@ -432,7 +432,7 @@ export class YoRHaUIExample {
     const helpPanel = new YoRHaPanel3D({
       variant: 'terminal',
       width: 6,
-      height: 4,
+      height: 4
     });
 
     modalLayout.addChild(helpPanel);
@@ -454,7 +454,7 @@ export class YoRHaUIExample {
       title: 'Command Executed Successfully',
       variant: 'default',
       size: 'medium',
-      closable: true,
+      closable: true
     });
 
     // Auto-close after 3 seconds;

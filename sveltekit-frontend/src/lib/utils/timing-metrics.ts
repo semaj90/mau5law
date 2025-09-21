@@ -23,14 +23,14 @@ export interface TimingMetrics {
   requestId?: string;
   timestamp: number;
   url: string;
-  userAgent: string;,
+  userAgent: string;
 }
 
 export interface PerformanceEntry {
   name: string;
   duration: number;
   startTime: number;
-  entryType: string;,
+  entryType: string;
 }
 
 class TimingMetricsCollector {
@@ -121,7 +121,7 @@ class TimingMetricsCollector {
       // Metadata
       timestamp: Date.now(),
       url: window.location.href,
-      userAgent: navigator.userAgent,
+      userAgent: navigator.userAgent
     };
   }
 
@@ -166,7 +166,7 @@ class TimingMetricsCollector {
     try {
       const response = await fetch(input, {
         ...init,
-        headers,
+        headers
       });
 
       const endTime = performance.now();
@@ -184,7 +184,7 @@ class TimingMetricsCollector {
         serverTiming,
         requestId: serverRequestId || requestId,
         status: response.status,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
 
       return response;
@@ -201,7 +201,7 @@ class TimingMetricsCollector {
         requestId,
         status: 0,
         error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
 
       throw error;
@@ -218,9 +218,9 @@ class TimingMetricsCollector {
       await fetch(endpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(metrics),
+        body: JSON.stringify(metrics)
       });
     } catch (error) {
       console.warn('Failed to send timing metrics:', error);
@@ -303,7 +303,7 @@ class TimingMetricsCollector {
     requestId: string;
     status: number;
     error?: string;
-    timestamp: number;,
+    timestamp: number;
   }): void {
     // Console logging for development;
     if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
@@ -313,7 +313,7 @@ class TimingMetricsCollector {
         clientMs: Math.round(metrics.clientDuration * 100) / 100,
         serverTiming: metrics.serverTiming,
         requestId: metrics.requestId.slice(0, 8),
-        status: metrics.status,
+        status: metrics.status
       });
     }
 
@@ -363,7 +363,7 @@ export const {
   instrumentedFetch,
   extractServerTiming,
   extractRequestId,
-  sendMetrics,
+  sendMetrics
 } = timingMetrics;
 
 // SvelteKit integration helper;

@@ -30,7 +30,7 @@ export interface RAGSearchResult {
     procedural: number;
     precedential: number;
     jurisdictional: number;
-    confidence: number;,
+    confidence: number;
   };
   relevanceScore?: number;
   rank?: number;
@@ -48,7 +48,7 @@ export interface RAGResponse {
   results: RAGSearchResult[];
   query: string;
   totalResults: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 // Fix for optimization files that expect "research" type
@@ -80,7 +80,7 @@ export interface DocumentChunk {
   content: string;
   embedding: number[];
   metadata: Record<string, any>;
-  chunkIndex: number;,
+  chunkIndex: number;
 }
 
 export interface VectorSearchOptions {
@@ -93,7 +93,7 @@ export interface VectorSearchOptions {
 export interface EmbeddingConfig {
   model: string;
   dimensions: number;
-  provider: 'openai' | 'ollama' | 'local';,
+  provider: 'openai' | 'ollama' | 'local';
 }
 
 // Missing exports referenced by optimization files;
@@ -112,7 +112,7 @@ export interface RAGDocument {
     lastModified: Date;
     fileSize: number;
     language: string;
-    tags: string[];,
+    tags: string[];
   };
   createdAt?: Date;
   updatedAt?: Date;
@@ -147,5 +147,5 @@ export interface RAGSource {
   title: string;
   content: string;
   relevance: number;
-  type: 'document' | 'evidence' | 'case' | 'legal' | 'research';,
+  type: 'document' | 'evidence' | 'case' | 'legal' | 'research';
 }

@@ -43,7 +43,7 @@ export interface PaginatedResponse<T = unknown> extends BaseResponse<T[]> {
     total: number;
     totalPages: number;
     hasNext: boolean;
-    hasPrev: boolean;,
+    hasPrev: boolean;
   };
 }
 
@@ -52,7 +52,7 @@ export interface ErrorResponse {
   error: string;
   code?: string;
   details?: Record<string, unknown>;
-  timestamp: Date;,
+  timestamp: Date;
 }
 
 // ============================================================================
@@ -62,11 +62,11 @@ export interface ErrorResponse {
 
 export interface TimestampedEntity {
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface UserOwnedEntity extends TimestampedEntity {
-  userId: string;,
+  userId: string;
 }
 
 export interface CaseEntity extends UserOwnedEntity {
@@ -91,7 +91,7 @@ export interface DocumentEntity extends UserOwnedEntity {
   embedding?: number[];
   metadata?: DocumentMetadata;
   tags?: string[];
-  isIndexed: boolean;,
+  isIndexed: boolean;
 }
 
 export interface DocumentMetadata {
@@ -114,7 +114,7 @@ export interface EmbeddingResult {
   vector: number[];
   model: string;
   dimensions: number;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export interface AIAnalysisResult {
@@ -124,7 +124,7 @@ export interface AIAnalysisResult {
   classification?: string;
   confidence: number;
   model: string;
-  processingTime: number;,
+  processingTime: number;
 }
 
 export interface SearchResult {
@@ -194,7 +194,7 @@ export interface UploadProgress {
   percentage: number;
   speed?: number;
   timeRemaining?: number;
-  stage: 'uploading' | 'processing' | 'indexing' | 'complete';,
+  stage: 'uploading' | 'processing' | 'indexing' | 'complete';
 }
 
 export interface UploadResult extends BaseResponse<DocumentEntity> {

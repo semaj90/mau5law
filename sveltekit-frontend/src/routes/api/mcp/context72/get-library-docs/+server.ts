@@ -6,20 +6,20 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
           library: 'melt-ui',
           version: '0.39.0',
           topic: topic || 'builders',
-          tokenCount: 120,
+          tokenCount: 120
         },
         snippets: [;
           {
             title: 'Button',
             code: '// Melt UI component creation removed - replace with bits-ui declarative components',
-            description: 'Melt button builder',
-          },
-        ],
+            description: 'Melt button builder'
+          }
+        ]
       },
       '/bits-ui/bits-ui': {
         content:
           '# Bits UI v2\n\n```svelte\n<Dialog.Root bind:open={isOpen}>\n  <Dialog.Trigger>Open</Dialog.Trigger>\n  <Dialog.Content>\n    <Dialog.Title>Title</Dialog.Title>\n  </Dialog.Content>\n</Dialog.Root>\n```',
-        metadata: { library: 'bits-ui', version: '2.x', topic: topic || 'dialog', tokenCount: 140 },
+        metadata: { library: 'bits-ui', version: '2.x', topic: topic || 'dialog', tokenCount: 140 }
       },
       '/xstate/xstate': {
         content:
@@ -28,8 +28,8 @@ export // Melt UI component creation removed - replace with bits-ui declarative 
           library: 'xstate',
           version: '5.x',
           topic: topic || 'machines',
-          tokenCount: 130,
-        },
+          tokenCount: 130
+        }
       },
       '/ioredis/ioredis': {
         content: `# IORedis - Advanced Redis Client for Node.js
@@ -61,7 +61,7 @@ class RedisService {
   private pool: {
     primary: Redis;
     subscriber: Redis;
-    publisher: Redis;,
+    publisher: Redis;
   };
 
   async initialize() {
@@ -72,7 +72,7 @@ class RedisService {
         host: 'localhost',
         port: 6379,
         connectionName: 'primary',
-        lazyConnect: false,
+        lazyConnect: false
       }),
 
       // Dedicated subscriber (required for pub/sub)
@@ -80,7 +80,7 @@ class RedisService {
   subscriber: new Redis({
         host: 'localhost',
         port: 6379,
-        connectionName: 'subscriber',
+        connectionName: 'subscriber'
       }),
 
       // Dedicated publisher
@@ -88,8 +88,8 @@ class RedisService {
   publisher: new Redis({
         host: 'localhost',
         port: 6379,
-        connectionName: 'publisher',
-      }),
+        connectionName: 'publisher'
+      })
     };
 
     // Setup event handlers
@@ -141,7 +141,7 @@ const redis = new Redis({
   retryDelayOnClusterDown: 300,
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
-  lazyConnect: true,
+  lazyConnect: true
 });
 
 // Exponential backoff for reconnection;
@@ -160,7 +160,7 @@ redis.on('error', (err) => {
 // Subscriber client (separate from main client);
 const subscriber = new Redis({
   host: 'localhost',
-  port: 6379,
+  port: 6379
 });
 
 // Subscribe to patterns
@@ -201,7 +201,7 @@ subscriber.on('message', (channel: string, message: string) => {
 // Publisher client;
 const publisher = new Redis({
   host: 'localhost',
-  port: 6379,
+  port: 6379
 });
 
 // Publish document updates;
@@ -209,7 +209,7 @@ async function notifyDocumentUpdate(docId: string, operation: string) {
   const message = JSON.stringify({
     documentId: docId,
     operation, // 'create', 'update', 'delete'
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 
   await publisher.publish(\`legal-ai:document:\${docId}\`, message);
@@ -320,7 +320,7 @@ interface CacheDocument {
   metadata: {
     type: 'contract' | 'evidence' | 'brief';
     priority: number;
-    timestamp: number;,
+    timestamp: number;
   };
 }
 
@@ -393,7 +393,7 @@ class TypedRedisService {
           library: 'ioredis',
           version: '5.x',
           topic: topic || 'client-patterns',
-          tokenCount: 2800,
+          tokenCount: 2800
         },
         snippets: [;
           {
@@ -403,9 +403,9 @@ class TypedRedisService {
   port: 6379,
   retryDelayOnFailover: 100,
   enableReadyCheck: true,
-  lazyConnect: true,
+  lazyConnect: true
 });`,
-            description: 'Basic Redis connection with retry logic',
+            description: 'Basic Redis connection with retry logic'
           },
           {
             title: 'Pub/Sub Setup',
@@ -414,7 +414,7 @@ subscriber.on('pmessage', (pattern, channel, message) => {
   const data = JSON.parse(message);
   handleDocumentUpdate(data);
 });`,
-            description: 'Pattern-based pub/sub subscription',
+            description: 'Pattern-based pub/sub subscription'
           },
           {
             title: 'Pipeline Operations',
@@ -422,9 +422,9 @@ subscriber.on('pmessage', (pattern, channel, message) => {
 pipeline.set('key1', 'value1');
 pipeline.expire('key1', 3600);
 const results = await pipeline.exec();`,
-            description: 'Atomic batch operations with pipeline',
-          },
-        ],
+            description: 'Atomic batch operations with pipeline'
+          }
+        ]
       },
       '/redis/node-redis': {
         content: `# Node Redis - Official Redis Client
@@ -438,7 +438,7 @@ import { createClient } from 'redis';
 const client = createClient({
   url: 'redis://localhost:6379',
   password: 'yourpassword',
-  database: 0,
+  database: 0
 });
 
 client.on('error', (err) => console.log('Redis Client Error', err);
@@ -454,11 +454,11 @@ const client = createClient({
     port: 6379,
     reconnectStrategy: (retries) => Math.min(retries * 50, 1000),
     connectTimeout: 60000,
-    lazyConnect: true,
+    lazyConnect: true
   },
   password: 'yourpassword',
   database: 0,
-  name: 'legal-ai-client',
+  name: 'legal-ai-client'
 });
 \`\`\`
 
@@ -493,7 +493,7 @@ await subscriber.pSubscribe('legal-ai:document:*', (message, channel) => {
 await client.publish('legal-ai:updates', JSON.stringify({
   type: 'document_updated',
   documentId: '123',
-  timestamp: Date.now(),
+  timestamp: Date.now()
 });
 
 // Publish document-specific updates;
@@ -501,7 +501,7 @@ async function notifyDocumentChange(docId: string, operation: string) {
   const message = JSON.stringify({
     documentId: docId,
     operation,
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 
   await client.publish(\`legal-ai:document:\${docId}\`, message);
@@ -520,8 +520,8 @@ const client = createClient({
         return new Error('Too many retries');
       }
       return Math.min(retries * 100, 3000);
-    },
-  },
+    }
+  }
 });
 
 client.on('error', (err) => {
@@ -630,7 +630,7 @@ if (result === -1) {
 await client.xAdd('legal-ai:events', '*', {
   event: 'document_processed',
   documentId: '123',
-  status: 'completed',
+  status: 'completed'
 });
 
 // Read from stream
@@ -647,7 +647,7 @@ messages.forEach(({ id, message }) => {
 
 // Consumer groups;
 await client.xGroupCreate('legal-ai:events', 'processors', '0', {
-  MKSTREAM: true,
+  MKSTREAM: true
 });
 
 // Read as consumer
@@ -673,7 +673,7 @@ interface LegalDocument {
   metadata: {
     caseId: string;
     priority: number;
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';,
+    riskLevel: 'low' | 'medium' | 'high' | 'critical';
   };
 }
 
@@ -719,7 +719,7 @@ class TypedRedisClient {
     // Add to sorted set by priority;
     multi.zAdd('documents:by_priority', {
       score: doc.metadata.priority,
-      value: doc.id,
+      value: doc.id
     });
 
     await multi.exec();
@@ -737,7 +737,7 @@ const createRedisPool = (size: number = 10) => {
 
   for (let i = 0; i < size; i++) {
     const client = createClient({
-      url: 'redis://localhost:6379',
+      url: 'redis://localhost:6379'
     });
     clients.push(client);
   }
@@ -761,7 +761,7 @@ const keys = {
   document: (id: string) => \`legal:doc:\${id}\`,
   caseDocuments: (caseId: string) => \`legal:case:\${caseId}:docs\`,
   userSession: (userId: string) => \`session:user:\${userId}\`,
-  rateLimit: (ip: string) => \`rate:\${ip}:\${Math.floor(Date.now() / 60000)}\`,
+  rateLimit: (ip: string) => \`rate:\${ip}:\${Math.floor(Date.now() / 60000)}\`
 };
 
 // Use hash tags for cluster deployment
@@ -793,7 +793,7 @@ class EfficientRedisCache {
           library: 'redis',
           version: '4.x',
           topic: topic || 'official-client',
-          tokenCount: 2400,
+          tokenCount: 2400
         },
         snippets: [;
           {
@@ -805,7 +805,7 @@ class EfficientRedisCache {
   }
 });
 await client.connect();`,
-            description: 'Simple Redis connection with reconnect strategy',
+            description: 'Simple Redis connection with reconnect strategy'
           },
           {
             title: 'Pub/Sub Pattern',
@@ -814,7 +814,7 @@ await subscriber.subscribe('legal-ai:updates', (message, channel) => {
   const data = JSON.parse(message);
   handleUpdate(data);
 });`,
-            description: 'Channel subscription with message handling',
+            description: 'Channel subscription with message handling'
           },
           {
             title: 'Transaction',
@@ -822,9 +822,9 @@ await subscriber.subscribe('legal-ai:updates', (message, channel) => {
 multi.set('key1', 'value1');
 multi.expire('key1', 3600);
 const results = await multi.exec();`,
-            description: 'Atomic operations with MULTI/EXEC',
-          },
-        ],
+            description: 'Atomic operations with MULTI/EXEC'
+          }
+        ]
       },
       '/patterns/message-queue-redis': {
         content: `# Redis Integration Patterns for Legal AI Platform
@@ -838,7 +838,7 @@ class RedisService {
   private pool: {
     primary: Redis;      // Read/write operations
     subscriber: Redis;   // Pub/sub subscriptions
-    publisher: Redis;    // Pub/sub publishing,
+    publisher: Redis;    // Pub/sub publishing
   };
 
   async initialize() {
@@ -849,20 +849,20 @@ class RedisService {
         retryDelayOnFailover: 100,
         enableReadyCheck: true,
         lazyConnect: false,
-        connectionName: 'legal-ai-primary',
+        connectionName: 'legal-ai-primary'
       }),
 
       subscriber: new Redis({
         host: process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379'),
-        connectionName: 'legal-ai-subscriber',
+        connectionName: 'legal-ai-subscriber'
       }),
 
       publisher: new Redis({
         host: process.env.REDIS_HOST || 'localhost',
         port: parseInt(process.env.REDIS_PORT || '6379'),
-        connectionName: 'legal-ai-publisher',
-      }),
+        connectionName: 'legal-ai-publisher'
+      })
     };
 
     // Setup event handlers for each connection
@@ -885,11 +885,11 @@ interface CachedDocument {
     caseId: string;
     priority: number;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidenceLevel: number;,
+    confidenceLevel: number;
   };
   cacheTimestamp: number;
   accessCount: number;
-  compressed: boolean;,
+  compressed: boolean;
 }
 
 class LegalDocumentCache {
@@ -936,7 +936,7 @@ class DocumentSyncService {
       documentId: docId,
       operation,
       timestamp: Date.now(),
-      source: 'legal-ai-service',
+      source: 'legal-ai-service'
     };
 
     // Publish to specific document channel
@@ -1001,7 +1001,7 @@ class SearchCacheService {
       filters,
       results,
       timestamp: Date.now(),
-      resultCount: results.length,
+      resultCount: results.length
     };
 
     await redis.setex(cacheKey, ttl, JSON.stringify(cacheData);
@@ -1124,7 +1124,7 @@ class RedisMonitoringService {
     hits: 0,
     misses: 0,
     errors: 0,
-    avgResponseTime: 0,
+    avgResponseTime: 0
   };
 
   async executeWithMetrics<T>(
@@ -1168,7 +1168,7 @@ class RedisMonitoringService {
     return {
       ...this.metrics,
       hitRatio,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
   }
 
@@ -1209,8 +1209,8 @@ const getRedisConfig = () => {
 
     // TLS for production;
     tls: isProduction ? {
-      checkServerIdentity: false,
-    } : undefined,
+      checkServerIdentity: false
+    } : undefined
   };
 };
 \`\`\`
@@ -1250,7 +1250,7 @@ const getRedisConfig = () => {
           library: 'redis-patterns',
           version: '1.0',
           topic: topic || 'integration-patterns',
-          tokenCount: 3200,
+          tokenCount: 3200
         },
         snippets: [;
           {
@@ -1258,18 +1258,18 @@ const getRedisConfig = () => {
             code: `this.pool = {
   primary: new Redis({ connectionName: 'legal-ai-primary' }),
   subscriber: new Redis({ connectionName: 'legal-ai-subscriber' }),
-  publisher: new Redis({ connectionName: 'legal-ai-publisher' }),
+  publisher: new Redis({ connectionName: 'legal-ai-publisher' })
 };`,
-            description: 'Separate Redis connections for different purposes',
+            description: 'Separate Redis connections for different purposes'
           },
           {
             title: 'Document Sync',
             code: `await publisher.publish(\`legal:document:\${docId}\`, JSON.stringify({
   documentId: docId,
   operation: 'update',
-  timestamp: Date.now(),
+  timestamp: Date.now()
 });`,
-            description: 'Real-time document update notifications',
+            description: 'Real-time document update notifications'
           },
           {
             title: 'Circuit Breaker',
@@ -1277,10 +1277,10 @@ const getRedisConfig = () => {
   () => redis.get(\`legal:doc:\${id}\`),
   null // fallback value
 );`,
-            description: 'Resilient Redis operations with fallback',
-          },
-        ],
-      },
+            description: 'Resilient Redis operations with fallback'
+          }
+        ]
+      }
     };
 
     const result = libraryDocs[context7CompatibleLibraryID] || {

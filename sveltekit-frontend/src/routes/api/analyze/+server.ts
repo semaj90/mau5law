@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
           options: {
             temperature: 0.2,
             top_p: 0.9,
-            num_ctx: 4096,
+            num_ctx: 4096
           }
         })
       });
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
         textLength: documentText.length,
         processingTimeMs: Date.now() - startTime,
         timestamp: new Date().toISOString(),
-        model: modelName,
+        model: modelName
       }
     };
 

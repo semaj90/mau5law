@@ -17,14 +17,14 @@ export interface User {
   avatarUrl?: string;
   emailVerified?: Date | boolean;
   createdAt: Date;
-  updatedAt: Date;,
+  updatedAt: Date;
 }
 
 export interface AuthState {
   user: User | null;
   loading: boolean;
   error: string | null;
-  isAuthenticated: boolean;,
+  isAuthenticated: boolean;
 }
 
 // Reactive authentication state using $state rune (browser-only);
@@ -32,12 +32,12 @@ const authState = browser ? $state<AuthState>({
   user: null,
   loading: false,
   error: null,
-  isAuthenticated: false,
+  isAuthenticated: false
 }) : {
   user: null,
   loading: false,
   error: null,
-  isAuthenticated: false,
+  isAuthenticated: false
 };
 
 // Derived state functions for common auth checks;
@@ -71,7 +71,7 @@ export class AuthService {
 
     try {
       const response = await fetch('/api/auth/me', {
-        credentials: 'include',
+        credentials: 'include'
       });
 
       if ((response as { ok?: any; json?: any }).ok) {
@@ -113,7 +113,7 @@ export class AuthService {
         email,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
-        ipInfo: await this.getClientInfo(),
+        ipInfo: await this.getClientInfo()
       };
 
       await mcpGPUOrchestrator.routeAPIRequest(
@@ -125,10 +125,10 @@ export class AuthService {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ email, password }),
-        credentials: 'include',
+        credentials: 'include'
       });
 
       const result = await (response as { ok?: any; json?: any }).json();
@@ -149,7 +149,7 @@ export class AuthService {
             userId: (result as { user?: any; error?: any }).user.id,
             includeRAG: false,
             includeGraph: true,
-            generateSummary: false,
+            generateSummary: false
           }
         );
 
@@ -181,7 +181,7 @@ export class AuthService {
     email: string;
     password: string;
     firstName: string;
-    lastName: string;,
+    lastName: string;
   }): Promise<any> {
     authState.loading = true;
     authState.error = null;
@@ -192,7 +192,7 @@ export class AuthService {
         email: userData.email,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       };
 
       await mcpGPUOrchestrator.routeAPIRequest(
@@ -204,10 +204,10 @@ export class AuthService {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(userData),
-        credentials: 'include',
+        credentials: 'include'
       });
 
       const result = await (response as { ok?: any; json?: any }).json();
@@ -224,7 +224,7 @@ export class AuthService {
             userId: (result as { user?: any; error?: any }).user.id,
             includeRAG: false,
             includeGraph: true,
-            generateSummary: true,
+            generateSummary: true
           }
         );
 
@@ -258,7 +258,7 @@ export class AuthService {
           { 
             userId: authState.user.id,
             timestamp: new Date().toISOString(),
-            sessionDuration: this.calculateSessionDuration(),
+            sessionDuration: this.calculateSessionDuration()
           },
           { userId: authState.user.id, analyticsLevel: 'session' }
         );
@@ -269,7 +269,7 @@ export class AuthService {
 
       const response = await fetch('/api/auth/logout', {
         method: 'POST',
-        credentials: 'include',
+        credentials: 'include'
       });
 
       // Clear state regardless of response
@@ -299,10 +299,10 @@ export class AuthService {
       const response = await fetch('/api/auth/profile', {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(updates),
-        credentials: 'include',
+        credentials: 'include'
       });
 
       const result = await (response as { ok?: any; json?: any }).json();
@@ -316,7 +316,7 @@ export class AuthService {
           { 
             userId: authState.user.id,
             changes: Object.keys(updates),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
           },
           { userId: authState.user.id, analyticsLevel: 'profile' }
         );
@@ -370,7 +370,7 @@ export class AuthService {
         screen: `${screen.width}x${screen.height}`,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         language: navigator.language,
-        platform: navigator.platform,
+        platform: navigator.platform
       };
     } catch {
       return {};

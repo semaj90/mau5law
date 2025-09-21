@@ -59,30 +59,30 @@ export const GET: RequestHandler = async () => {
     durationMs,
     adapter: {
       sessionCookieName: lucia.sessionCookieName,
-      luciaInstanceReused,
+      luciaInstanceReused
     },
     schemaIdentity: {
       usersSameRef,
-      sessionsSameRef,
+      sessionsSameRef
     },
     counts: {
       userCount,
       sessionCount,
       recentSessions,
-      countsError,
+      countsError
     },
     environment: {
       nodeVersion: process.version,
       pid: process.pid,
       uptime: process.uptime(),
-      platform: process.platform,
+      platform: process.platform
     },
-    warnings,
+    warnings
   }, {
     status: status === 'healthy' ? 200 : status === 'degraded' ? 206 : 503,
     headers: {
       'Cache-Control': 'no-cache',
-      'X-Auth-Health': status,
+      'X-Auth-Health': status
     }
   });
 };

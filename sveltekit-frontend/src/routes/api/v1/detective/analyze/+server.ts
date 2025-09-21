@@ -20,22 +20,22 @@ const DetectiveAnalysisSchema = z.object({
   options: z.object({
     includeAI: z.boolean().default(true),
     confidenceThreshold: z.number().min(0).max(1).default(0.6),
-    maxResults: z.number().min(1).max(100).default(20),
-  }).optional(),
+    maxResults: z.number().min(1).max(100).default(20)
+  }).optional()
 });
 
 const PatternDetectionSchema = z.object({
   caseId: z.string().uuid(),
   evidenceIds: z.array(z.string().uuid()).optional(),
   patternTypes: z.array(z.enum(['temporal', 'location', 'behavior', 'communication', 'financial'])).optional(),
-  sensitivity: z.number().min(0).max(1).default(0.7),
+  sensitivity: z.number().min(0).max(1).default(0.7)
 });
 
 const ConnectionMappingSchema = z.object({
   caseId: z.string().uuid(),
   entityTypes: z.array(z.enum(['people', 'evidence', 'locations', 'events'])).optional(),
   connectionStrength: z.number().min(0).max(1).default(0.5),
-  maxDepth: z.number().min(1).max(5).default(3),
+  maxDepth: z.number().min(1).max(5).default(3)
 });
 
 // Configuration for AI services
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         403,
         makeHttpErrorPayload({
           message: 'Detective mode not enabled for this case',
-          code: 'DETECTIVE_MODE_DISABLED',
+          code: 'DETECTIVE_MODE_DISABLED'
         })
       );
     }
@@ -108,9 +108,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           timestamp: new Date().toISOString(),
           type: analysisType,
           depth,
-          analyzedBy: locals.user.id,
-        },
-      },
+          analyzedBy: locals.user.id
+        }
+      }
     });
 
     return json({
@@ -123,14 +123,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         metadata: {
           evidenceCount: evidence.length,
           analysisTime: new Date().toISOString(),
-          confidence: analysisResult.overallConfidence,
-        },
+          confidence: analysisResult.overallConfidence
+        }
       },
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString(),
-        action: 'detective_analysis_completed',
-      },
+        action: 'detective_analysis_completed'
+      }
     });
 
   } catch (err: any) {
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid analysis request',
           code: 'INVALID_DATA',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to perform detective analysis',
         code: 'ANALYSIS_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -204,12 +204,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       data: {
         caseId: validatedCaseId,
         insights,
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       },
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     });
 
   } catch (err: any) {
@@ -221,7 +221,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid case ID',
           code: 'INVALID_ID',
-          details: err.errors,
+          details: err.errors
         })
       );
     }
@@ -231,7 +231,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to get insights',
         code: 'INSIGHTS_FAILED',
-        details: err.message,
+        details: err.message
       })
     );
   }
@@ -256,7 +256,7 @@ async function performDetectiveAnalysis(
     anomalies: [],
     timeline: [],
     recommendations: [],
-    alerts: [],
+    alerts: []
   };
 
   try {
@@ -295,7 +295,7 @@ async function performDetectiveAnalysis(
     return {
       ...analysis,
       error: 'Analysis failed',
-      details: error instanceof Error ? error.message: 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -311,16 +311,16 @@ function analyzeTimeline(evidence: any[]): any {
       timestamp: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).createdAt,
       type: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).evidenceType,
       significance: Math.random() * 0.5 + 0.5, // Mock significance score
-      description: `Evidence item: ${(item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).title}`,
+      description: `Evidence item: ${(item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).title}`
     })),
     patterns: [;
       {
         type: 'temporal_clustering',
         confidence: 0.82,
         description: 'Evidence clustered around specific time periods',
-        timeRanges: ['2024-01-01 to 2024-01-07', '2024-01-15 to 2024-01-20'],
-      },
-    ],
+        timeRanges: ['2024-01-01 to 2024-01-07', '2024-01-15 to 2024-01-20']
+      }
+    ]
   };
 }
 
@@ -334,16 +334,16 @@ function analyzeConnections(evidence: any[]): any {
       targetId: evidence[(index + 1) % evidence.length]?.id,
       connectionType: 'related',
       strength: Math.random() * 0.4 + 0.6,
-      evidence: ['Common location metadata', 'Similar timestamp'],
+      evidence: ['Common location metadata', 'Similar timestamp']
     })),
     findings: [;
       {
         type: 'strong_connection',
         confidence: 0.89,
         description: 'Multiple evidence items share common characteristics',
-        items: evidence.slice(0, 2).map(item => (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).id),
-      },
-    ],
+        items: evidence.slice(0, 2).map(item => (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).id)
+      }
+    ]
   };
 }
 
@@ -358,15 +358,15 @@ function detectPatterns(evidence: any[], focusAreas?: string[]): any {
         confidence: 0.76,
         description: 'Consistent behavior pattern detected across multiple evidence items',
         occurrences: Math.floor(Math.random() * 5) + 2,
-        significance: 'high',
+        significance: 'high'
       },
       {
         type: 'location',
         confidence: 0.84,
         description: 'Geographic clustering of evidence locations',
         coordinates: ['40.7128,-74.0060', '40.7589,-73.9851'],
-        significance: 'medium',
-      },
+        significance: 'medium'
+      }
     ],
     anomalies: [;
       {
@@ -374,9 +374,9 @@ function detectPatterns(evidence: any[], focusAreas?: string[]): any {
         confidence: 0.91,
         description: 'Unusual timing pattern detected',
         details: 'Evidence created outside normal business hours',
-        severity: 'medium',
-      },
-    ],
+        severity: 'medium'
+      }
+    ]
   };
 }
 
@@ -389,20 +389,20 @@ async function generateCaseInsights(caseData: any, userId: string): Promise<any>
     keyFindings: [
       'Strong temporal clustering of evidence suggests coordinated activity',
       'Geographic analysis indicates primary focus area in downtown district',
-      'Pattern analysis reveals behavioral consistency across multiple incidents',
+      'Pattern analysis reveals behavioral consistency across multiple incidents'
     ],
     riskAssessment: {
       level: 'medium',
       factors: ['Evidence quality', 'Timeline consistency', 'Connection strength'],
-      score: 0.73,
+      score: 0.73
     },
     nextSteps: [
       'Investigate temporal clustering patterns more deeply',
       'Collect additional evidence from identified geographic area',
-      'Interview persons of interest identified in connection analysis',
+      'Interview persons of interest identified in connection analysis'
     ],
     confidence: 0.78,
-    lastAnalyzed: caseData.metadata?.lastDetectiveAnalysis?.timestamp || 'Never',
+    lastAnalyzed: caseData.metadata?.lastDetectiveAnalysis?.timestamp || 'Never'
   };
 }
 

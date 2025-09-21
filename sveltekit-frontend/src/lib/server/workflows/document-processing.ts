@@ -27,7 +27,7 @@ export interface DocumentProcessingContext {
   status: 'pending' | 'processing' | 'completed' | 'failed';
   retryCount: number;
   maxRetries: number;
-  processingStage: 'chunking' | 'embedding' | 'storing' | 'indexing' | 'finalizing';,
+  processingStage: 'chunking' | 'embedding' | 'storing' | 'indexing' | 'finalizing';
 }
 
 export type DocumentProcessingEvent =;
@@ -103,7 +103,7 @@ const embeddingActor = fromPromise(async ({ input }: { input: { chunks: string[]
 );
 
 const storageActor = fromPromise(async ({
-    input,
+    input
   }: {
     input: {
       documentId: string;
@@ -111,7 +111,7 @@ const storageActor = fromPromise(async ({
       embeddings: number[][];
       metadata: Record<string, any>;
       model: string;
-      backend: string;,
+      backend: string;
     };
   }) => {
     const { documentId, chunks, embeddings, metadata, model, backend } = input;
@@ -134,9 +134,9 @@ const storageActor = fromPromise(async ({
         ...metadata,
         total_chunks: chunks.length,
         source_document: documentId,
-        processed_at: new Date().toISOString(),
+        processed_at: new Date().toISOString()
       } as any,
-      embedding: vec as unknown as any,
+      embedding: vec as unknown as any
     });
 
     await db.insert(documentEmbeddings).values(rows);
@@ -147,7 +147,7 @@ const storageActor = fromPromise(async ({
 );
 
 const cachingActor = fromPromise(async ({
-    input,
+    input
   }: {
     input: {
       documentId: string;
@@ -164,7 +164,7 @@ const cachingActor = fromPromise(async ({
       chunks,
       embeddings,
       metadata,
-      processed_at: new Date().toISOString(),
+      processed_at: new Date().toISOString()
     };
 
     await cache.set(cacheKey, cacheData, 86400); // 24h TTL
@@ -217,7 +217,7 @@ export const documentProcessingMachine = createMachine({
 
   types: {
     context: Record<string, any> as DocumentProcessingContext,
-    events: Record<string, any> as DocumentProcessingEvent,
+    events: Record<string, any> as DocumentProcessingEvent
   },
 
   context: {
@@ -232,7 +232,7 @@ export const documentProcessingMachine = createMachine({
     status: 'pending',
     retryCount: 0,
     maxRetries: 3,
-    processingStage: 'chunking',
+    processingStage: 'chunking'
   },
 
   initial: 'idle',
@@ -251,16 +251,16 @@ export const documentProcessingMachine = createMachine({
             progress: 10,
             processingStage: 'chunking',
             errors: [],
-            retryCount: 0,
-          }),
-        },
-      },
+            retryCount: 0
+          })
+        }
+      }
     },
 
     processing: {
       invoke: {
         src: progressTracker,
-        id: 'progressTracker',
+        id: 'progressTracker'
       },
 
       initial: 'chunking',
@@ -274,8 +274,8 @@ export const documentProcessingMachine = createMachine({
             id: 'chunkingActor',
             input: ({ context }) => ({
               content: context.content,
-              chunkSize: 512,
-            }),
+              chunkSize: 512
+            })
           },
 
           on: {
@@ -285,10 +285,10 @@ export const documentProcessingMachine = createMachine({
                 assign({
                   chunks: ({ event }) => (event as any).output?.chunks || [],
                   progress: 25,
-                  processingStage: 'embedding',
+                  processingStage: 'embedding'
                 }),
-                sendTo('progressTracker', { type: 'CHUNKING_COMPLETE' }),
-              ],
+                sendTo('progressTracker', { type: 'CHUNKING_COMPLETE' })
+              ]
             },
 
             CHUNKING_ERROR: {
@@ -296,11 +296,11 @@ export const documentProcessingMachine = createMachine({
               actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
-                  `Chunking failed: ${(event as any).error?.message || 'Unknown error'}`,
-                ],
-              }),
-            },
-          },
+                  `Chunking failed: ${(event as any).error?.message || 'Unknown error'}`
+                ]
+              })
+            }
+          }
         },
 
         embedding: {
@@ -311,8 +311,8 @@ export const documentProcessingMachine = createMachine({
             id: 'embeddingActor',
             input: ({ context }) => ({
               chunks: context.chunks,
-              model: 'nomic-embed-text:latest',
-            }),
+              model: 'nomic-embed-text:latest'
+            })
           },
 
           on: {
@@ -326,11 +326,11 @@ export const documentProcessingMachine = createMachine({
                   metadata: ({ context, event }) => ({
                     ...context.metadata,
                     backend: (event as any).output?.backend,
-                    model: (event as any).output?.model || "unknown",
-                  }),
+                    model: (event as any).output?.model || "unknown"
+                  })
                 }),
-                sendTo('progressTracker', { type: 'EMBEDDING_COMPLETE' }),
-              ],
+                sendTo('progressTracker', { type: 'EMBEDDING_COMPLETE' })
+              ]
             },
 
             EMBEDDING_ERROR: {
@@ -338,11 +338,11 @@ export const documentProcessingMachine = createMachine({
               actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
-                  `Embedding failed: ${(event as any).error?.message || 'Unknown error'}`,
-                ],
-              }),
-            },
-          },
+                  `Embedding failed: ${(event as any).error?.message || 'Unknown error'}`
+                ]
+              })
+            }
+          }
         },
 
         storing: {
@@ -361,8 +361,8 @@ export const documentProcessingMachine = createMachine({
                   embeddings: context.embeddings,
                   metadata: context.metadata,
                   model: context.metadata?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text:latest',
-                  backend: context.metadata.backend || 'ollama',
-                }),
+                  backend: context.metadata.backend || 'ollama'
+                })
               },
 
               initial: 'pending',
@@ -371,12 +371,12 @@ export const documentProcessingMachine = createMachine({
                 pending: {
                   on: {
                     STORAGE_COMPLETE: 'completed',
-                    STORAGE_ERROR: 'failed',
-                  },
+                    STORAGE_ERROR: 'failed'
+                  }
                 },
                 completed: { type: 'final' },
-                failed: { type: 'final' },
-              },
+                failed: { type: 'final' }
+              }
             },
 
             cache: {
@@ -387,8 +387,8 @@ export const documentProcessingMachine = createMachine({
                   documentId: context.documentId,
                   chunks: context.chunks,
                   embeddings: context.embeddings,
-                  metadata: context.metadata,
-                }),
+                  metadata: context.metadata
+                })
               },
 
               initial: 'pending',
@@ -398,11 +398,11 @@ export const documentProcessingMachine = createMachine({
                   on: {
                     CACHING_COMPLETE: 'completed',
                     CACHING_ERROR: 'completed', // Cache failure is not critical
-                  },
+                  }
                 },
-                completed: { type: 'final' },
-              },
-            },
+                completed: { type: 'final' }
+              }
+            }
           },
 
           onDone: {
@@ -412,10 +412,10 @@ export const documentProcessingMachine = createMachine({
                 progress: 100,
                 status: 'completed',
                 endTime: () => Date.now(),
-                processingStage: 'finalizing',
+                processingStage: 'finalizing'
               }),
-              sendTo('progressTracker', { type: 'STORAGE_COMPLETE' }),
-            ],
+              sendTo('progressTracker', { type: 'STORAGE_COMPLETE' })
+            ]
           },
 
           on: {
@@ -424,35 +424,35 @@ export const documentProcessingMachine = createMachine({
               actions: assign({
                 errors: ({ context, event }) => [
                   ...context.errors,
-                  `Storage failed: ${(event as any)?.error?.message || 'Unknown error'}`,
-                ],
-              }),
-            },
-          },
-        },
+                  `Storage failed: ${(event as any)?.error?.message || 'Unknown error'}`
+                ]
+              })
+            }
+          }
+        }
       },
 
       on: {
         CANCEL: 'cancelled',
         PROGRESS_UPDATE: {
           actions: assign({
-            progress: ({ event }) => event.progress,
-          }),
-        },
-      },
+            progress: ({ event }) => event.progress
+          })
+        }
+      }
     },
 
     completed: {
       type: 'final',
       entry: assign({
         status: 'completed',
-        progress: 100,
-      }),
+        progress: 100
+      })
     },
 
     error: {
       entry: assign({
-        status: 'failed',
+        status: 'failed'
       }),
 
       on: {
@@ -464,35 +464,35 @@ export const documentProcessingMachine = createMachine({
               retryCount: ({ context }) => context.retryCount + 1,
               status: 'processing',
               progress: 0,
-              processingStage: 'chunking',
-            }),
+              processingStage: 'chunking'
+            })
           },
           {
             target: 'failed',
             actions: assign({
               errors: ({ context }) => [
                 ...context.errors,
-                `Maximum retry attempts (${context.maxRetries}) exceeded`,
-              ],
-            }),
-          },
-        ],
-      },
+                `Maximum retry attempts (${context.maxRetries}) exceeded`
+              ]
+            })
+          }
+        ]
+      }
     },
 
     failed: {
       type: 'final',
       entry: assign({
-        status: 'failed',
-      }),
+        status: 'failed'
+      })
     },
 
     cancelled: {
       type: 'final',
       entry: assign({
-        status: 'failed',
-      }),
-    },
+        status: 'failed'
+      })
+    }
   },
 
   on: {
@@ -510,10 +510,10 @@ export const documentProcessingMachine = createMachine({
         endTime: undefined,
         status: 'pending',
         retryCount: 0,
-        processingStage: 'chunking',
-      }),
-    },
-  },
+        processingStage: 'chunking'
+      })
+    }
+  }
 });
 
 export default documentProcessingMachine;
