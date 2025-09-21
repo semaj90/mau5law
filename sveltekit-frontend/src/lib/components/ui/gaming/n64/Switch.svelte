@@ -14,7 +14,7 @@
   // Svelte 5 runes are auto-imported
 
   import 'nes.css/css/nes.min.css';
-  import {  , onMount  } from "svelte";
+  import { onMount } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
@@ -47,6 +47,9 @@
 
     // Advanced effects
     enableParticles?: boolean;
+
+    // Event handler
+    ondispatch?: (event: { checked: boolean; value?: string }) => void;
     glowIntensity?: number;
     enableSpatialAudio?: boolean;
     enableToggleGlow?: boolean;
@@ -61,7 +64,7 @@
   let {
     era = 'n64',
     variant = 'primary',
-    size = 'medium',
+    size = 'md',
     disabled = false,
     loading = false,
     animationStyle = 'smooth',
@@ -99,6 +102,8 @@
     animationDuration = 300,
     springTension = 0.8,
 
+    ondispatch,
+
     class: className = ''
   }: Props = $props();
 
@@ -127,7 +132,7 @@
 
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       }
 
       const oscillator1 = audioContext.createOscillator();

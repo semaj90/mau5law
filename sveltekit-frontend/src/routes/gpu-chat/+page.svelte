@@ -8,7 +8,7 @@
     platform: '',
     gpuInfo: '',
     memoryUsage: '',
-    services: ,
+    services: [],
     port: 5173
   });
   let performanceMetrics = $state({

@@ -16,12 +16,12 @@
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
 
   // System status state
   let systemHealth = $state<any>(null);
-  let integrationTests = $state({})>( );
+  let integrationTests = $state<any>({});
   let isLoading = $state(true);
   let lastUpdated = $state<string>('');
 
