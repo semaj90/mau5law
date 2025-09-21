@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
@@ -78,7 +80,7 @@ let uploadProgress = $state(new Map<string, number>());
     return mod.fabric ?? mod.default ?? mod;
   }
 
-  onMount(async () => {
+  $effect(async () => {
   // Dynamically import Fabric.js to avoid SSR issues
   const fabric = await getFabric();
 

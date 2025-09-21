@@ -6,6 +6,8 @@ https://svelte.dev/e/attribute_duplicate -->
   Basic route testing without complex imports
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -87,7 +89,7 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   ];
 
-  onMount(async () => {
+  $effect(async () => {
     // Get current path from page store
     page.subscribe(($page) => {
       currentPath = $page.url.pathname;

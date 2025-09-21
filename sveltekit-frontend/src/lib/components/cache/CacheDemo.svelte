@@ -2,6 +2,8 @@
 <!-- Demonstrates Loki.js + Redis + PostgreSQL caching with real-time statistics -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -328,7 +330,7 @@
   // LIFECYCLE
   // ============================================================================
 
-  onMount(() => {
+  $effect(() => {
     refreshStats();
     // Auto-refresh stats every 10 seconds
     const interval = setInterval(refreshStats, 10000);

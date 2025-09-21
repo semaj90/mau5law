@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
   import { Button, Card, CardContent, CardHeader, CardTitle, Alert } from '$lib/components/ui/enhanced-bits';
   import { LodCacheEngine } from '$lib/gpu/lod-cache-engine.js';
@@ -80,7 +82,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     append('🎮 WebGL2/WebGPU Acceleration Test - Enhanced UI Version');
     append('🔧 Click "Run Test" to check browser GPU acceleration capabilities');
     append('📋 This test validates WebGPU → WebGL2 → WebGL1 → WASM fallback chain');

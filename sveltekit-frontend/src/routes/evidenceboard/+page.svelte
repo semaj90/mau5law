@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
   import { Button, Card } from '$lib/components/ui/enhanced-bits';
@@ -7,7 +9,7 @@
   let pageLoaded = $state(false);
   let showWelcome = $state(true);
 
-  onMount(() => {
+  $effect(() => {
     pageLoaded = true;
     // Auto-hide welcome after 3 seconds
     setTimeout(() => showWelcome = false, 3000);

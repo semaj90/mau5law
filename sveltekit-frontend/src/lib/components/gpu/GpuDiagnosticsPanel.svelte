@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { gpuTelemetryService } from '../../gpu/gpu-telemetry-service.js';
@@ -21,7 +23,7 @@
     memory = (window as any).gpuContextProvider?.getMemoryUsage?.() || null;
   }
 
-  onMount(() => {
+  $effect(() => {
     refresh();
     const interval = setInterval(refresh, 1200);
     unsub = telemetryBus.subscribe(() => refresh());

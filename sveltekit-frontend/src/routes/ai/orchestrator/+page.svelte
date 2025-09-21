@@ -3,6 +3,8 @@ Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -73,7 +75,7 @@ Showcases the service worker-based AI orchestration system
     }
   ];
 
-  onMount(() => {
+  $effect(() => {
         capabilities: ['legal-analysis', 'case-research', 'document-review'],
         endpoint: 'http://localhost:11434'
       };

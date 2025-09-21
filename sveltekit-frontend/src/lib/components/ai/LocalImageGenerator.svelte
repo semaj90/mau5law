@@ -4,6 +4,8 @@ Supports Stable Diffusion WebUI, ComfyUI, and Ollama integration
 Production-ready with native Windows support
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { 
@@ -44,7 +46,7 @@ Production-ready with native Windows support
   // Provider status
   let providerStatus = $state<Map<string, string>('')>(new Map());
 
-  onMount(() => {
+  $effect(() => {
     // Load provider status
     providerStatus = imageGenerationService.getProviderStatus();
     // Load generation history

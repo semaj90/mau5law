@@ -1,6 +1,10 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
 
   // TODO: Replace createEventDispatcher with callback props in Svelte 5
 
@@ -34,7 +38,7 @@
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     alert('Notes saved successfully!');
-    dispatch('notesSaved');
+    ondispatch?.();
 
     // Reset form
     notesContent = '';

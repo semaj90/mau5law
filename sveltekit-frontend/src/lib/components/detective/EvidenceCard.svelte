@@ -2,7 +2,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
-  import * as Card from '$lib/components/ui/card';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
 
   // Define Evidence interface locally
   interface Evidence {
@@ -87,7 +87,7 @@
   }
 </script>
 
-<Card.Root
+<Card
   class="nes-container is-rounded group hover:shadow-md transition-shadow duration-200 cursor-pointer"
   role="article"
   aria-label={item.title}
@@ -217,7 +217,7 @@
       {/if}
     </div>
   </div>
-</Card.Root>
+</Card>
 
 <style>
   /* Modern CSS line clamping with fallback */

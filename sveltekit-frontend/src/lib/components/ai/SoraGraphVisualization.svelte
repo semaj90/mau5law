@@ -2,8 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy,   } from "svelte";
   import { writable, type Writable } from 'svelte/store';
   import { SoraGraphTraversal, type SoraTraversalPath, type SoraTraversalOptions } from '$lib/ai/sora-graph-traversal.js';
   import { MoogleGraphSynthesizer, type MoogleVisualizationConfig, type Moogle2DOutput, type Moogle3DMesh } from '$lib/ai/moogle-graph-synthesizer.js';
@@ -43,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
     interactive = true
   }: Props = $props();
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
 
   // State stores
   const loading: Writable<boolean> = writable(false);
@@ -179,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
     ...config
   } as MoogleVisualizationConfig
 
-  onMount(async () => {
+  $effect(async () => {
     try {
       await initializeComponents();
       if (query && startNodeId) {
@@ -188,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err) {
       console.error('Sora component initialization failed:', err);
       error.set(`Initialization failed: ${err.message}`);
-      dispatch('error', { message: 'Component initialization failed', error: err });
+      ondispatch?.({ message: 'Component initialization failed', error: err });
     }
   });
 
@@ -266,14 +268,14 @@ https://svelte.dev/e/js_parse_error -->
         const viz2D = await moogleSynthesizer.synthesize2D(traversalPaths, visualizationConfig);
         visualization2D.set(viz2D);
         renderCanvas2D(viz2D);
-        dispatch('visualizationComplete', { visualization: viz2D });
+        ondispatch?.({ visualization: viz2D });
       }
 
       if (mode === '3d' || mode === 'both') {
         const viz3D = await moogleSynthesizer.synthesize3D(traversalPaths, visualizationConfig);
         visualization3D.set(viz3D);
         renderCanvas3D(viz3D);
-        dispatch('visualizationComplete', { visualization: viz3D });
+        ondispatch?.({ visualization: viz3D });
       }
 
       // Update statistics
@@ -293,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err) {
       console.error('Graph traversal failed:', err);
       error.set(`Traversal failed: ${err.message}`);
-      dispatch('error', { message: 'Graph traversal failed', error: err });
+      ondispatch?.({ message: 'Graph traversal failed', error: err });
     } finally {
       loading.set(false);
     }
@@ -375,7 +377,7 @@ https://svelte.dev/e/js_parse_error -->
     });
 
     if (clickedNode) {
-      dispatch('nodeClicked', { 
+      ondispatch?.({ 
         nodeId: clickedNode.id, 
         nodeType: 'unknown' // Would need to track node types in metadata
       });
@@ -385,7 +387,7 @@ https://svelte.dev/e/js_parse_error -->
   function handlePathSelection(pathIndex: number): void {
     const selectedPath = $paths[pathIndex];
     if (selectedPath) {
-      dispatch('pathSelected', { path: selectedPath });
+      ondispatch?.({ path: selectedPath });
     }
   }
 

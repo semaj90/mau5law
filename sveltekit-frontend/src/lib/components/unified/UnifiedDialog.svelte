@@ -15,6 +15,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import * as Dialog from 'bits-ui';
@@ -100,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 
-  onMount(() => {
+  $effect(() => {
     if (webgpuEffects) {
       initWebGPU();
     }

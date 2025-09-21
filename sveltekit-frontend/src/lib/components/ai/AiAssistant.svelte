@@ -11,6 +11,8 @@ https://svelte.dev/e/js_parse_error -->
   - Backend: expects /api/ai/process-evidence (LangChain, Ollama, pg_vector, Neo4j, Redis, Docker)
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 // Type interfaces for the component
 
   import 'nes.css/css/nes.min.css';
@@ -61,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
   // Add missing errorMessage variable
   let errorMessage = $state('');
 
-  onMount(() => {
+  $effect(() => {
     // getSummaryCache(); // Uncomment and use this if you need to initialize cache on client
   });
 

@@ -4,6 +4,8 @@ https://svelte.dev/e/expected_token -->
 <!-- Hybrid Legal Document Analysis Component -->
 <!-- Combines EmbeddingGemma + NES YoRHa 3D + Hybrid Vector APIs -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, tick } from "svelte";
@@ -91,7 +93,7 @@ https://svelte.dev/e/expected_token -->
 
   let analysisData = $state<AnalysisResult[]>([]);
 
-  onMount(() => {
+  $effect(() => {
     if (enable3DVisualization) {
       initialize3DScene();
     }

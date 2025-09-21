@@ -4,9 +4,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import type { Evidence } from "$lib/data/types";
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
 
-  const dispatch = createEventDispatcher();
+  
 
   let dragActive = false;
   let files: FileList | null = null;
@@ -47,7 +47,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       if (!response.ok) throw new Error("Upload failed");
 
       const evidence = await response.json();
-      dispatch("upload", evidence);
+      ondispatch?.(evidence);
     } catch (error) {
       dispatch(
         "error",

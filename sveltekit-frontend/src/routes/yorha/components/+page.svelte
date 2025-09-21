@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa 3D Components Gallery -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
   import { onMount } from 'svelte';
@@ -90,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
     { id: 'config', label: 'Config', icon: Settings }
   ];
 
-  onMount(async () => {
+  $effect(async () => {
     // Initialize 3D UI (placeholder for now)
     if (canvasContainer) {
       // TODO: Initialize 3D UI when Three.js dependencies are resolved

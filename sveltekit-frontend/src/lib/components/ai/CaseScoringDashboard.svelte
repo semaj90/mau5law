@@ -5,6 +5,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
@@ -179,7 +181,7 @@
     }));
   }
 
-  onMount(() => {
+  $effect(() => {
     if (useMockData) {
       // Load mock data for demonstration
       setTimeout(() => {

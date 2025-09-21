@@ -4,6 +4,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -23,7 +25,7 @@
   let isLoading = $state(true);
   let lastUpdated = $state<string>('');
 
-  onMount(async () => {
+  $effect(async () => {
     if (!browser) return;
     await loadSystemStatus();
 

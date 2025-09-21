@@ -7,10 +7,12 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha'  }: { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme: 'light' | 'dark' | 'yorha' = 'yorha' : unknown } = $props();
 
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy,   } from "svelte";
   import { useMachine } from '@xstate/svelte';
   import { idleDetectionMachine } from '$lib/machines/idle-detection-rabbitmq-machine.js';
   import { neo4j3DEngine, type RecommendationGraph, type Neo4jNode } from '$lib/services/neo4j-3d-recommendation-engine.js';
@@ -51,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
   const { state: idleState, send: sendIdleEvent } = useMachine(idleDetectionMachine);
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
 
   // Camera and animation state
   let camera = {
@@ -179,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
           compression: true
         });
         streamingActive = true;
-        dispatch('streamingStarted', { streamId });
+        ondispatch?.({ streamId });
       }
 
       // Step 4: Complete (100% progress)
@@ -188,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
       // Update render stats
       renderStats.vertices = graph.nodes.length;
       renderStats.relationships = graph.relationships.length;
-      dispatch('graphLoaded', { graph });
+      ondispatch?.({ graph });
 
       // Cache the graph in WebGPU SOM cache
       await cacheGraphInSOM(graph);
@@ -288,7 +290,7 @@ https://svelte.dev/e/js_parse_error -->
         renderStats.fps = frameCount;
         frameCount = 0;
         lastFPSTime = currentTime;
-        dispatch('renderUpdate', { stats: renderStats });
+        ondispatch?.({ stats: renderStats });
       }
 
       // Render frame (WebGPU rendering would go here)
@@ -352,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
     // This would involve ray casting through the 3D scene
     const clickedNode = findNodeAtPosition(x, y);
     if (clickedNode) {
-      dispatch('nodeClicked', { node: clickedNode });
+      ondispatch?.({ node: clickedNode });
     }
   }
 
@@ -382,7 +384,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Lifecycle
-  onMount(async () => {
+  $effect(async () => {
     mounted = true;
     // Initialize WebGPU
     await initializeWebGPU();

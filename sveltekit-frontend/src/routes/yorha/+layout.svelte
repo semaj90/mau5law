@@ -1,5 +1,7 @@
 <!-- YoRHa Interface Layout -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   let { children  }: { children : unknown } = $props();
   import { page } from '$app/stores';
@@ -84,7 +86,7 @@
   ];
 
   // System status monitoring
-  onMount(async () => {
+  $effect(async () => {
     currentPath = $page.url.pathname;
 
     // Initialize YoRHa API and check system status

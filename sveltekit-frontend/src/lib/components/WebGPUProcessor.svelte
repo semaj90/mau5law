@@ -8,6 +8,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Integrates with QUIC streaming and attention tracking -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   	import { writable, derived } from 'svelte/store';
@@ -692,7 +694,7 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	// Component lifecycle
-  	onMount(async () => {
+  	$effect(async () => {
   		if (enableWebGPU) {
   			await initializeWebGPU();
   		}

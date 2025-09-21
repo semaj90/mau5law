@@ -3,6 +3,8 @@ Autonomous Engineering Page
 Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -45,7 +47,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   let showArchitecture = $state(false);
   let showIntegration = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     checkSystemStatus();
   });
 

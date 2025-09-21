@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { SearchResults } from "$lib/types/global";
   import { onMount } from 'svelte';
@@ -36,7 +38,7 @@
     'regulatory compliance for financial services'
   ];
 
-  onMount(async () => {
+  $effect(async () => {
     await context7Service.initialize();
 
     // Load search history from localStorage

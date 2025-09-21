@@ -10,8 +10,10 @@
   - Spatial audio feedback
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
@@ -99,7 +101,7 @@
     class: className = ''
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let isFocused = $state(false);
   let isHovered = $state(false);
@@ -166,19 +168,19 @@
     hasContent = target.value.length > 0;
     // Play typing sound
     playInputSound(440 + Math.random() * 200, 0.05);
-    dispatch('input', { value: target.value, event });
+    ondispatch?.({ value: target.value, event });
   };
 
   const handleFocus = () => {
     isFocused = true;
     playInputSound(660, 0.15);
-    dispatch('focus');
+    ondispatch?.();
   };
 
   const handleBlur = () => {
     isFocused = false;
     playInputSound(440, 0.1);
-    dispatch('blur');
+    ondispatch?.();
   };
 
   const handleHover = () => {
@@ -198,7 +200,7 @@
     } else if (event.key === 'Backspace') {
       playInputSound(330, 0.1);
     }
-    dispatch('keydown', { event });
+    ondispatch?.({ event });
   };
 
   // Get material styles based on state and variant
@@ -304,7 +306,7 @@
     scale(${dynamicScale})
   `);
 
-  onMount(() => {
+  $effect(() => {
     hasContent = effectiveValue.length > 0;
   });
 </script>

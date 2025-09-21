@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { run } from 'svelte/legacy';
   // Badge replaced with span - not available in enhanced-bits
@@ -34,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   let savedCitations: Citation[] = $state([]);
 
   // Initialize with sample data
-  onMount(() => {
+  $effect(() => {
     ];
   });
 

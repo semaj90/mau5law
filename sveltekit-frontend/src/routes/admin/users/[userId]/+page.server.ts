@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	try {
 		// Get user details with profile
-		const userResult = await db;
+		const userResult = await db
 			.select({
 				id: users.id,
 				email: users.email,
@@ -35,8 +35,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				lastName: profileTable.lastName
 			})
 			.from(users)
-			.leftJoin(profileTable, eq(profileTable.id, users.id)
-			.where(eq(users.id, userId)
+			.leftJoin(profileTable, eq(profileTable.id, users.id))
+			.where(eq(users.id, userId))
 			.limit(1);
 
 		if (userResult.length === 0) {
@@ -72,12 +72,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			db
 				.select({ count: count() })
 				.from(aiHistory)
-				.where(eq(aiHistory.user_id, userId)
+				.where(eq(aiHistory.user_id, userId))
 				.then(result => result[0]?.count || 0)
 		]);
 
 		// Get recent cases
-		const recentCases = await db;
+		const recentCases = await db
 			.select({
 				id: cases.id,
 				title: cases.title,
@@ -87,12 +87,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				updated_at: cases.updated_at
 			})
 			.from(cases)
-			.where(eq(cases.user_id, userId)
-			.orderBy(desc(cases.updated_at)
+			.where(eq(cases.user_id, userId))
+			.orderBy(desc(cases.updated_at))
 			.limit(5);
 
 		// Get recent AI interactions
-		const recentAIInteractions = await db;
+		const recentAIInteractions = await db
 			.select({
 				id: aiHistory.id,
 				agent_type: aiHistory.agent_type,
@@ -104,20 +104,20 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				created_at: aiHistory.created_at
 			})
 			.from(aiHistory)
-			.where(eq(aiHistory.user_id, userId)
-			.orderBy(desc(aiHistory.created_at)
+			.where(eq(aiHistory.user_id, userId))
+			.orderBy(desc(aiHistory.created_at))
 			.limit(10);
 
 		// Get active sessions
-		const activeSessions = await db;
+		const activeSessions = await db
 			.select({
 				id: sessions.id,
 				expires_at: sessions.expires_at,
 				created_at: sessions.created_at
 			})
 			.from(sessions)
-			.where(eq(sessions.user_id, userId)
-			.orderBy(desc(sessions.created_at)
+			.where(eq(sessions.user_id, userId))
+			.orderBy(desc(sessions.created_at))
 			.limit(5);
 
 		return {

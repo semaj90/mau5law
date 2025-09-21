@@ -3,11 +3,14 @@
   Real-time collaborative evidence mapping with advanced visualization and AI integration
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { websocketStore } from '$lib/stores/websocket-store';
   import { fabric } from 'fabric';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
+  import type { Canvas, Group, Point } from 'fabric';
 
   // Extend fabric types for custom properties
   interface ExtendedGroup extends fabric.Group {
@@ -52,13 +55,13 @@
   let selectedTool = $state<'select' | 'evidence' | 'connection' | 'note' | 'highlight' | 'draw'>('select');
   let isDrawing = $state(false);
   let canvasState = $state<any>( );
-  let collaborators = $state<Map<string, any>(new Map());
-  let cursors = $state<Map<string, any>(new Map());
+  let collaborators = $state<Map<string, any>>(new Map());
+  let cursors = $state<Map<string, any>>(new Map());
 
   // Evidence mapping
-  let evidenceNodes = $state<Map<string, any>(new Map());
-  let connections = $state<Map<string, any>(new Map());
-  let annotations = $state<Map<string, any>(new Map());
+  let evidenceNodes = $state<Map<string, any>>(new Map());
+  let connections = $state<Map<string, any>>(new Map());
+  let annotations = $state<Map<string, any>>(new Map());
 
   // AI suggestions
   let aiSuggestions = $state<any[]>([]);
@@ -78,7 +81,7 @@
   let collaboratorCursors = new Map<string, any>();
 
   // Lifecycle
-  onMount(async () => {
+  $effect(async () => {
     if (!browser) return;
 
     try {
@@ -877,7 +880,7 @@
   async function loadCanvasFromJSON(jsonData: string) {
     try {
       await fabricCanvas.loadFromJSON(jsonData, () => {
-        fabricCanvas.renderAll());
+        fabricCanvas.renderAll();
         // Rebuild node maps
         fabricCanvas.getObjects.forEach(obj => {
           if (obj.nodeType === 'evidence') {

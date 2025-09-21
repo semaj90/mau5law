@@ -3,6 +3,8 @@
   Advanced network visualization for evidence relationships and collaboration patterns
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { websocketStore } from '$lib/stores/websocket-store';
@@ -57,7 +59,7 @@
   let clusterElements: d3.Selection<SVGCircleElement, any, SVGGElement, unknown>;
 
   // Lifecycle
-  onMount(async () => {
+  $effect(async () => {
     if (!browser) return;
 
     try {

@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   const { userId: string, onCaseCreated: (caseId: string) = > void = () => } = $props();
 
@@ -202,7 +204,7 @@ https://svelte.dev/e/js_parse_error -->
 		}
 	}
 
-	onMount(() => {
+	$effect(() => {
 		// Show assistant after brief delay
 		setTimeout(() => {
 			isVisible = true;

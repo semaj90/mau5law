@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 	import { onMount } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
@@ -181,7 +183,7 @@ https://svelte.dev/e/expected_token -->
 		}, 8000);
 	}
 
-	onMount(() => {
+	$effect(() => {
 		updateTimestamp();
 		setInterval(updateTimestamp, 1000);
 		startAIPrompting();

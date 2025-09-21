@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
@@ -8,7 +10,7 @@
   let caseId: string | null = $state(null);
   let readOnly = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     // Get case ID from URL params if provided
     caseId = $page.url.searchParams.get('caseId');
     readOnly = $page.url.searchParams.get('readOnly') === 'true';

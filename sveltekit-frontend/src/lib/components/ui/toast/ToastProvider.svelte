@@ -1,5 +1,7 @@
 <!-- Toast Provider for Legal AI App -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Toast } from 'bits-ui';
   import BitsToast, { type ToastProps } from './BitsToast.svelte';

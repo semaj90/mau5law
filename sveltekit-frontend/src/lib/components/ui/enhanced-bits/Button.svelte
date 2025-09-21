@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import type { HTMLButtonAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
 

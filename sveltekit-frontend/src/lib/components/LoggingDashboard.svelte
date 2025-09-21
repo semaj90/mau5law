@@ -2,6 +2,8 @@
 https://svelte.dev/e/element_unclosed -->
 <!-- @migration-task Error while migrating Svelte code: `<div>` was left open -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
@@ -41,7 +43,7 @@ https://svelte.dev/e/element_unclosed -->
   let logContainer = $state<HTMLDivElement | null>(null);
   let refreshInterval: ReturnType<typeof setInterval> | null = null;
 
-  onMount(() => {
+  $effect(() => {
     // Auto-scroll to bottom when new entries arrive
     if (autoScroll) {
       scrollToBottom();

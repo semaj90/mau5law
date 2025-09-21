@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa System Dashboard -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
@@ -42,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
   let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
   let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
-  onMount(async () => {
+  $effect(async () => {
     await loadSystemData();
     startRealTimeUpdates();
   });

@@ -6,6 +6,8 @@ https://svelte.dev/e/js_parse_error -->
   Demonstrates complete form enhancement pattern
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
@@ -55,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Check for success message from server
-  onMount(() => {
+  $effect(() => {
     if (page.form?.message?.type === 'success') {
       showSuccess = true;
       toast.success(page.form.message.text);

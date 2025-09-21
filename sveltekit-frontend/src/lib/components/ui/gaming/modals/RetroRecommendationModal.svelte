@@ -3,6 +3,8 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Retro Gaming Recommendation Modal - Multi-Console CSS Styling -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
@@ -200,7 +202,7 @@ https://svelte.dev/e/attribute_duplicate -->
     return colors[type as keyof typeof colors] || currentTheme.colors.text;
   }
 
-  onMount(() => {
+  $effect(() => {
     if (sound) {
       audioContext = new AudioContext();
     }

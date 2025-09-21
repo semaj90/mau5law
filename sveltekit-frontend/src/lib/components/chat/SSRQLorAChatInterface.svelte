@@ -14,10 +14,12 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null  }: { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null : any } = $props();
 
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment';
   import { page } from '$app/state';
@@ -40,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
   
   
   // Dispatcher
-  const dispatch = createEventDispatcher();
+  
   // XState machine
   const { state, send } = useMachine(chatMachine, {
     context: {
@@ -73,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   let eventSource: EventSource | null = null;
   let chatContainer: HTMLElement;
   let messageInput: HTMLInputElement;
-  onMount(async () => {
+  $effect(async () => {
     if (!browser) return;
     // Initialize session if not provided
     if (!sessionId) {

@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   interface Props {
@@ -26,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch(e:any){ error = e.message; loading=false; }
   }
   function fmt(ts:number){ return new Date(ts).toLocaleTimeString(); }
-  onMount(()=>{ load(); interval = setInterval(()=>{ if(autoRefresh) load(); }, 5000); return ()=> clearInterval(interval); });
+  $effect(()=>{ load(); interval = setInterval(()=>{ if(autoRefresh) load(); }, 5000); return ()=> clearInterval(interval); });
 </script>
 
 <div class="alerts-panel p-3 border rounded bg-white dark:bg-neutral-900 text-sm space-y-3">

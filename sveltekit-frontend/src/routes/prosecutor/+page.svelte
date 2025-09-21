@@ -6,6 +6,8 @@ Prosecutor Dashboard - Complete Legal AI Workflow
 Features: Case management, evidence upload, AI chat, vector search
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { SearchResults } from "$lib/types/global";
   import {
@@ -49,7 +51,7 @@ Features: Case management, evidence upload, AI chat, vector search
   let webGPUEnabled = $state(false);
   let ragSystemStatus = $state('initializing');
 
-  onMount(async () => {
+  $effect(async () => {
     // Check WebGPU availability
     webGPUEnabled = await webGPUProcessor.initialize();
 

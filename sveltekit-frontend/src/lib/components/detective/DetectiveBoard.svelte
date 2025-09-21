@@ -1,5 +1,7 @@
 <!-- Detective Board - Enhanced 3-Column Grid with enhanced-bits UI, RabbitMQ & GPU Integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   	import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '$lib/components/ui/enhanced-bits';
 	import { alerts, showSuccess, showError, showInfo } from '$lib/stores/alerts';
   	import Badge from '$lib/components/ui/Badge.svelte';
@@ -102,7 +104,7 @@
   	});
 
   	// Enhanced system initialization
-  	onMount(async () => {
+  	$effect(async () => {
   		await initializeEnhancedSystems();
   		setupRealTimeUpdates();
   	});

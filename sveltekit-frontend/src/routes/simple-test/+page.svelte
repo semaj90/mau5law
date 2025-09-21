@@ -2,6 +2,8 @@
   Minimal Case Creation Test - Testing API integration without UI library dependencies
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 let isSubmitting = $state(false);
 let submitResult = $state('');

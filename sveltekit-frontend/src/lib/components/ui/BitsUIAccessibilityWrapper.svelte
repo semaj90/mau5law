@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
   // Import services conditionally to avoid SSR issues
   import { browser } from '$app/environment';
@@ -66,7 +68,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     // Update route config when route changes
     const interval = setInterval(() => {
       const newConfig = (enhancedRouteAccessibility as any)?.getCurrentConfig?.();

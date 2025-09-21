@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   /**
    * Comprehensive Upload Analytics Interface
@@ -84,7 +86,7 @@
   let pipelineStatus = $derived(machineState?.context?.pipeline || );
 
   // Initialize analytics
-  onMount(() => {
+  $effect(() => {
     initializeUploadAnalytics();
 
     // Setup user interaction tracking

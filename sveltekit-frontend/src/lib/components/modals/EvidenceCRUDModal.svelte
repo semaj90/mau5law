@@ -1,5 +1,7 @@
 <!-- Evidence CRUD Modal - SPA-style with Svelte 5 + Drizzle + PostgreSQL -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
   import { evidenceStore } from '$lib/stores/evidence';
   import { embeddingsService } from '$lib/services/embeddings-service';

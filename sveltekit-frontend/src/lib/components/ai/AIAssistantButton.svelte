@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
   // import * as Tooltip from 'bits-ui'; // Removed melt dependency

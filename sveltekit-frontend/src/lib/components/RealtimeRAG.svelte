@@ -3,6 +3,8 @@ https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Real-time RAG Interface Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { useMachine } from '@xstate/svelte';
@@ -39,7 +41,7 @@ https://svelte.dev/e/props_duplicate -->
   let machineState = $derived(ragMachine.state);
   let machineContext = $derived(ragMachine.context);
 
-  onMount(() => {
+  $effect(() => {
     ragStore.connect();
     loadDocuments();
   });

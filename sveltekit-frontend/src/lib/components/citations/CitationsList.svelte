@@ -12,10 +12,12 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   - Detective mode integration
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   const { caseId: string, detectiveMode = false, readonly = false } = $props();
 
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
   import CitationEditor from './CitationEditor.svelte';
@@ -26,7 +28,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
 
   // State
   let citations = writable<Citation[]>([]);
@@ -132,7 +134,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     applyClientSideSort();
     showEditor = false;
     selectedCitation = null;
-    dispatch('citationsUpdated');
+    ondispatch?.();
   }
 
   // Handle citation deletion
@@ -142,7 +144,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     applyClientSideSort();
     showEditor = false;
     selectedCitation = null;
-    dispatch('citationsUpdated');
+    ondispatch?.();
   }
 
   // Open editor for new citation
@@ -167,7 +169,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
   // Select citation
   function selectCitation(citation: Citation) {
-    dispatch('citationSelected', citation);
+    ondispatch?.(citation);
   }
 
   // Format citation display
@@ -216,7 +218,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
 
   // Load citations on mount and when dependencies change
-  onMount(() => {
+  $effect(() => {
     loadCitations();
   });
 

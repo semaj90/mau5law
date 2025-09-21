@@ -1,10 +1,12 @@
 <!-- Modular Data-Driven Dialog Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Dialog } from 'bits-ui';
   import { X, Loader2, AlertCircle, RefreshCw } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { reactiveApiClient } from '$lib/services/api-client';
   import type { ApiResponse, DialogDataProvider } from '$lib/types/api';
 
@@ -57,7 +59,7 @@
     error
    }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   // Reactive data state
   let data: unknown = $state(dataProvider?.data || null);
@@ -103,13 +105,13 @@
         data = (result as { data?: unknown }).data || result;
         lastFetch = Date.now();
         onDataLoad?.(data);
-        dispatch('dataLoad', data);
+        ondispatch?.(data);
       }
     } catch (err) {
       const error = err instanceof Error ? err.message: 'Failed to load data';
       errorMessage = error;
       onError?.(error);
-      dispatch('error', error);
+      ondispatch?.(error);
     } finally {
       isLoading = false;
     }
@@ -148,7 +150,7 @@
   });
 
   // Initial load
-  onMount(() => {
+  $effect(() => {
     if (autoLoad && entityType && entityId) {
       loadData();
     }

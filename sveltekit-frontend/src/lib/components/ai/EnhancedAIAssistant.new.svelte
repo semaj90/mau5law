@@ -3,6 +3,8 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Enhanced AI Assistant - Simplified Version -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import {
     Brain,
@@ -12,7 +14,7 @@ https://svelte.dev/e/attribute_duplicate -->
     Settings,
     Trash2,
   } from "lucide-svelte";
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
 
   let { caseId = $bindable()  }: { caseId = $bindable() : any } = $props(); // string | undefined = undefined;
   export const evidenceIds: string[] = []; // External reference for evidence context;
@@ -81,7 +83,7 @@ https://svelte.dev/e/attribute_duplicate -->
     showCitationDialog = true;
   }
   function insertCitation() {
-    dispatch("citation-inserted", selectedCitation);
+    ondispatch?.(selectedCitation);
     showCitationDialog = false;
   }
   function clearMessages() {

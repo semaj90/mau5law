@@ -1,9 +1,11 @@
 <!-- AI Chat Input Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { debounce } from '$lib/utils/debounce';
   import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
-  import { createEventDispatcher, onMount } from "svelte";
+  import {  , onMount  } from "svelte";
 
   // Props using Svelte 5 syntax
   interface Props {
@@ -27,7 +29,7 @@
   }: Props = $props();
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
 
   // Elements / state
   let textarea: HTMLTextAreaElement | null = null;
@@ -37,7 +39,7 @@
   const debouncedHandleInput = debounce((event: Event) => handleInput(event), 300);
 
   // Auto-focus on mount
-  onMount(() => {
+  $effect(() => {
     if (browser && autoFocus && textarea) {
       setTimeout(() => textarea?.focus(), 100);
     }
@@ -49,7 +51,7 @@
   function handleInput(event: Event) {
     const target = event.target as HTMLTextAreaElement;
     value = target.value;
-    dispatch("input", value);
+    ondispatch?.(value);
     adjustTextareaHeight();
   }
 
@@ -72,7 +74,7 @@
     const trimmedValue = value.trim();
     if (!trimmedValue || disabled) return;
 
-    dispatch("send", trimmedValue);
+    ondispatch?.(trimmedValue);
     value = "";
     resetTextareaHeight();
   }
@@ -116,16 +118,16 @@
 
   // Handle focus/blur events
   function handleFocus() {
-    dispatch("focus");
+    ondispatch?.();
   }
   function handleBlur() {
-    dispatch("blur");
+    ondispatch?.();
   }
 
   // Character count reactive values
-  $: characterCount = value ? value.length: 0;
-  $: isNearLimit = characterCount > maxLength * 0.8;
-  $: isAtLimit = characterCount >= maxLength;
+  const characterCount = $derived(value ? value.length: 0);
+  const isNearLimit = $derived(characterCount > maxLength * 0.8);
+  const isAtLimit = $derived(characterCount >= maxLength);
 </script>
 
 <div class="chat-input-wrapper" class:multiline={isMultiline}>

@@ -11,8 +11,10 @@
   - Integration with YoRHa design system
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
@@ -96,7 +98,7 @@
     class: className = ''
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let previousValue = $state(0);
   let animatedValue = $state(0);
@@ -351,7 +353,7 @@
   let sizeStyles = $derived(getSizeStyles(size));
   let materialStyles = $derived(getMaterialStyles(variant, materialType, animatedValue));
 
-  onMount(() => {
+  $effect(() => {
     animatedValue = progressPercentage;
     return () => {
       if (animationFrameId) {

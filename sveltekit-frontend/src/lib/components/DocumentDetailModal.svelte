@@ -12,8 +12,10 @@ https://svelte.dev/e/js_parse_error -->
   5. GPU acceleration for document analysis
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { fade, fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
   import { db } from '$lib/db/dexie-integration.js';
@@ -23,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   let { documentId = $bindable()  }: { documentId = $bindable() : any } = $props(); // string;
   let { isOpen = $bindable()  }: { isOpen = $bindable() : any } = $props(); // false;
   let { onClose = $bindable()  }: { onClose = $bindable() : any } = $props(); // (() => void) | null = null;
-  const dispatch = createEventDispatcher();
+  
 
   // ========================================================================
   // STATE MANAGEMENT
@@ -196,9 +198,9 @@ https://svelte.dev/e/js_parse_error -->
     });
 
     // Emit events for graph updates
-    dispatch('cacheUpdate', { documentId: docId, data: cacheData });
+    ondispatch?.({ documentId: docId, data: cacheData });
     if (graphConnections.length > 0) {
-      dispatch('graphUpdate', { connections: graphConnections });
+      ondispatch?.({ connections: graphConnections });
     }
   }
 
@@ -270,7 +272,7 @@ https://svelte.dev/e/js_parse_error -->
     });
 
     // Emit node selection event for graph updates
-    dispatch('nodeSelect', { 
+    ondispatch?.({ 
       nodeId: relatedDoc.id, 
       documentId: relatedDoc.id 
     });
@@ -329,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
   // LIFECYCLE
   // ========================================================================
 
-  onMount(() => {
+  $effect(() => {
     if (documentId) {
       loadDocumentData(documentId);
     }

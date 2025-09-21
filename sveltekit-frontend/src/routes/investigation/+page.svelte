@@ -6,6 +6,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
@@ -252,7 +254,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   }
 
   // Initialize
-  onMount(() => {
+  $effect(() => {
     console.log('🚀 Legal Investigation Workspace initialized');
 
     // Load existing cases and evidence

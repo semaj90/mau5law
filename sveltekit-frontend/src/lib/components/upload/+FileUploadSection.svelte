@@ -1,10 +1,12 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import Dropdown from '$lib/components/+Dropdown.svelte';
   import Checkbox from '$lib/components/+Checkbox.svelte';
 
-  const dispatch = createEventDispatcher();
+  
 
   let selectedCase: string = $state('');
   let selectedPoi: string = $state('');
@@ -42,7 +44,7 @@
 
       if (response.ok) {
         alert('File uploaded successfully!');
-        dispatch('uploadSuccess');
+        ondispatch?.();
         // Reset form
         selectedCase = '';
         selectedPoi = '';

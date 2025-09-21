@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // RoleGuard component - Role-based access control - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';

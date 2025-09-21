@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa AI Chat Component with Enhanced RAG Integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
@@ -22,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
   const RAG_SERVICE_URL  | null>(null); const data = 'http://localhost:8093');
 
   // Initialize with welcome message
-  onMount(async () => {
+  $effect(async () => {
     // Check Enhanced RAG service connection
     try {
   let response = $state<Responsetry {

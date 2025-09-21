@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
@@ -7,7 +9,7 @@
   let sessionStorageEnabled = $state(false);
   let devMode = $state(false);
   let sessionInfo = $state('');
-  onMount(() => {
+  $effect(() => {
     if (!browser) return;
     devMode = window.location.hostname === 'localhost' || 
               window.location.hostname === '127.0.0.1';

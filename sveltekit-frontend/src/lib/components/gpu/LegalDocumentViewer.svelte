@@ -10,6 +10,8 @@ https://svelte.dev/e/expected_token -->
      - MinIO file upload with real-time processing -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
@@ -1198,7 +1200,7 @@ https://svelte.dev/e/expected_token -->
     }
   });
   
-  onMount(async () => {
+  $effect(async () => {
     const success = await initializeGPU();
     if (success) {
       if (enableRealTimeUpdates) {

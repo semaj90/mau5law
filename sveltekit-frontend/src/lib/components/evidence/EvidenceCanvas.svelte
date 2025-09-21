@@ -1,5 +1,7 @@
 <!-- Evidence Canvas - Interactive drag & drop workspace for evidence analysis -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
   import { evidenceStore } from '$lib/stores/evidence';
   import { embeddingsService } from '$lib/services/embeddings-service';
@@ -47,7 +49,7 @@
   });
 
   // Initialize canvas
-  onMount(async () => {
+  $effect(async () => {
     await embeddingsService.initialize();
     updateCanvasSize();
     window.addEventListener('resize', updateCanvasSize);

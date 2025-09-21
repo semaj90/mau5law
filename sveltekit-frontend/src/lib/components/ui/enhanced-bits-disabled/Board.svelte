@@ -1,6 +1,8 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import { Grid, Layout, Maximize2, Minimize2, Save, RotateCcw } from 'lucide-svelte';
   import type { EvidenceItem } from './types';
 
@@ -54,7 +56,7 @@
   let dragOffset = $state({ x: 0, y: 0 });
   let connections = $state<any[]>([]) => []);
 
-  const dispatch = createEventDispatcher();
+  
 
   // Board styling based on background theme
   let boardClasses = $derived(() => {
@@ -105,7 +107,7 @@
       y: event.clientY - rect.top - (item as { x?: unknown; y?: unknown; id?: unknown; width?: unknown; height?: unknown; type?: unknown; data?: unknown }).y
     };
 
-    dispatch('itemSelect', { item });
+    ondispatch?.({ item });
   }
 
   // Handle mouse move for dragging
@@ -120,7 +122,7 @@
     const itemIndex = items.findIndex(i => i.id === draggedItem!.id);
     if (itemIndex !== -1) {
       items[itemIndex] = { ...items[itemIndex], x: newX, y: newY };
-      dispatch('itemMove', { item: items[itemIndex], newX, newY });
+      ondispatch?.({ item: items[itemIndex], newX, newY });
     }
   }
 
@@ -165,12 +167,12 @@
       return newItem;
     });
 
-    dispatch('layoutChange', { mode: 'auto-arranged' });
+    ondispatch?.({ mode: 'auto-arranged' });
   }
 
   // Save board state
   function saveBoard() {
-    dispatch('boardSave', { items, connections });
+    ondispatch?.({ items, connections });
   }
 
   // Get connection line path
@@ -196,7 +198,7 @@
   // Layout mode handlers
   function setLayoutMode(mode: typeof layoutMode) {
     layoutMode = mode;
-    dispatch('layoutChange', { mode });
+    ondispatch?.({ mode });
   }
 </script>
 

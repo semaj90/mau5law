@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { loadingStore } from '$lib/stores/loading-store';
   import AILoadingIndicator from './AILoadingIndicator.svelte';
   import { fly, fade } from 'svelte/transition';

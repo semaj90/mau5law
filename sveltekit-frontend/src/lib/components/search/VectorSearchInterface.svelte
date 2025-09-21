@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { vectorSearchIndex, type SearchQuery, type VectorSearchResult } from '$lib/services/vector-search-index';
@@ -27,7 +29,7 @@
     { value: 'risk_prioritized', label: 'Risk Prioritized' }
   ];
 
-  onMount(async () => {
+  $effect(async () => {
     try {
       searchStats = await vectorSearchIndex.getStats();
     } catch (error) {

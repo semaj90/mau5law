@@ -1,5 +1,7 @@
 <!-- Vite Error Logger Demo Page -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { logCustomError } from '$lib/vite/vscode-error-logger';
@@ -119,7 +121,7 @@
     return new Date(timestamp).toLocaleTimeString();
   }
 
-  onMount(() => {
+  $effect(() => {
     loadErrorLog();
   });
 </script>

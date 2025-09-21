@@ -3,6 +3,8 @@
   Interactive 3D evidence mapping with relationship visualization and collaboration features
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { websocketStore } from '$lib/stores/websocket-store';
@@ -59,7 +61,7 @@
   let sharedSelections = $state<Map<string, string>(new Map());
 
   // Lifecycle
-  onMount(async () => {
+  $effect(async () => {
     if (!browser) return;
 
     try {

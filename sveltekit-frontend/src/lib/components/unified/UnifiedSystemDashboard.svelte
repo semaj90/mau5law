@@ -4,6 +4,8 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
@@ -69,7 +71,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     batchMode: false,
     query: { query: 'legal contract analysis', keywords: ['contract', 'agreement'] }
   });
-  onMount(async () => {
+  $effect(async () => {
     await refreshSystemStatus();
     // Start periodic status updates
     statusInterval = setInterval(refreshSystemStatus, 5000);

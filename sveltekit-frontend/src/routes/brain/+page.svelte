@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
@@ -44,13 +46,13 @@ https://svelte.dev/e/js_parse_error -->
     const light = new THREE.DirectionalLight(0xffffff, 0.8);
     light.position.set(4, 6, 5);
     scene.add(light);
-  scene.add(new THREE.AmbientLight(0x404040);
+  scene.add(new THREE.AmbientLight(0x404040));
   }
 
   function buildGraph() {
     // Clear existing
-  Object.values(nodeMeshes).forEach(m => scene.remove(m);
-  linkLines.forEach(l => scene.remove(l);
+  Object.values(nodeMeshes).forEach(m => scene.remove(m));
+  linkLines.forEach(l => scene.remove(l));
     nodeMeshes = {};
     linkLines = [];
 
@@ -98,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  onMount(async () => {
+  $effect(async () => {
     initThree();
     try {
       await client.loadLayout('/api/yorha/layout');

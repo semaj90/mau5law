@@ -6,6 +6,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -50,7 +52,7 @@
   let loadingState = $derived(isLoading ? 'loading' : error ? 'error' : 'ready');
   let nesClass = $derived(`nes-container ${loadingState === 'loading' ? loadingClass : ''} ${error ? errorClass : ''}`);
 
-  onMount(async () => {
+  $effect(async () => {
     if (!browser || !enableGPU) {
       // Fallback for SSR or disabled GPU
       textureData = fallbackContent || generateFallbackPattern();

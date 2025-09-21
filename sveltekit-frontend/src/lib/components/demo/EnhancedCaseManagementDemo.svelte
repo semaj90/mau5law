@@ -4,6 +4,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { createActor } from 'xstate';
   import { onMount, onDestroy } from 'svelte';
@@ -29,7 +31,7 @@
   let userId = $state('demo-user-123');
 
   // Subscribe to state changes
-  onMount(() => {
+  $effect(() => {
     const subscription = actor.subscribe((snapshot) => {
       machineState = snapshot;
     });

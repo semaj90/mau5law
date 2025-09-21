@@ -3,6 +3,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 <!-- @migration-task Error while migrating Svelte code: `{@const}` must be the immediate child of `{#snippet}`, `{#if}`, `{:else if}`, `{:else}`, `{#each}`, `{:then}`, `{:catch}`, `<svelte:fragment>` or `<Component>` -->
 <!-- Chain of Custody Tracker for Legal AI App -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Shield, User, Calendar, MapPin, FileCheck, AlertTriangle, Lock, Unlock } from 'lucide-svelte';
   import { cn } from '$lib/utils';

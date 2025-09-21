@@ -3,6 +3,8 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import {
@@ -62,7 +64,7 @@ https://svelte.dev/e/attribute_duplicate -->
   	} = $props();
 
   	// Initialize citations
-  	onMount(async () => {
+  	$effect(async () => {
   		await loadCitations();
   		updateCategoryCounts();
   	});

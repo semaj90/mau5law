@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { get, type Unsubscriber } from 'svelte/store';
@@ -112,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
     return (isActivePath((item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).path) ? executiveClasses.navLinkActive: executiveClasses.navLink) + ' w-full block text-left group';
   }
 
-  onMount(async () => {
+  $effect(async () => {
     try {
       // Initialize auth if not already done
       await AuthStore.initialize();

@@ -4,6 +4,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
@@ -67,7 +69,7 @@
     recommendations: string[];
   }
   
-  onMount(() => {
+  $effect(() => {
     loadExistingPatterns();
   });
   
@@ -323,7 +325,7 @@
     {:else}
       {#each filteredPatterns as pattern}
         <div.Root class="pattern-nier-bits-card">
-          <Card.Header>
+          <CardHeader>
             <div class="pattern-header">
               <div class="pattern-title-section">
                 <div class="pattern-icon">{getPatternTypeIcon(pattern.type)}</div>
@@ -344,7 +346,7 @@
             <div.Description class="pattern-description">
               {pattern.description}
             </div.Description>
-          </Card.Header>
+          </CardHeader>
           
           <div class="card-content">
             <div class="pattern-stats">

@@ -3,6 +3,8 @@ AI Document Summarization - Generate summaries of legal documents
 TODO: Implement document upload, AI summarization, export functionality
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
 	import Button from '$lib/components/ui/enhanced-bits';
 	import * as Card from '$lib/components/ui/card';
@@ -89,14 +91,14 @@ TODO: Implement document upload, AI summarization, export functionality
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 			<!-- Upload and Controls -->
 			<div>
-				<Card.Root class="nes-container is-rounded mb-6">
-					<Card.Header>
-						<Card.Title class="nes-text is-primary flex items-center gap-2">
+				<Card class="nes-container is-rounded mb-6">
+					<CardHeader>
+						<CardTitle class="nes-text is-primary flex items-center gap-2">
 							<Upload class="w-5 h-5" />
 							Document Upload
 						</div.Title>
 					</div.Header>
-					<Card.Content>
+					<CardContent>
 						<div class="space-y-4">
 							<!-- File Upload -->
 							<div class="nes-field">
@@ -137,13 +139,13 @@ TODO: Implement document upload, AI summarization, export functionality
 				</div.Root>
 
 				<!-- Summary Options -->
-				<Card.Root class="nes-container is-rounded">
-					<Card.Header>
-						<Card.Title class="nes-text is-primary">
+				<Card class="nes-container is-rounded">
+					<CardHeader>
+						<CardTitle class="nes-text is-primary">
 							Summary Options
 						</div.Title>
 					</div.Header>
-					<Card.Content>
+					<CardContent>
 						<div class="space-y-4">
 							{#each summaryTypes as type}
 								<label class="flex items-center gap-3 cursor-pointer">
@@ -183,10 +185,10 @@ TODO: Implement document upload, AI summarization, export functionality
 
 			<!-- Summary Output -->
 			<div>
-				<Card.Root class="nes-container is-rounded">
-					<Card.Header>
+				<Card class="nes-container is-rounded">
+					<CardHeader>
 						<div class="flex justify-between items-center">
-							<Card.Title class="nes-text is-primary">
+							<CardTitle class="nes-text is-primary">
 								AI Summary
 							</div.Title>
 							{#if summary}
@@ -200,7 +202,7 @@ TODO: Implement document upload, AI summarization, export functionality
 							{/if}
 						</div>
 					</div.Header>
-					<Card.Content>
+					<CardContent>
 						{#if isSummarizing}
 							<div class="text-center py-8">
 								<Brain class="w-8 h-8 mx-auto mb-4 animate-pulse" />
@@ -255,14 +257,14 @@ TODO: Implement document upload, AI summarization, export functionality
 				</div.Root>
 
 				<!-- Recent Summaries -->
-				<Card.Root class="nes-container is-rounded mt-6">
-					<Card.Header>
-						<Card.Title class="nes-text is-primary text-sm flex items-center gap-2">
+				<Card class="nes-container is-rounded mt-6">
+					<CardHeader>
+						<CardTitle class="nes-text is-primary text-sm flex items-center gap-2">
 							<Clock class="w-4 h-4" />
 							Recent Summaries
 						</div.Title>
 					</div.Header>
-					<Card.Content>
+					<CardContent>
 						<div class="space-y-2">
 							<div class="text-xs nes-text is-disabled text-center">
 								No recent summaries

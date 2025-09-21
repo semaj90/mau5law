@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
@@ -41,7 +43,7 @@
   let isAuthRoute = $derived(currentPath.startsWith('/auth'));
   let isAdminRoute = $derived(currentPath.startsWith('/admin'));
 
-  onMount(() => {
+  $effect(() => {
     mounted = true;
   });
 </script>

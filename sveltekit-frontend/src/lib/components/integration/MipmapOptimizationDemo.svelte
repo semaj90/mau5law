@@ -3,6 +3,8 @@ https://svelte.dev/e/unexpected_reserved_word -->
 <!-- @migration-task Error while migrating Svelte code: 'default' is a reserved word in JavaScript and cannot be used here -->
 {#snippet default}
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { yorhaWebGPU } from '$lib/components/three/yorha-ui/webgpu/YoRHaWebGPUMath';
@@ -301,7 +303,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
   }
 
   // Initialize on mount
-  onMount(() => {
+  $effect(() => {
     initializeSystem();
   });
 </script>

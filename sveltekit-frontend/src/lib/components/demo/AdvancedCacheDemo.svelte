@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   	import { onMount } from 'svelte';
@@ -26,7 +28,7 @@
   		'Evaluate litigation risk for breach of contract',
   		'Examine patent infringement claims'
   	];
-  	onMount(async () => {
+  	$effect(async () => {
   		// Load cache stats
   		loadCacheStats();
   		// Generate sample user activity

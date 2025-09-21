@@ -6,6 +6,8 @@ https://svelte.dev/e/js_parse_error -->
   Shows neural memory prediction, ML caching, performance monitoring, and worker system
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
@@ -176,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
     isMonitoring = false;
   }
 
-  onMount(() => {
+  $effect(() => {
     updateSystemMetrics();
   });
 </script>

@@ -5,6 +5,8 @@ https://svelte.dev/e/props_duplicate -->
 <!-- Features: Local LLM + Enhanced RAG + Loki.js + Fuse.js + XState + Service Workers -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
@@ -95,7 +97,7 @@ https://svelte.dev/e/props_duplicate -->
     gpuUtilization: 0
   });
 
-  onMount(async () => {
+  $effect(async () => {
     await initializeServiceWorker();
     setupEventListeners();
     preloadRequiredData();

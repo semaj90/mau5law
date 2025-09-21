@@ -1,6 +1,8 @@
 /// <reference types="vite/client"></reference>
 <!-- Test page for Simple File Upload with RAG integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   import { onMount } from 'svelte';
@@ -16,7 +18,7 @@
     uploadResults = [...uploadResults, result];
   }
 
-  onMount(async () => {
+  $effect(async () => {
     try {
       // Production-ready REST status polling with retries, timeout, backoff, and background loop
       const API_BASE = import.meta.env.VITE_API_BASE || '';

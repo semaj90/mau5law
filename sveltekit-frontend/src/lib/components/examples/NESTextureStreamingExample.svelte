@@ -6,6 +6,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
@@ -62,7 +64,7 @@
   let calculatedLOD = $derived(lodManager.calculateLOD(lodContext));
   let lodInfo = $derived(lodManager.LOD_LEVELS[calculatedLOD]);
 
-  onMount(() => {
+  $effect(() => {
     // Update memory stats periodically
     const interval = setInterval(() => {
       memoryStats = lodManager.getMemoryStats();

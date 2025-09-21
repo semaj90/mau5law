@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
@@ -125,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
   let allEvidence = $derived((data as { evidence?: unknown }).evidence || []);
   let filteredEvidence = $derived(filterAndSortEvidence(allEvidence));
   let visibleEvidence = $derived(getPaginatedEvidence());
-  onMount(() => {
+  $effect(() => {
     // Initialize store with SSR data
     evidenceActions.setItems(data.evidence || []);
     // Set case context if available
@@ -611,7 +613,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Reactive statements
   // TODO: Convert to $derived
-  $: if (
+  $effect(() => { if (
     searchQuery ||
     selectedType ||
     selectedStatus ||
@@ -873,7 +875,7 @@ bulkOperation("delete")}
             size="sm"
             onclick={() =>
 {
-              selectedEvidence.clear();
+              selectedEvidence.clear(); });
               selectedEvidence = selectedEvidence;
               showBulkActions = false;
             }}

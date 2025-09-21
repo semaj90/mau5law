@@ -1,5 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script context="module" lang="ts">
+  // Svelte 5 runes are auto-imported
+
   export type Role = 'suspect' | 'witness' | 'victim' | 'associate' | 'unknown';
 
   export interface PersonDetails {
@@ -41,9 +43,9 @@
   export let relationships: Relationship[] = [];
 
   // Filter relationships for this person
-  $: personRelationships = relationships.filter(
+  const personRelationships = $derived(relationships.filter(
     (rel) => rel.person1 === person.name || rel.person2 === person.name
-  );
+  ));
 
   // Role styling
   const roleConfig = {
@@ -73,15 +75,11 @@
       label: 'Unknown Role'
     }
   } as const;
-
-  $: roleInfo = roleConfig[person.role] ?? roleConfig.unknown;
+  const roleInfo = $derived(roleConfig[person.role] ?? roleConfig.unknown);
 
   // Confidence level styling
-  $: confidenceColor =
-    person.confidence > 0.8 ? 'text-green-600' : person.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600';
-
-  $: barColor =
-    person.confidence > 0.8 ? 'bg-green-500' : person.confidence > 0.6 ? 'bg-yellow-500' : 'bg-red-500';
+  const confidenceColor = $derived(person.confidence > 0.8 ? 'text-green-600' : person.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600');
+  const barColor = $derived(person.confidence > 0.8 ? 'bg-green-500' : person.confidence > 0.6 ? 'bg-yellow-500' : 'bg-red-500');
 
   let showFullDetails = false;
 </script>

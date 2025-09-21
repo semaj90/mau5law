@@ -2,6 +2,8 @@
 <!-- File: sveltekit-frontend/src/routes/ai-summary/+page.svelte -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   let caseData = $state(null);
@@ -50,7 +52,7 @@
     };
   };
 
-  onMount(() => {
+  $effect(() => {
     loadCaseDemo();
   });
 </script>

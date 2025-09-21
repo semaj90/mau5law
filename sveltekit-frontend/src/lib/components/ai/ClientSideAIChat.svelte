@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter';
@@ -145,7 +147,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     initializeAI();
   });
 </script>

@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { UiTooltip as Tooltip } from "$lib/components/ui";
@@ -88,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
     },
   };
 
-  onMount(() => {
+  $effect(() => {
     // Add drag and drop event listeners
     if (browser) {
       document.addEventListener("dragover", handleDragOver);

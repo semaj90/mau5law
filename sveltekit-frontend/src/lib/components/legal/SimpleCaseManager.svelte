@@ -8,6 +8,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -50,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
   };
 
   // Load cases on mount
-  onMount(async () => {
+  $effect(async () => {
     await loadCases();
   });
 

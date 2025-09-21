@@ -6,6 +6,8 @@ https://svelte.dev/e/component_invalid_directive -->
   Provides comprehensive insights into user feedback and system performance
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
@@ -69,7 +71,7 @@ https://svelte.dev/e/component_invalid_directive -->
     { value: 'performance', label: 'Performance' }
   ];
 
-  onMount(() => {
+  $effect(() => {
     loadDashboardData();
     // Auto-refresh every 5 minutes
     const refreshInterval = setInterval(() => {

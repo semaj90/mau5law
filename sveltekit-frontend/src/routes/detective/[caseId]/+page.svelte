@@ -9,6 +9,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
@@ -33,7 +35,7 @@
   /**
    * Initialize the page
    */
-  onMount(async () => {
+  $effect(async () => {
     if (!caseId) {
       error = 'Case ID is required';
       isLoading = false;

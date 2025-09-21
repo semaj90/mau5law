@@ -3,6 +3,8 @@ Vector Recommendations Widget
 Compact AI recommendations component for sidebar/dashboard use
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -56,7 +58,7 @@ Compact AI recommendations component for sidebar/dashboard use
   let lastUpdated = $state<Date | null>(null);
   let refreshTimer = $state<number | null>(null);
 
-  onMount(() => {
+  $effect(() => {
     loadRecommendations();
 
     if (autoRefresh) {

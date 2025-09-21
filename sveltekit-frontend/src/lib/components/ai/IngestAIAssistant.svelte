@@ -2,6 +2,8 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   /**
    * Enhanced AI-Powered Document Ingest Assistant
@@ -183,7 +185,7 @@ https://svelte.dev/e/attribute_duplicate -->
   function dismissError(errorId: number) {
     errors.update(errs => errs.filter(err => err.id !== errorId));
   }
-  onMount(() => {
+  $effect(() => {
     // Initialize AI agent connection following your patterns
     aiAgentStore.connect.catch(console.error);
   });

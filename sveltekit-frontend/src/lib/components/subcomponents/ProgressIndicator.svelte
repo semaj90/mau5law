@@ -3,8 +3,10 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Progress Indicator Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
 
     interface Props {
         steps?: unknown[];
@@ -18,11 +20,11 @@ https://svelte.dev/e/js_parse_error -->
 
     let { steps = [], currentStep = 0, validationResults = }: Props = $props();
 
-    const dispatch = createEventDispatcher();
+    
 
     function handleStepClick(stepIndex: number): void {
         if (stepIndex <= currentStep || !steps[stepIndex].required) {
-            dispatch('step-click', stepIndex);
+            ondispatch?.(stepIndex);
         }
     }
 

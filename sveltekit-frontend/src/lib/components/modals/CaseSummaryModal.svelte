@@ -3,9 +3,11 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Case Summary Modal with AI-generated insights -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits';;
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   // Badge replaced with span - not available in enhanced-bits
   import * as Dialog from '$lib/components/ui/dialog';
   import Drawer from '$lib/components/ui/drawer/Drawer.svelte';
@@ -66,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
 
   let { useDrawer = $bindable()  }: { useDrawer = $bindable() : unknown } = $props(); // boolean = false;
 
-  const dispatch = createEventDispatcher();
+  
   let isGeneratingSummary = $state(false);
   let activeTab = $state<"overview" | "timeline" | "evidence" | "recommendations" >("overview");
 
@@ -89,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; summary?: unknown }).success) {
         caseData = { ...caseData, summary: (result as { success?: unknown; summary?: unknown }).summary };
-        dispatch("summaryGenerated", caseData);
+        ondispatch?.(caseData);
   }
     } catch (error) {
       console.error("Summary generation failed:", error);

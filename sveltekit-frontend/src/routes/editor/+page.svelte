@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -73,12 +75,11 @@
       updatedAt: new Date('2024-01-16')
   }
   ];
-  onMount(() => {
-      }); const settings = {
-        autoSave: true,
-        theme: 'light' as const,
-        layout: 'dual' as const
-  }
+  $effect(() => {
+    const settings = {
+      autoSave: true,
+      theme: 'light' as const,
+      layout: 'dual' as const
     };
     reportActions.load(sampleReport);
   });

@@ -1,5 +1,7 @@
 <!-- 3D NES.css LOD Effects for Document Processing -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
@@ -218,7 +220,7 @@
     }
   };
 
-  onMount(async () => {
+  $effect(async () => {
     // Initialize GPU cache for adaptive rendering
     gpuCache = new WebGPUSOMCache();
     await gpuCache.initializeWebGPU();

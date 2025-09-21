@@ -14,7 +14,9 @@ Usage:
 -->
 
 <script lang="ts">
-import { createEventDispatcher } from 'svelte';
+  // Svelte 5 runes are auto-imported
+
+import {   } from "svelte";
 import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
 
 interface SearchResult {
@@ -88,7 +90,7 @@ let performanceHistory = $state<Array<{
   results_count: number;
 }>([]);
 
-const dispatch = createEventDispatcher();
+
 
 // Load CUDA capabilities on mount
 $effect(async () => {
@@ -249,7 +251,7 @@ async function performSearch() {
       onSearchComplete(searchResults);
     }
 
-    dispatch('search', {
+    ondispatch?.({
       query,
       results: searchResults,
       searchTime: totalSearchTime,

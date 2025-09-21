@@ -1,4 +1,6 @@
 <script>
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import 'nes.css/css/nes.min.css';
   import 'nes.css/css/nes.min.css';
@@ -57,7 +59,7 @@
 	let vertices = [];
 	let faces = [];
 
-	onMount(() => {
+	$effect(() => {
 		generateSurfaceMesh();
 		startRenderLoop();
 	});

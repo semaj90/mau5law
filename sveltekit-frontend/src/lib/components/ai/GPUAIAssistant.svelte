@@ -1,5 +1,7 @@
 <!-- GPU AI Assistant - Real-time streaming chat with server GPU -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount, onDestroy } from 'svelte';
   import { gpuAIService } from '$lib/services/gpu-ai-service';
   import { evidenceStore } from '$lib/stores/evidence';
@@ -63,7 +65,7 @@
   });
 
   // Initialize AI assistant
-  onMount(async () => {
+  $effect(async () => {
     await initializeAssistant();
     updateGPUStatus();
 

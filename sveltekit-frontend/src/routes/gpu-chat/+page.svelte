@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import GPUAcceleratedChat from '$lib/components/GPUAcceleratedChat.svelte';
   import { onMount } from 'svelte';
@@ -15,7 +17,7 @@
     throughput: 0,
     gpuUtilization: 0
   });
-  onMount(async () => {
+  $effect(async () => {
     // Get system information with port detection
     try {
       // Try primary port first

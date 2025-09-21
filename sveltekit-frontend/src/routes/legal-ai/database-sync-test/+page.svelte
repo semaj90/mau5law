@@ -9,6 +9,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   
@@ -165,7 +167,7 @@
     live: $documentProcessing.isProcessing ? 'polite' : 'off'
   });
   
-  onMount(() => {
+  $effect(() => {
     addToLog('🚀 Database sync test component mounted');
     addToLog(`📊 SSR loaded ${recentSessions.length} sessions, ${recentDocuments.length} documents`);
     

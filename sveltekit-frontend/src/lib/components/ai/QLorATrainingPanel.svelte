@@ -3,6 +3,8 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- QLorA Training Panel with Checkbox Toggle -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
@@ -52,7 +54,7 @@ https://svelte.dev/e/attribute_duplicate -->
   let unsubscribeJob: (() => void) | null = null;
   let unsubscribeAnalytics: (() => void) | null = null;
 
-  onMount(() => {
+  $effect(() => {
     // Subscribe to training stores
     unsubscribeConfig = trainingConfig.subscribe(value => config = value);
     unsubscribeJob = currentTrainingJob.subscribe(value => currentJob = value);

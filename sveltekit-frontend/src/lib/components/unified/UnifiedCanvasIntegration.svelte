@@ -3,6 +3,8 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Unified Canvas Integration - Bridge Between Enhanced Evidence Canvas and Detective Board -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
@@ -44,7 +46,7 @@ https://svelte.dev/e/attribute_duplicate -->
   	} = $props();
 
   	// Initialize unified integration
-  	onMount(async () => {
+  	$effect(async () => {
   		await initializeUnifiedSystems();
   		startPerformanceMonitoring();
   	});

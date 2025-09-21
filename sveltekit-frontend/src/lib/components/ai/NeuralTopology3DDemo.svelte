@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   /**
@@ -46,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
     cacheHitRatio: 0
   });
 
-  onMount(async () => {
+  $effect(async () => {
     console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
     
     // Initialize all systems

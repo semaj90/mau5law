@@ -5,6 +5,8 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -46,7 +48,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   let keyboardNavigation = $state(false);
   let screenReaderMode = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     // Load saved accessibility preferences
     if (browser) {
       loadAccessibilitySettings();

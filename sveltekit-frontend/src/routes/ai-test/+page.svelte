@@ -1,5 +1,7 @@
 <!-- AI Chat Test Page - Showcasing Svelte 5 + bits-ui + Docker Ollama Integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
@@ -31,7 +33,7 @@
   let isLoading = $state(true);
 
   // Check system status on mount
-  onMount(async () => {
+  $effect(async () => {
     await checkSystemStatus();
   });
 

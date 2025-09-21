@@ -4,6 +4,8 @@
 <!-- @migration-task Error while migrating Svelte code: Identifier 'autoFetch' has already been declared
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // $props is a Svelte rune provided by the compiler/runtime — do not import it.
 
@@ -82,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     if (autoFetch) load();
   });
 </script>

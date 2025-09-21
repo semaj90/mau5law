@@ -3,6 +3,8 @@ Essential Route Page Template with CSS Bits UI Integration
 Use this template for all essential routes
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import 'nes.css/css/nes.min.css';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
@@ -32,7 +34,7 @@ Use this template for all essential routes
 	let isLoading = $state(false);
 	let isClient = $state(false);
 
-	onMount(() => {
+	$effect(() => {
 		isClient = true;
 	});
 
@@ -51,8 +53,8 @@ Use this template for all essential routes
 <ProductionLayout>
 	<div class="essential-route-page {className}">
 		<!-- Header -->
-		<Card.Root class="mb-6 nes-container is-rounded">
-			<Card.Header>
+		<Card class="mb-6 nes-container is-rounded">
+			<CardHeader>
 				<div class="flex justify-between items-center">
 					<div class="flex items-center gap-4">
 						{#if showBackButton}
@@ -65,11 +67,11 @@ Use this template for all essential routes
 								← Back
 						{/if}
 						<div>
-							<Card.Title class="nes-text is-primary text-2xl">
+							<CardTitle class="nes-text is-primary text-2xl">
 								{pageTitle}
 							</div.Title>
 							{#if description}
-								<Card.Description class="nes-text is-disabled mt-1">
+								<CardDescription class="nes-text is-disabled mt-1">
 									{description}
 								</div.Description>
 							{/if}
@@ -92,8 +94,8 @@ Use this template for all essential routes
 					{@render children()}
 				{:else}
 					<!-- Default placeholder content -->
-					<Card.Root class="nes-container is-rounded">
-						<Card.Content class="p-8 text-center">
+					<Card class="nes-container is-rounded">
+						<CardContent class="p-8 text-center">
 							<div class="mb-4">
 								<div class="text-6xl mb-4">🚧</div>
 								<h2 class="nes-text is-primary text-xl mb-2">
@@ -119,8 +121,8 @@ Use this template for all essential routes
 				{/if}
 			{:else}
 				<!-- Loading state -->
-				<Card.Root class="nes-container is-rounded">
-					<Card.Content class="p-8 text-center">
+				<Card class="nes-container is-rounded">
+					<CardContent class="p-8 text-center">
 						<div class="nes-text is-disabled">
 							<div class="animate-pulse">Loading...</div>
 						</div>

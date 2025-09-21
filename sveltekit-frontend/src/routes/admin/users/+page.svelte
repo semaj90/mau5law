@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   const { data } = $props();
 
@@ -106,7 +108,7 @@
     });
 
   // Load users on mount
-  onMount(() => {
+  $effect(() => {
     loadUsers();
   });
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import '$lib/styles/tooltip-global.css';
   import * as TooltipPrimitive from "bits-ui/tooltip";

@@ -2,6 +2,8 @@
 // Combines Hugerte with Melt UI components for legal document editing
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     content?: unknown;
@@ -21,7 +23,7 @@
     enableCitation = true
   }: Props = $props();
 
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   import * as Dialog from 'bits-ui';
   import { writable } from 'svelte/store';
   import type {     Writable     } from 'svelte/store';
@@ -30,7 +32,7 @@
               export const enableCollaboration = false;
   ;
   // Events
-  const dispatch = createEventDispatcher();
+  
 
   // Stores
   let editorElement: HTMLElement;
@@ -55,7 +57,7 @@
   let citationQuery = $state('');
   let citationResults = $state<Array() >([]);
 
-  onMount(async () => {
+  $effect(async () => {
     await initializeEditor();
   });
 
@@ -149,17 +151,17 @@
               const newContent = editor.getContent();
               content = newContent;
               updateCounts(newContent);
-              dispatch('change', { content: newContent, wordCount: $wordCount });
+              ondispatch?.({ content: newContent, wordCount: $wordCount });
             });
 
             // Save handler
             editor.on('save', () => {
-              dispatch('save', { content: editor.getContent() });
+              ondispatch?.({ content: editor.getContent() });
             });
           },
           save_enablewhendirty: true,
           save_onsavecallback: () => {
-            dispatch('save', { content: hugerte.getContent() });
+            ondispatch?.({ content: hugerte.getContent() });
           },
           autosave_interval: '10s',
           autosave_retention: '30m',
@@ -220,7 +222,7 @@
       const data = await response.json();
       if (data.success) {
         aiResults = data.data.answer;
-        dispatch('aiRequest', { selectedText, action: aiQuery });
+        ondispatch?.({ selectedText, action: aiQuery });
       } else {
         aiResults = 'Sorry, I encountered an error processing your request.';
   }

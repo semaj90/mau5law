@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Advanced Command Interface - Complete 3D System -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -95,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
       color: '#06b6d4'
     }
   ];
-  onMount(() => {
+  $effect(() => {
     activeModules.set(yorhaModules);
     initializeHolographics();
     startSystemMonitoring();

@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   let { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = ""  }: { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = "" : unknown } = $props();
 
@@ -142,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
   // Auto-save functionality
   let autoSaveTimeout: NodeJS.Timeout;
 
-  onMount(() => {
+  $effect(() => {
     initializeEditor();
     setupKeyboardShortcuts();
   });

@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // AuthProvider component - Global authentication context - Svelte 5 compatible
   import { authStore } from '$lib/stores/auth-store.svelte';

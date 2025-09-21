@@ -11,6 +11,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { graphCacheMachine } from '../../../../machines/graph-cache-machine.js';
@@ -56,7 +58,7 @@
     { region: 'PALETTE_MEMORY', utilization: 90, status: 'full' }
   ]);
 
-  onMount(() => {
+  $effect(() => {
     // Initialize XState machine
     cacheActor = createActor(graphCacheMachine);
     cacheActor.subscribe((state: unknown) => {

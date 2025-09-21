@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
 

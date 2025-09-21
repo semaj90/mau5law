@@ -2,6 +2,8 @@
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not a string -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import { browser } from "$app/environment";
@@ -33,7 +35,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     { key: "Escape", description: "Close modals/exit", action: "escape" },
   ];
 
-  onMount(() => {
+  $effect(() => {
     if (browser) {
       // Add keyboard event listeners
       document.addEventListener("keydown", handleKeyboardShortcut);

@@ -3,6 +3,8 @@
   Svelte 5 UI component wrapper for N64-style texture streaming
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import { onMount, onDestroy } from 'svelte';
 	import { useLegalTextureStreaming } from '$lib/components/headless/texture-streaming.svelte';
 	import { useEvidenceCanvas } from '$lib/components/headless/evidence-canvas.svelte';
@@ -54,7 +56,7 @@
 	let animationId = $state<number | null>(null);
 
 	// Initialization
-	onMount(() => {
+	$effect(() => {
 		try {
 			// Initialize texture streaming
 			textureStreaming.initialize(canvasElement);

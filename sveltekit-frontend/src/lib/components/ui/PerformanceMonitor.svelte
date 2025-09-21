@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { Activity, Cpu, Zap, Clock, TrendingUp } from 'lucide-svelte';
@@ -124,7 +126,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     setupPerformanceObserver();
 
     // Start metrics collection

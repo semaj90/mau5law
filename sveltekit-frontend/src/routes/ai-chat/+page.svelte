@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import 'nes.css/css/nes.min.css';
 	import { onMount } from 'svelte';
 
@@ -118,7 +120,7 @@
 		});
 	}
 
-	onMount(() => {
+	$effect(() => {
 		checkServiceHealth();
 		// Check health every 30 seconds
 		const interval = setInterval(checkServiceHealth, 30000);

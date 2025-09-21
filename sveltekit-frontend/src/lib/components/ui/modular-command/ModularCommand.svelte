@@ -1,10 +1,12 @@
 <!-- Modular API-Integrated Command Palette -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Command } from 'bits-ui';
   import { Search, FileText, Users, Calendar, Gavel, Loader2 } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { reactiveApiClient } from '$lib/services/api-client';
   import type { CommandSearchRequest, CommandSearchResponse, Case, Evidence, User, LegalDocument } from '$lib/types/api';
 
@@ -44,7 +46,7 @@
     onSearchChange
    }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   // Search state
   let query = $state('');
@@ -127,7 +129,7 @@
 
   function handleSelect(item: unknown, type: string) {
     onSelect?.(item, type);
-    dispatch('select', { item, type });
+    ondispatch?.({ item, type });
     open = false;
   }
 
@@ -173,7 +175,7 @@
   }
 
   // Cleanup timeout on unmount
-  onMount(() => {
+  $effect(() => {
     return () => {
       if (searchTimeout) {
         clearTimeout(searchTimeout);

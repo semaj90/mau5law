@@ -1,7 +1,9 @@
 <!-- TokenUsageManager.svelte - Advanced Token Management with Slider -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   import { writable, derived } from 'svelte/store';
   import {
     Button,
@@ -24,7 +26,7 @@
     class: className = ''
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   // Reactive state using Svelte 5 runes
   let tokenLimit = $state(initialLimit);
@@ -89,7 +91,7 @@
       optimizeTokenUsage();
     }
 
-    dispatch('tokenLimitChanged', { newLimit, tokensUsed });
+    ondispatch?.({ newLimit, tokensUsed });
   }
 
   function recordTokenUsage(usage: {
@@ -133,7 +135,7 @@
       100 - ((currentSession.totalTokens - expectedTokens) / expectedTokens * 100)
     );
 
-    dispatch('tokenUsageUpdated', {
+    ondispatch?.({
       tokensUsed,
       tokensRemaining,
       usagePercentage,
@@ -156,7 +158,7 @@
       tokensUsed = totalFromHistory;
     }
 
-    dispatch('tokensOptimized', {
+    ondispatch?.({
       method: 'history_compression',
       tokensSaved: Math.max(0, tokensUsed - tokenLimit * 0.8)
     });
@@ -204,7 +206,7 @@
       efficiency: 100
     };
 
-    dispatch('sessionReset', );
+    ondispatch?.();
   }
 
   function exportUsageData() {
@@ -233,7 +235,7 @@
 
   // Note: recordTokenUsage function is available for calling from parent components
 
-  onMount(() => {
+  $effect(() => {
     // Auto-set limit based on current model
     const modelLimit = modelLimits[currentModel as keyof typeof modelLimits];
     if (modelLimit && tokenLimit === initialLimit) {

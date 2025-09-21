@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // Use modular components and types
   import {
@@ -73,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrative');
 
   // Load available tags
-  onMount(async () => {
+  $effect(async () => {
     if (browser) {
       loadAvailableTags();
       aiSystem = new ComprehensiveAISystemIntegration();

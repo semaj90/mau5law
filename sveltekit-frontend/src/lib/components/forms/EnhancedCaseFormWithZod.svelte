@@ -6,6 +6,8 @@ https://svelte.dev/e/js_parse_error -->
   Demonstrates complete form enhancement pattern with validation
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   import { superForm } from 'sveltekit-superforms/client';
@@ -178,18 +180,18 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 {#if !componentError}
-<Card.Root class="w-full max-w-4xl mx-auto">
-  <Card.Header>
+<Card class="w-full max-w-4xl mx-auto">
+  <CardHeader>
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-3">
         <Scale class="h-6 w-6 text-primary" />
         <div>
-          <Card.Title class="text-xl">
+          <CardTitle class="text-xl">
             {editMode ? 'Edit Case' : 'Create New Case'}
-          </Card.Title>
-          <Card.Description>
+          </CardTitle>
+          <CardDescription>
             {editMode ? 'Update case information and evidence' : 'Enter case details and upload evidence'}
-          </Card.Description>
+          </CardDescription>
         </div>
       </div>
 
@@ -206,9 +208,9 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       {/if}
     </div>
-  </Card.Header>
+  </CardHeader>
 
-  <Card.Content>
+  <CardContent>
     <!-- Auto-save status -->
     {#if enableAutoSave && (lastSaved || isAutoSaving)}
       <div class="mb-4 p-3 bg-muted rounded-md flex items-center justify-between">
@@ -518,8 +520,8 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </form>
-  </Card.Content>
-</Card.Root>
+  </CardContent>
+</Card>
 {/if}
 
 {#if componentError}

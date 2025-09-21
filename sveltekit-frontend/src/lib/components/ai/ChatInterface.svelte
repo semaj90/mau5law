@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits';;
   import { Textarea } from "$lib/components/ui/textarea/index";
@@ -335,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     // Initialize conversation if none exists
     if (!$currentConversation) {
       chatActions.newConversation(caseId ? `Case ${caseId}` : undefined);

@@ -11,8 +11,10 @@
   - Integration with YoRHa design system
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount, tick } from 'svelte';
+  import {  , onMount, tick  } from "svelte";
   import { browser } from '$app/environment';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
@@ -106,7 +108,7 @@
     class: className = ''
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let isOpen = $state(false);
   let isFocused = $state(false);
@@ -223,7 +225,7 @@
     value = option.value;
     await playSelectSound(660, 0.2);
     await closeDropdown();
-    dispatch('change', { value: option.value, option });
+    ondispatch?.({ value: option.value, option });
   };
 
   const clearSelection = async () => {
@@ -231,7 +233,7 @@
 
     value = '';
     await playSelectSound(330, 0.15);
-    dispatch('change', { value: '', option: null });
+    ondispatch?.({ value: '', option: null });
   };
 
   const handleToggle = () => {
@@ -432,7 +434,7 @@
     scale(${dynamicScale})
   `);
 
-  onMount(() => {
+  $effect(() => {
     if (browser) {
       document.addEventListener('click', handleOutsideClick);
       return () => {

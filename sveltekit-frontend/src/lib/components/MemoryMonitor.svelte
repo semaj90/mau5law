@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     showDetails?: unknown;
@@ -19,7 +21,7 @@
   let updateCount = $state(0);
   let isOptimizing = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     memoryMonitoring.start(10000); // Update every 10 seconds
     memoryMonitoring.onUpdate((data) => {
       memoryData = data;

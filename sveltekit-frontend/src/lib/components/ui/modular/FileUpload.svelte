@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular File Upload Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';

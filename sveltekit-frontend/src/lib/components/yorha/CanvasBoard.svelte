@@ -3,11 +3,13 @@
   Interactive canvas for evidence visualization with YoRHa styling
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy,   } from "svelte";
   import type { EnhancedNeuralSpriteEngine } from '$lib/engines/neural-sprite-engine-enhanced';
 
-  const dispatch = createEventDispatcher();
+  
 
   // Neural engine integration
   let neuralEngine: EnhancedNeuralSpriteEngine | null = null;
@@ -90,7 +92,7 @@
     const pos = getMousePos(e);
     lastX = pos.x;
     lastY = pos.y;
-    dispatch('drawStart', { x: pos.x, y: pos.y, tool, color });
+    ondispatch?.({ x: pos.x, y: pos.y, tool, color });
   }
 
   function draw(e: MouseEvent) {
@@ -104,35 +106,35 @@
     ctx.stroke();
     lastX = pos.x;
     lastY = pos.y;
-    dispatch('draw', { x: pos.x, y: pos.y, tool, color });
+    ondispatch?.({ x: pos.x, y: pos.y, tool, color });
   }
 
   function stopDrawing() {
     if (!drawing) return;
     drawing = false;
-    dispatch('drawEnd', { tool, color });
+    ondispatch?.({ tool, color });
   }
 
   function clearCanvas() {
     if (!ctx || !canvas) return;
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    dispatch('clear');
+    ondispatch?.();
   }
 
   function setTool(newTool: string) {
     tool = newTool;
-    dispatch('toolChange', { tool: newTool });
+    ondispatch?.({ tool: newTool });
   }
 
   function setColor(newColor: string) {
     color = newColor;
-    dispatch('colorChange', { color: newColor });
+    ondispatch?.({ color: newColor });
   }
 
   function setBrushSize(size: number) {
     brushSize = size;
-    dispatch('brushSizeChange', { size });
+    ondispatch?.({ size });
   }
 
   // Initialize neural engine
@@ -143,7 +145,7 @@
       // Connect to services
       await neuralEngine.initializeServices();
       console.log('Neural Sprite Engine initialized for Evidence Board');
-      dispatch('neuralEngineReady', { engine: neuralEngine });
+      ondispatch?.({ engine: neuralEngine });
     } catch (error) {
       console.error('Failed to initialize Neural Engine:', error);
     }
@@ -151,10 +153,10 @@
 
   // Close event handler
   function closeBoard() {
-    dispatch('close');
+    ondispatch?.();
   }
 
-  onMount(() => {
+  $effect(() => {
     if (canvas) {
       ctx = canvas.getContext('2d');
       setupCanvasStyle();

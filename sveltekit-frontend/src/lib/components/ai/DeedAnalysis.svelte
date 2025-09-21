@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import type { Document } from "$lib/types/global";
@@ -61,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
   performSemanticSearch(searchQuery)
   }
 
-  onMount(() => {
+  $effect(() => {
   if (searchQuery && searchQuery.trim.length) {
     performSemanticSearch(searchQuery);
   }

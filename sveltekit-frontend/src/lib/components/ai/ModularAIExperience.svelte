@@ -8,6 +8,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { createActor } from 'xstate';
@@ -42,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
   let results = $state<any >(null);
   let error = $state<string | null >(null);
 
-  onMount(async () => {
+  $effect(async () => {
     // Initialize AI computation machine
     aiActor = createActor(aiComputationMachine, {
       input: {

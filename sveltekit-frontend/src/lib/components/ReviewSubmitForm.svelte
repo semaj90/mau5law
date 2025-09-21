@@ -2,15 +2,17 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
 
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
 
   interface FormData {
     final_review: string;

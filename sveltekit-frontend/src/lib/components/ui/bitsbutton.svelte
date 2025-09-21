@@ -1,8 +1,10 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import { browser } from '$app/environment';
   import { userAnalyticsStore } from '$lib/stores/analytics';
   import { lokiButtonCache } from '$lib/services/loki-cache';
@@ -134,16 +136,16 @@
 		};
 		if (browser) {
 			userAnalyticsStore.trackButtonClick(analyticsEvent);
-			dispatch('analytics', analyticsEvent);
+			ondispatch?.(analyticsEvent);
 			if (cacheKey) {
 				lokiButtonCache.recordInteraction(cacheKey, analyticsEvent);
-				dispatch('cache', { key: cacheKey, action: 'click' });
+				ondispatch?.({ key: cacheKey, action: 'click' });
 			}
 			if (searchKeywords.length > 0) {
 				searchableButtonIndex.addButton({ id, keywords: searchKeywords });
 			}
 		}
-		dispatch('click', analyticsEvent);
+		ondispatch?.(analyticsEvent);
 		if (onclick) onclick(event);
 	}
 </script>

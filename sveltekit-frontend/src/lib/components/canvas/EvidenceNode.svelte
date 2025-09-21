@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Move, RotateCcw, Trash2 } from 'lucide-svelte';
   import { onDestroy, onMount } from 'svelte';
@@ -31,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   let fabricCanvas: FabricCanvas | null = null; // fabric.Canvas when Fabric.js is loaded
   let nodeElement: HTMLElement;
   let canvasState = $state( );
-  onMount(async () => {
+  $effect(async () => {
     // Dynamically import Fabric.js to avoid SSR issues
     try {
       const fabric = await import('fabric');

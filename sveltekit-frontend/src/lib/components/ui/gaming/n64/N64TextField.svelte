@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
   let { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = ''  }: { value = '', placeholder = '', disabled = false, id | undefined, name | undefined, className = '' : unknown } = $props();
 
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   
   
   
@@ -13,18 +13,18 @@ https://svelte.dev/e/js_parse_error -->
   
   
 
-  const dispatch = createEventDispatcher();
+  
 
   function onInput(e: Event) {
   	const target = e.target as HTMLInputElement;
   	value = target.value;
-  	dispatch('input', { value });
+  	ondispatch?.({ value });
   }
 
   function onChange(e: Event) {
   	const target = e.target as HTMLInputElement;
   	value = target.value;
-  	dispatch('change', { value });
+  	ondispatch?.({ value });
   }
 </script>
 

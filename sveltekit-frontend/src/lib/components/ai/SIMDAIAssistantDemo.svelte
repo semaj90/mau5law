@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script>
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
 
@@ -243,7 +245,7 @@ export default ;
     }
   }
   
-  onMount(() => {
+  $effect(() => {
     addLog('🧬 SIMD AI Assistant initialized with XState machine');
     addLog(`💡 SIMD: ${enableSIMD ? 'enabled' : 'disabled'}, WebWorker: ${useWorker ? 'enabled' : 'disabled'}`);
   });

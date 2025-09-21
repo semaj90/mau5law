@@ -2,6 +2,8 @@
 https://svelte.dev/e/illegal_element_attribute -->
 <!-- Example: Modular Case Management with API Integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { ModularDialog } from '../modular-dialog';
   import { ModularCommand } from '../modular-command';

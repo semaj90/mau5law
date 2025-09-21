@@ -45,7 +45,7 @@ https://svelte.dev/e/expected_token -->
     { id: 'text2', x: 80, y: 100, z: 250, type: 'text' }
   ]);
 
-  onMount(() =&gt; {
+  $effect(() =&gt; {
     updateStereoProperties();
     startPerformanceMonitoring();
     animateDemoObjects();

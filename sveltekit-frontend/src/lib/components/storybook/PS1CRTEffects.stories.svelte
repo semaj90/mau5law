@@ -31,7 +31,7 @@ https://svelte.dev/e/expected_token -->
     frameDrops: 0
   });
 
-  onMount(() =&gt; {
+  $effect(() =&gt; {
     updateCSSProperties();
     startPerformanceMonitoring();
     initializeCRTAnimation();

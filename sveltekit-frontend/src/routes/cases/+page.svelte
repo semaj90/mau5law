@@ -1,6 +1,8 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot read properties of undefined (reading 'end') -->
 <!-- @migration-task Error while migrating Svelte code: Cannot read properties of undefined (reading 'end') -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import { goto, invalidateAll } from '$app/navigation';

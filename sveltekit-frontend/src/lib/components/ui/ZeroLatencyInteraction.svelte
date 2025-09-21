@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, onDestroy } from 'svelte';
@@ -39,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
   let trackedElements = new Set<HTMLElement>();
   let mousePosition = { x: 0, y: 0 };
 
-  onMount(() => {
+  $effect(() => {
     initializeZeroLatencySystem();
   });
 

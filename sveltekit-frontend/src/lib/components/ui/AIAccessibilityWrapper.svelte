@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { aiAccessibilityPatterns } from '$lib/services/ai-accessibility-patterns';
   import { accessibilityService } from '$lib/services/accessibility-service';
   import { onMount } from 'svelte';
@@ -25,7 +27,7 @@
   let containerElement: HTMLElement;
   let voiceCommandsActive = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     // Initialize AI accessibility patterns
     aiAccessibilityPatterns.updateOptions({
       enableVoiceCommands,

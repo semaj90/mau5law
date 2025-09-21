@@ -3,6 +3,8 @@
   Modern Svelte 5 component with live updates and collaborative features
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { websocketStore, isEvidenceBeingEdited, getActiveEditorsForEvidence, formatRecentActivity } from '$lib/stores/websocket-store';
@@ -38,7 +40,7 @@
   );
 
   // Load initial dashboard data
-  onMount(async () => {
+  $effect(async () => {
     try {
       loading = true;
       error = null;

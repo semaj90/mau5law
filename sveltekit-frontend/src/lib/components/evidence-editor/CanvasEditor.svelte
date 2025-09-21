@@ -2,13 +2,15 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { browser } from '$app/environment';
   import { autoTaggingMachine } from '$lib/stores/autoTaggingMachine';
   import { useMachine } from '@xstate/svelte';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
 
-  const dispatch = createEventDispatcher();
+  
   const { snapshot, send } = useMachine(autoTaggingMachine);
 
   // Access state from snapshot
@@ -45,7 +47,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let autoSaveTimer: ReturnType<typeof setInterval>;
   let isAutoSaving = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     if (!browser) return;
 
     ctx = canvas.getContext('2d')!;
@@ -435,8 +437,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         draw();
 
         // Dispatch events for other panels
-        dispatch('nodeUpdate', { node, aiTags });
-        dispatch('nodeSelect', node);
+        ondispatch?.({ node, aiTags });
+        ondispatch?.(node);
 
         // Auto-save after tagging
         await autoSave();
@@ -531,10 +533,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     if (clickedNode) {
       selectedNodeId = clickedNode.id;
       send({ type: 'SELECT_NODE', node: clickedNode });
-      dispatch('nodeSelect', clickedNode);
+      ondispatch?.(clickedNode);
     } else {
       selectedNodeId = null;
-      dispatch('nodeSelect', null);
+      ondispatch?.(null);
   }
     draw();
   }
@@ -679,7 +681,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         })
       });
 
-      dispatch('autoSaved', canvasState);
+      ondispatch?.(canvasState);
     } catch (error) {
       console.error('Auto-save failed:', error);
     } finally {

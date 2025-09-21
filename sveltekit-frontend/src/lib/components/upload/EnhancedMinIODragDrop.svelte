@@ -4,8 +4,10 @@
   Features: CUDA GPU acceleration, Visual Studio 2022 native performance
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { writable } from 'svelte/store';
   import { CONFIG } from '$lib/config/production-config.js';
   interface UploadFile {
@@ -65,9 +67,9 @@
     throughputMBps: 0
   });
 
-  const dispatch = createEventDispatcher();
+  
 
-  onMount(() => {
+  $effect(() => {
     console.log('EnhancedMinIODragDrop initialized with Clang/LLVM optimizations');
     if (enableCudaAcceleration) {
       testCudaWorkerAvailability();
@@ -169,7 +171,7 @@
       for (let i = 0; i < uploadFiles.length; i++) {
         const uploadFile = uploadFiles[i];
         uploadFile.status = 'uploading';
-        dispatch('uploadProgress', {
+        ondispatch?.({
           progress: (i / uploadFiles.length) * 100,
           currentFile: uploadFile.file.name
         });
@@ -211,12 +213,12 @@
       if (enableCudaAcceleration) {
         successMessage += ` (${performanceStats.cudaAccelerated} CUDA-optimized)`;
       }
-      dispatch('uploadComplete', results);
+      ondispatch?.(results);
 
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message: 'Upload failed';
       errorMessage = errorMsg;
-      dispatch('uploadError', errorMsg);
+      ondispatch?.(errorMsg);
     } finally {
       uploading = false;
       uploadProgress = 0;

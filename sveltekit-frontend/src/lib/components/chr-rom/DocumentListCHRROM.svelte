@@ -7,6 +7,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
@@ -48,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Initialize CHR-ROM system and load patterns
    */
-  onMount(async () => {
+  $effect(async () => {
     console.log('🎮 Initializing CHR-ROM Document List...');
     
     try {

@@ -1,5 +1,7 @@
 <!-- Phase 4 Gaming UI: Case Outcome Prediction Display -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
@@ -94,7 +96,7 @@
     return icons[risk as keyof typeof icons] || '⚪';
   }
 
-  onMount(() => {
+  $effect(() => {
     if (autoLoad) {
       loadPrediction();
     }

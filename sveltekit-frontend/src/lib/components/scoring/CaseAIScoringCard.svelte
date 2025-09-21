@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import Button from "bits-ui";
   import { onMount } from "svelte";
@@ -76,7 +78,7 @@
     return "Poor Quality";
   }
 
-  onMount(() => {
+  $effect(() => {
     if (autoScore) calculateScore();
   });
 </script>

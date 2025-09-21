@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
 </script>
@@ -33,7 +35,7 @@ https://svelte.dev/e/expected_token -->
     temperature: '51°C'
   });
   
-  onMount(async () => {
+  $effect(async () => {
     pageLoaded = true;
     
     if (showGpuStatus) {

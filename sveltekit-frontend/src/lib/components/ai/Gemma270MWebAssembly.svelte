@@ -5,6 +5,8 @@
 -->
 
 <script>
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
   import { Button, Card, CardContent, CardHeader, CardTitle, Alert } from '$lib/components/ui/enhanced-bits';
 
@@ -45,7 +47,7 @@
   let webglContext = $state(null);
   let gpuBuffers = $state(new Map());
 
-  onMount(async () => {
+  $effect(async () => {
     await initializeWebAssembly();
     checkBrowserCapabilities();
     initializeWebGL();

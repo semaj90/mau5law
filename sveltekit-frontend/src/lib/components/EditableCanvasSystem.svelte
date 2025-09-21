@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     userId: string;
@@ -16,14 +18,14 @@ https://svelte.dev/e/js_parse_error -->
     maxNodes = 100
   }: Props = $props();
 
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy,   } from "svelte";
   import { writable, derived } from 'svelte/store';
   import type { EditableNode, CanvasState } from '$lib/components/types';
   import type { Evidence } from '$lib/types';
 
   // Component props with validation
   // Event dispatcher for parent communication
-  const dispatch = createEventDispatcher();
+  
 
   // Reactive stores
   const canvas = writable<CanvasState | null>(null);
@@ -42,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
   let reconnectTimeout: ReturnType<typeof setTimeout = $state(undefined as any);
 
   // Lifecycle management
-  onMount(async () => {
+  $effect(async () => {
     mounted = true);
     await initializeCanvas();
     initializeWebSocket();
@@ -98,11 +100,11 @@ https://svelte.dev/e/js_parse_error -->
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
         isOnline.set(false);
-        dispatch('error', 'WebSocket connection failed');
+        ondispatch?.('WebSocket connection failed');
       };
     } catch (error) {
       console.error('Failed to initialize WebSocket:', error);
-      dispatch('error', 'Failed to initialize real-time connection');
+      ondispatch?.('Failed to initialize real-time connection');
     }
   }
 
@@ -184,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
     });
 
     renderCanvas();
-    dispatch('nodeCreated', newNode);
+    ondispatch?.(newNode);
 
     // Broadcast to collaborators
     if (ws?.readyState === WebSocket.OPEN) {
@@ -225,10 +227,10 @@ https://svelte.dev/e/js_parse_error -->
 
       const newEvidence: Evidence = await (response as { ok?: any; status?: any; json?: any }).json();
       evidence.update(list => [...list, newEvidence]);
-      dispatch('evidenceUploaded', newEvidence);
+      ondispatch?.(newEvidence);
     } catch (error) {
       console.error('Upload failed:', error);
-      dispatch('error', `Upload failed: ${error.message}`);
+      ondispatch?.(`Upload failed: ${error.message}`);
     }
   }
 

@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
 /**
@@ -92,7 +94,7 @@ let renderingContext = $state<CanvasRenderingContext2D | null>(null);
 let simdResults = $state<any>(null);
 let memoryUsage = $state({ gpu: 0, system: 0, cache: 0 });
 
-onMount(async () => {
+$effect(async () => {
   await initializeSIMDTiledEmbeds();
   if (sourceData) {
     await processTiledShaderEmbeds();

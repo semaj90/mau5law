@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
@@ -11,7 +13,7 @@
   let currentTranscript = $state('');
   let recognition: unknown = $state();
 
-  onMount(() => {
+  $effect(() => {
     // Initialize speech recognition
     const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
     if (SpeechRecognition) {

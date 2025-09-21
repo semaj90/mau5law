@@ -1,6 +1,8 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { page } from '$app/stores';
 
   // Props interface
@@ -28,7 +30,7 @@
   let isSubmitting: boolean = $state(false);
   let isSubmitted: boolean = $state(false);
 
-  const dispatch = createEventDispatcher();
+  
 
   // Auto-generate IDs using $effect for side effects
   $effect(() => {
@@ -80,7 +82,7 @@
 
       if (response.ok) {
         isSubmitted = true;
-        dispatch('feedback-submitted', { rating, feedback, interactionId });
+        ondispatch?.({ rating, feedback, interactionId });
 
         // Auto-hide after 2 seconds
         setTimeout(() => {
@@ -94,7 +96,7 @@
       }
     } catch (error) {
       console.error('❌ Failed to submit feedback:', error);
-      dispatch('feedback-error', { error });
+      ondispatch?.({ error });
     } finally {
       isSubmitting = false;
     }

@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     caseId: string | undefined ;
@@ -55,7 +57,7 @@
   		{ id: 'agent_orchestrate_crewai', name: 'CrewAI Agent', description: 'Orchestrate CrewAI agent' },
   		{ id: 'agent_orchestrate_autogen', name: 'AutoGen Agent', description: 'Orchestrate AutoGen agent' }
   	];
-  	onMount(async () => {
+  	$effect(async () => {
   		await initializeMCPConnection();
   		if (enableRealtimeUpdates) {
   			setupWebSocketConnection();

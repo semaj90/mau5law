@@ -11,10 +11,12 @@ https://svelte.dev/e/js_parse_error -->
   - Integration with case management system
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   const { caseId: string, citation: Partial<Citation> | null = null, mode: 'create' | 'edit' = 'create', disabled = false } = $props();
 
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
 
@@ -25,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
 
   // Form state
   let formData = $state({
@@ -78,7 +80,7 @@ https://svelte.dev/e/js_parse_error -->
   ];
 
   // Initialize Quill editor
-  onMount(async () => {
+  $effect(async () => {
     try {
       // Dynamic import of Quill
       const { default: Quill } = await import('quill');
@@ -188,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
       const result = await (response as { json?: any }).json();
 
       if ((result as { success?: any; citation?: any; error?: any }).success) {
-        dispatch('save', (result as { success?: any; citation?: any; error?: any }).citation);
+        ondispatch?.((result as { success?: any; citation?: any; error?: any }).citation);
       } else {
         console.error(error);
       }
@@ -216,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
       const result = await (response as { json?: any }).json();
 
       if ((result as { success?: any; citation?: any; error?: any }).success) {
-        dispatch('delete', citation.id);
+        ondispatch?.(citation.id);
       } else {
         console.error(error);
       }
@@ -530,7 +532,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex justify-end space-x-3 pt-4 border-t">
       <button
         type="button"
-        onclick={() => dispatch('cancel')}
+        onclick={() => ondispatch?.()}
         disabled={isLoading}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
       >

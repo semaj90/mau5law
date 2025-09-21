@@ -3,6 +3,8 @@
   Comprehensive dashboard showing cases, evidence, reports, and real-time processing
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { apiClient, type ApiResponse, type PaginatedResponse } from '$lib/services/enhanced-api-client';
   import { onMount } from 'svelte';
   import { toast } from 'svelte-sonner';
@@ -178,7 +180,7 @@
   };
 
   // Lifecycle
-  onMount(() => {
+  $effect(() => {
     loadDashboardData();
 
     // Set up auto-refresh every 30 seconds

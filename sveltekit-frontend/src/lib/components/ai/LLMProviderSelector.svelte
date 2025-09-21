@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- LLM Provider Selector with Melt UI and Real-time Status -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { 
     LLMProviderSelectorProps, 
@@ -17,7 +19,7 @@ https://svelte.dev/e/js_parse_error -->
   	// TODO: Replace with melt-ui equivalents when available
   	// import { Badge } from 'bits-ui';
   	import { writable, derived, type Writable } from 'svelte/store';
-  	import { createEventDispatcher, onMount } from 'svelte';
+  	import {  , onMount  } from "svelte";
   	import { fade, fly } from 'svelte/transition';
 
   	let { 
@@ -30,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
   		'data-testid': testId
   	}: LLMProviderSelectorProps = $props();
 
-  	const dispatch = createEventDispatcher();
+  	
 
   	// Mock providers - replace with real API calls
   	const providers: Writable<LLMProvider[]> = writable([
@@ -106,13 +108,13 @@ https://svelte.dev/e/js_parse_error -->
   			const newStatus = await checkProviderStatus(currentProviders[i]);
   			if (currentProviders[i].status !== newStatus) {
   				currentProviders[i].status = newStatus;
-  				dispatch('statusChanged', { provider: currentProviders[i], status: newStatus });
+  				ondispatch?.({ provider: currentProviders[i], status: newStatus });
   			}
   		}
   		providers.set(currentProviders);
   	};
 
-  	onMount(() => {
+  	$effect(() => {
   		// Initial status check
   		updateProviderStatuses();
   		// Periodic status updates every 10 seconds
@@ -139,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
   	$effect(() => {
   		if ($selected && $selected.value !== selectedProvider) {
   			selectedProvider = $selected.value;
-  			dispatch('providerSelected', { provider: selectedProvider });
+  			ondispatch?.({ provider: selectedProvider });
   		}
   	});
 

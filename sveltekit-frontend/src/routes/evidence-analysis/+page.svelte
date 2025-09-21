@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
   import EvidenceAnalysisDashboard from '$lib/components/dashboard/EvidenceAnalysisDashboard.svelte';
   import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
@@ -108,7 +110,7 @@
     ]
   };
 
-  onMount(() => {
+  $effect(() => {
     // Check WebGPU support
     webGPUSupported = !!navigator.gpu;
   });

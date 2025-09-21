@@ -8,7 +8,7 @@
   }: Props = $props();
 
   import { invalidateAll } from "$app/navigation";
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   import { superForm } from "sveltekit-superforms";
   // Corrected UI component import paths
   import Textarea from "$lib/components/ui/Textarea.svelte";
@@ -22,7 +22,7 @@
 
   // Bindable props already defined above; redundant redeclarations removed
 
-  const dispatch = createEventDispatcher();
+  
 
   // Melt UI builder for the Select component with proper typing
   // Melt UI component creation removed - replace with bits-ui declarative components
@@ -33,7 +33,7 @@
       onUpdated: async ({ form }) => {
         if (form.valid) {
           await invalidateAll();
-          dispatch("success");
+          ondispatch?.();
   }
       },
   }
@@ -104,7 +104,7 @@
 
   <div class="space-y-4">
     <Button class="bits-btn" type="button" variant="ghost" onclick={() =>
-dispatch("cancel")}
+ondispatch?.()}
       >Cancel</Button
     >
     <Button class="bits-btn" type="submit" disabled={$submitting}>

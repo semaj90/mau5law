@@ -1,6 +1,8 @@
 <!-- @migration-task Error while migrating Svelte code: 'import' and 'export' may only appear at the top level
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     onchange?: (event?: unknown) => void;
@@ -138,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
   }
     return nodes.length > 0 ? nodes : [{ type: 'paragraph', children: [{ type: 'text', text: '' }] }];
   }
-  onMount(() => {
+  $effect(() => {
     editor = new Editor({
       el: editorElement,
       initialValue: contentToMarkdown(content),

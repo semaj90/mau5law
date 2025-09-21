@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 // Enhanced Evidence Processing Component
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { , onMount, onDestroy } from 'svelte';
 
@@ -47,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
   let showLogs = $state(false);
   let processingLogs = $state<Array() >([]);
 
-  onMount(() => {
+  $effect(() => {
     uploadActor.start();
     // Subscribe to machine state changes
     uploadActor.subscribe((state) => {

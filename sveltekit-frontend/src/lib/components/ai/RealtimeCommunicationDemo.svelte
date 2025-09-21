@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'Card' has already been declared -->
 <!-- Real-time Communication Demo Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import {
@@ -276,7 +278,7 @@ https://svelte.dev/e/js_parse_error -->
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
 
-  onMount(() => {
+  $effect(() => {
     console.log('Real-time communication demo mounted');
   });
 

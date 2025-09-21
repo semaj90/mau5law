@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { diagnoseWebGPU, checkBrowserCompatibility } from '$lib/webgpu/webgpu-diagnostics';
@@ -12,7 +14,7 @@
   let testResults = $state(null);
   let performanceStats = $state<any>(null);
 
-  onMount(async () => {
+  $effect(async () => {
     if (!browser) return;
     
     // Check browser compatibility

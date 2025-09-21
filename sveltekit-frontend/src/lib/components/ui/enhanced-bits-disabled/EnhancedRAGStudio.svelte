@@ -3,6 +3,8 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- EnhancedRAG:Studio UI - Complete RAG Management Dashboard -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   interface Props { class?: string; children?: import('svelte').Snippet }
@@ -41,7 +43,7 @@ https://svelte.dev/e/attribute_duplicate -->
   let statusInterval = $state<ReturnType<typeof setInterval> | null>(null);
   let logsInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
-  onMount(() => {
+  $effect(() => {
     (async () => {
       await loadServiceStatus();
       await loadRecentLogs();

@@ -4,7 +4,7 @@
   import { Command } from 'bits-ui';
   import { Search, FileText, Users, Calendar, Gavel } from 'lucide-svelte';
   import { cn } from '$lib/utils';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
 
   // Exported props (use Svelte-style exports instead of $props/$bindable)
   let { open = $bindable(),
@@ -17,7 +17,7 @@
     class: className = $bindable()
   : unknown } = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   // Mock data for legal AI platform
   const mockCommands = [
@@ -60,7 +60,7 @@
   ];
 
   function handleSelect(item: unknown) {
-    dispatch('select', item);
+    ondispatch?.(item);
     open = false;
   }
 

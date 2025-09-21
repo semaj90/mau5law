@@ -11,6 +11,8 @@ https://svelte.dev/e/js_parse_error -->
     - Backend: expects /api/ai/process-evidence (LangChain, Ollama, pg_vector, Neo4j, Redis, Docker)
   -->
   <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 interface EvidenceItem {
   id: string;
   title: string;
@@ -94,7 +96,7 @@ interface UserData {
     // The actorRef is not directly used in the component's script, but can be accessed via aiGlobalStore if needed.
     // const { snapshot, send, actorRef } = useAIGlobalStore(); // Old usage
 
-    onMount(() => {
+    $effect(() => {
       // getSummaryCache(); // Uncomment and use this if you need to initialize cache on client
     });
 

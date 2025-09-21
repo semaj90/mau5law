@@ -2,17 +2,19 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits';;
   import type { Citation } from "$lib/types/api";
   import { Copy, Search, Star, Tag, Trash2 } from "lucide-svelte";
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   // Badge replaced with span - not available in enhanced-bits
   import Input from '$lib/components/ui/Input.svelte';
 
   let { citations = $bindable()  }: { citations = $bindable() : any } = $props(); // Citation[] = [];
 
-  const dispatch = createEventDispatcher();
+  
   let searchQuery = $state("");
   let selectedCategory = $state("all");
   let filteredCitations = $state<Citation[] >([]);
@@ -46,10 +48,10 @@ https://svelte.dev/e/js_parse_error -->
     });
   }
   function selectCitation(citation: Citation) {
-    dispatch("citationSelected", citation);
+    ondispatch?.(citation);
   }
   function deleteCitation(citation: Citation) {
-    dispatch("deleteCitation", citation);
+    ondispatch?.(citation);
   }
   function copyCitation(citation: Citation) {
     const citationText = `${citation.content}\n\nSource: ${citation.source}`;
@@ -58,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
   function toggleFavorite(citation: Citation) {
     // Update favorite status - in real app, this would update the database
     citation.isFavorite = !citation.isFavorite;
-    dispatch("updateCitation", citation);
+    ondispatch?.(citation);
   }
   // Drag and drop functionality
   function handleDragStart(event: DragEvent, citation: Citation) {

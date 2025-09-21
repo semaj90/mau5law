@@ -2,6 +2,8 @@
 <!-- Production-ready form with state management, validation, and progress tracking -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import {
     createDocumentUploadForm,
@@ -229,7 +231,7 @@
     // LIFECYCLE
     // ============================================================================
 
-    onMount(() => {
+    $effect(() => {
       // Load draft if available
       loadDraft();
     });

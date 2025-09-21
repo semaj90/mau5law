@@ -3,6 +3,8 @@ All Routes Explorer - Comprehensive Legal AI Platform Route Analysis
 Integrates with Gemma Embeddings Vector Architecture for route categorization
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
@@ -298,7 +300,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		window.open(path, '_blank');
 	}
 
-	onMount(() => {
+	$effect(() => {
 		isLoaded = true;
 		console.log('All routes page loaded with', allRoutes.length, 'routes');
 	});

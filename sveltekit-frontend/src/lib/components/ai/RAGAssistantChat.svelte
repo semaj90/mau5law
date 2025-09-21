@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 	import { onMount, tick } from 'svelte';
 	import { fly, fade, scale } from 'svelte/transition';
@@ -333,7 +335,7 @@
 	}
 
 	// Auto-greet on mount
-	onMount(async () => {
+	$effect(async () => {
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 		for (const greeting of aiResponses.greeting) {
 			await typeMessage(greeting);

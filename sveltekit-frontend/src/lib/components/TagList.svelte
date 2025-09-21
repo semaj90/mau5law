@@ -1,8 +1,10 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { debounce } from '$lib/utils/debounce';
   import { Plus, Tag, X } from 'lucide-svelte';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import { scale } from 'svelte/transition';
 
   // Props using Svelte 5 syntax
@@ -22,7 +24,7 @@
     readonly?: boolean;
   } = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   // State using Svelte 5 syntax
   let inputValue = $state('');
@@ -40,7 +42,7 @@
   let suggestions = $derived(filteredSuggestions);
 
   const debouncedSearch = debounce(async (query: string) => {
-    dispatch('search', query);
+    ondispatch?.(query);
 
     // Also fetch suggestions from Qdrant API
     if (query.length > 1) {
@@ -80,8 +82,8 @@
     const newTags = [...tags, trimmedTag];
     tags = newTags;
 
-    dispatch('change', newTags);
-    dispatch('add', trimmedTag);
+    ondispatch?.(newTags);
+    ondispatch?.(trimmedTag);
 
     inputValue = '';
     showSuggestions = false;
@@ -92,8 +94,8 @@
     const newTags = tags.filter((t) => t !== tag);
     tags = newTags;
 
-    dispatch('change', newTags);
-    dispatch('remove', tag);
+    ondispatch?.(newTags);
+    ondispatch?.(tag);
   }
 
   function handleKeyDown(event: KeyboardEvent) {

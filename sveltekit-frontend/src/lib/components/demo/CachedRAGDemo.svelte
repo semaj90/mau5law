@@ -4,6 +4,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   let query = $state('What constitutes breach of contract?');
   let loading = $state(false);

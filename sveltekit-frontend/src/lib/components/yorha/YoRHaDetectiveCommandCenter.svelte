@@ -1,5 +1,7 @@
 <!-- YoRHa Detective Command Center Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -94,7 +96,7 @@
   ];
 
   // Update time every second
-  onMount(() => {
+  $effect(() => {
     const timeInterval = setInterval(() => {
       currentTime = new Date();
     }, 1000);

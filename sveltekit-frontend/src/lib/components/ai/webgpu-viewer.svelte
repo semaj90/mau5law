@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- WebGPU Embedding Visualization - 3D Vector Space with Real-time Updates -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { Play, Pause, RotateCw, ZoomIn, ZoomOut, Layers } from 'lucide-svelte';
@@ -93,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   `;
 
-  onMount(async () => {
+  $effect(async () => {
   if (!navigator.gpu) {
     console.error('WebGPU not supported');
     return;

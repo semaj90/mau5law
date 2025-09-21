@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
   import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-svelte';
@@ -81,7 +83,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     if (typeof window !== 'undefined') {
       window.addEventListener('error', handleError);
       window.addEventListener('unhandledrejection', handleError);

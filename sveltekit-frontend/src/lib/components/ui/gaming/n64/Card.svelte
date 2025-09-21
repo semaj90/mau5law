@@ -11,8 +11,10 @@
   - Multiple material types (basic, phong, PBR)
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
@@ -97,7 +99,7 @@
     class: className = ''
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let isHovered = $state(false);
   let isFocused = $state(false);
@@ -194,7 +196,7 @@
     }, 200);
 
     onClick?.();
-    dispatch('click');
+    ondispatch?.();
   };
 
   const handleHover = () => {
@@ -202,7 +204,7 @@
     isHovered = true;
     playCardSound(550, 0.15);
     onHover?.();
-    dispatch('hover');
+    ondispatch?.();
   };
 
   const handleUnhover = () => {
@@ -214,7 +216,7 @@
     isFocused = true;
     playCardSound(660, 0.2);
     onFocus?.();
-    dispatch('focus');
+    ondispatch?.();
   };
 
   const handleBlur = () => {
@@ -335,7 +337,7 @@
     scale(${dynamicScale})
   `);
 
-  onMount(() => {
+  $effect(() => {
     // Set up intersection observer for performance optimization
     const observer = new IntersectionObserver(
       (entries) => {

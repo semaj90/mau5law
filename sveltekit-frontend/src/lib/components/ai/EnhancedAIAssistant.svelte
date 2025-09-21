@@ -7,6 +7,8 @@ https://svelte.dev/e/effect_invalid_placement -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { aiAssistant } from '$lib/stores/ai-assistant.svelte';
@@ -53,7 +55,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   let isListening = $state(false);
   let recognition: SpeechRecognition | null = null;
 
-  onMount(() => {
+  $effect(() => {
     // Initialize speech recognition if available
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;

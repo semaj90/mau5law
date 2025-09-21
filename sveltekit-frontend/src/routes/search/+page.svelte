@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import SearchBox from '$lib/components/ui/SearchBox.svelte';
 	import { onMount } from 'svelte';
 
@@ -35,7 +37,7 @@
 		}
 	};
 
-	onMount(() => {
+	$effect(() => {
 		// Set page title
 		document.title = 'Legal AI Search - Deeds Platform';
 	});

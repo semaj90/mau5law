@@ -136,21 +136,21 @@ def main():
                     changes = convert_svelte_file(filepath)
                     if changes:
                         converted_files += 1
-                        print(f"✅ {filepath}")
+                        print(f"[OK] {filepath}")
                         for change in changes:
                             print(f"   - {change}")
                         total_changes.extend(changes)
 
                 except Exception as e:
-                    print(f"❌ Error processing {filepath}: {e}")
+                    print(f"[ERROR] Error processing {filepath}: {e}")
 
     # Summary
-    print(f"\n📊 Migration Summary:")
+    print(f"\n[SUMMARY] Migration Summary:")
     print(f"   Total Svelte files: {total_files}")
     print(f"   Files converted: {converted_files}")
     print(f"   Total changes: {len(total_changes)}")
 
-    print(f"\n🎯 Svelte 5 migration completed!")
+    print(f"\n[COMPLETE] Svelte 5 migration completed!")
     print(f"   Run 'npm run check' to verify the migration")
 
 if __name__ == "__main__":

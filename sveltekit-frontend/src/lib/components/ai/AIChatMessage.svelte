@@ -5,6 +5,8 @@
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
 <script context="module">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
 
@@ -45,7 +47,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   let isMetadataExpanded = $state(false);
 
   // Format timestamp
-  onMount(() => {
+  $effect(() => {
     if (browser) {
       formattedTime = new Date(message.timestamp).toLocaleTimeString([], {
         hour: "2-digit",

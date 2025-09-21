@@ -1,5 +1,7 @@
 <!-- Detective Mode: Motive Analysis Enhancement -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
@@ -83,7 +85,7 @@
     triggerEvents: string[];
   }
 
-  onMount(() => {
+  $effect(() => {
     caseId = page.url.searchParams.get('case') || 'CASE-2024-001';
     initializeDetectiveMode();
     startSystemMonitoring();

@@ -14,8 +14,10 @@ https://svelte.dev/e/attribute_duplicate -->
   - Integration with YoRHa design system
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount, tick } from 'svelte';
+  import {  , onMount, tick  } from "svelte";
   import { browser } from '$app/environment';
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
@@ -112,7 +114,7 @@ https://svelte.dev/e/attribute_duplicate -->
    }: Props = $props();
 
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
 
   let isVisible = $state(false);
   let isAnimating = $state(false);
@@ -230,7 +232,7 @@ https://svelte.dev/e/attribute_duplicate -->
       isAnimating = false;
     }, 400);
 
-    dispatch('open');
+    ondispatch?.();
   };
 
   const closeDialog = async () => {
@@ -247,7 +249,7 @@ https://svelte.dev/e/attribute_duplicate -->
         previousFocusedElement.focus();
         previousFocusedElement = null;
       }
-      dispatch('close');
+      ondispatch?.();
     }, 400);
   };
 
@@ -382,7 +384,7 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   });
 
-  onMount(() => {
+  $effect(() => {
     if (browser) {
       document.addEventListener('keydown', handleKeydown);
       return () => {

@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
 	import { onMount } from 'svelte';
@@ -35,7 +37,7 @@ https://svelte.dev/e/expected_token -->
 		gpu: 'unknown'
 	};
 	
-	onMount(async () => {
+	$effect(async () => {
 		await detectCapabilities();
 		await initWebGPU();
 		generateNomicEmbeddings();

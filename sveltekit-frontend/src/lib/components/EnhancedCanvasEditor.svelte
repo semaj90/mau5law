@@ -3,8 +3,10 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save with Loki.js -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy,   } from "svelte";
 
   
 
@@ -108,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
   let evidenceItems = $state<any[] >([]);
   let searchResults = $state<any[] >([]);
 
-  onMount(() => {
+  $effect(() => {
     // Initialize components
     initializeLokiDB();
     initializeCanvas();

@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { Evidence } from "$lib/data/types";
   import { onMount } from "svelte";
@@ -58,7 +60,7 @@
     ev.dataTransfer?.setData("application/json", JSON.stringify(evd));
     ev.dataTransfer!.effectAllowed = "copy";
   }
-  onMount(fetchEvidence);
+  $effect(fetchEvidence);
 </script>
 
 <section class="evidence-panel">

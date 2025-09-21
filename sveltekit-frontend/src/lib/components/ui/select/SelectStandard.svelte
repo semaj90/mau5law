@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Select as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
   interface SelectOption {

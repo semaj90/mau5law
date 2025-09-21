@@ -2,8 +2,10 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   // Svelte 5 props interface
   interface Props {
     value?: string;
@@ -72,7 +74,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
 
   let inputElement: HTMLInputElement;
   let container: HTMLDivElement;
@@ -113,7 +115,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   });
 
   // Initialize audio context for spatial audio
-  onMount(async () => {
+  $effect(async () => {
     if (spatialAudio && typeof window !== 'undefined') {
       try {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext();

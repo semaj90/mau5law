@@ -1,5 +1,7 @@
 <!-- Svelte 5 SearchBox component with NES.css styling for CUDA service integration -->
 <script>
+  // Svelte 5 runes are auto-imported
+
 	import { writable } from 'svelte/store';
 
 	// Svelte 5 props

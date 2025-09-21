@@ -11,9 +11,11 @@
   - Integration with YoRHa 3D system
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Button as BitsButton } from 'bits-ui';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
@@ -77,7 +79,7 @@
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
 
   let isPressed = $state(false);
   let isHovered = $state(false);
@@ -161,14 +163,14 @@
       isPressed = false;
     }, 150);
     onClick?.();
-    dispatch('click');
+    ondispatch?.();
   };
 
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
     onHover?.();
-    dispatch('hover');
+    ondispatch?.();
   };
 
   const handleUnhover = () => {
@@ -179,7 +181,7 @@
     if (disabled) return;
     isFocused = true;
     onFocus?.();
-    dispatch('focus');
+    ondispatch?.();
   };
 
   const handleBlur = () => {
@@ -314,7 +316,7 @@
     scale(${dynamicScale})
   `);
 
-  onMount(() => {
+  $effect(() => {
     // Add particle explosion keyframe
     const style = document.createElement('style');
     style.textContent = `

@@ -1,13 +1,15 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   let laws: unknown[] = $state([]);
   let loading = $state(true);
   let error: string | null = $state(null);
   let searchQuery = $state('');
-  onMount(async () => {
+  $effect(async () => {
     try {
       const response = await fetch('/api/statutes');
       if (response.ok) {

@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
@@ -191,7 +193,7 @@ https://svelte.dev/e/expected_token -->
     return 'text-red-600';
   }
   
-  onMount(() => {
+  $effect(() => {
     console.log('🎨 SIMD Glyph Demo component mounted');
   });
 </script>

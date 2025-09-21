@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
   import { Chart, registerables } from 'chart.js';
   import type { EvidenceAnalysis, Finding, Correlation, Entity, TimelineEvent } from '$lib/services/ai-evidence-analyzer';
@@ -19,7 +21,7 @@
 
   let charts: Chart[] = [];
 
-  onMount(() => {
+  $effect(() => {
     renderRiskChart();
     renderEntitiesChart();
     renderTimelineChart();

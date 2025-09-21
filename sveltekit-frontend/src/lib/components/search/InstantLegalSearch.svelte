@@ -20,6 +20,8 @@ https://svelte.dev/e/expected_token -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, onDestroy } from 'svelte';
@@ -117,7 +119,7 @@ https://svelte.dev/e/expected_token -->
   let searchTimeout: NodeJS.Timeout | null = null;
 
   // Initialize search engine
-  onMount(async () => {
+  $effect(async () => {
     try {
       await instantSearchEngine.initialize();
       

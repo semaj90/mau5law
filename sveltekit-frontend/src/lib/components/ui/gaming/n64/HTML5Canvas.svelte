@@ -11,8 +11,10 @@
   - Performance monitoring and auto-quality adjustment
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount, onDestroy } from 'svelte';
+  import {  , onMount, onDestroy  } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
@@ -118,7 +120,7 @@
     class: className = ''
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let canvasElement = $state<HTMLCanvasElement | null>(null);
   let containerElement = $state<HTMLElement | null>(null);
@@ -400,7 +402,7 @@
         brightness: 1.05
       });
 
-      dispatch('fabricReady', { fabricCanvas });
+      ondispatch?.({ fabricCanvas });
     } catch (error) {
       console.warn('Fabric.js not available:', error);
     }
@@ -440,7 +442,7 @@
       else if (!enableBloom) enableBloom = true;
     }
 
-    dispatch('qualityAdjusted', { 
+    ondispatch?.({ 
       direction, 
       anisotropicLevel, 
       enableBloom, 
@@ -503,7 +505,7 @@
     handleResize();
   });
 
-  onMount(() => {
+  $effect(() => {
     initializeCanvas();
     // Handle window resize
     window.addEventListener('resize', handleResize);

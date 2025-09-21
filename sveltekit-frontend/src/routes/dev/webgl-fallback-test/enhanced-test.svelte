@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -25,7 +27,7 @@
     log += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
   }
 
-  onMount(async () => {
+  $effect(async () => {
     if (browser) {
       append('🚀 WebGL2/WebGPU Fallback Test for Gemma3 270M WebAssembly');
       append('Testing GPU acceleration hierarchy: WebGPU → WebGL2 → WebGL1 → WASM CPU');

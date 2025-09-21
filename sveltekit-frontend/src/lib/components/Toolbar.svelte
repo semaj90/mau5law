@@ -1,6 +1,8 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher,  } from 'svelte';
+  import {  ,   } from "svelte";
 
 
   	
@@ -27,7 +29,7 @@
   		ZoomOut 
   	} from 'lucide-svelte';
 
-  	const dispatch = createEventDispatcher();
+  	
 
   	// Tool categories
   	const tools = [
@@ -65,7 +67,7 @@
   			...state,
   			selectedTool: toolId
   		}));
-  		dispatch('toolSelected', { tool: toolId });
+  		ondispatch?.({ tool: toolId });
   }
   	function toggleFormatting(formatType: string) {
   		toolbarStore.update(state => ({
@@ -75,7 +77,7 @@
   				[formatType]: !(state.formatting as any)[formatType]
   }
   		}));
-  		dispatch('formatToggled', { type: formatType, value: !(formatting as any)[formatType] });
+  		ondispatch?.({ type: formatType, value: !(formatting as any)[formatType] });
   }
   	function setAlignment(alignment: string) {
   		toolbarStore.update(state => ({
@@ -85,7 +87,7 @@
   				textAlign: alignment
   }
   		}));
-  		dispatch('alignmentChanged', { alignment });
+  		ondispatch?.({ alignment });
   }
   	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
   		const target = event.target as HTMLInputElement;
@@ -97,7 +99,7 @@
   				[type]: color
   }
   		}));
-  		dispatch('colorChanged', { type, color });
+  		ondispatch?.({ type, color });
   }
   	function handleFontSizeChange(event: Event) {
   		const target = event.target as HTMLInputElement;
@@ -109,7 +111,7 @@
   				fontSize
   }
   		}));
-  		dispatch('fontSizeChanged', { fontSize });
+  		ondispatch?.({ fontSize });
   }
   	function handleStrokeWidthChange(event: Event) {
   		const target = event.target as HTMLInputElement;
@@ -121,10 +123,10 @@
   				strokeWidth
   }
   		}));
-  		dispatch('strokeWidthChanged', { strokeWidth });
+  		ondispatch?.({ strokeWidth });
   }
   	function handleAction(action: string) {
-  		dispatch('action', { action });
+  		ondispatch?.({ action });
   }
   	function handleZoom(delta: number) {
   		const newZoom = Math.max(10, Math.min(500, zoom + delta));
@@ -132,7 +134,7 @@
   			...state,
   			zoom: newZoom
   		}));
-  		dispatch('zoomChanged', { zoom: newZoom });
+  		ondispatch?.({ zoom: newZoom });
   }
 </script>
 

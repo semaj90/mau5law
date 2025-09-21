@@ -3,6 +3,8 @@
   Enhanced-Bits orchestrated components with Svelte 5 runes
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -165,7 +167,7 @@
     return `${(ms / 1000).toFixed(2)}s`;
   }
   // Initialize with example search on mount
-  onMount(() => {
+  $effect(() => {
     // Auto-suggest based on existing RAG demo
     if (!query) {
       query = 'Contract breach and liability analysis';

@@ -6,6 +6,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // Updated to use melt-ui components
   import Dialog from '$lib/components/ui/MeltDialog.svelte';

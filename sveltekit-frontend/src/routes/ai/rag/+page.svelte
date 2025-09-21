@@ -3,9 +3,11 @@ AI RAG Interface - Retrieval Augmented Generation for legal documents
 TODO: Implement RAG functionality, vector search, document context
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
 	import Button from '$lib/components/ui/enhanced-bits';
-	import * as Card from '$lib/components/ui/card';
+	import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
 	import RAGAssistantChat from '$lib/components/ai/RAGAssistantChat.svelte';
 	import { FileText, Brain, Search, Zap } from 'lucide-svelte';
 
@@ -83,13 +85,13 @@ TODO: Implement RAG functionality, vector search, document context
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<!-- Search Interface -->
 			<div class="lg:col-span-2">
-				<Card.Root class="nes-container is-rounded mb-6">
-					<Card.Header>
-						<Card.Title class="nes-text is-primary">
+				<Card class="nes-container is-rounded mb-6">
+					<CardHeader>
+						<CardTitle class="nes-text is-primary">
 							Legal Document Search
 						</div.Title>
 					</div.Header>
-					<Card.Content>
+					<CardContent>
 						<div class="space-y-4">
 							<div>
 								<label class="nes-text text-sm mb-2 block">
@@ -142,13 +144,13 @@ TODO: Implement RAG functionality, vector search, document context
 				</div.Root>
 
 				<!-- Chat Interface -->
-				<Card.Root class="nes-container is-rounded">
-					<Card.Header>
-						<Card.Title class="nes-text is-primary">
+				<Card class="nes-container is-rounded">
+					<CardHeader>
+						<CardTitle class="nes-text is-primary">
 							RAG Assistant Chat
 						</div.Title>
 					</div.Header>
-					<Card.Content class="p-0">
+					<CardContent class="p-0">
 						<div class="h-96">
 							<RAGAssistantChat />
 						</div>
@@ -158,13 +160,13 @@ TODO: Implement RAG functionality, vector search, document context
 
 			<!-- Features Sidebar -->
 			<div>
-				<Card.Root class="nes-container is-rounded">
-					<Card.Header>
-						<Card.Title class="nes-text is-primary text-sm">
+				<Card class="nes-container is-rounded">
+					<CardHeader>
+						<CardTitle class="nes-text is-primary text-sm">
 							RAG Features
 						</div.Title>
 					</div.Header>
-					<Card.Content>
+					<CardContent>
 						<div class="space-y-4">
 							{#each features as feature}
 								<div class="border-b border-gray-600 pb-3 last:border-0">
@@ -184,13 +186,13 @@ TODO: Implement RAG functionality, vector search, document context
 				</div.Root>
 
 				<!-- Quick Actions -->
-				<Card.Root class="nes-container is-rounded mt-6">
-					<Card.Header>
-						<Card.Title class="nes-text is-primary text-sm">
+				<Card class="nes-container is-rounded mt-6">
+					<CardHeader>
+						<CardTitle class="nes-text is-primary text-sm">
 							Quick Actions
 						</div.Title>
 					</div.Header>
-					<Card.Content>
+					<CardContent>
 						<div class="space-y-2">
 							<Button class="nes-btn w-full text-xs" size="sm">
 								Search Similar Cases

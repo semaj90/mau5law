@@ -2,6 +2,8 @@
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
 
@@ -49,7 +51,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   });
 
   // Check service status on mount
-  onMount(() => {
+  $effect(() => {
     // Add any initialization here
   });
 </script>

@@ -57,7 +57,7 @@ let performanceMetrics = {
   tensorCoreUtilization: 0
 };
 
-onMount(async () =&gt; {
+$effect(async () =&gt; {
   console.log('🎮 Initializing RTX 3060 Ti SubsampleAA Demo...');
 
   try {

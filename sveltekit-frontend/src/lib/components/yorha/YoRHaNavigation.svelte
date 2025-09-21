@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa Navigation Sidebar Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { Props } from "$lib/types/global";
   import { page } from "$app/state";
@@ -80,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Auto-scroll to active route
-  onMount(() => {
+  $effect(() => {
     const activeElement = document.querySelector.active');
     if (activeElement) {
       activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });

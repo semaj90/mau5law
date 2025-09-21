@@ -8,6 +8,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { derived } from 'svelte/store';
@@ -149,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Component lifecycle
-  onMount(() => {
+  $effect(() => {
     console.log('🚀 Real-Time Legal Search Component mounted');
   });
 

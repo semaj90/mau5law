@@ -4,6 +4,8 @@ https://svelte.dev/e/attribute_invalid_name -->
 <!-- Gemma3LegalChat.svelte -->
 <!-- Complete Gemma3 Legal Model Integration Component for SvelteKit -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
@@ -145,7 +147,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     }
   });
   // Initialize on mount
-  onMount(async () => {
+  $effect(async () => {
     try {
       // Initialize Gemma3 WASM Bridge
       if (typeof window !== 'undefined' && 'gpu' in navigator) {

@@ -13,10 +13,12 @@ https://svelte.dev/e/js_parse_error -->
   - Legal knowledge base integration
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   const { caseId: string | null = null, caseData: Case | null = null, detectiveMode = false, readonly = false, height = '600px' } = $props();
 
-  import { onMount, createEventDispatcher, tick } from 'svelte';
+  import { onMount,  , tick  } from "svelte";
   import { writable } from 'svelte/store';
   import type { Case, Evidence, Citation } from '$lib/server/db/schemas/cases-schema.js';
 
@@ -28,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
 
   // Message interface
   interface ChatMessage {
@@ -73,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   let messageInput: HTMLTextAreaElement;
 
   // Initialize system message for legal context
-  onMount(async () => {
+  $effect(async () => {
     // Check Ollama connectivity
     await checkOllamaConnection();
 

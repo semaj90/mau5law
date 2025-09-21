@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
   import { Button, LinkButton } from '$lib/components/ui/enhanced-bits';

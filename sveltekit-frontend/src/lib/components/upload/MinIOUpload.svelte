@@ -1,5 +1,7 @@
 <!-- MinIO Upload Component with SvelteKit 2 + Superforms + PostgreSQL Integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { superForm } from 'sveltekit-superforms/client';
   import { fileUploadSchema, type FileUploadData } from '$lib/schemas/upload';
