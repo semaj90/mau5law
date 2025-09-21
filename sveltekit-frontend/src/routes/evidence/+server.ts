@@ -12,7 +12,7 @@ export const POST: RequestHandler = (async ({ request }) => {
 
     if (!file) return json({ success: false, error: 'No file' }, { status: 400 });
 
-    const buffer = Buffer.from(await file.arrayBuffer();
+    const buffer = Buffer.from(await file.arrayBuffer());
     const id = randomUUID();
     const objectName = `${id}_${file.name}`;
 

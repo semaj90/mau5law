@@ -136,20 +136,20 @@ export const legal = $root.legal = (() => {
             User.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.id != null && Object.hasOwnProperty.call(message, "id")
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
-                if (message.email != null && Object.hasOwnProperty.call(message, "email")
+                if (message.email != null && Object.hasOwnProperty.call(message, "email"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.email);
-                if (message.name != null && Object.hasOwnProperty.call(message, "name")
+                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.name);
                 if (message.roles != null && message.roles.length)
                     for (let i = 0; i < message.roles.length; ++i)
                         writer.uint32(/* id 4, wireType 2 =*/34).string(message.roles[i]);
-                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt")
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
                     $root.google.protobuf.Timestamp.encode(message.createdAt, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
-                if (message.updatedAt != null && Object.hasOwnProperty.call(message, "updatedAt")
+                if (message.updatedAt != null && Object.hasOwnProperty.call(message, "updatedAt"))
                     $root.google.protobuf.Timestamp.encode(message.updatedAt, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
-                if (message.preferences != null && Object.hasOwnProperty.call(message, "preferences")
+                if (message.preferences != null && Object.hasOwnProperty.call(message, "preferences"))
                     $root.legal.api.UserPreferences.encode(message.preferences, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                 return writer;
             };
@@ -179,7 +179,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             User.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.User();
                 while (reader.pos < end) {
@@ -200,21 +200,21 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 4: {
-                            if (!(message.roles && message.roles.length)
+                            if (!(message.roles && message.roles.length))
                                 message.roles = [];
-                            message.roles.push(reader.string();
+                            message.roles.push(reader.string());
                             break;
                         }
                     case 5: {
-                            message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 6: {
-                            message.updatedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.updatedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 7: {
-                            message.preferences = $root.legal.api.UserPreferences.decode(reader, reader.uint32();
+                            message.preferences = $root.legal.api.UserPreferences.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -236,9 +236,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             User.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -252,20 +252,20 @@ export const legal = $root.legal = (() => {
             User.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.id != null && message.hasOwnProperty("id")
-                    if (!$util.isString(message.id)
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
                         return "id: string expected";
-                if (message.email != null && message.hasOwnProperty("email")
-                    if (!$util.isString(message.email)
+                if (message.email != null && message.hasOwnProperty("email"))
+                    if (!$util.isString(message.email))
                         return "email: string expected";
-                if (message.name != null && message.hasOwnProperty("name")
-                    if (!$util.isString(message.name)
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
                         return "name: string expected";
                 if (message.roles != null && message.hasOwnProperty("roles")) {
-                    if (!Array.isArray(message.roles)
+                    if (!Array.isArray(message.roles))
                         return "roles: array expected";
                     for (let i = 0; i < message.roles.length; ++i)
-                        if (!$util.isString(message.roles[i])
+                        if (!$util.isString(message.roles[i]))
                             return "roles: string[] expected";
                 }
                 if (message.createdAt != null && message.hasOwnProperty("createdAt")) {
@@ -305,7 +305,7 @@ export const legal = $root.legal = (() => {
                 if (object.name != null)
                     message.name = String(object.name);
                 if (object.roles) {
-                    if (!Array.isArray(object.roles)
+                    if (!Array.isArray(object.roles))
                         throw TypeError(".legal.api.User.roles: array expected");
                     message.roles = [];
                     for (let i = 0; i < object.roles.length; ++i)
@@ -352,22 +352,22 @@ export const legal = $root.legal = (() => {
                     object.updatedAt = null;
                     object.preferences = null;
                 }
-                if (message.id != null && message.hasOwnProperty("id")
+                if (message.id != null && message.hasOwnProperty("id"))
                     object.id = message.id;
-                if (message.email != null && message.hasOwnProperty("email")
+                if (message.email != null && message.hasOwnProperty("email"))
                     object.email = message.email;
-                if (message.name != null && message.hasOwnProperty("name")
+                if (message.name != null && message.hasOwnProperty("name"))
                     object.name = message.name;
                 if (message.roles && message.roles.length) {
                     object.roles = [];
                     for (let j = 0; j < message.roles.length; ++j)
                         object.roles[j] = message.roles[j];
                 }
-                if (message.createdAt != null && message.hasOwnProperty("createdAt")
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
                     object.createdAt = $root.google.protobuf.Timestamp.toObject(message.createdAt, options);
-                if (message.updatedAt != null && message.hasOwnProperty("updatedAt")
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt"))
                     object.updatedAt = $root.google.protobuf.Timestamp.toObject(message.updatedAt, options);
-                if (message.preferences != null && message.hasOwnProperty("preferences")
+                if (message.preferences != null && message.hasOwnProperty("preferences"))
                     object.preferences = $root.legal.api.UserPreferences.toObject(message.preferences, options);
                 return object;
             };
@@ -484,13 +484,13 @@ export const legal = $root.legal = (() => {
             UserPreferences.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.theme != null && Object.hasOwnProperty.call(message, "theme")
+                if (message.theme != null && Object.hasOwnProperty.call(message, "theme"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.theme);
-                if (message.language != null && Object.hasOwnProperty.call(message, "language")
+                if (message.language != null && Object.hasOwnProperty.call(message, "language"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.language);
-                if (message.notificationsEnabled != null && Object.hasOwnProperty.call(message, "notificationsEnabled")
+                if (message.notificationsEnabled != null && Object.hasOwnProperty.call(message, "notificationsEnabled"))
                     writer.uint32(/* id 3, wireType 0 =*/24).bool(message.notificationsEnabled);
-                if (message.analyticsOptIn != null && Object.hasOwnProperty.call(message, "analyticsOptIn")
+                if (message.analyticsOptIn != null && Object.hasOwnProperty.call(message, "analyticsOptIn"))
                     writer.uint32(/* id 4, wireType 0 =*/32).bool(message.analyticsOptIn);
                 return writer;
             };
@@ -520,7 +520,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             UserPreferences.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.UserPreferences();
                 while (reader.pos < end) {
@@ -563,9 +563,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             UserPreferences.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -579,16 +579,16 @@ export const legal = $root.legal = (() => {
             UserPreferences.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.theme != null && message.hasOwnProperty("theme")
-                    if (!$util.isString(message.theme)
+                if (message.theme != null && message.hasOwnProperty("theme"))
+                    if (!$util.isString(message.theme))
                         return "theme: string expected";
-                if (message.language != null && message.hasOwnProperty("language")
-                    if (!$util.isString(message.language)
+                if (message.language != null && message.hasOwnProperty("language"))
+                    if (!$util.isString(message.language))
                         return "language: string expected";
-                if (message.notificationsEnabled != null && message.hasOwnProperty("notificationsEnabled")
+                if (message.notificationsEnabled != null && message.hasOwnProperty("notificationsEnabled"))
                     if (typeof message.notificationsEnabled !== "boolean")
                         return "notificationsEnabled: boolean expected";
-                if (message.analyticsOptIn != null && message.hasOwnProperty("analyticsOptIn")
+                if (message.analyticsOptIn != null && message.hasOwnProperty("analyticsOptIn"))
                     if (typeof message.analyticsOptIn !== "boolean")
                         return "analyticsOptIn: boolean expected";
                 return null;
@@ -636,13 +636,13 @@ export const legal = $root.legal = (() => {
                     object.notificationsEnabled = false;
                     object.analyticsOptIn = false;
                 }
-                if (message.theme != null && message.hasOwnProperty("theme")
+                if (message.theme != null && message.hasOwnProperty("theme"))
                     object.theme = message.theme;
-                if (message.language != null && message.hasOwnProperty("language")
+                if (message.language != null && message.hasOwnProperty("language"))
                     object.language = message.language;
-                if (message.notificationsEnabled != null && message.hasOwnProperty("notificationsEnabled")
+                if (message.notificationsEnabled != null && message.hasOwnProperty("notificationsEnabled"))
                     object.notificationsEnabled = message.notificationsEnabled;
-                if (message.analyticsOptIn != null && message.hasOwnProperty("analyticsOptIn")
+                if (message.analyticsOptIn != null && message.hasOwnProperty("analyticsOptIn"))
                     object.analyticsOptIn = message.analyticsOptIn;
                 return object;
             };
@@ -759,13 +759,13 @@ export const legal = $root.legal = (() => {
             AuthRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.email != null && Object.hasOwnProperty.call(message, "email")
+                if (message.email != null && Object.hasOwnProperty.call(message, "email"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.email);
-                if (message.password != null && Object.hasOwnProperty.call(message, "password")
+                if (message.password != null && Object.hasOwnProperty.call(message, "password"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.password);
-                if (message.rememberMe != null && Object.hasOwnProperty.call(message, "rememberMe")
+                if (message.rememberMe != null && Object.hasOwnProperty.call(message, "rememberMe"))
                     writer.uint32(/* id 3, wireType 0 =*/24).bool(message.rememberMe);
-                if (message.clientInfo != null && Object.hasOwnProperty.call(message, "clientInfo")
+                if (message.clientInfo != null && Object.hasOwnProperty.call(message, "clientInfo"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.clientInfo);
                 return writer;
             };
@@ -795,7 +795,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AuthRequest.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AuthRequest();
                 while (reader.pos < end) {
@@ -838,9 +838,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AuthRequest.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -854,17 +854,17 @@ export const legal = $root.legal = (() => {
             AuthRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.email != null && message.hasOwnProperty("email")
-                    if (!$util.isString(message.email)
+                if (message.email != null && message.hasOwnProperty("email"))
+                    if (!$util.isString(message.email))
                         return "email: string expected";
-                if (message.password != null && message.hasOwnProperty("password")
-                    if (!$util.isString(message.password)
+                if (message.password != null && message.hasOwnProperty("password"))
+                    if (!$util.isString(message.password))
                         return "password: string expected";
-                if (message.rememberMe != null && message.hasOwnProperty("rememberMe")
+                if (message.rememberMe != null && message.hasOwnProperty("rememberMe"))
                     if (typeof message.rememberMe !== "boolean")
                         return "rememberMe: boolean expected";
-                if (message.clientInfo != null && message.hasOwnProperty("clientInfo")
-                    if (!$util.isString(message.clientInfo)
+                if (message.clientInfo != null && message.hasOwnProperty("clientInfo"))
+                    if (!$util.isString(message.clientInfo))
                         return "clientInfo: string expected";
                 return null;
             };
@@ -911,13 +911,13 @@ export const legal = $root.legal = (() => {
                     object.rememberMe = false;
                     object.clientInfo = "";
                 }
-                if (message.email != null && message.hasOwnProperty("email")
+                if (message.email != null && message.hasOwnProperty("email"))
                     object.email = message.email;
-                if (message.password != null && message.hasOwnProperty("password")
+                if (message.password != null && message.hasOwnProperty("password"))
                     object.password = message.password;
-                if (message.rememberMe != null && message.hasOwnProperty("rememberMe")
+                if (message.rememberMe != null && message.hasOwnProperty("rememberMe"))
                     object.rememberMe = message.rememberMe;
-                if (message.clientInfo != null && message.hasOwnProperty("clientInfo")
+                if (message.clientInfo != null && message.hasOwnProperty("clientInfo"))
                     object.clientInfo = message.clientInfo;
                 return object;
             };
@@ -1043,15 +1043,15 @@ export const legal = $root.legal = (() => {
             AuthResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.success != null && Object.hasOwnProperty.call(message, "success")
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
                     writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
-                if (message.token != null && Object.hasOwnProperty.call(message, "token")
+                if (message.token != null && Object.hasOwnProperty.call(message, "token"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.token);
-                if (message.user != null && Object.hasOwnProperty.call(message, "user")
+                if (message.user != null && Object.hasOwnProperty.call(message, "user"))
                     $root.legal.api.User.encode(message.user, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-                if (message.errorMessage != null && Object.hasOwnProperty.call(message, "errorMessage")
+                if (message.errorMessage != null && Object.hasOwnProperty.call(message, "errorMessage"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.errorMessage);
-                if (message.expiresAt != null && Object.hasOwnProperty.call(message, "expiresAt")
+                if (message.expiresAt != null && Object.hasOwnProperty.call(message, "expiresAt"))
                     writer.uint32(/* id 5, wireType 0 =*/40).int64(message.expiresAt);
                 return writer;
             };
@@ -1081,7 +1081,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AuthResponse.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AuthResponse();
                 while (reader.pos < end) {
@@ -1098,7 +1098,7 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            message.user = $root.legal.api.User.decode(reader, reader.uint32();
+                            message.user = $root.legal.api.User.decode(reader, reader.uint32());
                             break;
                         }
                     case 4: {
@@ -1128,9 +1128,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AuthResponse.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -1144,22 +1144,22 @@ export const legal = $root.legal = (() => {
             AuthResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.success != null && message.hasOwnProperty("success")
+                if (message.success != null && message.hasOwnProperty("success"))
                     if (typeof message.success !== "boolean")
                         return "success: boolean expected";
-                if (message.token != null && message.hasOwnProperty("token")
-                    if (!$util.isString(message.token)
+                if (message.token != null && message.hasOwnProperty("token"))
+                    if (!$util.isString(message.token))
                         return "token: string expected";
                 if (message.user != null && message.hasOwnProperty("user")) {
                     let error = $root.legal.api.User.verify(message.user);
                     if (error)
                         return "user." + error;
                 }
-                if (message.errorMessage != null && message.hasOwnProperty("errorMessage")
-                    if (!$util.isString(message.errorMessage)
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
+                    if (!$util.isString(message.errorMessage))
                         return "errorMessage: string expected";
-                if (message.expiresAt != null && message.hasOwnProperty("expiresAt")
-                    if (!$util.isInteger(message.expiresAt) && !(message.expiresAt && $util.isInteger(message.expiresAt.low) && $util.isInteger(message.expiresAt.high))
+                if (message.expiresAt != null && message.hasOwnProperty("expiresAt"))
+                    if (!$util.isInteger(message.expiresAt) && !(message.expiresAt && $util.isInteger(message.expiresAt.low) && $util.isInteger(message.expiresAt.high)))
                         return "expiresAt: integer|Long expected";
                 return null;
             };
@@ -1223,15 +1223,15 @@ export const legal = $root.legal = (() => {
                     } else
                         object.expiresAt = options.longs === String ? "0" : 0;
                 }
-                if (message.success != null && message.hasOwnProperty("success")
+                if (message.success != null && message.hasOwnProperty("success"))
                     object.success = message.success;
-                if (message.token != null && message.hasOwnProperty("token")
+                if (message.token != null && message.hasOwnProperty("token"))
                     object.token = message.token;
-                if (message.user != null && message.hasOwnProperty("user")
+                if (message.user != null && message.hasOwnProperty("user"))
                     object.user = $root.legal.api.User.toObject(message.user, options);
-                if (message.errorMessage != null && message.hasOwnProperty("errorMessage")
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
                     object.errorMessage = message.errorMessage;
-                if (message.expiresAt != null && message.hasOwnProperty("expiresAt")
+                if (message.expiresAt != null && message.hasOwnProperty("expiresAt"))
                     if (typeof message.expiresAt === "number")
                         object.expiresAt = options.longs === String ? String(message.expiresAt) : message.expiresAt;
                     else
@@ -1434,33 +1434,33 @@ export const legal = $root.legal = (() => {
             LegalDocument.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.id != null && Object.hasOwnProperty.call(message, "id")
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
-                if (message.title != null && Object.hasOwnProperty.call(message, "title")
+                if (message.title != null && Object.hasOwnProperty.call(message, "title"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.title);
-                if (message.content != null && Object.hasOwnProperty.call(message, "content")
+                if (message.content != null && Object.hasOwnProperty.call(message, "content"))
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.content);
-                if (message.fileUrl != null && Object.hasOwnProperty.call(message, "fileUrl")
+                if (message.fileUrl != null && Object.hasOwnProperty.call(message, "fileUrl"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.fileUrl);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type")
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                     writer.uint32(/* id 5, wireType 0 =*/40).int32(message.type);
                 if (message.tags != null && message.tags.length)
                     for (let i = 0; i < message.tags.length; ++i)
                         writer.uint32(/* id 6, wireType 2 =*/50).string(message.tags[i]);
-                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata")
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
                     $root.legal.api.DocumentMetadata.encode(message.metadata, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
-                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt")
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
                     $root.google.protobuf.Timestamp.encode(message.createdAt, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
-                if (message.updatedAt != null && Object.hasOwnProperty.call(message, "updatedAt")
+                if (message.updatedAt != null && Object.hasOwnProperty.call(message, "updatedAt"))
                     $root.google.protobuf.Timestamp.encode(message.updatedAt, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
-                if (message.ownerId != null && Object.hasOwnProperty.call(message, "ownerId")
+                if (message.ownerId != null && Object.hasOwnProperty.call(message, "ownerId"))
                     writer.uint32(/* id 10, wireType 2 =*/82).string(message.ownerId);
                 if (message.collaboratorIds != null && message.collaboratorIds.length)
                     for (let i = 0; i < message.collaboratorIds.length; ++i)
                         writer.uint32(/* id 11, wireType 2 =*/90).string(message.collaboratorIds[i]);
-                if (message.status != null && Object.hasOwnProperty.call(message, "status")
+                if (message.status != null && Object.hasOwnProperty.call(message, "status"))
                     writer.uint32(/* id 12, wireType 0 =*/96).int32(message.status);
-                if (message.securityLevel != null && Object.hasOwnProperty.call(message, "securityLevel")
+                if (message.securityLevel != null && Object.hasOwnProperty.call(message, "securityLevel"))
                     writer.uint32(/* id 13, wireType 0 =*/104).int32(message.securityLevel);
                 return writer;
             };
@@ -1490,7 +1490,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             LegalDocument.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.LegalDocument();
                 while (reader.pos < end) {
@@ -1519,21 +1519,21 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 6: {
-                            if (!(message.tags && message.tags.length)
+                            if (!(message.tags && message.tags.length))
                                 message.tags = [];
-                            message.tags.push(reader.string();
+                            message.tags.push(reader.string());
                             break;
                         }
                     case 7: {
-                            message.metadata = $root.legal.api.DocumentMetadata.decode(reader, reader.uint32();
+                            message.metadata = $root.legal.api.DocumentMetadata.decode(reader, reader.uint32());
                             break;
                         }
                     case 8: {
-                            message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 9: {
-                            message.updatedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.updatedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 10: {
@@ -1541,9 +1541,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 11: {
-                            if (!(message.collaboratorIds && message.collaboratorIds.length)
+                            if (!(message.collaboratorIds && message.collaboratorIds.length))
                                 message.collaboratorIds = [];
-                            message.collaboratorIds.push(reader.string();
+                            message.collaboratorIds.push(reader.string());
                             break;
                         }
                     case 12: {
@@ -1573,9 +1573,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             LegalDocument.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -1589,19 +1589,19 @@ export const legal = $root.legal = (() => {
             LegalDocument.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.id != null && message.hasOwnProperty("id")
-                    if (!$util.isString(message.id)
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
                         return "id: string expected";
-                if (message.title != null && message.hasOwnProperty("title")
-                    if (!$util.isString(message.title)
+                if (message.title != null && message.hasOwnProperty("title"))
+                    if (!$util.isString(message.title))
                         return "title: string expected";
-                if (message.content != null && message.hasOwnProperty("content")
-                    if (!$util.isString(message.content)
+                if (message.content != null && message.hasOwnProperty("content"))
+                    if (!$util.isString(message.content))
                         return "content: string expected";
-                if (message.fileUrl != null && message.hasOwnProperty("fileUrl")
-                    if (!$util.isString(message.fileUrl)
+                if (message.fileUrl != null && message.hasOwnProperty("fileUrl"))
+                    if (!$util.isString(message.fileUrl))
                         return "fileUrl: string expected";
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     switch (message.type) {
                     default:
                         return "type: enum value expected";
@@ -1617,10 +1617,10 @@ export const legal = $root.legal = (() => {
                         break;
                     }
                 if (message.tags != null && message.hasOwnProperty("tags")) {
-                    if (!Array.isArray(message.tags)
+                    if (!Array.isArray(message.tags))
                         return "tags: array expected";
                     for (let i = 0; i < message.tags.length; ++i)
-                        if (!$util.isString(message.tags[i])
+                        if (!$util.isString(message.tags[i]))
                             return "tags: string[] expected";
                 }
                 if (message.metadata != null && message.hasOwnProperty("metadata")) {
@@ -1638,17 +1638,17 @@ export const legal = $root.legal = (() => {
                     if (error)
                         return "updatedAt." + error;
                 }
-                if (message.ownerId != null && message.hasOwnProperty("ownerId")
-                    if (!$util.isString(message.ownerId)
+                if (message.ownerId != null && message.hasOwnProperty("ownerId"))
+                    if (!$util.isString(message.ownerId))
                         return "ownerId: string expected";
                 if (message.collaboratorIds != null && message.hasOwnProperty("collaboratorIds")) {
-                    if (!Array.isArray(message.collaboratorIds)
+                    if (!Array.isArray(message.collaboratorIds))
                         return "collaboratorIds: array expected";
                     for (let i = 0; i < message.collaboratorIds.length; ++i)
-                        if (!$util.isString(message.collaboratorIds[i])
+                        if (!$util.isString(message.collaboratorIds[i]))
                             return "collaboratorIds: string[] expected";
                 }
-                if (message.status != null && message.hasOwnProperty("status")
+                if (message.status != null && message.hasOwnProperty("status"))
                     switch (message.status) {
                     default:
                         return "status: enum value expected";
@@ -1659,7 +1659,7 @@ export const legal = $root.legal = (() => {
                     case 4:
                         break;
                     }
-                if (message.securityLevel != null && message.hasOwnProperty("securityLevel")
+                if (message.securityLevel != null && message.hasOwnProperty("securityLevel"))
                     switch (message.securityLevel) {
                     default:
                         return "securityLevel: enum value expected";
@@ -1737,7 +1737,7 @@ export const legal = $root.legal = (() => {
                     break;
                 }
                 if (object.tags) {
-                    if (!Array.isArray(object.tags)
+                    if (!Array.isArray(object.tags))
                         throw TypeError(".legal.api.LegalDocument.tags: array expected");
                     message.tags = [];
                     for (let i = 0; i < object.tags.length; ++i)
@@ -1761,7 +1761,7 @@ export const legal = $root.legal = (() => {
                 if (object.ownerId != null)
                     message.ownerId = String(object.ownerId);
                 if (object.collaboratorIds) {
-                    if (!Array.isArray(object.collaboratorIds)
+                    if (!Array.isArray(object.collaboratorIds))
                         throw TypeError(".legal.api.LegalDocument.collaboratorIds: array expected");
                     message.collaboratorIds = [];
                     for (let i = 0; i < object.collaboratorIds.length; ++i)
@@ -1852,37 +1852,37 @@ export const legal = $root.legal = (() => {
                     object.status = options.enums === String ? "DOCUMENT_STATUS_DRAFT" : 0;
                     object.securityLevel = options.enums === String ? "SECURITY_LEVEL_PUBLIC" : 0;
                 }
-                if (message.id != null && message.hasOwnProperty("id")
+                if (message.id != null && message.hasOwnProperty("id"))
                     object.id = message.id;
-                if (message.title != null && message.hasOwnProperty("title")
+                if (message.title != null && message.hasOwnProperty("title"))
                     object.title = message.title;
-                if (message.content != null && message.hasOwnProperty("content")
+                if (message.content != null && message.hasOwnProperty("content"))
                     object.content = message.content;
-                if (message.fileUrl != null && message.hasOwnProperty("fileUrl")
+                if (message.fileUrl != null && message.hasOwnProperty("fileUrl"))
                     object.fileUrl = message.fileUrl;
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     object.type = options.enums === String ? $root.legal.api.DocumentType[message.type] === undefined ? message.type : $root.legal.api.DocumentType[message.type] : message.type;
                 if (message.tags && message.tags.length) {
                     object.tags = [];
                     for (let j = 0; j < message.tags.length; ++j)
                         object.tags[j] = message.tags[j];
                 }
-                if (message.metadata != null && message.hasOwnProperty("metadata")
+                if (message.metadata != null && message.hasOwnProperty("metadata"))
                     object.metadata = $root.legal.api.DocumentMetadata.toObject(message.metadata, options);
-                if (message.createdAt != null && message.hasOwnProperty("createdAt")
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
                     object.createdAt = $root.google.protobuf.Timestamp.toObject(message.createdAt, options);
-                if (message.updatedAt != null && message.hasOwnProperty("updatedAt")
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt"))
                     object.updatedAt = $root.google.protobuf.Timestamp.toObject(message.updatedAt, options);
-                if (message.ownerId != null && message.hasOwnProperty("ownerId")
+                if (message.ownerId != null && message.hasOwnProperty("ownerId"))
                     object.ownerId = message.ownerId;
                 if (message.collaboratorIds && message.collaboratorIds.length) {
                     object.collaboratorIds = [];
                     for (let j = 0; j < message.collaboratorIds.length; ++j)
                         object.collaboratorIds[j] = message.collaboratorIds[j];
                 }
-                if (message.status != null && message.hasOwnProperty("status")
+                if (message.status != null && message.hasOwnProperty("status"))
                     object.status = options.enums === String ? $root.legal.api.DocumentStatus[message.status] === undefined ? message.status : $root.legal.api.DocumentStatus[message.status] : message.status;
-                if (message.securityLevel != null && message.hasOwnProperty("securityLevel")
+                if (message.securityLevel != null && message.hasOwnProperty("securityLevel"))
                     object.securityLevel = options.enums === String ? $root.legal.api.SecurityLevel[message.securityLevel] === undefined ? message.securityLevel : $root.legal.api.SecurityLevel[message.securityLevel] : message.securityLevel;
                 return object;
             };
@@ -2114,9 +2114,9 @@ export const legal = $root.legal = (() => {
             DocumentMetadata.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.jurisdiction != null && Object.hasOwnProperty.call(message, "jurisdiction")
+                if (message.jurisdiction != null && Object.hasOwnProperty.call(message, "jurisdiction"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.jurisdiction);
-                if (message.courtLevel != null && Object.hasOwnProperty.call(message, "courtLevel")
+                if (message.courtLevel != null && Object.hasOwnProperty.call(message, "courtLevel"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.courtLevel);
                 if (message.parties != null && message.parties.length)
                     for (let i = 0; i < message.parties.length; ++i)
@@ -2124,9 +2124,9 @@ export const legal = $root.legal = (() => {
                 if (message.practiceAreas != null && message.practiceAreas.length)
                     for (let i = 0; i < message.practiceAreas.length; ++i)
                         writer.uint32(/* id 4, wireType 2 =*/34).string(message.practiceAreas[i]);
-                if (message.confidenceScore != null && Object.hasOwnProperty.call(message, "confidenceScore")
+                if (message.confidenceScore != null && Object.hasOwnProperty.call(message, "confidenceScore"))
                     writer.uint32(/* id 5, wireType 5 =*/45).float(message.confidenceScore);
-                if (message.riskLevel != null && Object.hasOwnProperty.call(message, "riskLevel")
+                if (message.riskLevel != null && Object.hasOwnProperty.call(message, "riskLevel"))
                     writer.uint32(/* id 6, wireType 2 =*/50).string(message.riskLevel);
                 if (message.keyTerms != null && message.keyTerms.length)
                     for (let i = 0; i < message.keyTerms.length; ++i)
@@ -2134,7 +2134,7 @@ export const legal = $root.legal = (() => {
                 if (message.citations != null && message.citations.length)
                     for (let i = 0; i < message.citations.length; ++i)
                         $root.legal.api.LegalCitation.encode(message.citations[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
-                if (message.caseInfo != null && Object.hasOwnProperty.call(message, "caseInfo")
+                if (message.caseInfo != null && Object.hasOwnProperty.call(message, "caseInfo"))
                     $root.legal.api.CaseInformation.encode(message.caseInfo, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
                 return writer;
             };
@@ -2164,7 +2164,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             DocumentMetadata.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.DocumentMetadata();
                 while (reader.pos < end) {
@@ -2181,15 +2181,15 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            if (!(message.parties && message.parties.length)
+                            if (!(message.parties && message.parties.length))
                                 message.parties = [];
-                            message.parties.push($root.legal.api.Party.decode(reader, reader.uint32());
+                            message.parties.push($root.legal.api.Party.decode(reader, reader.uint32()));
                             break;
                         }
                     case 4: {
-                            if (!(message.practiceAreas && message.practiceAreas.length)
+                            if (!(message.practiceAreas && message.practiceAreas.length))
                                 message.practiceAreas = [];
-                            message.practiceAreas.push(reader.string();
+                            message.practiceAreas.push(reader.string());
                             break;
                         }
                     case 5: {
@@ -2201,19 +2201,19 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 7: {
-                            if (!(message.keyTerms && message.keyTerms.length)
+                            if (!(message.keyTerms && message.keyTerms.length))
                                 message.keyTerms = [];
-                            message.keyTerms.push(reader.string();
+                            message.keyTerms.push(reader.string());
                             break;
                         }
                     case 8: {
-                            if (!(message.citations && message.citations.length)
+                            if (!(message.citations && message.citations.length))
                                 message.citations = [];
-                            message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32());
+                            message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
                             break;
                         }
                     case 9: {
-                            message.caseInfo = $root.legal.api.CaseInformation.decode(reader, reader.uint32();
+                            message.caseInfo = $root.legal.api.CaseInformation.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -2235,9 +2235,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             DocumentMetadata.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -2251,14 +2251,14 @@ export const legal = $root.legal = (() => {
             DocumentMetadata.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction")
-                    if (!$util.isString(message.jurisdiction)
+                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction"))
+                    if (!$util.isString(message.jurisdiction))
                         return "jurisdiction: string expected";
-                if (message.courtLevel != null && message.hasOwnProperty("courtLevel")
-                    if (!$util.isString(message.courtLevel)
+                if (message.courtLevel != null && message.hasOwnProperty("courtLevel"))
+                    if (!$util.isString(message.courtLevel))
                         return "courtLevel: string expected";
                 if (message.parties != null && message.hasOwnProperty("parties")) {
-                    if (!Array.isArray(message.parties)
+                    if (!Array.isArray(message.parties))
                         return "parties: array expected";
                     for (let i = 0; i < message.parties.length; ++i) {
                         let error = $root.legal.api.Party.verify(message.parties[i]);
@@ -2267,27 +2267,27 @@ export const legal = $root.legal = (() => {
                     }
                 }
                 if (message.practiceAreas != null && message.hasOwnProperty("practiceAreas")) {
-                    if (!Array.isArray(message.practiceAreas)
+                    if (!Array.isArray(message.practiceAreas))
                         return "practiceAreas: array expected";
                     for (let i = 0; i < message.practiceAreas.length; ++i)
-                        if (!$util.isString(message.practiceAreas[i])
+                        if (!$util.isString(message.practiceAreas[i]))
                             return "practiceAreas: string[] expected";
                 }
-                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore")
+                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore"))
                     if (typeof message.confidenceScore !== "number")
                         return "confidenceScore: number expected";
-                if (message.riskLevel != null && message.hasOwnProperty("riskLevel")
-                    if (!$util.isString(message.riskLevel)
+                if (message.riskLevel != null && message.hasOwnProperty("riskLevel"))
+                    if (!$util.isString(message.riskLevel))
                         return "riskLevel: string expected";
                 if (message.keyTerms != null && message.hasOwnProperty("keyTerms")) {
-                    if (!Array.isArray(message.keyTerms)
+                    if (!Array.isArray(message.keyTerms))
                         return "keyTerms: array expected";
                     for (let i = 0; i < message.keyTerms.length; ++i)
-                        if (!$util.isString(message.keyTerms[i])
+                        if (!$util.isString(message.keyTerms[i]))
                             return "keyTerms: string[] expected";
                 }
                 if (message.citations != null && message.hasOwnProperty("citations")) {
-                    if (!Array.isArray(message.citations)
+                    if (!Array.isArray(message.citations))
                         return "citations: array expected";
                     for (let i = 0; i < message.citations.length; ++i) {
                         let error = $root.legal.api.LegalCitation.verify(message.citations[i]);
@@ -2320,7 +2320,7 @@ export const legal = $root.legal = (() => {
                 if (object.courtLevel != null)
                     message.courtLevel = String(object.courtLevel);
                 if (object.parties) {
-                    if (!Array.isArray(object.parties)
+                    if (!Array.isArray(object.parties))
                         throw TypeError(".legal.api.DocumentMetadata.parties: array expected");
                     message.parties = [];
                     for (let i = 0; i < object.parties.length; ++i) {
@@ -2330,7 +2330,7 @@ export const legal = $root.legal = (() => {
                     }
                 }
                 if (object.practiceAreas) {
-                    if (!Array.isArray(object.practiceAreas)
+                    if (!Array.isArray(object.practiceAreas))
                         throw TypeError(".legal.api.DocumentMetadata.practiceAreas: array expected");
                     message.practiceAreas = [];
                     for (let i = 0; i < object.practiceAreas.length; ++i)
@@ -2341,14 +2341,14 @@ export const legal = $root.legal = (() => {
                 if (object.riskLevel != null)
                     message.riskLevel = String(object.riskLevel);
                 if (object.keyTerms) {
-                    if (!Array.isArray(object.keyTerms)
+                    if (!Array.isArray(object.keyTerms))
                         throw TypeError(".legal.api.DocumentMetadata.keyTerms: array expected");
                     message.keyTerms = [];
                     for (let i = 0; i < object.keyTerms.length; ++i)
                         message.keyTerms[i] = String(object.keyTerms[i]);
                 }
                 if (object.citations) {
-                    if (!Array.isArray(object.citations)
+                    if (!Array.isArray(object.citations))
                         throw TypeError(".legal.api.DocumentMetadata.citations: array expected");
                     message.citations = [];
                     for (let i = 0; i < object.citations.length; ++i) {
@@ -2391,9 +2391,9 @@ export const legal = $root.legal = (() => {
                     object.riskLevel = "";
                     object.caseInfo = null;
                 }
-                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction")
+                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction"))
                     object.jurisdiction = message.jurisdiction;
-                if (message.courtLevel != null && message.hasOwnProperty("courtLevel")
+                if (message.courtLevel != null && message.hasOwnProperty("courtLevel"))
                     object.courtLevel = message.courtLevel;
                 if (message.parties && message.parties.length) {
                     object.parties = [];
@@ -2405,9 +2405,9 @@ export const legal = $root.legal = (() => {
                     for (let j = 0; j < message.practiceAreas.length; ++j)
                         object.practiceAreas[j] = message.practiceAreas[j];
                 }
-                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore")
+                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore"))
                     object.confidenceScore = options.json && !isFinite(message.confidenceScore) ? String(message.confidenceScore) : message.confidenceScore;
-                if (message.riskLevel != null && message.hasOwnProperty("riskLevel")
+                if (message.riskLevel != null && message.hasOwnProperty("riskLevel"))
                     object.riskLevel = message.riskLevel;
                 if (message.keyTerms && message.keyTerms.length) {
                     object.keyTerms = [];
@@ -2419,7 +2419,7 @@ export const legal = $root.legal = (() => {
                     for (let j = 0; j < message.citations.length; ++j)
                         object.citations[j] = $root.legal.api.LegalCitation.toObject(message.citations[j], options);
                 }
-                if (message.caseInfo != null && message.hasOwnProperty("caseInfo")
+                if (message.caseInfo != null && message.hasOwnProperty("caseInfo"))
                     object.caseInfo = $root.legal.api.CaseInformation.toObject(message.caseInfo, options);
                 return object;
             };
@@ -2536,13 +2536,13 @@ export const legal = $root.legal = (() => {
             Party.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.name != null && Object.hasOwnProperty.call(message, "name")
+                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
-                if (message.role != null && Object.hasOwnProperty.call(message, "role")
+                if (message.role != null && Object.hasOwnProperty.call(message, "role"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.role);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type")
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.type);
-                if (message.contact != null && Object.hasOwnProperty.call(message, "contact")
+                if (message.contact != null && Object.hasOwnProperty.call(message, "contact"))
                     $root.legal.api.ContactInfo.encode(message.contact, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                 return writer;
             };
@@ -2572,7 +2572,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             Party.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.Party();
                 while (reader.pos < end) {
@@ -2593,7 +2593,7 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 4: {
-                            message.contact = $root.legal.api.ContactInfo.decode(reader, reader.uint32();
+                            message.contact = $root.legal.api.ContactInfo.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -2615,9 +2615,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             Party.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -2631,14 +2631,14 @@ export const legal = $root.legal = (() => {
             Party.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.name != null && message.hasOwnProperty("name")
-                    if (!$util.isString(message.name)
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
                         return "name: string expected";
-                if (message.role != null && message.hasOwnProperty("role")
-                    if (!$util.isString(message.role)
+                if (message.role != null && message.hasOwnProperty("role"))
+                    if (!$util.isString(message.role))
                         return "role: string expected";
-                if (message.type != null && message.hasOwnProperty("type")
-                    if (!$util.isString(message.type)
+                if (message.type != null && message.hasOwnProperty("type"))
+                    if (!$util.isString(message.type))
                         return "type: string expected";
                 if (message.contact != null && message.hasOwnProperty("contact")) {
                     let error = $root.legal.api.ContactInfo.verify(message.contact);
@@ -2693,13 +2693,13 @@ export const legal = $root.legal = (() => {
                     object.type = "";
                     object.contact = null;
                 }
-                if (message.name != null && message.hasOwnProperty("name")
+                if (message.name != null && message.hasOwnProperty("name"))
                     object.name = message.name;
-                if (message.role != null && message.hasOwnProperty("role")
+                if (message.role != null && message.hasOwnProperty("role"))
                     object.role = message.role;
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     object.type = message.type;
-                if (message.contact != null && message.hasOwnProperty("contact")
+                if (message.contact != null && message.hasOwnProperty("contact"))
                     object.contact = $root.legal.api.ContactInfo.toObject(message.contact, options);
                 return object;
             };
@@ -2816,13 +2816,13 @@ export const legal = $root.legal = (() => {
             ContactInfo.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.address != null && Object.hasOwnProperty.call(message, "address")
+                if (message.address != null && Object.hasOwnProperty.call(message, "address"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.address);
-                if (message.phone != null && Object.hasOwnProperty.call(message, "phone")
+                if (message.phone != null && Object.hasOwnProperty.call(message, "phone"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.phone);
-                if (message.email != null && Object.hasOwnProperty.call(message, "email")
+                if (message.email != null && Object.hasOwnProperty.call(message, "email"))
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.email);
-                if (message.lawFirm != null && Object.hasOwnProperty.call(message, "lawFirm")
+                if (message.lawFirm != null && Object.hasOwnProperty.call(message, "lawFirm"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.lawFirm);
                 return writer;
             };
@@ -2852,7 +2852,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ContactInfo.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ContactInfo();
                 while (reader.pos < end) {
@@ -2895,9 +2895,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ContactInfo.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -2911,17 +2911,17 @@ export const legal = $root.legal = (() => {
             ContactInfo.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.address != null && message.hasOwnProperty("address")
-                    if (!$util.isString(message.address)
+                if (message.address != null && message.hasOwnProperty("address"))
+                    if (!$util.isString(message.address))
                         return "address: string expected";
-                if (message.phone != null && message.hasOwnProperty("phone")
-                    if (!$util.isString(message.phone)
+                if (message.phone != null && message.hasOwnProperty("phone"))
+                    if (!$util.isString(message.phone))
                         return "phone: string expected";
-                if (message.email != null && message.hasOwnProperty("email")
-                    if (!$util.isString(message.email)
+                if (message.email != null && message.hasOwnProperty("email"))
+                    if (!$util.isString(message.email))
                         return "email: string expected";
-                if (message.lawFirm != null && message.hasOwnProperty("lawFirm")
-                    if (!$util.isString(message.lawFirm)
+                if (message.lawFirm != null && message.hasOwnProperty("lawFirm"))
+                    if (!$util.isString(message.lawFirm))
                         return "lawFirm: string expected";
                 return null;
             };
@@ -2968,13 +2968,13 @@ export const legal = $root.legal = (() => {
                     object.email = "";
                     object.lawFirm = "";
                 }
-                if (message.address != null && message.hasOwnProperty("address")
+                if (message.address != null && message.hasOwnProperty("address"))
                     object.address = message.address;
-                if (message.phone != null && message.hasOwnProperty("phone")
+                if (message.phone != null && message.hasOwnProperty("phone"))
                     object.phone = message.phone;
-                if (message.email != null && message.hasOwnProperty("email")
+                if (message.email != null && message.hasOwnProperty("email"))
                     object.email = message.email;
-                if (message.lawFirm != null && message.hasOwnProperty("lawFirm")
+                if (message.lawFirm != null && message.hasOwnProperty("lawFirm"))
                     object.lawFirm = message.lawFirm;
                 return object;
             };
@@ -3091,13 +3091,13 @@ export const legal = $root.legal = (() => {
             LegalCitation.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.citationText != null && Object.hasOwnProperty.call(message, "citationText")
+                if (message.citationText != null && Object.hasOwnProperty.call(message, "citationText"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.citationText);
-                if (message.source != null && Object.hasOwnProperty.call(message, "source")
+                if (message.source != null && Object.hasOwnProperty.call(message, "source"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.source);
-                if (message.url != null && Object.hasOwnProperty.call(message, "url")
+                if (message.url != null && Object.hasOwnProperty.call(message, "url"))
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.url);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type")
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                     writer.uint32(/* id 4, wireType 0 =*/32).int32(message.type);
                 return writer;
             };
@@ -3127,7 +3127,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             LegalCitation.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.LegalCitation();
                 while (reader.pos < end) {
@@ -3170,9 +3170,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             LegalCitation.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -3186,16 +3186,16 @@ export const legal = $root.legal = (() => {
             LegalCitation.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.citationText != null && message.hasOwnProperty("citationText")
-                    if (!$util.isString(message.citationText)
+                if (message.citationText != null && message.hasOwnProperty("citationText"))
+                    if (!$util.isString(message.citationText))
                         return "citationText: string expected";
-                if (message.source != null && message.hasOwnProperty("source")
-                    if (!$util.isString(message.source)
+                if (message.source != null && message.hasOwnProperty("source"))
+                    if (!$util.isString(message.source))
                         return "source: string expected";
-                if (message.url != null && message.hasOwnProperty("url")
-                    if (!$util.isString(message.url)
+                if (message.url != null && message.hasOwnProperty("url"))
+                    if (!$util.isString(message.url))
                         return "url: string expected";
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     switch (message.type) {
                     default:
                         return "type: enum value expected";
@@ -3272,13 +3272,13 @@ export const legal = $root.legal = (() => {
                     object.url = "";
                     object.type = options.enums === String ? "CITATION_TYPE_CASE_LAW" : 0;
                 }
-                if (message.citationText != null && message.hasOwnProperty("citationText")
+                if (message.citationText != null && message.hasOwnProperty("citationText"))
                     object.citationText = message.citationText;
-                if (message.source != null && message.hasOwnProperty("source")
+                if (message.source != null && message.hasOwnProperty("source"))
                     object.source = message.source;
-                if (message.url != null && message.hasOwnProperty("url")
+                if (message.url != null && message.hasOwnProperty("url"))
                     object.url = message.url;
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     object.type = options.enums === String ? $root.legal.api.CitationType[message.type] === undefined ? message.type : $root.legal.api.CitationType[message.type] : message.type;
                 return object;
             };
@@ -3423,13 +3423,13 @@ export const legal = $root.legal = (() => {
             CaseInformation.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.caseNumber != null && Object.hasOwnProperty.call(message, "caseNumber")
+                if (message.caseNumber != null && Object.hasOwnProperty.call(message, "caseNumber"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.caseNumber);
-                if (message.courtName != null && Object.hasOwnProperty.call(message, "courtName")
+                if (message.courtName != null && Object.hasOwnProperty.call(message, "courtName"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.courtName);
-                if (message.filingDate != null && Object.hasOwnProperty.call(message, "filingDate")
+                if (message.filingDate != null && Object.hasOwnProperty.call(message, "filingDate"))
                     $root.google.protobuf.Timestamp.encode(message.filingDate, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-                if (message.status != null && Object.hasOwnProperty.call(message, "status")
+                if (message.status != null && Object.hasOwnProperty.call(message, "status"))
                     writer.uint32(/* id 4, wireType 0 =*/32).int32(message.status);
                 if (message.judges != null && message.judges.length)
                     for (let i = 0; i < message.judges.length; ++i)
@@ -3462,7 +3462,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             CaseInformation.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.CaseInformation();
                 while (reader.pos < end) {
@@ -3479,7 +3479,7 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            message.filingDate = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.filingDate = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 4: {
@@ -3487,9 +3487,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 5: {
-                            if (!(message.judges && message.judges.length)
+                            if (!(message.judges && message.judges.length))
                                 message.judges = [];
-                            message.judges.push(reader.string();
+                            message.judges.push(reader.string());
                             break;
                         }
                     default:
@@ -3511,9 +3511,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             CaseInformation.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -3527,18 +3527,18 @@ export const legal = $root.legal = (() => {
             CaseInformation.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.caseNumber != null && message.hasOwnProperty("caseNumber")
-                    if (!$util.isString(message.caseNumber)
+                if (message.caseNumber != null && message.hasOwnProperty("caseNumber"))
+                    if (!$util.isString(message.caseNumber))
                         return "caseNumber: string expected";
-                if (message.courtName != null && message.hasOwnProperty("courtName")
-                    if (!$util.isString(message.courtName)
+                if (message.courtName != null && message.hasOwnProperty("courtName"))
+                    if (!$util.isString(message.courtName))
                         return "courtName: string expected";
                 if (message.filingDate != null && message.hasOwnProperty("filingDate")) {
                     let error = $root.google.protobuf.Timestamp.verify(message.filingDate);
                     if (error)
                         return "filingDate." + error;
                 }
-                if (message.status != null && message.hasOwnProperty("status")
+                if (message.status != null && message.hasOwnProperty("status"))
                     switch (message.status) {
                     default:
                         return "status: enum value expected";
@@ -3551,10 +3551,10 @@ export const legal = $root.legal = (() => {
                         break;
                     }
                 if (message.judges != null && message.hasOwnProperty("judges")) {
-                    if (!Array.isArray(message.judges)
+                    if (!Array.isArray(message.judges))
                         return "judges: array expected";
                     for (let i = 0; i < message.judges.length; ++i)
-                        if (!$util.isString(message.judges[i])
+                        if (!$util.isString(message.judges[i]))
                             return "judges: string[] expected";
                 }
                 return null;
@@ -3614,7 +3614,7 @@ export const legal = $root.legal = (() => {
                     break;
                 }
                 if (object.judges) {
-                    if (!Array.isArray(object.judges)
+                    if (!Array.isArray(object.judges))
                         throw TypeError(".legal.api.CaseInformation.judges: array expected");
                     message.judges = [];
                     for (let i = 0; i < object.judges.length; ++i)
@@ -3644,13 +3644,13 @@ export const legal = $root.legal = (() => {
                     object.filingDate = null;
                     object.status = options.enums === String ? "CASE_STATUS_PENDING" : 0;
                 }
-                if (message.caseNumber != null && message.hasOwnProperty("caseNumber")
+                if (message.caseNumber != null && message.hasOwnProperty("caseNumber"))
                     object.caseNumber = message.caseNumber;
-                if (message.courtName != null && message.hasOwnProperty("courtName")
+                if (message.courtName != null && message.hasOwnProperty("courtName"))
                     object.courtName = message.courtName;
-                if (message.filingDate != null && message.hasOwnProperty("filingDate")
+                if (message.filingDate != null && message.hasOwnProperty("filingDate"))
                     object.filingDate = $root.google.protobuf.Timestamp.toObject(message.filingDate, options);
-                if (message.status != null && message.hasOwnProperty("status")
+                if (message.status != null && message.hasOwnProperty("status"))
                     object.status = options.enums === String ? $root.legal.api.CaseStatus[message.status] === undefined ? message.status : $root.legal.api.CaseStatus[message.status] : message.status;
                 if (message.judges && message.judges.length) {
                     object.judges = [];
@@ -3831,22 +3831,22 @@ export const legal = $root.legal = (() => {
             SearchRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.query != null && Object.hasOwnProperty.call(message, "query")
+                if (message.query != null && Object.hasOwnProperty.call(message, "query"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.query);
                 if (message.filters != null && message.filters.length)
                     for (let i = 0; i < message.filters.length; ++i)
                         $root.legal.api.SearchFilter.encode(message.filters[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-                if (message.limit != null && Object.hasOwnProperty.call(message, "limit")
+                if (message.limit != null && Object.hasOwnProperty.call(message, "limit"))
                     writer.uint32(/* id 3, wireType 0 =*/24).int32(message.limit);
-                if (message.offset != null && Object.hasOwnProperty.call(message, "offset")
+                if (message.offset != null && Object.hasOwnProperty.call(message, "offset"))
                     writer.uint32(/* id 4, wireType 0 =*/32).int32(message.offset);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type")
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                     writer.uint32(/* id 5, wireType 0 =*/40).int32(message.type);
-                if (message.includeEmbeddings != null && Object.hasOwnProperty.call(message, "includeEmbeddings")
+                if (message.includeEmbeddings != null && Object.hasOwnProperty.call(message, "includeEmbeddings"))
                     writer.uint32(/* id 6, wireType 0 =*/48).bool(message.includeEmbeddings);
-                if (message.sort != null && Object.hasOwnProperty.call(message, "sort")
+                if (message.sort != null && Object.hasOwnProperty.call(message, "sort"))
                     $root.legal.api.SortOptions.encode(message.sort, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
-                if (message.userId != null && Object.hasOwnProperty.call(message, "userId")
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
                     writer.uint32(/* id 8, wireType 2 =*/66).string(message.userId);
                 return writer;
             };
@@ -3876,7 +3876,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchRequest.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchRequest();
                 while (reader.pos < end) {
@@ -3889,9 +3889,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 2: {
-                            if (!(message.filters && message.filters.length)
+                            if (!(message.filters && message.filters.length))
                                 message.filters = [];
-                            message.filters.push($root.legal.api.SearchFilter.decode(reader, reader.uint32());
+                            message.filters.push($root.legal.api.SearchFilter.decode(reader, reader.uint32()));
                             break;
                         }
                     case 3: {
@@ -3911,7 +3911,7 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 7: {
-                            message.sort = $root.legal.api.SortOptions.decode(reader, reader.uint32();
+                            message.sort = $root.legal.api.SortOptions.decode(reader, reader.uint32());
                             break;
                         }
                     case 8: {
@@ -3937,9 +3937,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchRequest.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -3953,11 +3953,11 @@ export const legal = $root.legal = (() => {
             SearchRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.query != null && message.hasOwnProperty("query")
-                    if (!$util.isString(message.query)
+                if (message.query != null && message.hasOwnProperty("query"))
+                    if (!$util.isString(message.query))
                         return "query: string expected";
                 if (message.filters != null && message.hasOwnProperty("filters")) {
-                    if (!Array.isArray(message.filters)
+                    if (!Array.isArray(message.filters))
                         return "filters: array expected";
                     for (let i = 0; i < message.filters.length; ++i) {
                         let error = $root.legal.api.SearchFilter.verify(message.filters[i]);
@@ -3965,13 +3965,13 @@ export const legal = $root.legal = (() => {
                             return "filters." + error;
                     }
                 }
-                if (message.limit != null && message.hasOwnProperty("limit")
-                    if (!$util.isInteger(message.limit)
+                if (message.limit != null && message.hasOwnProperty("limit"))
+                    if (!$util.isInteger(message.limit))
                         return "limit: integer expected";
-                if (message.offset != null && message.hasOwnProperty("offset")
-                    if (!$util.isInteger(message.offset)
+                if (message.offset != null && message.hasOwnProperty("offset"))
+                    if (!$util.isInteger(message.offset))
                         return "offset: integer expected";
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     switch (message.type) {
                     default:
                         return "type: enum value expected";
@@ -3982,7 +3982,7 @@ export const legal = $root.legal = (() => {
                     case 4:
                         break;
                     }
-                if (message.includeEmbeddings != null && message.hasOwnProperty("includeEmbeddings")
+                if (message.includeEmbeddings != null && message.hasOwnProperty("includeEmbeddings"))
                     if (typeof message.includeEmbeddings !== "boolean")
                         return "includeEmbeddings: boolean expected";
                 if (message.sort != null && message.hasOwnProperty("sort")) {
@@ -3990,8 +3990,8 @@ export const legal = $root.legal = (() => {
                     if (error)
                         return "sort." + error;
                 }
-                if (message.userId != null && message.hasOwnProperty("userId")
-                    if (!$util.isString(message.userId)
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
                         return "userId: string expected";
                 return null;
             };
@@ -4011,7 +4011,7 @@ export const legal = $root.legal = (() => {
                 if (object.query != null)
                     message.query = String(object.query);
                 if (object.filters) {
-                    if (!Array.isArray(object.filters)
+                    if (!Array.isArray(object.filters))
                         throw TypeError(".legal.api.SearchRequest.filters: array expected");
                     message.filters = [];
                     for (let i = 0; i < object.filters.length; ++i) {
@@ -4088,24 +4088,24 @@ export const legal = $root.legal = (() => {
                     object.sort = null;
                     object.userId = "";
                 }
-                if (message.query != null && message.hasOwnProperty("query")
+                if (message.query != null && message.hasOwnProperty("query"))
                     object.query = message.query;
                 if (message.filters && message.filters.length) {
                     object.filters = [];
                     for (let j = 0; j < message.filters.length; ++j)
                         object.filters[j] = $root.legal.api.SearchFilter.toObject(message.filters[j], options);
                 }
-                if (message.limit != null && message.hasOwnProperty("limit")
+                if (message.limit != null && message.hasOwnProperty("limit"))
                     object.limit = message.limit;
-                if (message.offset != null && message.hasOwnProperty("offset")
+                if (message.offset != null && message.hasOwnProperty("offset"))
                     object.offset = message.offset;
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     object.type = options.enums === String ? $root.legal.api.SearchType[message.type] === undefined ? message.type : $root.legal.api.SearchType[message.type] : message.type;
-                if (message.includeEmbeddings != null && message.hasOwnProperty("includeEmbeddings")
+                if (message.includeEmbeddings != null && message.hasOwnProperty("includeEmbeddings"))
                     object.includeEmbeddings = message.includeEmbeddings;
-                if (message.sort != null && message.hasOwnProperty("sort")
+                if (message.sort != null && message.hasOwnProperty("sort"))
                     object.sort = $root.legal.api.SortOptions.toObject(message.sort, options);
-                if (message.userId != null && message.hasOwnProperty("userId")
+                if (message.userId != null && message.hasOwnProperty("userId"))
                     object.userId = message.userId;
                 return object;
             };
@@ -4214,9 +4214,9 @@ export const legal = $root.legal = (() => {
             SearchFilter.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.field != null && Object.hasOwnProperty.call(message, "field")
+                if (message.field != null && Object.hasOwnProperty.call(message, "field"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.field);
-                if (message.operator != null && Object.hasOwnProperty.call(message, "operator")
+                if (message.operator != null && Object.hasOwnProperty.call(message, "operator"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.operator);
                 if (message.values != null && message.values.length)
                     for (let i = 0; i < message.values.length; ++i)
@@ -4249,7 +4249,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchFilter.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchFilter();
                 while (reader.pos < end) {
@@ -4266,9 +4266,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            if (!(message.values && message.values.length)
+                            if (!(message.values && message.values.length))
                                 message.values = [];
-                            message.values.push(reader.string();
+                            message.values.push(reader.string());
                             break;
                         }
                     default:
@@ -4290,9 +4290,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchFilter.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -4306,17 +4306,17 @@ export const legal = $root.legal = (() => {
             SearchFilter.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.field != null && message.hasOwnProperty("field")
-                    if (!$util.isString(message.field)
+                if (message.field != null && message.hasOwnProperty("field"))
+                    if (!$util.isString(message.field))
                         return "field: string expected";
-                if (message.operator != null && message.hasOwnProperty("operator")
-                    if (!$util.isString(message.operator)
+                if (message.operator != null && message.hasOwnProperty("operator"))
+                    if (!$util.isString(message.operator))
                         return "operator: string expected";
                 if (message.values != null && message.hasOwnProperty("values")) {
-                    if (!Array.isArray(message.values)
+                    if (!Array.isArray(message.values))
                         return "values: array expected";
                     for (let i = 0; i < message.values.length; ++i)
-                        if (!$util.isString(message.values[i])
+                        if (!$util.isString(message.values[i]))
                             return "values: string[] expected";
                 }
                 return null;
@@ -4339,7 +4339,7 @@ export const legal = $root.legal = (() => {
                 if (object.operator != null)
                     message.operator = String(object.operator);
                 if (object.values) {
-                    if (!Array.isArray(object.values)
+                    if (!Array.isArray(object.values))
                         throw TypeError(".legal.api.SearchFilter.values: array expected");
                     message.values = [];
                     for (let i = 0; i < object.values.length; ++i)
@@ -4367,9 +4367,9 @@ export const legal = $root.legal = (() => {
                     object.field = "";
                     object.operator = "";
                 }
-                if (message.field != null && message.hasOwnProperty("field")
+                if (message.field != null && message.hasOwnProperty("field"))
                     object.field = message.field;
-                if (message.operator != null && message.hasOwnProperty("operator")
+                if (message.operator != null && message.hasOwnProperty("operator"))
                     object.operator = message.operator;
                 if (message.values && message.values.length) {
                     object.values = [];
@@ -4473,9 +4473,9 @@ export const legal = $root.legal = (() => {
             SortOptions.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.field != null && Object.hasOwnProperty.call(message, "field")
+                if (message.field != null && Object.hasOwnProperty.call(message, "field"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.field);
-                if (message.descending != null && Object.hasOwnProperty.call(message, "descending")
+                if (message.descending != null && Object.hasOwnProperty.call(message, "descending"))
                     writer.uint32(/* id 2, wireType 0 =*/16).bool(message.descending);
                 return writer;
             };
@@ -4505,7 +4505,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SortOptions.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SortOptions();
                 while (reader.pos < end) {
@@ -4540,9 +4540,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SortOptions.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -4556,10 +4556,10 @@ export const legal = $root.legal = (() => {
             SortOptions.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.field != null && message.hasOwnProperty("field")
-                    if (!$util.isString(message.field)
+                if (message.field != null && message.hasOwnProperty("field"))
+                    if (!$util.isString(message.field))
                         return "field: string expected";
-                if (message.descending != null && message.hasOwnProperty("descending")
+                if (message.descending != null && message.hasOwnProperty("descending"))
                     if (typeof message.descending !== "boolean")
                         return "descending: boolean expected";
                 return null;
@@ -4601,9 +4601,9 @@ export const legal = $root.legal = (() => {
                     object.field = "";
                     object.descending = false;
                 }
-                if (message.field != null && message.hasOwnProperty("field")
+                if (message.field != null && message.hasOwnProperty("field"))
                     object.field = message.field;
-                if (message.descending != null && message.hasOwnProperty("descending")
+                if (message.descending != null && message.hasOwnProperty("descending"))
                     object.descending = message.descending;
                 return object;
             };
@@ -4762,15 +4762,15 @@ export const legal = $root.legal = (() => {
                 if (message.results != null && message.results.length)
                     for (let i = 0; i < message.results.length; ++i)
                         $root.legal.api.SearchResult.encode(message.results[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.totalCount != null && Object.hasOwnProperty.call(message, "totalCount")
+                if (message.totalCount != null && Object.hasOwnProperty.call(message, "totalCount"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.totalCount);
-                if (message.maxScore != null && Object.hasOwnProperty.call(message, "maxScore")
+                if (message.maxScore != null && Object.hasOwnProperty.call(message, "maxScore"))
                     writer.uint32(/* id 3, wireType 5 =*/29).float(message.maxScore);
-                if (message.queryId != null && Object.hasOwnProperty.call(message, "queryId")
+                if (message.queryId != null && Object.hasOwnProperty.call(message, "queryId"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.queryId);
-                if (message.processingTimeMs != null && Object.hasOwnProperty.call(message, "processingTimeMs")
+                if (message.processingTimeMs != null && Object.hasOwnProperty.call(message, "processingTimeMs"))
                     writer.uint32(/* id 5, wireType 0 =*/40).int32(message.processingTimeMs);
-                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata")
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
                     $root.legal.api.SearchMetadata.encode(message.metadata, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
                 return writer;
             };
@@ -4800,7 +4800,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchResponse.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchResponse();
                 while (reader.pos < end) {
@@ -4809,9 +4809,9 @@ export const legal = $root.legal = (() => {
                         break;
                     switch (tag >>> 3) {
                     case 1: {
-                            if (!(message.results && message.results.length)
+                            if (!(message.results && message.results.length))
                                 message.results = [];
-                            message.results.push($root.legal.api.SearchResult.decode(reader, reader.uint32());
+                            message.results.push($root.legal.api.SearchResult.decode(reader, reader.uint32()));
                             break;
                         }
                     case 2: {
@@ -4831,7 +4831,7 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 6: {
-                            message.metadata = $root.legal.api.SearchMetadata.decode(reader, reader.uint32();
+                            message.metadata = $root.legal.api.SearchMetadata.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -4853,9 +4853,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchResponse.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -4870,7 +4870,7 @@ export const legal = $root.legal = (() => {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
                 if (message.results != null && message.hasOwnProperty("results")) {
-                    if (!Array.isArray(message.results)
+                    if (!Array.isArray(message.results))
                         return "results: array expected";
                     for (let i = 0; i < message.results.length; ++i) {
                         let error = $root.legal.api.SearchResult.verify(message.results[i]);
@@ -4878,17 +4878,17 @@ export const legal = $root.legal = (() => {
                             return "results." + error;
                     }
                 }
-                if (message.totalCount != null && message.hasOwnProperty("totalCount")
-                    if (!$util.isInteger(message.totalCount)
+                if (message.totalCount != null && message.hasOwnProperty("totalCount"))
+                    if (!$util.isInteger(message.totalCount))
                         return "totalCount: integer expected";
-                if (message.maxScore != null && message.hasOwnProperty("maxScore")
+                if (message.maxScore != null && message.hasOwnProperty("maxScore"))
                     if (typeof message.maxScore !== "number")
                         return "maxScore: number expected";
-                if (message.queryId != null && message.hasOwnProperty("queryId")
-                    if (!$util.isString(message.queryId)
+                if (message.queryId != null && message.hasOwnProperty("queryId"))
+                    if (!$util.isString(message.queryId))
                         return "queryId: string expected";
-                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs")
-                    if (!$util.isInteger(message.processingTimeMs)
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
+                    if (!$util.isInteger(message.processingTimeMs))
                         return "processingTimeMs: integer expected";
                 if (message.metadata != null && message.hasOwnProperty("metadata")) {
                     let error = $root.legal.api.SearchMetadata.verify(message.metadata);
@@ -4911,7 +4911,7 @@ export const legal = $root.legal = (() => {
                     return object;
                 let message = new $root.legal.api.SearchResponse();
                 if (object.results) {
-                    if (!Array.isArray(object.results)
+                    if (!Array.isArray(object.results))
                         throw TypeError(".legal.api.SearchResponse.results: array expected");
                     message.results = [];
                     for (let i = 0; i < object.results.length; ++i) {
@@ -4963,15 +4963,15 @@ export const legal = $root.legal = (() => {
                     for (let j = 0; j < message.results.length; ++j)
                         object.results[j] = $root.legal.api.SearchResult.toObject(message.results[j], options);
                 }
-                if (message.totalCount != null && message.hasOwnProperty("totalCount")
+                if (message.totalCount != null && message.hasOwnProperty("totalCount"))
                     object.totalCount = message.totalCount;
-                if (message.maxScore != null && message.hasOwnProperty("maxScore")
+                if (message.maxScore != null && message.hasOwnProperty("maxScore"))
                     object.maxScore = options.json && !isFinite(message.maxScore) ? String(message.maxScore) : message.maxScore;
-                if (message.queryId != null && message.hasOwnProperty("queryId")
+                if (message.queryId != null && message.hasOwnProperty("queryId"))
                     object.queryId = message.queryId;
-                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs")
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
                     object.processingTimeMs = message.processingTimeMs;
-                if (message.metadata != null && message.hasOwnProperty("metadata")
+                if (message.metadata != null && message.hasOwnProperty("metadata"))
                     object.metadata = $root.legal.api.SearchMetadata.toObject(message.metadata, options);
                 return object;
             };
@@ -5108,16 +5108,16 @@ export const legal = $root.legal = (() => {
             SearchResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.document != null && Object.hasOwnProperty.call(message, "document")
+                if (message.document != null && Object.hasOwnProperty.call(message, "document"))
                     $root.legal.api.LegalDocument.encode(message.document, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                if (message.score != null && Object.hasOwnProperty.call(message, "score")
+                if (message.score != null && Object.hasOwnProperty.call(message, "score"))
                     writer.uint32(/* id 2, wireType 5 =*/21).float(message.score);
                 if (message.highlights != null && message.highlights.length)
                     for (let i = 0; i < message.highlights.length; ++i)
                         writer.uint32(/* id 3, wireType 2 =*/26).string(message.highlights[i]);
-                if (message.similarity != null && Object.hasOwnProperty.call(message, "similarity")
+                if (message.similarity != null && Object.hasOwnProperty.call(message, "similarity"))
                     $root.legal.api.VectorSimilarity.encode(message.similarity, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                if (message.excerpt != null && Object.hasOwnProperty.call(message, "excerpt")
+                if (message.excerpt != null && Object.hasOwnProperty.call(message, "excerpt"))
                     writer.uint32(/* id 5, wireType 2 =*/42).string(message.excerpt);
                 if (message.relatedCitations != null && message.relatedCitations.length)
                     for (let i = 0; i < message.relatedCitations.length; ++i)
@@ -5150,7 +5150,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchResult.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchResult();
                 while (reader.pos < end) {
@@ -5159,7 +5159,7 @@ export const legal = $root.legal = (() => {
                         break;
                     switch (tag >>> 3) {
                     case 1: {
-                            message.document = $root.legal.api.LegalDocument.decode(reader, reader.uint32();
+                            message.document = $root.legal.api.LegalDocument.decode(reader, reader.uint32());
                             break;
                         }
                     case 2: {
@@ -5167,13 +5167,13 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            if (!(message.highlights && message.highlights.length)
+                            if (!(message.highlights && message.highlights.length))
                                 message.highlights = [];
-                            message.highlights.push(reader.string();
+                            message.highlights.push(reader.string());
                             break;
                         }
                     case 4: {
-                            message.similarity = $root.legal.api.VectorSimilarity.decode(reader, reader.uint32();
+                            message.similarity = $root.legal.api.VectorSimilarity.decode(reader, reader.uint32());
                             break;
                         }
                     case 5: {
@@ -5181,9 +5181,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 6: {
-                            if (!(message.relatedCitations && message.relatedCitations.length)
+                            if (!(message.relatedCitations && message.relatedCitations.length))
                                 message.relatedCitations = [];
-                            message.relatedCitations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32());
+                            message.relatedCitations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
                             break;
                         }
                     default:
@@ -5205,9 +5205,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchResult.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -5226,14 +5226,14 @@ export const legal = $root.legal = (() => {
                     if (error)
                         return "document." + error;
                 }
-                if (message.score != null && message.hasOwnProperty("score")
+                if (message.score != null && message.hasOwnProperty("score"))
                     if (typeof message.score !== "number")
                         return "score: number expected";
                 if (message.highlights != null && message.hasOwnProperty("highlights")) {
-                    if (!Array.isArray(message.highlights)
+                    if (!Array.isArray(message.highlights))
                         return "highlights: array expected";
                     for (let i = 0; i < message.highlights.length; ++i)
-                        if (!$util.isString(message.highlights[i])
+                        if (!$util.isString(message.highlights[i]))
                             return "highlights: string[] expected";
                 }
                 if (message.similarity != null && message.hasOwnProperty("similarity")) {
@@ -5241,11 +5241,11 @@ export const legal = $root.legal = (() => {
                     if (error)
                         return "similarity." + error;
                 }
-                if (message.excerpt != null && message.hasOwnProperty("excerpt")
-                    if (!$util.isString(message.excerpt)
+                if (message.excerpt != null && message.hasOwnProperty("excerpt"))
+                    if (!$util.isString(message.excerpt))
                         return "excerpt: string expected";
                 if (message.relatedCitations != null && message.hasOwnProperty("relatedCitations")) {
-                    if (!Array.isArray(message.relatedCitations)
+                    if (!Array.isArray(message.relatedCitations))
                         return "relatedCitations: array expected";
                     for (let i = 0; i < message.relatedCitations.length; ++i) {
                         let error = $root.legal.api.LegalCitation.verify(message.relatedCitations[i]);
@@ -5276,7 +5276,7 @@ export const legal = $root.legal = (() => {
                 if (object.score != null)
                     message.score = Number(object.score);
                 if (object.highlights) {
-                    if (!Array.isArray(object.highlights)
+                    if (!Array.isArray(object.highlights))
                         throw TypeError(".legal.api.SearchResult.highlights: array expected");
                     message.highlights = [];
                     for (let i = 0; i < object.highlights.length; ++i)
@@ -5290,7 +5290,7 @@ export const legal = $root.legal = (() => {
                 if (object.excerpt != null)
                     message.excerpt = String(object.excerpt);
                 if (object.relatedCitations) {
-                    if (!Array.isArray(object.relatedCitations)
+                    if (!Array.isArray(object.relatedCitations))
                         throw TypeError(".legal.api.SearchResult.relatedCitations: array expected");
                     message.relatedCitations = [];
                     for (let i = 0; i < object.relatedCitations.length; ++i) {
@@ -5325,18 +5325,18 @@ export const legal = $root.legal = (() => {
                     object.similarity = null;
                     object.excerpt = "";
                 }
-                if (message.document != null && message.hasOwnProperty("document")
+                if (message.document != null && message.hasOwnProperty("document"))
                     object.document = $root.legal.api.LegalDocument.toObject(message.document, options);
-                if (message.score != null && message.hasOwnProperty("score")
+                if (message.score != null && message.hasOwnProperty("score"))
                     object.score = options.json && !isFinite(message.score) ? String(message.score) : message.score;
                 if (message.highlights && message.highlights.length) {
                     object.highlights = [];
                     for (let j = 0; j < message.highlights.length; ++j)
                         object.highlights[j] = message.highlights[j];
                 }
-                if (message.similarity != null && message.hasOwnProperty("similarity")
+                if (message.similarity != null && message.hasOwnProperty("similarity"))
                     object.similarity = $root.legal.api.VectorSimilarity.toObject(message.similarity, options);
-                if (message.excerpt != null && message.hasOwnProperty("excerpt")
+                if (message.excerpt != null && message.hasOwnProperty("excerpt"))
                     object.excerpt = message.excerpt;
                 if (message.relatedCitations && message.relatedCitations.length) {
                     object.relatedCitations = [];
@@ -5458,13 +5458,13 @@ export const legal = $root.legal = (() => {
             VectorSimilarity.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.cosineSimilarity != null && Object.hasOwnProperty.call(message, "cosineSimilarity")
+                if (message.cosineSimilarity != null && Object.hasOwnProperty.call(message, "cosineSimilarity"))
                     writer.uint32(/* id 1, wireType 5 =*/13).float(message.cosineSimilarity);
-                if (message.euclideanDistance != null && Object.hasOwnProperty.call(message, "euclideanDistance")
+                if (message.euclideanDistance != null && Object.hasOwnProperty.call(message, "euclideanDistance"))
                     writer.uint32(/* id 2, wireType 5 =*/21).float(message.euclideanDistance);
-                if (message.embeddingDimension != null && Object.hasOwnProperty.call(message, "embeddingDimension")
+                if (message.embeddingDimension != null && Object.hasOwnProperty.call(message, "embeddingDimension"))
                     writer.uint32(/* id 3, wireType 0 =*/24).int32(message.embeddingDimension);
-                if (message.modelUsed != null && Object.hasOwnProperty.call(message, "modelUsed")
+                if (message.modelUsed != null && Object.hasOwnProperty.call(message, "modelUsed"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.modelUsed);
                 return writer;
             };
@@ -5494,7 +5494,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             VectorSimilarity.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.VectorSimilarity();
                 while (reader.pos < end) {
@@ -5537,9 +5537,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             VectorSimilarity.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -5553,17 +5553,17 @@ export const legal = $root.legal = (() => {
             VectorSimilarity.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.cosineSimilarity != null && message.hasOwnProperty("cosineSimilarity")
+                if (message.cosineSimilarity != null && message.hasOwnProperty("cosineSimilarity"))
                     if (typeof message.cosineSimilarity !== "number")
                         return "cosineSimilarity: number expected";
-                if (message.euclideanDistance != null && message.hasOwnProperty("euclideanDistance")
+                if (message.euclideanDistance != null && message.hasOwnProperty("euclideanDistance"))
                     if (typeof message.euclideanDistance !== "number")
                         return "euclideanDistance: number expected";
-                if (message.embeddingDimension != null && message.hasOwnProperty("embeddingDimension")
-                    if (!$util.isInteger(message.embeddingDimension)
+                if (message.embeddingDimension != null && message.hasOwnProperty("embeddingDimension"))
+                    if (!$util.isInteger(message.embeddingDimension))
                         return "embeddingDimension: integer expected";
-                if (message.modelUsed != null && message.hasOwnProperty("modelUsed")
-                    if (!$util.isString(message.modelUsed)
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
+                    if (!$util.isString(message.modelUsed))
                         return "modelUsed: string expected";
                 return null;
             };
@@ -5610,13 +5610,13 @@ export const legal = $root.legal = (() => {
                     object.embeddingDimension = 0;
                     object.modelUsed = "";
                 }
-                if (message.cosineSimilarity != null && message.hasOwnProperty("cosineSimilarity")
+                if (message.cosineSimilarity != null && message.hasOwnProperty("cosineSimilarity"))
                     object.cosineSimilarity = options.json && !isFinite(message.cosineSimilarity) ? String(message.cosineSimilarity) : message.cosineSimilarity;
-                if (message.euclideanDistance != null && message.hasOwnProperty("euclideanDistance")
+                if (message.euclideanDistance != null && message.hasOwnProperty("euclideanDistance"))
                     object.euclideanDistance = options.json && !isFinite(message.euclideanDistance) ? String(message.euclideanDistance) : message.euclideanDistance;
-                if (message.embeddingDimension != null && message.hasOwnProperty("embeddingDimension")
+                if (message.embeddingDimension != null && message.hasOwnProperty("embeddingDimension"))
                     object.embeddingDimension = message.embeddingDimension;
-                if (message.modelUsed != null && message.hasOwnProperty("modelUsed")
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
                     object.modelUsed = message.modelUsed;
                 return object;
             };
@@ -5732,7 +5732,7 @@ export const legal = $root.legal = (() => {
                 if (message.facets != null && message.facets.length)
                     for (let i = 0; i < message.facets.length; ++i)
                         $root.legal.api.SearchFacet.encode(message.facets[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-                if (message.hasMoreResults != null && Object.hasOwnProperty.call(message, "hasMoreResults")
+                if (message.hasMoreResults != null && Object.hasOwnProperty.call(message, "hasMoreResults"))
                     writer.uint32(/* id 3, wireType 0 =*/24).bool(message.hasMoreResults);
                 return writer;
             };
@@ -5762,7 +5762,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchMetadata.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchMetadata();
                 while (reader.pos < end) {
@@ -5771,15 +5771,15 @@ export const legal = $root.legal = (() => {
                         break;
                     switch (tag >>> 3) {
                     case 1: {
-                            if (!(message.suggestedQueries && message.suggestedQueries.length)
+                            if (!(message.suggestedQueries && message.suggestedQueries.length))
                                 message.suggestedQueries = [];
-                            message.suggestedQueries.push(reader.string();
+                            message.suggestedQueries.push(reader.string());
                             break;
                         }
                     case 2: {
-                            if (!(message.facets && message.facets.length)
+                            if (!(message.facets && message.facets.length))
                                 message.facets = [];
-                            message.facets.push($root.legal.api.SearchFacet.decode(reader, reader.uint32());
+                            message.facets.push($root.legal.api.SearchFacet.decode(reader, reader.uint32()));
                             break;
                         }
                     case 3: {
@@ -5805,9 +5805,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchMetadata.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -5822,14 +5822,14 @@ export const legal = $root.legal = (() => {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
                 if (message.suggestedQueries != null && message.hasOwnProperty("suggestedQueries")) {
-                    if (!Array.isArray(message.suggestedQueries)
+                    if (!Array.isArray(message.suggestedQueries))
                         return "suggestedQueries: array expected";
                     for (let i = 0; i < message.suggestedQueries.length; ++i)
-                        if (!$util.isString(message.suggestedQueries[i])
+                        if (!$util.isString(message.suggestedQueries[i]))
                             return "suggestedQueries: string[] expected";
                 }
                 if (message.facets != null && message.hasOwnProperty("facets")) {
-                    if (!Array.isArray(message.facets)
+                    if (!Array.isArray(message.facets))
                         return "facets: array expected";
                     for (let i = 0; i < message.facets.length; ++i) {
                         let error = $root.legal.api.SearchFacet.verify(message.facets[i]);
@@ -5837,7 +5837,7 @@ export const legal = $root.legal = (() => {
                             return "facets." + error;
                     }
                 }
-                if (message.hasMoreResults != null && message.hasOwnProperty("hasMoreResults")
+                if (message.hasMoreResults != null && message.hasOwnProperty("hasMoreResults"))
                     if (typeof message.hasMoreResults !== "boolean")
                         return "hasMoreResults: boolean expected";
                 return null;
@@ -5856,14 +5856,14 @@ export const legal = $root.legal = (() => {
                     return object;
                 let message = new $root.legal.api.SearchMetadata();
                 if (object.suggestedQueries) {
-                    if (!Array.isArray(object.suggestedQueries)
+                    if (!Array.isArray(object.suggestedQueries))
                         throw TypeError(".legal.api.SearchMetadata.suggestedQueries: array expected");
                     message.suggestedQueries = [];
                     for (let i = 0; i < object.suggestedQueries.length; ++i)
                         message.suggestedQueries[i] = String(object.suggestedQueries[i]);
                 }
                 if (object.facets) {
-                    if (!Array.isArray(object.facets)
+                    if (!Array.isArray(object.facets))
                         throw TypeError(".legal.api.SearchMetadata.facets: array expected");
                     message.facets = [];
                     for (let i = 0; i < object.facets.length; ++i) {
@@ -5906,7 +5906,7 @@ export const legal = $root.legal = (() => {
                     for (let j = 0; j < message.facets.length; ++j)
                         object.facets[j] = $root.legal.api.SearchFacet.toObject(message.facets[j], options);
                 }
-                if (message.hasMoreResults != null && message.hasOwnProperty("hasMoreResults")
+                if (message.hasMoreResults != null && message.hasOwnProperty("hasMoreResults"))
                     object.hasMoreResults = message.hasMoreResults;
                 return object;
             };
@@ -6006,7 +6006,7 @@ export const legal = $root.legal = (() => {
             SearchFacet.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.field != null && Object.hasOwnProperty.call(message, "field")
+                if (message.field != null && Object.hasOwnProperty.call(message, "field"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.field);
                 if (message.values != null && message.values.length)
                     for (let i = 0; i < message.values.length; ++i)
@@ -6039,7 +6039,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchFacet.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchFacet();
                 while (reader.pos < end) {
@@ -6052,9 +6052,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 2: {
-                            if (!(message.values && message.values.length)
+                            if (!(message.values && message.values.length))
                                 message.values = [];
-                            message.values.push($root.legal.api.FacetValue.decode(reader, reader.uint32());
+                            message.values.push($root.legal.api.FacetValue.decode(reader, reader.uint32()));
                             break;
                         }
                     default:
@@ -6076,9 +6076,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SearchFacet.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -6092,11 +6092,11 @@ export const legal = $root.legal = (() => {
             SearchFacet.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.field != null && message.hasOwnProperty("field")
-                    if (!$util.isString(message.field)
+                if (message.field != null && message.hasOwnProperty("field"))
+                    if (!$util.isString(message.field))
                         return "field: string expected";
                 if (message.values != null && message.hasOwnProperty("values")) {
-                    if (!Array.isArray(message.values)
+                    if (!Array.isArray(message.values))
                         return "values: array expected";
                     for (let i = 0; i < message.values.length; ++i) {
                         let error = $root.legal.api.FacetValue.verify(message.values[i]);
@@ -6122,7 +6122,7 @@ export const legal = $root.legal = (() => {
                 if (object.field != null)
                     message.field = String(object.field);
                 if (object.values) {
-                    if (!Array.isArray(object.values)
+                    if (!Array.isArray(object.values))
                         throw TypeError(".legal.api.SearchFacet.values: array expected");
                     message.values = [];
                     for (let i = 0; i < object.values.length; ++i) {
@@ -6151,7 +6151,7 @@ export const legal = $root.legal = (() => {
                     object.values = [];
                 if (options.defaults)
                     object.field = "";
-                if (message.field != null && message.hasOwnProperty("field")
+                if (message.field != null && message.hasOwnProperty("field"))
                     object.field = message.field;
                 if (message.values && message.values.length) {
                     object.values = [];
@@ -6255,9 +6255,9 @@ export const legal = $root.legal = (() => {
             FacetValue.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.value != null && Object.hasOwnProperty.call(message, "value")
+                if (message.value != null && Object.hasOwnProperty.call(message, "value"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.value);
-                if (message.count != null && Object.hasOwnProperty.call(message, "count")
+                if (message.count != null && Object.hasOwnProperty.call(message, "count"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.count);
                 return writer;
             };
@@ -6287,7 +6287,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             FacetValue.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.FacetValue();
                 while (reader.pos < end) {
@@ -6322,9 +6322,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             FacetValue.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -6338,11 +6338,11 @@ export const legal = $root.legal = (() => {
             FacetValue.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.value != null && message.hasOwnProperty("value")
-                    if (!$util.isString(message.value)
+                if (message.value != null && message.hasOwnProperty("value"))
+                    if (!$util.isString(message.value))
                         return "value: string expected";
-                if (message.count != null && message.hasOwnProperty("count")
-                    if (!$util.isInteger(message.count)
+                if (message.count != null && message.hasOwnProperty("count"))
+                    if (!$util.isInteger(message.count))
                         return "count: integer expected";
                 return null;
             };
@@ -6383,9 +6383,9 @@ export const legal = $root.legal = (() => {
                     object.value = "";
                     object.count = 0;
                 }
-                if (message.value != null && message.hasOwnProperty("value")
+                if (message.value != null && message.hasOwnProperty("value"))
                     object.value = message.value;
-                if (message.count != null && message.hasOwnProperty("count")
+                if (message.count != null && message.hasOwnProperty("count"))
                     object.count = message.count;
                 return object;
             };
@@ -6539,22 +6539,22 @@ export const legal = $root.legal = (() => {
             ChatMessage.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.id != null && Object.hasOwnProperty.call(message, "id")
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
-                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId")
+                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
-                if (message.userId != null && Object.hasOwnProperty.call(message, "userId")
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.userId);
-                if (message.content != null && Object.hasOwnProperty.call(message, "content")
+                if (message.content != null && Object.hasOwnProperty.call(message, "content"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.content);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type")
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                     writer.uint32(/* id 5, wireType 0 =*/40).int32(message.type);
                 if (message.attachments != null && message.attachments.length)
                     for (let i = 0; i < message.attachments.length; ++i)
                         $root.legal.api.Attachment.encode(message.attachments[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
-                if (message.timestamp != null && Object.hasOwnProperty.call(message, "timestamp")
+                if (message.timestamp != null && Object.hasOwnProperty.call(message, "timestamp"))
                     $root.google.protobuf.Timestamp.encode(message.timestamp, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
-                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata")
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
                     $root.legal.api.MessageMetadata.encode(message.metadata, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
                 return writer;
             };
@@ -6584,7 +6584,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatMessage.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatMessage();
                 while (reader.pos < end) {
@@ -6613,17 +6613,17 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 6: {
-                            if (!(message.attachments && message.attachments.length)
+                            if (!(message.attachments && message.attachments.length))
                                 message.attachments = [];
-                            message.attachments.push($root.legal.api.Attachment.decode(reader, reader.uint32());
+                            message.attachments.push($root.legal.api.Attachment.decode(reader, reader.uint32()));
                             break;
                         }
                     case 7: {
-                            message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 8: {
-                            message.metadata = $root.legal.api.MessageMetadata.decode(reader, reader.uint32();
+                            message.metadata = $root.legal.api.MessageMetadata.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -6645,9 +6645,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatMessage.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -6661,19 +6661,19 @@ export const legal = $root.legal = (() => {
             ChatMessage.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.id != null && message.hasOwnProperty("id")
-                    if (!$util.isString(message.id)
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
                         return "id: string expected";
-                if (message.sessionId != null && message.hasOwnProperty("sessionId")
-                    if (!$util.isString(message.sessionId)
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    if (!$util.isString(message.sessionId))
                         return "sessionId: string expected";
-                if (message.userId != null && message.hasOwnProperty("userId")
-                    if (!$util.isString(message.userId)
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
                         return "userId: string expected";
-                if (message.content != null && message.hasOwnProperty("content")
-                    if (!$util.isString(message.content)
+                if (message.content != null && message.hasOwnProperty("content"))
+                    if (!$util.isString(message.content))
                         return "content: string expected";
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     switch (message.type) {
                     default:
                         return "type: enum value expected";
@@ -6685,7 +6685,7 @@ export const legal = $root.legal = (() => {
                         break;
                     }
                 if (message.attachments != null && message.hasOwnProperty("attachments")) {
-                    if (!Array.isArray(message.attachments)
+                    if (!Array.isArray(message.attachments))
                         return "attachments: array expected";
                     for (let i = 0; i < message.attachments.length; ++i) {
                         let error = $root.legal.api.Attachment.verify(message.attachments[i]);
@@ -6755,7 +6755,7 @@ export const legal = $root.legal = (() => {
                     break;
                 }
                 if (object.attachments) {
-                    if (!Array.isArray(object.attachments)
+                    if (!Array.isArray(object.attachments))
                         throw TypeError(".legal.api.ChatMessage.attachments: array expected");
                     message.attachments = [];
                     for (let i = 0; i < object.attachments.length; ++i) {
@@ -6801,24 +6801,24 @@ export const legal = $root.legal = (() => {
                     object.timestamp = null;
                     object.metadata = null;
                 }
-                if (message.id != null && message.hasOwnProperty("id")
+                if (message.id != null && message.hasOwnProperty("id"))
                     object.id = message.id;
-                if (message.sessionId != null && message.hasOwnProperty("sessionId")
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
                     object.sessionId = message.sessionId;
-                if (message.userId != null && message.hasOwnProperty("userId")
+                if (message.userId != null && message.hasOwnProperty("userId"))
                     object.userId = message.userId;
-                if (message.content != null && message.hasOwnProperty("content")
+                if (message.content != null && message.hasOwnProperty("content"))
                     object.content = message.content;
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     object.type = options.enums === String ? $root.legal.api.MessageType[message.type] === undefined ? message.type : $root.legal.api.MessageType[message.type] : message.type;
                 if (message.attachments && message.attachments.length) {
                     object.attachments = [];
                     for (let j = 0; j < message.attachments.length; ++j)
                         object.attachments[j] = $root.legal.api.Attachment.toObject(message.attachments[j], options);
                 }
-                if (message.timestamp != null && message.hasOwnProperty("timestamp")
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
                     object.timestamp = $root.google.protobuf.Timestamp.toObject(message.timestamp, options);
-                if (message.metadata != null && message.hasOwnProperty("metadata")
+                if (message.metadata != null && message.hasOwnProperty("metadata"))
                     object.metadata = $root.legal.api.MessageMetadata.toObject(message.metadata, options);
                 return object;
             };
@@ -6965,16 +6965,16 @@ export const legal = $root.legal = (() => {
             MessageMetadata.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.modelUsed != null && Object.hasOwnProperty.call(message, "modelUsed")
+                if (message.modelUsed != null && Object.hasOwnProperty.call(message, "modelUsed"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.modelUsed);
-                if (message.tokensUsed != null && Object.hasOwnProperty.call(message, "tokensUsed")
+                if (message.tokensUsed != null && Object.hasOwnProperty.call(message, "tokensUsed"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.tokensUsed);
-                if (message.processingTimeMs != null && Object.hasOwnProperty.call(message, "processingTimeMs")
+                if (message.processingTimeMs != null && Object.hasOwnProperty.call(message, "processingTimeMs"))
                     writer.uint32(/* id 3, wireType 5 =*/29).float(message.processingTimeMs);
                 if (message.sourceDocuments != null && message.sourceDocuments.length)
                     for (let i = 0; i < message.sourceDocuments.length; ++i)
                         writer.uint32(/* id 4, wireType 2 =*/34).string(message.sourceDocuments[i]);
-                if (message.confidenceScore != null && Object.hasOwnProperty.call(message, "confidenceScore")
+                if (message.confidenceScore != null && Object.hasOwnProperty.call(message, "confidenceScore"))
                     writer.uint32(/* id 5, wireType 5 =*/45).float(message.confidenceScore);
                 return writer;
             };
@@ -7004,7 +7004,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             MessageMetadata.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.MessageMetadata();
                 while (reader.pos < end) {
@@ -7025,9 +7025,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 4: {
-                            if (!(message.sourceDocuments && message.sourceDocuments.length)
+                            if (!(message.sourceDocuments && message.sourceDocuments.length))
                                 message.sourceDocuments = [];
-                            message.sourceDocuments.push(reader.string();
+                            message.sourceDocuments.push(reader.string());
                             break;
                         }
                     case 5: {
@@ -7053,9 +7053,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             MessageMetadata.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -7069,23 +7069,23 @@ export const legal = $root.legal = (() => {
             MessageMetadata.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.modelUsed != null && message.hasOwnProperty("modelUsed")
-                    if (!$util.isString(message.modelUsed)
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
+                    if (!$util.isString(message.modelUsed))
                         return "modelUsed: string expected";
-                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed")
-                    if (!$util.isInteger(message.tokensUsed)
+                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed"))
+                    if (!$util.isInteger(message.tokensUsed))
                         return "tokensUsed: integer expected";
-                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs")
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
                     if (typeof message.processingTimeMs !== "number")
                         return "processingTimeMs: number expected";
                 if (message.sourceDocuments != null && message.hasOwnProperty("sourceDocuments")) {
-                    if (!Array.isArray(message.sourceDocuments)
+                    if (!Array.isArray(message.sourceDocuments))
                         return "sourceDocuments: array expected";
                     for (let i = 0; i < message.sourceDocuments.length; ++i)
-                        if (!$util.isString(message.sourceDocuments[i])
+                        if (!$util.isString(message.sourceDocuments[i]))
                             return "sourceDocuments: string[] expected";
                 }
-                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore")
+                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore"))
                     if (typeof message.confidenceScore !== "number")
                         return "confidenceScore: number expected";
                 return null;
@@ -7110,7 +7110,7 @@ export const legal = $root.legal = (() => {
                 if (object.processingTimeMs != null)
                     message.processingTimeMs = Number(object.processingTimeMs);
                 if (object.sourceDocuments) {
-                    if (!Array.isArray(object.sourceDocuments)
+                    if (!Array.isArray(object.sourceDocuments))
                         throw TypeError(".legal.api.MessageMetadata.sourceDocuments: array expected");
                     message.sourceDocuments = [];
                     for (let i = 0; i < object.sourceDocuments.length; ++i)
@@ -7142,18 +7142,18 @@ export const legal = $root.legal = (() => {
                     object.processingTimeMs = 0;
                     object.confidenceScore = 0;
                 }
-                if (message.modelUsed != null && message.hasOwnProperty("modelUsed")
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
                     object.modelUsed = message.modelUsed;
-                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed")
+                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed"))
                     object.tokensUsed = message.tokensUsed;
-                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs")
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
                     object.processingTimeMs = options.json && !isFinite(message.processingTimeMs) ? String(message.processingTimeMs) : message.processingTimeMs;
                 if (message.sourceDocuments && message.sourceDocuments.length) {
                     object.sourceDocuments = [];
                     for (let j = 0; j < message.sourceDocuments.length; ++j)
                         object.sourceDocuments[j] = message.sourceDocuments[j];
                 }
-                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore")
+                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore"))
                     object.confidenceScore = options.json && !isFinite(message.confidenceScore) ? String(message.confidenceScore) : message.confidenceScore;
                 return object;
             };
@@ -7279,15 +7279,15 @@ export const legal = $root.legal = (() => {
             ChatRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId")
+                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.sessionId);
-                if (message.userId != null && Object.hasOwnProperty.call(message, "userId")
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.userId);
-                if (message.message != null && Object.hasOwnProperty.call(message, "message")
+                if (message.message != null && Object.hasOwnProperty.call(message, "message"))
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.message);
-                if (message.context != null && Object.hasOwnProperty.call(message, "context")
+                if (message.context != null && Object.hasOwnProperty.call(message, "context"))
                     $root.legal.api.ChatContext.encode(message.context, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                if (message.options != null && Object.hasOwnProperty.call(message, "options")
+                if (message.options != null && Object.hasOwnProperty.call(message, "options"))
                     $root.legal.api.ChatOptions.encode(message.options, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
                 return writer;
             };
@@ -7317,7 +7317,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatRequest.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatRequest();
                 while (reader.pos < end) {
@@ -7338,11 +7338,11 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 4: {
-                            message.context = $root.legal.api.ChatContext.decode(reader, reader.uint32();
+                            message.context = $root.legal.api.ChatContext.decode(reader, reader.uint32());
                             break;
                         }
                     case 5: {
-                            message.options = $root.legal.api.ChatOptions.decode(reader, reader.uint32();
+                            message.options = $root.legal.api.ChatOptions.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -7364,9 +7364,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatRequest.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -7380,14 +7380,14 @@ export const legal = $root.legal = (() => {
             ChatRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.sessionId != null && message.hasOwnProperty("sessionId")
-                    if (!$util.isString(message.sessionId)
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    if (!$util.isString(message.sessionId))
                         return "sessionId: string expected";
-                if (message.userId != null && message.hasOwnProperty("userId")
-                    if (!$util.isString(message.userId)
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
                         return "userId: string expected";
-                if (message.message != null && message.hasOwnProperty("message")
-                    if (!$util.isString(message.message)
+                if (message.message != null && message.hasOwnProperty("message"))
+                    if (!$util.isString(message.message))
                         return "message: string expected";
                 if (message.context != null && message.hasOwnProperty("context")) {
                     let error = $root.legal.api.ChatContext.verify(message.context);
@@ -7453,15 +7453,15 @@ export const legal = $root.legal = (() => {
                     object.context = null;
                     object.options = null;
                 }
-                if (message.sessionId != null && message.hasOwnProperty("sessionId")
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
                     object.sessionId = message.sessionId;
-                if (message.userId != null && message.hasOwnProperty("userId")
+                if (message.userId != null && message.hasOwnProperty("userId"))
                     object.userId = message.userId;
-                if (message.message != null && message.hasOwnProperty("message")
+                if (message.message != null && message.hasOwnProperty("message"))
                     object.message = message.message;
-                if (message.context != null && message.hasOwnProperty("context")
+                if (message.context != null && message.hasOwnProperty("context"))
                     object.context = $root.legal.api.ChatContext.toObject(message.context, options);
-                if (message.options != null && message.hasOwnProperty("options")
+                if (message.options != null && message.hasOwnProperty("options"))
                     object.options = $root.legal.api.ChatOptions.toObject(message.options, options);
                 return object;
             };
@@ -7584,12 +7584,12 @@ export const legal = $root.legal = (() => {
                 if (message.documentIds != null && message.documentIds.length)
                     for (let i = 0; i < message.documentIds.length; ++i)
                         writer.uint32(/* id 1, wireType 2 =*/10).string(message.documentIds[i]);
-                if (message.caseId != null && Object.hasOwnProperty.call(message, "caseId")
+                if (message.caseId != null && Object.hasOwnProperty.call(message, "caseId"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.caseId);
                 if (message.previousMessageIds != null && message.previousMessageIds.length)
                     for (let i = 0; i < message.previousMessageIds.length; ++i)
                         writer.uint32(/* id 3, wireType 2 =*/26).string(message.previousMessageIds[i]);
-                if (message.variables != null && Object.hasOwnProperty.call(message, "variables")
+                if (message.variables != null && Object.hasOwnProperty.call(message, "variables"))
                     for (let keys = Object.keys(message.variables), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 4, wireType 2 =*/34).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.variables[keys[i]]).ldelim();
                 return writer;
@@ -7620,7 +7620,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatContext.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatContext(), key, value;
                 while (reader.pos < end) {
@@ -7629,9 +7629,9 @@ export const legal = $root.legal = (() => {
                         break;
                     switch (tag >>> 3) {
                     case 1: {
-                            if (!(message.documentIds && message.documentIds.length)
+                            if (!(message.documentIds && message.documentIds.length))
                                 message.documentIds = [];
-                            message.documentIds.push(reader.string();
+                            message.documentIds.push(reader.string());
                             break;
                         }
                     case 2: {
@@ -7639,9 +7639,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            if (!(message.previousMessageIds && message.previousMessageIds.length)
+                            if (!(message.previousMessageIds && message.previousMessageIds.length))
                                 message.previousMessageIds = [];
-                            message.previousMessageIds.push(reader.string();
+                            message.previousMessageIds.push(reader.string());
                             break;
                         }
                     case 4: {
@@ -7686,9 +7686,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatContext.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -7703,28 +7703,28 @@ export const legal = $root.legal = (() => {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
                 if (message.documentIds != null && message.hasOwnProperty("documentIds")) {
-                    if (!Array.isArray(message.documentIds)
+                    if (!Array.isArray(message.documentIds))
                         return "documentIds: array expected";
                     for (let i = 0; i < message.documentIds.length; ++i)
-                        if (!$util.isString(message.documentIds[i])
+                        if (!$util.isString(message.documentIds[i]))
                             return "documentIds: string[] expected";
                 }
-                if (message.caseId != null && message.hasOwnProperty("caseId")
-                    if (!$util.isString(message.caseId)
+                if (message.caseId != null && message.hasOwnProperty("caseId"))
+                    if (!$util.isString(message.caseId))
                         return "caseId: string expected";
                 if (message.previousMessageIds != null && message.hasOwnProperty("previousMessageIds")) {
-                    if (!Array.isArray(message.previousMessageIds)
+                    if (!Array.isArray(message.previousMessageIds))
                         return "previousMessageIds: array expected";
                     for (let i = 0; i < message.previousMessageIds.length; ++i)
-                        if (!$util.isString(message.previousMessageIds[i])
+                        if (!$util.isString(message.previousMessageIds[i]))
                             return "previousMessageIds: string[] expected";
                 }
                 if (message.variables != null && message.hasOwnProperty("variables")) {
-                    if (!$util.isObject(message.variables)
+                    if (!$util.isObject(message.variables))
                         return "variables: object expected";
                     let key = Object.keys(message.variables);
                     for (let i = 0; i < key.length; ++i)
-                        if (!$util.isString(message.variables[key[i]])
+                        if (!$util.isString(message.variables[key[i]]))
                             return "variables: string{k:string} expected";
                 }
                 return null;
@@ -7743,7 +7743,7 @@ export const legal = $root.legal = (() => {
                     return object;
                 let message = new $root.legal.api.ChatContext();
                 if (object.documentIds) {
-                    if (!Array.isArray(object.documentIds)
+                    if (!Array.isArray(object.documentIds))
                         throw TypeError(".legal.api.ChatContext.documentIds: array expected");
                     message.documentIds = [];
                     for (let i = 0; i < object.documentIds.length; ++i)
@@ -7752,7 +7752,7 @@ export const legal = $root.legal = (() => {
                 if (object.caseId != null)
                     message.caseId = String(object.caseId);
                 if (object.previousMessageIds) {
-                    if (!Array.isArray(object.previousMessageIds)
+                    if (!Array.isArray(object.previousMessageIds))
                         throw TypeError(".legal.api.ChatContext.previousMessageIds: array expected");
                     message.previousMessageIds = [];
                     for (let i = 0; i < object.previousMessageIds.length; ++i)
@@ -7794,7 +7794,7 @@ export const legal = $root.legal = (() => {
                     for (let j = 0; j < message.documentIds.length; ++j)
                         object.documentIds[j] = message.documentIds[j];
                 }
-                if (message.caseId != null && message.hasOwnProperty("caseId")
+                if (message.caseId != null && message.hasOwnProperty("caseId"))
                     object.caseId = message.caseId;
                 if (message.previousMessageIds && message.previousMessageIds.length) {
                     object.previousMessageIds = [];
@@ -7931,15 +7931,15 @@ export const legal = $root.legal = (() => {
             ChatOptions.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.model != null && Object.hasOwnProperty.call(message, "model")
+                if (message.model != null && Object.hasOwnProperty.call(message, "model"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.model);
-                if (message.temperature != null && Object.hasOwnProperty.call(message, "temperature")
+                if (message.temperature != null && Object.hasOwnProperty.call(message, "temperature"))
                     writer.uint32(/* id 2, wireType 5 =*/21).float(message.temperature);
-                if (message.maxTokens != null && Object.hasOwnProperty.call(message, "maxTokens")
+                if (message.maxTokens != null && Object.hasOwnProperty.call(message, "maxTokens"))
                     writer.uint32(/* id 3, wireType 0 =*/24).int32(message.maxTokens);
-                if (message.stream != null && Object.hasOwnProperty.call(message, "stream")
+                if (message.stream != null && Object.hasOwnProperty.call(message, "stream"))
                     writer.uint32(/* id 4, wireType 0 =*/32).bool(message.stream);
-                if (message.includeSources != null && Object.hasOwnProperty.call(message, "includeSources")
+                if (message.includeSources != null && Object.hasOwnProperty.call(message, "includeSources"))
                     writer.uint32(/* id 5, wireType 0 =*/40).bool(message.includeSources);
                 return writer;
             };
@@ -7969,7 +7969,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatOptions.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatOptions();
                 while (reader.pos < end) {
@@ -8016,9 +8016,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatOptions.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -8032,19 +8032,19 @@ export const legal = $root.legal = (() => {
             ChatOptions.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.model != null && message.hasOwnProperty("model")
-                    if (!$util.isString(message.model)
+                if (message.model != null && message.hasOwnProperty("model"))
+                    if (!$util.isString(message.model))
                         return "model: string expected";
-                if (message.temperature != null && message.hasOwnProperty("temperature")
+                if (message.temperature != null && message.hasOwnProperty("temperature"))
                     if (typeof message.temperature !== "number")
                         return "temperature: number expected";
-                if (message.maxTokens != null && message.hasOwnProperty("maxTokens")
-                    if (!$util.isInteger(message.maxTokens)
+                if (message.maxTokens != null && message.hasOwnProperty("maxTokens"))
+                    if (!$util.isInteger(message.maxTokens))
                         return "maxTokens: integer expected";
-                if (message.stream != null && message.hasOwnProperty("stream")
+                if (message.stream != null && message.hasOwnProperty("stream"))
                     if (typeof message.stream !== "boolean")
                         return "stream: boolean expected";
-                if (message.includeSources != null && message.hasOwnProperty("includeSources")
+                if (message.includeSources != null && message.hasOwnProperty("includeSources"))
                     if (typeof message.includeSources !== "boolean")
                         return "includeSources: boolean expected";
                 return null;
@@ -8095,15 +8095,15 @@ export const legal = $root.legal = (() => {
                     object.stream = false;
                     object.includeSources = false;
                 }
-                if (message.model != null && message.hasOwnProperty("model")
+                if (message.model != null && message.hasOwnProperty("model"))
                     object.model = message.model;
-                if (message.temperature != null && message.hasOwnProperty("temperature")
+                if (message.temperature != null && message.hasOwnProperty("temperature"))
                     object.temperature = options.json && !isFinite(message.temperature) ? String(message.temperature) : message.temperature;
-                if (message.maxTokens != null && message.hasOwnProperty("maxTokens")
+                if (message.maxTokens != null && message.hasOwnProperty("maxTokens"))
                     object.maxTokens = message.maxTokens;
-                if (message.stream != null && message.hasOwnProperty("stream")
+                if (message.stream != null && message.hasOwnProperty("stream"))
                     object.stream = message.stream;
-                if (message.includeSources != null && message.hasOwnProperty("includeSources")
+                if (message.includeSources != null && message.hasOwnProperty("includeSources"))
                     object.includeSources = message.includeSources;
                 return object;
             };
@@ -8250,16 +8250,16 @@ export const legal = $root.legal = (() => {
             ChatResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.response != null && Object.hasOwnProperty.call(message, "response")
+                if (message.response != null && Object.hasOwnProperty.call(message, "response"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.response);
                 if (message.sources != null && message.sources.length)
                     for (let i = 0; i < message.sources.length; ++i)
                         writer.uint32(/* id 2, wireType 2 =*/18).string(message.sources[i]);
-                if (message.confidence != null && Object.hasOwnProperty.call(message, "confidence")
+                if (message.confidence != null && Object.hasOwnProperty.call(message, "confidence"))
                     writer.uint32(/* id 3, wireType 5 =*/29).float(message.confidence);
-                if (message.modelUsed != null && Object.hasOwnProperty.call(message, "modelUsed")
+                if (message.modelUsed != null && Object.hasOwnProperty.call(message, "modelUsed"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.modelUsed);
-                if (message.tokensUsed != null && Object.hasOwnProperty.call(message, "tokensUsed")
+                if (message.tokensUsed != null && Object.hasOwnProperty.call(message, "tokensUsed"))
                     writer.uint32(/* id 5, wireType 0 =*/40).int32(message.tokensUsed);
                 if (message.citations != null && message.citations.length)
                     for (let i = 0; i < message.citations.length; ++i)
@@ -8295,7 +8295,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatResponse.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatResponse();
                 while (reader.pos < end) {
@@ -8308,9 +8308,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 2: {
-                            if (!(message.sources && message.sources.length)
+                            if (!(message.sources && message.sources.length))
                                 message.sources = [];
-                            message.sources.push(reader.string();
+                            message.sources.push(reader.string());
                             break;
                         }
                     case 3: {
@@ -8326,15 +8326,15 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 6: {
-                            if (!(message.citations && message.citations.length)
+                            if (!(message.citations && message.citations.length))
                                 message.citations = [];
-                            message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32());
+                            message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
                             break;
                         }
                     case 7: {
-                            if (!(message.actionItems && message.actionItems.length)
+                            if (!(message.actionItems && message.actionItems.length))
                                 message.actionItems = [];
-                            message.actionItems.push($root.legal.api.ActionItem.decode(reader, reader.uint32());
+                            message.actionItems.push($root.legal.api.ActionItem.decode(reader, reader.uint32()));
                             break;
                         }
                     default:
@@ -8356,9 +8356,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ChatResponse.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -8372,27 +8372,27 @@ export const legal = $root.legal = (() => {
             ChatResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.response != null && message.hasOwnProperty("response")
-                    if (!$util.isString(message.response)
+                if (message.response != null && message.hasOwnProperty("response"))
+                    if (!$util.isString(message.response))
                         return "response: string expected";
                 if (message.sources != null && message.hasOwnProperty("sources")) {
-                    if (!Array.isArray(message.sources)
+                    if (!Array.isArray(message.sources))
                         return "sources: array expected";
                     for (let i = 0; i < message.sources.length; ++i)
-                        if (!$util.isString(message.sources[i])
+                        if (!$util.isString(message.sources[i]))
                             return "sources: string[] expected";
                 }
-                if (message.confidence != null && message.hasOwnProperty("confidence")
+                if (message.confidence != null && message.hasOwnProperty("confidence"))
                     if (typeof message.confidence !== "number")
                         return "confidence: number expected";
-                if (message.modelUsed != null && message.hasOwnProperty("modelUsed")
-                    if (!$util.isString(message.modelUsed)
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
+                    if (!$util.isString(message.modelUsed))
                         return "modelUsed: string expected";
-                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed")
-                    if (!$util.isInteger(message.tokensUsed)
+                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed"))
+                    if (!$util.isInteger(message.tokensUsed))
                         return "tokensUsed: integer expected";
                 if (message.citations != null && message.hasOwnProperty("citations")) {
-                    if (!Array.isArray(message.citations)
+                    if (!Array.isArray(message.citations))
                         return "citations: array expected";
                     for (let i = 0; i < message.citations.length; ++i) {
                         let error = $root.legal.api.LegalCitation.verify(message.citations[i]);
@@ -8401,7 +8401,7 @@ export const legal = $root.legal = (() => {
                     }
                 }
                 if (message.actionItems != null && message.hasOwnProperty("actionItems")) {
-                    if (!Array.isArray(message.actionItems)
+                    if (!Array.isArray(message.actionItems))
                         return "actionItems: array expected";
                     for (let i = 0; i < message.actionItems.length; ++i) {
                         let error = $root.legal.api.ActionItem.verify(message.actionItems[i]);
@@ -8427,7 +8427,7 @@ export const legal = $root.legal = (() => {
                 if (object.response != null)
                     message.response = String(object.response);
                 if (object.sources) {
-                    if (!Array.isArray(object.sources)
+                    if (!Array.isArray(object.sources))
                         throw TypeError(".legal.api.ChatResponse.sources: array expected");
                     message.sources = [];
                     for (let i = 0; i < object.sources.length; ++i)
@@ -8440,7 +8440,7 @@ export const legal = $root.legal = (() => {
                 if (object.tokensUsed != null)
                     message.tokensUsed = object.tokensUsed | 0;
                 if (object.citations) {
-                    if (!Array.isArray(object.citations)
+                    if (!Array.isArray(object.citations))
                         throw TypeError(".legal.api.ChatResponse.citations: array expected");
                     message.citations = [];
                     for (let i = 0; i < object.citations.length; ++i) {
@@ -8450,7 +8450,7 @@ export const legal = $root.legal = (() => {
                     }
                 }
                 if (object.actionItems) {
-                    if (!Array.isArray(object.actionItems)
+                    if (!Array.isArray(object.actionItems))
                         throw TypeError(".legal.api.ChatResponse.actionItems: array expected");
                     message.actionItems = [];
                     for (let i = 0; i < object.actionItems.length; ++i) {
@@ -8486,18 +8486,18 @@ export const legal = $root.legal = (() => {
                     object.modelUsed = "";
                     object.tokensUsed = 0;
                 }
-                if (message.response != null && message.hasOwnProperty("response")
+                if (message.response != null && message.hasOwnProperty("response"))
                     object.response = message.response;
                 if (message.sources && message.sources.length) {
                     object.sources = [];
                     for (let j = 0; j < message.sources.length; ++j)
                         object.sources[j] = message.sources[j];
                 }
-                if (message.confidence != null && message.hasOwnProperty("confidence")
+                if (message.confidence != null && message.hasOwnProperty("confidence"))
                     object.confidence = options.json && !isFinite(message.confidence) ? String(message.confidence) : message.confidence;
-                if (message.modelUsed != null && message.hasOwnProperty("modelUsed")
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
                     object.modelUsed = message.modelUsed;
-                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed")
+                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed"))
                     object.tokensUsed = message.tokensUsed;
                 if (message.citations && message.citations.length) {
                     object.citations = [];
@@ -8624,13 +8624,13 @@ export const legal = $root.legal = (() => {
             ActionItem.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.description != null && Object.hasOwnProperty.call(message, "description")
+                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.description);
-                if (message.priority != null && Object.hasOwnProperty.call(message, "priority")
+                if (message.priority != null && Object.hasOwnProperty.call(message, "priority"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.priority);
-                if (message.dueDate != null && Object.hasOwnProperty.call(message, "dueDate")
+                if (message.dueDate != null && Object.hasOwnProperty.call(message, "dueDate"))
                     $root.google.protobuf.Timestamp.encode(message.dueDate, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-                if (message.assignedTo != null && Object.hasOwnProperty.call(message, "assignedTo")
+                if (message.assignedTo != null && Object.hasOwnProperty.call(message, "assignedTo"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.assignedTo);
                 return writer;
             };
@@ -8660,7 +8660,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ActionItem.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ActionItem();
                 while (reader.pos < end) {
@@ -8677,7 +8677,7 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            message.dueDate = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.dueDate = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 4: {
@@ -8703,9 +8703,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             ActionItem.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -8719,10 +8719,10 @@ export const legal = $root.legal = (() => {
             ActionItem.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.description != null && message.hasOwnProperty("description")
-                    if (!$util.isString(message.description)
+                if (message.description != null && message.hasOwnProperty("description"))
+                    if (!$util.isString(message.description))
                         return "description: string expected";
-                if (message.priority != null && message.hasOwnProperty("priority")
+                if (message.priority != null && message.hasOwnProperty("priority"))
                     switch (message.priority) {
                     default:
                         return "priority: enum value expected";
@@ -8737,8 +8737,8 @@ export const legal = $root.legal = (() => {
                     if (error)
                         return "dueDate." + error;
                 }
-                if (message.assignedTo != null && message.hasOwnProperty("assignedTo")
-                    if (!$util.isString(message.assignedTo)
+                if (message.assignedTo != null && message.hasOwnProperty("assignedTo"))
+                    if (!$util.isString(message.assignedTo))
                         return "assignedTo: string expected";
                 return null;
             };
@@ -8810,13 +8810,13 @@ export const legal = $root.legal = (() => {
                     object.dueDate = null;
                     object.assignedTo = "";
                 }
-                if (message.description != null && message.hasOwnProperty("description")
+                if (message.description != null && message.hasOwnProperty("description"))
                     object.description = message.description;
-                if (message.priority != null && message.hasOwnProperty("priority")
+                if (message.priority != null && message.hasOwnProperty("priority"))
                     object.priority = options.enums === String ? $root.legal.api.ActionPriority[message.priority] === undefined ? message.priority : $root.legal.api.ActionPriority[message.priority] : message.priority;
-                if (message.dueDate != null && message.hasOwnProperty("dueDate")
+                if (message.dueDate != null && message.hasOwnProperty("dueDate"))
                     object.dueDate = $root.google.protobuf.Timestamp.toObject(message.dueDate, options);
-                if (message.assignedTo != null && message.hasOwnProperty("assignedTo")
+                if (message.assignedTo != null && message.hasOwnProperty("assignedTo"))
                     object.assignedTo = message.assignedTo;
                 return object;
             };
@@ -8960,15 +8960,15 @@ export const legal = $root.legal = (() => {
             Attachment.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.filename != null && Object.hasOwnProperty.call(message, "filename")
+                if (message.filename != null && Object.hasOwnProperty.call(message, "filename"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.filename);
-                if (message.contentType != null && Object.hasOwnProperty.call(message, "contentType")
+                if (message.contentType != null && Object.hasOwnProperty.call(message, "contentType"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.contentType);
-                if (message.size != null && Object.hasOwnProperty.call(message, "size")
+                if (message.size != null && Object.hasOwnProperty.call(message, "size"))
                     writer.uint32(/* id 3, wireType 0 =*/24).int64(message.size);
-                if (message.url != null && Object.hasOwnProperty.call(message, "url")
+                if (message.url != null && Object.hasOwnProperty.call(message, "url"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.url);
-                if (message.checksum != null && Object.hasOwnProperty.call(message, "checksum")
+                if (message.checksum != null && Object.hasOwnProperty.call(message, "checksum"))
                     writer.uint32(/* id 5, wireType 2 =*/42).string(message.checksum);
                 return writer;
             };
@@ -8998,7 +8998,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             Attachment.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.Attachment();
                 while (reader.pos < end) {
@@ -9045,9 +9045,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             Attachment.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -9061,20 +9061,20 @@ export const legal = $root.legal = (() => {
             Attachment.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.filename != null && message.hasOwnProperty("filename")
-                    if (!$util.isString(message.filename)
+                if (message.filename != null && message.hasOwnProperty("filename"))
+                    if (!$util.isString(message.filename))
                         return "filename: string expected";
-                if (message.contentType != null && message.hasOwnProperty("contentType")
-                    if (!$util.isString(message.contentType)
+                if (message.contentType != null && message.hasOwnProperty("contentType"))
+                    if (!$util.isString(message.contentType))
                         return "contentType: string expected";
-                if (message.size != null && message.hasOwnProperty("size")
-                    if (!$util.isInteger(message.size) && !(message.size && $util.isInteger(message.size.low) && $util.isInteger(message.size.high))
+                if (message.size != null && message.hasOwnProperty("size"))
+                    if (!$util.isInteger(message.size) && !(message.size && $util.isInteger(message.size.low) && $util.isInteger(message.size.high)))
                         return "size: integer|Long expected";
-                if (message.url != null && message.hasOwnProperty("url")
-                    if (!$util.isString(message.url)
+                if (message.url != null && message.hasOwnProperty("url"))
+                    if (!$util.isString(message.url))
                         return "url: string expected";
-                if (message.checksum != null && message.hasOwnProperty("checksum")
-                    if (!$util.isString(message.checksum)
+                if (message.checksum != null && message.hasOwnProperty("checksum"))
+                    if (!$util.isString(message.checksum))
                         return "checksum: string expected";
                 return null;
             };
@@ -9135,18 +9135,18 @@ export const legal = $root.legal = (() => {
                     object.url = "";
                     object.checksum = "";
                 }
-                if (message.filename != null && message.hasOwnProperty("filename")
+                if (message.filename != null && message.hasOwnProperty("filename"))
                     object.filename = message.filename;
-                if (message.contentType != null && message.hasOwnProperty("contentType")
+                if (message.contentType != null && message.hasOwnProperty("contentType"))
                     object.contentType = message.contentType;
-                if (message.size != null && message.hasOwnProperty("size")
+                if (message.size != null && message.hasOwnProperty("size"))
                     if (typeof message.size === "number")
                         object.size = options.longs === String ? String(message.size) : message.size;
                     else
                         object.size = options.longs === String ? $util.Long.prototype.toString.call(message.size) : options.longs === Number ? new $util.LongBits(message.size.low >>> 0, message.size.high >>> 0).toNumber() : message.size;
-                if (message.url != null && message.hasOwnProperty("url")
+                if (message.url != null && message.hasOwnProperty("url"))
                     object.url = message.url;
-                if (message.checksum != null && message.hasOwnProperty("checksum")
+                if (message.checksum != null && message.hasOwnProperty("checksum"))
                     object.checksum = message.checksum;
                 return object;
             };
@@ -9273,16 +9273,16 @@ export const legal = $root.legal = (() => {
             AnalysisRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.documentId != null && Object.hasOwnProperty.call(message, "documentId")
+                if (message.documentId != null && Object.hasOwnProperty.call(message, "documentId"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.documentId);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type")
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.type);
                 if (message.specificQueries != null && message.specificQueries.length)
                     for (let i = 0; i < message.specificQueries.length; ++i)
                         writer.uint32(/* id 3, wireType 2 =*/26).string(message.specificQueries[i]);
-                if (message.options != null && Object.hasOwnProperty.call(message, "options")
+                if (message.options != null && Object.hasOwnProperty.call(message, "options"))
                     $root.legal.api.AnalysisOptions.encode(message.options, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                if (message.userId != null && Object.hasOwnProperty.call(message, "userId")
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
                     writer.uint32(/* id 5, wireType 2 =*/42).string(message.userId);
                 return writer;
             };
@@ -9312,7 +9312,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AnalysisRequest.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AnalysisRequest();
                 while (reader.pos < end) {
@@ -9329,13 +9329,13 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            if (!(message.specificQueries && message.specificQueries.length)
+                            if (!(message.specificQueries && message.specificQueries.length))
                                 message.specificQueries = [];
-                            message.specificQueries.push(reader.string();
+                            message.specificQueries.push(reader.string());
                             break;
                         }
                     case 4: {
-                            message.options = $root.legal.api.AnalysisOptions.decode(reader, reader.uint32();
+                            message.options = $root.legal.api.AnalysisOptions.decode(reader, reader.uint32());
                             break;
                         }
                     case 5: {
@@ -9361,9 +9361,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AnalysisRequest.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -9377,10 +9377,10 @@ export const legal = $root.legal = (() => {
             AnalysisRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.documentId != null && message.hasOwnProperty("documentId")
-                    if (!$util.isString(message.documentId)
+                if (message.documentId != null && message.hasOwnProperty("documentId"))
+                    if (!$util.isString(message.documentId))
                         return "documentId: string expected";
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     switch (message.type) {
                     default:
                         return "type: enum value expected";
@@ -9393,10 +9393,10 @@ export const legal = $root.legal = (() => {
                         break;
                     }
                 if (message.specificQueries != null && message.hasOwnProperty("specificQueries")) {
-                    if (!Array.isArray(message.specificQueries)
+                    if (!Array.isArray(message.specificQueries))
                         return "specificQueries: array expected";
                     for (let i = 0; i < message.specificQueries.length; ++i)
-                        if (!$util.isString(message.specificQueries[i])
+                        if (!$util.isString(message.specificQueries[i]))
                             return "specificQueries: string[] expected";
                 }
                 if (message.options != null && message.hasOwnProperty("options")) {
@@ -9404,8 +9404,8 @@ export const legal = $root.legal = (() => {
                     if (error)
                         return "options." + error;
                 }
-                if (message.userId != null && message.hasOwnProperty("userId")
-                    if (!$util.isString(message.userId)
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
                         return "userId: string expected";
                 return null;
             };
@@ -9457,7 +9457,7 @@ export const legal = $root.legal = (() => {
                     break;
                 }
                 if (object.specificQueries) {
-                    if (!Array.isArray(object.specificQueries)
+                    if (!Array.isArray(object.specificQueries))
                         throw TypeError(".legal.api.AnalysisRequest.specificQueries: array expected");
                     message.specificQueries = [];
                     for (let i = 0; i < object.specificQueries.length; ++i)
@@ -9494,18 +9494,18 @@ export const legal = $root.legal = (() => {
                     object.options = null;
                     object.userId = "";
                 }
-                if (message.documentId != null && message.hasOwnProperty("documentId")
+                if (message.documentId != null && message.hasOwnProperty("documentId"))
                     object.documentId = message.documentId;
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     object.type = options.enums === String ? $root.legal.api.AnalysisType[message.type] === undefined ? message.type : $root.legal.api.AnalysisType[message.type] : message.type;
                 if (message.specificQueries && message.specificQueries.length) {
                     object.specificQueries = [];
                     for (let j = 0; j < message.specificQueries.length; ++j)
                         object.specificQueries[j] = message.specificQueries[j];
                 }
-                if (message.options != null && message.hasOwnProperty("options")
+                if (message.options != null && message.hasOwnProperty("options"))
                     object.options = $root.legal.api.AnalysisOptions.toObject(message.options, options);
-                if (message.userId != null && message.hasOwnProperty("userId")
+                if (message.userId != null && message.hasOwnProperty("userId"))
                     object.userId = message.userId;
                 return object;
             };
@@ -9645,14 +9645,14 @@ export const legal = $root.legal = (() => {
             AnalysisOptions.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.jurisdiction != null && Object.hasOwnProperty.call(message, "jurisdiction")
+                if (message.jurisdiction != null && Object.hasOwnProperty.call(message, "jurisdiction"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.jurisdiction);
                 if (message.practiceAreas != null && message.practiceAreas.length)
                     for (let i = 0; i < message.practiceAreas.length; ++i)
                         writer.uint32(/* id 2, wireType 2 =*/18).string(message.practiceAreas[i]);
-                if (message.confidenceThreshold != null && Object.hasOwnProperty.call(message, "confidenceThreshold")
+                if (message.confidenceThreshold != null && Object.hasOwnProperty.call(message, "confidenceThreshold"))
                     writer.uint32(/* id 3, wireType 5 =*/29).float(message.confidenceThreshold);
-                if (message.includeRecommendations != null && Object.hasOwnProperty.call(message, "includeRecommendations")
+                if (message.includeRecommendations != null && Object.hasOwnProperty.call(message, "includeRecommendations"))
                     writer.uint32(/* id 4, wireType 0 =*/32).bool(message.includeRecommendations);
                 return writer;
             };
@@ -9682,7 +9682,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AnalysisOptions.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AnalysisOptions();
                 while (reader.pos < end) {
@@ -9695,9 +9695,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 2: {
-                            if (!(message.practiceAreas && message.practiceAreas.length)
+                            if (!(message.practiceAreas && message.practiceAreas.length))
                                 message.practiceAreas = [];
-                            message.practiceAreas.push(reader.string();
+                            message.practiceAreas.push(reader.string());
                             break;
                         }
                     case 3: {
@@ -9727,9 +9727,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AnalysisOptions.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -9743,20 +9743,20 @@ export const legal = $root.legal = (() => {
             AnalysisOptions.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction")
-                    if (!$util.isString(message.jurisdiction)
+                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction"))
+                    if (!$util.isString(message.jurisdiction))
                         return "jurisdiction: string expected";
                 if (message.practiceAreas != null && message.hasOwnProperty("practiceAreas")) {
-                    if (!Array.isArray(message.practiceAreas)
+                    if (!Array.isArray(message.practiceAreas))
                         return "practiceAreas: array expected";
                     for (let i = 0; i < message.practiceAreas.length; ++i)
-                        if (!$util.isString(message.practiceAreas[i])
+                        if (!$util.isString(message.practiceAreas[i]))
                             return "practiceAreas: string[] expected";
                 }
-                if (message.confidenceThreshold != null && message.hasOwnProperty("confidenceThreshold")
+                if (message.confidenceThreshold != null && message.hasOwnProperty("confidenceThreshold"))
                     if (typeof message.confidenceThreshold !== "number")
                         return "confidenceThreshold: number expected";
-                if (message.includeRecommendations != null && message.hasOwnProperty("includeRecommendations")
+                if (message.includeRecommendations != null && message.hasOwnProperty("includeRecommendations"))
                     if (typeof message.includeRecommendations !== "boolean")
                         return "includeRecommendations: boolean expected";
                 return null;
@@ -9777,7 +9777,7 @@ export const legal = $root.legal = (() => {
                 if (object.jurisdiction != null)
                     message.jurisdiction = String(object.jurisdiction);
                 if (object.practiceAreas) {
-                    if (!Array.isArray(object.practiceAreas)
+                    if (!Array.isArray(object.practiceAreas))
                         throw TypeError(".legal.api.AnalysisOptions.practiceAreas: array expected");
                     message.practiceAreas = [];
                     for (let i = 0; i < object.practiceAreas.length; ++i)
@@ -9810,16 +9810,16 @@ export const legal = $root.legal = (() => {
                     object.confidenceThreshold = 0;
                     object.includeRecommendations = false;
                 }
-                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction")
+                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction"))
                     object.jurisdiction = message.jurisdiction;
                 if (message.practiceAreas && message.practiceAreas.length) {
                     object.practiceAreas = [];
                     for (let j = 0; j < message.practiceAreas.length; ++j)
                         object.practiceAreas[j] = message.practiceAreas[j];
                 }
-                if (message.confidenceThreshold != null && message.hasOwnProperty("confidenceThreshold")
+                if (message.confidenceThreshold != null && message.hasOwnProperty("confidenceThreshold"))
                     object.confidenceThreshold = options.json && !isFinite(message.confidenceThreshold) ? String(message.confidenceThreshold) : message.confidenceThreshold;
-                if (message.includeRecommendations != null && message.hasOwnProperty("includeRecommendations")
+                if (message.includeRecommendations != null && message.hasOwnProperty("includeRecommendations"))
                     object.includeRecommendations = message.includeRecommendations;
                 return object;
             };
@@ -9956,16 +9956,16 @@ export const legal = $root.legal = (() => {
             AnalysisResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.analysisId != null && Object.hasOwnProperty.call(message, "analysisId")
+                if (message.analysisId != null && Object.hasOwnProperty.call(message, "analysisId"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.analysisId);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type")
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.type);
                 if (message.results != null && message.results.length)
                     for (let i = 0; i < message.results.length; ++i)
                         $root.legal.api.AnalysisResult.encode(message.results[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-                if (message.overallConfidence != null && Object.hasOwnProperty.call(message, "overallConfidence")
+                if (message.overallConfidence != null && Object.hasOwnProperty.call(message, "overallConfidence"))
                     writer.uint32(/* id 4, wireType 5 =*/37).float(message.overallConfidence);
-                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt")
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
                     $root.google.protobuf.Timestamp.encode(message.createdAt, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
                 if (message.recommendations != null && message.recommendations.length)
                     for (let i = 0; i < message.recommendations.length; ++i)
@@ -9998,7 +9998,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AnalysisResponse.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AnalysisResponse();
                 while (reader.pos < end) {
@@ -10015,9 +10015,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            if (!(message.results && message.results.length)
+                            if (!(message.results && message.results.length))
                                 message.results = [];
-                            message.results.push($root.legal.api.AnalysisResult.decode(reader, reader.uint32());
+                            message.results.push($root.legal.api.AnalysisResult.decode(reader, reader.uint32()));
                             break;
                         }
                     case 4: {
@@ -10025,13 +10025,13 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 5: {
-                            message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 6: {
-                            if (!(message.recommendations && message.recommendations.length)
+                            if (!(message.recommendations && message.recommendations.length))
                                 message.recommendations = [];
-                            message.recommendations.push($root.legal.api.Recommendation.decode(reader, reader.uint32());
+                            message.recommendations.push($root.legal.api.Recommendation.decode(reader, reader.uint32()));
                             break;
                         }
                     default:
@@ -10053,9 +10053,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AnalysisResponse.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -10069,10 +10069,10 @@ export const legal = $root.legal = (() => {
             AnalysisResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.analysisId != null && message.hasOwnProperty("analysisId")
-                    if (!$util.isString(message.analysisId)
+                if (message.analysisId != null && message.hasOwnProperty("analysisId"))
+                    if (!$util.isString(message.analysisId))
                         return "analysisId: string expected";
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     switch (message.type) {
                     default:
                         return "type: enum value expected";
@@ -10085,7 +10085,7 @@ export const legal = $root.legal = (() => {
                         break;
                     }
                 if (message.results != null && message.hasOwnProperty("results")) {
-                    if (!Array.isArray(message.results)
+                    if (!Array.isArray(message.results))
                         return "results: array expected";
                     for (let i = 0; i < message.results.length; ++i) {
                         let error = $root.legal.api.AnalysisResult.verify(message.results[i]);
@@ -10093,7 +10093,7 @@ export const legal = $root.legal = (() => {
                             return "results." + error;
                     }
                 }
-                if (message.overallConfidence != null && message.hasOwnProperty("overallConfidence")
+                if (message.overallConfidence != null && message.hasOwnProperty("overallConfidence"))
                     if (typeof message.overallConfidence !== "number")
                         return "overallConfidence: number expected";
                 if (message.createdAt != null && message.hasOwnProperty("createdAt")) {
@@ -10102,7 +10102,7 @@ export const legal = $root.legal = (() => {
                         return "createdAt." + error;
                 }
                 if (message.recommendations != null && message.hasOwnProperty("recommendations")) {
-                    if (!Array.isArray(message.recommendations)
+                    if (!Array.isArray(message.recommendations))
                         return "recommendations: array expected";
                     for (let i = 0; i < message.recommendations.length; ++i) {
                         let error = $root.legal.api.Recommendation.verify(message.recommendations[i]);
@@ -10160,7 +10160,7 @@ export const legal = $root.legal = (() => {
                     break;
                 }
                 if (object.results) {
-                    if (!Array.isArray(object.results)
+                    if (!Array.isArray(object.results))
                         throw TypeError(".legal.api.AnalysisResponse.results: array expected");
                     message.results = [];
                     for (let i = 0; i < object.results.length; ++i) {
@@ -10177,7 +10177,7 @@ export const legal = $root.legal = (() => {
                     message.createdAt = $root.google.protobuf.Timestamp.fromObject(object.createdAt);
                 }
                 if (object.recommendations) {
-                    if (!Array.isArray(object.recommendations)
+                    if (!Array.isArray(object.recommendations))
                         throw TypeError(".legal.api.AnalysisResponse.recommendations: array expected");
                     message.recommendations = [];
                     for (let i = 0; i < object.recommendations.length; ++i) {
@@ -10212,18 +10212,18 @@ export const legal = $root.legal = (() => {
                     object.overallConfidence = 0;
                     object.createdAt = null;
                 }
-                if (message.analysisId != null && message.hasOwnProperty("analysisId")
+                if (message.analysisId != null && message.hasOwnProperty("analysisId"))
                     object.analysisId = message.analysisId;
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     object.type = options.enums === String ? $root.legal.api.AnalysisType[message.type] === undefined ? message.type : $root.legal.api.AnalysisType[message.type] : message.type;
                 if (message.results && message.results.length) {
                     object.results = [];
                     for (let j = 0; j < message.results.length; ++j)
                         object.results[j] = $root.legal.api.AnalysisResult.toObject(message.results[j], options);
                 }
-                if (message.overallConfidence != null && message.hasOwnProperty("overallConfidence")
+                if (message.overallConfidence != null && message.hasOwnProperty("overallConfidence"))
                     object.overallConfidence = options.json && !isFinite(message.overallConfidence) ? String(message.overallConfidence) : message.overallConfidence;
-                if (message.createdAt != null && message.hasOwnProperty("createdAt")
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
                     object.createdAt = $root.google.protobuf.Timestamp.toObject(message.createdAt, options);
                 if (message.recommendations && message.recommendations.length) {
                     object.recommendations = [];
@@ -10365,11 +10365,11 @@ export const legal = $root.legal = (() => {
             AnalysisResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.category != null && Object.hasOwnProperty.call(message, "category")
+                if (message.category != null && Object.hasOwnProperty.call(message, "category"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.category);
-                if (message.finding != null && Object.hasOwnProperty.call(message, "finding")
+                if (message.finding != null && Object.hasOwnProperty.call(message, "finding"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.finding);
-                if (message.confidence != null && Object.hasOwnProperty.call(message, "confidence")
+                if (message.confidence != null && Object.hasOwnProperty.call(message, "confidence"))
                     writer.uint32(/* id 3, wireType 5 =*/29).float(message.confidence);
                 if (message.supportingText != null && message.supportingText.length)
                     for (let i = 0; i < message.supportingText.length; ++i)
@@ -10377,7 +10377,7 @@ export const legal = $root.legal = (() => {
                 if (message.citations != null && message.citations.length)
                     for (let i = 0; i < message.citations.length; ++i)
                         $root.legal.api.LegalCitation.encode(message.citations[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
-                if (message.riskLevel != null && Object.hasOwnProperty.call(message, "riskLevel")
+                if (message.riskLevel != null && Object.hasOwnProperty.call(message, "riskLevel"))
                     writer.uint32(/* id 6, wireType 0 =*/48).int32(message.riskLevel);
                 return writer;
             };
@@ -10407,7 +10407,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AnalysisResult.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AnalysisResult();
                 while (reader.pos < end) {
@@ -10428,15 +10428,15 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 4: {
-                            if (!(message.supportingText && message.supportingText.length)
+                            if (!(message.supportingText && message.supportingText.length))
                                 message.supportingText = [];
-                            message.supportingText.push(reader.string();
+                            message.supportingText.push(reader.string());
                             break;
                         }
                     case 5: {
-                            if (!(message.citations && message.citations.length)
+                            if (!(message.citations && message.citations.length))
                                 message.citations = [];
-                            message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32());
+                            message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
                             break;
                         }
                     case 6: {
@@ -10462,9 +10462,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             AnalysisResult.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -10478,24 +10478,24 @@ export const legal = $root.legal = (() => {
             AnalysisResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.category != null && message.hasOwnProperty("category")
-                    if (!$util.isString(message.category)
+                if (message.category != null && message.hasOwnProperty("category"))
+                    if (!$util.isString(message.category))
                         return "category: string expected";
-                if (message.finding != null && message.hasOwnProperty("finding")
-                    if (!$util.isString(message.finding)
+                if (message.finding != null && message.hasOwnProperty("finding"))
+                    if (!$util.isString(message.finding))
                         return "finding: string expected";
-                if (message.confidence != null && message.hasOwnProperty("confidence")
+                if (message.confidence != null && message.hasOwnProperty("confidence"))
                     if (typeof message.confidence !== "number")
                         return "confidence: number expected";
                 if (message.supportingText != null && message.hasOwnProperty("supportingText")) {
-                    if (!Array.isArray(message.supportingText)
+                    if (!Array.isArray(message.supportingText))
                         return "supportingText: array expected";
                     for (let i = 0; i < message.supportingText.length; ++i)
-                        if (!$util.isString(message.supportingText[i])
+                        if (!$util.isString(message.supportingText[i]))
                             return "supportingText: string[] expected";
                 }
                 if (message.citations != null && message.hasOwnProperty("citations")) {
-                    if (!Array.isArray(message.citations)
+                    if (!Array.isArray(message.citations))
                         return "citations: array expected";
                     for (let i = 0; i < message.citations.length; ++i) {
                         let error = $root.legal.api.LegalCitation.verify(message.citations[i]);
@@ -10503,7 +10503,7 @@ export const legal = $root.legal = (() => {
                             return "citations." + error;
                     }
                 }
-                if (message.riskLevel != null && message.hasOwnProperty("riskLevel")
+                if (message.riskLevel != null && message.hasOwnProperty("riskLevel"))
                     switch (message.riskLevel) {
                     default:
                         return "riskLevel: enum value expected";
@@ -10535,14 +10535,14 @@ export const legal = $root.legal = (() => {
                 if (object.confidence != null)
                     message.confidence = Number(object.confidence);
                 if (object.supportingText) {
-                    if (!Array.isArray(object.supportingText)
+                    if (!Array.isArray(object.supportingText))
                         throw TypeError(".legal.api.AnalysisResult.supportingText: array expected");
                     message.supportingText = [];
                     for (let i = 0; i < object.supportingText.length; ++i)
                         message.supportingText[i] = String(object.supportingText[i]);
                 }
                 if (object.citations) {
-                    if (!Array.isArray(object.citations)
+                    if (!Array.isArray(object.citations))
                         throw TypeError(".legal.api.AnalysisResult.citations: array expected");
                     message.citations = [];
                     for (let i = 0; i < object.citations.length; ++i) {
@@ -10601,11 +10601,11 @@ export const legal = $root.legal = (() => {
                     object.confidence = 0;
                     object.riskLevel = options.enums === String ? "RISK_LEVEL_LOW" : 0;
                 }
-                if (message.category != null && message.hasOwnProperty("category")
+                if (message.category != null && message.hasOwnProperty("category"))
                     object.category = message.category;
-                if (message.finding != null && message.hasOwnProperty("finding")
+                if (message.finding != null && message.hasOwnProperty("finding"))
                     object.finding = message.finding;
-                if (message.confidence != null && message.hasOwnProperty("confidence")
+                if (message.confidence != null && message.hasOwnProperty("confidence"))
                     object.confidence = options.json && !isFinite(message.confidence) ? String(message.confidence) : message.confidence;
                 if (message.supportingText && message.supportingText.length) {
                     object.supportingText = [];
@@ -10617,7 +10617,7 @@ export const legal = $root.legal = (() => {
                     for (let j = 0; j < message.citations.length; ++j)
                         object.citations[j] = $root.legal.api.LegalCitation.toObject(message.citations[j], options);
                 }
-                if (message.riskLevel != null && message.hasOwnProperty("riskLevel")
+                if (message.riskLevel != null && message.hasOwnProperty("riskLevel"))
                     object.riskLevel = options.enums === String ? $root.legal.api.RiskLevel[message.riskLevel] === undefined ? message.riskLevel : $root.legal.api.RiskLevel[message.riskLevel] : message.riskLevel;
                 return object;
             };
@@ -10762,13 +10762,13 @@ export const legal = $root.legal = (() => {
             Recommendation.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.title != null && Object.hasOwnProperty.call(message, "title")
+                if (message.title != null && Object.hasOwnProperty.call(message, "title"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.title);
-                if (message.description != null && Object.hasOwnProperty.call(message, "description")
+                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.description);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type")
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                     writer.uint32(/* id 3, wireType 0 =*/24).int32(message.type);
-                if (message.priority != null && Object.hasOwnProperty.call(message, "priority")
+                if (message.priority != null && Object.hasOwnProperty.call(message, "priority"))
                     writer.uint32(/* id 4, wireType 0 =*/32).int32(message.priority);
                 if (message.steps != null && message.steps.length)
                     for (let i = 0; i < message.steps.length; ++i)
@@ -10801,7 +10801,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             Recommendation.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.Recommendation();
                 while (reader.pos < end) {
@@ -10826,9 +10826,9 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 5: {
-                            if (!(message.steps && message.steps.length)
+                            if (!(message.steps && message.steps.length))
                                 message.steps = [];
-                            message.steps.push(reader.string();
+                            message.steps.push(reader.string());
                             break;
                         }
                     default:
@@ -10850,9 +10850,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             Recommendation.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -10866,13 +10866,13 @@ export const legal = $root.legal = (() => {
             Recommendation.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.title != null && message.hasOwnProperty("title")
-                    if (!$util.isString(message.title)
+                if (message.title != null && message.hasOwnProperty("title"))
+                    if (!$util.isString(message.title))
                         return "title: string expected";
-                if (message.description != null && message.hasOwnProperty("description")
-                    if (!$util.isString(message.description)
+                if (message.description != null && message.hasOwnProperty("description"))
+                    if (!$util.isString(message.description))
                         return "description: string expected";
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     switch (message.type) {
                     default:
                         return "type: enum value expected";
@@ -10882,7 +10882,7 @@ export const legal = $root.legal = (() => {
                     case 3:
                         break;
                     }
-                if (message.priority != null && message.hasOwnProperty("priority")
+                if (message.priority != null && message.hasOwnProperty("priority"))
                     switch (message.priority) {
                     default:
                         return "priority: enum value expected";
@@ -10893,10 +10893,10 @@ export const legal = $root.legal = (() => {
                         break;
                     }
                 if (message.steps != null && message.hasOwnProperty("steps")) {
-                    if (!Array.isArray(message.steps)
+                    if (!Array.isArray(message.steps))
                         return "steps: array expected";
                     for (let i = 0; i < message.steps.length; ++i)
-                        if (!$util.isString(message.steps[i])
+                        if (!$util.isString(message.steps[i]))
                             return "steps: string[] expected";
                 }
                 return null;
@@ -10967,7 +10967,7 @@ export const legal = $root.legal = (() => {
                     break;
                 }
                 if (object.steps) {
-                    if (!Array.isArray(object.steps)
+                    if (!Array.isArray(object.steps))
                         throw TypeError(".legal.api.Recommendation.steps: array expected");
                     message.steps = [];
                     for (let i = 0; i < object.steps.length; ++i)
@@ -10997,13 +10997,13 @@ export const legal = $root.legal = (() => {
                     object.type = options.enums === String ? "RECOMMENDATION_TYPE_ACTION" : 0;
                     object.priority = options.enums === String ? "ACTION_PRIORITY_LOW" : 0;
                 }
-                if (message.title != null && message.hasOwnProperty("title")
+                if (message.title != null && message.hasOwnProperty("title"))
                     object.title = message.title;
-                if (message.description != null && message.hasOwnProperty("description")
+                if (message.description != null && message.hasOwnProperty("description"))
                     object.description = message.description;
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     object.type = options.enums === String ? $root.legal.api.RecommendationType[message.type] === undefined ? message.type : $root.legal.api.RecommendationType[message.type] : message.type;
-                if (message.priority != null && message.hasOwnProperty("priority")
+                if (message.priority != null && message.hasOwnProperty("priority"))
                     object.priority = options.enums === String ? $root.legal.api.ActionPriority[message.priority] === undefined ? message.priority : $root.legal.api.ActionPriority[message.priority] : message.priority;
                 if (message.steps && message.steps.length) {
                     object.steps = [];
@@ -11125,9 +11125,9 @@ export const legal = $root.legal = (() => {
             HealthCheckRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.service != null && Object.hasOwnProperty.call(message, "service")
+                if (message.service != null && Object.hasOwnProperty.call(message, "service"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.service);
-                if (message.includeDetails != null && Object.hasOwnProperty.call(message, "includeDetails")
+                if (message.includeDetails != null && Object.hasOwnProperty.call(message, "includeDetails"))
                     writer.uint32(/* id 2, wireType 0 =*/16).bool(message.includeDetails);
                 return writer;
             };
@@ -11157,7 +11157,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             HealthCheckRequest.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.HealthCheckRequest();
                 while (reader.pos < end) {
@@ -11192,9 +11192,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             HealthCheckRequest.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -11208,10 +11208,10 @@ export const legal = $root.legal = (() => {
             HealthCheckRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.service != null && message.hasOwnProperty("service")
-                    if (!$util.isString(message.service)
+                if (message.service != null && message.hasOwnProperty("service"))
+                    if (!$util.isString(message.service))
                         return "service: string expected";
-                if (message.includeDetails != null && message.hasOwnProperty("includeDetails")
+                if (message.includeDetails != null && message.hasOwnProperty("includeDetails"))
                     if (typeof message.includeDetails !== "boolean")
                         return "includeDetails: boolean expected";
                 return null;
@@ -11253,9 +11253,9 @@ export const legal = $root.legal = (() => {
                     object.service = "";
                     object.includeDetails = false;
                 }
-                if (message.service != null && message.hasOwnProperty("service")
+                if (message.service != null && message.hasOwnProperty("service"))
                     object.service = message.service;
-                if (message.includeDetails != null && message.hasOwnProperty("includeDetails")
+                if (message.includeDetails != null && message.hasOwnProperty("includeDetails"))
                     object.includeDetails = message.includeDetails;
                 return object;
             };
@@ -11382,16 +11382,16 @@ export const legal = $root.legal = (() => {
             HealthCheckResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.healthy != null && Object.hasOwnProperty.call(message, "healthy")
+                if (message.healthy != null && Object.hasOwnProperty.call(message, "healthy"))
                     writer.uint32(/* id 1, wireType 0 =*/8).bool(message.healthy);
-                if (message.status != null && Object.hasOwnProperty.call(message, "status")
+                if (message.status != null && Object.hasOwnProperty.call(message, "status"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.status);
-                if (message.details != null && Object.hasOwnProperty.call(message, "details")
+                if (message.details != null && Object.hasOwnProperty.call(message, "details"))
                     for (let keys = Object.keys(message.details), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.details[keys[i]]).ldelim();
-                if (message.timestamp != null && Object.hasOwnProperty.call(message, "timestamp")
+                if (message.timestamp != null && Object.hasOwnProperty.call(message, "timestamp"))
                     $root.google.protobuf.Timestamp.encode(message.timestamp, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                if (message.version != null && Object.hasOwnProperty.call(message, "version")
+                if (message.version != null && Object.hasOwnProperty.call(message, "version"))
                     writer.uint32(/* id 5, wireType 2 =*/42).string(message.version);
                 return writer;
             };
@@ -11421,7 +11421,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             HealthCheckResponse.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.HealthCheckResponse(), key, value;
                 while (reader.pos < end) {
@@ -11461,7 +11461,7 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 4: {
-                            message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 5: {
@@ -11487,9 +11487,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             HealthCheckResponse.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -11503,18 +11503,18 @@ export const legal = $root.legal = (() => {
             HealthCheckResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.healthy != null && message.hasOwnProperty("healthy")
+                if (message.healthy != null && message.hasOwnProperty("healthy"))
                     if (typeof message.healthy !== "boolean")
                         return "healthy: boolean expected";
-                if (message.status != null && message.hasOwnProperty("status")
-                    if (!$util.isString(message.status)
+                if (message.status != null && message.hasOwnProperty("status"))
+                    if (!$util.isString(message.status))
                         return "status: string expected";
                 if (message.details != null && message.hasOwnProperty("details")) {
-                    if (!$util.isObject(message.details)
+                    if (!$util.isObject(message.details))
                         return "details: object expected";
                     let key = Object.keys(message.details);
                     for (let i = 0; i < key.length; ++i)
-                        if (!$util.isString(message.details[key[i]])
+                        if (!$util.isString(message.details[key[i]]))
                             return "details: string{k:string} expected";
                 }
                 if (message.timestamp != null && message.hasOwnProperty("timestamp")) {
@@ -11522,8 +11522,8 @@ export const legal = $root.legal = (() => {
                     if (error)
                         return "timestamp." + error;
                 }
-                if (message.version != null && message.hasOwnProperty("version")
-                    if (!$util.isString(message.version)
+                if (message.version != null && message.hasOwnProperty("version"))
+                    if (!$util.isString(message.version))
                         return "version: string expected";
                 return null;
             };
@@ -11582,9 +11582,9 @@ export const legal = $root.legal = (() => {
                     object.timestamp = null;
                     object.version = "";
                 }
-                if (message.healthy != null && message.hasOwnProperty("healthy")
+                if (message.healthy != null && message.hasOwnProperty("healthy"))
                     object.healthy = message.healthy;
-                if (message.status != null && message.hasOwnProperty("status")
+                if (message.status != null && message.hasOwnProperty("status"))
                     object.status = message.status;
                 let keys2;
                 if (message.details && (keys2 = Object.keys(message.details)).length) {
@@ -11592,9 +11592,9 @@ export const legal = $root.legal = (() => {
                     for (let j = 0; j < keys2.length; ++j)
                         object.details[keys2[j]] = message.details[keys2[j]];
                 }
-                if (message.timestamp != null && message.hasOwnProperty("timestamp")
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
                     object.timestamp = $root.google.protobuf.Timestamp.toObject(message.timestamp, options);
-                if (message.version != null && message.hasOwnProperty("version")
+                if (message.version != null && message.hasOwnProperty("version"))
                     object.version = message.version;
                 return object;
             };
@@ -11738,19 +11738,19 @@ export const legal = $root.legal = (() => {
             SystemStatus.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.serviceName != null && Object.hasOwnProperty.call(message, "serviceName")
+                if (message.serviceName != null && Object.hasOwnProperty.call(message, "serviceName"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.serviceName);
-                if (message.operational != null && Object.hasOwnProperty.call(message, "operational")
+                if (message.operational != null && Object.hasOwnProperty.call(message, "operational"))
                     writer.uint32(/* id 2, wireType 0 =*/16).bool(message.operational);
-                if (message.cpuUsage != null && Object.hasOwnProperty.call(message, "cpuUsage")
+                if (message.cpuUsage != null && Object.hasOwnProperty.call(message, "cpuUsage"))
                     writer.uint32(/* id 3, wireType 5 =*/29).float(message.cpuUsage);
-                if (message.memoryUsage != null && Object.hasOwnProperty.call(message, "memoryUsage")
+                if (message.memoryUsage != null && Object.hasOwnProperty.call(message, "memoryUsage"))
                     writer.uint32(/* id 4, wireType 5 =*/37).float(message.memoryUsage);
-                if (message.activeConnections != null && Object.hasOwnProperty.call(message, "activeConnections")
+                if (message.activeConnections != null && Object.hasOwnProperty.call(message, "activeConnections"))
                     writer.uint32(/* id 5, wireType 0 =*/40).int32(message.activeConnections);
-                if (message.requestsPerMinute != null && Object.hasOwnProperty.call(message, "requestsPerMinute")
+                if (message.requestsPerMinute != null && Object.hasOwnProperty.call(message, "requestsPerMinute"))
                     writer.uint32(/* id 6, wireType 0 =*/48).int64(message.requestsPerMinute);
-                if (message.lastUpdated != null && Object.hasOwnProperty.call(message, "lastUpdated")
+                if (message.lastUpdated != null && Object.hasOwnProperty.call(message, "lastUpdated"))
                     $root.google.protobuf.Timestamp.encode(message.lastUpdated, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                 return writer;
             };
@@ -11780,7 +11780,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SystemStatus.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SystemStatus();
                 while (reader.pos < end) {
@@ -11813,7 +11813,7 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 7: {
-                            message.lastUpdated = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.lastUpdated = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     default:
@@ -11835,9 +11835,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             SystemStatus.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -11851,23 +11851,23 @@ export const legal = $root.legal = (() => {
             SystemStatus.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.serviceName != null && message.hasOwnProperty("serviceName")
-                    if (!$util.isString(message.serviceName)
+                if (message.serviceName != null && message.hasOwnProperty("serviceName"))
+                    if (!$util.isString(message.serviceName))
                         return "serviceName: string expected";
-                if (message.operational != null && message.hasOwnProperty("operational")
+                if (message.operational != null && message.hasOwnProperty("operational"))
                     if (typeof message.operational !== "boolean")
                         return "operational: boolean expected";
-                if (message.cpuUsage != null && message.hasOwnProperty("cpuUsage")
+                if (message.cpuUsage != null && message.hasOwnProperty("cpuUsage"))
                     if (typeof message.cpuUsage !== "number")
                         return "cpuUsage: number expected";
-                if (message.memoryUsage != null && message.hasOwnProperty("memoryUsage")
+                if (message.memoryUsage != null && message.hasOwnProperty("memoryUsage"))
                     if (typeof message.memoryUsage !== "number")
                         return "memoryUsage: number expected";
-                if (message.activeConnections != null && message.hasOwnProperty("activeConnections")
-                    if (!$util.isInteger(message.activeConnections)
+                if (message.activeConnections != null && message.hasOwnProperty("activeConnections"))
+                    if (!$util.isInteger(message.activeConnections))
                         return "activeConnections: integer expected";
-                if (message.requestsPerMinute != null && message.hasOwnProperty("requestsPerMinute")
-                    if (!$util.isInteger(message.requestsPerMinute) && !(message.requestsPerMinute && $util.isInteger(message.requestsPerMinute.low) && $util.isInteger(message.requestsPerMinute.high))
+                if (message.requestsPerMinute != null && message.hasOwnProperty("requestsPerMinute"))
+                    if (!$util.isInteger(message.requestsPerMinute) && !(message.requestsPerMinute && $util.isInteger(message.requestsPerMinute.low) && $util.isInteger(message.requestsPerMinute.high)))
                         return "requestsPerMinute: integer|Long expected";
                 if (message.lastUpdated != null && message.hasOwnProperty("lastUpdated")) {
                     let error = $root.google.protobuf.Timestamp.verify(message.lastUpdated);
@@ -11942,22 +11942,22 @@ export const legal = $root.legal = (() => {
                         object.requestsPerMinute = options.longs === String ? "0" : 0;
                     object.lastUpdated = null;
                 }
-                if (message.serviceName != null && message.hasOwnProperty("serviceName")
+                if (message.serviceName != null && message.hasOwnProperty("serviceName"))
                     object.serviceName = message.serviceName;
-                if (message.operational != null && message.hasOwnProperty("operational")
+                if (message.operational != null && message.hasOwnProperty("operational"))
                     object.operational = message.operational;
-                if (message.cpuUsage != null && message.hasOwnProperty("cpuUsage")
+                if (message.cpuUsage != null && message.hasOwnProperty("cpuUsage"))
                     object.cpuUsage = options.json && !isFinite(message.cpuUsage) ? String(message.cpuUsage) : message.cpuUsage;
-                if (message.memoryUsage != null && message.hasOwnProperty("memoryUsage")
+                if (message.memoryUsage != null && message.hasOwnProperty("memoryUsage"))
                     object.memoryUsage = options.json && !isFinite(message.memoryUsage) ? String(message.memoryUsage) : message.memoryUsage;
-                if (message.activeConnections != null && message.hasOwnProperty("activeConnections")
+                if (message.activeConnections != null && message.hasOwnProperty("activeConnections"))
                     object.activeConnections = message.activeConnections;
-                if (message.requestsPerMinute != null && message.hasOwnProperty("requestsPerMinute")
+                if (message.requestsPerMinute != null && message.hasOwnProperty("requestsPerMinute"))
                     if (typeof message.requestsPerMinute === "number")
                         object.requestsPerMinute = options.longs === String ? String(message.requestsPerMinute) : message.requestsPerMinute;
                     else
                         object.requestsPerMinute = options.longs === String ? $util.Long.prototype.toString.call(message.requestsPerMinute) : options.longs === Number ? new $util.LongBits(message.requestsPerMinute.low >>> 0, message.requestsPerMinute.high >>> 0).toNumber() : message.requestsPerMinute;
-                if (message.lastUpdated != null && message.hasOwnProperty("lastUpdated")
+                if (message.lastUpdated != null && message.hasOwnProperty("lastUpdated"))
                     object.lastUpdated = $root.google.protobuf.Timestamp.toObject(message.lastUpdated, options);
                 return object;
             };
@@ -12075,14 +12075,14 @@ export const legal = $root.legal = (() => {
             BatchRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.batchId != null && Object.hasOwnProperty.call(message, "batchId")
+                if (message.batchId != null && Object.hasOwnProperty.call(message, "batchId"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.batchId);
                 if (message.operations != null && message.operations.length)
                     for (let i = 0; i < message.operations.length; ++i)
                         $root.legal.api.BatchOperation.encode(message.operations[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-                if (message.options != null && Object.hasOwnProperty.call(message, "options")
+                if (message.options != null && Object.hasOwnProperty.call(message, "options"))
                     $root.legal.api.BatchOptions.encode(message.options, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-                if (message.userId != null && Object.hasOwnProperty.call(message, "userId")
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.userId);
                 return writer;
             };
@@ -12112,7 +12112,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchRequest.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchRequest();
                 while (reader.pos < end) {
@@ -12125,13 +12125,13 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 2: {
-                            if (!(message.operations && message.operations.length)
+                            if (!(message.operations && message.operations.length))
                                 message.operations = [];
-                            message.operations.push($root.legal.api.BatchOperation.decode(reader, reader.uint32());
+                            message.operations.push($root.legal.api.BatchOperation.decode(reader, reader.uint32()));
                             break;
                         }
                     case 3: {
-                            message.options = $root.legal.api.BatchOptions.decode(reader, reader.uint32();
+                            message.options = $root.legal.api.BatchOptions.decode(reader, reader.uint32());
                             break;
                         }
                     case 4: {
@@ -12157,9 +12157,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchRequest.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -12173,11 +12173,11 @@ export const legal = $root.legal = (() => {
             BatchRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.batchId != null && message.hasOwnProperty("batchId")
-                    if (!$util.isString(message.batchId)
+                if (message.batchId != null && message.hasOwnProperty("batchId"))
+                    if (!$util.isString(message.batchId))
                         return "batchId: string expected";
                 if (message.operations != null && message.hasOwnProperty("operations")) {
-                    if (!Array.isArray(message.operations)
+                    if (!Array.isArray(message.operations))
                         return "operations: array expected";
                     for (let i = 0; i < message.operations.length; ++i) {
                         let error = $root.legal.api.BatchOperation.verify(message.operations[i]);
@@ -12190,8 +12190,8 @@ export const legal = $root.legal = (() => {
                     if (error)
                         return "options." + error;
                 }
-                if (message.userId != null && message.hasOwnProperty("userId")
-                    if (!$util.isString(message.userId)
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
                         return "userId: string expected";
                 return null;
             };
@@ -12211,7 +12211,7 @@ export const legal = $root.legal = (() => {
                 if (object.batchId != null)
                     message.batchId = String(object.batchId);
                 if (object.operations) {
-                    if (!Array.isArray(object.operations)
+                    if (!Array.isArray(object.operations))
                         throw TypeError(".legal.api.BatchRequest.operations: array expected");
                     message.operations = [];
                     for (let i = 0; i < object.operations.length; ++i) {
@@ -12250,16 +12250,16 @@ export const legal = $root.legal = (() => {
                     object.options = null;
                     object.userId = "";
                 }
-                if (message.batchId != null && message.hasOwnProperty("batchId")
+                if (message.batchId != null && message.hasOwnProperty("batchId"))
                     object.batchId = message.batchId;
                 if (message.operations && message.operations.length) {
                     object.operations = [];
                     for (let j = 0; j < message.operations.length; ++j)
                         object.operations[j] = $root.legal.api.BatchOperation.toObject(message.operations[j], options);
                 }
-                if (message.options != null && message.hasOwnProperty("options")
+                if (message.options != null && message.hasOwnProperty("options"))
                     object.options = $root.legal.api.BatchOptions.toObject(message.options, options);
-                if (message.userId != null && message.hasOwnProperty("userId")
+                if (message.userId != null && message.hasOwnProperty("userId"))
                     object.userId = message.userId;
                 return object;
             };
@@ -12368,11 +12368,11 @@ export const legal = $root.legal = (() => {
             BatchOperation.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.operationId != null && Object.hasOwnProperty.call(message, "operationId")
+                if (message.operationId != null && Object.hasOwnProperty.call(message, "operationId"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.operationId);
-                if (message.type != null && Object.hasOwnProperty.call(message, "type")
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
                     writer.uint32(/* id 2, wireType 2 =*/18).string(message.type);
-                if (message.parameters != null && Object.hasOwnProperty.call(message, "parameters")
+                if (message.parameters != null && Object.hasOwnProperty.call(message, "parameters"))
                     for (let keys = Object.keys(message.parameters), i = 0; i < keys.length; ++i)
                         writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.parameters[keys[i]]).ldelim();
                 return writer;
@@ -12403,7 +12403,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchOperation.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchOperation(), key, value;
                 while (reader.pos < end) {
@@ -12461,9 +12461,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchOperation.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -12477,18 +12477,18 @@ export const legal = $root.legal = (() => {
             BatchOperation.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.operationId != null && message.hasOwnProperty("operationId")
-                    if (!$util.isString(message.operationId)
+                if (message.operationId != null && message.hasOwnProperty("operationId"))
+                    if (!$util.isString(message.operationId))
                         return "operationId: string expected";
-                if (message.type != null && message.hasOwnProperty("type")
-                    if (!$util.isString(message.type)
+                if (message.type != null && message.hasOwnProperty("type"))
+                    if (!$util.isString(message.type))
                         return "type: string expected";
                 if (message.parameters != null && message.hasOwnProperty("parameters")) {
-                    if (!$util.isObject(message.parameters)
+                    if (!$util.isObject(message.parameters))
                         return "parameters: object expected";
                     let key = Object.keys(message.parameters);
                     for (let i = 0; i < key.length; ++i)
-                        if (!$util.isString(message.parameters[key[i]])
+                        if (!$util.isString(message.parameters[key[i]]))
                             return "parameters: string{k:string} expected";
                 }
                 return null;
@@ -12539,9 +12539,9 @@ export const legal = $root.legal = (() => {
                     object.operationId = "";
                     object.type = "";
                 }
-                if (message.operationId != null && message.hasOwnProperty("operationId")
+                if (message.operationId != null && message.hasOwnProperty("operationId"))
                     object.operationId = message.operationId;
-                if (message.type != null && message.hasOwnProperty("type")
+                if (message.type != null && message.hasOwnProperty("type"))
                     object.type = message.type;
                 let keys2;
                 if (message.parameters && (keys2 = Object.keys(message.parameters)).length) {
@@ -12664,13 +12664,13 @@ export const legal = $root.legal = (() => {
             BatchOptions.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.parallelExecution != null && Object.hasOwnProperty.call(message, "parallelExecution")
+                if (message.parallelExecution != null && Object.hasOwnProperty.call(message, "parallelExecution"))
                     writer.uint32(/* id 1, wireType 0 =*/8).bool(message.parallelExecution);
-                if (message.maxConcurrency != null && Object.hasOwnProperty.call(message, "maxConcurrency")
+                if (message.maxConcurrency != null && Object.hasOwnProperty.call(message, "maxConcurrency"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.maxConcurrency);
-                if (message.timeoutSeconds != null && Object.hasOwnProperty.call(message, "timeoutSeconds")
+                if (message.timeoutSeconds != null && Object.hasOwnProperty.call(message, "timeoutSeconds"))
                     writer.uint32(/* id 3, wireType 0 =*/24).int32(message.timeoutSeconds);
-                if (message.continueOnError != null && Object.hasOwnProperty.call(message, "continueOnError")
+                if (message.continueOnError != null && Object.hasOwnProperty.call(message, "continueOnError"))
                     writer.uint32(/* id 4, wireType 0 =*/32).bool(message.continueOnError);
                 return writer;
             };
@@ -12700,7 +12700,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchOptions.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchOptions();
                 while (reader.pos < end) {
@@ -12743,9 +12743,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchOptions.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -12759,16 +12759,16 @@ export const legal = $root.legal = (() => {
             BatchOptions.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.parallelExecution != null && message.hasOwnProperty("parallelExecution")
+                if (message.parallelExecution != null && message.hasOwnProperty("parallelExecution"))
                     if (typeof message.parallelExecution !== "boolean")
                         return "parallelExecution: boolean expected";
-                if (message.maxConcurrency != null && message.hasOwnProperty("maxConcurrency")
-                    if (!$util.isInteger(message.maxConcurrency)
+                if (message.maxConcurrency != null && message.hasOwnProperty("maxConcurrency"))
+                    if (!$util.isInteger(message.maxConcurrency))
                         return "maxConcurrency: integer expected";
-                if (message.timeoutSeconds != null && message.hasOwnProperty("timeoutSeconds")
-                    if (!$util.isInteger(message.timeoutSeconds)
+                if (message.timeoutSeconds != null && message.hasOwnProperty("timeoutSeconds"))
+                    if (!$util.isInteger(message.timeoutSeconds))
                         return "timeoutSeconds: integer expected";
-                if (message.continueOnError != null && message.hasOwnProperty("continueOnError")
+                if (message.continueOnError != null && message.hasOwnProperty("continueOnError"))
                     if (typeof message.continueOnError !== "boolean")
                         return "continueOnError: boolean expected";
                 return null;
@@ -12816,13 +12816,13 @@ export const legal = $root.legal = (() => {
                     object.timeoutSeconds = 0;
                     object.continueOnError = false;
                 }
-                if (message.parallelExecution != null && message.hasOwnProperty("parallelExecution")
+                if (message.parallelExecution != null && message.hasOwnProperty("parallelExecution"))
                     object.parallelExecution = message.parallelExecution;
-                if (message.maxConcurrency != null && message.hasOwnProperty("maxConcurrency")
+                if (message.maxConcurrency != null && message.hasOwnProperty("maxConcurrency"))
                     object.maxConcurrency = message.maxConcurrency;
-                if (message.timeoutSeconds != null && message.hasOwnProperty("timeoutSeconds")
+                if (message.timeoutSeconds != null && message.hasOwnProperty("timeoutSeconds"))
                     object.timeoutSeconds = message.timeoutSeconds;
-                if (message.continueOnError != null && message.hasOwnProperty("continueOnError")
+                if (message.continueOnError != null && message.hasOwnProperty("continueOnError"))
                     object.continueOnError = message.continueOnError;
                 return object;
             };
@@ -12958,18 +12958,18 @@ export const legal = $root.legal = (() => {
             BatchResponse.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.batchId != null && Object.hasOwnProperty.call(message, "batchId")
+                if (message.batchId != null && Object.hasOwnProperty.call(message, "batchId"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.batchId);
-                if (message.status != null && Object.hasOwnProperty.call(message, "status")
+                if (message.status != null && Object.hasOwnProperty.call(message, "status"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.status);
                 if (message.results != null && message.results.length)
                     for (let i = 0; i < message.results.length; ++i)
                         $root.legal.api.BatchResult.encode(message.results[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-                if (message.startedAt != null && Object.hasOwnProperty.call(message, "startedAt")
+                if (message.startedAt != null && Object.hasOwnProperty.call(message, "startedAt"))
                     $root.google.protobuf.Timestamp.encode(message.startedAt, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                if (message.completedAt != null && Object.hasOwnProperty.call(message, "completedAt")
+                if (message.completedAt != null && Object.hasOwnProperty.call(message, "completedAt"))
                     $root.google.protobuf.Timestamp.encode(message.completedAt, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
-                if (message.errorMessage != null && Object.hasOwnProperty.call(message, "errorMessage")
+                if (message.errorMessage != null && Object.hasOwnProperty.call(message, "errorMessage"))
                     writer.uint32(/* id 6, wireType 2 =*/50).string(message.errorMessage);
                 return writer;
             };
@@ -12999,7 +12999,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchResponse.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchResponse();
                 while (reader.pos < end) {
@@ -13016,17 +13016,17 @@ export const legal = $root.legal = (() => {
                             break;
                         }
                     case 3: {
-                            if (!(message.results && message.results.length)
+                            if (!(message.results && message.results.length))
                                 message.results = [];
-                            message.results.push($root.legal.api.BatchResult.decode(reader, reader.uint32());
+                            message.results.push($root.legal.api.BatchResult.decode(reader, reader.uint32()));
                             break;
                         }
                     case 4: {
-                            message.startedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.startedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 5: {
-                            message.completedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32();
+                            message.completedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                             break;
                         }
                     case 6: {
@@ -13052,9 +13052,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchResponse.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -13068,10 +13068,10 @@ export const legal = $root.legal = (() => {
             BatchResponse.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.batchId != null && message.hasOwnProperty("batchId")
-                    if (!$util.isString(message.batchId)
+                if (message.batchId != null && message.hasOwnProperty("batchId"))
+                    if (!$util.isString(message.batchId))
                         return "batchId: string expected";
-                if (message.status != null && message.hasOwnProperty("status")
+                if (message.status != null && message.hasOwnProperty("status"))
                     switch (message.status) {
                     default:
                         return "status: enum value expected";
@@ -13083,7 +13083,7 @@ export const legal = $root.legal = (() => {
                         break;
                     }
                 if (message.results != null && message.hasOwnProperty("results")) {
-                    if (!Array.isArray(message.results)
+                    if (!Array.isArray(message.results))
                         return "results: array expected";
                     for (let i = 0; i < message.results.length; ++i) {
                         let error = $root.legal.api.BatchResult.verify(message.results[i]);
@@ -13101,8 +13101,8 @@ export const legal = $root.legal = (() => {
                     if (error)
                         return "completedAt." + error;
                 }
-                if (message.errorMessage != null && message.hasOwnProperty("errorMessage")
-                    if (!$util.isString(message.errorMessage)
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
+                    if (!$util.isString(message.errorMessage))
                         return "errorMessage: string expected";
                 return null;
             };
@@ -13150,7 +13150,7 @@ export const legal = $root.legal = (() => {
                     break;
                 }
                 if (object.results) {
-                    if (!Array.isArray(object.results)
+                    if (!Array.isArray(object.results))
                         throw TypeError(".legal.api.BatchResponse.results: array expected");
                     message.results = [];
                     for (let i = 0; i < object.results.length; ++i) {
@@ -13196,20 +13196,20 @@ export const legal = $root.legal = (() => {
                     object.completedAt = null;
                     object.errorMessage = "";
                 }
-                if (message.batchId != null && message.hasOwnProperty("batchId")
+                if (message.batchId != null && message.hasOwnProperty("batchId"))
                     object.batchId = message.batchId;
-                if (message.status != null && message.hasOwnProperty("status")
+                if (message.status != null && message.hasOwnProperty("status"))
                     object.status = options.enums === String ? $root.legal.api.BatchStatus[message.status] === undefined ? message.status : $root.legal.api.BatchStatus[message.status] : message.status;
                 if (message.results && message.results.length) {
                     object.results = [];
                     for (let j = 0; j < message.results.length; ++j)
                         object.results[j] = $root.legal.api.BatchResult.toObject(message.results[j], options);
                 }
-                if (message.startedAt != null && message.hasOwnProperty("startedAt")
+                if (message.startedAt != null && message.hasOwnProperty("startedAt"))
                     object.startedAt = $root.google.protobuf.Timestamp.toObject(message.startedAt, options);
-                if (message.completedAt != null && message.hasOwnProperty("completedAt")
+                if (message.completedAt != null && message.hasOwnProperty("completedAt"))
                     object.completedAt = $root.google.protobuf.Timestamp.toObject(message.completedAt, options);
-                if (message.errorMessage != null && message.hasOwnProperty("errorMessage")
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
                     object.errorMessage = message.errorMessage;
                 return object;
             };
@@ -13355,15 +13355,15 @@ export const legal = $root.legal = (() => {
             BatchResult.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.operationId != null && Object.hasOwnProperty.call(message, "operationId")
+                if (message.operationId != null && Object.hasOwnProperty.call(message, "operationId"))
                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.operationId);
-                if (message.success != null && Object.hasOwnProperty.call(message, "success")
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
                     writer.uint32(/* id 2, wireType 0 =*/16).bool(message.success);
-                if (message.resultData != null && Object.hasOwnProperty.call(message, "resultData")
+                if (message.resultData != null && Object.hasOwnProperty.call(message, "resultData"))
                     writer.uint32(/* id 3, wireType 2 =*/26).string(message.resultData);
-                if (message.errorMessage != null && Object.hasOwnProperty.call(message, "errorMessage")
+                if (message.errorMessage != null && Object.hasOwnProperty.call(message, "errorMessage"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.errorMessage);
-                if (message.processingTimeMs != null && Object.hasOwnProperty.call(message, "processingTimeMs")
+                if (message.processingTimeMs != null && Object.hasOwnProperty.call(message, "processingTimeMs"))
                     writer.uint32(/* id 5, wireType 5 =*/45).float(message.processingTimeMs);
                 return writer;
             };
@@ -13393,7 +13393,7 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchResult.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchResult();
                 while (reader.pos < end) {
@@ -13440,9 +13440,9 @@ export const legal = $root.legal = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             BatchResult.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -13456,19 +13456,19 @@ export const legal = $root.legal = (() => {
             BatchResult.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.operationId != null && message.hasOwnProperty("operationId")
-                    if (!$util.isString(message.operationId)
+                if (message.operationId != null && message.hasOwnProperty("operationId"))
+                    if (!$util.isString(message.operationId))
                         return "operationId: string expected";
-                if (message.success != null && message.hasOwnProperty("success")
+                if (message.success != null && message.hasOwnProperty("success"))
                     if (typeof message.success !== "boolean")
                         return "success: boolean expected";
-                if (message.resultData != null && message.hasOwnProperty("resultData")
-                    if (!$util.isString(message.resultData)
+                if (message.resultData != null && message.hasOwnProperty("resultData"))
+                    if (!$util.isString(message.resultData))
                         return "resultData: string expected";
-                if (message.errorMessage != null && message.hasOwnProperty("errorMessage")
-                    if (!$util.isString(message.errorMessage)
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
+                    if (!$util.isString(message.errorMessage))
                         return "errorMessage: string expected";
-                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs")
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
                     if (typeof message.processingTimeMs !== "number")
                         return "processingTimeMs: number expected";
                 return null;
@@ -13519,15 +13519,15 @@ export const legal = $root.legal = (() => {
                     object.errorMessage = "";
                     object.processingTimeMs = 0;
                 }
-                if (message.operationId != null && message.hasOwnProperty("operationId")
+                if (message.operationId != null && message.hasOwnProperty("operationId"))
                     object.operationId = message.operationId;
-                if (message.success != null && message.hasOwnProperty("success")
+                if (message.success != null && message.hasOwnProperty("success"))
                     object.success = message.success;
-                if (message.resultData != null && message.hasOwnProperty("resultData")
+                if (message.resultData != null && message.hasOwnProperty("resultData"))
                     object.resultData = message.resultData;
-                if (message.errorMessage != null && message.hasOwnProperty("errorMessage")
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
                     object.errorMessage = message.errorMessage;
-                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs")
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
                     object.processingTimeMs = options.json && !isFinite(message.processingTimeMs) ? String(message.processingTimeMs) : message.processingTimeMs;
                 return object;
             };
@@ -13650,9 +13650,9 @@ export const google = $root.google = (() => {
             Timestamp.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
-                if (message.seconds != null && Object.hasOwnProperty.call(message, "seconds")
+                if (message.seconds != null && Object.hasOwnProperty.call(message, "seconds"))
                     writer.uint32(/* id 1, wireType 0 =*/8).int64(message.seconds);
-                if (message.nanos != null && Object.hasOwnProperty.call(message, "nanos")
+                if (message.nanos != null && Object.hasOwnProperty.call(message, "nanos"))
                     writer.uint32(/* id 2, wireType 0 =*/16).int32(message.nanos);
                 return writer;
             };
@@ -13682,7 +13682,7 @@ export const google = $root.google = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             Timestamp.decode = function decode(reader, length, error) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = $Reader.create(reader);
                 let end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Timestamp();
                 while (reader.pos < end) {
@@ -13717,9 +13717,9 @@ export const google = $root.google = (() => {
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
             Timestamp.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader)
+                if (!(reader instanceof $Reader))
                     reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32();
+                return this.decode(reader, reader.uint32());
             };
 
             /**
@@ -13733,11 +13733,11 @@ export const google = $root.google = (() => {
             Timestamp.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
-                if (message.seconds != null && message.hasOwnProperty("seconds")
-                    if (!$util.isInteger(message.seconds) && !(message.seconds && $util.isInteger(message.seconds.low) && $util.isInteger(message.seconds.high))
+                if (message.seconds != null && message.hasOwnProperty("seconds"))
+                    if (!$util.isInteger(message.seconds) && !(message.seconds && $util.isInteger(message.seconds.low) && $util.isInteger(message.seconds.high)))
                         return "seconds: integer|Long expected";
-                if (message.nanos != null && message.hasOwnProperty("nanos")
-                    if (!$util.isInteger(message.nanos)
+                if (message.nanos != null && message.hasOwnProperty("nanos"))
+                    if (!$util.isInteger(message.nanos))
                         return "nanos: integer expected";
                 return null;
             };
@@ -13789,12 +13789,12 @@ export const google = $root.google = (() => {
                         object.seconds = options.longs === String ? "0" : 0;
                     object.nanos = 0;
                 }
-                if (message.seconds != null && message.hasOwnProperty("seconds")
+                if (message.seconds != null && message.hasOwnProperty("seconds"))
                     if (typeof message.seconds === "number")
                         object.seconds = options.longs === String ? String(message.seconds) : message.seconds;
                     else
                         object.seconds = options.longs === String ? $util.Long.prototype.toString.call(message.seconds) : options.longs === Number ? new $util.LongBits(message.seconds.low >>> 0, message.seconds.high >>> 0).toNumber() : message.seconds;
-                if (message.nanos != null && message.hasOwnProperty("nanos")
+                if (message.nanos != null && message.hasOwnProperty("nanos"))
                     object.nanos = message.nanos;
                 return object;
             };

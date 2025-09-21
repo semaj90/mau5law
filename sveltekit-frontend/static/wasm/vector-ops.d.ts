@@ -59,25 +59,14 @@ export declare function zScoreNormalize(vectorPtr: number, length: number): void
  * @param vectorCount `i32`
  * @param algorithm `i32`
  */
-export declare function computeBatchSimilarity(
-  queryPtr: number,
-  vectorsPtr: number,
-  resultsPtr: number,
-  vectorDim: number,
-  vectorCount: number,
-  algorithm: number
-): void;
+export declare function computeBatchSimilarity(queryPtr: number, vectorsPtr: number, resultsPtr: number, vectorDim: number, vectorCount: number, algorithm: number): void;
 /**
  * src/wasm/vector-operations/batchNormalizeVectors
  * @param vectorsPtr `usize`
  * @param numVectors `i32`
  * @param vectorLength `i32`
  */
-export declare function batchNormalizeVectors(
-  vectorsPtr: number,
-  numVectors: number,
-  vectorLength: number
-): void;
+export declare function batchNormalizeVectors(vectorsPtr: number, numVectors: number, vectorLength: number): void;
 /**
  * src/wasm/vector-operations/hashEmbedding
  * @param textPtr `usize`
@@ -85,12 +74,7 @@ export declare function batchNormalizeVectors(
  * @param embeddingPtr `usize`
  * @param embeddingDim `i32`
  */
-export declare function hashEmbedding(
-  textPtr: number,
-  textLen: number,
-  embeddingPtr: number,
-  embeddingDim: number
-): void;
+export declare function hashEmbedding(textPtr: number, textLen: number, embeddingPtr: number, embeddingDim: number): void;
 /**
  * src/wasm/vector-operations/allocateVectorMemory
  * @param length `i32`
@@ -130,11 +114,7 @@ export declare function prepareVectorForServer(vectorPtr: number, length: number
  * @param resultPtr `usize`
  * @param length `i32`
  */
-export declare function processServerResponse(
-  responsePtr: number,
-  resultPtr: number,
-  length: number
-): void;
+export declare function processServerResponse(responsePtr: number, resultPtr: number, length: number): void;
 /**
  * src/wasm/vector-operations/hybridCosineSimilarity
  * @param aPtr `usize`
@@ -143,12 +123,7 @@ export declare function processServerResponse(
  * @param useServer `bool`
  * @returns `f32`
  */
-export declare function hybridCosineSimilarity(
-  aPtr: number,
-  bPtr: number,
-  length: number,
-  useServer: boolean
-): number;
+export declare function hybridCosineSimilarity(aPtr: number, bPtr: number, length: number, useServer: boolean): number;
 /**
  * src/wasm/vector-operations/batchVectorChunking
  * @param vectorsPtr `usize`
@@ -158,13 +133,7 @@ export declare function hybridCosineSimilarity(
  * @param resultsPtr `usize`
  * @returns `i32`
  */
-export declare function batchVectorChunking(
-  vectorsPtr: number,
-  numVectors: number,
-  vectorLength: number,
-  chunkSize: number,
-  resultsPtr: number
-): number;
+export declare function batchVectorChunking(vectorsPtr: number, numVectors: number, vectorLength: number, chunkSize: number, resultsPtr: number): number;
 /**
  * src/wasm/vector-operations/prepareTensorForCUDA
  * @param tensorPtr `usize`
@@ -172,12 +141,7 @@ export declare function batchVectorChunking(
  * @param dimCount `i32`
  * @param outputPtr `usize`
  */
-export declare function prepareTensorForCUDA(
-  tensorPtr: number,
-  dimensions: Array<number>,
-  dimCount: number,
-  outputPtr: number
-): void;
+export declare function prepareTensorForCUDA(tensorPtr: number, dimensions: Array<number>, dimCount: number, outputPtr: number): void;
 /**
  * src/wasm/vector-operations/optimizedEmbeddingTransfer
  * @param embeddingPtr `usize`
@@ -185,11 +149,7 @@ export declare function prepareTensorForCUDA(
  * @param compressionLevel `i32`
  * @returns `usize`
  */
-export declare function optimizedEmbeddingTransfer(
-  embeddingPtr: number,
-  length: number,
-  compressionLevel: number
-): number;
+export declare function optimizedEmbeddingTransfer(embeddingPtr: number, length: number, compressionLevel: number): number;
 /**
  * src/wasm/vector-operations/shouldUseServer
  * @param operationType `i32`
@@ -197,11 +157,7 @@ export declare function optimizedEmbeddingTransfer(
  * @param complexityScore `i32`
  * @returns `bool`
  */
-export declare function shouldUseServer(
-  operationType: number,
-  dataSize: number,
-  complexityScore: number
-): boolean;
+export declare function shouldUseServer(operationType: number, dataSize: number, complexityScore: number): boolean;
 /**
  * src/wasm/vector-operations/cosineSimJS
  * @param aPtr `usize`
@@ -238,8 +194,4 @@ export declare function getMemoryStats(): number;
  * @param iterations `i32`
  * @returns `f32`
  */
-export declare function benchmarkOperation(
-  operation: number,
-  dataSize: number,
-  iterations: number
-): number;
+export declare function benchmarkOperation(operation: number, dataSize: number, iterations: number): number;

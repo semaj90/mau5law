@@ -44,9 +44,11 @@ https://svelte.dev/e/js_parse_error -->
   let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
   let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
 
-  $effect(async () => {
-    await loadSystemData();
-    startRealTimeUpdates();
+  $effect(() => {
+    (async () => {
+      await loadSystemData();
+      startRealTimeUpdates();
+    })();
   });
 
   onDestroy(() => {

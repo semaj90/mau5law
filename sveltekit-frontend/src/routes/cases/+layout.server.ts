@@ -37,10 +37,10 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
     }
   }
   if (statusFilter !== "all") {
-    if (helpers.eq) whereConditions.push(helpers.eq((cases as any).status, statusFilter);
+    if (helpers.eq) whereConditions.push(helpers.eq((cases as any).status, statusFilter));
   }
   if (priorityFilter !== "all") {
-    if (helpers.eq) whereConditions.push(helpers.eq((cases as any).priority, priorityFilter);
+    if (helpers.eq) whereConditions.push(helpers.eq((cases as any).priority, priorityFilter));
   }
 
   // Safely determine sort column
@@ -51,7 +51,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
   let caseStats = [];
 
   // Mock data for testing purposes
-  userCases = [;
+  userCases = [
     {
       id: 'case-1',
       title: 'Test Case 1',
