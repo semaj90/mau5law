@@ -16,11 +16,11 @@ import type { PageServerLoad, Actions } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values
-  const form = await superValidate(zod(evidenceUploadSchema);
+  const form = await superValidate(zod(evidenceUploadSchema));
 
-  // Get available cases for the current user;
+  // Get available cases for the current user
   try {
-    const userCases = await db;
+    const userCases = await db
       .select({
         id: cases.id,
         title: cases.title,
@@ -47,7 +47,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   upload: async ({ request, locals }) => {
     const formData = await request.formData();
-    const form = await superValidate(formData, zod(evidenceUploadSchema);
+    const form = await superValidate(formData, zod(evidenceUploadSchema));
 
     if (!form.valid) {
       console.error('Form validation failed:', form.errors);
@@ -124,7 +124,7 @@ export const actions: Actions = {
 
       // Save file to disk
       const filePath = path.join(uploadDir, `${timestamp}-${randomSuffix}${fileExtension}`);
-      const fileBuffer = Buffer.from(await file.arrayBuffer();
+      const fileBuffer = Buffer.from(await file.arrayBuffer());
       await writeFile(filePath, fileBuffer);
 
       // Generate file hash for integrity
@@ -250,7 +250,7 @@ export const actions: Actions = {
 
       // Insert evidence record into database with unified schema
       const evidenceRecord = await db
-        .insert(evidence);
+        .insert(evidence)
         .values({
           case_id: form.data.case_id || null,
           uploader_id: locals.user?.id || 'anonymous', // Assuming user session is available

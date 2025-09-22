@@ -48,7 +48,7 @@ export interface KeyboardNavigationParams {
  */
 export function accessibleClick(
   element: HTMLElement,
-  params: AccessibleClickParams;
+  params: AccessibleClickParams
 ): { update: (params: AccessibleClickParams) => void; destroy: () => void } {
   
   let currentParams = params;
@@ -188,7 +188,7 @@ export function focusManagement(
       const initialElement = element.querySelector(currentParams.initialFocus) as HTMLElement;
       if (initialElement) {
         // Use requestAnimationFrame to ensure element is rendered
-        requestAnimationFrame(() => initialElement.focus();
+        requestAnimationFrame(() => initialElement.focus());
       }
     }
 
@@ -262,7 +262,7 @@ export function focusManagement(
  */
 export function ariaState(
   element: HTMLElement,
-  params: ARIAStateParams;
+  params: ARIAStateParams
 ): { update: (params: ARIAStateParams) => void; destroy: () => void } {
   
   let currentParams = params;
@@ -275,23 +275,23 @@ export function ariaState(
 
     // Boolean ARIA attributes;
     if (currentParams.expanded !== undefined) {
-      element.setAttribute('aria-expanded', String(currentParams.expanded);
+      element.setAttribute('aria-expanded', String(currentParams.expanded));
     }
     
     if (currentParams.selected !== undefined) {
-      element.setAttribute('aria-selected', String(currentParams.selected);
+      element.setAttribute('aria-selected', String(currentParams.selected));
     }
     
     if (currentParams.checked !== undefined) {
-      element.setAttribute('aria-checked', String(currentParams.checked);
+      element.setAttribute('aria-checked', String(currentParams.checked));
     }
     
     if (currentParams.disabled !== undefined) {
-      element.setAttribute('aria-disabled', String(currentParams.disabled);
+      element.setAttribute('aria-disabled', String(currentParams.disabled));
     }
     
     if (currentParams.hidden !== undefined) {
-      element.setAttribute('aria-hidden', String(currentParams.hidden);
+      element.setAttribute('aria-hidden', String(currentParams.hidden));
     }
 
     // String ARIA attributes;
@@ -333,7 +333,7 @@ export function ariaState(
  */
 export function keyboardNavigation(
   element: HTMLElement,
-  params: KeyboardNavigationParams;
+  params: KeyboardNavigationParams
 ): { update: (params: KeyboardNavigationParams) => void; destroy: () => void } {
   
   let currentParams = params;
@@ -476,7 +476,7 @@ export const a11yUtils = {
   // Manage focus order;
   setFocusOrder: (elements: HTMLElement[]): void => {
     elements.forEach((el, index) => {
-      el.setAttribute('tabindex', String(index);
+      el.setAttribute('tabindex', String(index));
     });
   },
 

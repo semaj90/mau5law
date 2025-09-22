@@ -16,7 +16,7 @@
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/kit": "^2.0.0",
-    "@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
+    "@sveltejs/vite-plugin-svelte": "^4.0.4",
     "@types/fabric": "^5.3.0",
     "@types/file-saver": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -33,9 +33,14 @@
     "vite": "^5.4.20"
   },
   "dependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/pg": "^8.15.5",
+    "bcrypt": "^6.0.0",
+    "drizzle-orm": "^0.44.5",
     "fabric": "^5.3.0",
     "file-saver": "^2.0.5",
-    "nes.css": "^2.3.0"
+    "nes.css": "^2.3.0",
+    "postgres": "^3.4.7"
   },
   "engines": {
     "node": ">=18.0.0"

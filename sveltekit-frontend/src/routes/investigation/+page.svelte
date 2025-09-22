@@ -141,7 +141,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     console.log('🧠 Analysis complete:', analysis);
 
     // Update evidence with analysis
-    evidence = evidence.map.title === fileId || (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).id === fileId) {
+    evidence = evidence.map((item) => {
+      if (item.title === fileId || (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).id === fileId) {
         return {
           ...item,
           status: 'analyzed',

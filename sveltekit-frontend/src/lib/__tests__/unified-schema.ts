@@ -165,7 +165,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   profileImageUrl: text("profile_image_url"),
 
   // The structured "Who, What, Why, How" profile data
-  profileData: jsonb("profile_data");
+  profileData: jsonb("profile_data")
     .default({
       who: "",
       what: "",

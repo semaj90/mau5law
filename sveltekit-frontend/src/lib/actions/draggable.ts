@@ -1,7 +1,6 @@
 
 // Enhanced draggable action for detective board evidence nodes
 import { evidenceStore } from '$lib/stores/evidence';
-}
 
 export interface DraggableOptions {
   id?: string; // Evidence ID for store updates
@@ -54,8 +53,8 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
       if (constraint.container) {
         const containerRect = constraint.container.getBoundingClientRect();
         const nodeRect = node.getBoundingClientRect();
-        constrainedX = Math.max(0, Math.min(containerRect.width - nodeRect.width, x);
-        constrainedY = Math.max(0, Math.min(containerRect.height - nodeRect.height, y);
+        constrainedX = Math.max(0, Math.min(containerRect.width - nodeRect.width, x));
+        constrainedY = Math.max(0, Math.min(containerRect.height - nodeRect.height, y));
       } else {
         if (constraint.minX !== undefined) constrainedX = Math.max(constraint.minX, constrainedX);
         if (constraint.maxX !== undefined) constrainedX = Math.min(constraint.maxX, constrainedX);

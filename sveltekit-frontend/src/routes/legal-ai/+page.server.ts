@@ -57,12 +57,12 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         createdAt: ragSessions.createdAt
       })
       .from(ragSessions)
-      .where(eq(ragSessions.isActive, true)
-      .orderBy(desc(ragSessions.updatedAt)
+      .where(eq(ragSessions.isActive, true))
+      .orderBy(desc(ragSessions.updatedAt))
       .limit(5);
 
     // Fetch recent documents
-    const recentDocumentsQuery = db;
+    const recentDocumentsQuery = db
       .select({
         id: legalDocuments.id,
         title: legalDocuments.title,
@@ -86,7 +86,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         const [{ count }] = await db
           .select({ count: legalDocuments.id })
           .from(legalDocuments)
-          .where(eq(legalDocuments.sessionId, session.id);
+          .where(eq(legalDocuments.sessionId, session.id));
         return {
           id: session.id,
           sessionName: session.sessionName || `Session ${session.id.slice(0, 8)}`,

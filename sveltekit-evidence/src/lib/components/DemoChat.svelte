@@ -32,11 +32,11 @@ Tests the demo RAG functionality with a working interface
     query = '';
 
     // Add user message
-    chatHistory.push({
+    chatHistory = [...chatHistory, {
       type: 'user',
       content: userQuery,
       timestamp: new Date()
-    });
+    }];
 
     isLoading = true;
 
@@ -67,21 +67,21 @@ Tests the demo RAG functionality with a working interface
       }
 
       // Add AI response
-      chatHistory.push({
+      chatHistory = [...chatHistory, {
         type: 'ai',
         content: response.response,
         timestamp: new Date(),
         sources: response.sources,
         reasoning: response.reasoning
-      });
+      }];
 
     } catch (error) {
       console.error('Chat error:', error);
-      chatHistory.push({
+      chatHistory = [...chatHistory, {
         type: 'ai',
         content: 'Sorry, I encountered an error processing your request. Please try again.',
         timestamp: new Date()
-      });
+      }];
     } finally {
       isLoading = false;
     }
@@ -107,7 +107,7 @@ Tests the demo RAG functionality with a working interface
   <div class="chat-header">
     <h3 class="nes-text is-primary">🤖 Demo AI Chat</h3>
     <div class="chat-controls">
-      <button class="nes-btn is-warning" onclick={clearChat}>
+      <button class="nes-btn is-warning" onclick={() => clearChat()}>
         Clear Chat
       </button>
     </div>
@@ -231,7 +231,7 @@ Tests the demo RAG functionality with a working interface
     </div>
     <button
       class="nes-btn is-primary"
-      onclick={sendQuery}
+      onclick={() => sendQuery()}
       disabled={!query.trim() || isLoading}
     >
       {isLoading ? 'Thinking...' : 'Send'}

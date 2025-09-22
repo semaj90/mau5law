@@ -48,8 +48,8 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
 
   try {
     // Initialize forms
-    const createCaseForm = await superValidate(zod(createCaseSchema);
-    const addEvidenceForm = await superValidate(zod(addEvidenceSchema);
+    const createCaseForm = await superValidate(zod(createCaseSchema));
+    const addEvidenceForm = await superValidate(zod(addEvidenceSchema));
 
     // If viewing a specific case;
     if (caseIdToView) {
@@ -121,8 +121,8 @@ export const load: PageServerLoad = async ({ url, locals, parent }) => {
     console.error('Error in cases page load:', error);
 
     // Fallback data
-    const createCaseForm = await superValidate(zod(createCaseSchema);
-    const addEvidenceForm = await superValidate(zod(addEvidenceSchema);
+    const createCaseForm = await superValidate(zod(createCaseSchema));
+    const addEvidenceForm = await superValidate(zod(addEvidenceSchema));
 
     return {
       activeCase: null,
@@ -144,7 +144,7 @@ export const actions: Actions = {
       return fail(401, { message: "Unauthorized" });
     }
 
-    const form = await superValidate(request, zod(createCaseSchema);
+    const form = await superValidate(request, zod(createCaseSchema));
 
     if (!form.valid) {
       return fail(400, { form });
@@ -212,7 +212,7 @@ export const actions: Actions = {
       return fail(401, { message: "Unauthorized" });
     }
 
-    const form = await superValidate(request, zod(addEvidenceSchema);
+    const form = await superValidate(request, zod(addEvidenceSchema));
 
     if (!form.valid) {
       return fail(400, { form });

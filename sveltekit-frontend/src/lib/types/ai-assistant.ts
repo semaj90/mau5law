@@ -2,8 +2,7 @@
  * AI Assistant Types - Complete type definitions for multi-backend AI system
  */
 
-export type Backend = 'vllm' | 'ollama' | 'webasm' | 'go-micro';
-}
+export type Backend = 'tensorRT-llm' | 'ollama' | 'webasm' | 'go-micro' | 'gemma' | 'openai' | 'azure' | 'anthropic' | 'local-llm' | 'custom-api' | 'google-palm' | 'cohere' | 'ai21' | 'llama2-server';
 
 export interface ChatMessage {
   id: string;
@@ -205,7 +204,7 @@ export interface GPUAcceleration {
 
 export interface WebGPUConfig {
   maxBufferSize: number;
-  preferredLimits?: GPULimits;
+  preferredLimits?: Record<string, number>;
   enableOptimizations: boolean;
   fallbackToCPU: boolean;
 }
@@ -257,7 +256,6 @@ export interface WebASMResponse {
 
 // Export formats
 export type ExportFormat = 'json' | 'markdown' | 'pdf' | 'docx' | 'csv';
-}
 
 export interface ExportOptions {
   format: ExportFormat;
@@ -323,3 +321,86 @@ export interface CacheMetrics {
   memoryUsage: number;
   diskUsage: number;
 }
+
+// === Svelte 5 Integration Enhancements ===
+
+/**
+ * Svelte 5 reactive store for AI assistant state
+ */
+export interface AIAssistantReactiveState {
+  currentSession: ChatSession | null;
+  messages: ChatMessage[];
+  isLoading: boolean;
+  activeBackend: Backend;
+  error: string | null;
+}
+
+/**
+ * Event handlers for Svelte 5 components
+ */
+export interface AIAssistantEventHandlers {
+  onMessageSent?: (message: ChatMessage) => void;
+  onMessageReceived?: (message: ChatMessage) => void;
+  onSessionChanged?: (session: ChatSession) => void;
+  onBackendChanged?: (backend: Backend) => void;
+  onError?: (error: string) => void;
+}
+
+/**
+ * Component props interface for Svelte 5
+ */
+export interface AIAssistantProps {
+  config?: AssistantConfig;
+  handlers?: AIAssistantEventHandlers;
+  theme?: 'light' | 'dark' | 'yorha' | 'legal';
+  enabledBackends?: Backend[];
+  readonly?: boolean;
+  autoFocus?: boolean;
+}
+
+/**
+ * Type guards for runtime validation
+ */
+export const isChatMessage = (value: unknown): value is ChatMessage => {
+  return typeof value === 'object' && value !== null &&
+    'id' in value && 'role' in value && 'content' in value;
+};
+
+export const isBackendResponse = (value: unknown): value is BackendResponse => {
+  return typeof value === 'object' && value !== null &&
+    'text' in value && 'backend' in value && 'model' in value;
+};
+
+export const isLegalContext = (value: unknown): value is LegalContext => {
+  return typeof value === 'object' && value !== null &&
+    'domain' in value && 'confidentiality' in value;
+};
+
+/**
+ * Enhanced streaming response interface
+ */
+export interface StreamingResponse {
+  id: string;
+  content: string;
+  isComplete: boolean;
+  tokens: number;
+  backend: Backend;
+  timestamp: number;
+}
+
+/**
+ * WebGPU integration for enhanced performance
+ */
+export interface WebGPUAIConfig extends WebGPUConfig {
+  shaderOptimizations: boolean;
+  tensorParallelism: boolean;
+  batchSize: number;
+  precision: 'fp16' | 'fp32' | 'int8';
+}
+
+// === Re-exports for compatibility ===
+export type { ChatMessage as AIMessage };
+export type { ChatSession as AISession };
+export type { BackendResponse as AIResponse };
+export type { LegalContext as AILegalContext };
+

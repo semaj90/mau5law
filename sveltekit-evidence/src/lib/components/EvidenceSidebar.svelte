@@ -10,9 +10,9 @@ Enhanced with Lucia v3 session handling and drizzle-orm integration
   import { boardActions } from '$lib/stores/boardStore';
   import type { Evidence } from '$lib/types';
 
-  // Session-aware user information from page store
-  $: user = $page.data?.user ?? null;
-  $: session = $page.data?.session ?? null;
+  // Session-aware user information from page store using Svelte 5 $derived
+  let user = $derived($page.data?.user ?? null);
+  let session = $derived($page.data?.session ?? null);
 
   // Props using Svelte 5 $props()
   let {

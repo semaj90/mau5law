@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	interface TensorRTHealth {
 		status: string;
@@ -10,20 +9,21 @@
 		error?: string;
 	}
 
-	let health = writable<TensorRTHealth>({ status: 'checking' });
-	let isConnected = false;
+	// Svelte 5 runes
+	let health = $state<TensorRTHealth>({ status: 'checking' });
+	let isConnected = $state(false);
 
 	async function checkHealth() {
 		try {
 			const response = await fetch('/api/tensorrt');
 			const data = await response.json();
-			health.set(data);
+			health = data;
 			isConnected = data.status === 'connected';
 		} catch (error) {
-			health.set({
+			health = {
 				status: 'error',
 				error: error instanceof Error ? error.message : 'Connection failed'
-			});
+			};
 			isConnected = false;
 		}
 	}
@@ -44,29 +44,29 @@
 		</div>
 	</div>
 
-	{#if $health}
+	{#if health}
 		<div class="health-details">
-			{#if $health.status === 'connected'}
+			{#if health.status === 'connected'}
 				<div class="health-item">
 					<span class="label">Status:</span>
 					<span class="value success">✅ Healthy</span>
 				</div>
 
-				{#if $health.cuda_available}
+				{#if health.cuda_available}
 					<div class="health-item">
 						<span class="label">CUDA:</span>
 						<span class="value success">✅ Available</span>
 					</div>
 				{/if}
 
-				{#if $health.gpu_name}
+				{#if health.gpu_name}
 					<div class="health-item">
 						<span class="label">GPU:</span>
-						<span class="value">{$health.gpu_name}</span>
+						<span class="value">{health.gpu_name}</span>
 					</div>
 				{/if}
 
-				{#if $health.tensorrt_available}
+				{#if health.tensorrt_available}
 					<div class="health-item">
 						<span class="label">TensorRT:</span>
 						<span class="value success">✅ Ready</span>
@@ -75,20 +75,20 @@
 			{:else}
 				<div class="health-item">
 					<span class="label">Status:</span>
-					<span class="value error">❌ {$health.status}</span>
+					<span class="value error">❌ {health.status}</span>
 				</div>
 
-				{#if $health.error}
+				{#if health.error}
 					<div class="health-item">
 						<span class="label">Error:</span>
-						<span class="value error">{$health.error}</span>
+						<span class="value error">{health.error}</span>
 					</div>
 				{/if}
 			{/if}
 		</div>
 	{/if}
 
-	<button on:click={checkHealth} class="refresh-btn">
+	<button onclick={checkHealth} class="refresh-btn">
 		🔄 Refresh Status
 	</button>
 </div>

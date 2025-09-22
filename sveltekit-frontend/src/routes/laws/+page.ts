@@ -8,7 +8,7 @@ export const load: PageLoad = async ({ fetch, url, depends }) => {
 
   try {
     // Quick access links for major legal resources
-    const quickLinks = [;
+    const quickLinks = [
       {
         id: 'ca-civil-code',
         title: 'California Civil Code',

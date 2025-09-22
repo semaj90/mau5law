@@ -1,7 +1,7 @@
 <!-- Legal AI Multi-Model Orchestrator Interface -->
 <!-- Nintendo-Style UI with Memory Bank Visualization -->
 
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import { legalAIOrchestrator } from '$lib/services/legal-ai-orchestrator';
   import Button from '$lib/components/ui/Button.svelte';

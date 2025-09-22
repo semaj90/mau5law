@@ -5,14 +5,14 @@ import { users, cases, evidence, sessions, aiHistory, profileTable } from '$lib/
 import { eq, desc, count, sql } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-	const session = await locals.auth.validate();
-	if (!session) {
+	// Check authentication using Lucia v3
+	if (!locals.session || !locals.user) {
 		throw redirect(302, '/login');
 	}
 
 	// Check if user is admin
 	const adminCheck = await db.select().from(users).limit(1);
-	if (adminCheck.length === 0 || adminCheck[0].id !== session.user.userId) {
+	if (adminCheck.length === 0 || adminCheck[0].id !== locals.user.id) {
 		throw error(403, 'Admin access required');
 	}
 
@@ -51,21 +51,21 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			db
 				.select({ count: count() })
 				.from(cases)
-				.where(eq(cases.user_id, userId)
+				.where(eq(cases.user_id, userId))
 				.then(result => result[0]?.count || 0),
 
 			// Evidence count
 			db
 				.select({ count: count() })
 				.from(evidence)
-				.where(eq(evidence.user_id, userId)
+				.where(eq(evidence.user_id, userId))
 				.then(result => result[0]?.count || 0),
 
 			// Active sessions count
 			db
 				.select({ count: count() })
 				.from(sessions)
-				.where(eq(sessions.user_id, userId)
+				.where(eq(sessions.user_id, userId))
 				.then(result => result[0]?.count || 0),
 
 			// AI interactions count
@@ -148,8 +148,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 export const actions: Actions = {
 	updateProfile: async ({ request, params, locals }) => {
-		const session = await locals.auth.validate();
-		if (!session) {
+		if (!locals.session || !locals.user) {
 			throw redirect(302, '/login');
 		}
 
@@ -168,22 +167,22 @@ export const actions: Actions = {
 			const existingProfile = await db
 				.select()
 				.from(profileTable)
-				.where(eq(profileTable.id, userId)
+				.where(eq(profileTable.id, userId))
 				.limit(1);
 
 			if (existingProfile.length > 0) {
 				// Update existing profile
 				await db
-					.update(profileTable);
+					.update(profileTable)
 					.set({
 						firstName,
 						lastName
 					})
-					.where(eq(profileTable.id, userId);
+					.where(eq(profileTable.id, userId));
 			} else {
 				// Create new profile
 				await db
-					.insert(profileTable);
+					.insert(profileTable)
 					.values({
 						id: userId,
 						firstName,
@@ -199,8 +198,7 @@ export const actions: Actions = {
 	},
 
 	revokeSession: async ({ request, params, locals }) => {
-		const session = await locals.auth.validate();
-		if (!session) {
+		if (!locals.session || !locals.user) {
 			throw redirect(302, '/login');
 		}
 
@@ -214,7 +212,7 @@ export const actions: Actions = {
 		try {
 			await db
 				.delete(sessions)
-				.where(eq(sessions.id, sessionId);
+				.where(eq(sessions.id, sessionId));
 
 			return { success: true, message: 'Session revoked successfully' };
 		} catch (err) {
@@ -224,8 +222,7 @@ export const actions: Actions = {
 	},
 
 	resetPassword: async ({ request, params, locals }) => {
-		const session = await locals.auth.validate();
-		if (!session) {
+		if (!locals.session || !locals.user) {
 			throw redirect(302, '/login');
 		}
 
@@ -249,17 +246,17 @@ export const actions: Actions = {
 
 			// Update user password
 			await db
-				.update(users);
+				.update(users)
 				.set({
 					password_hash: passwordHash,
 					updated_at: new Date()
 				})
-				.where(eq(users.id, userId);
+				.where(eq(users.id, userId));
 
 			// Revoke all existing sessions for this user
 			await db
 				.delete(sessions)
-				.where(eq(sessions.user_id, userId);
+				.where(eq(sessions.user_id, userId));
 
 			return { success: true, message: 'Password reset successfully. All sessions have been revoked.' };
 		} catch (err) {

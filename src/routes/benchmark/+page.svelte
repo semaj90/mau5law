@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import { runEmbeddingBenchmark } from '$lib/gpu/gpu-benchmark';
   import { telemetryBus } from '$lib/services/telemetry-bus';

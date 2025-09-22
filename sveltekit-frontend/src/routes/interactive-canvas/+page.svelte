@@ -138,11 +138,11 @@ https://svelte.dev/e/js_parse_error -->
   	async function calculateFileHash(file: File, onProgress?: (progress: number) => void): Promise<string> {
   		const chunkSize = 1024 * 1024; // 1MB chunks
   		const chunks = Math.ceil(file.size / chunkSize);
-  		const hash = await crypto.subtle.digest('SHA-256', await file.arrayBuffer();
+  		const hash = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
   		// Simulate progress for demo (real implementation would process chunks)
   		if (onProgress) {
   			for (let i = 0; i <= 100; i += 10) {
-  				await new Promise(resolve => setTimeout(resolve, 10);
+  				await new Promise(resolve => setTimeout(resolve, 10));
   				onProgress(i / 100);
   }}
   		return Array.from(new Uint8Array(hash))

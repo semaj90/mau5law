@@ -1,7 +1,7 @@
 <!-- Legal AI Orchestrator - Using Existing Ollama Models -->
 <!-- Nintendo-Style UI with Memory Bank Visualization -->
 
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';

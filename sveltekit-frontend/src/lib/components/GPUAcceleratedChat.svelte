@@ -100,7 +100,11 @@
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         return PRIMARY_PORT;
       }
-    } catch // Try fallback ports
+    } catch (error) {
+      // Try fallback ports
+      console.warn(`Primary port ${PRIMARY_PORT} failed:`, error);
+    }
+
     for (const port of FALLBACK_PORTS) {
       try {
         const response = await fetch(`http://localhost:${port}/api/health`, {
@@ -110,7 +114,10 @@
           console.log(`Using fallback port ${port}`);
           return port;
         }
-      } catch }
+      } catch (error) {
+        console.warn(`Fallback port ${port} failed:`, error);
+      }
+    }
 
     // Default to primary if all fail
     return PRIMARY_PORT;

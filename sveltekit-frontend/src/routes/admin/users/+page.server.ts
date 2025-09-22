@@ -6,15 +6,14 @@ import { eq, desc, like, or } from 'drizzle-orm';
 import { hash } from '@node-rs/argon2';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
-	const session = await locals.auth.validate();
-	if (!session) {
+	if (!locals.session || !locals.user) {
 		throw redirect(302, '/login');
 	}
 
 	// Check if user is admin (you might want to add an admin role field)
 	// For now, we'll assume the first user is admin
 	const adminCheck = await db.select().from(users).limit(1);
-	if (adminCheck.length === 0 || adminCheck[0].id !== session.user.userId) {
+	if (adminCheck.length === 0 || adminCheck[0].id !== locals.user.id) {
 		throw error(403, 'Admin access required');
 	}
 
@@ -24,7 +23,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 	const offset = (page - 1) * limit;
 
 	try {
-		let query = db;
+		let query = db
 			.select({
 				id: users.id,
 				email: users.email,
@@ -33,7 +32,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 			})
 			.from(users);
 
-		// Add search filter if provided;
+		// Add search filter if provided
 		if (search) {
 			query = query.where(
 				or(
@@ -43,7 +42,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		}
 
 		const usersResult = await query
-			.orderBy(desc(users.created_at)
+			.orderBy(desc(users.created_at))
 			.limit(limit)
 			.offset(offset);
 
@@ -82,8 +81,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 
 export const actions: Actions = {
 	createUser: async ({ request, locals }) => {
-		const session = await locals.auth.validate();
-		if (!session) {
+		if (!locals.session || !locals.user) {
 			throw redirect(302, '/login');
 		}
 
@@ -121,7 +119,7 @@ export const actions: Actions = {
 			const existingUser = await db
 				.select()
 				.from(users)
-				.where(eq(users.email, email)
+				.where(eq(users.email, email))
 				.limit(1);
 
 			if (existingUser.length > 0) {
@@ -132,7 +130,7 @@ export const actions: Actions = {
 				};
 			}
 
-			// Hash password;
+			// Hash password
 			const passwordHash = await hash(password, {
 				memoryCost: 19456,
 				timeCost: 2,
@@ -142,7 +140,7 @@ export const actions: Actions = {
 
 			// Create user
 			const newUser = await db
-				.insert(users);
+				.insert(users)
 				.values({
 					email,
 					password_hash: passwordHash
@@ -168,8 +166,7 @@ export const actions: Actions = {
 	},
 
 	deleteUser: async ({ request, locals }) => {
-		const session = await locals.auth.validate();
-		if (!session) {
+		if (!locals.session || !locals.user) {
 			throw redirect(302, '/login');
 		}
 
@@ -180,15 +177,15 @@ export const actions: Actions = {
 			return { success: false, error: 'User ID is required' };
 		}
 
-		// Prevent admin from deleting themselves;
-		if (userId === session.user.userId) {
+		// Prevent admin from deleting themselves
+		if (userId === parseInt(locals.user.id)) {
 			return { success: false, error: 'Cannot delete your own account' };
 		}
 
 		try {
 			const deleteResult = await db
 				.delete(users)
-				.where(eq(users.id, userId)
+				.where(eq(users.id, userId))
 				.returning();
 
 			if (deleteResult.length === 0) {
@@ -203,8 +200,7 @@ export const actions: Actions = {
 	},
 
 	toggleUserStatus: async ({ request, locals }) => {
-		const session = await locals.auth.validate();
-		if (!session) {
+		if (!locals.session || !locals.user) {
 			throw redirect(302, '/login');
 		}
 

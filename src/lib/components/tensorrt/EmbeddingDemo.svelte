@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	interface EmbeddingResult {
 		text: string;
@@ -10,10 +9,11 @@
 		similarity?: number;
 	}
 
-	let embeddings = writable<EmbeddingResult[]>([]);
-	let input = '';
-	let isLoading = false;
-	let compareMode = false;
+	// Svelte 5 runes
+	let embeddings = $state<EmbeddingResult[]>([]);
+	let input = $state('');
+	let isLoading = $state(false);
+	let compareMode = $state(false);
 
 	const sampleTexts = [
 		"Time is of the essence delivery clause",
@@ -48,12 +48,12 @@
 				};
 
 				// Calculate similarity with existing embeddings if in compare mode
-				if (compareMode && $embeddings.length > 0) {
-					const lastEmbedding = $embeddings[$embeddings.length - 1];
+				if (compareMode && embeddings.length > 0) {
+					const lastEmbedding = embeddings[embeddings.length - 1];
 					result.similarity = calculateCosineSimilarity(result.embedding, lastEmbedding.embedding);
 				}
 
-				embeddings.update(embs => [...embs, result]);
+				embeddings = [...embeddings, result];
 			} else {
 				throw new Error(data.error || 'Embedding generation failed');
 			}
@@ -83,7 +83,7 @@
 	}
 
 	function clearEmbeddings() {
-		embeddings.set([]);
+		embeddings = [];
 	}
 
 	function formatNumber(num: number): string {
@@ -117,7 +117,7 @@
 					disabled={isLoading}
 				></textarea>
 				<button
-					on:click={handleSubmit}
+					onclick={handleSubmit}
 					disabled={!input.trim() || isLoading}
 					class="generate-btn"
 				>
@@ -130,7 +130,7 @@
 					<input type="checkbox" bind:checked={compareMode} />
 					📊 Similarity comparison mode
 				</label>
-				<button on:click={clearEmbeddings} class="clear-btn">
+				<button onclick={clearEmbeddings} class="clear-btn">
 					🗑️ Clear All
 				</button>
 			</div>
@@ -141,7 +141,7 @@
 			<div class="sample-buttons">
 				{#each sampleTexts as sample}
 					<button
-						on:click={() => useSample(sample)}
+						onclick={() => useSample(sample)}
 						class="sample-btn"
 						disabled={isLoading}
 					>
@@ -153,7 +153,7 @@
 	</div>
 
 	<div class="results">
-		{#if $embeddings.length === 0}
+		{#if embeddings.length === 0}
 			<div class="empty-state">
 				<div class="empty-icon">🎯</div>
 				<h3>No embeddings generated yet</h3>
@@ -161,7 +161,7 @@
 			</div>
 		{:else}
 			<div class="embeddings-grid">
-				{#each $embeddings as result, index (index)}
+				{#each embeddings as result, index (index)}
 					<div class="embedding-card">
 						<div class="card-header">
 							<span class="index">#{index + 1}</span>

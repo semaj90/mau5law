@@ -1,8 +1,7 @@
 // YoRHa Interface Types
 // Complete type definitions for the cyberpunk YoRHa legal AI interface system
 
-// Core System Types;
-}
+// Core System Types
 
 export interface SystemMetrics {
 	cpu_usage: number;
@@ -19,8 +18,7 @@ export type SecurityLevel = 'MINIMUM' | 'STANDARD' | 'HIGH' | 'MAXIMUM' | 'CLASS
 export type QuantumState = 'COHERENT' | 'ENTANGLED' | 'SUPERPOSITION' | 'COLLAPSED' | 'UNSTABLE';
 export type SystemStatus = 'ONLINE' | 'DEGRADED' | 'MAINTENANCE' | 'OFFLINE' | 'CRITICAL';
 
-// Module System Types;
-}
+// Module System Types
 
 export interface YoRHaModule {
 	id: string;
@@ -46,7 +44,6 @@ export type ModuleStatus =
 	| 'UPDATING'
 	| 'MAXIMUM'
 	| 'OFFLINE';
-}
 
 export interface ModuleConfiguration {
 	auto_start: boolean;
@@ -67,8 +64,7 @@ export interface ResourceAllocation {
 
 export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'CRITICAL';
 
-// Command System Types;
-}
+// Command System Types
 
 export interface CommandResult {
 	id: string;
@@ -83,7 +79,6 @@ export interface CommandResult {
 }
 
 export type CommandStatus = 'PROCESSING' | 'SUCCESS' | 'ERROR' | 'TIMEOUT' | 'CANCELLED';
-}
 
 export interface CommandContext {
 	user_id: string;
@@ -112,8 +107,7 @@ export interface CommandParameter {
 	validation?: string; // regex pattern
 }
 
-// 3D Holographic Types;
-}
+// 3D Holographic Types
 
 export interface HolographicData {
 	id: string;
@@ -147,7 +141,6 @@ export type AnimationType =
 	| 'orbit'
 	| 'bounce'
 	| 'static';
-}
 
 export interface Vector3D {
 	x: number;
@@ -195,8 +188,7 @@ export interface CameraConfig {
 	auto_rotate: boolean;
 }
 
-// Visual Effects Types;
-}
+// Visual Effects Types
 
 export interface VisualEffect {
 	type: EffectType;
@@ -214,7 +206,6 @@ export type EffectType =
 	| 'distortion'
 	| 'particle_system'
 	| 'data_streams';
-}
 
 export interface ParticleSystem {
 	particle_count: number;
@@ -227,8 +218,7 @@ export interface ParticleSystem {
 	physics_enabled: boolean;
 }
 
-// Data Visualization Types;
-}
+// Data Visualization Types
 
 export interface DataVisualization {
 	id: string;
@@ -248,7 +238,6 @@ export type VisualizationType =
 	| 'security_grid'
 	| 'quantum_state'
 	| 'legal_relationships';
-}
 
 export interface VisualizationConfig {
 	width: number;
@@ -260,8 +249,7 @@ export interface VisualizationConfig {
 	show_connections: boolean;
 }
 
-// Neural Network Types;
-}
+// Neural Network Types
 
 export interface NeuralNetworkState {
 	total_nodes: number;
@@ -282,7 +270,6 @@ export type TrainingStatus =
 	| 'OPTIMIZING'
 	| 'COMPLETE'
 	| 'ERROR';
-}
 
 export interface NeuralNode {
 	id: string;
@@ -302,8 +289,7 @@ export interface NeuralConnection {
 	signal_strength: number;
 }
 
-// Legal AI Specific Types;
-}
+// Legal AI Specific Types
 
 export interface LegalAISession {
 	session_id: string;
@@ -318,7 +304,6 @@ export interface LegalAISession {
 }
 
 export type SessionStatus = 'ACTIVE' | 'IDLE' | 'PAUSED' | 'TERMINATED' | 'ERROR';
-}
 
 export interface LegalContext {
 	jurisdiction: string;
@@ -350,7 +335,6 @@ export type LegalQueryType =
 	| 'contract_analysis';
 
 export type ProcessingStatus = 'QUEUED' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
-}
 
 export interface LegalResponse {
 	id: string;
@@ -383,8 +367,7 @@ export interface RiskFactor {
 	mitigation_strategies: string[];
 }
 
-// System Monitoring Types;
-}
+// System Monitoring Types
 
 export interface SystemAlert {
 	id: string;
@@ -409,7 +392,6 @@ export type AlertType =
 	| 'AUTHENTICATION_FAILURE';
 
 export type AlertSeverity = 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL' | 'EMERGENCY';
-}
 
 export interface PerformanceReport {
 	timestamp: string;
@@ -439,8 +421,7 @@ export interface ModulePerformance {
 	resource_usage: ResourceUtilization;
 }
 
-// User Interface Types;
-}
+// User Interface Types
 
 export interface UITheme {
 	name: string;
@@ -489,8 +470,7 @@ export interface LayoutConfig {
 	grid_columns: number;
 }
 
-// API Integration Types;
-}
+// API Integration Types
 
 export interface APIEndpoint {
 	name: string;
@@ -511,8 +491,7 @@ export interface APIResponse<T = any> {
 	processing_time_ms: number;
 }
 
-// WebGL and Rendering Types;
-}
+// WebGL and Rendering Types
 
 export interface WebGLConfig {
 	canvas_width: number;
@@ -571,7 +550,6 @@ export type YoRHaEventType =
 	| 'user_login'
 	| 'user_logout'
 	| 'data_updated';
-}
 
 export interface YoRHaEvent {
 	type: YoRHaEventType;
@@ -613,3 +591,75 @@ export type YoRHaModuleStatus = ModuleStatus;
 export type YoRHaSystemStatus = SystemStatus;
 export type YoRHaSecurityLevel = SecurityLevel;
 export type YoRHaCommandStatus = CommandStatus;
+
+// === Svelte 5 Runes Integration ===
+
+/**
+ * Reactive state wrapper for YoRHa system metrics
+ * Compatible with Svelte 5 $state() runes
+ */
+export interface YoRHaReactiveState<T> {
+  value: T;
+  subscribe: (callback: (value: T) => void) => () => void;
+  update: (updater: (current: T) => T) => void;
+  set: (value: T) => void;
+}
+
+/**
+ * Enhanced-Bits compatible theme configuration
+ */
+export interface YoRHaEnhancedTheme extends UITheme {
+  enhancedBits: {
+    cardStyles: Record<string, string>;
+    buttonVariants: Record<string, string>;
+    inputStyles: Record<string, string>;
+  };
+}
+
+/**
+ * Type-safe event handlers for YoRHa components
+ */
+export interface YoRHaEventHandlers {
+  onSystemStatusChange?: (status: SystemStatus) => void;
+  onModuleStateChange?: (module: YoRHaModule) => void;
+  onCommandExecuted?: (result: CommandResult) => void;
+  onAlertRaised?: (alert: SystemAlert) => void;
+  onLegalQueryComplete?: (response: LegalResponse) => void;
+}
+
+/**
+ * Svelte 5 component props interface
+ */
+export interface YoRHaComponentProps {
+  theme?: YoRHaEnhancedTheme;
+  handlers?: YoRHaEventHandlers;
+  config?: ConfigurationOption[];
+  readonly?: boolean;
+  disabled?: boolean;
+}
+
+/**
+ * Type guards for runtime type checking
+ */
+export const isSystemMetrics = (value: unknown): value is SystemMetrics => {
+  return typeof value === 'object' && value !== null &&
+    'cpu_usage' in value && 'memory_usage' in value;
+};
+
+export const isLegalQuery = (value: unknown): value is LegalQuery => {
+  return typeof value === 'object' && value !== null &&
+    'id' in value && 'query_text' in value && 'query_type' in value;
+};
+
+export const isYoRHaModule = (value: unknown): value is YoRHaModule => {
+  return typeof value === 'object' && value !== null &&
+    'id' in value && 'name' in value && 'status' in value;
+};
+
+// === Re-exports for Enhanced Compatibility ===
+export type { SystemMetrics as YoRHaSystemMetrics };
+export type { LegalQuery as YoRHaLegalQuery };
+export type { CommandResult as YoRHaCommandResult };
+export type { HolographicData as YoRHa3DObject };
+export type { VisualEffect as YoRHaEffect };
+

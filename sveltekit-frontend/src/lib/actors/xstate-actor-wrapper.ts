@@ -7,24 +7,19 @@
 import { fromPromise, createActor, type ActorRefFrom } from "xstate";
 import { fetchWithTimeout } from "$lib/utils";
 
-// ===== EMBEDDING ACTOR =====;
-}
+// ===== EMBEDDING ACTOR =====
 
 export interface EmbeddingActorInput {
   text: string;
   documentId?: string;
   caseId?: string;
-  chunkIndex?: number;
-}
-
+  chunkIndex?: number
 export interface EmbeddingActorOutput {
   embedding: number[];
   dimensions: number;
   model: string;
   processingTime: number;
-  tokenCount?: number;
-}
-
+  tokenCount?: number
 export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingActorInput }) => {
   const startTime = Date.now();
 
@@ -58,25 +53,20 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
   }
 });
 
-// ===== DOCUMENT PROCESSING ACTOR =====;
-}
+// ===== DOCUMENT PROCESSING ACTOR =====
 
 export interface DocumentProcessingInput {
   documentId: string;
   generateSummary?: boolean;
   extractEntities?: boolean;
-  generateEmbeddings?: boolean;
-}
-
+  generateEmbeddings?: boolean
 export interface DocumentProcessingOutput {
   documentId: string;
   summary?: string;
   entities?: Array<any>;
   embeddings?: { chunks: number; dimensions: number };
   processingTime: number;
-  success: boolean;
-}
-
+  success: boolean
 export const documentProcessingActor = fromPromise(async ({ input }: { input: DocumentProcessingInput }) => {
     const startTime = Date.now();
 
@@ -108,25 +98,19 @@ export const documentProcessingActor = fromPromise(async ({ input }: { input: Do
   }
 );
 
-// ===== LEGAL ANALYSIS ACTOR =====;
-}
-
+// ===== LEGAL ANALYSIS ACTOR =====
 export interface LegalAnalysisInput {
   content: string;
   caseType?: 'contract' | 'litigation' | 'compliance' | 'regulatory';
   jurisdiction?: string;
-  priority?: 'high' | 'medium' | 'low';
-}
-
+  priority?: 'high' | 'medium' | 'low'
 export interface LegalAnalysisOutput {
   riskScore: number;
   riskFactors: string[];
   recommendations: string[];
   precedents: Array<any>;
   confidence: number;
-  processingTime: number;
-}
-
+  processingTime: number
 export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
   const startTime = Date.now();
 
@@ -157,24 +141,18 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
   }
 });
 
-// ===== RAG SEARCH ACTOR =====;
-}
-
+// ===== RAG SEARCH ACTOR =====
 export interface RAGSearchInput {
   query: string;
   caseId?: string;
   documentTypes?: string[];
   limit?: number;
-  threshold?: number;
-}
-
+  threshold?: number
 export interface RAGSearchOutput {
   results: Array<any>;
   totalResults: number;
   processingTime: number;
-  model: string;
-}
-
+  model: string
 export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchInput }) => {
   const startTime = Date.now();
 
@@ -208,40 +186,26 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
 export function createEmbeddingActor(
   input: EmbeddingActorInput;
 ): ActorRefFrom<typeof embeddingActor> {
-  return createActor(embeddingActor, { input });
-}
-
+  return createActor(embeddingActor, { input })
 export function createDocumentProcessingActor(
   input: DocumentProcessingInput;
 ): ActorRefFrom<typeof documentProcessingActor> {
-  return createActor(documentProcessingActor, { input });
-}
-
+  return createActor(documentProcessingActor, { input })
 export function createLegalAnalysisActor(
   input: LegalAnalysisInput;
 ): ActorRefFrom<typeof legalAnalysisActor> {
-  return createActor(legalAnalysisActor, { input });
-}
-
+  return createActor(legalAnalysisActor, { input })
 export function createRAGSearchActor(input: RAGSearchInput): ActorRefFrom<typeof ragSearchActor> {
-  return createActor(ragSearchActor, { input });
-}
-
-// ===== WORKFLOW ORCHESTRATION ACTOR =====;
-}
-
+  return createActor(ragSearchActor, { input })
+// ===== WORKFLOW ORCHESTRATION ACTOR =====
 export interface WorkflowInput {
   steps: Array<any>;
-  parallel?: boolean;
-}
-
+  parallel?: boolean
 export interface WorkflowOutput {
   results: Record<string, any>;
   totalTime: number;
   success: boolean;
-  errors: Array<any>;
-}
-
+  errors: Array<any>
 export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInput }) => {
   const startTime = Date.now();
   const results: Record<string, any> = {};
@@ -350,9 +314,7 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
 });
 
 export function createWorkflowActor(input: WorkflowInput): ActorRefFrom<typeof workflowActor> {
-  return createActor(workflowActor, { input });
-}
-
+  return createActor(workflowActor, { input })
 // ===== UTILITY FUNCTIONS =====
 
 export async function runActor<T>(actor: ActorRefFrom<any>): Promise<T> {
@@ -370,19 +332,13 @@ export async function runActor<T>(actor: ActorRefFrom<any>): Promise<T> {
       }
     });
     actor.start();
-  });
-}
-
+  })
 export function getActorOutput<T>(actor: ActorRefFrom<any>): T | undefined {
   const snapshot = actor.getSnapshot();
-  return snapshot.output as T;
-}
-
+  return snapshot.output as T
 export function isActorDone(actor: ActorRefFrom<any>): boolean {
   const snapshot = actor.getSnapshot();
-  return snapshot.status === 'done';
-}
-
+  return snapshot.status === 'done'
 export function hasActorError(actor: ActorRefFrom<any>): boolean {
   const snapshot = actor.getSnapshot();
   return snapshot.status === 'error';
