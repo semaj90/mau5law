@@ -8,7 +8,47 @@
 
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
-  import { fabric } from 'fabric';
+
+  // Dynamic fabric import to avoid SSR issues
+  let fabricInstance: any = null;
+
+  async function getFabric(): Promise<any> {
+    if (fabricInstance) return fabricInstance;
+    try {
+      const mod: any = await import('fabric');
+      fabricInstance = mod.fabric ?? mod.default ?? mod;
+      return fabricInstance;
+    } catch (error) {
+      console.error('Failed to load fabric.js:', error);
+      // Show fallback notice
+      const notice = document.createElement('div');
+      notice.innerHTML = '⚠️ failure default to mock - Canvas unavailable, fabric.js loading failed';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      document.body.appendChild(notice);
+      setTimeout(() => notice.remove(), 5000);
+
+      // Return mock fabric for fallback
+      return {
+        Canvas: class MockCanvas {
+          constructor(element: any, options: any) {
+            this.element = element;
+            this.options = options;
+          }
+          add() {}
+          remove() {}
+          clear() {}
+          renderAll() {}
+          getObjects() { return []; }
+          on() {}
+          off() {}
+        },
+        Object: class MockObject {},
+        Rect: class MockRect {},
+        Circle: class MockCircle {},
+        Group: class MockGroup {}
+      };
+    }
+  }
   
   interface EvidenceItem {
     id: string;
@@ -54,7 +94,7 @@
 
   // Canvas state using Svelte 5 runes
   let canvasElement: HTMLCanvasElement = $state(undefined as any);
-  let fabricCanvas: fabric.Canvas = $state(undefined as any);
+  let fabricCanvas: any = $state(null);
   let selectedEvidence = $state<string | null>(null);
   let isDragMode = $state(true);
   let showGrid = $state(true);
@@ -63,12 +103,12 @@
   let dragCounter = $state(0);
 
   // Evidence object cache
-  let evidenceObjects = $state<Map<string, fabric.Object>('')>(new Map());
+  let evidenceObjects = $state<Map<string, any>>(new Map());
   
   // MinIO-WebGPU Evidence Service
   let evidenceService = $state<any>(null);
-  let processingJobs = $state<Map<string, any>('')>(new Map());
-  let processingProgress = $state({})>(new Map());
+  let processingJobs = $state<Map<string, any>>(new Map());
+  let processingProgress = $state<Map<string, any>>(new Map());
 
   // Derived state
   let canvasReady = $derived(!!fabricCanvas);
@@ -92,9 +132,10 @@
     }
   });
 
-  function initializeFabricCanvas() {
+  async function initializeFabricCanvas() {
     if (!canvasElement) return;
 
+    const fabric = await getFabric();
     fabricCanvas = new fabric.Canvas(canvasElement, {
       width,
       height,
@@ -131,9 +172,10 @@
     syncEvidenceObjects();
   }
 
-  function addGrid() {
+  async function addGrid() {
     if (!fabricCanvas) return;
 
+    const fabric = await getFabric();
     const gridSize = 40;
     const gridOptions = {
       stroke: '#e2e8f0',
@@ -534,7 +576,8 @@
     }
   }
 
-  function createDocumentCard(evidence: EvidenceItem): fabric.Group {
+  async function createDocumentCard(evidence: EvidenceItem): Promise<any> {
+    const fabric = await getFabric();
     const cardWidth = 180;
     const cardHeight = 120;
 

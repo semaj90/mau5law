@@ -672,7 +672,8 @@ export default defineConfig({
     'nes-modal': 'nes-container fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 min-w-96 max-w-2xl',
     'nes-modal-overlay': 'fixed inset-0 bg-nes-black/50 z-40',
 
-    'nes-select': 'nes-input appearance-none bg-[url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3E%3Cpath stroke=\'%23000\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'4\' d=\'M6 8l4 4 4-4\'/%3E%3C/svg%3E")] bg-[length:20px] bg-[right_8px_center] bg-no-repeat pr-10',
+    // 'nes-select': Temporarily disabled due to UnoCSS parsing issues with SVG data URL
+    'nes-select': 'nes-input appearance-none pr-10',
 
     'nes-checkbox': 'appearance-none w-6 h-6 border-4 border-nes-black bg-nes-white checked:bg-nes-green checked:shadow-[inset_2px_2px_0px_0px_theme(colors.nes.black)] cursor-pointer',
     'nes-radio': 'appearance-none w-6 h-6 border-4 border-nes-black bg-nes-white rounded-full checked:bg-nes-blue checked:shadow-[inset_2px_2px_0px_0px_theme(colors.nes.black)] cursor-pointer',

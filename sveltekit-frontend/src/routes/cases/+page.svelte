@@ -103,7 +103,7 @@
       if (optimisticEvidence.length) {
         optimisticEvidence = optimisticEvidence.filter(e => !e.__optimistic);
       }
-      toast.error.error.message || 'Failed to add evidence');
+      toast.error(error.message || 'Failed to add evidence');
     }
   });
 

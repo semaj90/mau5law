@@ -62,12 +62,31 @@
 
       messages = [...messages, aiResponse];
     } catch (error) {
+      console.error('Chat API error:', error);
+
+      // Show fallback notice
+      const notice = document.createElement('div');
+      notice.innerHTML = '⚠️ failure default to mock';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      document.body.appendChild(notice);
+      setTimeout(() => notice.remove(), 3000);
+
+      // Generate mock legal response
+      const mockLegalResponses = [
+        "Based on your legal question, I would recommend reviewing the relevant case law in your jurisdiction. Here's a mock analysis of potential approaches.",
+        "This appears to be a contract law matter. In similar cases, courts have typically focused on intent and consideration. Mock legal advice: consult local precedents.",
+        "For employment law issues like this, documentation is crucial. Mock recommendation: gather timeline evidence and review company policies.",
+        "In intellectual property matters, prior art searches are essential. Mock suggestion: conduct comprehensive patent database review."
+      ];
+
+      const randomMockResponse = mockLegalResponses[Math.floor(Math.random() * mockLegalResponses.length)];
+
       const errorResponse = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: `🔧 Connection successful but AI services are offline. Your request was processed correctly by the SvelteKit + Triton integration.`,
+        content: `🤖 ${randomMockResponse} [Mock Legal AI - Real service unavailable]`,
         timestamp: new Date(),
-        metadata: { error: true, apiReachable: true }
+        metadata: { error: true, source: 'mock-legal-ai' }
       };
       messages = [...messages, errorResponse];
     } finally {

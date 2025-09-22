@@ -214,7 +214,7 @@ class WorkerPool {
   }
 
   terminate() {
-    this.workers.forEach(worker => worker.terminate();
+    this.workers.forEach(worker => worker.terminate());
   }
 }
 
@@ -426,13 +426,13 @@ export class ConcurrentJSONSerializer {
     };
 
     // Process in parallel with worker pool
-    const promises = items.map((item, index) =>;
-      this.serialize(item, {
+    const promises = items.map((item, index) => {
+      return this.serialize(item, {
         ...batchOptions,
         // Remove priority as it's not a valid option
         // Distribute workload across batch
-      })
-    );
+      });
+    });
 
     return await Promise.all(promises);
   }
@@ -537,7 +537,7 @@ export const concurrentSerializer = ConcurrentJSONSerializer.getInstance();
 // Utility functions for common use cases
 export async function serializeForAPI<T>(
   data: T,
-  options?: Partial<SerializationOptions>;
+  options?: Partial<SerializationOptions>, 
 ): Promise<string> {
   const result = await concurrentSerializer.serialize(data, {
     compress: true,
@@ -555,7 +555,7 @@ export async function serializeForAPI<T>(
 
 export async function serializeLegalDocument<T>(
   document: T,
-  options?: Partial<SerializationOptions>;
+  options?: Partial<SerializationOptions>, 
 ): Promise<string> {
   const result = await concurrentSerializer.serialize(document, {
     legalDocumentMode: true,
@@ -574,7 +574,7 @@ export async function serializeLegalDocument<T>(
 
 export async function serializeBatchForCache<T>(
   items: T[],
-  options?: Partial<SerializationOptions>;
+  options?: Partial<SerializationOptions>, 
 ): Promise<SerializationResult[]> {
   return await concurrentSerializer.serializeBatch(items, {
     compress: true,

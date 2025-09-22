@@ -1,11 +1,17 @@
-<!-- @migration-task Error while migrating Svelte code: `</Dialog.Description>` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</Dialog.Description>` attempted to close an element that was not open -->
-<!-- @migration-task Error while migrating Svelte code: `</Dialog.Description>` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- Legal Case Analysis Dialog - Bits UI Component -->
+/**
+ * LegalAnalysisDialog.svelte
+ *
+ * Dialog component for AI-powered legal case analysis.
+ * Props:
+ *   - open: boolean (controls dialog visibility)
+ *   - onOpenChange: (open: boolean) => void
+ *
+ * Integrates with legalCaseStore for case selection and analysis.
+ */
+// Svelte 5 runes are auto-imported
+
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+
 
   import 'nes.css/css/nes.min.css';
   import { Dialog, Select, Button, Badge, Progress } from 'bits-ui';
@@ -17,7 +23,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     onOpenChange: (open: boolean) => void;
   }
 
-  let { open = $bindable(), onOpenChange  }: Props = $props();
+  let { open = $bindable(), onOpenChange = () => {} }: Props = $props();
 
   // Store access
   const {

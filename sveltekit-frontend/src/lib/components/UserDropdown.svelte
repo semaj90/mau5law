@@ -38,7 +38,7 @@
 </script>
 
 <div class="user-dropdown" bind:this={dropdownElement}>
-	<button 
+	<button
 		class="user-trigger"
 		onclick={() => toggleDropdown()}
 		aria-expanded={dropdownOpen}
@@ -48,24 +48,24 @@
 		<span class="user-name">
 			{user?.name || user?.email || 'User'}
 		</span>
-		<svg 
-			class="dropdown-arrow" 
+		<svg
+			class="dropdown-arrow"
 			class:rotated={dropdownOpen}
-			width="16" 
-			height="16" 
-			viewBox="0 0 16 16" 
+			width="16"
+			height="16"
+			viewBox="0 0 16 16"
 			fill="none"
 		>
-			<path 
-				d="m4 6 4 4 4-4" 
-				stroke="currentColor" 
-				stroke-width="1.5" 
-				stroke-linecap="round" 
+			<path
+				d="m4 6 4 4 4-4"
+				stroke="currentColor"
+				stroke-width="1.5"
+				stroke-linecap="round"
 				stroke-linejoin="round"
 			/>
 		</svg>
 	</button>
-	
+
 	{#if dropdownOpen}
 		<div class="dropdown-menu">
 			<div class="dropdown-header">
@@ -76,14 +76,14 @@
 					<div class="user-role">{user?.role || ''}</div>
 				</div>
 			</div>
-			
+
 			<div class="dropdown-section">
 				<h4>Avatar Options</h4>
 				<Avatar size="medium" showUploadButton={true} />
 			</div>
-			
+
 			<div class="dropdown-divider"></div>
-			
+
 			<div class="dropdown-actions">
 				<a href="/profile" class="dropdown-item">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -91,21 +91,21 @@
 					</svg>
 					Profile Settings
 				</a>
-				
+
 				<a href="/dashboard" class="dropdown-item">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M1 3h14v2H1V3ZM1 7h14v2H1V7ZM1 11h14v2H1v-2Z" fill="currentColor"/>
 					</svg>
 					Dashboard
 				</a>
-				
+
 				<a href="/cases" class="dropdown-item">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M3 2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6.414a1 1 0 0 0-.293-.707l-3.414-3.414A1 1 0 0 0 9.586 2H3Z" fill="currentColor"/>
 					</svg>
 					My Cases
 				</a>
-				
+
 				<button type="button" class="dropdown-item logout" onclick={() => handleLogout()}>
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M6 15H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3M13 11l3-3-3-3M8 8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

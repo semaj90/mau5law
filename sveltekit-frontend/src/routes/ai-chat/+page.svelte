@@ -20,6 +20,11 @@
 		try {
 			connectionStatus = 'connecting';
 			const response = await fetch('http://localhost:8086/health');
+
+			if (!response.ok) {
+				throw new Error(`Health check failed: ${response.status}`);
+			}
+
 			const data = await response.json();
 			connectionStatus = 'connected';
 			modelInfo = {
@@ -29,6 +34,19 @@
 		} catch (error) {
 			connectionStatus = 'disconnected';
 			console.error('Service health check failed:', error);
+
+			// Show fallback notice
+			const notice = document.createElement('div');
+			notice.innerHTML = '⚠️ failure default to mock - AI service unavailable';
+			notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+			document.body.appendChild(notice);
+			setTimeout(() => notice.remove(), 3000);
+
+			// Set mock model info
+			modelInfo = {
+				name: 'Mock Legal AI - Offline',
+				status: 'Simulated'
+			};
 		}
 	}
 
@@ -88,13 +106,31 @@
 
 		} catch (error) {
 			console.error('Error sending message:', error);
-			const errorMessage = {
+
+			// Show fallback notice
+			const notice = document.createElement('div');
+			notice.innerHTML = '⚠️ failure default to mock';
+			notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+			document.body.appendChild(notice);
+			setTimeout(() => notice.remove(), 3000);
+
+			// Generate mock legal AI response
+			const mockResponses = [
+				"Based on your query, I've identified potential legal precedents in employment law. Here's a mock analysis: The case pattern suggests reviewing contract termination clauses and documenting timeline inconsistencies.",
+				"Mock legal analysis: Your employment dispute may benefit from examining wrongful termination precedents in the 9th Circuit. I recommend gathering evidence of discriminatory practices.",
+				"Simulated AI response: The contract language appears standard, but Section 4.2 may contain problematic clauses. Consider reviewing similar cases from Martinez v. TechCorp (2024).",
+				"Mock Gemma3 Legal AI: This case shows strong indicators for favorable outcome. Key factors include procedural violations and inadequate documentation by opposing party."
+			];
+
+			const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
+
+			const mockMessage = {
 				id: crypto.randomUUID(),
 				role: 'assistant' as const,
-				content: `❌ Error: ${error instanceof Error ? error.message: 'Unknown error occurred'}`,
+				content: `🤖 ${randomResponse} [Mock Response - Real AI service unavailable]`,
 				timestamp: new Date()
 			};
-			messages = [...messages, errorMessage];
+			messages = [...messages, mockMessage];
 		} finally {
 			isLoading = false;
 			typingIndicator = false;

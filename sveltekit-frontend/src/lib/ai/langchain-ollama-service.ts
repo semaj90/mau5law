@@ -15,8 +15,7 @@ import { CallbackManagerForRetrieverRun } from "@langchain/core/callbacks/manage
 
 // ============================================================================
 // CONFIGURATION & TYPES
-// ============================================================================;
-}
+// ============================================================================
 
 export interface LangChainConfig {
   ollamaBaseUrl: string;
@@ -149,7 +148,7 @@ export class LangChainOllamaService {
 
       // Calculate embeddings for return data
       const embeddings = await Promise.all(
-        chunks.map(chunk => this.embeddings.embedQuery(chunk)
+        chunks.map(chunk => this.embeddings.embedQuery(chunk))
       );
 
       const processingTime = Date.now() - startTime;
@@ -249,13 +248,13 @@ export class LangChainOllamaService {
 
   private filterDocumentsByContext(
     documents: LangChainDocument[],
-    context: any;
+    context: any
   ): LangChainDocument[] {
     let filtered = documents;
 
     // Filter by document types;
     if (context.documentTypes && context.documentTypes.length > 0) {
-      filtered = filtered.filter((doc) => context.documentTypes.includes(doc.metadata.type);
+      filtered = filtered.filter((doc) => context.documentTypes.includes(doc.metadata.type));
     }
 
     // Filter by date range;

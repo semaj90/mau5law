@@ -94,10 +94,10 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Computed properties
   let totalEvidence = $derived(evidenceItems.length);
   let processingCount = $derived(
-    evidenceItems.filter(item => item.status) === 'processing').length
+    evidenceItems.filter(item => item.status === 'processing').length
   );
   let readyCount = $derived(
-    evidenceItems.filter(item => item.status) === 'ready').length
+    evidenceItems.filter(item => item.status === 'ready').length
   );
 
   $effect(async () => {

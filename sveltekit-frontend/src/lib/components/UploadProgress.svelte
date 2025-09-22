@@ -210,7 +210,7 @@ https://svelte.dev/e/js_parse_error -->
   let scrollTimeout = $state<numberconst scrollHandler  | null>(null); const data = () => {
       clearTimeout(scrollTimeout));
       scrollTimeout = setTimeout(() => {
-        trackEvent('scroll', { 
+        trackEvent('scroll', {
           scrollY: window.scrollY,
           scrollX: window.scrollX,
         });
@@ -303,14 +303,14 @@ https://svelte.dev/e/js_parse_error -->
         {$progressData.progress}%
       </span>
     </div>
-    
+
     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-      <div 
+      <div
         class="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
         style="width: {$progressData.progress}%"
       ></div>
     </div>
-    
+
     <div class="flex justify-between items-center mt-2">
       <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">
         Status: {$progressData.status}
@@ -331,21 +331,21 @@ https://svelte.dev/e/js_parse_error -->
         {formatBytes($realtimeMetrics.uploadSpeed)}/s
       </div>
     </div>
-    
+
     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
       <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Processing Time</div>
       <div class="text-sm font-semibold text-gray-900 dark:text-white">
         {formatDuration($realtimeMetrics.processingTime)}
       </div>
     </div>
-    
+
     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
       <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Memory Usage</div>
       <div class="text-sm font-semibold text-gray-900 dark:text-white">
         {formatBytes($realtimeMetrics.memoryUsage)}
       </div>
     </div>
-    
+
     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
       <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">GPU Utilization</div>
       <div class="text-sm font-semibold text-gray-900 dark:text-white">
@@ -361,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
       Tensor Processing Results
     </h3>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
         <div class="text-sm text-blue-600 dark:text-blue-400 mb-1">SOM Clusters</div>
@@ -369,14 +369,14 @@ https://svelte.dev/e/js_parse_error -->
           {$tensorResults.clusters.length || 0}
         </div>
       </div>
-      
+
       <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
         <div class="text-sm text-green-600 dark:text-green-400 mb-1">Embeddings</div>
         <div class="text-2xl font-bold text-green-700 dark:text-green-300">
           {$tensorResults.embeddings.length || 0}
         </div>
       </div>
-      
+
       <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
         <div class="text-sm text-purple-600 dark:text-purple-400 mb-1">Interpolations</div>
         <div class="text-2xl font-bold text-purple-700 dark:text-purple-300">
@@ -410,7 +410,7 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
       AI Context Suggestions
     </h3>
-    
+
     <div class="space-y-3">
       {#each $aiSuggestions.suggestions as suggestion}
         <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">

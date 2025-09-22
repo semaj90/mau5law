@@ -311,7 +311,52 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Evidence fetch error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: 'failure default to mock',
+      evidence: [
+        {
+          id: 'mock-evidence-1',
+          caseId: caseId,
+          title: 'Contract Agreement - Smith v. Jones',
+          description: 'Employment contract with non-compete clause',
+          evidenceType: 'document',
+          subType: 'contract',
+          tags: ['employment', 'contract', 'non-compete'],
+          location: 'Client files - Box 15',
+          collectedBy: 'Jane Doe, Paralegal',
+          fileName: 'employment_contract_2024.pdf',
+          fileSize: 245760,
+          mimeType: 'application/pdf',
+          hash: 'sha256:a1b2c3d4e5f6...',
+          analyzed: true,
+          dateCreated: new Date(Date.now() - 86400000).toISOString(),
+          dateModified: new Date().toISOString()
+        },
+        {
+          id: 'mock-evidence-2',
+          caseId: caseId,
+          title: 'Email Communication - Internal Discussion',
+          description: 'Email thread discussing project termination',
+          evidenceType: 'communication',
+          subType: 'email',
+          tags: ['email', 'termination', 'project'],
+          location: 'Email Archive - Q3 2024',
+          collectedBy: 'Mike Johnson, Attorney',
+          fileName: 'email_thread_termination.eml',
+          fileSize: 32768,
+          mimeType: 'message/rfc822',
+          hash: 'sha256:b2c3d4e5f6a1...',
+          analyzed: false,
+          dateCreated: new Date(Date.now() - 172800000).toISOString(),
+          dateModified: new Date().toISOString()
+        }
+      ],
+      pagination: {
+        limit: parseInt(url.searchParams.get('limit') || '50'),
+        offset: parseInt(url.searchParams.get('offset') || '0'),
+        total: 2,
+        hasMore: false
+      },
+      filters: { caseId, evidenceType: url.searchParams.get('type'), analyzed: url.searchParams.get('analyzed'), search: url.searchParams.get('search') }
     }, { status: 500 });
   }
 };
@@ -402,10 +447,33 @@ export const POST: RequestHandler = async ({ request }) => {
     }, { status: 201 });
   } catch (error: any) {
     console.error('Error creating evidence:', error);
-    return json(
-      { error: 'Failed to create evidence' },)
-      { status: 500 }
-    );
+    return json({
+      success: false,
+      error: 'failure default to mock',
+      evidence: {
+        id: 'mock-created-evidence',
+        caseId: evidenceData.caseId,
+        title: evidenceData.title || 'Mock Evidence Item',
+        description: evidenceData.description || 'Mock evidence created due to service failure',
+        evidenceType: evidenceData.evidenceType || 'document',
+        subType: evidenceData.subType || 'general',
+        tags: evidenceData.tags || ['mock', 'fallback'],
+        location: evidenceData.location || 'Mock Storage Location',
+        collectedBy: evidenceData.collectedBy || 'System Mock',
+        fileName: evidenceData.fileName || 'mock_evidence.pdf',
+        fileSize: evidenceData.fileSize || 102400,
+        mimeType: evidenceData.mimeType || 'application/pdf',
+        hash: 'sha256:mock-hash-value',
+        analyzed: false,
+        dateCreated: new Date().toISOString(),
+        dateModified: new Date().toISOString()
+      },
+      analysis: {
+        analysisTriggered: false,
+        detectiveMode: false,
+        mockData: true
+      }
+    }, { status: 500 });
   }
 };
 
@@ -496,9 +564,26 @@ export const PATCH: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     console.error('Evidence processing error:', error);
-    return json({ 
+    return json({
       success: false,
-      error: 'Processing failed' 
+      error: 'failure default to mock',
+      analysis: {
+        id: 'mock-analysis-result',
+        status: 'completed',
+        confidence: 0.75,
+        entities: [
+          { type: 'PERSON', value: 'John Smith', confidence: 0.9 },
+          { type: 'DATE', value: '2024-01-15', confidence: 0.8 },
+          { type: 'ORGANIZATION', value: 'Legal Corp', confidence: 0.85 }
+        ],
+        keywords: ['contract', 'agreement', 'legal', 'binding'],
+        summary: 'Mock analysis result due to service failure. Evidence appears to be a legal document with standard contractual terms.',
+        sentiment: 0.1,
+        classification: 'contract_document',
+        relationships: [],
+        processingTime: 250,
+        mockData: true
+      }
     }, { status: 500 });
   }
 };
@@ -526,7 +611,17 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('Evidence update error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: 'failure default to mock',
+      evidence: {
+        id: updateData.id || 'mock-evidence-id',
+        title: updateData.title || 'Mock Updated Evidence',
+        description: updateData.description || 'Mock evidence updated due to service failure',
+        evidenceType: updateData.evidenceType || 'document',
+        tags: updateData.tags || ['mock', 'updated'],
+        analyzed: updateData.analyzed || false,
+        dateModified: new Date().toISOString(),
+        mockData: true
+      }
     }, { status: 500 });
   }
 };
@@ -553,7 +648,10 @@ export const DELETE: RequestHandler = async ({ request }) => {
     console.error('Evidence deletion error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: 'failure default to mock',
+      message: 'Mock deletion - evidence would have been removed if service was available',
+      deletedId: id || 'mock-evidence-id',
+      mockData: true
     }, { status: 500 });
   }
 };

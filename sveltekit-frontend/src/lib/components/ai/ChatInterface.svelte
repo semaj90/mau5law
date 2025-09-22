@@ -144,9 +144,10 @@ https://svelte.dev/e/js_parse_error -->
       notifications.add({
         type: "error",
         title: "Chat Error",
-        message: "Failed to get response from AI assistant",
+        message: "Failed to get response from AI assistant"
+      });
 
-    errorMessage = error instanceof Error ? error.message: 'An error occurred';});
+      errorMessage = error instanceof Error ? error.message: 'An error occurred';
     } finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);

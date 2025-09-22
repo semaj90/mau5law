@@ -467,9 +467,31 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   } catch (err: any) {
     console.error('File upload error:', err);
-  if (err instanceof Response) throw err;
-  const correlationId = uuidv4();
-  return fail(500, 'File upload failed', { correlationId }, correlationId);
+    if (err instanceof Response) throw err;
+    const correlationId = uuidv4();
+    return json({
+      success: false,
+      error: 'failure default to mock',
+      data: [{
+        id: 'mock-upload-evidence',
+        fileName: 'mock_evidence_upload.pdf',
+        originalName: 'evidence_document.pdf',
+        fileSize: 524288,
+        mimeType: 'application/pdf',
+        url: '/api/evidence/mock/mock-upload-evidence',
+        hash: 'sha256:mock-upload-hash',
+        aiAnalysis: {
+          summary: 'Mock AI analysis due to upload service failure. Document appears to contain legal evidence.',
+          keyPoints: ['Mock key point 1', 'Mock key point 2'],
+          categories: ['document', 'legal', 'evidence'],
+          entities: ['Mock Entity'],
+          confidence: 0.7,
+          processingTime: 150,
+          model: 'mock-gemma3-legal'
+        }
+      }],
+      meta: { count: 1, correlationId, mockData: true }
+    }, { status: 500 });
   }
 };
 }
@@ -861,7 +883,13 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (err: any) {
     console.error('File serving error:', err);
-    throw error(500, 'Failed to serve file');
+    return new Response('failure default to mock - file serving unavailable', {
+      status: 500,
+      headers: {
+        'Content-Type': 'text/plain',
+        'x-correlation-id': correlationId
+      }
+    });
   }
 };
 
@@ -901,7 +929,16 @@ export const DELETE: RequestHandler = async ({ url }) => {
   return ok({ id: fileId }, { message: 'File deleted' }, correlationId);
   } catch (err: any) {
     console.error('File deletion error:', err);
-    throw error(500, 'Failed to delete file');
+    return json({
+      success: false,
+      error: 'failure default to mock',
+      data: {
+        id: fileId || 'mock-file-id',
+        message: 'Mock deletion - file would have been deleted if service was available',
+        mockData: true
+      },
+      meta: { correlationId }
+    }, { status: 500 });
   }
 };
 

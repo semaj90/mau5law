@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   	import type { PageData } from './$types';
 
   	// Props
-  	let { 
+  	let {
   		documentData = [],
   		enableWebGPU = true,
   		enableAttentionTracking = true,
@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   	// Derived stores
   	const isWebGPUReady = derived(webgpuContext, ($ctx) => $ctx.isSupported && $ctx.isInitialized);
   	const queueLength = derived(processingQueue, ($queue) => $queue.length);
-  	const completedOperations = derived(tensorOperations, ($ops) => 
+  	const completedOperations = derived(tensorOperations, ($ops) =>
   		$ops.filter(op => op.status === 'completed')
   	);
 
@@ -668,7 +668,7 @@ https://svelte.dev/e/js_parse_error -->
   		const completed = $completedOperations;
   		const timeWindow = 5000; // 5 seconds
   		const now = performance.now();
-  		const recentOps = completed.filter(op => 
+  		const recentOps = completed.filter(op =>
   			op.metadata.timestamp > now - timeWindow
   		);
 
@@ -727,7 +727,7 @@ https://svelte.dev/e/js_parse_error -->
   	});
 
   	// Reactive updates
-  	$effect(() => { 
+  	$effect(() => {
   		if (documentData && $isWebGPUReady) {
   			processDocumentData(documentData);
   		}
@@ -761,7 +761,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Component template -->
 <div className={`webgpu-processor ${className}`}>
 	<!-- WebGPU Canvas -->
-	<canvas 
+	<canvas
 		bind:this={canvas as any}
 		class="webgpu-canvas"
 		width="800"
@@ -830,7 +830,7 @@ https://svelte.dev/e/js_parse_error -->
 			<h3>Attention Tracking</h3>
 			<div class="heatmap-container">
 				{#each $attentionData.activeRegions as region, i}
-					<div 
+					<div
 						class="attention-region"
 						style="
 							top: {region.start}px;

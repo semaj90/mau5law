@@ -1,5 +1,6 @@
 
 import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
 // Evidence search API endpoint with advanced vector capabilities
 // Supports document content search, image analysis, and multi-modal search
@@ -74,7 +75,46 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     console.error("Evidence search error:", error);
-    return json({ error: "Search failed" }, { status: 500 });
+    return json({
+      error: 'failure default to mock',
+      results: [
+        {
+          id: 'mock-evidence-search-1',
+          caseId: caseId || 'mock-case-1',
+          title: 'Mock Contract Document - Search Result',
+          description: `Mock evidence search result for query: "${query}"`,
+          evidenceType: evidenceType || 'document',
+          fileName: 'mock_contract_search.pdf',
+          fileUrl: '/api/evidence/mock/mock-evidence-search-1',
+          tags: ['contract', 'mock', 'search-result'],
+          summary: 'Mock evidence document returned due to search service failure.',
+          uploadedAt: new Date(Date.now() - 86400000).toISOString(),
+          similarity: 0.85,
+          searchType: searchMode,
+          mockData: true
+        },
+        {
+          id: 'mock-evidence-search-2',
+          caseId: caseId || 'mock-case-1',
+          title: 'Mock Email Communication - Search Result',
+          description: `Mock email evidence for query: "${query}"`,
+          evidenceType: evidenceType || 'communication',
+          fileName: 'mock_email_search.eml',
+          fileUrl: '/api/evidence/mock/mock-evidence-search-2',
+          tags: ['email', 'communication', 'mock'],
+          summary: 'Mock email evidence returned due to search service failure.',
+          uploadedAt: new Date(Date.now() - 172800000).toISOString(),
+          similarity: 0.72,
+          searchType: searchMode,
+          mockData: true
+        }
+      ],
+      searchMode,
+      executionTime: 150,
+      query,
+      totalResults: 2,
+      mockData: true
+    }, { status: 500 });
   }
 };
 

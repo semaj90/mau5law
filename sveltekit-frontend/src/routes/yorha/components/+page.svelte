@@ -77,9 +77,11 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // UI state
-  let yorhaUI = $state<any | null >(null);
-  let canvasContainer = $state<HTMLElement// Component variants and options
-  const componentTypes | null>(null) => [
+  let yorhaUI = $state<any | null>(null);
+  let canvasContainer = $state<HTMLElement | null>(null);
+
+  // Component variants and options
+  const componentTypes = [
     { id: 'button', label: 'Button 3D', icon: Gamepad2, description: '3D interactive buttons with hover effects' },
     { id: 'panel', label: 'Panel 3D', icon: Monitor, description: 'Floating 3D panels with content areas' },
     { id: 'input', label: 'Input 3D', icon: Code, description: 'Terminal-style 3D input fields' },

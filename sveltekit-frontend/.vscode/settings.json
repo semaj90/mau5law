@@ -1,49 +1,79 @@
 {
-  // Svelte 5 Support
+  // Svelte 5 Support - Optimized
   "svelte.enable-ts-plugin": true,
   "svelte.plugin.svelte.compilerWarnings": {
-    "css-unused-selector": "ignore"
+    "css-unused-selector": "ignore",
+    "a11y-click-events-have-key-events": "ignore",
+    "a11y-no-static-element-interactions": "ignore"
   },
 
-  // Prettier Configuration for Svelte 5
-  "prettier.enable": true,
-  "prettier.documentSelectors": ["**/*.svelte"],
+  // Performance Optimizations
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.suggest.autoImports": false,
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "typescript.preferences.useLabelDetailsInCompletionEntries": false,
+  "typescript.suggest.completeFunctionCalls": false,
+  "typescript.referencesCodeLens.enabled": false,
+  "typescript.implementationsCodeLens.enabled": false,
 
-  // Default Formatter Settings
+  // Prettier Configuration - Optimized for Large Codebase
+  "prettier.enable": true,
+  "prettier.requireConfig": true,
+  "prettier.documentSelectors": ["**/*.svelte"],
+  "prettier.ignorePath": ".prettierignore",
+
+  // Default Formatter Settings - Optimized
   "[svelte]": {
     "editor.defaultFormatter": "svelte.svelte-vscode",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false
   },
 
-  // ESLint Configuration
-  "eslint.enable": true,
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-    "svelte"
-  ],
+  // ESLint Configuration - Disabled for Performance
+  "eslint.enable": false,
 
-  // TypeScript Settings for Svelte 5
-  "typescript.preferences.includePackageJsonAutoImports": "auto",
-  "typescript.suggest.autoImports": true,
-
-  // Editor Settings
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit"
-  },
+  // Editor Performance Settings
+  "editor.codeActionsOnSave": {},
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "editor.parameterHints.enabled": false,
+  "editor.hover.enabled": false,
+  "editor.lightbulb.enabled": "off",
+  "editor.codeLens": false,
+  "editor.foldingImportsByDefault": true,
+  "editor.semanticHighlighting.enabled": false,
 
   // File Associations
   "files.associations": {
     "*.svelte": "svelte"
+  },
+
+  // Search Exclusions for Better Performance
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/build": true,
+    "**/.svelte-kit": true,
+    "**/archived-components": true,
+    "**/dist": true,
+    "**/.git": true
+  },
+
+  // File Watcher Exclusions
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/build/**": true,
+    "**/.svelte-kit/**": true,
+    "**/archived-components/**": true,
+    "**/dist/**": true
   },
 
   // Svelte 5 Runes Support

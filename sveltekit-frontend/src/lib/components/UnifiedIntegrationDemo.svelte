@@ -244,7 +244,7 @@
                 {$systemHealth.overall.toUpperCase()}
               </span>
             </div>
-            
+
             <div class="border-t pt-3">
               <h4 class="text-xs font-semibold text-gray-700 mb-2">Services</h4>
               <div class="space-y-1">
@@ -256,7 +256,7 @@
                 {/each}
               </div>
             </div>
-            
+
             <div class="border-t pt-3">
               <h4 class="text-xs font-semibold text-gray-700 mb-2">Performance</h4>
               <div class="space-y-1 text-xs">
@@ -288,7 +288,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-operation-type-">
               Operation Type
-            </label><select id="-operation-type-" 
+            </label><select id="-operation-type-"
               bind:value={selectedOperation} onchange={onOperationChange}
               class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
@@ -304,7 +304,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-input-data-">
               Input Data
-            </label><textarea id="-input-data-" 
+            </label><textarea id="-input-data-"
               bind:value={testInput}
               rows="8"
               class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
@@ -320,7 +320,7 @@
           {/if}
 
           <!-- Execute Button -->
-          <Button 
+          <Button
             onclick={executeOperation}
             disabled={isLoading || !testInput.trim()}
             class="w-full bits-btn bits-btn"
@@ -374,20 +374,20 @@
                     {/if}
                   </div>
                 </div>
-                
+
                 <div class="bg-gray-50 rounded p-2 text-xs font-mono">
                   {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data?.success !== undefined}
                     <p class="text-{(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data.success ? 'green' : 'red'}-600 mb-1">
                       Status: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data.success ? 'Success' : 'Failed'}
                     </p>
                   {/if}
-                  
+
                   {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.performance}
                     <p>Latency: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.latency}ms</p>
                     <p>Throughput: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.throughput.toFixed(2)}/s</p>
                     <p>Resource Usage: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.resourceUsage.toFixed(2)}</p>
                   {/if}
-                  
+
                   {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.fallbacksTriggered?.length > 0}
                     <p class="text-yellow-600">
                       Fallbacks: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.fallbacksTriggered.join(' → ')}
@@ -418,7 +418,7 @@
                 <h4 class="text-sm font-medium text-blue-800">Total Operations</h4>
                 <p class="text-2xl font-bold text-blue-600">{$metrics.count}</p>
               </div>
-              
+
               {#if $metrics.latestMetric}
                 <div class="bg-green-50 rounded-lg p-3">
                   <h4 class="text-sm font-medium text-green-800">Latest Latency</h4>
@@ -428,7 +428,7 @@
                 </div>
               {/if}
             </div>
-            
+
             <!-- Recent Metrics Chart (simplified) -->
             <div>
               <h4 class="text-sm font-medium text-gray-700 mb-2">Recent Performance</h4>
@@ -439,7 +439,7 @@
                       {metric.timestamp ? new Date(metric.timestamp).toLocaleTimeString() : 'N/A'}
                     </span>
                     <div class="flex-1 bg-gray-200 rounded-full h-2">
-                      <div 
+                      <div
                         class="bg-blue-500 h-2 rounded-full transition-all duration-300"
                         style="width: {Math.min(100, (metric.latency / 1000) * 100)}%"
                       ></div>

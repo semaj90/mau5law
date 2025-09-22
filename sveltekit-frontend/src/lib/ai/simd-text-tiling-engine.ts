@@ -9,7 +9,6 @@
 import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
 import { langChainOllamaService } from './langchain-ollama-service.js';
 import { webgpuLangChainBridge } from '$lib/server/webgpu-langchain-bridge.js';
-}
 
 export interface TextTileConfig {
   compressionRatio: number; // Target compression (e.g., 109:1 for 7-bit representation)
@@ -177,7 +176,7 @@ export class SIMDTextTilingEngine {
    */
   private async applySIMDTiling(
     embeddings: Float32Array[],
-    originalText: string;
+    originalText: string
   ): Promise<Float32Array> {
     try {
       // Concatenate all embeddings into a single array for tiling

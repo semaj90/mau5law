@@ -51,6 +51,11 @@
   async function checkSystemStatus() {
     try {
       const res = await fetch('/api/v1/cluster/health');
+
+      if (!res.ok) {
+        throw new Error(`Health check failed: ${res.status}`);
+      }
+
       const data = await res.json();
       systemStatus = {
         gpu: data?.services?.gpu === 'accelerated',
@@ -60,8 +65,25 @@
         neo4j: data?.services?.neo4j === 'active'
       };
     } catch (e: unknown) {
-      error = 'System health check failed';
       console.error('Health check error:', e);
+
+      // Show fallback notice
+      const notice = document.createElement('div');
+      notice.innerHTML = '⚠️ failure default to mock';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      document.body.appendChild(notice);
+      setTimeout(() => notice.remove(), 3000);
+
+      // Set mock system status
+      systemStatus = {
+        gpu: false,
+        ollama: false,
+        enhancedRAG: false,
+        postgres: false,
+        neo4j: false
+      };
+
+      error = 'System health check failed - using mock status';
     }
   }
 
@@ -171,8 +193,34 @@
         }
       }
     } catch (e: unknown) {
-      error = e?.message ?? 'Failed to send message';
       console.error('Send message error:', e);
+
+      // Show fallback notice
+      const notice = document.createElement('div');
+      notice.innerHTML = '⚠️ failure default to mock';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      document.body.appendChild(notice);
+      setTimeout(() => notice.remove(), 3000);
+
+      // Generate mock AI assistant response
+      const mockLegalAssistantResponses = [
+        "Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.",
+        "This appears to be an employment law matter. Mock legal assistant analysis suggests: The timeline of events indicates potential wrongful termination. I recommend gathering additional documentation and reviewing company policy violations.",
+        "For intellectual property concerns like this, prior art searches are essential. Mock recommendation: Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.",
+        "In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options."
+      ];
+
+      const randomMockResponse = mockLegalAssistantResponses[Math.floor(Math.random() * mockLegalAssistantResponses.length)];
+
+      const mockAiMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: `🤖 ${randomMockResponse} [Mock AI Assistant - Real service unavailable]`,
+        timestamp: new Date()
+      };
+
+      messages = [...messages, mockAiMessage];
+      error = '';
     } finally {
       isStreaming = false;
     }
@@ -199,11 +247,39 @@
   async function loadEvidenceReports() {
     try {
       const response = await fetch('/api/v1/evidence/reports');
-      if (response.ok) {
-        evidenceReports = await response.json();
+      if (!response.ok) {
+        throw new Error(`Evidence reports API failed: ${response.status}`);
       }
+      evidenceReports = await response.json();
     } catch (e) {
       console.error('Failed to load evidence reports:', e);
+
+      // Show fallback notice
+      const notice = document.createElement('div');
+      notice.innerHTML = '⚠️ failure default to mock';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      document.body.appendChild(notice);
+      setTimeout(() => notice.remove(), 3000);
+
+      // Set mock evidence reports
+      evidenceReports = [
+        {
+          id: 'mock-evidence-001',
+          title: 'Mock Police Report - Employment Dispute',
+          type: 'police_report',
+          date: '2024-01-15',
+          content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
+          confidence: 0.85
+        },
+        {
+          id: 'mock-evidence-002',
+          title: 'Mock Witness Statement - Contract Violation',
+          type: 'witness_statement',
+          date: '2024-01-16',
+          content: 'Mock evidence: Witness account of contract negotiation meeting.',
+          confidence: 0.92
+        }
+      ];
     }
   }
 

@@ -317,11 +317,11 @@ export class AuthService {
 
   /**
    * Get sample cases for demo page
-   */;
+   */
   async getSampleCases(limit: number = 5) {
     try {
       // This would fetch from cases table in production
-      // For now, return mock data;
+      // For now, return mock data
       return Array.from({ length: limit }, (_, i) => ({
         id: `case_${i + 1}`,
         title: `Sample Case ${i + 1}`,

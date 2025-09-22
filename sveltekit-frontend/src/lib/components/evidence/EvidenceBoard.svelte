@@ -17,7 +17,6 @@ https://svelte.dev/e/js_parse_error -->
 
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
-  import { writable } from 'svelte/store';
   import { caseManagementService } from '$lib/services/case-management-service.js';
   import { apiFetch } from '$lib/api/clients/api-client.js';
   import {
@@ -38,20 +37,20 @@ https://svelte.dev/e/js_parse_error -->
     readOnly = false
   }: Props = $props();
 
-  // State management
-  let evidenceItems = writable<any[]>([]);
-  let selectedEvidence = writable<string[]>([]);
-  let detectiveInsights = writable<any>( );
-  let connectionMap = writable<any[]>([]);
-  let analysisResults = writable<any>( );
-  // UI state
-  let searchQuery = '';
-  let filterType = 'all';
-  let viewMode: 'grid' | 'timeline' | 'network' = 'grid';
-  let showFilters = false;
-  let showInsights = false;
-  let loadingAnalysis = false;
-  let draggedEvidence: string | null = null;
+  // State management - Svelte 5 runes
+  let evidenceItems = $state<any[]>([]);
+  let selectedEvidence = $state<string[]>([]);
+  let detectiveInsights = $state<any>(null);
+  let connectionMap = $state<any[]>([]);
+  let analysisResults = $state<any>(null);
+  // UI state - Svelte 5 runes
+  let searchQuery = $state('');
+  let filterType = $state('all');
+  let viewMode = $state<'grid' | 'timeline' | 'network'>('grid');
+  let showFilters = $state(false);
+  let showInsights = $state(false);
+  let loadingAnalysis = $state(false);
+  let draggedEvidence = $state<string | null>(null);
 
   // Evidence filters
   const evidenceTypes = [
@@ -75,19 +74,21 @@ https://svelte.dev/e/js_parse_error -->
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null;
   let networkLayout: unknown = {};
-  $effect(async () => {
-    await loadEvidence();
-    if (detectiveMode) {
-      await loadDetectiveInsights();
-    }
-    initializeCanvas();
+  $effect(() => {
+    (async () => {
+      await loadEvidence();
+      if (detectiveMode) {
+        await loadDetectiveInsights();
+      }
+      initializeCanvas();
+    })();
   });
 
   onDestroy(() => {
     // Cleanup canvas and event listeners
   });
 
-  // Load evidence for the case
+  // Load evidence for the case with fallbacks
   async function loadEvidence() {
     try {
       const caseData = await caseManagementService.getCaseById(caseId, {
@@ -95,54 +96,132 @@ https://svelte.dev/e/js_parse_error -->
         includeTimeline: true,
       });
       if (caseData?.evidence) {
-        evidenceItems.set(caseData.evidence);
+        evidenceItems = caseData.evidence;
       }
     } catch (error) {
       console.error('Failed to load evidence:', error);
+      // Show fallback notice
+      const notice = document.createElement('div');
+      notice.innerHTML = '⚠️ failure default to mock - Evidence service unavailable, using mock data';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      document.body.appendChild(notice);
+      setTimeout(() => notice.remove(), 5000);
+
+      // Provide mock evidence data
+      evidenceItems = [
+        {
+          id: 'mock-evidence-1',
+          title: 'Mock Contract Document',
+          description: 'Mock evidence document for fallback demonstration',
+          evidenceType: 'document',
+          fileName: 'mock_contract.pdf',
+          fileSize: 245760,
+          mimeType: 'application/pdf',
+          analyzed: true,
+          confidence: 0.85,
+          tags: ['contract', 'legal', 'mock'],
+          mockData: true,
+          uploadedAt: new Date(Date.now() - 86400000).toISOString()
+        },
+        {
+          id: 'mock-evidence-2',
+          title: 'Mock Email Evidence',
+          description: 'Mock email communication evidence',
+          evidenceType: 'communication',
+          fileName: 'mock_email.eml',
+          fileSize: 32768,
+          mimeType: 'message/rfc822',
+          analyzed: false,
+          confidence: 0.72,
+          tags: ['email', 'communication', 'mock'],
+          mockData: true,
+          uploadedAt: new Date(Date.now() - 172800000).toISOString()
+        }
+      ];
     }
   }
 
-  // Load detective insights if in detective mode
+  // Load detective insights if in detective mode with fallbacks
   async function loadDetectiveInsights() {
     try {
       loadingAnalysis = true;
       const insights = await caseManagementService.generateDetectiveInsights(caseId);
-      detectiveInsights.set(insights);
+      detectiveInsights = insights;
       // Build connection map for network view
       buildConnectionMap(insights);
     } catch (error) {
       console.error('Failed to load detective insights:', error);
+      // Provide mock detective insights as fallback
+      detectiveInsights = {
+        mockData: true,
+        confidence: 0.78,
+        suspiciousPatterns: [
+          {
+            type: 'time_anomaly',
+            description: 'Mock suspicious pattern: Unusual timing in document creation',
+            severity: 'medium',
+            evidence: ['mock-evidence-1']
+          }
+        ],
+        entityConnections: [
+          {
+            source: 'mock-evidence-1',
+            target: 'mock-evidence-2',
+            confidence: 0.85,
+            relationship: 'references'
+          }
+        ],
+        crossReferences: [
+          {
+            sourceEvidence: 'mock-evidence-1',
+            targetEvidence: 'mock-evidence-2',
+            relevance: 0.75,
+            type: 'temporal'
+          }
+        ],
+        timeline: {
+          events: [
+            {
+              timestamp: new Date(Date.now() - 86400000).toISOString(),
+              evidenceId: 'mock-evidence-1',
+              description: 'Mock contract document created'
+            }
+          ]
+        }
+      };
+      // Build connection map for mock data
+      buildConnectionMap(detectiveInsights);
     } finally {
       loadingAnalysis = false;
     }
   }
 
   // Build connection map for network visualization
-  function buildConnectionMap(insights: unknown) {
-    const connections: unknown[] = [];
+  function buildConnectionMap(insights: any) {
+    const connections: any[] = [];
     // Process entity connections
-    insights.entityConnections?.forEach((connection: unknown) => {
+    insights?.entityConnections?.forEach((connection: any) => {
       connections.push({
         type: 'entity',
         source: connection.source,
         target: connection.target,
-        strength: connection.confidence,
-        label: connection.relationship,
+        strength: connection.confidence || 0.5,
+        label: connection.relationship || 'related',
       });
     });
 
     // Process cross-references
-    insights.crossReferences?.forEach((ref: unknown) => {
+    insights?.crossReferences?.forEach((ref: any) => {
       connections.push({
         type: 'reference',
         source: ref.sourceEvidence,
         target: ref.targetEvidence,
-        strength: ref.relevance,
+        strength: ref.relevance || 0.5,
         label: ref.type,
       });
     });
 
-    connectionMap.set(connections);
+    connectionMap = connections;
   }
 
   // Initialize canvas for network view
@@ -157,17 +236,16 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Derived evidence list filtered by search and type
-    let filteredEvidence: unknown[] = [];
-    let filteredEvidence = $derived($evidenceItems.filter((evidence: unknown) => {
-      const query = searchQuery?.toLowerCase?.() || '');
-      const matchesSearch =
-        !query ||
-        evidence.title?.toLowerCase.includes(query) ||
-        evidence.description?.toLowerCase.includes(query) ||
-        evidence.evidenceNumber?.toLowerCase.includes(query);
-      const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
-      return matchesSearch && matchesType;
-    });
+  let filteredEvidence = $derived(evidenceItems.filter((evidence: any) => {
+    const query = searchQuery?.toLowerCase() || '';
+    const matchesSearch =
+      !query ||
+      evidence.title?.toLowerCase().includes(query) ||
+      evidence.description?.toLowerCase().includes(query) ||
+      evidence.evidenceNumber?.toLowerCase().includes(query);
+    const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
+    return matchesSearch && matchesType;
+  }));
 
   // Toggle detective mode
   async function toggleDetectiveMode() {

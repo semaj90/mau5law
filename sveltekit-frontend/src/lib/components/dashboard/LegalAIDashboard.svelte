@@ -379,19 +379,19 @@
                 <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Cases</h3>
                 <div class="flow-root">
                   <ul class="-my-5 divide-y divide-gray-200">
-                    {#each cases.slice(0, 5) as case}
+                    {#each cases.slice(0, 5) as caseItem}
                       <li class="py-4">
                         <div class="flex items-center space-x-4">
                           <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate">{case?.title || 'Untitled Case'}</p>
-                            <p class="text-sm text-gray-500 truncate">{case?.description || 'No description'}</p>
+                            <p class="text-sm font-medium text-gray-900 truncate">{caseItem?.title || 'Untitled Case'}</p>
+                            <p class="text-sm text-gray-500 truncate">{caseItem?.description || 'No description'}</p>
                           </div>
                           <div class="flex items-center space-x-2">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(case?.priority || 'medium')}">
-                              {case?.priority || 'medium'}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getPriorityColor(caseItem?.priority || 'medium')}">
+                              {caseItem?.priority || 'medium'}
                             </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(case?.status || 'open')}">
-                              {case?.status || 'open'}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border {getStatusColor(caseItem?.status || 'open')}">
+                              {caseItem?.status || 'open'}
                             </span>
                           </div>
                         </div>
@@ -464,26 +464,26 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  {#each cases as case}
+                  {#each cases as caseItem}
                     <tr>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div class="text-sm font-medium text-gray-900">{case?.title || 'Untitled Case'}</div>
-                          <div class="text-sm text-gray-500">{case?.caseNumber || 'No case number'}</div>
+                          <div class="text-sm font-medium text-gray-900">{caseItem?.title || 'Untitled Case'}</div>
+                          <div class="text-sm text-gray-500">{caseItem?.caseNumber || 'No case number'}</div>
                         </div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(case?.status || 'open')}">
-                          {case?.status || 'open'}
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getStatusColor(caseItem?.status || 'open')}">
+                          {caseItem?.status || 'open'}
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(case?.priority || 'medium')}">
-                          {case?.priority || 'medium'}
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {getPriorityColor(caseItem?.priority || 'medium')}">
+                          {caseItem?.priority || 'medium'}
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {case?.updatedAt ? formatDate(case.updatedAt) : 'No date'}
+                        {caseItem?.updatedAt ? formatDate(caseItem.updatedAt) : 'No date'}
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button class="text-blue-600 hover:text-blue-900">View</button>
