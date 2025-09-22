@@ -535,7 +535,7 @@
 
     <!-- Error Display -->
     {#if isError}
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertTriangle class="h-4 w-4" />
         <AlertDescription>
           {contextValue.error || "An error occurred during processing"}

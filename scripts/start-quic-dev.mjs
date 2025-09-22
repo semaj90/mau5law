@@ -50,6 +50,21 @@ async function startQuicDev() {
     try {
         showProgress(1, 10, 'Initializing...');
 
+        // Step 0: Check Docker services
+        console.log('🐳 Checking Docker services...');
+        showProgress(1.5, 10, 'Checking Docker services...');
+
+        const dockerCheck = spawn('docker', ['ps', '--filter', 'name=legal-ai', '--format', 'table {{.Names}}\t{{.Status}}'], {
+            stdio: 'pipe'
+        });
+
+        dockerCheck.stdout.on('data', (data) => {
+            console.log(`🐳 Docker: ${data.toString().trim()}`);
+        });
+
+        // Wait for Docker check
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
         // Step 1: Start MCP Context7 Server
         console.log('🧠 Starting MCP Context7 Server...');
         showProgress(2, 10, 'Starting MCP Context7...');
@@ -156,6 +171,14 @@ async function startQuicDev() {
             env: {
                 ...process.env,
                 REDIS_PASSWORD: 'redis',
+                REDIS_HOST: 'localhost',
+                REDIS_PORT: '6379',
+                MINIO_ENDPOINT: 'localhost:9000',
+                MINIO_ACCESS_KEY: 'minio',
+                MINIO_SECRET_KEY: 'minio123',
+                MINIO_BUCKET_NAME: 'legal-documents',
+                MINIO_USE_SSL: 'false',
+                DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
                 NODE_ENV: 'development'
             }
         });
@@ -227,6 +250,10 @@ async function startQuicDev() {
         console.log('   🧠 MCP Context7 API:          http://localhost:8080/mcp/health');
         console.log('   🔷 SvelteKit Dev:             http://localhost:5173');
         console.log('   📊 Status Dashboard:          http://localhost:9090/status');
+        console.log('   🗄️ MinIO Console:             http://localhost:9001 (minio/minio123)');
+        console.log('   🗄️ MinIO API:                 http://localhost:9000');
+        console.log('   🔴 Redis Insight:             http://localhost:8001');
+        console.log('   🐘 PostgreSQL:                localhost:5432 (legal_admin/123456)');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log('⚡ QUIC/HTTP3 Protocol Features:');
         console.log('   • 0-RTT connection establishment');

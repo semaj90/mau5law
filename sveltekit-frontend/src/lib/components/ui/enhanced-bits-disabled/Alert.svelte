@@ -88,7 +88,7 @@ box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.2), inset 2px 2px 0px rgba(255, 
     transform: translateY(-1px);
 box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.3), inset 2px 2px 0px rgba(255, 255, 255, 0.9), 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-/* Destructive variant animation */ .bits-alert[data-variant="destructive"] {
+/* Destructive variant animation */ .bits-alert[data-variant="error"] {
     animation: alert-pulse 2s ease-in-out infinite;
   }
   

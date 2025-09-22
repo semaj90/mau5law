@@ -291,7 +291,7 @@ and AI-powered verification features.
 
   <!-- Error Messages -->
   {#if error}
-    <Alert variant="destructive">
+    <Alert variant="error">
       <AlertTriangle class="w-4 h-4" />
       <AlertTitle>Workflow Error</AlertTitle>
       <AlertDescription>{error}</AlertDescription>
@@ -400,7 +400,7 @@ showIntegrityDetails = !showIntegrityDetails}
                 <Button class="bits-btn" onclick={approveWorkflow} variant="success">
 Approve Custody
 
-                <Button class="bits-btn" onclick={rejectWorkflow} variant="destructive">
+                <Button class="bits-btn" onclick={rejectWorkflow} variant="error">
 Reject Custody
 
               </div>
@@ -429,7 +429,7 @@ Leave Collaboration
                 <Button class="bits-btn" onclick={retryWorkflow}>
 Retry Workflow
 
-                <Button class="bits-btn" onclick={cancelWorkflow} variant="destructive">
+                <Button class="bits-btn" onclick={cancelWorkflow} variant="error">
 Cancel Workflow
 
               </div>

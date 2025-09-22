@@ -490,7 +490,7 @@
         <form method="POST" action="?/flushCache" use:enhance>
           <Button
             type="submit"
-            variant="destructive"
+            variant="error"
             class="gap-2"
             onclick={(e) => {
               if (!confirm('Are you sure you want to flush all cache data? This cannot be undone.')) {

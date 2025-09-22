@@ -510,7 +510,7 @@ aiAssistantManager.checkClusterHealth(}
 
       <div class="flex justify-between gap-2">
         <Button class="bits-btn" 
-          variant="destructive"
+          variant="error"
           onclick={(event: MouseEvent) => clearConversation}
           disabled={!hasConversation}
         >

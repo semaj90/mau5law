@@ -28,9 +28,9 @@ class ReinforcementLearningCache {
 
     // In a real implementation, you might load a model from disk
     // or connect to a separate caching service like Redis.
-    await new Promise(resolve => setTimeout(resolve, 50); // Simulate async setup
+    await new Promise(resolve => setTimeout(resolve, 50)); // Simulate async setup
 
-    // Initialize mock learning model;
+    // Initialize mock learning model
     this.learningModel = {
       weights: new Map<string, number>(),
       learningRate: 0.01,
@@ -46,7 +46,7 @@ class ReinforcementLearningCache {
     const value = this.cache.get(key);
     if (value) {
       this.updateModelWeights(key, 'hit');
-      this.hitRatio = Math.min(0.95, this.hitRatio + 0.001); // Slight improvement;
+      this.hitRatio = Math.min(0.95, this.hitRatio + 0.001); // Slight improvement
     } else {
       this.updateModelWeights(key, 'miss');
       this.hitRatio = Math.max(0.7, this.hitRatio - 0.001); // Slight degradation
@@ -64,7 +64,7 @@ class ReinforcementLearningCache {
   }
 
   private shouldCache(key: string, value: any): boolean {
-    // Simple heuristic - in production this would use ML model;
+    // Simple heuristic - in production this would use ML model
     if (this.cache.size > 1000) {
       // Evict least valuable items based on learning
       this.evictLeastValuable();
@@ -96,7 +96,7 @@ class ReinforcementLearningCache {
 
   private evictLeastValuable(): void {
     if (!this.learningModel) return;
-    const sortedEntries: Array<[string, number]> = Array.from(this.learningModel.weights.entries()
+    const sortedEntries: Array<[string, number]> = Array.from(this.learningModel.weights.entries())
       .sort((a, b) => a[1] - b[1]);
     const toEvict = sortedEntries.slice(0, 100);
     for (const [key] of toEvict) {
@@ -107,14 +107,14 @@ class ReinforcementLearningCache {
 
   /**
    * Gets current cache hit ratio for monitoring
-   */;
+   */
   getHitRatio(): number {
     return Math.round(this.hitRatio * 100) / 100; // Round to 2 decimal places
   }
 
   /**
    * Gets cache statistics
-   */;
+   */
   getStats(): {
     size: number;
     hitRatio: number;
@@ -131,7 +131,7 @@ class ReinforcementLearningCache {
 
   /**
    * Clear all cache entries
-   */;
+   */
   clear(): void {
     this.cache.clear();
     if (this.learningModel) {

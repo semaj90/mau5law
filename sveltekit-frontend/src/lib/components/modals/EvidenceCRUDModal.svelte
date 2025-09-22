@@ -653,7 +653,7 @@
           <div class="flex items-center gap-2">
             {#if mode !== 'view' && mode !== 'create'}
               <Button
-                variant="destructive"
+                variant="error"
                 size="sm"
                 onclick={handleDelete}
                 disabled={isDeleting}

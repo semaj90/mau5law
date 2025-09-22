@@ -406,7 +406,7 @@ openEditDialog(caseData)}
 
               <Button class="bits-btn" 
                 size="sm" 
-                variant="destructive"
+                variant="error"
                 onclick={() =>
 deleteCase(caseData.id!)}
               >

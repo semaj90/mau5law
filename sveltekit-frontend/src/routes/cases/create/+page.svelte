@@ -168,7 +168,7 @@ goto('/cases/templates')}
 
   <!-- Error Alert -->
   {#if errorMessage}
-    <Alert.Root variant="destructive" class="mb-6">
+    <Alert.Root variant="error" class="mb-6">
       <AlertCircle class="h-4 w-4" />
       <Alert.Title>Error</Alert.Title>
       <Alert.Description>{errorMessage}</Alert.Description>

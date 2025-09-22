@@ -47,10 +47,10 @@ class MultidimensionalRoutingMatrix {
 
   private async loadProductionData(): Promise<void> {
     // Simulate loading from external source
-    await new Promise(resolve => setTimeout(resolve, 100);
+    await new Promise(resolve => setTimeout(resolve, 100));
     
     // Legal Document Analysis Routes
-    this.matrix.set('analyze_legal_document', [;
+    this.matrix.set('analyze_legal_document', [
       { 
         tool: 'legal-document-analyzer-grpc', 
         cost: 0.05, 
@@ -66,7 +66,7 @@ class MultidimensionalRoutingMatrix {
         quality: 0.85,
         throughput: 50,
         reliability: 0.95
-      },);
+      },
       { 
         tool: 'legal-document-analyzer-quic', 
         cost: 0.08, 
@@ -78,7 +78,7 @@ class MultidimensionalRoutingMatrix {
     ]);
 
     // Vector Search Routes
-    this.matrix.set('vector_search', [;
+    this.matrix.set('vector_search', [
       {
         tool: 'postgresql-pgvector',
         cost: 0.01,
@@ -94,7 +94,7 @@ class MultidimensionalRoutingMatrix {
         quality: 0.95,
         throughput: 1000,
         reliability: 0.97
-      },);
+      },
       {
         tool: 'redis-vector-search',
         cost: 0.02,
@@ -106,7 +106,7 @@ class MultidimensionalRoutingMatrix {
     ]);
 
     // Evidence Processing Routes
-    this.matrix.set('process_evidence', [;
+    this.matrix.set('process_evidence', [
       {
         tool: 'tesseract-ocr-wasm',
         cost: 0.001, // Client-side processing
@@ -122,7 +122,7 @@ class MultidimensionalRoutingMatrix {
         quality: 0.95,
         throughput: 100,
         reliability: 0.98
-      },);
+      },
       {
         tool: 'cloud-vision-api',
         cost: 0.15,
@@ -134,7 +134,7 @@ class MultidimensionalRoutingMatrix {
     ]);
 
     // Case Management Routes
-    this.matrix.set('case_management', [;
+    this.matrix.set('case_management', [
       {
         tool: 'postgresql-direct',
         cost: 0.005,
@@ -142,7 +142,7 @@ class MultidimensionalRoutingMatrix {
         quality: 0.95,
         throughput: 1000,
         reliability: 0.99
-      },);
+      },
       {
         tool: 'neo4j-graph-queries',
         cost: 0.02,
@@ -251,12 +251,12 @@ class MultidimensionalRoutingMatrix {
     const recentDecisions = this.routingHistory.slice(-100); // Last 100 decisions
     if (recentDecisions.length === 0) return;
 
-    const successRate = recentDecisions.filter(item => item.length) / recentDecisions.length;
+    const successRate = recentDecisions.filter(item => item.success).length / recentDecisions.length;
     const averageLatency = recentDecisions.reduce((sum, d) => sum + d.route.latency, 0) / recentDecisions.length;
     const averageQuality = recentDecisions.reduce((sum, d) => sum + d.route.quality, 0) / recentDecisions.length;
 
     // Calculate efficiency score (0-1)
-    const latencyScore = Math.max(0, 1 - (averageLatency / 2000); // 2000ms as baseline
+    const latencyScore = Math.max(0, 1 - (averageLatency / 2000)); // 2000ms as baseline
     this.efficiencyScore = (successRate * 0.4) + (latencyScore * 0.3) + (averageQuality * 0.3);
   }
 

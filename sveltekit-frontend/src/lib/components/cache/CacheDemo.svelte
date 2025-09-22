@@ -465,7 +465,7 @@
               
               <Button 
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn danger-variant"
-                variant="destructive" 
+                variant="error" 
                 onclick={deleteCacheValue} 
                 disabled={$isLoading}
                 aria-label={$isLoading ? 'Deleting cache entry, please wait' : 'Delete cache entry from all layers'}
@@ -486,7 +486,7 @@
               
               <Button 
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn danger-variant critical-action"
-                variant="destructive" 
+                variant="error" 
                 onclick={clearCache} 
                 disabled={$isLoading}
                 aria-label={$isLoading ? 'Clearing all cache data, please wait' : 'Clear entire cache - WARNING: This will remove all cached data'}

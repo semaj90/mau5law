@@ -254,7 +254,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
 
         <Button class="bits-btn" 
           onclick={cleanup}
-          variant="destructive"
+          variant="error"
         >
 🧹 Cleanup
 

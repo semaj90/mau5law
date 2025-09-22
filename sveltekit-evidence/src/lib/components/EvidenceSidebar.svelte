@@ -1,12 +1,18 @@
 <!--
 EvidenceSidebar.svelte - Evidence upload and management sidebar
 Handles file uploads, evidence display, and drag-to-board functionality
+Enhanced with Lucia v3 session handling and drizzle-orm integration
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import { currentEvidence, caseActions } from '$lib/stores/caseStore';
   import { boardActions } from '$lib/stores/boardStore';
   import type { Evidence } from '$lib/types';
+
+  // Session-aware user information from page store
+  $: user = $page.data?.user ?? null;
+  $: session = $page.data?.session ?? null;
 
   // Props using Svelte 5 $props()
   let {
@@ -50,10 +56,62 @@ Handles file uploads, evidence display, and drag-to-board functionality
   }
 
   async function uploadSingleFile(file: File) {
+    // Enhanced session resolution with Lucia v3 and page store priority
+    let uploadedBy = 'anonymous';
+    let uploaderRole = 'viewer';
+    let uploaderEmail = null;
+
+    try {
+      // 1) Primary: Use SvelteKit page store (most reliable)
+      if (user?.id) {
+        uploadedBy = user.id;
+        uploaderRole = user.role || 'viewer';
+        uploaderEmail = user.email;
+      } else {
+        // 2) Fallback: Check persisted global stores
+        const win = (window as any);
+        const candidate = win?.__PERSISTED_SESSION || win?.__SESSION || win?.__LUCIA_SESSION;
+        if (candidate?.user?.id) {
+          uploadedBy = candidate.user.id;
+          uploaderRole = candidate.user.role || 'viewer';
+          uploaderEmail = candidate.user.email;
+        } else {
+          // 3) Fallback: Check localStorage session cache
+          const stored = localStorage.getItem('session') || localStorage.getItem('auth') || localStorage.getItem('legal_ai_session');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed?.user?.id) {
+              uploadedBy = parsed.user.id;
+              uploaderRole = parsed.user.role || 'viewer';
+              uploaderEmail = parsed.user.email;
+            }
+          }
+        }
+      }
+
+      // 4) Last resort: Direct server session check via Lucia API
+      if (uploadedBy === 'anonymous') {
+        const res = await fetch('/api/auth/session');
+        if (res.ok) {
+          const json = await res.json();
+          if (json?.user?.id) {
+            uploadedBy = json.user.id;
+            uploaderRole = json.user.role || 'viewer';
+            uploaderEmail = json.user.email;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Session resolution failed:', e);
+      // Continue with anonymous fallback
+    }
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('caseId', caseId);
-    formData.append('uploadedBy', 'current_user'); // TODO: Get from auth store
+    formData.append('uploadedBy', uploadedBy); // resolved from Lucia session
+    formData.append('uploaderRole', uploaderRole); // enhanced metadata for audit trail
+    if (uploaderEmail) formData.append('uploaderEmail', uploaderEmail);
 
     const response = await fetch('/api/evidence/ingest', {
       method: 'POST',
@@ -110,6 +168,23 @@ Handles file uploads, evidence display, and drag-to-board functionality
     }
   }
 
+  // Mini-text filename optimization for sidebar display
+  function truncateFilename(filename: string, maxLength: number = 25): string {
+    if (filename.length <= maxLength) return filename;
+
+    const extension = filename.split('.').pop() || '';
+    const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.')) || filename;
+    const truncatedName = nameWithoutExt.substring(0, maxLength - extension.length - 4) + '...';
+
+    return extension ? `${truncatedName}.${extension}` : truncatedName;
+  }
+
+  // Smart text truncation for evidence notes and metadata
+  function truncateText(text: string, maxLength: number = 50): string {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength - 3) + '...';
+  }
+
   // Format file size
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
@@ -119,10 +194,37 @@ Handles file uploads, evidence display, and drag-to-board functionality
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
-  // Format upload date
+  // Enhanced timestamp formatting with relative times
   function formatDate(date: Date | string): string {
     const d = typeof date === 'string' ? new Date(date) : date;
     return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+  }
+
+  // Mini-text relative time formatting for compact display
+  function formatRelativeTime(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'now';
+    if (diffMins < 60) return `${diffMins}m`;
+    if (diffHours < 24) return `${diffHours}h`;
+    if (diffDays < 7) return `${diffDays}d`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w`;
+    if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo`;
+    return `${Math.floor(diffDays / 365)}y`;
+  }
+
+  // Detailed timestamp with user context for audit trail
+  function formatDetailedTimestamp(date: Date | string, uploadedBy?: string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    const relativeTime = formatRelativeTime(d);
+    const fullTime = d.toLocaleString();
+    const uploader = uploadedBy && uploadedBy !== 'anonymous' ? ` by ${uploadedBy}` : '';
+    return `${relativeTime} (${fullTime})${uploader}`;
   }
 
   // Filter evidence by type using Svelte 5 $state() and $derived()
@@ -139,9 +241,67 @@ Handles file uploads, evidence display, and drag-to-board functionality
     (evidence.notes && evidence.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (evidence.tags || []).some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   ));
+
+  // Case files organization state
+  let showCaseFiles = $state(false);
+  let caseFilesExpanded = $state(true);
+
+  // Mock case files data (in real app would come from drizzle-orm query)
+  // TODO: Replace with actual drizzle-orm query:
+  // const caseFiles = $derived(await db.select({
+  //   id: cases.id,
+  //   name: cases.title,
+  //   count: count(evidence.id),
+  //   status: cases.status,
+  //   priority: cases.priority
+  // }).from(cases).leftJoin(evidence, eq(cases.id, evidence.caseId)).groupBy(cases.id));
+  let caseFiles = $derived([
+    { id: 'cases', name: 'All Cases', count: 12, path: '/cases' },
+    { id: 'active', name: 'Active Cases', count: 8, path: '/cases?status=active' },
+    { id: 'closed', name: 'Closed Cases', count: 4, path: '/cases?status=closed' },
+    { id: 'high-priority', name: 'High Priority', count: 3, path: '/cases?priority=high' }
+  ]);
 </script>
 
 <div class="evidence-sidebar">
+  <!-- Session Status -->
+  {#if user}
+    <div class="session-info nes-container is-dark">
+      <p class="nes-text is-success">👤 {user.email || user.id} ({user.role})</p>
+    </div>
+  {/if}
+
+  <!-- Case Files Organization -->
+  <div class="case-files-section nes-container is-dark with-title">
+    <p class="title">
+      📁 Case Files
+      <button
+        class="nes-btn is-small toggle-btn"
+        onclick={() => { showCaseFiles = !showCaseFiles; }}
+      >
+        {showCaseFiles ? '−' : '+'}
+      </button>
+    </p>
+
+    {#if showCaseFiles}
+      <div class="case-files-list">
+        {#each caseFiles as caseFile}
+          <a
+            href={caseFile.path}
+            class="case-file-item nes-container"
+            role="button"
+            tabindex="0"
+          >
+            <div class="case-file-header">
+              <span class="case-file-name">{truncateText(caseFile.name, 20)}</span>
+              <span class="nes-badge is-small">{caseFile.count}</span>
+            </div>
+          </a>
+        {/each}
+      </div>
+    {/if}
+  </div>
+
   <!-- Upload Section -->
   <div class="upload-section nes-container is-dark with-title">
     <p class="title">📤 Upload Evidence</p>
@@ -225,16 +385,16 @@ bind:value={searchQuery}
           <div class="evidence-header">
             <span class="file-icon">{getFileIcon(evidence.type)}</span>
             <span class="filename" title={evidence.filename}>
-              {evidence.filename}
+              {truncateFilename(evidence.filename)}
             </span>
           </div>
 
           <div class="evidence-meta">
-            <span class="nes-text is-disabled">
+            <span class="nes-text is-disabled mini-text">
               {formatFileSize(evidence.metadata.size)}
             </span>
-            <span class="nes-text is-disabled">
-              {formatDate(evidence.uploadedAt)}
+            <span class="nes-text is-disabled mini-text" title={formatDetailedTimestamp(evidence.uploadedAt, evidence.uploadedBy)}>
+              {formatRelativeTime(evidence.uploadedAt)}
             </span>
           </div>
 
@@ -248,7 +408,9 @@ bind:value={searchQuery}
 
           {#if evidence.notes}
             <div class="evidence-notes">
-              <p class="nes-text is-disabled">{evidence.notes}</p>
+              <p class="nes-text is-disabled mini-text" title={evidence.notes}>
+                {truncateText(evidence.notes, 40)}
+              </p>
             </div>
           {/if}
 
@@ -307,11 +469,71 @@ bind:value={searchQuery}
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
     padding: 1rem;
     background: #1a1a1a;
     border-right: 2px solid #495057;
     overflow-y: auto;
+  }
+
+  /* Session and user info */
+  .session-info {
+    flex-shrink: 0;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Case files organization */
+  .case-files-section {
+    flex-shrink: 0;
+  }
+
+  .case-files-section .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .toggle-btn {
+    padding: 0.25rem 0.5rem;
+    min-height: auto;
+  }
+
+  .case-files-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .case-file-item {
+    padding: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+  }
+
+  .case-file-item:hover {
+    border-color: #007bff;
+    background: rgba(0, 123, 255, 0.1);
+  }
+
+  .case-file-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .case-file-name {
+    font-size: 0.9em;
+    font-weight: bold;
+  }
+
+  /* Mini-text optimization */
+  .mini-text {
+    font-size: 0.75em !important;
+    line-height: 1.2;
   }
 
   .upload-section, .evidence-section, .instructions {

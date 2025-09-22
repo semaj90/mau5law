@@ -966,7 +966,7 @@
       <Button class="bits-btn" variant="ghost" onclick={() => deleteEvidenceDialogOpen = false}>
         {#snippet children()}Cancel{/snippet}
 
-      <Button class="bits-btn" variant="destructive" onclick={deleteEvidence}>
+      <Button class="bits-btn" variant="error" onclick={deleteEvidence}>
         {#snippet children()}Delete Evidence{/snippet}
 
     </AlertDialog.Footer>
