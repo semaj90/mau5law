@@ -345,7 +345,7 @@ showNewPersonModal = true}>
 <Edit class="w-4 h-4" />
               Edit
 </Button>
-            <Button class="bits-btn" size="sm" variant="destructive">
+            <Button class="bits-btn" size="sm" variant="error">
 <Trash2 class="w-4 h-4" />
               Remove
 </Button>

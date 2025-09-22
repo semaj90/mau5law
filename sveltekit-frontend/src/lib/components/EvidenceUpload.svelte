@@ -293,7 +293,7 @@ Process Another
 
   <!-- Error Status -->
   {#if error}
-    <Alert variant="destructive" class="mt-4">
+    <Alert variant="error" class="mt-4">
       <XCircle class="w-4 h-4" />
       <AlertDescription>
         <div class="mb-2">{error}</div>

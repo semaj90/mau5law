@@ -544,7 +544,7 @@ let uploadProgress = $state(new Map<string, number>());
 
         <!-- Object Controls -->
         {#if hasSelectedObject && !readOnly}
-          <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
+          <Button class="bits-btn" variant="error" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>

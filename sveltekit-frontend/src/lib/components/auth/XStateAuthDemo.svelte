@@ -314,7 +314,7 @@
 
           </div>
 
-          <Button onclick={demonstrateLogout} variant="destructive" class="w-full bits-btn bits-btn">
+          <Button onclick={demonstrateLogout} variant="error" class="w-full bits-btn bits-btn">
 <LogOut class="h-4 w-4 mr-2" />
             Demonstrate Logout
 
@@ -367,7 +367,7 @@
 demoStep = 'dashboard'} variant="ghost">
                 Back to Dashboard
 
-              <Button class="bits-btn" onclick={demonstrateLogout} variant="destructive">
+              <Button class="bits-btn" onclick={demonstrateLogout} variant="error">
 <LogOut class="h-4 w-4 mr-2" />
                 Complete Demo
 

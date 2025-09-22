@@ -27,7 +27,7 @@
 	// Workflow state using $state
 	let workflowActive = $state(false);
 	let currentStep = $state(0);
-	let workflowData = $state<Record<string, any>({
+	let workflowData = $state({
 		what: '',
 		who: '',
 		when: '',
@@ -42,7 +42,7 @@
 	// RAG ingestion state using $state
 	let isIngesting = $state(false);
 	let ingestionProgress = $state(0);
-	let ragContext = $state<Array<any>([]);
+	let ragContext = $state([]);
 
 	const workflowSteps = [
 		{
@@ -114,7 +114,7 @@
 	}
 
 	// Add message helper
-	function addMessage(content: string, type: 'user' | 'assistant' | 'system' = 'assistant', metadata = ) {
+	function addMessage(content: string, type: 'user' | 'assistant' | 'system' = 'assistant', metadata = {}) {
 		pushMessage({
 			id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
 			content,
@@ -125,7 +125,7 @@
 	}
 
 	// Typewriter effect for AI messages
-	async function typeMessage(content: string, metadata = ) {
+	async function typeMessage(content: string, metadata = {}) {
 		isTyping = true;
 		const messageId = crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
 
@@ -262,19 +262,19 @@
 				body: JSON.stringify(caseData)
 			});
 
-			if ((response as { ok?: any; json?: any; text?: any; status?: any }).ok) {
-				const result = await (response as { ok?: any; json?: any; text?: any; status?: any }).json();
+			if (response.ok) {
+				const result = await response.json();
 				await typeMessage(
 					`🎉 Case successfully created! Case ID: ${result?.data?.id}\n\n📊 AI Analysis Complete:\n• ${ragContext.length} relevant precedents found\n• Priority: ${workflowData.priority}\n• Category: ${workflowData.category}\n\nReady to assist with evidence collection and legal strategy!`
 				);
 				try {
-					onCaseCreated((result as { data?: any }).data.id);
+					onCaseCreated(result.data.id);
 				} catch (err) {
 					// swallow callback errors
 				}
 			} else {
-				const text = await (response as { ok?: any; json?: any; text?: any; status?: any }).text.catch(() => '');
-				throw new Error('Failed to create case: ' + (text || (response as { ok?: any; json?: any; text?: any; status?: any }).status));
+				const text = await response.text().catch(() => '');
+				throw new Error('Failed to create case: ' + (text || response.status));
 			}
 		} catch (error) {
 			await typeMessage('❌ Failed to create case. Please try again or contact support.');
@@ -330,17 +330,22 @@
 			if (chatContainer) {
 				try {
 					chatContainer.scrollTop = chatContainer.scrollHeight;
-				} catch }
+				} catch (e) {
+					// Ignore scroll errors
+				}
+			}
 		}, 100);
 	}
 
 	// Auto-greet on mount
-	$effect(async () => {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		for (const greeting of aiResponses.greeting) {
-			await typeMessage(greeting);
-			await new Promise((resolve) => setTimeout(resolve, 800));
-		}
+	$effect(() => {
+		(async () => {
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+			for (const greeting of aiResponses.greeting) {
+				await typeMessage(greeting);
+				await new Promise((resolve) => setTimeout(resolve, 800));
+			}
+		})();
 	});
 </script>
 

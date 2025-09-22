@@ -134,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
     <span class="ml-2 text-gray-600">Loading artifact...</span>
   </div>
 {:else if error}
-  <Alert variant="destructive">
+  <Alert variant="error">
     <AlertTriangle class="w-4 h-4" />
     <AlertDescription>{error}</AlertDescription>
   </Alert>

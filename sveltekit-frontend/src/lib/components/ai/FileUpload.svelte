@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
 
     {#if error}
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>{error}</AlertDescription>
       </Alert>

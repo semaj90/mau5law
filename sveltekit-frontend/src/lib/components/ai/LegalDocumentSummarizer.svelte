@@ -231,7 +231,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
   <!-- Service Status -->
   <div class="mb-4">
     {#if serviceHealth === 'unavailable'}
-      <Alert variant="destructive">
+      <Alert variant="error">
         <div class="flex items-center space-x-2">
           <span>❌</span>
           <span>Gemma3 Summarization Service is unavailable</span>
@@ -384,7 +384,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
 
         <!-- Error Message -->
         {#if errorMessage}
-          <Alert variant="destructive">
+          <Alert variant="error">
             <div class="flex items-center space-x-2">
               <span>⚠️</span>
               <span>{errorMessage}</span>

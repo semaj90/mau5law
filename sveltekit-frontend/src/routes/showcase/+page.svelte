@@ -170,7 +170,7 @@ Secondary Action
             <Button class="bits-btn" variant="ghost">
 Ghost Button
 </Button>
-            <Button class="bits-btn" variant="destructive">
+            <Button class="bits-btn" variant="error">
 Delete Action
 </Button>
           </div>

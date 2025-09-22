@@ -12,7 +12,6 @@ import { threadSafePostgres } from './thread-safe-postgres.js';
 import { concurrentSerializer, serializeForAPI } from './concurrent-json-serializer.js';
 import { gpuCoordinator, gpuProcessJsonb } from './gpu-thread-coordinator.js';
 import { cognitiveCache } from '../services/cognitive-cache-integration.js';
-}
 
 export interface SSRResponse<T = any> {
   success: boolean;
@@ -182,7 +181,7 @@ export function sanitizeForSSR<T>(data: T): T {
  */
 export async function loadWithSSR<T extends BitsUICompatibleData>(
   loader: () => Promise<T>,
-  fallback: T;
+  fallback: T
 ): Promise<T> {
   try {
     const data = await loader();
@@ -196,9 +195,9 @@ export async function loadWithSSR<T extends BitsUICompatibleData>(
 /**
  * Batch API calls for efficient SSR data loading
  */
-export async function batchSSRRequests<T extends Record<string, any>(
+export async function batchSSRRequests<T extends Record<string, any>>(
   requests: { [K in keyof T]: () => Promise<T[K]> },
-  timeout = 5000;
+  timeout = 5000
 ): Promise<T> {
   const results = {} as T;
 
@@ -236,7 +235,7 @@ export function ssrErrorBoundary<T>(fn: () => Promise<T>, fallback: T): Promise<
  */
 export function validateSSRResponse<T>(
   response: any,
-  validator: (data: any) => data is T;
+  validator: (data: any) => data is T
 ): response is SSRResponse<T> {
   return (
     response &&
@@ -245,7 +244,7 @@ export function validateSSRResponse<T>(
     'data' in response &&
     'meta' in response &&
     ((response as { success?: any; data?: any }).success === false ||
-      validator((response as { success?: any; data?: any }).data)
+      validator((response as { success?: any; data?: any }).data))
   );
 }
 
@@ -332,7 +331,7 @@ export async function queryLegalDocumentsSSR(query: {
       (threadSafePostgres as any).queryJsonbDocuments ||
       (threadSafePostgres as any).queryDocuments ||
       null;
-    const results = queryFn;
+    const results = queryFn
       ? await queryFn('legal_documents', query, {
           limit: options?.limit,
           offset: options?.offset,

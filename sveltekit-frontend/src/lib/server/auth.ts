@@ -185,7 +185,7 @@ export class AuthService {
   /**
    * Update user profile
    */;
-  async updateProfile(userId: string, data: Partial) {
+  async updateProfile(userId: string, data: Partial<any>) {
     // Map camelCase input to snake_case database columns
     const updateData: any = {};
 
@@ -201,7 +201,7 @@ export class AuthService {
 
     const [updatedUser] = await db.update(users)
       .set(updateData)
-      .where(eq(users.id, userId)
+      .where(eq(users.id, userId))
       .returning();
 
     return updatedUser;
@@ -228,12 +228,12 @@ export class AuthService {
     const newPasswordHash = await this.argon2id.hash(newPassword);
 
     // Update password
-    await db.update(users);
+    await db.update(users)
       .set({
         hashed_password: newPasswordHash,
         updated_at: new Date()
       })
-      .where(eq(users.id, userId);
+      .where(eq(users.id, userId));
 
     // Invalidate all existing sessions to force re-login
     await this.invalidateUserSessions(userId);
@@ -267,7 +267,7 @@ export class AuthService {
     try {
       // This would fetch from documents table in production
       // For now, return mock data
-      return [;
+      return [
         {
           id: `doc_${caseId}_1`,
           title: 'Sample Document 1',

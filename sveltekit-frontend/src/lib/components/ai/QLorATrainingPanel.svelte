@@ -362,14 +362,14 @@ Select Files
             <Button class="bits-btn" onclick={pauseTraining} variant="ghost" size="sm">
 ⏸️ Pause
 </Button>
-            <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
+            <Button class="bits-btn" onclick={stopTraining} variant="error" size="sm">
 ⏹️ Stop
 </Button>
           {:else if currentJob.status === 'paused'}
             <Button class="bits-btn" onclick={resumeTraining} variant="default" size="sm">
 ▶️ Resume
 </Button>
-            <Button class="bits-btn" onclick={stopTraining} variant="destructive" size="sm">
+            <Button class="bits-btn" onclick={stopTraining} variant="error" size="sm">
 ⏹️ Stop
 </Button>
           {/if}

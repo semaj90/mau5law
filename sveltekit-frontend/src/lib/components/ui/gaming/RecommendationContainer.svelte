@@ -429,13 +429,13 @@
                 
                 <!-- Error Indicator -->
                 {#if recommendationError}
-                  <Badge.Root class="error-badge" variant="destructive">
+                  <Badge.Root class="error-badge" variant="error">
                     ⚠️ Error
                   </Badge.Root>
                 {/if}
                 
                 {#if criticalCount > 0}
-                  <Badge.Root class="critical-badge" variant="destructive">
+                  <Badge.Root class="critical-badge" variant="error">
                     {criticalCount}
                   </Badge.Root>
                 {/if}

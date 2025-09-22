@@ -5,8 +5,8 @@ import UnoCSS from 'unocss/vite';
 export default defineConfig({
   plugins: [UnoCSS(), sveltekit()],
   server: {
-    port: 5173,
-    strictPort: true,
+    port: process.env.PORT || 5173,
+    strictPort: false, // Allow automatic port fallback
     host: '0.0.0.0',
   },
   preview: {

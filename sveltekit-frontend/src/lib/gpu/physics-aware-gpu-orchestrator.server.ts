@@ -58,10 +58,10 @@ class PhysicsAwareGpuOrchestrator {
 
   private async detectHardwareGpus(): Promise<void> {
     // Simulate hardware detection delay
-    await new Promise(resolve => setTimeout(resolve, 200);
+    await new Promise(resolve => setTimeout(resolve, 200));
     
     // Mock detection of RTX 3060 Ti as per user's actual hardware
-    this.availableDevices = [;
+    this.availableDevices = [
       {
         id: 0,
         name: 'NVIDIA GeForce RTX 3060 Ti',
@@ -95,10 +95,10 @@ class PhysicsAwareGpuOrchestrator {
     this.availableDevices.forEach(device => {
       // Simulate realistic GPU metric fluctuations
       const baseLoad = 0.1 + (this.runningTasks.size * 0.2);
-      device.load = Math.min(0.95, baseLoad + (Math.random() * 0.1 - 0.05);
+      device.load = Math.min(0.95, baseLoad + (Math.random() * 0.1 - 0.05));
       device.temperature = 45 + (device.load * 30) + (Math.random() * 5 - 2.5);
       device.powerUsage = 120 + (device.load * 80) + (Math.random() * 10 - 5);
-      device.memoryUsage = Math.max(1.0, device.memoryUsage + (Math.random() * 0.2 - 0.1);
+      device.memoryUsage = Math.max(1.0, device.memoryUsage + (Math.random() * 0.2 - 0.1));
       device.lastUpdate = Date.now();
     });
 
@@ -208,7 +208,7 @@ class PhysicsAwareGpuOrchestrator {
 
   private canExecuteImmediately(task: GpuTask, device: GpuDevice): boolean {
     // Check if device can handle the task immediately
-    const runningTasksOnDevice = Array.from(this.runningTasks.values()
+    const runningTasksOnDevice = Array.from(this.runningTasks.values())
       .filter(t => t.deviceId === device.id);
     
     // For high-priority tasks, allow some overlap;

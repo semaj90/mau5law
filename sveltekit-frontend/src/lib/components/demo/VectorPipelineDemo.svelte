@@ -99,7 +99,7 @@ Submit Batch
         <Button class="bits-btn" onclick={runHealthCheck} variant="ghost">
 Health Check
 </Button>
-        <Button class="bits-btn" onclick={resetPipeline} variant="destructive">
+        <Button class="bits-btn" onclick={resetPipeline} variant="error">
 Reset Pipeline
 </Button>
         <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>
