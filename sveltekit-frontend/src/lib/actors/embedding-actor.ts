@@ -7,7 +7,6 @@
 import { fromPromise, createActor } from 'xstate';
 import type { EmbeddingResponse } from "$lib/types/api";
 import { ollamaService } from "$lib/services/ollamaService";
-}
 
 export interface EmbeddingInput {
   text: string;
@@ -178,7 +177,7 @@ export async function generateLegalDocumentEmbedding(
   text: string,
   caseId: string,
   documentType: 'contract' | 'evidence' | 'legal_brief' | 'correspondence',
-  evidenceId?: string;
+  evidenceId?: string
 ): Promise<EmbeddingOutput> {
   return generateEmbedding({
     text,

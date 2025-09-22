@@ -64,18 +64,56 @@ Located in: `src/lib/components/ui/enhanced-bits/`
 #### Interactive Components
 - `Button.svelte` - Primary action buttons
 - `Input.svelte` - Form input fields
-- `Select.svelte` - Dropdown selections
+- `Select.svelte` - Dropdown selections (dynamic import)
 - `Dialog.svelte` - Modal dialogs
 
 #### Feedback Components
-- `Alert.svelte` - Status messages and notifications
-- `AlertDescription.svelte` - Detailed alert content
+- `Alert.svelte` - Status messages and notifications (dynamic import)
+- `AlertDescription.svelte` - Detailed alert content (dynamic import)
+- `Toast.svelte` - Toast notifications (dynamic import)
+- `ProgressBar.svelte` - Progress indicators (dynamic import)
+- `LoaderOverlay.svelte` - Loading overlays (dynamic import)
 
-#### Specialized Legal AI Components
-- `EvidenceThumbnail.svelte` - Evidence preview cards
-- `EvidenceAIAnalysis.svelte` - AI analysis displays
+#### Evidence Layer Components (Legal AI Specific)
+- `EvidenceCard.svelte` - Evidence display cards (dynamic import)
+- `EvidenceThumbnail.svelte` - Evidence preview thumbnails (dynamic import)
+- `EvidenceAIAnalysis.svelte` - AI analysis displays (dynamic import)
+- `EvidenceTimeline.svelte` - Chain of custody timeline (dynamic import)
+- `EvidenceTags.svelte` - Evidence tagging system (dynamic import)
+- `EvidenceHash.svelte` - Hash verification display (dynamic import)
+
+#### Forms & Input Components
 - `SearchInput.svelte` - Enhanced search inputs
-- `Board.svelte` - Dashboard layouts
+- `FileUploader.svelte` - Drag-and-drop file uploads (dynamic import)
+- `MultiSelect.svelte` - Multiple selection component (dynamic import)
+- `DatePicker.svelte` - Date selection component (dynamic import)
+- `RichTextEditor.svelte` - Rich text editing (dynamic import)
+
+#### Dashboard & Layout Components
+- `Board.svelte` - Evidence board layout (dynamic import)
+- `Sidebar.svelte` - Navigation sidebar (dynamic import)
+- `Toolbar.svelte` - Action toolbar (dynamic import)
+- `SplitView.svelte` - Split pane layout (dynamic import)
+
+#### Visualization Components
+- `ConfidenceBar.svelte` - AI confidence visualization (dynamic import)
+- `TimelineGraph.svelte` - Timeline visualization (dynamic import)
+- `Heatmap.svelte` - Data heatmap display (dynamic import)
+- `EntityCloud.svelte` - Entity relationship cloud (dynamic import)
+
+#### Utility Components
+- `CopyButton.svelte` - Copy to clipboard button (dynamic import)
+- `Collapsible.svelte` - Collapsible content sections (dynamic import)
+- `DebugPanel.svelte` - Development debugging panel (dynamic import)
+
+#### AI & Specialized Components
+- `AIChatMessage.svelte` - AI chat message display
+- `AIRecommendations.svelte` - AI-powered recommendations
+- `EmbeddingForm.svelte` - Embedding generation form
+- `EmbeddingSearch.svelte` - Vector search interface
+- `GemmaEmbeddingDemo.svelte` - Gemma embedding demonstration
+- `KeyboardMapping.svelte` - Keyboard shortcut display
+- `LinkButton.svelte` - Link-styled button component
 
 ### Import Patterns
 
@@ -90,10 +128,38 @@ import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
 import Card from '$lib/components/ui/enhanced-bits/Card.svelte';
 ```
 
-#### ⚠️ Avoid: Compound Imports (SSR Issues)
+#### ✅ Compound Component Pattern (shadcn-style)
 ```typescript
-// Don't use in SSR contexts
-import { CardCompound } from '$lib/components/ui/enhanced-bits';
+import * as Card from '$lib/components/ui/card';
+import * as Dialog from '$lib/components/ui/dialog';
+
+// Usage: <Card.Root>, <Card.Header>, <Card.Title>, etc.
+```
+
+#### ✅ Dynamic Component Loading
+```typescript
+import { loadComponent } from '$lib/components/ui/enhanced-bits';
+
+const EvidenceCard = await loadComponent('EvidenceCard');
+if (EvidenceCard) {
+  // Use component safely
+}
+```
+
+#### ✅ Custom Design Integration
+```typescript
+import { createCustomTheme, applyCustomDesign, NESDesignSystem } from '$lib/components/ui/enhanced-bits';
+
+// Create custom theme
+const myTheme = createCustomTheme({
+  colors: {
+    primary: '#ff0066',
+    evidence: '#00ffcc'
+  }
+});
+
+// Apply to element
+applyCustomDesign(element, myTheme);
 ```
 
 ## Migration Patterns

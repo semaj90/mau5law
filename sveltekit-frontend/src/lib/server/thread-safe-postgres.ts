@@ -18,7 +18,6 @@ const sql = postgres({
   connect_timeout: 10,
   debug: dev
 });
-}
 
 export interface ThreadSafePostgres {
   query: typeof sql;

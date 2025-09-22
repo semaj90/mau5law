@@ -49,15 +49,15 @@ Displays all media: evidence, generated images, documents, uploads
     // Filter by category
     if (selectedCategory !== 'all') {
       if (selectedCategory === 'ai-generated') {
-        items = items.filter(item => item.metadata)?.aiGenerated);
+        items = items.filter(item => item.metadata?.aiGenerated);
       } else {
-        items = items.filter(item => item.category) === selectedCategory);
+        items = items.filter(item => item.category === selectedCategory);
       }
     }
 
     // Filter by case
     if (selectedCaseId !== 'all') {
-      items = items.filter(item => item.caseId) === selectedCaseId);
+      items = items.filter(item => item.caseId === selectedCaseId);
     }
 
     // Search filter

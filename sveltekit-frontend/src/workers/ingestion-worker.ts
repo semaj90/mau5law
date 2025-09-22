@@ -482,7 +482,7 @@ export class IngestionWorkerManager {
     {
       resolve: (value: any) => void;
       reject: (error: Error) => void;
-      onProgress?: (progress: number, stage?: string, data?: any) => void;
+      onProgress?: (progress: number, stage?: string, data?: any) => void
     }
   >();
 
@@ -536,7 +536,7 @@ export class IngestionWorkerManager {
 
   public async processIngestion(
     task: IngestionTask,
-    onProgress?: (progress: number, stage?: string, data?: any) => void;
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<IngestionResult> {
     return this.executeTask('ingestion', task, onProgress);
   }
@@ -544,7 +544,7 @@ export class IngestionWorkerManager {
   public async generateEmbeddings(
     texts: string[],
     options: EmbeddingOptions = {},
-    onProgress?: (progress: number, stage?: string, data?: any) => void;
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<any> {
     return this.executeTask('embedding', { texts, options }, onProgress);
   }
@@ -552,7 +552,7 @@ export class IngestionWorkerManager {
   public async performSOMClustering(
     embeddings: number[][],
     config: SOMConfig,
-    onProgress?: (progress: number, stage?: string, data?: any) => void;
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<any> {
     return this.executeTask('som_clustering', { embeddings, config }, onProgress);
   }
@@ -560,7 +560,7 @@ export class IngestionWorkerManager {
   public async applyRTXCompression(
     documents: any[],
     compressionRatio: number = 50,
-    onProgress?: (progress: number, stage?: string, data?: any) => void;
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<any> {
     return this.executeTask('rtx_compression', { documents, compressionRatio }, onProgress);
   }
@@ -572,7 +572,7 @@ export class IngestionWorkerManager {
   private async executeTask(
     type: WorkerMessage['type'],
     data: any,
-    onProgress?: (progress: number, stage?: string, data?: any) => void;
+    onProgress?: (progress: number, stage?: string, data?: any) => void
   ): Promise<any> {
     if (!this.worker) {
       throw new Error('Ingestion worker not available');

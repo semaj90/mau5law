@@ -64,7 +64,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
       processingMetrics
     ] = await Promise.allSettled([
       // Recent sessions with enhanced data
-      db;
+      db
         .select({
           id: ragSessions.id,
           sessionName: ragSessions.sessionName,
@@ -78,7 +78,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         .limit(10), // More sessions for testing
 
       // Recent documents with metadata
-      db;
+      db
         .select({
           id: legalDocuments.id,
           title: legalDocuments.title,
@@ -105,7 +105,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         .where(sql`DATE(created_at) = CURRENT_DATE`),
 
       // Processing performance metrics
-      db;
+      db
         .select({
           avgProcessingTime: sql<number>`AVG(CAST(processing_metadata->>'processingTime' AS INTEGER))`,
           cacheHits: sql<number>`COUNT(*) FILTER (WHERE processing_metadata->>'cacheHit' = 'true')`,
@@ -132,7 +132,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           const [{ count: docCount }] = await db
             .select({ count: count() })
             .from(legalDocuments)
-            .where(eq(legalDocuments.sessionId, session.id);
+            .where(eq(legalDocuments.sessionId, session.id));
           return {
             id: session.id,
             sessionName: session.sessionName || `Test Session ${session.id.slice(0, 8)}`,

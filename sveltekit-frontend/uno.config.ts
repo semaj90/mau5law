@@ -145,6 +145,20 @@ export default defineConfig({
         matrix: '#00ff00',
         retro: '#ff1493',
       },
+
+      // Enhanced NES Gaming Color Palette
+      nes: {
+        red: '#D92916',
+        orange: '#FF6B35',
+        yellow: '#F9CA24',
+        green: '#6ECF3C',
+        blue: '#4A90E2',
+        purple: '#8E44AD',
+        pink: '#E91E63',
+        gray: '#95A5A6',
+        black: '#2C3E50',
+        white: '#ECF0F1'
+      },
       neural: {
         input: '#4f46e5',
         hidden: '#7c3aed',
@@ -279,6 +293,18 @@ export default defineConfig({
         '40%, 43%': { transform: 'translate3d(0, -30px, 0)' },
         '70%': { transform: 'translate3d(0, -15px, 0)' },
         '90%': { transform: 'translate3d(0, -4px, 0)' },
+      },
+      'nes-blink': {
+        '0%, 50%': { opacity: '1' },
+        '51%, 100%': { opacity: '0' },
+      },
+      'nes-pulse': {
+        '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+        '50%': { transform: 'scale(1.05)', opacity: '0.8' },
+      },
+      'nes-bounce': {
+        '0%, 100%': { transform: 'translateY(0px)' },
+        '50%': { transform: 'translateY(-10px)' },
       },
     },
   },
@@ -616,6 +642,55 @@ export default defineConfig({
     'relationship-type': 'text-xs text-muted-foreground px-2 py-1 bg-background rounded',
     'relationship-to': 'font-medium text-foreground',
     'relationship-strength': 'ml-auto text-xs font-mono',
+
+    // Enhanced NES Gaming Components
+    'nes-button': 'bg-nes-red hover:bg-nes-orange text-white font-nes text-sm px-4 py-2 border-4 border-nes-black shadow-[4px_4px_0px_0px_theme(colors.nes.black)] active:shadow-[2px_2px_0px_0px_theme(colors.nes.black)] active:translate-x-[2px] active:translate-y-[2px] transition-all duration-100 cursor-pointer',
+    'nes-button-primary': 'nes-button bg-nes-blue hover:bg-nes-purple',
+    'nes-button-success': 'nes-button bg-nes-green hover:bg-nes-blue',
+    'nes-button-warning': 'nes-button bg-nes-yellow hover:bg-nes-orange text-nes-black',
+    'nes-button-danger': 'nes-button bg-nes-red hover:bg-nes-pink',
+
+    'nes-card': 'bg-nes-white border-4 border-nes-black shadow-[8px_8px_0px_0px_theme(colors.nes.black)] p-4 relative',
+    'nes-card-dark': 'bg-nes-black border-4 border-nes-white shadow-[8px_8px_0px_0px_theme(colors.nes.white)] p-4 relative text-nes-white',
+
+    'nes-input': 'bg-nes-white border-4 border-nes-black px-4 py-2 font-nes text-sm focus:outline-none focus:shadow-[inset_4px_4px_0px_0px_theme(colors.nes.gray)]',
+    'nes-input-dark': 'bg-nes-black border-4 border-nes-white px-4 py-2 font-nes text-sm text-nes-white focus:outline-none focus:shadow-[inset_4px_4px_0px_0px_theme(colors.nes.gray)]',
+
+    'nes-panel': 'bg-nes-gray border-4 border-nes-black relative',
+    'nes-panel-header': 'bg-nes-blue text-nes-white p-3 border-b-4 border-nes-black font-nes text-sm uppercase tracking-wide',
+    'nes-panel-content': 'p-4',
+
+    'nes-badge': 'bg-nes-red text-nes-white px-2 py-1 font-nes text-xs border-2 border-nes-black shadow-[2px_2px_0px_0px_theme(colors.nes.black)]',
+    'nes-badge-success': 'nes-badge bg-nes-green',
+    'nes-badge-warning': 'nes-badge bg-nes-yellow text-nes-black',
+    'nes-badge-info': 'nes-badge bg-nes-blue',
+
+    // NES Gaming Enhanced UI Patterns
+    'nes-container': 'bg-nes-white border-4 border-nes-black p-6 shadow-[12px_12px_0px_0px_theme(colors.nes.black)]',
+    'nes-container-dark': 'bg-nes-black border-4 border-nes-white p-6 shadow-[12px_12px_0px_0px_theme(colors.nes.white)] text-nes-white',
+
+    'nes-modal': 'nes-container fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 min-w-96 max-w-2xl',
+    'nes-modal-overlay': 'fixed inset-0 bg-nes-black/50 z-40',
+
+    'nes-select': 'nes-input appearance-none bg-[url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3E%3Cpath stroke=\'%23000\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'4\' d=\'M6 8l4 4 4-4\'/%3E%3C/svg%3E")] bg-[length:20px] bg-[right_8px_center] bg-no-repeat pr-10',
+
+    'nes-checkbox': 'appearance-none w-6 h-6 border-4 border-nes-black bg-nes-white checked:bg-nes-green checked:shadow-[inset_2px_2px_0px_0px_theme(colors.nes.black)] cursor-pointer',
+    'nes-radio': 'appearance-none w-6 h-6 border-4 border-nes-black bg-nes-white rounded-full checked:bg-nes-blue checked:shadow-[inset_2px_2px_0px_0px_theme(colors.nes.black)] cursor-pointer',
+
+    // NES Gaming Animation Effects
+    'nes-blink': 'animate-[nes-blink_1s_step-end_infinite]',
+    'nes-pulse': 'animate-[nes-pulse_2s_ease-in-out_infinite]',
+    'nes-bounce': 'animate-[nes-bounce_1s_ease-in-out_infinite]',
+
+    // NES Gaming Layout Helpers
+    'nes-grid': 'grid gap-4 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]',
+    'nes-flex': 'flex gap-4 items-center flex-wrap',
+
+    // Enhanced-Bits + NES Hybrid Components
+    'enhanced-nes-button': 'nes-button yorha-button',
+    'enhanced-nes-card': 'nes-card yorha-card',
+    'enhanced-nes-input': 'nes-input yorha-input',
+    'enhanced-nes-modal': 'nes-modal yorha-panel',
   },
   rules: [
     // Animation utilities - Fix for unmatched animation classes
@@ -1017,5 +1092,71 @@ export default defineConfig({
     'entity-tag',
     'relationship-connector',
     'theme-weight-indicator',
+
+    // Enhanced NES Gaming Components
+    'nes-button',
+    'nes-button-primary',
+    'nes-button-success',
+    'nes-button-warning',
+    'nes-button-danger',
+    'nes-card',
+    'nes-card-dark',
+    'nes-input',
+    'nes-input-dark',
+    'nes-panel',
+    'nes-panel-header',
+    'nes-panel-content',
+    'nes-badge',
+    'nes-badge-success',
+    'nes-badge-warning',
+    'nes-badge-info',
+    'nes-container',
+    'nes-container-dark',
+    'nes-modal',
+    'nes-modal-overlay',
+    'nes-select',
+    'nes-checkbox',
+    'nes-radio',
+    'nes-blink',
+    'nes-pulse',
+    'nes-bounce',
+    'nes-grid',
+    'nes-flex',
+    'enhanced-nes-button',
+    'enhanced-nes-card',
+    'enhanced-nes-input',
+    'enhanced-nes-modal',
+
+    // NES Color Classes
+    'bg-nes-red',
+    'bg-nes-orange',
+    'bg-nes-yellow',
+    'bg-nes-green',
+    'bg-nes-blue',
+    'bg-nes-purple',
+    'bg-nes-pink',
+    'bg-nes-gray',
+    'bg-nes-black',
+    'bg-nes-white',
+    'text-nes-red',
+    'text-nes-orange',
+    'text-nes-yellow',
+    'text-nes-green',
+    'text-nes-blue',
+    'text-nes-purple',
+    'text-nes-pink',
+    'text-nes-gray',
+    'text-nes-black',
+    'text-nes-white',
+    'border-nes-red',
+    'border-nes-orange',
+    'border-nes-yellow',
+    'border-nes-green',
+    'border-nes-blue',
+    'border-nes-purple',
+    'border-nes-pink',
+    'border-nes-gray',
+    'border-nes-black',
+    'border-nes-white',
   ],
 });

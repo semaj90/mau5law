@@ -8,31 +8,31 @@
   import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
-  // State management
-  let query = '';
-  let response = '';
-  let loading = false;
-  let modelStatus = clientAI.getModelStatus();
-  let lastResponse: any = null;
+  // State management - Svelte 5 runes
+  let query = $state('');
+  let response = $state('');
+  let loading = $state(false);
+  let modelStatus = $state(clientAI.getModelStatus());
+  let lastResponse = $state<any>(null);
 
-  // Chat history
-  let chatHistory: Array<{
+  // Chat history - Svelte 5 runes
+  let chatHistory = $state<Array<{
     query: string;
     response: string;
     source: 'client' | 'server';
     reasoning: string;
     timestamp: Date;
     metadata: any;
-  }> = [];
+  }>>([]);
 
-  // Performance metrics
-  let performanceMetrics = {
+  // Performance metrics - Svelte 5 runes
+  let performanceMetrics = $state({
     clientResponses: 0,
     serverResponses: 0,
     avgClientTime: 0,
     avgServerTime: 0,
     totalQueries: 0
-  };
+  });
 
   onMount(() => {
     // Update model status periodically

@@ -216,7 +216,7 @@ export const actions: Actions = {
               ...(locals.orchestrator.apiKey ? { Authorization: `Bearer ${locals.orchestrator.apiKey}` } : Record<string, any>)
             },
             body: JSON.stringify(ingestionPayload)
-          }).catch((err) => console.error('Ingestion service request failed:', err);
+          }).catch((err) => console.error('Ingestion service request failed:', err));
         } else {
           // If no orchestrator is configured, attempt a minimal local best-effort:
           //  - upload attachments to MinIO (if locals.minio available) and return metadata links;
@@ -500,7 +500,7 @@ export const actions: Actions = {
       return fail(400, { message: 'Case ID is required' });
     }
 
-    const form = await superValidate(request, zod(caseFormSchema);
+    const form = await superValidate(request, zod(caseFormSchema));
 
     if (!form.valid) {
       return fail(400, { form });
@@ -523,7 +523,7 @@ export const actions: Actions = {
       // Check permissions (owner or assigned user)
     if (
       !locals.user?.id ||
-      (existingCase.createdBy !== locals.user.id && existingCase.assignedTo !== locals.user.id);
+      (existingCase.createdBy !== locals.user.id && existingCase.assignedTo !== locals.user.id)
     ) {
       return fail(403, {
         form,
@@ -590,7 +590,7 @@ export const actions: Actions = {
   },
 
   saveDraft: async ({ request, locals }) => {
-    const form = await superValidate(request, zod(caseFormSchema.partial());
+    const form = await superValidate(request, zod(caseFormSchema.partial()));
 
     try {
       // Save partial form data as draft;

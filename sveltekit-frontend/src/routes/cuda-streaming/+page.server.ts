@@ -165,7 +165,7 @@ async function getStreamingStats() {
 }
 
 async function getRecentProcessingResults() {
-  return [;
+  return [
     {
       sessionId: "stream_1234567890",
       operation: "document_vectorization",
@@ -220,7 +220,7 @@ async function processCudaDocument(documentData: string, options: any) {
   // Mock CUDA document processing - replace with actual implementation
   const simulatedProcessingTime = Math.random() * 1000 + 200;
   
-  await new Promise(resolve => setTimeout(resolve, simulatedProcessingTime);
+  await new Promise(resolve => setTimeout(resolve, simulatedProcessingTime));
   
   return {
     vectors: new Array(768).fill(0).map(() => Math.random()),

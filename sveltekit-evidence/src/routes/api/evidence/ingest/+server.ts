@@ -1,9 +1,12 @@
 /**
  * Evidence Ingestion API - Handles file uploads and processing
- * POST /api/evidence/ingest
+ * POST /api/evidence/ingest - Integrates with QUIC/HTTP3 AI pipeline
  */
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { db } from '$lib/db';
+import { evidence, timeline } from '$lib/db/schema';
+import { quicClient } from '$lib/services/quicClient';
 import type { Evidence } from '$lib/types';
 
 export const POST: RequestHandler = async ({ request }) => {

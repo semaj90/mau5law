@@ -1,10 +1,16 @@
 <script lang="ts">
 	import { cn } from "$lib/utils";
+	import type { Snippet } from "svelte";
 
-	let className: string | undefined = undefined;
-	export { className as class };
+	// Svelte 5 props
+	interface Props {
+		class?: string;
+		htmlFor?: string;
+		children?: Snippet;
+		[key: string]: any;
+	}
 
-	export let htmlFor: string | undefined = undefined;
+	let { class: className, htmlFor, children, ...restProps }: Props = $props();
 </script>
 
 <label
@@ -13,7 +19,7 @@
 		"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 		className
 	)}
-	{...$$restProps}
+	{...restProps}
 >
-	<slot />
+	{@render children?.()}
 </label>

@@ -1,6 +1,5 @@
 // Stub for context7 multicore error analysis to unblock build
-// Provides analyzeCurrentErrors returning shape expected by context7-flashattention-integration;
-}
+// Provides analyzeCurrentErrors returning shape expected by context7-flashattention-integration
 
 export interface Context7CategoryAnalysisItem {
   category: string;
@@ -19,7 +18,7 @@ export interface Context7ErrorAnalysisResult {
 
 export async function analyzeCurrentErrors(): Promise<Context7ErrorAnalysisResult> {
   // Simulate analysis delay
-  await new Promise(r => setTimeout(r, 10);
+  await new Promise(r => setTimeout(r, 10));
 
   const categories: Context7CategoryAnalysisItem[] = [
     { category: 'svelte5_migration', status: 'completed', estimated_fixes: 12, multicore_analysis: { context: 'Migration warnings and state rune updates' } },

@@ -360,7 +360,7 @@ export async function queryLegalDocumentsSSR(query: {
 /**
  * Enhanced batch SSR requests with GPU acceleration
  */
-export async function batchSSRRequestsGPU<T extends Record<string, any>(
+export async function batchSSRRequestsGPU<T extends Record<string, any>>(
   requests: { [K in keyof T]: () => Promise<T[K]> },
   options: {
     timeout?: number;

@@ -1,6 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions
-https://svelte.dev/e/render_tag_invalid_expression -->
-<!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
+<!-- Fixed: ContentSection component with proper Svelte 5 render syntax -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
@@ -15,6 +13,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     gap?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
     columns?: 1 | 2 | 3 | 4 | 6 | 12;
     class?: string;
+    children?: import('svelte').Snippet;
   }
 
   let {
@@ -25,6 +24,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     gap = 'md',
     columns = 1,
     class: className = '',
+    children,
     ...restProps
   }: Props = $props();
 
@@ -41,7 +41,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       none: "p-0",
       sm: "p-2",
       md: "p-4",
-      lg: "p-6", 
+      lg: "p-6",
       xl: "p-8"
     };
 
@@ -56,7 +56,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     const columnClasses = variant === 'grid' ? {
       1: "grid-cols-1",
       2: "grid-cols-1 md:grid-cols-2",
-      3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3", 
+      3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
       4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
       6: "grid-cols-2 md:grid-cols-3 lg:grid-cols-6",
       12: "grid-cols-4 md:grid-cols-6 lg:grid-cols-12"
@@ -109,7 +109,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
           {title}
         </h2>
       {/if}
-      
+
       {#if subtitle}
         <p class="nes-legal-subtitle text-gray-300 neural-sprite-active">
           {subtitle}
@@ -119,6 +119,26 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   {/if}
 
   <div class={contentClass}>
-    {@render children}
+    {#if children}
+      {@render children()}
+    {:else}
+      <!-- TODO: Default content goes here when no children provided
+           Examples based on variant:
+           - 'default': Main page content, forms, data displays
+           - 'card': Card body content, action buttons
+           - 'panel': Dashboard widgets, status indicators
+           - 'grid': Grid items, responsive components
+
+           Usage patterns from architecture:
+           - Legal case data tables
+           - AI analysis results
+           - User dashboards
+           - Admin panels
+           - Demo components
+      -->
+      <div class="nes-text is-disabled text-center p-8">
+        Content section ready for children components
+      </div>
+    {/if}
   </div>
 </section>

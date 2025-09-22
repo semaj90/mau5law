@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	interface ChatMessage {
 		id: string;
@@ -11,9 +10,10 @@
 		model?: string;
 	}
 
-	let messages = writable<ChatMessage[]>([]);
-	let input = '';
-	let isLoading = false;
+	// Svelte 5 runes
+	let messages = $state<ChatMessage[]>([]);
+	let input = $state('');
+	let isLoading = $state(false);
 	let chatContainer: HTMLElement;
 
 	const models = [
@@ -22,7 +22,7 @@
 		{ id: 'embedding-analysis', name: '🔍 Embedding Analysis' }
 	];
 
-	let selectedModel = models[0].id;
+	let selectedModel = $state(models[0].id);
 
 	async function sendMessage() {
 		if (!input.trim() || isLoading) return;
@@ -34,7 +34,7 @@
 			timestamp: new Date()
 		};
 
-		messages.update(msgs => [...msgs, userMessage]);
+		messages = [...messages, userMessage];
 		const userInput = input;
 		input = '';
 		isLoading = true;
@@ -64,7 +64,7 @@
 					model: data.model
 				};
 
-				messages.update(msgs => [...msgs, assistantMessage]);
+				messages = [...messages, assistantMessage];
 			} else {
 				throw new Error(data.error || 'TensorRT inference failed');
 			}
@@ -76,7 +76,7 @@
 				timestamp: new Date()
 			};
 
-			messages.update(msgs => [...msgs, errorMessage]);
+			messages = [...messages, errorMessage];
 		} finally {
 			isLoading = false;
 		}
@@ -90,15 +90,17 @@
 	}
 
 	function clearChat() {
-		messages.set([]);
+		messages = [];
 	}
 
-	// Auto-scroll to bottom when new messages arrive
-	$: if ($messages.length > 0 && chatContainer) {
-		setTimeout(() => {
-			chatContainer.scrollTop = chatContainer.scrollHeight;
-		}, 100);
-	}
+	// Auto-scroll to bottom when new messages arrive - Svelte 5 effect
+	$effect(() => {
+		if (messages.length > 0 && chatContainer) {
+			setTimeout(() => {
+				chatContainer.scrollTop = chatContainer.scrollHeight;
+			}, 100);
+		}
+	});
 
 	onMount(() => {
 		// Add welcome message
@@ -109,7 +111,7 @@
 			timestamp: new Date(),
 			model: 'system'
 		};
-		messages.set([welcomeMessage]);
+		messages = [welcomeMessage];
 	});
 </script>
 
@@ -127,14 +129,14 @@
 				{/each}
 			</select>
 
-			<button on:click={clearChat} class="clear-btn">
+			<button onclick={clearChat} class="clear-btn">
 				🗑️ Clear
 			</button>
 		</div>
 	</div>
 
 	<div class="chat-messages" bind:this={chatContainer}>
-		{#each $messages as message (message.id)}
+		{#each messages as message (message.id)}
 			<div class="message" class:user={message.role === 'user'} class:assistant={message.role === 'assistant'}>
 				<div class="message-header">
 					<span class="role">
@@ -182,14 +184,14 @@
 		<div class="input-container">
 			<textarea
 				bind:value={input}
-				on:keydown={handleKeydown}
+				onkeydown={handleKeydown}
 				placeholder="Ask about legal documents, contracts, compliance..."
 				rows="3"
 				disabled={isLoading}
 			></textarea>
 
 			<button
-				on:click={sendMessage}
+				onclick={sendMessage}
 				disabled={!input.trim() || isLoading}
 				class="send-btn"
 			>

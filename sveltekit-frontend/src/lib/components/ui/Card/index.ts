@@ -1,16 +1,17 @@
 
-// Export local components
-export { default as Card } from './Card.svelte';
-export { default as CardHeader } from './CardHeader.svelte';
-export { default as CardTitle } from './CardTitle.svelte';
-export { default as CardDescription } from './CardDescription.svelte';
-export { default as CardContent } from './CardContent.svelte';
-export { default as CardFooter } from './CardFooter.svelte';
+// Card Compound Component Exports - SSR-Safe
+// shadcn-style compatibility layer for enhanced-bits
 
-// Compound component structure for * as Card imports
-export { default as Root } from './Card.svelte';
-export { default as Header } from './CardHeader.svelte';
-export { default as Title } from './CardTitle.svelte';
-export { default as Description } from './CardDescription.svelte';
-export { default as Content } from './CardContent.svelte';
-export { default as Footer } from './CardFooter.svelte';
+// Re-export enhanced-bits Card components for compound usage
+export { Card as Root } from '$lib/components/ui/enhanced-bits';
+export { CardHeader as Header } from '$lib/components/ui/enhanced-bits';
+export { CardTitle as Title } from '$lib/components/ui/enhanced-bits';
+export { CardDescription as Description } from '$lib/components/ui/enhanced-bits';
+export { CardContent as Content } from '$lib/components/ui/enhanced-bits';
+export { CardFooter as Footer } from '$lib/components/ui/enhanced-bits';
+
+// Also export with standard names for flexibility
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/enhanced-bits';
+
+// For convenience, also export the compound object
+export { CardCompound } from '$lib/components/ui/enhanced-bits';

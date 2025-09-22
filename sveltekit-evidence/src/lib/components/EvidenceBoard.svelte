@@ -13,14 +13,8 @@ Provides drag-drop positioning, zoom, selection, and object management
   } from '$lib/stores/boardStore';
   import type { BoardObject, Evidence } from '$lib/types';
 
-  // Minimal ambient declaration for 'fabric' to avoid TypeScript errors when
-  // @types/fabric or fabric isn't installed in the environment. Runtime still
-  // uses dynamic import in onMount.
-  declare module 'fabric' {
-    const fabric: any;
-    export { fabric };
-    export default fabric;
-  }
+  // Note: fabric module types will be resolved at runtime via dynamic import
+  // This avoids TypeScript compilation errors in environments without @types/fabric
 
   // Svelte 5 props
   interface Props {
@@ -286,8 +280,8 @@ Provides drag-drop positioning, zoom, selection, and object management
     }
   }
 
-  // Add evidence from drag-drop
-  export function addEvidenceFromDrop(evidence: Evidence, x: number, y: number) {
+  // Add evidence from drag-drop (exposed to parent via binding)
+  function addEvidenceFromDrop(evidence: Evidence, x: number, y: number) {
     const boardObjectId = boardActions.addEvidenceToBoard(
       evidence.id,
       evidence.minioUrl,
@@ -296,6 +290,16 @@ Provides drag-drop positioning, zoom, selection, and object management
     );
     return boardObjectId;
   }
+
+  // Export function for parent components
+  $effect(() => {
+    // Make function available to parent through binding
+    if (typeof window !== 'undefined') {
+      (window as any).__evidenceBoard = {
+        addEvidenceFromDrop
+      };
+    }
+  });
 
   // Keyboard shortcuts
   function handleKeyDown(e: KeyboardEvent) {
@@ -366,15 +370,15 @@ Provides drag-drop positioning, zoom, selection, and object management
   <div class="board-header">
     <div class="board-controls">
       {#if !readonly}
-        <button class="nes-btn is-primary" onclick={autoArrange}>
+        <button class="nes-btn is-primary" onclick={() => autoArrange()}>
           Auto Arrange
         </button>
-        <button class="nes-btn is-success" onclick={saveBoard}>
+        <button class="nes-btn is-success" onclick={() => saveBoard()}>
           Save Board
         </button>
       {/if}
 
-      <button class="nes-btn" onclick={exportAsImage}>
+      <button class="nes-btn" onclick={() => exportAsImage()}>
         Export PNG
       </button>
 

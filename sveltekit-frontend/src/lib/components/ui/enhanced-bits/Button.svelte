@@ -3,6 +3,7 @@
 
   import type { HTMLButtonAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
+  import { getContext } from 'svelte';
 
   interface ButtonProps extends HTMLButtonAttributes {
     children?: Snippet;
@@ -28,6 +29,10 @@
     onclick,
     ...restProps
   }: ButtonProps = $props();
+
+  // Get theme context
+  const themeContext = getContext<any>('theme');
+  const currentTheme = themeContext?.resolvedTheme?.() || 'light';
 
   // Reactive class computation using $derived
   let buttonClasses = $derived.by(() => {

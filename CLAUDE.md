@@ -1,9 +1,5 @@
 - no assist me
-● I'll assist you. Here's what you need to do:
-  1. Download the TensorRT-LLM wheel manually:
-    - Go to: https://pypi.nvidia.com/tensorrt-llm/
-    - Download: tensorrt_llm-1.1.0rc5-cp312-cp312-linux_x86_64.whl (3.6GB)
-    - Save it to: C:\Users\james\Videos\deeds-web-app\ubuntu-tensorrt\
+●
   2. Then I'll help you copy it to WSL and install it using the existing trt_env.
     Download that wheel file and let me know when it's ready.
 - check if it's already installed before attempting to isntall anything

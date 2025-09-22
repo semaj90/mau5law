@@ -19,23 +19,26 @@ Route: /cases/[caseId]
   } from '$lib/stores/caseStore';
   import { boardObjects, boardStats } from '$lib/stores/boardStore';
 
-  // Get case ID from route params
-  $: caseId = $page.params.caseId;
+  // Get case ID from route params using Svelte 5 $derived
+  let caseId = $derived($page.params.caseId);
 
-  // Component state
-  let activeTab = 'board'; // 'board', 'timeline', 'reports', 'chat'
-  let showReportEditor = false;
+  // Component state using Svelte 5 $state
+  let activeTab = $state('board'); // 'board', 'timeline', 'reports', 'chat'
+  let showReportEditor = $state(false);
 
-  // Load case data when component mounts or caseId changes
+  // Load case data when component mounts
   onMount(() => {
     if (caseId) {
       loadCase();
     }
   });
 
-  $: if (caseId) {
-    loadCase();
-  }
+  // React to caseId changes using Svelte 5 $effect
+  $effect(() => {
+    if (caseId) {
+      loadCase();
+    }
+  });
 
   async function loadCase() {
     try {
@@ -185,13 +188,13 @@ Route: /cases/[caseId]
       <div class="reports-view nes-container is-dark">
         <div class="reports-header">
           <h2 class="nes-text is-primary">📝 Case Reports</h2>
-          <button class="nes-btn is-success" onclick={toggleReportEditor}>
+          <button class="nes-btn is-success" onclick={() => toggleReportEditor()}>
             + New Report
           </button>
         </div>
 
         {#if showReportEditor}
-          <ReportEditor {caseId} on:close={toggleReportEditor} />
+          <ReportEditor {caseId} onclose={() => toggleReportEditor()} />
         {/if}
 
         <div class="reports-list">

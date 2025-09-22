@@ -15,7 +15,7 @@ export async function fetchSSRData<T>(
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     body?: any;
   }
-): Promise<APIResponse<T> {
+): Promise<APIResponse<T>> {
   const { params, method = 'GET', body } = options || {};
 
   const url = new URL(endpoint, window.location.origin);
@@ -114,7 +114,7 @@ export async function submitForm<T>(
     onSuccess?: (data: T) => void;
     onError?: (error: string) => void;
   }
-): Promise<APIResponse<T> {
+): Promise<APIResponse<T>> {
   const { method = 'POST', onSuccess, onError } = options || {};
 
   try {
@@ -142,9 +142,9 @@ export async function submitForm<T>(
 /**
  * Batch data loader for complex Bits UI components
  */
-export async function loadBatchData<T extends Record<string, any>(
-  endpoints: Record<keyof T, string>;
-): Promise<Record<keyof T, any> {
+export async function loadBatchData<T extends Record<string, any>>(
+  endpoints: Record<keyof T, string>
+): Promise<Record<keyof T, any>> {
   const promises = Object.entries(endpoints).map(async ([key, endpoint]) => {
     try {
       const response = await fetchSSRData(endpoint);
@@ -163,7 +163,7 @@ export async function loadBatchData<T extends Record<string, any>(
  */
 export function validateSSRData<T>(
   data: any,
-  validator: (data: any) => data is T;
+  validator: (data: any) => data is T
 ): T | null {
   return validator(data) ? data : null;
 }
@@ -173,7 +173,7 @@ export function validateSSRData<T>(
  */
 export function createDebouncedSearch<T>(
   searchFn: (query: string) => Promise<T[]>,
-  delay: number = 300;
+  delay: number = 300
 ) {
   let searchTimeout: ReturnType<typeof setTimeout> | undefined;
   let currentQuery = $state('');
@@ -221,7 +221,7 @@ export function createDebouncedSearch<T>(
 export function withSSRErrorBoundary<T>(
   fn: () => Promise<T>,
   fallback: T,
-  onError?: (error: Error) => void;
+  onError?: (error: Error) => void
 ): Promise<T> {
   return fn().catch((error) => {
     console.error('SSR Error Boundary:', error);
@@ -242,7 +242,7 @@ export function createOptimisticStore<T>(initialData: T) {
 
   const update = async (
     optimisticData: T,
-    updateFn: () => Promise<T>;
+    updateFn: () => Promise<T>
   ) => {
     const previousData = data;
     data = optimisticData;

@@ -33,7 +33,9 @@
               port = fallbackPort;
               break;
             }
-          } catch }
+          } catch (error) {
+            console.warn(`Failed to connect to port ${fallbackPort}:`, error);
+          }
       }
       if (response.ok) {
         systemInfo = {

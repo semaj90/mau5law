@@ -3,7 +3,8 @@
 
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
-  import { Button, LinkButton } from '$lib/components/ui/enhanced-bits';
+  import { fade } from 'svelte/transition';
+  import { Button, LinkButton, YoRHaSearchBar, ThemeToggle, Tabs, Popover, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
   import AccessibilitySettings from '$lib/components/ui/AccessibilitySettings.svelte';
   import { accessibilityService } from '$lib/services/accessibility-service';
 
@@ -24,6 +25,10 @@
   let isAuth = $derived(currentPath.startsWith('/auth'));
   let isAdmin = $derived(currentPath.startsWith('/admin'));
   let showAccessibilitySettings = $state(false);
+  let searchQuery = $state('');
+  let showSearch = $state(false);
+  let showUserMenu = $state(false);
+  let activeNavTab = $state('main');
 
   // Navigation item type
   type NavItem = {
@@ -76,11 +81,29 @@
     }
   }
 
+  function toggleSearch() {
+    showSearch = !showSearch;
+  }
+
+  function handleSearch(event: CustomEvent) {
+    const { query } = event.detail;
+    // Navigate to search results or trigger search
+    if (query.trim()) {
+      // For demo purposes, navigate to AI dashboard with search
+      window.location.href = `/ai/dashboard?q=${encodeURIComponent(query)}`;
+    }
+  }
+
   function handleKeyboardShortcut(event: KeyboardEvent) {
     // Alt + A: Open accessibility settings
     if (event.altKey && event.key.toLowerCase() === 'a') {
       event.preventDefault();
       toggleAccessibilitySettings();
+    }
+    // Ctrl + K: Open search
+    if (event.ctrlKey && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      toggleSearch();
     }
   }
 </script>
@@ -111,56 +134,104 @@
         </a>
       </div>
 
-      <!-- Main Navigation -->
+      <!-- Main Navigation with Tabs -->
       <nav class="navbar-center" aria-label="Main navigation">
         {#if variant === 'minimal'}
           <!-- Minimal nav for auth pages -->
           <LinkButton href="/" variant="ghost" size="sm">Home</LinkButton>
           <LinkButton href="/all-routes" variant="ghost" size="sm">Browse</LinkButton>
-        {:else if isDemo}
-          <!-- Demo-specific navigation -->
-          {#each demoNavItems as item}
-            <LinkButton
-              href={item.path}
-              variant={isActive(item.path) ? 'primary' : 'ghost'}
-              size="sm"
-              class="nav-item"
-            >
-              <span class="nav-icon">{item.icon}</span>
-              <span class="nav-label">{item.label}</span>
-            </LinkButton>
-          {/each}
-        {:else if isAdmin && user?.role === 'admin'}
-          <!-- Admin navigation -->
-          {#each adminNavItems as item}
-            <LinkButton
-              href={item.path}
-              variant={isActive(item.path) ? 'primary' : 'ghost'}
-              size="sm"
-              class="nav-item"
-            >
-              <span class="nav-icon">{item.icon}</span>
-              <span class="nav-label">{item.label}</span>
-            </LinkButton>
-          {/each}
         {:else}
-          <!-- Main navigation -->
-          {#each mainNavItems as item}
-            <LinkButton
-              href={item.path}
-              variant={isActive(item.path) ? 'primary' : 'ghost'}
-              size="sm"
-              class="nav-item"
-            >
-              <span class="nav-icon">{item.icon}</span>
-              <span class="nav-label">{item.label}</span>
-            </LinkButton>
-          {/each}
+          <!-- Tabbed Navigation -->
+          <Tabs
+            bind:value={activeNavTab}
+            class="nav-tabs"
+            orientation="horizontal"
+          >
+            <div class="tabs-list">
+              <button
+                class="tab-trigger {activeNavTab === 'main' ? 'active' : ''}"
+                onclick={() => activeNavTab = 'main'}
+              >
+                🏠 Main
+              </button>
+              {#if isDemo}
+                <button
+                  class="tab-trigger {activeNavTab === 'demo' ? 'active' : ''}"
+                  onclick={() => activeNavTab = 'demo'}
+                >
+                  🎮 Demo
+                </button>
+              {/if}
+              {#if isAdmin && user?.role === 'admin'}
+                <button
+                  class="tab-trigger {activeNavTab === 'admin' ? 'active' : ''}"
+                  onclick={() => activeNavTab = 'admin'}
+                >
+                  ⚙️ Admin
+                </button>
+              {/if}
+            </div>
+
+            <div class="tab-content">
+              {#if activeNavTab === 'main'}
+                {#each mainNavItems as item}
+                  <LinkButton
+                    href={item.path}
+                    variant={isActive(item.path) ? 'primary' : 'ghost'}
+                    size="sm"
+                    class="nav-item"
+                  >
+                    <span class="nav-icon">{item.icon}</span>
+                    <span class="nav-label">{item.label}</span>
+                  </LinkButton>
+                {/each}
+              {:else if activeNavTab === 'demo' && isDemo}
+                {#each demoNavItems as item}
+                  <LinkButton
+                    href={item.path}
+                    variant={isActive(item.path) ? 'primary' : 'ghost'}
+                    size="sm"
+                    class="nav-item"
+                  >
+                    <span class="nav-icon">{item.icon}</span>
+                    <span class="nav-label">{item.label}</span>
+                  </LinkButton>
+                {/each}
+              {:else if activeNavTab === 'admin' && isAdmin && user?.role === 'admin'}
+                {#each adminNavItems as item}
+                  <LinkButton
+                    href={item.path}
+                    variant={isActive(item.path) ? 'primary' : 'ghost'}
+                    size="sm"
+                    class="nav-item"
+                  >
+                    <span class="nav-icon">{item.icon}</span>
+                    <span class="nav-label">{item.label}</span>
+                  </LinkButton>
+                {/each}
+              {/if}
+            </div>
+          </Tabs>
         {/if}
       </nav>
 
       <!-- User Menu / Auth Buttons -->
       <div class="navbar-end">
+        <!-- Search Toggle -->
+        {#if variant === 'full'}
+          <button
+            class="search-toggle nes-btn"
+            onclick={toggleSearch}
+            aria-label="Toggle search (Ctrl+K)"
+            title="Search (Ctrl+K)"
+          >
+            🔍
+          </button>
+        {/if}
+
+        <!-- Theme Toggle -->
+        <ThemeToggle size="sm" />
+
         <!-- Accessibility Settings Button -->
         <button
           class="accessibility-btn nes-btn is-primary"
@@ -172,15 +243,63 @@
         </button>
 
         {#if user}
-          <div class="user-menu">
-            <span class="user-name">{user.name || user.email}</span>
-            <LinkButton href="/settings" variant="ghost" size="sm">
-              ⚙️ Settings
-            </LinkButton>
-            <LinkButton href="/auth/logout" variant="ghost" size="sm">
-              Logout
-            </LinkButton>
-          </div>
+          <!-- User Profile Dropdown -->
+          <Popover bind:open={showUserMenu}>
+            <button
+              class="user-profile-trigger"
+              onclick={() => showUserMenu = !showUserMenu}
+              aria-label="User menu"
+            >
+              <div class="user-avatar">
+                {user.avatar ?
+                  `<img src="${user.avatar}" alt="${user.name}" />` :
+                  (user.name?.[0] || user.email?.[0] || '👤')
+                }
+              </div>
+              <div class="user-info">
+                <span class="user-name">{user.name || user.email}</span>
+                <span class="user-role">{user.role || 'User'}</span>
+              </div>
+              <span class="dropdown-arrow">▼</span>
+            </button>
+
+            <Card class="user-dropdown-card">
+              <CardHeader>
+                <CardTitle class="flex items-center gap-2">
+                  <div class="user-avatar-large">
+                    {user.avatar ?
+                      `<img src="${user.avatar}" alt="${user.name}" />` :
+                      (user.name?.[0] || user.email?.[0] || '👤')
+                    }
+                  </div>
+                  <div>
+                    <div class="font-medium">{user.name || 'User'}</div>
+                    <div class="text-sm text-muted-foreground">{user.email}</div>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent class="space-y-2">
+                <LinkButton href="/profile" variant="ghost" size="sm" class="w-full justify-start">
+                  👤 Profile
+                </LinkButton>
+                <LinkButton href="/settings" variant="ghost" size="sm" class="w-full justify-start">
+                  ⚙️ Settings
+                </LinkButton>
+                <LinkButton href="/dashboard" variant="ghost" size="sm" class="w-full justify-start">
+                  📊 Dashboard
+                </LinkButton>
+                {#if user.role === 'admin'}
+                  <LinkButton href="/admin" variant="ghost" size="sm" class="w-full justify-start">
+                    🔧 Admin Panel
+                  </LinkButton>
+                {/if}
+                <hr class="my-2" />
+                <LinkButton href="/auth/logout" variant="ghost" size="sm" class="w-full justify-start text-red-600">
+                  🚪 Logout
+                </LinkButton>
+              </CardContent>
+            </Card>
+          </Popover>
         {:else}
           <LinkButton href="/auth/login" variant="ghost" size="sm">
             Login
@@ -193,6 +312,23 @@
     </div>
   </div>
 </header>
+
+<!-- Search Overlay -->
+{#if showSearch}
+  <div class="search-overlay" transition:fade={{ duration: 200 }}>
+    <div class="search-container">
+      <YoRHaSearchBar
+        bind:value={searchQuery}
+        theme={isDemo ? 'yorha' : 'legal'}
+        placeholder="Search legal documents, cases, evidence..."
+        autofocus={true}
+        onsearch={handleSearch}
+        onblur={() => setTimeout(() => showSearch = false, 100)}
+        maxSuggestions={6}
+      />
+    </div>
+  </div>
+{/if}
 
 <!-- Accessibility Settings Modal -->
 <AccessibilitySettings bind:isOpen={showAccessibilitySettings} />
@@ -349,9 +485,189 @@
     outline-offset: 2px;
   }
 
+  .search-toggle {
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .search-toggle:hover {
+    background: var(--color-border);
+    transform: scale(1.05);
+  }
+
+  /* Tab Navigation */
+  .nav-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .tabs-list {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    background: var(--color-bg-tertiary, rgba(255, 255, 255, 0.05));
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+  }
+
+  .tab-trigger {
+    padding: 0.375rem 0.75rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .tab-trigger:hover {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+  }
+
+  .tab-trigger.active {
+    background: var(--color-primary);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .tab-content {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* User Profile */
+  .user-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--color-text-primary);
+  }
+
+  .user-profile-trigger:hover {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-primary);
+  }
+
+  .user-avatar,
+  .user-avatar-large {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    overflow: hidden;
+  }
+
+  .user-avatar-large {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.25rem;
+  }
+
+  .user-avatar img,
+  .user-avatar-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.125rem;
+  }
+
+  .user-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    display: none;
+  }
+
+  .user-role {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    display: none;
+  }
+
+  .dropdown-arrow {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    transition: transform 0.2s ease;
+  }
+
+  .user-profile-trigger:hover .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+
+  .user-dropdown-card {
+    min-width: 250px;
+    margin-top: 0.5rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-primary);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Search Overlay */
+  .search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 50;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+  }
+
+  .search-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 0 1rem;
+  }
+
   @media (min-width: 768px) {
-    .user-name {
-      display: inline;
+    .user-name,
+    .user-role {
+      display: block;
+    }
+
+    .tab-content {
+      justify-content: flex-start;
     }
   }
 

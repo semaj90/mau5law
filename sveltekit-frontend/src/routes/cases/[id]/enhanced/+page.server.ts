@@ -85,7 +85,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 	];
 
 	const aiInsights = {
-		strategy_recommendations: [;
+		strategy_recommendations: [
 			{
 				priority: 'high',
 				recommendation: 'Focus discovery on Section 4.2 performance metrics',

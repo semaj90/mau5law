@@ -8,9 +8,10 @@ Provides basic report editing functionality for case documentation
   interface Props {
     report?: Report;
     caseId?: string;
+    onclose?: () => void;
   }
 
-  let { report, caseId }: Props = $props();
+  let { report, caseId, onclose }: Props = $props();
 
   let title = $state(report?.title || 'New Report');
   let content = $state(report?.content || '');
@@ -52,14 +53,14 @@ Provides basic report editing functionality for case documentation
 
     <div class="editor-controls">
       {#if isEditing}
-        <button class="nes-btn is-success" onclick={handleSave}>
+        <button class="nes-btn is-success" onclick={() => handleSave()}>
           Save
         </button>
-        <button class="nes-btn is-warning" onclick={handleCancel}>
+        <button class="nes-btn is-warning" onclick={() => handleCancel()}>
           Cancel
         </button>
       {:else}
-        <button class="nes-btn is-primary" onclick={handleEdit}>
+        <button class="nes-btn is-primary" onclick={() => handleEdit()}>
           Edit
         </button>
       {/if}
