@@ -3,9 +3,9 @@
   "tabWidth": 2,
   "singleQuote": true,
   "trailingComma": "es5",
-  "printWidth": 100,
+  "printWidth": 120,
   "semi": true,
-  "arrowParens": "always",
+  "arrowParens": "avoid",
   "bracketSpacing": true,
   "endOfLine": "lf",
   "plugins": ["prettier-plugin-svelte"],
@@ -16,20 +16,23 @@
         "parser": "svelte",
         "svelteStrictMode": false,
         "svelteAllowShorthand": true,
-        "svelteIndentScriptAndStyle": true
+        "svelteIndentScriptAndStyle": true,
+        "svelteSortOrder": "options-scripts-markup-styles"
+      }
+    },
+    {
+      "files": ["*.ts", "*.js"],
+      "options": {
+        "parser": "typescript",
+        "printWidth": 120,
+        "quoteProps": "preserve"
       }
     },
     {
       "files": ["*.json", "*.jsonc"],
       "options": {
-        "parser": "json"
-      }
-    },
-    {
-      "files": "*.md",
-      "options": {
-        "parser": "markdown",
-        "proseWrap": "always"
+        "parser": "json",
+        "printWidth": 80
       }
     }
   ]

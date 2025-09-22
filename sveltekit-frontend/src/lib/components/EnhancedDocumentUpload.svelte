@@ -19,7 +19,7 @@
     // Load upload configuration
     try {
       const response = await fetch('/api/documents/upload-enhanced');
-      uploadConfig = await (response as { json?: unknown }).json();
+      uploadConfig = await response.json();
     } catch (error) {
       console.error('Failed to load upload config:', error);
     }
@@ -34,7 +34,7 @@
     if (selectedFile) {
       // Auto-generate title from filename if not provided
       if (!title) {
-        title = selectedFile.name.replace.replace(/[-_]/g, ' ');
+        title = selectedFile.name.replace(/[-_]/g, ' ');
       }
     }
   }
@@ -76,7 +76,7 @@
         errorMessage = (result as { success?: unknown; error?: unknown }).error || 'Upload failed';
       }
     } catch (error: unknown) {
-      errorMessage = error.message || 'Network error during upload';
+      errorMessage = (error as Error)?.message || String(error) || 'Network error during upload';
     } finally {
       uploading = false;
     }

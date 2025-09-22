@@ -6,7 +6,7 @@
 
 import { writable, type Writable } from 'svelte/store';
 
-// Action parameter types;
+// Action parameter types
 export interface AccessibleClickParams {
   handler: (event: Event) => void;
   label?: string;

@@ -17,7 +17,6 @@ const RAW_ENV = {
   VITE_SHADER_DEBUG: import.meta.env.VITE_SHADER_DEBUG,
   VITE_REDUCTION_MODE: import.meta.env.VITE_REDUCTION_MODE
 };
-}
 
 export interface EnvConfig {
   OLLAMA_URL: string;
@@ -41,7 +40,7 @@ function coerceBoolean(value: string | undefined, defaultValue: boolean): boolea
 }
 
 function validateAndBuildEnv(): EnvConfig {
-  const memoryMB = clampMemoryMB(parseInt(RAW_ENV.VITE_GPU_MEMORY_LIMIT || '512', 10);
+  const memoryMB = clampMemoryMB(parseInt(RAW_ENV.VITE_GPU_MEMORY_LIMIT || '512', 10));
   const profile = normalizePerformanceProfile(RAW_ENV.VITE_PERFORMANCE_PROFILE);
 
   const cfg: EnvConfig = {

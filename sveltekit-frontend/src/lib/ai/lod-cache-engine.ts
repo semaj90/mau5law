@@ -251,9 +251,9 @@ class LODCacheEngine {
 
   /**
    * Load backend-specific shader resources for vector processing
-   */;
+   */
   private async loadVectorProcessingShaders(): Promise<void> {
-    const embeddingShaders = await this.getOrLoadShaderResources('embedding-generation', () =>;
+    const embeddingShaders = await this.getOrLoadShaderResources('embedding-generation', () =>
       gpuContextProvider.loadShaderResources('embedding-generation', {
         webgpu: { compute: this.createWebGPUEmbeddingShader() },
         webgl2: { vertex: this.createWebGL2ComputeVertexShader(), fragment: this.createWebGL2EmbeddingFragmentShader() },
@@ -265,7 +265,7 @@ class LODCacheEngine {
       console.log(`🔧 Loaded ${this.activeBackend} shaders for embedding generation`);
     }
 
-    const clusteringShaders = await this.getOrLoadShaderResources('vector-clustering', () =>;
+    const clusteringShaders = await this.getOrLoadShaderResources('vector-clustering', () =>
       gpuContextProvider.loadShaderResources('vector-clustering', {
         webgpu: { compute: this.createWebGPUClusteringShader() },
         webgl2: { vertex: this.createWebGL2ComputeVertexShader(), fragment: this.createWebGL2ClusteringFragmentShader() },
@@ -276,7 +276,7 @@ class LODCacheEngine {
       console.log(`🔧 Loaded ${this.activeBackend} shaders for vector clustering`);
     }
 
-    const similarityShaders = await this.getOrLoadShaderResources('similarity-computation', () =>;
+    const similarityShaders = await this.getOrLoadShaderResources('similarity-computation', () =>
       gpuContextProvider.loadShaderResources('similarity-computation', {
         webgpu: { compute: this.createWebGPUSimilarityShader() },
         webgl2: { vertex: this.createWebGL2ComputeVertexShader(), fragment: this.createWebGL2SimilarityFragmentShader() },
@@ -472,7 +472,7 @@ class LODCacheEngine {
    */
   private async generateSVGSummaries(
     text: string,
-    compressedData: LODCacheEntry['compressed_data'];
+    compressedData: LODCacheEntry['compressed_data']
   ): Promise<LODCacheEntry['svg_summaries']> {
     return {
       glyph: await this.svgProcessor.generateGlyphSVG(compressedData.glyph),
@@ -488,7 +488,7 @@ class LODCacheEngine {
    */
   private async extractVectorMetadata(
     text: string,
-    context: LODProcessingContext;
+    context: LODProcessingContext
   ): Promise<LODCacheEntry['vector_metadata']> {
     const embeddings = await this.vectorEncoder.generateMultiLevelEmbeddings(text);
     const topologyFeatures = await this.topologyAnalyzer.extractStructuralFeatures(text);

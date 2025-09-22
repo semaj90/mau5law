@@ -12,13 +12,36 @@
   import { getRedisConfig, KEY_PATTERNS, CACHE_TTL } from '$lib/config/redis-config';
   import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label } from '$lib/components/ui/enhanced-bits';
   // Dynamic fabric import to avoid SSR issues
-  let fabric: any = null;
+  let fabricInstance: any = null;
 
   async function getFabric(): Promise<any> {
-    if (fabric) return fabric;
-    const mod: any = await import('fabric');
-    fabric = mod.fabric ?? mod.default ?? mod;
-    return fabric;
+    if (fabricInstance) return fabricInstance;
+    try {
+      const mod: any = await import('fabric');
+      fabricInstance = mod.fabric ?? mod.default ?? mod;
+      return fabricInstance;
+    } catch (error) {
+      console.error('Failed to load fabric.js:', error);
+      // Return mock fabric for fallback
+      return {
+        Canvas: class MockCanvas {
+          constructor(element: any, options: any) {
+            this.element = element;
+            this.options = options;
+          }
+          add() {}
+          remove() {}
+          clear() {}
+          renderAll() {}
+          getObjects() { return []; }
+          on() {}
+          off() {}
+        },
+        Object: class MockObject {},
+        Line: class MockLine {},
+        Group: class MockGroup {}
+      };
+    }
   }
 
   // Custom types for fabric objects with extended properties
@@ -63,12 +86,12 @@
 
   // Canvas and state management
   let canvasElement: HTMLCanvasElement;
-  let fabricCanvas: fabric.Canvas;
+  let fabricCanvas: any;
   let canvasContainer: HTMLDivElement;
 
   let selectedTool = $state<'select' | 'evidence' | 'connection' | 'note' | 'highlight' | 'draw'>('select');
   let isDrawing = $state(false);
-  let canvasState = $state<any>( );
+  let canvasState = $state<any>(null);
   let collaborators = $state<Map<string, any>>(new Map());
   let cursors = $state<Map<string, any>>(new Map());
 

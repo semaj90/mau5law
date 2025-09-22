@@ -1,189 +1,294 @@
 <script lang="ts">
-  import { Select as BitsSelect } from 'bits-ui';
-  import type { SelectProps } from 'bits-ui';
-  import { createEventDispatcher } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  // Svelte 5 runes are auto-imported
 
-  interface EnhancedSelectProps extends Partial<SelectProps> {
-    theme?: 'default' | 'primary' | 'secondary' | 'gaming' | 'legal';
-    size?: 'sm' | 'md' | 'lg';
-    variant?: 'default' | 'ghost' | 'outline';
-    placeholder?: string;
+  import type { Snippet } from 'svelte';
+  import 'nes.css/css/nes.min.css';
+  import { Select as BitsSelect } from 'bits-ui';
+  import { cn } from '$lib/utils/cn';
+  import { ChevronDown, Check } from 'lucide-svelte';
+
+  // Extract available components from BitsSelect
+  const {
+    Root: SelectRoot,
+    Trigger: SelectTrigger,
+    Content: SelectContent,
+    Item: SelectItem,
+    // Value and other components might not be available
+    Portal: SelectPortal,
+    Group: SelectGroup
+  } = BitsSelect;
+
+  interface SelectOption {
+    value: string;
+    label: string;
+    description?: string;
     disabled?: boolean;
-    error?: string;
-    label?: string;
-    items: Array<{ value: string; label: string; disabled?: boolean }>;
+    category?: string;
+  }
+
+  interface SelectProps {
+    /** Selected value */
     value?: string;
-    animation?: 'fade' | 'fly' | 'scale';
+    /** Callback when value changes */
+    onValueChange?: (value: string) => void;
+    /** Available options */
+    options: SelectOption[];
+    /** Placeholder text */
+    placeholder?: string;
+    /** Label for the select */
+    label?: string;
+    /** Disabled state */
+    disabled?: boolean;
+    /** Legal context styling */
+    legal?: boolean;
+    /** Evidence category selection */
+    evidenceCategory?: boolean;
+    /** Case type selection */
+    caseType?: boolean;
+    /** AI confidence for recommendations */
+    aiRecommendations?: boolean;
+    /** Select size */
+    size?: 'sm' | 'md' | 'lg';
+    /** Error state */
+    error?: boolean;
+    /** Error message */
+    errorMessage?: string;
+    /** Full width */
+    fullWidth?: boolean;
+    /** Custom trigger class */
+    triggerClass?: string;
+    /** Custom content class */
+    contentClass?: string;
   }
 
   let {
-    theme = 'default',
-    size = 'md',
-    variant = 'default',
+    value = $bindable(),
+    onValueChange,
+    options = [],
     placeholder = 'Select an option...',
     disabled = false,
-    error = '',
-    label = '',
-    items = [],
-    value = $bindable(),
-    animation = 'fade',
-    ...props
-  }: EnhancedSelectProps = $props();
+    legal = false,
+    evidenceCategory = false,
+    caseType = false,
+    aiRecommendations = false,
+    size = 'md',
+    error = false,
+    errorMessage = '',
+    fullWidth = false,
+    triggerClass = '',
+    contentClass = ''
+  }: SelectProps = $props();
 
-  const dispatch = createEventDispatcher();
+  // Group options by category if they have categories
+  let groupedOptions = $derived((() => {
+    const hasCategories = options.some(option => option.category);
 
-  let open = $state(false);
+    if (!hasCategories) {
+      return { '': options };
+    }
 
-  const themeClasses = {
-    default: 'bg-background border-border text-foreground hover:bg-accent',
-    primary: 'bg-primary border-primary-foreground text-primary-foreground hover:bg-primary/90',
-    secondary: 'bg-secondary border-secondary-foreground text-secondary-foreground hover:bg-secondary/90',
-    gaming: 'bg-black border-green-400 text-green-400 hover:bg-green-400/10 shadow-[0_0_10px_rgba(34,197,94,0.3)]',
-    legal: 'bg-slate-50 border-slate-300 text-slate-900 hover:bg-slate-100 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100'
-  };
+    return options.reduce((acc, option) => {
+      const category = option.category || 'Other';
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(option);
+      return acc;
+    }, as Record<string, SelectOption[]>);
+  })());
 
-  const sizeClasses = {
-    sm: 'h-8 px-2 text-sm',
-    md: 'h-10 px-3 text-base',
-    lg: 'h-12 px-4 text-lg'
-  };
+  // Reactive trigger classes using $derived
+  let triggerClasses = $derived(cn(
+    'bits-select-trigger',
+    {
+      'h-8 px-3 text-xs': size === 'sm',
+      'h-10 px-3 text-sm': size === 'md',
+      'h-12 px-4 text-base': size === 'lg',
+      'w-full': fullWidth,
+      'nier-bits-select': legal,
+      'yorha-input': evidenceCategory || caseType,
+      'border-red-500 bg-red-50': error,
+      'border-green-500 bg-green-50': aiRecommendations && value,
+      'font-gothic tracking-wide': legal,
+      'cursor-not-allowed opacity-50':disabled
+    },
+    triggerClass
+  ));
 
-  const variantClasses = {
-    default: 'bg-background border border-input',
-    ghost: 'bg-transparent border-transparent hover:bg-accent',
-    outline: 'bg-transparent border border-input hover:bg-accent'
-  };
+  // Reactive content classes using $derived
+  let selectContentClasses = $derived(cn(
+    'bits-select-content',
+    {
+      'nier-panel-elevated shadow-xl': legal,
+      'border-2 border-nier-border-primary': evidenceCategory,
+      'yorha-card': caseType,
+      'bg-gradient-to-b from-nier-bg-primary to-nier-bg-secondary': legal
+    },
+    contentClass
+  ));
 
+  // Handle value change
   function handleValueChange(newValue: string) {
     value = newValue;
-    dispatch('change', { value: newValue });
+    onValueChange?.(newValue);
   }
+
+  // Get selected option label
+  let selectedLabel = $derived(
+    options.find(option => option.value === value)?.label || placeholder
+  );
 </script>
 
-<div class="enhanced-select-wrapper">
-  {#if label}
-    <label class="block text-sm font-medium mb-2 text-foreground">
-      {label}
-    </label>
-  {/if}
-
-  <BitsSelect.Root
-    bind:open
-    {disabled}
-    onValueChange={handleValueChange}
-    {...props}
-  >
-    <BitsSelect.Trigger
-      class={`
-        inline-flex items-center justify-between rounded-md font-medium
-        transition-colors focus-visible:outline-none focus-visible:ring-2
-        focus-visible:ring-ring focus-visible:ring-offset-2
-        disabled:pointer-events-none disabled:opacity-50
-        ${themeClasses[theme]}
-        ${sizeClasses[size]}
-        ${variantClasses[variant]}
-        ${error ? 'border-destructive' : ''}
-        w-full
-      `}
-    >
-      <BitsSelect.Value {placeholder} />
-      <BitsSelect.Icon class="h-4 w-4 opacity-50">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m6 9 6 6 6-6"/>
-        </svg>
-      </BitsSelect.Icon>
-    </BitsSelect.Trigger>
+<div class="select-wrapper" class:w-full={fullWidth}>
+  <SelectRoot {value} valuechange={handleValueChange} {disabled} type="single">
+    <SelectTrigger class={triggerClasses}>
+      <div class="select-value">
+        {selectedLabel}
+      </div>
+      <div class="select-icon">
+        <ChevronDown class="h-4 w-4 opacity-50" />
+      </div>
+    </SelectTrigger>
 
     <BitsSelect.Portal>
-      <BitsSelect.Content
-        class={`
-          relative z-50 min-w-[8rem] overflow-hidden rounded-md border
-          bg-popover text-popover-foreground shadow-md
-          data-[state=open]:animate-in data-[state=closed]:animate-out
-          data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
-          data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
-          data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2
-          data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2
-          ${theme === 'gaming' ? 'bg-black border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.3)]' : ''}
-          ${theme === 'legal' ? 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700' : ''}
-        `}
-        sideOffset={4}
-        transition={animation === 'fade' ? fade : fly}
-        transitionConfig={animation === 'fly' ? { y: -10, duration: 200 } : { duration: 200 }}
-      >
-        <BitsSelect.ScrollUpButton class="flex cursor-default items-center justify-center py-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-            <path d="m18 15-6-6-6 6"/>
-          </svg>
-        </BitsSelect.ScrollUpButton>
-
+      <SelectContent class={selectContentClasses}>
         <BitsSelect.Viewport class="p-1">
-          {#each items as item (item.value)}
-            <BitsSelect.Item
-              value={item.value}
-              disabled={item.disabled}
-              class={`
-                relative flex w-full cursor-default select-none items-center
-                rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none
-                focus:bg-accent focus:text-accent-foreground
-                data-[disabled]:pointer-events-none data-[disabled]:opacity-50
-                ${theme === 'gaming' ? 'hover:bg-green-400/10 hover:text-green-400' : ''}
-                ${theme === 'legal' ? 'hover:bg-slate-100 dark:hover:bg-slate-700' : ''}
-              `}
-            >
-              <span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-                <BitsSelect.ItemIndicator>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                    <path d="M20 6 9 17l-5-5"/>
-                  </svg>
-                </BitsSelect.ItemIndicator>
-              </span>
-              <BitsSelect.ItemText>{item.label}</BitsSelect.ItemText>
-            </BitsSelect.Item>
+          {#each Object.entries(groupedOptions) as [category, categoryOptions]}
+            {#if category && Object.keys.length > 1}
+              <BitsSelect.Group>
+                <div class="px-2 py-1.5 text-xs font-semibold nes-text is-disabled uppercase tracking-wider">
+                  {category}
+                </div>
+                {#each categoryOptions as option (option.value)}
+                  {@render selectItem(option)}
+                {/each}
+              </BitsSelect.Group>
+              {#if category !== Object.keys(groupedOptions)[Object.keys.length - 1]}
+                <div class="h-px bg-border my-1"></div>
+              {/if}
+            {:else}
+              {#each categoryOptions as option (option.value)}
+                {@render selectItem(option)}
+              {/each}
+            {/if}
           {/each}
         </BitsSelect.Viewport>
-
-        <BitsSelect.ScrollDownButton class="flex cursor-default items-center justify-center py-1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-            <path d="m6 9 6 6 6-6"/>
-          </svg>
-        </BitsSelect.ScrollDownButton>
-      </BitsSelect.Content>
+      </SelectContent>
     </BitsSelect.Portal>
-  </BitsSelect.Root>
+  </SelectRoot>
 
-  {#if error}
-    <p class="mt-2 text-sm text-destructive" transition:fade>
-      {error}
-    </p>
+  {#if error && errorMessage}
+    <div class="mt-1 text-xs text-red-600 font-medium">
+      {errorMessage}
+    </div>
   {/if}
 </div>
 
-<style>
-  .enhanced-select-wrapper {
+{#snippet selectItem(option: SelectOption)}
+  <SelectItem
+    value={option.value}
+    disabled={option.disabled}
+    class={cn(
+      'bits-select-item',
+      {
+        'yorha-priority-high': evidenceCategory && option.value.includes('critical'),
+        'yorha-priority-medium': evidenceCategory && option.value.includes('evidence'),
+        'opacity-50 cursor-not-allowed': option.disabled,
+        'font-gothic': legal
+      }
+    )}
+  >
+    <div class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <Check class="h-4 w-4" />
+    </div>
+
+    <div class="pl-6">
+      <div class="font-medium">
+        {option.label}
+      </div>
+      {#if option.description}
+        <div class="text-xs nes-text is-disabled mt-0.5">
+          {option.description}
+        </div>
+      {/if}
+    </div>
+  </SelectItem>
+{/snippet}
+
+<style>/* @unocss-include */ .select-wrapper {
     position: relative;
-    width: 100%;
+  }
+/* Enhanced select animations for legal AI context */ :global(.bits-select-content) {
+    animation: select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Gaming theme enhancements */
-  :global(.enhanced-select-wrapper[data-theme="gaming"]) {
-    --select-glow: 0 0 10px rgba(34, 197, 94, 0.3);
+  @keyframes select-content-show {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(-2px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+/* Legal AI specific styling */ :global(.nier-bits-select) {
+background: linear-gradient( 135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100% );
+    border: 2px solid var(--color-nier-border-secondary);
+    transition: all 0.2s ease;
   }
 
-  /* Legal theme enhancements */
-  :global(.enhanced-select-wrapper[data-theme="legal"]) {
-    --select-border: rgba(148, 163, 184, 0.3);
+  :global(.nier-bits-select:focus) {
+    border-color: var(--color-nier-border-primary);
+    box-shadow: 0 0 0 1px var(--color-nier-border-primary);
   }
 
-  /* Animation keyframes */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  :global(.nier-panel-elevated) {
+box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+/* Evidence category specific styling */ :global([data-evidence-category] .bits-select-item) {
+    position: relative;
   }
 
-  @keyframes slideIn {
-    from { transform: translateY(-10px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+  :global([data-evidence-category] .bits-select-item: :before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    background: var(--color-nier-accent-cool);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  :global([data-evidence-category] .bits-select-item[data-highlighted]::before) {
+    opacity: 1;
+  }
+/* Case type specific styling */ :global([data-case-type] .bits-select-content) {
+background-image: radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(58, 55, 47, 0.05) 0%, transparent 50%);
+  }
+/* AI recommendations styling */ :global([data-ai-recommendations] .bits-select-item) {
+    transition: all 0.2s ease;
+  }
+
+  :global([data-ai-recommendations] .bits-select-item:hover) {
+background: linear-gradient( 90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100% );
+  }
+/* Enhanced focus states for accessibility */ :global(.bits-select-trigger:focus-visible) {
+    outline: 2px solid var(--color-nier-border-primary);
+    outline-offset: 2px;
+  }
+
+  :global(.bits-select-item:focus-visible) {
+    outline: 2px solid var(--color-nier-border-primary);
+    outline-offset: -2px;
+  }
+/* Responsive adjustments */ @media (max-width: 640px) {
+    :global(.bits-select-content) {
+      max-height: 60vh;
+    }
   }
 </style>

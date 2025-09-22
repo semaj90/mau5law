@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 // Base URL for Go GPU status service (fallback to localhost)
@@ -31,12 +32,26 @@ export const GET: RequestHandler = async () => {
                 data?.memory?.total != null && data?.memory?.free != null
                     ? data.memory.total - data.memory.free: null
         };
-        return json({ ok: true, source: 'go', memory });
-    } catch (err: any) {
         return json({
-            ok: false,
-            source: 'shim',
-            memory: { free: null, total: null, used: null }
+            success: true,
+            ok: true,
+            source: 'go',
+            memory
         });
+    } catch (err: any) {
+        console.error('GPU memory status error:', err);
+
+        return json({
+            success: false,
+            error: 'failure default to mock',
+            ok: false,
+            source: 'mock',
+            memory: {
+                free: 8192, // Mock 8GB free
+                total: 12288, // Mock 12GB total
+                used: 4096, // Mock 4GB used
+                mockDevice: 'RTX 3060 (Simulated)'
+            }
+        }, { status: 500 });
     }
 };

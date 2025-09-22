@@ -1,24 +1,57 @@
 import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 import { gemma3Client } from '$lib/gemma3Client';
 import { ai_interactions as aiInteractions } from '$lib/server/db/schema-postgres';
 import { db } from '$lib/server/db/drizzle';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-  const { prompt, documentId, caseId } = await request.json();
-  const start = Date.now();
+  try {
+    const { prompt, documentId, caseId } = await request.json();
+    const start = Date.now();
 
-  const response = await gemma3Client.generate(prompt);
-  const responseTime = Date.now() - start;
+    if (!locals.user?.id) {
+      return json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-  await db.insert(aiInteractions).values({
-    userId: locals.user.id,
-    caseId,
-    prompt,
-    response: response.text,
-    model: 'gemma3',
-    responseTime,
-    metadata: { documentId }
-  });
+    const response = await gemma3Client.generate(prompt);
+    const responseTime = Date.now() - start;
 
-  return new Response(JSON.stringify({ response: response.text });
+    await db.insert(aiInteractions).values({
+      userId: locals.user.id,
+      caseId,
+      prompt,
+      response: response.text,
+      model: 'gemma3',
+      responseTime,
+      metadata: { documentId }
+    });
+
+    return json({
+      success: true,
+      response: response.text,
+      responseTime,
+      model: 'gemma3'
+    });
+
+  } catch (error) {
+    console.error('Legal analysis API error:', error);
+
+    // Return mock legal analysis on failure
+    const mockResponse = {
+      success: false,
+      error: 'failure default to mock',
+      response: 'Mock legal analysis: Based on employment law precedents, this case shows potential for wrongful termination claims. Key factors include procedural violations and discriminatory patterns. Recommend document discovery for HR records and witness interviews.',
+      responseTime: 1500,
+      model: 'gemma3-mock',
+      confidence: 0.75,
+      recommendations: [
+        'Review employment contract terms',
+        'Gather timeline documentation',
+        'Interview potential witnesses',
+        'Research similar case precedents'
+      ]
+    };
+
+    return json(mockResponse, { status: 500 });
+  }
 };

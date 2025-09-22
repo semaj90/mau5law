@@ -7,9 +7,11 @@ import type {
   WorkerStatus as ProperWorkerStatus
 } from '$lib/types/svelte5-patterns';
 
-// AI/LLM Types - Using proper definitions;
+// AI/LLM Types - Using proper definitions
 declare global {
   type LLMProvider = 'ollama' | 'openai' | 'anthropic' | 'huggingface';
+  type LLMQuantization = 'fp32' | 'fp16' | 'int8' | 'int4' | 'awqkv';
+  type LLMModelFormat = 'gguf' | 'safetensors' | 'pytorch' | 'onnx';
   type AITask = ProperAITask;
   type AIResponse<T = any> = ProperAIResponse<T>;
   type WorkerStatus = ProperWorkerStatus;
@@ -24,13 +26,32 @@ declare global {
     embed: (text: string) => Promise<number[]>;
     similaritySearch: (query: string, options?: { limit?: number }) => Promise<any[]>;
   };
+  type LLMInferenceConfig = {
+    model: string;
+    quantization?: LLMQuantization;
+    format?: LLMModelFormat;
+    fallbackModels?: string[];
+    maxTokens?: number;
+    temperature?: number;
+    enableFallback?: boolean;
+  };
+  type LLMInferenceResult = {
+    success: boolean;
+    response?: string;
+    model: string;
+    quantization?: LLMQuantization;
+    fallbackUsed?: boolean;
+    error?: string;
+  };
   type ErrorProcessingPipeline = {
-    processErrors: (errors: Error[]) => Promise<Array<any>;
+    processErrors: (errors: Error[]) => Promise<Array<any>>;
     analyzeError: (error: Error) => Promise<any>;
   };
 
-  // API Request/Response Types - Using proper definitions;
-  import type {
+}
+
+// API Request/Response Types - Using proper definitions
+import type {
     CaseCreateRequest as ProperCaseCreateRequest,
     CaseUpdateRequest as ProperCaseUpdateRequest,
     CaseSearchRequest as ProperCaseSearchRequest,
@@ -59,10 +80,10 @@ declare global {
     };
     type BulkOperationResponse = ProperBulkOperationResponse;
     type FormSubmissionResult<T = any> = ProperFormSubmissionResult<T>;
-  }
+}
 
-  // Database Types - Using proper definitions;
-  import type {
+// Database Types - Using proper definitions
+import type {
     CaseState,
     EvidenceState,
     VectorSearchResult as ProperVectorSearchResult,
@@ -110,8 +131,8 @@ declare global {
     export type VectorSearchResult = ProperVectorSearchResult;
   }
 
-  // Service Types;
-  declare global {
+// Service Types
+declare global {
     type DocumentCache = any;
     type ReinforcementLearningCache = any;
     type PGVectorStore = {
@@ -126,10 +147,10 @@ declare global {
       score: number;
       sources?: any[];
     };
-  }
+}
 
-  // XState Types;
-  declare global {
+// XState Types
+declare global {
     type RecommendationMachineContext = {
       userContext?: any;
       [key: string]: any;
@@ -137,14 +158,14 @@ declare global {
     type ConcurrencyContext = any;
     type ConcurrencyTask = any;
     type WorkerResult = any;
-  }
+}
 
-  // External Library Types;
-  declare module '$lib/types' {
+// External Library Types
+declare module '$lib/types' {
     // Duplicate removed: // Duplicate removed: export type Case = any;
   }
 
-  declare global {
+declare global {
     type GGUFInferenceRequest = {
       prompt: string;
       maxTokens: number;
@@ -155,15 +176,12 @@ declare global {
       stopTokens: string[];
       priority: any;
     };
-  }
+}
 
-  // Row/Database result types;
-  declare global {
+// Row/Database result types
+declare global {
     interface RowList<T> {
       rows: T;
     }
-  }
-
-  // Close first unclosed declare global block from top of file
 }
 

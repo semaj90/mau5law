@@ -52,11 +52,11 @@ https://svelte.dev/e/js_parse_error -->
     animation: blink 1s infinite;
 }
   @keyframes blink {
-    0%, 50% { 
-      border-color: #007bff; 
+    0%, 50% {
+      border-color: #007bff;
 }
-    51%, 100% { 
-      border-color: transparent; 
+    51%, 100% {
+      border-color: transparent;
 }}
 </style>
 

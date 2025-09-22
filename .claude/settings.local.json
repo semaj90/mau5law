@@ -347,7 +347,9 @@
       "Bash(findstr:*)",
       "Bash(docker-compose up:*)",
       "Bash(docker-compose restart:*)",
-      "Bash(du:*)"
+      "Bash(du:*)",
+      "Bash(if ! grep -q \"route: ''$route''\" src/lib/data/routes-config.ts)",
+      "Bash(then)"
     ],
     "deny": [],
     "ask": []

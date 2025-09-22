@@ -50,12 +50,12 @@ afterAll(async () => {
 global.fetch = global.fetch || require('node-fetch');
 
 // Export test utilities
-export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms);
+export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const withRetry = async <T>(
   operation: () => Promise<T>,
   maxAttempts: number = 3,
-  delayMs: number = 1000;
+  delayMs: number = 1000
 ): Promise<T> => {
   let lastError: Error;
 
