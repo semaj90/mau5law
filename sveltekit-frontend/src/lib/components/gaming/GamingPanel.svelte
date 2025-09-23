@@ -248,9 +248,11 @@ border-top: none border-right: none }
 	.corner-decoration.bottom-right {
 		bottom: 8px;
 		right: 8px;
-border-top: none border-left: none }
+border-top: none;
+border-left: none; }
 /* Scan Effects */ .scan-line-horizontal {
-position: absolute top: 0;
+position: absolute;
+top: 0;
 		left: 0;
 		right: 0;
 		height: 2px;
@@ -261,7 +263,8 @@ position: absolute top: 0;
 	}
 	
 	.scan-line-vertical {
-position: absolute top: 0;
+position: absolute;
+top: 0;
 		bottom: 0;
 		left: 0;
 		width: 2px;

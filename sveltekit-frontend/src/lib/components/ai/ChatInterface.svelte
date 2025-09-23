@@ -70,9 +70,9 @@ https://svelte.dev/e/js_parse_error -->
       chatActions.setTyping(true);
 
       // Check if this is an analysis request
-      const isAnalysisRequest = userMessage.toLowerCase.includes('analyze') ||
-                               userMessage.toLowerCase.includes('evidence') ||
-                               userMessage.toLowerCase.includes('case');
+      const isAnalysisRequest = userMessage.toLowerCase().includes('analyze') ||
+                               userMessage.toLowerCase().includes('evidence') ||
+                               userMessage.toLowerCase().includes('case');
   let response: Response;
 
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {

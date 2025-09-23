@@ -366,7 +366,8 @@
 
   .yorha-table-container: :before {
     content: '';
-position: absolute top: 0;
+    position: absolute;
+    top: 0;
     left: 0;
     right: 0;
     height: 2px;

@@ -325,8 +325,9 @@
     // Apply search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(item => item.includes)(query) ||
-        case_.description.toLowerCase.includes(query)
+      filtered = filtered.filter(case_ =>
+        case_.title.toLowerCase().includes(query) ||
+        case_.description.toLowerCase().includes(query)
       );
     }
 

@@ -161,7 +161,7 @@ export class CudaCacheSOMOptimizer {
   private calculateModelScore(
     model: ModelVariant,
     somPosition: { x: number; y: number },
-    queryEmbedding: Float32Array)
+    queryEmbedding: Float32Array
   ): number {
     // Complex scoring algorithm considering:
     // - Model capabilities
@@ -333,7 +333,7 @@ export class SelfPromptingIntelligence {
   generateSelfPromptingSuggestions(
     originalQuery: string,
     intent: UserIntent,
-    availableModels: ModelVariant[];
+    availableModels: ModelVariant[]
   ): SelfPromptingSuggestion[] {
     const suggestions: SelfPromptingSuggestion[] = [];
 
@@ -351,13 +351,13 @@ export class SelfPromptingIntelligence {
     }
 
     // Expansion suggestions based on context
-    suggestions.push(...this.generateExpansionSuggestions(originalQuery, intent);
+    suggestions.push(...this.generateExpansionSuggestions(originalQuery, intent));
 
     // Alternative approach suggestions
-    suggestions.push(...this.generateAlternativeSuggestions(originalQuery, intent);
+    suggestions.push(...this.generateAlternativeSuggestions(originalQuery, intent));
 
     // Follow-up suggestions based on user patterns
-    suggestions.push(...this.generateFollowUpSuggestions(intent);
+    suggestions.push(...this.generateFollowUpSuggestions(intent));
 
     return suggestions.sort((a, b) => b.confidence - a.confidence).slice(0, 5);
   }
@@ -446,7 +446,7 @@ export class SelfPromptingIntelligence {
         this.queryPatterns.set(patternKey, (this.queryPatterns.get(patternKey) || 0) + 0.1);
       }
     } else {
-      this.successfulInteractions.set(feedbackKey, Math.max(0, currentScore - 0.2);
+      this.successfulInteractions.set(feedbackKey, Math.max(0, currentScore - 0.2));
     }
   }
 }
@@ -559,7 +559,7 @@ export class IntelligentModelOrchestrator {
   async processQuery(
     query: string,
     context: any = {},
-    userBehavior?: UserBehaviorPattern)
+    userBehavior?: UserBehaviorPattern
   ): Promise<any> {
     // Step 1: Analyze user intent
     const intent = this.selfPrompting.analyzeUserIntent(query, context);
@@ -600,7 +600,7 @@ export class IntelligentModelOrchestrator {
     // Update stores
     this.suggestions.set(suggestions);
     this.memoryOptimization.set(memoryOptimization);
-    this.performance.set(Array.from(this.performanceMetrics.values());
+    this.performance.set(Array.from(this.performanceMetrics.values()));
 
     return {
       selectedModel: optimalModel,
@@ -659,7 +659,7 @@ export class IntelligentModelOrchestrator {
   private calculatePerformanceBenefit(
     current: ModelVariant,
     target: ModelVariant,
-    intent: UserIntent)
+    intent: UserIntent
   ): number {
     // Calculate expected performance improvement
     const latencyImprovement = Math.max(0, current.targetLatency - target.targetLatency);
@@ -780,7 +780,7 @@ export class IntelligentModelOrchestrator {
   }
 
   private getActiveModelIds(): string[] {
-    return Array.from(this.modelRegistry.values()
+    return Array.from(this.modelRegistry.values())
       .filter(model => model.isLoaded || model.id === this.activeModel)
       .map(model => model.id);
   }
@@ -810,7 +810,7 @@ export class IntelligentModelOrchestrator {
       }
     }
 
-    this.performance.set(Array.from(this.performanceMetrics.values());
+    this.performance.set(Array.from(this.performanceMetrics.values()));
   }
 
   // Public methods for external integration
@@ -865,7 +865,7 @@ export class IntelligentModelOrchestrator {
       recommendations.push(`Optimize high-latency models: ${highLatency.map(m => m.modelId).join(', ')}`);
     }
 
-    const memoryLayout = this.cudaOptimizer.optimizeCudaMemoryLayout(this.getActiveModelIds())
+    const memoryLayout = this.cudaOptimizer.optimizeCudaMemoryLayout(this.getActiveModelIds());
     if (memoryLayout.fragmentationRatio > 0.3) {
       recommendations.push('Consider memory defragmentation to improve performance');
     }

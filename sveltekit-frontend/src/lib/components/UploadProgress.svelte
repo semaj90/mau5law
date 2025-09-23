@@ -207,8 +207,12 @@ https://svelte.dev/e/js_parse_error -->
     );
 
     // Scroll tracking (throttled)
-  let scrollTimeout = $state<numberconst scrollHandler  | null>(null); const data = () => {
-      clearTimeout(scrollTimeout));
+  let scrollTimeout = $state<number | null>(null);
+
+  const scrollHandler = () => {
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
       scrollTimeout = setTimeout(() => {
         trackEvent('scroll', {
           scrollY: window.scrollY,

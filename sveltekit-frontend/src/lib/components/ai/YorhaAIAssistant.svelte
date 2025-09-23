@@ -509,8 +509,12 @@ https://svelte.dev/e/js_parse_error -->
   	// Setup activity tracking
   	function setupActivityTracking() {
   		// Track typing in message input
-  let typingTimeout = $state<numberconst updateTyping  | null>(null); const data = () => {
-  			clearTimeout(typingTimeout));
+  		let typingTimeout = $state<number | null>(null);
+
+  		const updateTyping = () => {
+  			if (typingTimeout) {
+  				clearTimeout(typingTimeout);
+  			}
   			updateUserActivity({ action: 'typing' });
 
   			typingTimeout = setTimeout(() => {

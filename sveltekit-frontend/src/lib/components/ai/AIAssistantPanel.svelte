@@ -35,12 +35,20 @@
 	let accelerationStatus = $state<'initializing' | 'ready' | 'error' | 'disabled'>('disabled');
 	let lastAccelerationResults = $state<any>(null);
 
-	// Event dispatcher for communication with parent component
-	const dispatch = createEventDispatcher<{
-		'evidence-select': { evidenceId: string };
-		'evidence-highlight': { evidenceIds: string[] };
-		'action-trigger': { type: string; data: any };
-	}>();
+	// Svelte 5: Replace event dispatcher with callback props
+	interface Props {
+		caseId?: string;
+		onEvidenceSelect?: (data: { evidenceId: string }) => void;
+		onEvidenceHighlight?: (data: { evidenceIds: string[] }) => void;
+		onActionTrigger?: (data: { type: string; data: any }) => void;
+	}
+
+	let {
+		caseId = 'case-001',
+		onEvidenceSelect,
+		onEvidenceHighlight,
+		onActionTrigger
+	}: Props = $props();
 
 	// Reactive values using Svelte 5 $derived - properly connected to unified store
 	const messages = $derived(aiAssistant.currentMessages);

@@ -526,7 +526,7 @@ class LODCacheEngine {
     glyph[3] = this.calculateFrequencyScore(char);
     glyph[4] = this.calculateContextualRelevance(char);
     glyph[5] = this.calculatePredictiveValue(char);
-    glyph[6] = this.calculateCompressionChecksum(glyph.slice(0, 6);
+    glyph[6] = this.calculateCompressionChecksum(glyph.slice(0, 6));
     return glyph;
   }
 
@@ -612,7 +612,7 @@ class LODCacheEngine {
   }
 
   private generateEntryId(text: string, context: any): string {
-    const hash = this.simpleHash(text + JSON.stringify(context);
+    const hash = this.simpleHash(text + JSON.stringify(context));
     return `lod-${hash}-${Date.now()}`;
   }
 
@@ -733,13 +733,13 @@ class LODCacheEngine {
   // Placeholder methods for components that would be implemented;
   private async performVectorSearch(query: string, _options: EnhancedRAGRetrievalOptions): Promise<VectorSearchMatch[]> {
     // Would implement actual vector similarity search
-    return Array.from(this.cache.values();
+    return Array.from(this.cache.values())
       .map(entry => ({
         entry,
         relevance_score: 0.8,
         vector_similarity: 0.75
       })
-      .slice(0, 20);
+      .slice(0, 20));
   }
 
   private async applyTopologyFiltering(matches: VectorSearchMatch[], _query: string): Promise<VectorSearchMatch[]> {
@@ -776,13 +776,13 @@ class LODCacheEngine {
     // Simple keyword extraction - would use more sophisticated NLP
     return text.toLowerCase()
       .split(/\s+/)
-      .filter(word => word.length > 3 && !['this', 'that', 'with', 'from', 'they'].includes(word)
+      .filter(word => word.length > 3 && !['this', 'that', 'with', 'from', 'they'].includes(word))
       .slice(0, 10);
   }
 
   // Public API methods;
   getCacheStats(): LODCacheStats {
-    const entries = Array.from(this.cache.values();
+    const entries = Array.from(this.cache.values());
     if (entries.length === 0) {
       return {
         total_entries: 0,
@@ -977,7 +977,7 @@ class VectorMetadataEncoder {
     const hybridGPU = this.cacheEngine!.getHybridGPU()!;
 
     // Convert text segments to numeric arrays for GPU processing
-    const maxLength = Math.max(...segments.map(s => s.length);
+    const maxLength = Math.max(...segments.map(s => s.length));
     const textBuffer = new Float32Array(segments.length * maxLength);
     const lengthBuffer = new Float32Array(segments.length);
 
@@ -1044,7 +1044,7 @@ class VectorMetadataEncoder {
     for (let i = 0; i < segments.length; i++) {
       const start = i * this.dimensions;
       const end = start + this.dimensions;
-      embeddings.push(embeddingsFlat.slice(start, end);
+      embeddings.push(embeddingsFlat.slice(start, end));
     }
 
     console.log(`🚀 Generated ${embeddings.length} embeddings using GPU acceleration`);
@@ -1114,7 +1114,7 @@ class VectorMetadataEncoder {
       let freqAcc = 0;
       for (let j = 0; j < adaptiveDim; j += 8) {
         const v = out[sliceStart + j];
-        freqAcc += Math.abs(v) * (1 + Math.sin(j * 0.03125);
+        freqAcc += Math.abs(v) * (1 + Math.sin(j * 0.03125));
       }
       const freq = freqAcc * (8 / adaptiveDim);
 
@@ -1163,7 +1163,7 @@ class VectorMetadataEncoder {
       }
 
       // Normalize
-      const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
+      const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
       if (norm > 0) {
         for (let i = 0; i < this.dimensions; i++) {
           embedding[i] /= norm;

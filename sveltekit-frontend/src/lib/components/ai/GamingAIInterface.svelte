@@ -228,11 +228,11 @@
     let response = ''
     let confidence = Math.floor(Math.random() * 20) + 80
 
-    if (command.toLowerCase.includes('analyze')) {
+    if (command.toLowerCase().includes('analyze')) {
       response = `[ANALYSIS COMPLETE]\n\nDetected patterns in case evidence suggest high probability of digital tampering.\nCross-referencing with legal precedent database...\n\nRecommendation: Focus investigation on metadata inconsistencies found in Evidence-ID: ${Math.floor(Math.random() * 1000)}`
-    } else if (command.toLowerCase.includes('search')) {
+    } else if (command.toLowerCase().includes('search')) {
       response = `[SEARCH INITIATED]\n\nScanning ${Math.floor(Math.random() * 500 + 100)} case files...\nFound ${Math.floor(Math.random() * 15 + 3)} relevant matches.\n\nHighest correlation: Case #2024-${Math.floor(Math.random() * 999)} (${confidence}% similarity)`
-    } else if (command.toLowerCase.includes('status')) {
+    } else if (command.toLowerCase().includes('status')) {
       response = `[SYSTEM STATUS]\n\nYoRHa Legal AI: OPERATIONAL\nDatabase Connection: STABLE\nAnalysis Engine: ${systemStatus.toUpperCase()}\nCase Context: ${caseContext?.title || 'None'}\n\nAll systems nominal.`
     } else {
       response = `[PROCESSING COMPLETE]\n\nQuery processed successfully.\nAnalysis confidence: ${confidence}%\n\nAdditional context required for enhanced analysis. Please provide specific case parameters or evidence identifiers.`

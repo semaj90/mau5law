@@ -11,7 +11,8 @@
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import { lodManager } from '$lib/services/N64LODManager';
+  import type { Snippet } from 'svelte';
+  import { lodManager, LOD_LEVELS } from '$lib/services/N64LODManager';
   import type { LODContext } from '$lib/services/N64LODManager';
 
   interface Props {
@@ -25,6 +26,11 @@
     errorClass?: string;
     overlay?: boolean;
     debug?: boolean;
+    children?: {
+      overlay?: Snippet<[number, boolean, string]>;
+      fallback?: Snippet<[string]>;
+      debug?: Snippet<[any, number, boolean]>;
+    };
   }
 
   let {
@@ -37,22 +43,24 @@
     loadingClass = 'nes-loading',
     errorClass = 'nes-error',
     overlay = false,
-    debug = false
+    debug = false,
+    children
   }: Props = $props();
 
   // Reactive state for texture streaming
-  let webgpuSupported = false;
-  let textureData: string = '';
-  let currentLOD: 0 | 1 | 2 | 3 = 3; // Start with lowest detail
-  let isLoading = true;
-  let error: string | null = null;
+  let webgpuSupported = $state(false);
+  let textureData = $state('');
+  let currentLOD = $state<0 | 1 | 2 | 3>(3); // Start with lowest detail
+  let isLoading = $state(true);
+  let error = $state<string | null>(null);
   let containerElement: HTMLElement;
 
   // NES-style loading states (converted to derived values)
   let loadingState = $derived(isLoading ? 'loading' : error ? 'error' : 'ready');
   let nesClass = $derived(`nes-container ${loadingState === 'loading' ? loadingClass : ''} ${error ? errorClass : ''}`);
 
-  $effect(async () => {
+  $effect(() => {
+    (async () => {
     if (!browser || !enableGPU) {
       // Fallback for SSR or disabled GPU
       textureData = fallbackContent || generateFallbackPattern();
@@ -119,7 +127,8 @@
       textureData = generateFallbackPattern();
       isLoading = false;
     }
-  }
+    })();
+  });
 
   /**
    * Generate NES-style fallback pattern when WebGPU is unavailable
@@ -127,7 +136,7 @@
   function generateFallbackPattern(): string {
     // Generate simple NES-style pattern as SVG
     const color = hashToColor(assetId);
-    const pattern = assetId.slice.toUpperCase();
+    const pattern = assetId.toUpperCase();
 
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"
              style="image-rendering: pixelated;" xmlns="http://www.w3.org/2000/svg">
@@ -143,7 +152,7 @@
    * Convert GPU texture data to displayable format
    */
   async function convertTextureToDisplay(textureBuffer: ArrayBuffer, lodLevel: number): Promise<string> {
-    const lodInfo = lodManager.LOD_LEVELS[lodLevel];
+    const lodInfo = LOD_LEVELS[lodLevel];
     const { width: texWidth, height: texHeight } = lodInfo.resolution;
 
     // Create canvas to convert texture data
@@ -274,7 +283,7 @@
       {:else}
         <div class="nes-fallback-pattern">
           <div class="nes-pattern-block" style:background={hashToColor(assetId)}>
-            {assetId.slice.toUpperCase()}
+            {assetId.toUpperCase()}
           </div>
         </div>
       {/if}

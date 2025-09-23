@@ -442,14 +442,14 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   legalDocuments: many(legalDocuments),
   notes: many(notes),
   savedCitations: many(savedCitations)
-});
+}));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id]
   })
-});
+}));
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
@@ -468,7 +468,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   personsOfInterest: many(personsOfInterest),
   legalDocuments: many(legalDocuments),
   notes: many(notes)
-});
+}));
 
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
@@ -477,7 +477,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   }),
   cases: many(caseCriminals),
   evidence: many(evidence)
-});
+}));
 
 export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
   case: one(cases, {
@@ -492,7 +492,7 @@ export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
     fields: [caseCriminals.addedBy],
     references: [users.id]
   })
-});
+}));
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
@@ -503,14 +503,14 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     fields: [evidence.caseId],
     references: [cases.id]
   })
-});
+}));
 
 export const themesRelations = relations(themes, ({ one }) => ({
   createdBy: one(users, {
     fields: [themes.createdBy],
     references: [users.id]
   })
-});
+}));
 
 export const reportsRelations = relations(reports, ({ one }) => ({
   createdBy: one(users, {
@@ -525,14 +525,14 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     fields: [reports.generatedBy],
     references: [users.id]
   })
-});
+}));
 
 export const citationPointsRelations = relations(citationPoints, ({ one }) => ({
   createdBy: one(users, {
     fields: [citationPoints.createdBy],
     references: [users.id]
   })
-});
+}));
 
 export const attachmentVerificationsRelations = relations(
   attachmentVerifications,
@@ -567,7 +567,7 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
     fields: [legalDocuments.userId],
     references: [users.id]
   })
-});
+}));
 
 export const notesRelations = relations(notes, ({ one }) => ({
   case: one(cases, {
@@ -578,4 +578,4 @@ export const notesRelations = relations(notes, ({ one }) => ({
     fields: [notes.userId],
     references: [users.id]
   })
-});
+}));

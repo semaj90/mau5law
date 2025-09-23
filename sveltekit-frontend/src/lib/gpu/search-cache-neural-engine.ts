@@ -7,7 +7,7 @@
  */
 import type { LegalDocument } from '../memory/nes-memory-architecture.js';
 // --- Helpers & Mock Subsystems ---
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms);
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // --- Mocks for the full analytics data stack ---
 

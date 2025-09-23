@@ -5,14 +5,25 @@
   import { componentLoader } from '$lib/utils/dynamic-imports';
   import AILoadingIndicator from './AILoadingIndicator.svelte';
 
-  let { loader } = $props();: () => Promise<any>;
-  let { key } = $props();: string;
-  let { fallback } = $props();: string = 'Loading component...';
-  let { errorFallback } = $props();: string = 'Failed to load component';
-  let { props } = $props();: Record<string, any> = {};
-  let Component: unknown = null;
-  let isLoading = true;
-  let error: Error | null = null;
+  interface Props {
+    loader: () => Promise<any>;
+    key: string;
+    fallback?: string;
+    errorFallback?: string;
+    props?: Record<string, any>;
+  }
+
+  let {
+    loader,
+    key,
+    fallback = 'Loading component...',
+    errorFallback = 'Failed to load component',
+    props: componentProps = {}
+  }: Props = $props();
+
+  let Component = $state<any>(null);
+  let isLoading = $state(true);
+  let error = $state<Error | null>(null);
 
   async function loadComponent() {
     try {
@@ -61,7 +72,7 @@
     </button>
   </div>
 {:else if Component}
-  <svelte:component this={Component} {...props} />
+  <svelte:component this={Component} {...componentProps} />
 {/if}
 
 <style>

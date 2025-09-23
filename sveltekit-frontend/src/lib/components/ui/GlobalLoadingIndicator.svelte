@@ -5,8 +5,12 @@
   import AILoadingIndicator from './AILoadingIndicator.svelte';
   import { fly, fade } from 'svelte/transition';
 
-  let { position } = $props();: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'top-right';
-  let { maxVisible } = $props();: number = 3;
+  interface Props {
+    position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+    maxVisible?: number;
+  }
+
+  let { position = 'top-right', maxVisible = 3 }: Props = $props();
 
   let operations = $derived(Array.from($loadingStore.operations.values()));
   let activeOperations = $derived(operations.filter(op => op.status === 'loading'));

@@ -179,6 +179,7 @@
     fileStates = fileStates.map(fs => {
       if (fs.controller) {
         try { fs.controller.abort(); } catch(e) { /* ignore */ }
+      }
       if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch(e) { /* ignore */ } fs.retryTimeoutId = null; }
       if (['uploading','pending','processing'].includes(fs.status)) {
         return { ...fs, status: 'canceled', progress: fs.status === 'uploading' ? fs.progress: 0, controller: null };

@@ -9,8 +9,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"regexp"
 	"strings"
+	"sync"
+	"syscall"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -25,9 +28,13 @@ import (
 // Features: MinIO streaming, sentence-aware chunking, hierarchical summarization
 
 type StreamingProcessor struct {
-	minioClient *minio.Client
-	logger      *log.Logger
-	upgrader    websocket.Upgrader
+	minioClient   *minio.Client
+	logger        *log.Logger
+	upgrader      websocket.Upgrader
+	httpClient    *http.Client
+	processPool   chan struct{}
+	shutdown      chan struct{}
+	workerGroup   sync.WaitGroup
 }
 
 type ChunkMetadata struct {
@@ -45,24 +52,24 @@ type ChunkMetadata struct {
 type ProcessedChunk struct {
 	Metadata      ChunkMetadata          `json:"metadata"`
 	Content       string                 `json:"content"`
-	Entities      []LegalEntity          `json:"entities,omitempty"`
+	Entities      []PDFLegalEntity       `json:"entities,omitempty"`
 	Embedding     []float32              `json:"embedding,omitempty"`
 	LocalSummary  string                 `json:"local_summary,omitempty"`
-	Relationships []LegalRelationship    `json:"relationships,omitempty"`
+	Relationships []PDFLegalRelationship `json:"relationships,omitempty"`
 	Attributes    map[string]interface{} `json:"attributes"`
 }
 
-type LegalEntity struct {
+type PDFLegalEntity struct {
 	ID         string                 `json:"id"`
 	Type       string                 `json:"type"`
-	Text       string                 `json:"text"`
+	Value      string                 `json:"value"`
 	Confidence float64                `json:"confidence"`
 	StartPos   int                    `json:"start_pos"`
 	EndPos     int                    `json:"end_pos"`
 	Attributes map[string]interface{} `json:"attributes"`
 }
 
-type LegalRelationship struct {
+type PDFLegalRelationship struct {
 	ID         string                 `json:"id"`
 	FromEntity string                 `json:"from_entity"`
 	ToEntity   string                 `json:"to_entity"`
@@ -80,15 +87,15 @@ type StreamingRequest struct {
 	Metadata     map[string]interface{} `json:"metadata"`
 }
 
-type StreamingResponse struct {
-	DocumentID    string           `json:"document_id"`
-	TotalChunks   int              `json:"total_chunks"`
-	ProcessedChunks int            `json:"processed_chunks"`
-	CurrentChunk  *ProcessedChunk  `json:"current_chunk,omitempty"`
-	Status        string           `json:"status"`
-	Progress      float64          `json:"progress"`
-	Timestamp     time.Time        `json:"timestamp"`
-	Error         string           `json:"error,omitempty"`
+type PDFStreamingResponse struct {
+	DocumentID      string           `json:"document_id"`
+	TotalChunks     int              `json:"total_chunks"`
+	ProcessedChunks int              `json:"processed_chunks"`
+	CurrentChunk    *ProcessedChunk  `json:"current_chunk,omitempty"`
+	Status          string           `json:"status"`
+	Progress        float64          `json:"progress"`
+	Timestamp       time.Time        `json:"timestamp"`
+	Error           string           `json:"error,omitempty"`
 }
 
 type HierarchicalSummary struct {
@@ -96,7 +103,7 @@ type HierarchicalSummary struct {
 	ExecutiveSummary string                   `json:"executive_summary"`
 	SectionSummaries []SectionSummary         `json:"section_summaries"`
 	GlobalSummary   string                   `json:"global_summary"`
-	KeyEntities     []LegalEntity            `json:"key_entities"`
+	KeyEntities     []PDFLegalEntity         `json:"key_entities"`
 	CriticalFindings []string                 `json:"critical_findings"`
 	LegalPrecedents []string                 `json:"legal_precedents"`
 	Metadata        map[string]interface{}   `json:"metadata"`
@@ -114,10 +121,10 @@ type SectionSummary struct {
 
 func NewStreamingProcessor() (*StreamingProcessor, error) {
 	// MinIO configuration
-	endpoint := getEnv("MINIO_ENDPOINT", "localhost:9000")
-	accessKey := getEnv("MINIO_ACCESS_KEY", "minioadmin")
-	secretKey := getEnv("MINIO_SECRET_KEY", "minioadmin")
-	useSSL := getEnv("MINIO_USE_SSL", "false") == "true"
+	endpoint := getPDFEnv("MINIO_ENDPOINT", "localhost:9000")
+	accessKey := getPDFEnv("MINIO_ACCESS_KEY", "minioadmin")
+	secretKey := getPDFEnv("MINIO_SECRET_KEY", "minioadmin")
+	useSSL := getPDFEnv("MINIO_USE_SSL", "false") == "true"
 
 	client, err := minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
@@ -131,19 +138,56 @@ func NewStreamingProcessor() (*StreamingProcessor, error) {
 
 	upgrader := websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool { return true },
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
+
+	// Create HTTP client with connection pooling
+	httpClient := &http.Client{
+		Timeout: 30 * time.Second,
+		Transport: &http.Transport{
+			MaxIdleConns:        100,
+			MaxIdleConnsPerHost: 10,
+			IdleConnTimeout:     90 * time.Second,
+		},
+	}
+
+	// Create process pool for concurrent chunk processing
+	poolSize := 10
+	if val := os.Getenv("CHUNK_PROCESS_POOL_SIZE"); val != "" {
+		if size := parseIntWithDefault(val, 10); size > 0 {
+			poolSize = size
+		}
 	}
 
 	return &StreamingProcessor{
-		minioClient: client,
-		logger:      logger,
-		upgrader:    upgrader,
+		minioClient:   client,
+		logger:        logger,
+		upgrader:      upgrader,
+		httpClient:    httpClient,
+		processPool:   make(chan struct{}, poolSize),
+		shutdown:      make(chan struct{}),
 	}, nil
 }
 
 func (sp *StreamingProcessor) StreamDocumentFromMinIO(ctx context.Context, bucketName, objectName string) (io.Reader, error) {
-	object, err := sp.minioClient.GetObject(ctx, bucketName, objectName, minio.GetObjectOptions{})
+	// Add retry logic for MinIO connections
+	var object *minio.Object
+	var err error
+
+	for i := 0; i < 3; i++ {
+		object, err = sp.minioClient.GetObject(ctx, bucketName, objectName, minio.GetObjectOptions{})
+		if err == nil {
+			break
+		}
+		if i < 2 {
+			sp.logger.Printf("Retry %d: MinIO connection failed: %v", i+1, err)
+			time.Sleep(time.Duration(i+1) * time.Second)
+		}
+	}
+
 	if err != nil {
-		return nil, fmt.Errorf("failed to get object from MinIO: %w", err)
+		return nil, fmt.Errorf("failed to get object from MinIO after retries: %w", err)
 	}
 
 	return object, nil
@@ -232,6 +276,10 @@ func (sp *StreamingProcessor) getLastNTokens(text string, n int) string {
 }
 
 func (sp *StreamingProcessor) ProcessChunkWithPython(chunk *ProcessedChunk) error {
+	// Use connection pooling and timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
 	// Call Python OCR + NER + Embedding service
 	payload := map[string]interface{}{
 		"chunk_id": chunk.Metadata.ChunkID,
@@ -248,8 +296,15 @@ func (sp *StreamingProcessor) ProcessChunkWithPython(chunk *ProcessedChunk) erro
 		return fmt.Errorf("failed to marshal chunk data: %w", err)
 	}
 
-	// Call Python service (assuming it's running on port 8888)
-	resp, err := http.Post("http://localhost:8888/process-chunk", "application/json", bytes.NewBuffer(jsonData))
+	// Create request with context
+	req, err := http.NewRequestWithContext(ctx, "POST", "http://localhost:8888/process-chunk", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	// Use shared HTTP client with connection pooling
+	resp, err := sp.httpClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to call Python service: %w", err)
 	}
@@ -260,10 +315,10 @@ func (sp *StreamingProcessor) ProcessChunkWithPython(chunk *ProcessedChunk) erro
 	}
 
 	var result struct {
-		Entities      []LegalEntity       `json:"entities"`
-		Embedding     []float32           `json:"embedding"`
-		LocalSummary  string              `json:"local_summary"`
-		Relationships []LegalRelationship `json:"relationships"`
+		Entities      []PDFLegalEntity       `json:"entities"`
+		Embedding     []float32              `json:"embedding"`
+		LocalSummary  string                 `json:"local_summary"`
+		Relationships []PDFLegalRelationship `json:"relationships"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -282,7 +337,7 @@ func (sp *StreamingProcessor) ProcessChunkWithPython(chunk *ProcessedChunk) erro
 func (sp *StreamingProcessor) CreateHierarchicalSummary(chunks []ProcessedChunk, documentID string) (*HierarchicalSummary, error) {
 	// Aggregate local summaries into section summaries
 	var sectionSummaries []SectionSummary
-	var allEntities []LegalEntity
+	var allEntities []PDFLegalEntity
 	var globalSummaryContent strings.Builder
 
 	// Group chunks into sections (every 10 chunks = 1 section for example)
@@ -303,7 +358,7 @@ func (sp *StreamingProcessor) CreateHierarchicalSummary(chunks []ProcessedChunk,
 			totalTokens += chunk.Metadata.TokenCount
 
 			for _, entity := range chunk.Entities {
-				sectionEntities = append(sectionEntities, entity.Text)
+				sectionEntities = append(sectionEntities, entity.Value)
 				allEntities = append(allEntities, entity)
 			}
 		}
@@ -378,7 +433,17 @@ func (sp *StreamingProcessor) callGemma3Summarizer(content, summaryType string) 
 		return "", err
 	}
 
-	resp, err := http.Post("http://localhost:11434/api/generate", "application/json", bytes.NewBuffer(jsonData))
+	// Create request with timeout context
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "POST", "http://localhost:11434/api/generate", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := sp.httpClient.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -499,12 +564,12 @@ func (sp *StreamingProcessor) deduplicateStrings(items []string) []string {
 	return result
 }
 
-func (sp *StreamingProcessor) deduplicateEntities(entities []LegalEntity) []LegalEntity {
+func (sp *StreamingProcessor) deduplicateEntities(entities []PDFLegalEntity) []PDFLegalEntity {
 	seen := make(map[string]bool)
-	var result []LegalEntity
+	var result []PDFLegalEntity
 
 	for _, entity := range entities {
-		key := entity.Type + ":" + entity.Text
+		key := entity.Type + ":" + entity.Value
 		if !seen[key] {
 			seen[key] = true
 			result = append(result, entity)
@@ -535,7 +600,7 @@ func (sp *StreamingProcessor) handleStreamingProcess(w http.ResponseWriter, r *h
 	// Stream document from MinIO
 	reader, err := sp.StreamDocumentFromMinIO(ctx, "legal-documents", req.MinIOPath)
 	if err != nil {
-		conn.WriteJSON(StreamingResponse{
+		conn.WriteJSON(PDFStreamingResponse{
 			Status: "error",
 			Error:  fmt.Sprintf("Failed to stream from MinIO: %v", err),
 		})
@@ -545,7 +610,7 @@ func (sp *StreamingProcessor) handleStreamingProcess(w http.ResponseWriter, r *h
 	// Read content (for PDFs, this would integrate with OCR)
 	content, err := io.ReadAll(reader)
 	if err != nil {
-		conn.WriteJSON(StreamingResponse{
+		conn.WriteJSON(PDFStreamingResponse{
 			Status: "error",
 			Error:  fmt.Sprintf("Failed to read content: %v", err),
 		})
@@ -555,35 +620,75 @@ func (sp *StreamingProcessor) handleStreamingProcess(w http.ResponseWriter, r *h
 	// Create sentence-aware chunks
 	chunks := sp.SentenceAwareChunker(string(content), req.ChunkSize, req.OverlapSize)
 
-	// Process chunks with streaming updates
-	for chunkIndex, chunk := range chunks {
-		chunk.Metadata.DocumentID = req.DocumentID
+	// Process chunks concurrently with worker pool
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	processedCount := 0
+	errorCount := 0
 
-		// Process chunk with Python services
-		if err := sp.ProcessChunkWithPython(&chunk); err != nil {
-			sp.logger.Printf("Warning: Failed to process chunk %s: %v", chunk.Metadata.ChunkID, err)
+	// Channel for sending updates
+	updateChan := make(chan PDFStreamingResponse, len(chunks))
+	done := make(chan struct{})
+
+	// Goroutine to send WebSocket updates
+	go func() {
+		for {
+			select {
+			case update := <-updateChan:
+				if err := conn.WriteJSON(update); err != nil {
+					sp.logger.Printf("Failed to send progress update: %v", err)
+				}
+			case <-done:
+				return
+			}
 		}
+	}()
 
-		// Send progress update
-		progress := float64(chunkIndex+1) / float64(len(chunks)) * 100
-		response := StreamingResponse{
-			DocumentID:      req.DocumentID,
-			TotalChunks:     len(chunks),
-			ProcessedChunks: chunkIndex + 1,
-			CurrentChunk:    &chunk,
-			Status:          "processing",
-			Progress:        progress,
-			Timestamp:       time.Now(),
-		}
+	for i := range chunks {
+		wg.Add(1)
+		sp.processPool <- struct{}{} // Acquire semaphore
 
-		if err := conn.WriteJSON(response); err != nil {
-			sp.logger.Printf("Failed to send progress update: %v", err)
-			return
-		}
+		go func(chunkIndex int) {
+			defer wg.Done()
+			defer func() { <-sp.processPool }() // Release semaphore
 
-		// Store chunk in PostgreSQL + Neo4j here
-		// ... (database operations)
+			chunk := &chunks[chunkIndex]
+			chunk.Metadata.DocumentID = req.DocumentID
+
+			// Process chunk with Python services
+			if err := sp.ProcessChunkWithPython(chunk); err != nil {
+				sp.logger.Printf("Warning: Failed to process chunk %s: %v", chunk.Metadata.ChunkID, err)
+				mu.Lock()
+				errorCount++
+				mu.Unlock()
+			}
+
+			mu.Lock()
+			processedCount++
+			progress := float64(processedCount) / float64(len(chunks)) * 100
+			mu.Unlock()
+
+			// Send progress update
+			response := PDFStreamingResponse{
+				DocumentID:      req.DocumentID,
+				TotalChunks:     len(chunks),
+				ProcessedChunks: processedCount,
+				CurrentChunk:    chunk,
+				Status:          "processing",
+				Progress:        progress,
+				Timestamp:       time.Now(),
+			}
+
+			updateChan <- response
+
+			// Store chunk in PostgreSQL + Neo4j here
+			// ... (database operations)
+		}(i)
 	}
+
+	// Wait for all chunks to be processed
+	wg.Wait()
+	close(done)
 
 	// Create hierarchical summary
 	_, err = sp.CreateHierarchicalSummary(chunks, req.DocumentID)
@@ -592,7 +697,7 @@ func (sp *StreamingProcessor) handleStreamingProcess(w http.ResponseWriter, r *h
 	}
 
 	// Final response
-	finalResponse := StreamingResponse{
+	finalResponse := PDFStreamingResponse{
 		DocumentID:      req.DocumentID,
 		TotalChunks:     len(chunks),
 		ProcessedChunks: len(chunks),
@@ -621,11 +726,27 @@ func (sp *StreamingProcessor) handleHealth(w http.ResponseWriter, r *http.Reques
 	})
 }
 
-func getEnv(key, defaultValue string) string {
+func getPDFEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
 	}
 	return defaultValue
+}
+
+func parseIntWithDefault(val string, defaultVal int) int {
+	if parsed, err := fmt.Sscanf(val, "%d", &defaultVal); err == nil && parsed > 0 {
+		return defaultVal
+	}
+	return defaultVal
+}
+
+// Graceful shutdown handler
+func (sp *StreamingProcessor) Shutdown() {
+	sp.logger.Println("Shutting down streaming processor...")
+	close(sp.shutdown)
+	sp.workerGroup.Wait()
+	sp.httpClient.CloseIdleConnections()
+	sp.logger.Println("Streaming processor shutdown complete")
 }
 
 func main() {
@@ -649,11 +770,43 @@ func main() {
 
 	handler := c.Handler(r)
 
-	port := getEnv("PORT", "8103")
+	port := getPDFEnv("PORT", "8103")
 	processor.logger.Printf("Streaming PDF Processor starting on port %s", port)
+	processor.logger.Printf("Configuration:")
+	processor.logger.Printf("  - Chunk Process Pool Size: %d", cap(processor.processPool))
+	processor.logger.Printf("  - HTTP Client Timeout: 30s")
+	processor.logger.Printf("  - MinIO Endpoint: %s", getPDFEnv("MINIO_ENDPOINT", "localhost:9000"))
 	processor.logger.Printf("Endpoints:")
 	processor.logger.Printf("  WS  /api/v1/stream/process - Stream process 200+ page documents")
 	processor.logger.Printf("  GET /api/v1/health - Service health check")
 
-	log.Fatal(http.ListenAndServe(":"+port, handler))
+	// Create server with timeouts
+	server := &http.Server{
+		Addr:         ":" + port,
+		Handler:      handler,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	// Setup graceful shutdown
+	go func() {
+		sigChan := make(chan os.Signal, 1)
+		signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+		<-sigChan
+
+		processor.logger.Println("Received shutdown signal")
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		if err := server.Shutdown(shutdownCtx); err != nil {
+			processor.logger.Printf("Server shutdown error: %v", err)
+		}
+		processor.Shutdown()
+	}()
+
+	processor.logger.Printf("Server ready to accept connections")
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("Server failed to start: %v", err)
+	}
 }
