@@ -88,7 +88,7 @@ export interface AccessLogEntry {
 export interface AnalysisResult {
   id: string;
   type: 'ocr' | 'image_analysis' | 'audio_transcription' | 'video_analysis' | 'forensic_analysis';
-  result: any;
+  result: unknown;
   confidence: number;
   timestamp: string;
   tool_used: string;
@@ -164,10 +164,10 @@ const createEvidenceStore = () => {
     processing_queue: [],
     stats: null,
     chain_of_custody_log: [],
-    security_alerts: []
+    security_alerts: [],
   });
 
-  const fetchEvidence = async (caseId: string | null): Promise<any> => {
+  const fetchEvidence = async (caseId: string | null): Promise<void> => {
     if (!caseId) {
       set({
         evidence: [],
@@ -179,59 +179,175 @@ const createEvidenceStore = () => {
         processing_queue: [],
         stats: null,
         chain_of_custody_log: [],
-        security_alerts: []
+        security_alerts: [],
       });
       return;
     }
 
-    update((state) => ({ ...state, isLoading: true, error: null }));
+    update(state => ({ ...state, isLoading: true, error: null }));
 
     try {
       const response = await fetch(`/api/evidence/list?caseId=${caseId}`, {
         headers: {
           'Content-Type': 'application/json',
-          'X-Legal-Request': 'true'
-        }
+          'X-Legal-Request': 'true',
+        },
       });
 
-      if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
-        const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
-        throw new Error(errorData.message || "Failed to fetch evidence");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}) as { message?: string });
+        throw new Error(errorData.message || 'Failed to fetch evidence');
       }
 
-      const evidenceData = await (response as { ok?: any; json?: any; blob?: any }).json();
+      const evidenceData = (await response.json().catch(() => ({}))) as {
+        evidence?: Evidence[];
+        stats?: EvidenceStats | null;
+      };
       const evidenceList: Evidence[] = evidenceData.evidence || [];
       const stats: EvidenceStats = evidenceData.stats || null;
 
       // Validate evidence integrity
       await validateEvidenceIntegrity(evidenceList);
 
-      update((state) => ({
+      update(state => ({
         ...state,
         evidence: evidenceList,
         filtered_evidence: evidenceList,
         stats,
         isLoading: false,
-        error: null
+        error: null,
       }));
 
       // Log access for audit trail
       await logEvidenceAccess(caseId, 'case_evidence_accessed');
-
-    } catch (error: any) {
-      console.error("Error fetching evidence:", error);
-      update((state) => ({
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error('Error fetching evidence:', err);
+      update(state => ({
         ...state,
         evidence: [],
         filtered_evidence: [],
         isLoading: false,
-        error: error.message
+        error: message,
       }));
     }
   };
+  // QUIC tensor streaming for evidence embeddings (browser-only, no-SSR)
+  type TensorEnvelope = {
+    kind: 'embedding';
+    evidenceId: string;
+    caseId: string;
+    dim: number;
+    // Keep as raw numbers for simplicity; server can convert to Float32
+    vector: number[];
+    // Optional metadata
+    createdAt: string;
+  };
 
+  class QUICTensorStream {
+    private writer: WritableStreamDefaultWriter<Uint8Array> | null = null;
+    private connected = false;
+
+    async connect(url: string): Promise<void> {
+      if (typeof window === 'undefined') return;
+      // @ts-ignore WebTransport experimental
+      if (!window.WebTransport) return;
+
+      try {
+        // @ts-ignore WebTransport experimental
+        const transport = new window.WebTransport(url);
+        await transport.ready;
+        const stream = await transport.createBidirectionalStream();
+        this.writer = stream.writable.getWriter();
+        this.connected = true;
+
+        // Ensure we clean up on errors
+        transport.closed.catch(() => {
+          this.connected = false;
+          this.writer?.releaseLock();
+          this.writer = null;
+        });
+      } catch {
+        this.connected = false;
+        this.writer = null;
+      }
+    }
+
+    async sendEnvelope(envelope: TensorEnvelope): Promise<void> {
+      if (!this.connected || !this.writer) return;
+      const json = JSON.stringify(envelope) + '\n';
+      const bytes = new TextEncoder().encode(json);
+      try {
+        await this.writer.write(bytes);
+      } catch {
+        // Best-effort; ignore transient write errors
+      }
+    }
+
+    isConnected(): boolean {
+      return this.connected && !!this.writer;
+    }
+  }
+
+  // Lazy QUIC stream and streaming guard
+  let quicStream: QUICTensorStream | null = null;
+  const streamedEmbeddingIds = new Set<string>();
+
+  async function ensureQuicConnected(): Promise<void> {
+    if (typeof window === 'undefined') return;
+    // @ts-ignore WebTransport experimental
+    if (!window.WebTransport) return;
+    if (quicStream?.isConnected()) return;
+
+    const url =
+      (window as any).__QUIC_TENSOR_URL__ ||
+      (import.meta as any)?.env?.VITE_QUIC_TENSOR_URL ||
+      'https://localhost:8447/legal-stream';
+    quicStream = new QUICTensorStream();
+    await quicStream.connect(String(url));
+  }
+
+  // Stream embeddings when available (once per evidence)
+  const unsubscribeTensor = subscribe(async (state) => {
+    if (typeof window === 'undefined') return;
+    // Try to connect once when evidence first appears
+    if (!state.evidence.length) return;
+
+    await ensureQuicConnected();
+    if (!quicStream?.isConnected()) return;
+
+    const caseId = get(selectedCase);
+    if (!caseId) return;
+
+    for (const ev of state.evidence) {
+      if (!ev.embedding || !Array.isArray(ev.embedding) || ev.embedding.length === 0) continue;
+      if (streamedEmbeddingIds.has(ev.id)) continue;
+
+      const envelope: TensorEnvelope = {
+        kind: 'embedding',
+        evidenceId: ev.id,
+        caseId,
+        dim: ev.embedding.length,
+        vector: ev.embedding,
+        createdAt: new Date().toISOString(),
+      };
+
+      streamedEmbeddingIds.add(ev.id);
+      quicStream.sendEnvelope(envelope).catch(() => {
+        // If send fails, allow retry later
+        streamedEmbeddingIds.delete(ev.id);
+      });
+    }
+  });
+
+  // Clean-up hook (in case the store is ever torn down in HMR)
+  if (import.meta?.hot) {
+    import.meta.hot.dispose(() => {
+      unsubscribeTensor();
+    });
+  }
   // Automatically fetch evidence when selected case changes;
-  selectedCase.subscribe((caseId) => {
+  selectedCase.subscribe(caseId => {
     fetchEvidence(caseId);
   });
 
@@ -241,14 +357,17 @@ const createEvidenceStore = () => {
 
     // Add new evidence with comprehensive metadata
     addEvidence: async (
-      newEvidenceData: Omit<Evidence, "id" | "x" | "y" | "caseId" | "created_at" | "updated_at" | "chain_of_custody" | "access_log">
+      newEvidenceData: Omit<
+        Evidence,
+        'id' | 'x' | 'y' | 'caseId' | 'created_at' | 'updated_at' | 'chain_of_custody' | 'access_log'
+      >
     ) => {
-      update((state) => ({ ...state, isLoading: true }));
+      update(state => ({ ...state, isLoading: true }));
       const currentCaseId = get(selectedCase);
 
       if (!currentCaseId) {
-        const err = "No case selected to add evidence to.";
-        update((state) => ({ ...state, isLoading: false, error: err }));
+        const err = 'No case selected to add evidence to.';
+        update(state => ({ ...state, isLoading: false, error: err }));
         console.error(err);
         return;
       }
@@ -261,7 +380,7 @@ const createEvidenceStore = () => {
           person: newEvidenceData.collected_by,
           location: newEvidenceData.location_collected,
           purpose: 'Evidence collection for case investigation',
-          notes: `Evidence "${newEvidenceData.title}" added to case system`
+          notes: `Evidence "${newEvidenceData.title}" added to case system`,
         };
 
         const evidencePayload = {
@@ -272,44 +391,43 @@ const createEvidenceStore = () => {
           x: Math.random() * 500, // Default canvas position
           y: Math.random() * 500,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         };
 
-        const response = await fetch("/api/evidence", {
-          method: "POST",
+        const response = await fetch('/api/evidence', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "X-Legal-Request": "true"
+            'Content-Type': 'application/json',
+            'X-Legal-Request': 'true',
           },
-          body: JSON.stringify(evidencePayload)
+          body: JSON.stringify(evidencePayload),
         });
 
-        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
-          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
-          throw new Error(errorData.message || "Failed to add evidence");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}) as { message?: string });
+          throw new Error(errorData.message || 'Failed to add evidence');
         }
+        const createdEvidence: Evidence = await response.json();
 
-        const createdEvidence: Evidence = await (response as { ok?: any; json?: any; blob?: any }).json();
-
-        update((state) => ({
+        update(state => ({
           ...state,
           evidence: [...state.evidence, createdEvidence],
           filtered_evidence: applyFilter([...state.evidence, createdEvidence], state.current_filter),
-          isLoading: false
+          isLoading: false,
         }));
 
         // Log evidence addition
         await logEvidenceAccess(createdEvidence.id, 'evidence_added');
 
         return createdEvidence;
-
-      } catch (error: any) {
-        update((state) => ({
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        update(state => ({
           ...state,
           isLoading: false,
-          error: error.message
+          error: message,
         }));
-        console.error("Error adding evidence:", error);
+        console.error('Error adding evidence:', error);
         throw error;
       }
     },
@@ -317,7 +435,7 @@ const createEvidenceStore = () => {
     // Update evidence with optimistic updates and chain of custody
     updateEvidence: async (
       evidenceId: string,
-      updates: Partial<Omit<Evidence, "id" | "caseId" | "created_at">>,
+      updates: Partial<Omit<Evidence, 'id' | 'caseId' | 'created_at'>>,
       chainOfCustodyAction?: {
         action: ChainOfCustodyEntry['action'];
         person: string;
@@ -328,14 +446,14 @@ const createEvidenceStore = () => {
       let originalEvidence: Evidence | undefined;
 
       // Optimistic update;
-      update((state) => {
-        originalEvidence = state.evidence.find((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId);
-        const updatedEvidence = state.evidence.map((item) => {
-          if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId) {
+      update(state => {
+        originalEvidence = state.evidence.find(item => item.id === evidenceId);
+        const updatedEvidence = state.evidence.map(item => {
+          if (item.id === evidenceId) {
             const updated = {
               ...item,
               ...updates,
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             };
 
             // Add chain of custody entry if provided;
@@ -343,7 +461,7 @@ const createEvidenceStore = () => {
               const chainEntry: ChainOfCustodyEntry = {
                 id: `chain_${Date.now()}`,
                 timestamp: new Date().toISOString(),
-                ...chainOfCustodyAction
+                ...chainOfCustodyAction,
               };
               updated.chain_of_custody = [...updated.chain_of_custody, chainEntry];
             }
@@ -356,49 +474,46 @@ const createEvidenceStore = () => {
         return {
           ...state,
           evidence: updatedEvidence,
-          filtered_evidence: applyFilter(updatedEvidence, state.current_filter)
+          filtered_evidence: applyFilter(updatedEvidence, state.current_filter),
         };
       });
 
       try {
-        const payload: any = { ...updates };
+        const payload: Record<string, unknown> = { ...updates };
         if (chainOfCustodyAction) {
           payload.chain_of_custody_action = chainOfCustodyAction;
         }
 
         const response = await fetch(`/api/evidence/${evidenceId}`, {
-          method: "PATCH",
+          method: 'PATCH',
           headers: {
-            "Content-Type": "application/json",
-            "X-Legal-Request": "true"
+            'Content-Type': 'application/json',
+            'X-Legal-Request': 'true',
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
         });
 
-        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
-          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
-          throw new Error(errorData.message || "Failed to update evidence");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}) as { message?: string });
+          throw new Error(errorData.message || 'Failed to update evidence');
         }
 
         // Log evidence modification
         await logEvidenceAccess(evidenceId, 'evidence_modified');
-
-      } catch (error: any) {
-        console.error("Error updating evidence:", error);
+      } catch (error: unknown) {
+        console.error('Error updating evidence:', error);
 
         // Revert optimistic update on failure;
         if (originalEvidence) {
           const original = originalEvidence;
-          update((state) => ({
+          update(state => ({
             ...state,
-            evidence: state.evidence.map((item) =>
-              (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? original : item
-            ),
+            evidence: state.evidence.map(item => (item.id === evidenceId ? original : item)),
             filtered_evidence: applyFilter(
-              state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? original : item),
+              state.evidence.map(item => (item.id === evidenceId ? original : item)),
               state.current_filter
             ),
-            error: error.message
+            error: error instanceof Error ? error.message : String(error),
           }));
         }
         throw error;
@@ -410,43 +525,42 @@ const createEvidenceStore = () => {
       let originalList: Evidence[] = [];
 
       // Optimistic update;
-      update((state) => {
+      update(state => {
         originalList = state.evidence;
-        const newList = state.evidence.filter((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id !== evidenceId);
+        const newList = state.evidence.filter(item => item.id !== evidenceId);
         return {
           ...state,
           evidence: newList,
-          filtered_evidence: applyFilter(newList, state.current_filter)
+          filtered_evidence: applyFilter(newList, state.current_filter),
         };
       });
 
       try {
         const response = await fetch(`/api/evidence/${evidenceId}`, {
-          method: "DELETE",
+          method: 'DELETE',
           headers: {
-            "Content-Type": "application/json",
-            "X-Legal-Request": "true"
+            'Content-Type': 'application/json',
+            'X-Legal-Request': 'true',
           },
-          body: JSON.stringify({ reason })
+          body: JSON.stringify({ reason }),
         });
 
-        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
-          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
-          throw new Error(errorData.message || "Failed to delete evidence");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}) as { message?: string });
+          throw new Error(errorData.message || 'Failed to delete evidence');
         }
 
         // Log evidence deletion
         await logEvidenceAccess(evidenceId, 'evidence_deleted', { reason });
-
-      } catch (error: any) {
-        console.error("Error deleting evidence:", error);
+      } catch (error: unknown) {
+        console.error('Error deleting evidence:', error);
 
         // Revert optimistic update on failure;
-        update((state) => ({
+        update(state => ({
           ...state,
           evidence: originalList,
           filtered_evidence: applyFilter(originalList, state.current_filter),
-          error: error.message
+          error: error instanceof Error ? error.message : String(error),
         }));
         throw error;
       }
@@ -454,50 +568,46 @@ const createEvidenceStore = () => {
 
     // Process evidence (OCR, analysis, etc.);
     processEvidence: async (evidenceId: string, processingType: 'ocr' | 'analysis' | 'forensic') => {
-      update((state) => ({
+      update(state => ({
         ...state,
-        processing_queue: [...state.processing_queue, evidenceId]
+        processing_queue: [...state.processing_queue, evidenceId],
       }));
 
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/process`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "X-Legal-Request": "true"
+            'Content-Type': 'application/json',
+            'X-Legal-Request': 'true',
           },
-          body: JSON.stringify({ type: processingType })
+          body: JSON.stringify({ type: processingType }),
         });
 
-        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
-          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
-          throw new Error(errorData.message || "Failed to process evidence");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}) as { message?: string });
+          throw new Error(errorData.message || 'Failed to process evidence');
         }
+        const processedEvidence: Evidence = await response.json();
 
-        const processedEvidence: Evidence = await (response as { ok?: any; json?: any; blob?: any }).json();
-
-        update((state) => ({
+        update(state => ({
           ...state,
-          evidence: state.evidence.map((item) =>
-            (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? processedEvidence : item
-          ),
+          evidence: state.evidence.map(item => (item.id === evidenceId ? processedEvidence : item)),
           filtered_evidence: applyFilter(
-            state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? processedEvidence : item),
+            state.evidence.map(item => (item.id === evidenceId ? processedEvidence : item)),
             state.current_filter
           ),
-          processing_queue: state.processing_queue.filter(id => id !== evidenceId)
+          processing_queue: state.processing_queue.filter(id => id !== evidenceId),
         }));
 
         // Log evidence processing
         await logEvidenceAccess(evidenceId, 'evidence_processed', { type: processingType });
 
         return processedEvidence;
-
-      } catch (error: any) {
-        update((state) => ({
+      } catch (error: unknown) {
+        update(state => ({
           ...state,
           processing_queue: state.processing_queue.filter(id => id !== evidenceId),
-          error: error.message
+          error: error instanceof Error ? error.message : String(error),
         }));
         throw error;
       }
@@ -505,30 +615,37 @@ const createEvidenceStore = () => {
 
     // Filter evidence;
     filterEvidence: (filter: EvidenceFilter | null) => {
-      update((state) => {
+      update(state => {
         const filtered = applyFilter(state.evidence, filter);
         return {
           ...state,
           current_filter: filter,
-          filtered_evidence: filtered
+          filtered_evidence: filtered,
         };
       });
     },
 
     // Search evidence;
-    searchEvidence: async (query: string, options?: {
-      include_content?: boolean;
-      include_notes?: boolean;
-      case_sensitive?: boolean;
-    }) => {
+    searchEvidence: async (
+      query: string,
+      options?: {
+        include_content?: boolean;
+        include_notes?: boolean;
+        case_sensitive?: boolean;
+      }
+    ) => {
       const { include_content = true, include_notes = true, case_sensitive = false } = options || {};
 
-      update((state) => {
+      update(state => {
         const searchTerm = case_sensitive ? query : query.toLowerCase();
 
-        const filtered = state.evidence.filter((evidence) => {
-          const title = case_sensitive ? evidence.title: evidence.title.toLowerCase();
-          const ocrText = evidence.ocr_text ? (case_sensitive ? evidence.ocr_text: evidence.ocr_text.toLowerCase()) : '';
+        const filtered = state.evidence.filter(evidence => {
+          const title = case_sensitive ? evidence.title : evidence.title.toLowerCase();
+          const ocrText = evidence.ocr_text
+            ? case_sensitive
+              ? evidence.ocr_text
+              : evidence.ocr_text.toLowerCase()
+            : '';
           const tags = evidence.tags?.join(' ') || '';
           const notes = evidence.notes?.map(n => n.content).join(' ') || '';
 
@@ -537,7 +654,7 @@ const createEvidenceStore = () => {
             evidence.evidence_tag,
             tags,
             ...(include_content ? [ocrText] : []),
-            ...(include_notes ? [notes] : [])
+            ...(include_notes ? [notes] : []),
           ].join(' ');
 
           return (case_sensitive ? searchIn : searchIn.toLowerCase()).includes(searchTerm);
@@ -546,14 +663,14 @@ const createEvidenceStore = () => {
         return {
           ...state,
           filtered_evidence: filtered,
-          current_filter: { search_text: query }
+          current_filter: { search_text: query },
         };
       });
     },
 
     // Select evidence for detailed view;
     selectEvidence: (evidenceId: string | null) => {
-      update((state) => {
+      update(state => {
         const selected = evidenceId ? state.evidence.find(e => e.id === evidenceId) || null : null;
 
         if (selected) {
@@ -563,7 +680,7 @@ const createEvidenceStore = () => {
 
         return {
           ...state,
-          selected_evidence: selected
+          selected_evidence: selected,
         };
       });
     },
@@ -572,37 +689,35 @@ const createEvidenceStore = () => {
     addChainOfCustodyEntry: async (evidenceId: string, entry: Omit<ChainOfCustodyEntry, 'id' | 'timestamp'>) => {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/chain-of-custody`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "X-Legal-Request": "true"
+            'Content-Type': 'application/json',
+            'X-Legal-Request': 'true',
           },
-          body: JSON.stringify(entry)
+          body: JSON.stringify(entry),
         });
 
-        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
-          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
-          throw new Error(errorData.message || "Failed to add chain of custody entry");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}) as { message?: string });
+          throw new Error(errorData.message || 'Failed to add chain of custody entry');
         }
 
-        const updatedEvidence: Evidence = await (response as { ok?: any; json?: any; blob?: any }).json();
+        const updatedEvidence: Evidence = await response.json();
 
-        update((state) => ({
+        update(state => ({
           ...state,
-          evidence: state.evidence.map((item) =>
-            (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? updatedEvidence : item
-          ),
+          evidence: state.evidence.map(item => (item.id === evidenceId ? updatedEvidence : item)),
           filtered_evidence: applyFilter(
-            state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? updatedEvidence : item),
+            state.evidence.map(item => (item.id === evidenceId ? updatedEvidence : item)),
             state.current_filter
-          )
-        });
+          ),
+        }));
 
         return updatedEvidence;
-
-      } catch (error: any) {
-        update((state) => ({ ...state, error: error.message }));
-        throw error;
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        update(state => ({ ...state, error: message }));
+        throw err;
       }
     },
 
@@ -610,24 +725,24 @@ const createEvidenceStore = () => {
     generateEvidenceReport: async (evidenceIds: string[], reportType: 'chain_of_custody' | 'analysis' | 'summary') => {
       try {
         const response = await fetch('/api/evidence/report', {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "X-Legal-Request": "true"
+            'Content-Type': 'application/json',
+            'X-Legal-Request': 'true',
           },
-          body: JSON.stringify({ evidenceIds, reportType })
+          body: JSON.stringify({ evidenceIds, reportType }),
         });
 
-        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
-          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
-          throw new Error(errorData.message || "Failed to generate evidence report");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}) as { message?: string });
+          throw new Error(errorData.message || 'Failed to generate evidence report');
         }
 
-        return await (response as { ok?: any; json?: any; blob?: any }).blob(); // PDF or other report format
-
-      } catch (error: any) {
-        update((state) => ({ ...state, error: error.message });
-        throw error;
+        return await response.blob(); // PDF or other report format
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        update(state => ({ ...state, error: message }));
+        throw err;
       }
     },
 
@@ -635,19 +750,19 @@ const createEvidenceStore = () => {
     validateIntegrity: async (evidenceId: string) => {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/validate`, {
-          method: "POST",
-          headers: { "X-Legal-Request": "true" }
+          method: 'POST',
+          headers: { 'X-Legal-Request': 'true' },
         });
 
-        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
-          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
-          throw new Error(errorData.message || "Failed to validate evidence integrity");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}) as { message?: string });
+          throw new Error(errorData.message || 'Failed to validate evidence integrity');
         }
 
-        const validation = await (response as { ok?: any; json?: any; blob?: any }).json();
+        const validation = await response.json();
 
         if (!validation.valid) {
-          update((state) => ({
+          update(state => ({
             ...state,
             security_alerts: [
               ...state.security_alerts,
@@ -658,30 +773,30 @@ const createEvidenceStore = () => {
                 message: validation.message || 'Evidence integrity check failed',
                 timestamp: new Date().toISOString(),
                 severity: 'high',
-                resolved: false
-              }
-            ]
+                resolved: false,
+              },
+            ],
           }));
         }
 
         return validation;
-
-      } catch (error: any) {
-        update((state) => ({ ...state, error: error.message });
-        throw error;
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        update(state => ({ ...state, error: message }));
+        throw err;
       }
     },
 
     // Utility methods;
     clearError: () => {
-      update((state) => ({ ...state, error: null }));
+      update(state => ({ ...state, error: null }));
     },
 
     clearFilter: () => {
-      update((state) => ({
+      update(state => ({
         ...state,
         current_filter: null,
-        filtered_evidence: state.evidence
+        filtered_evidence: state.evidence,
       }));
     },
 
@@ -691,15 +806,15 @@ const createEvidenceStore = () => {
 
       try {
         const response = await fetch(`/api/evidence/stats?caseId=${currentCaseId}`, {
-          headers: { "X-Legal-Request": "true" }
+          headers: { 'X-Legal-Request': 'true' },
         });
 
-        if ((response as { ok?: any; json?: any; blob?: any }).ok) {
-          const stats = await (response as { ok?: any; json?: any; blob?: any }).json();
-          update((state) => ({ ...state, stats }));
+        if (response.ok) {
+          const stats = await response.json();
+          update(state => ({ ...state, stats }));
         }
-      } catch (error: any) {
-        console.error("Failed to refresh stats:", error);
+      } catch (err: unknown) {
+        console.error('Failed to refresh stats:', err);
       }
     },
 
@@ -707,26 +822,26 @@ const createEvidenceStore = () => {
     exportEvidence: async (evidenceIds: string[], format: 'json' | 'pdf' | 'zip') => {
       try {
         const response = await fetch('/api/evidence/export', {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "X-Legal-Request": "true"
+            'Content-Type': 'application/json',
+            'X-Legal-Request': 'true',
           },
-          body: JSON.stringify({ evidenceIds, format })
+          body: JSON.stringify({ evidenceIds, format }),
         });
 
-        if (!(response as { ok?: any; json?: any; blob?: any }).ok) {
-          const errorData = await (response as { ok?: any; json?: any; blob?: any }).json();
-          throw new Error(errorData.message || "Failed to export evidence");
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}) as { message?: string });
+          throw new Error(errorData.message || 'Failed to export evidence');
         }
 
-        return await (response as { ok?: any; json?: any; blob?: any }).blob();
-
-      } catch (error: any) {
-        update((state) => ({ ...state, error: error.message });
-        throw error;
+        return await response.blob();
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        update(state => ({ ...state, error: message }));
+        throw err;
       }
-    }
+    },
   };
 };
 
@@ -734,26 +849,29 @@ const createEvidenceStore = () => {
 function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evidence[] {
   if (!filter) return evidence;
 
-  return evidence.filter((item) => {
+  return evidence.filter(item => {
     // Type filter;
-    if (filter.type && filter.type.length > 0 && !filter.type.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).type)) {
+    if (filter.type && filter.type.length > 0 && !filter.type.includes(item.type)) {
       return false;
     }
 
     // Confidentiality filter
-    if (filter.confidentiality_level && filter.confidentiality_level.length > 0 &&
-        !filter.confidentiality_level.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).confidentiality_level)) {
+    if (
+      filter.confidentiality_level &&
+      filter.confidentiality_level.length > 0 &&
+      !filter.confidentiality_level.includes(item.confidentiality_level)
+    ) {
       return false;
     }
 
     // Priority filter;
-    if (filter.priority && filter.priority.length > 0 && !filter.priority.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).priority)) {
+    if (filter.priority && filter.priority.length > 0 && !filter.priority.includes(item.priority)) {
       return false;
     }
 
     // Date range filter;
     if (filter.date_range) {
-      const itemDate = new Date((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).collected_date);
+      const itemDate = new Date(item.collected_date);
       const startDate = new Date(filter.date_range.start);
       const endDate = new Date(filter.date_range.end);
       if (itemDate < startDate || itemDate > endDate) {
@@ -762,14 +880,13 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
     }
 
     // Collected by filter
-    if (filter.collected_by && filter.collected_by.length > 0 &&
-        !filter.collected_by.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).collected_by)) {
+    if (filter.collected_by && filter.collected_by.length > 0 && !filter.collected_by.includes(item.collected_by)) {
       return false;
     }
 
     // Tags filter;
     if (filter.tags && filter.tags.length > 0) {
-      const itemTags = (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).tags || [];
+      const itemTags = item.tags || [];
       if (!filter.tags.some(tag => itemTags.includes(tag))) {
         return false;
       }
@@ -779,13 +896,15 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
     if (filter.search_text) {
       const searchText = filter.search_text.toLowerCase();
       const searchableText = [
-        (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).title,
-        (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).evidence_tag,
-        (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).collected_by,
-        (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).ocr_text || '',
-        ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).tags || []).join(' '),
-        ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).notes || []).map(n => n.content).join(' ')
-      ].join(' ').toLowerCase();
+        item.title,
+        item.evidence_tag,
+        item.collected_by,
+        item.ocr_text || '',
+        (item.tags || []).join(' '),
+        (item.notes || []).map(n => n.content).join(' '),
+      ]
+        .join(' ')
+        .toLowerCase();
 
       if (!searchableText.includes(searchText)) {
         return false;
@@ -793,11 +912,11 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
     }
 
     // Processing status filters;
-    if (filter.processed_only && !(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).processed) {
+    if (filter.processed_only && !item.processed) {
       return false;
     }
 
-    if (filter.unprocessed_only && (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).processed) {
+    if (filter.unprocessed_only && item.processed) {
       return false;
     }
 
@@ -808,8 +927,8 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
 async function validateEvidenceIntegrity(evidence: Evidence[]): Promise<void> {
   // Validate file hashes and integrity;
   for (const item of evidence) {
-    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).hash && (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).originalHash && (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).hash !== (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).originalHash) {
-      console.warn(`Evidence integrity check failed for ${(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id}: hash mismatch`);
+    if (item.hash && item.originalHash && item.hash !== item.originalHash) {
+      console.warn(`Evidence integrity check failed for ${item.id}: hash mismatch`);
     }
   }
 }
@@ -820,16 +939,16 @@ async function logEvidenceAccess(evidenceId: string, action: string, metadata?: 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Legal-Request': 'true'
+        'X-Legal-Request': 'true',
       },
       body: JSON.stringify({
         evidence_id: evidenceId,
         action,
         timestamp: new Date().toISOString(),
-        metadata
-      })
+        metadata,
+      }),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to log evidence access:', error);
   }
 }
@@ -838,14 +957,14 @@ async function logEvidenceAccess(evidenceId: string, action: string, metadata?: 
 export const evidenceStore = createEvidenceStore();
 
 // Derived stores (aligned with snake_case state properties)
-export const filteredEvidence = derived(evidenceStore, ($s) => $s.filtered_evidence);
-export const selectedEvidence = derived(evidenceStore, ($s) => $s.selected_evidence);
-export const isEvidenceLoading = derived(evidenceStore, ($s) => $s.isLoading);
-export const evidenceError = derived(evidenceStore, ($s) => $s.error);
-export const evidenceStats = derived(evidenceStore, ($s) => $s.stats);
-export const pendingEvidenceIds = derived(evidenceStore, ($s) => $s.processing_queue);
-export const allSecurityAlerts = derived(evidenceStore, ($s) => $s.security_alerts);
-export const securityAlerts = derived(evidenceStore, ($s) => $s.security_alerts.filter(a => !a.resolved));
+export const filteredEvidence = derived(evidenceStore, $s => $s.filtered_evidence);
+export const selectedEvidence = derived(evidenceStore, $s => $s.selected_evidence);
+export const isEvidenceLoading = derived(evidenceStore, $s => $s.isLoading);
+export const evidenceError = derived(evidenceStore, $s => $s.error);
+export const evidenceStats = derived(evidenceStore, $s => $s.stats);
+export const pendingEvidenceIds = derived(evidenceStore, $s => $s.processing_queue);
+export const allSecurityAlerts = derived(evidenceStore, $s => $s.security_alerts);
+export const securityAlerts = derived(evidenceStore, $s => $s.security_alerts.filter(a => !a.resolved));
 
 // Helper utilities (exported as standalone functions);
 export function getUnprocessedEvidence(evidence: Evidence[]): Evidence[] {
@@ -862,21 +981,23 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
     unprocessed_count: 0,
     encrypted_count: 0,
     total_file_size: 0,
-    average_relevance_score: 0
+    average_relevance_score: 0,
   };
 
   let totalRelevanceScore = 0;
   let relevanceScoreCount = 0;
 
   for (const item of evidence) {
-    stats.by_type[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).type] = (stats.by_type[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).type] || 0) + 1;
-    stats.by_priority[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).priority] = (stats.by_priority[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).priority] || 0) + 1;
-    stats.by_confidentiality[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).confidentiality_level] = (stats.by_confidentiality[(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).confidentiality_level] || 0) + 1;
-    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).processed) stats.processed_count++; else stats.unprocessed_count++;
-    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).encrypted) stats.encrypted_count++;
-    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).file_size) stats.total_file_size += (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).file_size;
-    if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).relevance_score !== undefined) {
-      totalRelevanceScore += (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).relevance_score;
+    stats.by_type[item.type] = (stats.by_type[item.type] || 0) + 1;
+    stats.by_priority[item.priority] = (stats.by_priority[item.priority] || 0) + 1;
+    stats.by_confidentiality[item.confidentiality_level] =
+      (stats.by_confidentiality[item.confidentiality_level] || 0) + 1;
+    if (item.processed) stats.processed_count++;
+    else stats.unprocessed_count++;
+    if (item.encrypted) stats.encrypted_count++;
+    if (item.file_size) stats.total_file_size += item.file_size;
+    if (item.relevance_score !== undefined) {
+      totalRelevanceScore += item.relevance_score;
       relevanceScoreCount++;
     }
   }

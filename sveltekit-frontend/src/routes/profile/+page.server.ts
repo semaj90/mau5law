@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
 
     // Initialize the SuperForm with drizzle-zod schema
-    const profileForm = await superValidate(profileData, zod(profileSchema as any);
+    const profileForm = await superValidate(profileData, zod(profileSchema as any));
 
     // Get user account statistics
     const [
@@ -121,7 +121,7 @@ export const actions: Actions = {
       throw redirect(302, '/login');
     }
 
-    const form = await superValidate(request, zod(profileSchema as any);
+    const form = await superValidate(request, zod(profileSchema as any));
 
     if (!form.valid) {
       return { form };

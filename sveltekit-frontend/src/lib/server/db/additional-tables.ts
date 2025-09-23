@@ -1,7 +1,8 @@
 // Additional Legal AI Database Tables
 // These will be imported and added to the main unified-schema.ts
 
-import { pgTable, uuid, varchar, text, timestamp, integer, decimal, boolean, jsonb, vector } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, integer, decimal, boolean, jsonb } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
 import { relations } from 'drizzle-orm/relations';
 import { users, cases, evidence, legalDocuments } from './unified-schema.js';
 

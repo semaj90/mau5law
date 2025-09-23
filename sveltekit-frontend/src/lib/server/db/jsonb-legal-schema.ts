@@ -12,7 +12,8 @@
  */
 
 import { sql } from 'drizzle-orm';
-import { pgTable, text, integer, timestamp, jsonb, vector, uuid, boolean, real } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, timestamp, jsonb, uuid, boolean, real } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
 // import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 

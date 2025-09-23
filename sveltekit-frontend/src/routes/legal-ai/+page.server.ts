@@ -10,7 +10,7 @@ import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
 import { desc, eq } from 'drizzle-orm';
 import { langExtractService } from '$lib/services/langextract-ollama-service.js';
 
-// Types for page data;
+// Types for page data
 export interface LegalAIPageData {
   initialState: {
     langchainService: {
@@ -44,11 +44,11 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
       langExtractService.listAvailableModels().catch(() => [])
     ]);
 
-    const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value: false;
-    const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value: [];
+    const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value : false;
+    const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value : [];
 
     // Fetch recent sessions with document counts
-    const recentSessionsQuery = db;
+    const recentSessionsQuery = db
       .select({
         id: ragSessions.id,
         sessionName: ragSessions.sessionName,
@@ -72,7 +72,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         keyTerms: legalDocuments.keyTerms
       })
       .from(legalDocuments)
-      .orderBy(desc(legalDocuments.createdAt)
+      .orderBy(desc(legalDocuments.createdAt))
       .limit(10);
 
     // Execute queries in parallel
@@ -81,7 +81,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
       recentDocumentsQuery
     ]);
 
-    // Count documents per session;
+    // Count documents per session
     const sessionsWithCounts = await Promise.all(recentSessions.map(async (session) => {
         const [{ count }] = await db
           .select({ count: legalDocuments.id })
@@ -163,7 +163,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
   } catch (error) {
     console.error('Failed to load legal AI page data:', error);
     
-    // Return fallback data if loading fails;
+    // Return fallback data if loading fails
     return {
       initialState: {
         langchainService: {

@@ -47,7 +47,7 @@ async function* modelPipeline(query: string, signal: AbortSignal) {
   ).split(/\s+/);
   for (const w of fallback) {
     if (signal.aborted) return;
-    await new Promise((r) => setTimeout(r, 50);
+    await new Promise((r) => setTimeout(r, 50));
     yield w + ' ';
   }
 }
@@ -84,14 +84,14 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     const readable = new ReadableStream({
       async start(controller) {
-        controller.enqueue(encoder.encode(`event: meta\ndata: {"streamId":"${stream.id}"}\n\n`);
+        controller.enqueue(encoder.encode(`event: meta\ndata: {"streamId":"${stream.id}"}\n\n`));
         try {
           for await (const tok of modelPipeline(query, stream.controller.signal)) {
             recordToken(stream.id, tok);
             // If interrupted gracefully, stop early and emit summary
             const meta = getStream(stream.id);
             if (meta?.interrupted) break;
-            controller.enqueue(encoder.encode(`event: token\ndata: ${tok}\n\n`);
+            controller.enqueue(encoder.encode(`event: token\ndata: ${tok}\n\n`));
           }
           // After token streaming, or early interruption, attempt a summary
           const meta = getStream(stream.id);
@@ -108,19 +108,18 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             }
           } catch (summaryErr) {
             // Non-fatal; proceed to done
-            controller.enqueue(;
+            controller.enqueue(
               encoder.encode(`event: error\ndata: summary_failed: ${
                   (summaryErr as any)?.message || 'unknown'
-                }\n\n`
-              )
+                }\n\n`)
             );
           }
-          controller.enqueue(encoder.encode(`event: done\ndata: end\n\n`);
+          controller.enqueue(encoder.encode(`event: done\ndata: end\n\n`));
         } catch (e: any) {
           if (stream.controller.signal.aborted) {
-            controller.enqueue(encoder.encode(`event: done\ndata: aborted\n\n`);
+            controller.enqueue(encoder.encode(`event: done\ndata: aborted\n\n`));
           } else {
-            controller.enqueue(encoder.encode(`event: error\ndata: ${e.message}\n\n`);
+            controller.enqueue(encoder.encode(`event: error\ndata: ${e.message}\n\n`));
           }
         } finally {
           removeStream(stream.id);

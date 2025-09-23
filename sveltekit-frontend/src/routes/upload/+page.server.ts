@@ -9,7 +9,7 @@ import type { Actions } from './$types.js';
 const UPLOAD_SERVICE_URL = import.meta.env.UPLOAD_SERVICE_URL || 'http://localhost:8093';
 
 // Fallback minimal schema used only to keep typechecking stable during incremental edits.
-// Replace with the project's canonical `fileUploadSchema` when available.;
+// Replace with the project's canonical `fileUploadSchema` when available.
 const fallbackFileUploadSchema = z.object({
   caseId: z.string().optional(),
   type: z.string().optional(),
@@ -21,7 +21,7 @@ const fallbackFileUploadSchema = z.object({
 });
 
 const getSchema = () => {
-  // Try to reference the real `fileUploadSchema` if it exists in the current module scope;
+  // Try to reference the real `fileUploadSchema` if it exists in the current module scope.
   // otherwise, fall back to the local minimal schema.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -31,7 +31,7 @@ const getSchema = () => {
 export const load: PageServerLoad = async () => {
   // Initialize the form
   const schema = getSchema();
-  const form = await superValidate(zod(schema);
+  const form = await superValidate(zod(schema));
 
   return {
     form
@@ -42,7 +42,7 @@ export const actions: Actions = {
   upload: async ({ request, fetch }) => {
     const formData = await request.formData();
     const schema = getSchema();
-    const form = await superValidate(formData, zod(schema);
+    const form = await superValidate(formData, zod(schema));
 
     if (!form.valid) {
       return fail(400, { form });
@@ -75,16 +75,16 @@ export const actions: Actions = {
         uploadFormData.append('description', form.data.description);
       }
 
-      // Add tags if provided;
+      // Add tags if provided
       if (form.data.tags && Array.isArray(form.data.tags) && form.data.tags.length > 0) {
         uploadFormData.append('tags', JSON.stringify((form.data.tags as string[]).reduce((acc, tag) => {
             acc[tag] = 'true';
             return acc;
           }, {} as Record<string, string>)
-        );
+        ));
       }
 
-      // Add metadata;
+      // Add metadata
       const metadata = {
         title: form.data.title,
         isPrivate: form.data.isPrivate.toString(),
@@ -92,9 +92,9 @@ export const actions: Actions = {
         uploadedBy: 'user', // TODO: Get from session
         uploadedAt: new Date().toISOString()
       };
-      uploadFormData.append('metadata', JSON.stringify(metadata);
+      uploadFormData.append('metadata', JSON.stringify(metadata));
 
-      // Upload to MinIO service;
+      // Upload to MinIO service
       const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
         method: 'POST',
         body: uploadFormData
@@ -118,7 +118,7 @@ export const actions: Actions = {
         });
       }
 
-      // Return success with upload result;
+      // Return success with upload result
       return {
         form,
         uploadResult,

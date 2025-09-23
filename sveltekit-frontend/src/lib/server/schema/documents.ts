@@ -4,7 +4,7 @@
  */
 
 import { pgTable, serial, text, varchar, timestamp, integer, boolean, jsonb, uuid } from 'drizzle-orm/pg-core';
-import { vector } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
 import { customVector } from '@useverk/drizzle-pgvector';
 import { relations } from 'drizzle-orm';
 

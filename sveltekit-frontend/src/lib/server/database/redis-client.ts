@@ -5,7 +5,6 @@
 
 import { Redis } from 'ioredis';
 import { env } from '$env/dynamic/private';
-}
 
 export interface RedisConfig {
   host: string;
@@ -18,13 +17,13 @@ export interface RedisConfig {
 }
 
 // Use REDIS_URL if provided, otherwise fallback to individual config
-const redisUrl = env.REDIS_URL || 'redis://:redis@localhost:6379';
+const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
 
 // Default Redis configuration;
 const defaultConfig: RedisConfig = {
   host: env.REDIS_HOST || 'localhost',
   port: parseInt(env.REDIS_PORT || '6379'),
-  password: env.REDIS_PASSWORD || 'redis',
+  password: env.REDIS_PASSWORD, // No default password - Docker Redis has no auth
   db: 0,
   retryDelayOnFailover: 100,
   maxRetriesPerRequest: 3,
@@ -157,5 +156,6 @@ export async function checkRedisHealth(): Promise<any> {
   }
 }
 
-// Export singleton client for convenience
+// Export singleton client for convenience and default export
 export { redis as redisClient };
+export { getRedisClient as redis };

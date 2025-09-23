@@ -4,7 +4,8 @@
  * Production-ready schema for SvelteKit 2 + TensorRT-LLM stack
  */
 
-import { pgTable, text, serial, timestamp, integer, vector, uuid, boolean, jsonb, numeric, real, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, integer, uuid, boolean, jsonb, numeric, real, index } from "drizzle-orm/pg-core";
+import { vector } from "pgvector/drizzle-orm";
 import { relations } from 'drizzle-orm';
 import { createSelectSchema, createUpdateSchema, createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';

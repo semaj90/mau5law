@@ -36,7 +36,8 @@ type EvidenceEvents =
 const evidenceProcessingMachine = createMachine({
   id: 'evidenceProcessor',
   initial: 'idle',
-  types: Record<string, any> as { context: EvidenceContext; events: EvidenceEvents },
+  // Using xstate v5 generic types requires runtime noop; cast for compile-time only
+  types: {} as { context: EvidenceContext; events: EvidenceEvents },
   context: {
     file: null,
     evidenceId: '',
@@ -132,7 +133,10 @@ const evidenceProcessingMachine = createMachine({
         src: async ({ context }) => {
           const fileBuffer = await context.file!.arrayBuffer();
           // Use static API per PNGEmbedExtractor implementation
-          const pngWithMetadata = await PNGEmbedExtractor.embedMetadata(fileBuffer, context.metadata!);
+          const pngWithMetadata = await PNGEmbedExtractor.embedMetadata(
+            fileBuffer,
+            context.metadata as NonNullable<typeof context.metadata>
+          );
           return pngWithMetadata;
         },
         onDone: {
@@ -301,7 +305,7 @@ export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k);
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 

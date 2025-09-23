@@ -3,7 +3,8 @@
  * PostgreSQL + pgvector + Drizzle ORM
  */
 
-import { pgTable, text, timestamp, boolean, serial, varchar, jsonb, vector, index, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, serial, varchar, jsonb, index, uniqueIndex } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
 import { sql } from 'drizzle-orm';
 // import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';

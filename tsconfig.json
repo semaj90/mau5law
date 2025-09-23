@@ -1,13 +1,30 @@
 {
   "compilerOptions": {
-    "moduleResolution": "bundler",
-    "module": "ESNext",
-    "target": "ESNext",
+    "moduleResolution": "bundler", // Better for modern bundlers
+    "module": "ESNext", // Modern ES modules for Vite/QUIC
+    "sourceMap": false, // disable source maps for smaller production builds
+    "inlineSources": false,
+    "target": "ES2022", // More modern features for better performance
+    "lib": ["DOM", "DOM.Iterable", "ES2022"], // Removed unsupported "WebAssembly" lib; add types if needed
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "types": ["node"]
+    "types": ["node", "@webgpu/types"], // Added WebGPU for your GPU acceleration
+    "isolatedModules": true,
+    "strict": true, // Enable strict mode for better type safety
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "baseUrl": ".",
+    "paths": {
+      "$lib/*": ["src/lib/*"],
+      "$components/*": ["src/lib/components/*"],
+      "$services/*": ["src/lib/services/*"],
+      "$types/*": ["src/lib/types/*"],
+      "$utils/*": ["src/lib/utils/*"]
+    }
   },
-  "include": ["uno.config.ts"]
+  "include": ["uno.config.ts", "svelte.config.*", "types.d.ts"],
+  "exclude": ["node_modules/**", "build/**", "dist/**", "src/**"]
 }

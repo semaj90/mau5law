@@ -13,13 +13,16 @@ export interface EmbeddingActorInput {
   text: string;
   documentId?: string;
   caseId?: string;
-  chunkIndex?: number
+  chunkIndex?: number;
+}
+
 export interface EmbeddingActorOutput {
   embedding: number[];
   dimensions: number;
   model: string;
   processingTime: number;
-  tokenCount?: number
+  tokenCount?: number;
+}
 export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingActorInput }) => {
   const startTime = Date.now();
 
@@ -59,14 +62,17 @@ export interface DocumentProcessingInput {
   documentId: string;
   generateSummary?: boolean;
   extractEntities?: boolean;
-  generateEmbeddings?: boolean
+  generateEmbeddings?: boolean;
+}
+
 export interface DocumentProcessingOutput {
   documentId: string;
   summary?: string;
   entities?: Array<any>;
   embeddings?: { chunks: number; dimensions: number };
   processingTime: number;
-  success: boolean
+  success: boolean;
+}
 export const documentProcessingActor = fromPromise(async ({ input }: { input: DocumentProcessingInput }) => {
     const startTime = Date.now();
 
@@ -103,14 +109,17 @@ export interface LegalAnalysisInput {
   content: string;
   caseType?: 'contract' | 'litigation' | 'compliance' | 'regulatory';
   jurisdiction?: string;
-  priority?: 'high' | 'medium' | 'low'
+  priority?: 'high' | 'medium' | 'low';
+}
+
 export interface LegalAnalysisOutput {
   riskScore: number;
   riskFactors: string[];
   recommendations: string[];
   precedents: Array<any>;
   confidence: number;
-  processingTime: number
+  processingTime: number;
+}
 export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
   const startTime = Date.now();
 
@@ -147,12 +156,15 @@ export interface RAGSearchInput {
   caseId?: string;
   documentTypes?: string[];
   limit?: number;
-  threshold?: number
+  threshold?: number;
+}
+
 export interface RAGSearchOutput {
   results: Array<any>;
   totalResults: number;
   processingTime: number;
-  model: string
+  model: string;
+}
 export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchInput }) => {
   const startTime = Date.now();
 
