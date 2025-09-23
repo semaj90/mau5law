@@ -1,6 +1,5 @@
 <!-- YoRHa Detective Notification Component -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   interface Props {
     message: string;
     type: 'success' | 'error' | 'info' | 'warning';

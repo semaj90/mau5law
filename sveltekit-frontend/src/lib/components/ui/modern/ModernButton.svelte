@@ -2,7 +2,6 @@
   // Svelte 5 runes are auto-imported
 
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   import Button from "bits-ui";
   // Tooltip functionality will use CSS-only or bits-ui Tooltip when needed
 

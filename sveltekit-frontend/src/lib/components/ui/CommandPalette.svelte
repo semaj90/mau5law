@@ -4,7 +4,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import type { User } from '$lib/types';
   import { onMount,   } from "svelte";
   import { Search, File, Briefcase, User as UserIcon, Settings, Command } from "lucide-svelte";
@@ -31,8 +30,8 @@ https://svelte.dev/e/js_parse_error -->
   let searchQuery = $state('');
   let selectedIndex = $state(0);
   let filteredItems = $derived(searchQuery 
-    ? allItems.filter(item => item.title).toLowerCase.includes(searchQuery.toLowerCase()) ||
-        (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).description.toLowerCase.includes(searchQuery.toLowerCase())
+    ? allItems.filter(item => item.title).toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).description.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : allItems);
   const allItems: CommandItem[] = [

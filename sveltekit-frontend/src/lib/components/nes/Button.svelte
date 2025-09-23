@@ -1,13 +1,35 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
+
   interface Props {
     label?: string;
+    variant?: 'primary' | 'success' | 'warning' | 'error' | 'info' | 'disabled';
     type?: 'primary' | 'success' | 'warning' | 'error';
+    disabled?: boolean;
+    onclick?: () => void;
     onClick?: () => void;
+    children?: Snippet;
   }
 
-  let { label = 'Click Me', type = 'primary', onClick = () => {} }: Props = $props();
+  let {
+    label = 'Click Me',
+    variant = 'primary',
+    type = 'primary',
+    disabled = false,
+    onclick = () => {},
+    onClick = () => {},
+    children
+  }: Props = $props();
+
+  // Support both variant and type for backward compatibility
+  const buttonType = variant || type;
+  const handleClick = onclick || onClick;
 </script>
 
-<button class={`nes-btn is-${type}`} onclick={onClick}>
-  {label}
+<button class={`nes-btn is-${buttonType}`} onclick={handleClick} {disabled}>
+  {#if children}
+    {@render children()}
+  {:else}
+    {label}
+  {/if}
 </button>

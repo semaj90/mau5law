@@ -6,7 +6,6 @@
   // Svelte 5 runes are auto-imported
 
   import { debounce } from '$lib/utils/debounce';
-  import 'nes.css/css/nes.min.css';
   interface Props {
     caseId: string | undefined ;
     evidenceIds: string[] ;

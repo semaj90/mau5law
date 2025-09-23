@@ -644,7 +644,6 @@ export default ;
 </style>
 
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
 </script>
   function formatTime(date: Date): string {
     const now = new Date());

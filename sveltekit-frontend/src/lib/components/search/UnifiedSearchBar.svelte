@@ -5,7 +5,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
   import { goto } from '$app/navigation';
   import Fuse from 'fuse.js';
@@ -290,8 +289,8 @@
   function rankResults(results: SearchResult[], query: string): SearchResult[] {
     return results.sort((a, b) => {
       // Boost exact matches in title
-      const aExactTitle = a.title.toLowerCase.includes(query.toLowerCase()) ? 0.2 : 0;
-      const bExactTitle = b.title.toLowerCase.includes(query.toLowerCase()) ? 0.2 : 0;
+      const aExactTitle = a.title.toLowerCase().includes(query.toLowerCase()) ? 0.2 : 0;
+      const bExactTitle = b.title.toLowerCase().includes(query.toLowerCase()) ? 0.2 : 0;
       const aScore = a.similarity + aExactTitle;
       const bScore = b.similarity + bExactTitle;
       return bScore - aScore;

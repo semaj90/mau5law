@@ -117,9 +117,9 @@
   ];
 
   // Get current stage info
-  $: currentStage = getCurrentStage(uploadState?.value);
-  $: stageIndex = progressStages.findIndex(s => s.id === currentStage);
-  $: overallProgress = stageIndex >= 0 ? Math.round((stageIndex / (progressStages.length - 1)) * 100) : 0;
+  let currentStage = $derived(getCurrentStage(uploadState?.value));
+  let stageIndex = $derived(progressStages.findIndex(s => s.id === currentStage));
+  let overallProgress = $derived(stageIndex >= 0 ? Math.round((stageIndex / (progressStages.length - 1)) * 100) : 0);
 
   function getCurrentStage(stateValue: any): string {
     if (!stateValue) return 'idle';

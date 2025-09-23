@@ -70,33 +70,65 @@
 }
 
 @layer components {
-  /* YoRHa button styles */
+  /* YoRHa button styles using standard CSS */
   .yorha-btn {
-    @apply font-mono font-semibold transition-all duration-300 border-2;
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-weight: 600;
+    transition: all 0.3s;
+    border-width: 2px;
+    border-style: solid;
   }
 
   .yorha-btn-primary {
-    @apply bg-gradient-to-r from-yorha-primary to-yorha-secondary text-yorha-bg-primary border-yorha-primary;
-    @apply hover:scale-105 hover:shadow-lg hover:shadow-yorha-primary/20;
+    background: linear-gradient(to right, var(--yorha-primary), var(--yorha-secondary));
+    color: var(--yorha-bg-primary);
+    border-color: var(--yorha-primary);
+  }
+
+  .yorha-btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 255, 65, 0.1), 0 4px 6px -2px rgba(0, 255, 65, 0.05);
   }
 
   .yorha-btn-secondary {
-    @apply bg-yorha-bg-secondary text-yorha-text-primary border-yorha-border;
-    @apply hover:border-yorha-primary hover:text-yorha-primary;
+    background-color: var(--yorha-bg-secondary);
+    color: var(--yorha-text-primary);
+    border-color: var(--yorha-border);
+  }
+
+  .yorha-btn-secondary:hover {
+    border-color: var(--yorha-primary);
+    color: var(--yorha-primary);
   }
 
   /* YoRHa card styles */
   .yorha-card {
-    @apply bg-yorha-bg-secondary border border-yorha-border;
-    @apply hover:border-yorha-primary transition-all duration-300;
-    @apply hover:shadow-lg hover:shadow-yorha-primary/10;
+    background-color: var(--yorha-bg-secondary);
+    border: 1px solid var(--yorha-border);
+    transition: all 0.3s;
+  }
+
+  .yorha-card:hover {
+    border-color: var(--yorha-primary);
+    box-shadow: 0 10px 15px -3px rgba(0, 255, 65, 0.1), 0 4px 6px -2px rgba(0, 255, 65, 0.05);
   }
 
   /* YoRHa input styles */
   .yorha-input {
-    @apply bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary;
-    @apply placeholder-yorha-text-muted font-mono;
-    @apply focus:border-yorha-primary focus:outline-none focus:ring-2 focus:ring-yorha-primary/20;
+    background-color: var(--yorha-bg-tertiary);
+    border: 1px solid var(--yorha-border);
+    color: var(--yorha-text-primary);
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+
+  .yorha-input::placeholder {
+    color: var(--yorha-text-muted);
+  }
+
+  .yorha-input:focus {
+    border-color: var(--yorha-primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 255, 65, 0.2);
   }
 }
 

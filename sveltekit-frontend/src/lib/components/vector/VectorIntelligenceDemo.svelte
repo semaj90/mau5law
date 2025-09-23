@@ -8,7 +8,6 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Button,

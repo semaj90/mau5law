@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { ContextMenu } from "bits-ui";
   import type {     Snippet     } from 'svelte';
   import type { WithoutChild } from "bits-ui";

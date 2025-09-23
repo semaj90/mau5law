@@ -10,7 +10,6 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import { WebGPUBufferUploader, WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';

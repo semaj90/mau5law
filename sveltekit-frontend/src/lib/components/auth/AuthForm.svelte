@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { superForm } from "sveltekit-superforms";
 
   interface Props {

@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   // NES Auth Modal - Svelte 5 compatible
   interface Props {
     open?: boolean;

@@ -14,7 +14,6 @@ export default ;
 </script>, template, and <style>.
 -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { onMount } from "svelte";
   import Button from '$lib/components/ui/enhanced-bits';;
   import {

@@ -4,7 +4,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { cn } from '$lib/utils';
 
   interface Props {

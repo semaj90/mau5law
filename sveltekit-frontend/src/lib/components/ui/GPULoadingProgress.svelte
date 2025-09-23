@@ -5,7 +5,6 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
 
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
 </script>
   import { tweened } from 'svelte/motion';
   import { cubicInOut } from 'svelte/easing';

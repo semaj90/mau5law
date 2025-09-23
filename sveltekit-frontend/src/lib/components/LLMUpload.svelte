@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { invoke } from '@tauri-apps/api/tauri';
   let uploadResult = $state('');
   let error = $state('');

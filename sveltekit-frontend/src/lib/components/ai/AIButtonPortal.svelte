@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/button/Button.svelte';
 
   interface Props {

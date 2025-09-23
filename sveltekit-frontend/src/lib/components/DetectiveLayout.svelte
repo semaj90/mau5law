@@ -1,18 +1,14 @@
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
-<script>
-  import 'nes.css/css/nes.min.css';
-  const { title = "Detective Interface", subtitle = "" } = $props();
+<script lang="ts">
+  import type { Snippet } from 'svelte';
 
+  interface Props {
+    title?: string;
+    subtitle?: string;
+    children?: Snippet;
+  }
 
-
-// Auto-generated default export
-export default ;
+  let { title = "Detective Interface", subtitle = "", children }: Props = $props();
 </script>
-  
-  
-
 
 <style>
   .detective-layout {

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import AiSetupBanner from '$lib/components/ai/AiSetupBanner.svelte';
 </script>
 

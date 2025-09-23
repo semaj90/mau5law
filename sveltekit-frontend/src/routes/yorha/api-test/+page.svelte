@@ -5,7 +5,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   // Svelte runes are provided globally via src/types/svelte-helpers.d.ts
   import { onMount, onDestroy } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
@@ -739,9 +738,9 @@ https://svelte.dev/e/js_parse_error -->
     // Filter by search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(item => item.endpoint).toLowerCase.includes(term) ||
-        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).category?.toLowerCase.includes(term) ||
-        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).url.toLowerCase.includes(term)
+      filtered = filtered.filter(item => item.endpoint).toLowerCase().includes(term) ||
+        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).category?.toLowerCase().includes(term) ||
+        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).url.toLowerCase().includes(term)
       );
     }
 

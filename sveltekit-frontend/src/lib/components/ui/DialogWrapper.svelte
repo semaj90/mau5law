@@ -1,7 +1,6 @@
 <!-- Dialog Wrapper: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   import * as Dialog from 'bits-ui';
 
   interface Props {

@@ -6,7 +6,6 @@ Custody Timeline Component
 Displays the chronological chain of custody events with detailed audit trail
 -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   interface Props {
     events: Array;
     signature?: string;

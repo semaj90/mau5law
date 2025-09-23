@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   // $props is a built-in rune in Svelte 5, no import needed
 
   interface Props {

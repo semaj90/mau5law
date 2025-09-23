@@ -95,10 +95,10 @@ export class FastJSON {
 
   /**
    * Fast JSON clone for legal document objects
-   */;
+   */
   static clone<T>(obj: T): T {
     try {
-      return JSON.parse(JSON.stringify(obj);
+      return JSON.parse(JSON.stringify(obj));
     } catch (error) {
       console.error('FastJSON clone error:', error);
       throw new Error(`JSON clone failed: ${(error as any)?.message || 'Unknown error'}`);

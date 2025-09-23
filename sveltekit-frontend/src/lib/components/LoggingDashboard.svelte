@@ -4,7 +4,6 @@ https://svelte.dev/e/element_unclosed -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
   import {
@@ -32,8 +31,8 @@ https://svelte.dev/e/element_unclosed -->
     const matchesLevel = selectedLevel === 'all' || entry.level === selectedLevel;
     const matchesCategory = selectedCategory === 'all' || entry.category === selectedCategory;
     const matchesSearch = !searchQuery ||
-      entry.message.toLowerCase.includes(searchQuery.toLowerCase()) ||
-      entry.category.toLowerCase.includes(searchQuery.toLowerCase());
+      entry.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.category.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesLevel && matchesCategory && matchesSearch;
   }));

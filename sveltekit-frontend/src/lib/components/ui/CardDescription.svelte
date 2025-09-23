@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   // Simple CardDescription component (shadcn-like) - Svelte 5
   interface Props {
     className?: string;

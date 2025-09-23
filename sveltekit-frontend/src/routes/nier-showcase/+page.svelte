@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import NierThemeShowcase from '$lib/components/NierThemeShowcase.svelte';
   import NierHeader from '$lib/components/NierHeader.svelte';
   import CaseCard from '$lib/components/cases/CaseCard.svelte';

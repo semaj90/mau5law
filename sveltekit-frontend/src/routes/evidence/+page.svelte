@@ -4,7 +4,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import { page } from "$app/stores";
   import EvidenceUploadModal from "$lib/components/modals/EvidenceUploadModal.svelte";
@@ -144,10 +143,10 @@ https://svelte.dev/e/js_parse_error -->
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (e) =>
-          e.title?.toLowerCase.includes(query) ||
-          e.description?.toLowerCase.includes(query) ||
-          e.collectedBy?.toLowerCase.includes(query) ||
-          e.tags?.some((tag) => tag.toLowerCase.includes(query))
+          e.title?.toLowerCase().includes(query) ||
+          e.description?.toLowerCase().includes(query) ||
+          e.collectedBy?.toLowerCase().includes(query) ||
+          e.tags?.some((tag) => tag.toLowerCase().includes(query))
       );
     }
 
@@ -168,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
     // Apply collector filter
     if (selectedCollector) {
       filtered = filtered.filter((e) =>
-        e.collectedBy?.toLowerCase.includes(selectedCollector.toLowerCase())
+        e.collectedBy?.toLowerCase().includes(selectedCollector.toLowerCase())
       );
     }
 

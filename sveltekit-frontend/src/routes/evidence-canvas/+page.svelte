@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import { page } from '$app/stores';
   let title = $state('Evidence Canvas - Legal AI Platform');

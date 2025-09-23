@@ -131,7 +131,6 @@
 
 <style>
   /* Import NES.css for retro styling option */
-  @import 'nes.css/css/nes.min.css';
 
   /* Custom NieR enhancements using UnoCSS theme colors */
   button {

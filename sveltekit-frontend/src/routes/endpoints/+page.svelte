@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   let { data }: { data: unknown } = $props(); // { endpoints: { name: string; path: string; healthy: boolean; message?: string }[] };
 </script>
 

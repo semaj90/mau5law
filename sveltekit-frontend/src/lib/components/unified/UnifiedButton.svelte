@@ -17,7 +17,6 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
 
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   // Replaced melt with bits-ui components
   import { fly, fade } from 'svelte/transition';
   import { spring } from 'svelte/motion';

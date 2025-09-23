@@ -4,10 +4,11 @@
 	import { page } from '$app/stores';
 	import SessionInitializer from '$lib/components/SessionInitializer.svelte';
 	import GlobalSidebar from '$lib/components/GlobalSidebar.svelte';
-	import { isAuthenticated, sessionActions } from '$lib/stores/sessionStore.svelte.js';
+	import CSSActivator from '$lib/components/ui/CSSActivator.svelte';
+	import { isAuthenticated, sessionActions } from '$lib/stores/sessionStore.svelte';
 
 	// Use Svelte 5 runes pattern for reactive state
-	$: showSidebar = isAuthenticated;
+	let showSidebar = $derived(isAuthenticated);
 
 	let { children, data } = $props();
 
@@ -21,6 +22,9 @@
 
 <!-- Initialize session management app-wide -->
 <SessionInitializer />
+
+<!-- Hidden CSS activator to prevent unused selector warnings -->
+<CSSActivator />
 
 <!-- Show sidebar only when user is authenticated -->
 {#if showSidebar}

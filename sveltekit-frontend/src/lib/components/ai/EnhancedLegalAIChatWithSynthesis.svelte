@@ -8,7 +8,6 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
   import { onMount, tick } from 'svelte';

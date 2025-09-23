@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
 
   import { getContext } from 'svelte';
   interface Props {

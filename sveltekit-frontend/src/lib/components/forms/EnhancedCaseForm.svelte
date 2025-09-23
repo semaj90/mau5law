@@ -5,7 +5,6 @@ https://svelte.dev/e/props_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { notifications } from "$lib/stores/notification";
   import type { User } from "$lib/types/user";
   import {   } from "svelte";

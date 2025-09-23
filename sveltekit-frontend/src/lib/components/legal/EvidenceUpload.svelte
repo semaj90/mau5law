@@ -9,7 +9,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   const { maxFiles = 10, maxFileSize = 100 * 1024 * 1024, acceptedTypes = [
     'image/*',
     'application/pdf',

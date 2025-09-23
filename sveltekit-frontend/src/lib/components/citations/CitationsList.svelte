@@ -14,7 +14,6 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   const { caseId: string, detectiveMode = false, readonly = false } = $props();
 
   import { onMount,   } from "svelte";

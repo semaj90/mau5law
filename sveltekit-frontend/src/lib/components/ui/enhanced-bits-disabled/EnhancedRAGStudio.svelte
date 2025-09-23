@@ -6,7 +6,6 @@ https://svelte.dev/e/attribute_duplicate -->
   // Svelte 5 runes are auto-imported
 
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   interface Props { class?: string; children?: import('svelte').Snippet }
   import { onMount } from 'svelte';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits';

@@ -27,7 +27,6 @@ const MEMORY_CONSTRAINTS = {
   SPRITE_LIMIT: 64, // Max sprites on screen
   PALETTE_COLORS: 52 // NES-like color palette
 } as const;
-}
 
 export interface NESTexture {
   id: string;
@@ -355,24 +354,24 @@ export class WebGPUTextureStreamer {
     data: ArrayBuffer,
     width: number,
     height: number,
-    legalContext?: NESTexture['legalContext'];
+    legalContext?: NESTexture['legalContext']
   ): Promise<ArrayBuffer> {
     if (!this.compressionWorker) return data;
 
     return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject(new Error('Compression timeout');
+      const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
+        reject(new Error('Compression timeout'));
       }, 5000);
 
       const handleMessage = (e: any) => {
         clearTimeout(timeout);
         this.compressionWorker!.removeEventListener('message', handleMessage);
-        
+
         if (e.data.success) {
           console.log(`🗜️ Compressed texture: ${this.formatBytes(e.data.originalSize)} → ${this.formatBytes(e.data.compressedSize)} (${e.data.compressionRatio.toFixed(2)}x)`);
           resolve(e.data.compressedData);
         } else {
-          reject(new Error(e.data.error);
+          reject(new Error(e.data.error));
         }
       };
 
@@ -404,7 +403,7 @@ export class WebGPUTextureStreamer {
     this.device.queue.writeTexture(
       { texture },
       textureData,
-      { bytesPerRow: nesTexture.width * 4, rowsPerImage: nesTexture.height },)
+      { bytesPerRow: nesTexture.width * 4, rowsPerImage: nesTexture.height },
       { width: nesTexture.width, height: nesTexture.height }
     );
 
@@ -428,7 +427,7 @@ export class WebGPUTextureStreamer {
     // Upload texture data with proper buffer conversion
     const textureData = BufferTypeGuards.isArrayBuffer(nesTexture.data)
       ? new Uint8Array(nesTexture.data)
-      : new Uint8Array(toArrayBuffer(nesTexture.data);
+      : new Uint8Array(toArrayBuffer(nesTexture.data));
       
     this.gl.texImage2D(
       this.gl.TEXTURE_2D,
@@ -554,12 +553,12 @@ export class WebGPUTextureStreamer {
     if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k);
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
   async destroy(): Promise<void> {
-    // Clean up all textures;
+    // Clean up all textures
     for (const region of this.memoryRegions.keys()) {
       const memoryRegion = this.memoryRegions.get(region)!;
       for (const id of memoryRegion.textures.keys()) {
@@ -567,7 +566,7 @@ export class WebGPUTextureStreamer {
       }
     }
 
-    // Clean up GPU resources;
+    // Clean up GPU resources
     if (this.device) {
       this.device.destroy();
       this.device = null;

@@ -1,7 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script context="module" lang="ts">
-  // Svelte 5 runes are auto-imported
-
+<script module lang="ts">
   export type Role = 'suspect' | 'witness' | 'victim' | 'associate' | 'unknown';
 
   export interface PersonDetails {
@@ -30,17 +27,21 @@
 </script>
 
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { Badge } from '$lib/components/ui/badge';
 
-  // Exposed props (use standard Svelte exports)
-  export let person: Person = {
-    name: 'Unknown',
-    role: 'unknown',
-    confidence: 0
-  };
+  interface Props {
+    person?: Person;
+    relationships?: Relationship[];
+  }
 
-  export let relationships: Relationship[] = [];
+  let {
+    person = {
+      name: 'Unknown',
+      role: 'unknown',
+      confidence: 0
+    },
+    relationships = []
+  }: Props = $props();
 
   // Filter relationships for this person
   const personRelationships = $derived(relationships.filter(

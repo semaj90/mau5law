@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import type { ChatMessage } from "$lib/stores/chatStore";
   import DOMPurify from "dompurify";
   import { Bot, User } from "lucide-svelte";

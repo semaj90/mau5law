@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   // $props is a Svelte rune; do not import it.
 
   interface Props {

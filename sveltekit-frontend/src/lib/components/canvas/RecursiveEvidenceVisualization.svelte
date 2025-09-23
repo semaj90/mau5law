@@ -68,7 +68,6 @@
 
   // Visualization state (use any for fabric types to avoid missing type exports)
   let hierarchyNodes = $state<Map<string, any>>(new Map());
-  let hierarchyNodes = $state<Map<string, any>>(new Map());
   let connectionLines = $state<any[]>([]);
   let layoutMode = $state<'tree' | 'radial' | 'force'>('tree');
   let showChainIntegrity = $state<boolean>(true);

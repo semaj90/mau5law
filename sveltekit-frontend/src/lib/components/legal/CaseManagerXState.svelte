@@ -8,7 +8,6 @@ https://svelte.dev/e/js_parse_error -->
   // Component props
   let { ...props }: unknown = $props();
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import { useMachine } from '@xstate/svelte';

@@ -5,7 +5,6 @@ https://svelte.dev/e/tag_invalid_name -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';;

@@ -10,7 +10,6 @@ https://svelte.dev/e/js_parse_error -->
 </script>` element
 https://svelte.dev/e/script_duplicate -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   
   let query = $state('contract liability terms'
   let results: unknown[] = []

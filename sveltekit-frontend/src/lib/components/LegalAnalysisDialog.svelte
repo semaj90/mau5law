@@ -13,7 +13,6 @@
 <script lang="ts">
 
 
-  import 'nes.css/css/nes.min.css';
   import { Dialog, Select, Button, Badge, Progress } from 'bits-ui';
   import { legalCaseStore } from '$lib/stores/legal-case.store.svelte';
   import type { LegalCase } from '$lib/types/legal';

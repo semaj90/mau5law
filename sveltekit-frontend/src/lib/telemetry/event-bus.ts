@@ -122,7 +122,7 @@ export class TelemetryEventBus {
   async measurePerformance<T>(
     operation: string,
     fn: () => Promise<T>,
-    component: string = 'unknown';
+    component: string = 'unknown'
   ): Promise<T> {
     const start = performance.now();
     let success = false;
@@ -178,7 +178,7 @@ export class TelemetryEventBus {
     dimensions: number,
     encodingTime: number,
     compressionRatio: number,
-    success: boolean;
+    success: boolean
   ): void {
     this.emitPerformanceEvent({
       type: 'vector_encoding',
@@ -254,7 +254,7 @@ export class TelemetryEventBus {
       // Re-add events on failure (with buffer limit)
       const remainingSpace = this.options.maxBufferSize - this.eventBuffer.length;
       if (remainingSpace > 0) {
-        this.eventBuffer.unshift(...events.slice(-remainingSpace);
+        this.eventBuffer.unshift(...events.slice(-remainingSpace));
       }
       
       if (this.options.enableDebug) {

@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open -->
 <!--
   Integrated Legal Investigation Workspace
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
@@ -8,7 +5,6 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';

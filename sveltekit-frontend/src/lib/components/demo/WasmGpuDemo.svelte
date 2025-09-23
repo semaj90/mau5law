@@ -6,7 +6,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { createWasmGpuService, WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
   import { WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';

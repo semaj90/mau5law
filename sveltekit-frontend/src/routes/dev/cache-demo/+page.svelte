@@ -1,6 +1,5 @@
 <!-- Cache System Demo Page -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import CacheDemo from '$lib/components/cache/CacheDemo.svelte';
 </script>
 

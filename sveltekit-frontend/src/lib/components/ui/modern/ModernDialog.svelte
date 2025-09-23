@@ -2,7 +2,6 @@
   // Svelte 5 runes are auto-imported
 
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   import { Dialog as DialogPrimitive } from "bits-ui";
   // Removed melt dependency - using bits-ui Dialog primitives only
   import ModernButton from "./ModernButton.svelte";

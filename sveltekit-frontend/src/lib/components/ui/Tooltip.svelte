@@ -2,7 +2,6 @@
   // Svelte 5 runes are auto-imported
 
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   interface Props {
     content?: string;
     placement?: "top" | "bottom" | "left" | "right";

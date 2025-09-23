@@ -3,7 +3,6 @@
   // Svelte 5 runes are auto-imported
 
   import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   // import { Dialog as BitsDialog } from 'bits-ui';
   import { fade, fly } from 'svelte/transition';
   import { cn } from '$lib/utils/cn';

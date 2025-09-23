@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { integrationChecker, type IntegrationStatus } from '$lib/integration-status';
   import { unifiedRuntime } from '$lib/webgpu/unified-runtime-abstraction';

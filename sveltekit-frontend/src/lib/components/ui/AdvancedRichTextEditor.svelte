@@ -5,7 +5,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   let { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = ""  }: { content = null, placeholder = "Start writing your legal report...", autosave = true, reportId = "", caseId = "" : unknown } = $props();
 
   import { Editor } from "@tiptap/core";

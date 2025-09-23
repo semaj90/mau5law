@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
   import {
@@ -97,7 +96,7 @@
 
   <!-- Input area -->
   <div class="border-t p-4">
-    <form on:submit|preventDefault={handleSubmit} class="flex space-x-2">
+    <form onsubmit={(e) => { e.preventDefault(); handleSubmit(e); }} class="flex space-x-2">
       <Input
         type="text"
         placeholder="Ask about your legal case..."

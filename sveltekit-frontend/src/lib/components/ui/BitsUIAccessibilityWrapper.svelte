@@ -312,22 +312,12 @@
   }
 
   /* Route-specific accessibility enhancements */
-  :global(.accessibility-enhanced-essential) {
-    /* Enhanced focus for essential routes */
-  }
-
-  :global(.accessibility-enhanced-demo) {
-    /* Demo-specific accessibility styling */
-  }
-
-  :global(.accessibility-enhanced-test) {
-    /* Test-specific accessibility styling */
-  }
-
+  :global(.accessibility-enhanced-essential),
+  :global(.accessibility-enhanced-demo),
+  :global(.accessibility-enhanced-test),
   :global(.accessibility-enhanced-legal) {
-    /* Legal-specific accessibility styling for compliance and readability */
-
-    /* Essential accessibility improvements only - unused selectors removed */
+    /* Enhanced focus and accessibility improvements for all route types */
+    position: relative;
   }
 
   :global(.accessibility-focused) {

@@ -4,7 +4,6 @@ https://svelte.dev/e/js_parse_error -->
 <script>
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   const { title = "System status", status = "OK", updatedAt = null } = $props();
 
 

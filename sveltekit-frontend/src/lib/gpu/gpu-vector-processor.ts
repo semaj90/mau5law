@@ -157,10 +157,10 @@ export class GPUVectorProcessor {
     if (vec4Compatible) {
       const vec4Count = Math.ceil(count / 4);
       wgsl = `
-        @group(0) @binding(0) var<storage, read> inData: array<vec4<f32>;
-        @group(0) @binding(1) var<storage, read_write> outData: array<vec4<f32>;
+        @group(0) @binding(0) var<storage, read> inData: array<vec4<f32>>;
+        @group(0) @binding(1) var<storage, read_write> outData: array<vec4<f32>>;
 
-        @compute @workgroup_size(${workgroupSize});
+        @compute @workgroup_size(${workgroupSize})
         fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
           let i = gid.x;
           if (i < ${vec4Count}u) {
@@ -193,7 +193,7 @@ export class GPUVectorProcessor {
 
     const bindGroupLayout = device.createBindGroupLayout({
       entries: [
-        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },)
+        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
         { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
       ],
       label: `legal-vector-bgl-${cacheKey}`

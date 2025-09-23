@@ -5,7 +5,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { Scale, Calendar, MapPin, ExternalLink, BookOpen, Star, TrendingUp, Users } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   export interface LegalPrecedent {

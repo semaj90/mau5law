@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
 
   // Replaced melt with bits-ui components
   import { setContext } from "svelte";

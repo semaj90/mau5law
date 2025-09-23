@@ -2,7 +2,6 @@
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   export interface Settings {
     theme: string;
     language: string;

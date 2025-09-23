@@ -1,7 +1,6 @@
 
 
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import * as ContextMenu from 'bits-ui';
   import { fly, scale } from 'svelte/transition';
   import {

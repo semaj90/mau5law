@@ -438,11 +438,11 @@ export class MultiCoreMCPVectorServer {
 
   /**
    * Process vector chunk in worker thread
-   */;
+   */
   private processVectorChunk(worker: Worker, chunk: VectorChunk): Promise<ProcessedVector[]> {
     return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject(new Error('Worker timeout');
+      const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
+        reject(new Error('Worker timeout'));
       }, 30000); // 30 second timeout
 
       const messageHandler = (result: any) => {

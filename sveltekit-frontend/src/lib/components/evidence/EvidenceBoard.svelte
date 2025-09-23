@@ -15,7 +15,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { caseManagementService } from '$lib/services/case-management-service.js';
   import { apiFetch } from '$lib/api/clients/api-client.js';

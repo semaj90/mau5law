@@ -2,7 +2,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   // import Button from '$lib/components/ui/enhanced-bits'; // Temporarily disabled due to SSR issues
   // import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits'; // Temporarily disabled due to SSR issues
   // import { Textarea } from '$lib/components/ui/textarea'; // Replaced with native HTML textarea

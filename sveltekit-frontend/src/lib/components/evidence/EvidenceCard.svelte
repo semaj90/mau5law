@@ -4,7 +4,6 @@ https://svelte.dev/e/block_unexpected_character -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   interface Props {
     evidence: ExtendedEvidence;
     onView: (evidence: Evidence) => void;

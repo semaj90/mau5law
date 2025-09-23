@@ -2,9 +2,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
-  import 'nes.css/css/nes.min.css';
-  import 'nes.css/css/nes.min.css';
   /* Route Discovery & Enhanced UX (Svelte 5 runes) */
   // @ts-ignore Vite glob (eager for static analysis)
   const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as Record<string, any>;
@@ -108,7 +105,7 @@
       if (!showPages && r.kind === 'page') return false;
       if (!search.trim()) return true;
       const q = search.toLowerCase();
-      return r.path.toLowerCase.includes(q) || r.label.toLowerCase.includes(q);
+      return r.path.toLowerCase().includes(q) || r.label.toLowerCase().includes(q);
     })
   );
 

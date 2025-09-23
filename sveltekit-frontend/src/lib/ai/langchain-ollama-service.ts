@@ -124,7 +124,7 @@ export class LangChainOllamaService {
       // Split document into chunks
       const chunks = await this.textSplitter.splitText(content);
 
-      // Create LangChain documents;
+      // Create LangChain documents
       const documents = chunks.map((chunk, index) => ({
         pageContent: chunk,
         metadata: {
@@ -133,9 +133,9 @@ export class LangChainOllamaService {
           chunkIndex: index,
           chunkId: `${documentId}_${index}`
         }
-      });
+      }));
 
-      // Create vector store if it doesn't exist;
+      // Create vector store if it doesn't exist
       if (!this.vectorStore) {
         this.vectorStore = await MemoryVectorStore.fromDocuments(
           documents,

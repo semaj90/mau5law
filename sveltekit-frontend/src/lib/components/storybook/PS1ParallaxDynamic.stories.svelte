@@ -4,7 +4,6 @@ https://svelte.dev/e/expected_token -->
 <script>
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
 </script>
 	import { onMount, onDestroy } from 'svelte';
 	import '../yorha/ps1.css';

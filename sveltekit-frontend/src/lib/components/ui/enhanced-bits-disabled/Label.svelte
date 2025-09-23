@@ -6,7 +6,6 @@ NES-styled label with legal AI theming
   // Svelte 5 runes are auto-imported
 
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   import { cn } from '$lib/utils';
   
   interface LabelProps {

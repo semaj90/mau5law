@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
   import { invoke } from '@tauri-apps/api/tauri';

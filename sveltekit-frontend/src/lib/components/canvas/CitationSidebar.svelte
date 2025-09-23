@@ -4,7 +4,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits';;
   import type { Citation } from "$lib/types/api";
   import { Copy, Search, Star, Tag, Trash2 } from "lucide-svelte";
@@ -34,11 +33,11 @@ https://svelte.dev/e/js_parse_error -->
     filteredCitations = citations.filter((citation) => {
       const matchesSearch =
         searchQuery === "" ||
-        citation.title.toLowerCase.includes(searchQuery.toLowerCase()) ||
-        citation.content.toLowerCase.includes(searchQuery.toLowerCase()) ||
-        citation.source.toLowerCase.includes(searchQuery.toLowerCase()) ||
+        citation.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        citation.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        citation.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
         citation.tags.some((tag) =>
-          tag.toLowerCase.includes(searchQuery.toLowerCase())
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
         )
 
       const matchesCategory =

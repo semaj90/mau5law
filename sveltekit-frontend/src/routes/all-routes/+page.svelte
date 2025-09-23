@@ -12,7 +12,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	import CardContent from '$lib/components/ui/enhanced-bits/CardContent.svelte';
 	import CardTitle from '$lib/components/ui/enhanced-bits/CardTitle.svelte';
 	import Dialog from '$lib/components/ui/enhanced-bits/Dialog.svelte';
-	import { DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogClose } from '$lib/components/ui/enhanced-bits/Dialog.svelte';
+	import DialogTrigger from '$lib/components/ui/enhanced-bits/DialogTrigger.svelte';
+	import DialogContent from '$lib/components/ui/enhanced-bits/DialogContent.svelte';
+	import DialogTitle from '$lib/components/ui/enhanced-bits/DialogTitle.svelte';
+	import DialogDescription from '$lib/components/ui/enhanced-bits/DialogDescription.svelte';
+	import DialogClose from '$lib/components/ui/enhanced-bits/DialogClose.svelte';
 
 	interface Props {
 		data: PageData;
@@ -330,7 +334,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 
 				<!-- Section Overview -->
 				<div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-					<Card variant="interactive" class="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300">
+					<Card class="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300">
 						{#snippet children()}
 							<CardContent class="p-4">
 								<h3 class="font-bold text-lg text-blue-800 flex items-center gap-2">
@@ -342,7 +346,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						{/snippet}
 					</Card>
 
-					<Card variant="interactive" class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300">
+					<Card class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300">
 						{#snippet children()}
 							<CardContent class="p-4">
 								<h3 class="font-bold text-lg text-green-800 flex items-center gap-2">
@@ -354,7 +358,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						{/snippet}
 					</Card>
 
-					<Card variant="interactive" class="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-300">
+					<Card class="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-300">
 						{#snippet children()}
 							<CardContent class="p-4">
 								<h3 class="font-bold text-lg text-purple-800 flex items-center gap-2">
@@ -366,7 +370,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						{/snippet}
 					</Card>
 
-					<Card variant="interactive" class="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300">
+					<Card class="bg-gradient-to-br from-yellow-50 to-yellow-100 border-2 border-yellow-300">
 						{#snippet children()}
 							<CardContent class="p-4">
 								<h3 class="font-bold text-lg text-yellow-800 flex items-center gap-2">
@@ -378,7 +382,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						{/snippet}
 					</Card>
 
-					<Card variant="interactive" class="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300">
+					<Card class="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300">
 						{#snippet children()}
 							<CardContent class="p-4">
 								<h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
@@ -652,7 +656,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 							serviceName === 'infrastructure' ? '🏗️' :
 							serviceName === 'gpu-services' ? '🖥️' : '🔌'}
 
-						<Card variant="interactive" class="service-cluster border-2 border-gray-300 hover:border-blue-400">
+						<Card class="service-cluster border-2 border-gray-300 hover:border-blue-400">
 							{#snippet children()}
 								<CardHeader>
 									<CardTitle class="flex items-center justify-between">
@@ -749,13 +753,37 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 					{#each filteredRoutes as route, index}
 						{@const categoryInfo = routeCategories[route.category]}
 						{@const columnClass = index % 3 === 0 ? 'flex-basis-31' : index % 3 === 1 ? 'flex-basis-33' : 'flex-basis-35'}
-						<Card variant="interactive" class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group cursor-pointer border-2" onclick={() => openRouteModal(route)}>
+						<Card class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group cursor-pointer border-2" onclick={() => openRouteModal(route)}>
+							{#snippet children()}
+								<CardHeader>
+									{#snippet children()}
+										<CardTitle class="text-{categoryInfo.color}-700 text-lg group-hover:text-{categoryInfo.color}-900">
+											{categoryInfo.icon} {route.path}
+										</CardTitle>
+									{/snippet}
+								</CardHeader>
+								<CardContent>
+									{#snippet children()}
+										{#if route.description}
+											<p class="text-sm text-gray-600 mb-3">{route.description}</p>
+										{/if}
+										<div class="flex flex-wrap gap-2">
+											<span class="px-2 py-1 rounded-full text-xs bg-{categoryInfo.color}-100 text-{categoryInfo.color}-800">
+												{categoryInfo.name}
+											</span>
+										</div>
+									{/snippet}
+								</CardContent>
+							{/snippet}
+						</Card>
+					{/each}
+				</div>
 			{:else}
 				<!-- Standard Grid Layout -->
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
 					{#each filteredRoutes as route}
 						{@const categoryInfo = routeCategories[route.category]}
-						<Card variant="interactive" class="hover:border-{categoryInfo.color}-400 group cursor-pointer" onclick={() => openRouteModal(route)}>
+						<Card class="hover:border-{categoryInfo.color}-400 group cursor-pointer" onclick={() => openRouteModal(route)}>
 						{#snippet children()}
 							<CardContent class="p-4">
 								<!-- Route Header -->
@@ -897,7 +925,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 						⚠️ Priority: Archive Demo Routes
 					</h4>
 					<p class="text-sm text-gray-700 mb-2">
-						<strong>{routeStats.priorities.archive}</strong> demo/testing routes should be archived to reduce complexity.
+						<strong>{routeStats.byPriority.demo + routeStats.byPriority.testing}</strong> demo/testing routes should be archived to reduce complexity.
 					</p>
 					<p class="text-xs text-gray-600">42% of routes are non-production demos that can be moved to /archive/</p>
 				</div>

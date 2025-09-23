@@ -7,7 +7,7 @@ Should be included in the root layout to ensure session is available everywhere
   import { onMount, onDestroy } from 'svelte';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
-  import { sessionStore, initUserDataSync } from '$lib/stores/sessionStore';
+  import { sessionStore, initUserDataSync } from '$lib/stores/sessionStore.svelte';
   import { userDataStore } from '$lib/stores/userDataStore';
 
   // Props for configuration

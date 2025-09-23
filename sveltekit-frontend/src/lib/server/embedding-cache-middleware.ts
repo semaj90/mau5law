@@ -34,7 +34,7 @@ interface CachedEmbedding {
 
 export class EmbeddingCacheMiddleware {
   private config: Required<EmbeddingCacheConfig>;
-  private pythonWorkerQueue: Map<string, Promise<Float32Array> = new Map();
+  private pythonWorkerQueue: Map<string, Promise<Float32Array>> = new Map();
 
   constructor(config: EmbeddingCacheConfig = {}) {
     this.config = {
@@ -42,32 +42,27 @@ export class EmbeddingCacheMiddleware {
       pythonWorkerUrl: config.pythonWorkerUrl || 'http://localhost:8000',
       cacheTTL: config.cacheTTL || 86400, // 24 hours
       batchSize: config.batchSize || 128, // RTX 3060 Ti optimized
-      useGPUAcceleration: config.useGPUAcceleration ?? true
+      useGPUAcceleration: config.useGPUAcceleration ?? true,
     };
   }
 
   /**
    * Initialize centralized cache (no-op, already initialized)
-   */;
-  async initializeRedisCache(): Promise<void> {
+   */ async initializeRedisCache(): Promise<void> {
     // Using centralized cache service - no initialization needed
     console.log('✅ Using centralized cache for embeddings');
   }
 
   /**
    * Generate SHA256 cache key for text
-   */;
-  private generateCacheKey(text: string): string {
+   */ private generateCacheKey(text: string): string {
     return crypto.createHash('sha256').update(text.trim()).digest('hex');
   }
 
   /**
    * Check centralized cache for embedding
    */
-  private async checkRedisCache(
-    text: string,
-    model: string = 'nomic-embed-text-v1';
-  ): Promise<Float32Array | null> {
+  private async checkRedisCache(text: string, model: string = 'nomic-embed-text-v1'): Promise<Float32Array | null> {
     try {
       const cachedVector = await getCachedEmbedding(text, model);
       return cachedVector ? new Float32Array(cachedVector) : null;
@@ -80,30 +75,23 @@ export class EmbeddingCacheMiddleware {
 
   /**
    * Check Postgres for persistent embedding storage
-   */;
-  private async checkPostgresCache(cacheKey: string): Promise<CachedEmbedding | null> {
+   */ private async checkPostgresCache(cacheKey: string): Promise<CachedEmbedding | null> {
     try {
       const results = await (threadSafePostgres.queryJsonbDocuments?.(
         'embeddings',
         { path: 'id', value: cacheKey, operator: '@>' },
         { limit: 1, useGPU: this.config.useGPUAcceleration }
-      ) || Promise.resolve([]);
+      ) || Promise.resolve([]));
 
       if (results.length > 0) {
         const result = results[0];
         return {
-          id: (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any })
-            .id,
-          text: (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any })
-            .text,
+          id: (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).id,
+          text: (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).text,
           vector: new Float32Array(
-            (
-              result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }
-            ).vector
+            (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).vector
           ),
-          metadata: (
-            result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }
-          ).metadata
+          metadata: (result as { id?: any; text?: any; vector?: any; metadata?: any; embeddings?: any }).metadata,
         };
       }
     } catch (error) {
@@ -115,22 +103,21 @@ export class EmbeddingCacheMiddleware {
 
   /**
    * Call Python GPU worker for embedding generation
-   */;
-  private async callPythonGPUWorker(texts: string[]): Promise<Float32Array[]> {
+   */ private async callPythonGPUWorker(texts: string[]): Promise<Float32Array[]> {
     try {
       const response = await fetch(`${this.config.pythonWorkerUrl}/embed`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-GPU-Batch-Size': this.config.batchSize.toString(),
-          'X-Thread-ID': `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          'X-Thread-ID': `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         },
         body: JSON.stringify({
           texts,
           model: 'nomic-embed-text-v1',
           precision: 'fp16', // RTX 3060 Ti tensor core optimization
-          batch_size: this.config.batchSize
-        })
+          batch_size: this.config.batchSize,
+        }),
       });
 
       if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -139,15 +126,11 @@ export class EmbeddingCacheMiddleware {
         );
       }
 
-      const { vectors, metadata } = await (
-        response as { ok?: any; status?: any; statusText?: any; json?: any }
-      ).json();
+      const { vectors, metadata } = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
 
-      console.log(
-        `🚀 GPU embedding batch completed: ${texts.length} texts, ${metadata.gpu_time_ms}ms`
-      );
+      console.log(`🚀 GPU embedding batch completed: ${texts.length} texts, ${metadata.gpu_time_ms}ms`);
 
-      return vectors.map((v: number[]) => new Float32Array(v);
+      return vectors.map((v: number[]) => new Float32Array(v));
     } catch (error) {
       console.error('Python GPU worker failed:', error);
       throw error;
@@ -157,11 +140,7 @@ export class EmbeddingCacheMiddleware {
   /**
    * Store embedding in both Redis and Postgres with WebGPU optimization
    */
-  private async storeEmbedding(
-    text: string,
-    vector: Float32Array,
-    cacheKey: string;
-  ): Promise<void> {
+  private async storeEmbedding(text: string, vector: Float32Array, cacheKey: string): Promise<void> {
     const embedding: CachedEmbedding = {
       id: cacheKey,
       text,
@@ -170,8 +149,8 @@ export class EmbeddingCacheMiddleware {
         model: 'nomic-embed-text-v1',
         timestamp: Date.now(),
         gpuProcessed: true,
-        threadId: `middleware_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      }
+        threadId: `middleware_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      },
     };
 
     // Store using WebGPU-optimized cache with tensor compression;
@@ -195,7 +174,7 @@ export class EmbeddingCacheMiddleware {
         text,
         vector: Array.from(vector),
         metadata: embedding.metadata,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       });
     } catch (error) {
       console.error('Postgres embedding storage failed:', error);
@@ -204,8 +183,7 @@ export class EmbeddingCacheMiddleware {
 
   /**
    * Main embedding retrieval method with full caching pipeline
-   */;
-  async getEmbedding(text: string): Promise<Float32Array> {
+   */ async getEmbedding(text: string): Promise<Float32Array> {
     if (!text || text.trim().length === 0) {
       throw new Error('Text input cannot be empty');
     }
@@ -258,8 +236,7 @@ export class EmbeddingCacheMiddleware {
 
   /**
    * GPU worker call with thread coordination
-   */;
-  private async callGPUWorker(text: string, cacheKey: string): Promise<Float32Array> {
+   */ private async callGPUWorker(text: string, cacheKey: string): Promise<Float32Array> {
     console.log('🎯 Calling Python GPU worker for new embedding');
 
     // Use GPU coordinator for optimal resource allocation;
@@ -270,12 +247,13 @@ export class EmbeddingCacheMiddleware {
           model: 'nomic-embed-text-v1',
           precision: 'fp16',
           batchSize: 1,
-          priority: 'high'
+          priority: 'high',
         });
 
         if (gpuResult.result?.embeddings) {
-          return new Float32Array(;
-            (gpuResult.result as {
+          return new Float32Array(
+            (
+              gpuResult.result as {
                 id?: any;
                 text?: any;
                 vector?: any;
@@ -297,8 +275,7 @@ export class EmbeddingCacheMiddleware {
 
   /**
    * Batch embedding processing with WebGPU-optimized parallel caching
-   */;
-  async getBatchEmbeddings(texts: string[]): Promise<Float32Array[]> {
+   */ async getBatchEmbeddings(texts: string[]): Promise<Float32Array[]> {
     if (texts.length === 0) return [];
 
     const results: Float32Array[] = new Array(texts.length);
@@ -311,8 +288,8 @@ export class EmbeddingCacheMiddleware {
       const cacheOperations = texts.map((text, i) => ({
         type: 'get' as const,
         key: `embed:${this.generateCacheKey(text)}`,
-        options: { decompress: true }
-      });
+        options: { decompress: true },
+      }));
 
       const cachedResults = await optimizedCache.batch(cacheOperations);
 
@@ -327,7 +304,7 @@ export class EmbeddingCacheMiddleware {
 
         // Try standard cache as fallback
         const cacheKey = this.generateCacheKey(texts[i]);
-        const redisResult = await this.checkRedisCache(texts[i], 'nomic-embed-text-v1');
+        const redisResult = await this.checkRedisCache(text, 'nomic-embed-text-v1');
         if (redisResult) {
           results[i] = redisResult;
           continue;
@@ -378,7 +355,7 @@ export class EmbeddingCacheMiddleware {
     if (missingTexts.length > 0) {
       console.log(`🚀 Processing ${missingTexts.length} embeddings with GPU acceleration`);
 
-      const batchTexts = missingTexts.map((m) => m.text);
+      const batchTexts = missingTexts.map(m => m.text);
       const newEmbeddings = await this.callPythonGPUWorker(batchTexts);
 
       // Store new embeddings using WebGPU optimization;
@@ -390,9 +367,9 @@ export class EmbeddingCacheMiddleware {
           ttl: 3600,
           compress: true,
           parallel: true,
-          priority: 'high' as const
-        }
-      });
+          priority: 'high' as const,
+        },
+      }));
 
       try {
         // Parallel WebGPU-optimized storage
@@ -406,7 +383,7 @@ export class EmbeddingCacheMiddleware {
           const { index, text, cacheKey } = missingTexts[i];
           const embedding = newEmbeddings[i];
 
-          this.storeEmbedding(text, embedding, cacheKey).catch((error) => {
+          this.storeEmbedding(text, embedding, cacheKey).catch(error => {
             console.warn('Failed to cache embedding:', error);
           });
         }
@@ -419,18 +396,14 @@ export class EmbeddingCacheMiddleware {
       }
     }
 
-    console.log(
-      `📊 Batch embedding complete: ${texts.length} total, ${missingTexts.length} GPU calls`
-    );
+    console.log(`📊 Batch embedding complete: ${texts.length} total, ${missingTexts.length} GPU calls`);
     return results;
   }
 
   /**
    * Get cache statistics
-   */;
-  async getCacheStats(): Promise<any> {
-    const postgresHealth = await (threadSafePostgres.healthCheck?.() ??
-      threadSafePostgres.health();
+   */ async getCacheStats(): Promise<any> {
+    const postgresHealth = await (threadSafePostgres.healthCheck?.() ?? threadSafePostgres.health());
 
     let totalEmbeddings = 0;
     try {
@@ -438,7 +411,7 @@ export class EmbeddingCacheMiddleware {
         'embeddings',
         { path: 'metadata.model', value: 'nomic-embed-text-v1', operator: '@>' },
         { limit: 1000 }
-      ) || Promise.resolve([]);
+      ) || Promise.resolve([]));
       totalEmbeddings = countResult.length;
     } catch (error) {
       console.warn('Could not get embedding count:', error);
@@ -448,14 +421,13 @@ export class EmbeddingCacheMiddleware {
       redisConnected: true, // Using centralized cache service
       postgresConnected: !!postgresHealth,
       totalEmbeddings,
-      gpuAcceleration: this.config.useGPUAcceleration
+      gpuAcceleration: this.config.useGPUAcceleration,
     };
   }
 
   /**
    * Clear embeddings cache
-   */;
-  async clearCache(): Promise<void> {
+   */ async clearCache(): Promise<void> {
     // Clear Redis using centralized cache;
     try {
       // Use centralized cache clear method
@@ -493,8 +465,7 @@ export interface LegalEmbeddingQuery {
 
 /**
  * Legal document embedding with metadata context
- */;
-export async function getLegalEmbedding(query: LegalEmbeddingQuery): Promise<any> {
+ */ export async function getLegalEmbedding(query: LegalEmbeddingQuery): Promise<any> {
   const startTime = Date.now();
 
   // Add legal context to embedding text for better legal AI performance
@@ -510,21 +481,17 @@ export async function getLegalEmbedding(query: LegalEmbeddingQuery): Promise<any
       documentContext: {
         documentType: query.documentType,
         jurisdiction: query.jurisdiction,
-        practiceArea: query.practiceArea
-      }
-    }
+        practiceArea: query.practiceArea,
+      },
+    },
   };
 }
 
 /**
  * Batch legal document embeddings
  */
-export async function getBatchLegalEmbeddings(
-  queries: LegalEmbeddingQuery[];
-): Promise<Float32Array[]> {
-  const contextualTexts = queries.map((q) =>
-    q.practiceArea ? `[${q.practiceArea}] ${q.text}` : q.text
-  );
+export async function getBatchLegalEmbeddings(queries: LegalEmbeddingQuery[]): Promise<Float32Array[]> {
+  const contextualTexts = queries.map(q => (q.practiceArea ? `[${q.practiceArea}] ${q.text}` : q.text));
 
   return await embeddingCache.getBatchEmbeddings(contextualTexts);
 }

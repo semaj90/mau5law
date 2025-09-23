@@ -1,12 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
-<script>
-  import 'nes.css/css/nes.min.css';
-  const { width = '560px', height = '420px', variant = 'info', ariaLabel = 'N64 Screen' } = $props();
-
-
+<script lang="ts">
+  import type { Snippet } from 'svelte';
   import './N64Theme.css';
+
+  interface Props {
+    width?: string;
+    height?: string;
+    variant?: string;
+    ariaLabel?: string;
+    children?: Snippet;
+  }
+
+  let { width = '560px', height = '420px', variant = 'info', ariaLabel = 'N64 Screen', children }: Props = $props();
 
   // Dimensions can be strings like "320px" or "100%"
   

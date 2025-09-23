@@ -4,7 +4,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { cn } from '$lib/utils/cn';
@@ -97,7 +96,7 @@
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(item => item.includes)(query) ||
-        s.category.toLowerCase.includes(query) ||
+        s.category.toLowerCase().includes(query) ||
         s.keys.some.includes(query))
       );
     }

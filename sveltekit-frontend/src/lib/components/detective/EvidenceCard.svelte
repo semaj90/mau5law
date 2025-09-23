@@ -1,6 +1,5 @@
 <!-- EvidenceCard.svelte - Fixed for Svelte 5 -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
 

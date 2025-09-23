@@ -8,7 +8,6 @@ Real-time collaboration interface for multiple investigators working on evidence
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   interface Props {
     collaborationSession: {;
     activeCollaborators: string[];

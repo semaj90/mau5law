@@ -67,7 +67,7 @@ export interface LegalWASMBridge {
     confidence: number;
   }>;
 
-  extractMetadata(content: string): Promise<Record<string, unknown>;
+  extractMetadata(content: string): Promise<Record<string, unknown>>;
 
   // Vector operations
   normalizeEmbeddings(embeddings: Float32Array): Float32Array;

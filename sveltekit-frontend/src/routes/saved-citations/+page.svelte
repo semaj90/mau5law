@@ -4,7 +4,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { run } from 'svelte/legacy';
   // Badge replaced with span - not available in enhanced-bits
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
@@ -66,11 +65,11 @@ https://svelte.dev/e/js_parse_error -->
     filteredCitations = savedCitations.filter((citation) => {
       const matchesSearch =
         searchQuery === '' ||
-        citation.title.toLowerCase.includes(searchQuery.toLowerCase()) ||
-        citation.content.toLowerCase.includes(searchQuery.toLowerCase()) ||
-        citation.source.toLowerCase.includes(searchQuery.toLowerCase()) ||
-  (citation.notes && citation.notes.toLowerCase.includes(searchQuery.toLowerCase())) ||
-  citation.tags.some((tag: string) => tag.toLowerCase.includes(searchQuery.toLowerCase()));
+        citation.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        citation.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        citation.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  (citation.notes && citation.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
+  citation.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesCategory = selectedCategory === 'all' || citation.category === selectedCategory;
 
       return matchesSearch && matchesCategory;

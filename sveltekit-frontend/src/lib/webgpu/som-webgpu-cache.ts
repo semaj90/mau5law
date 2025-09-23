@@ -301,21 +301,21 @@ export class WebGPUSOMCache {
 
   private initializeCollections() {
     this.todosCollection =
-      this.lokiDB.getCollection('todos') ||;
+      this.lokiDB.getCollection('todos') ||
       this.lokiDB.addCollection('todos', {
         indices: ['priority', 'category', 'confidence'],
         unique: ['id']
       });
 
     this.errorsCollection =
-      this.lokiDB.getCollection('errors') ||;
+      this.lokiDB.getCollection('errors') ||
       this.lokiDB.addCollection('errors', {
         indices: ['severity', 'category', 'file'],
         unique: ['id']
       });
 
     this.cacheCollection =
-      this.lokiDB.getCollection('cache') ||;
+      this.lokiDB.getCollection('cache') ||
       this.lokiDB.addCollection('cache', {
         indices: ['key', 'timestamp'],
         ttl: 300000, // 5 minutes
@@ -549,7 +549,7 @@ export class WebGPUSOMCache {
         layout: computePipeline.getBindGroupLayout(0),
         entries: [
           { binding: 0, resource: { buffer: textBuffer } },
-          { binding: 1, resource: { buffer: embeddingBuffer } },>
+          { binding: 1, resource: { buffer: embeddingBuffer } },
           { binding: 2, resource: { buffer: configBuffer } }
         ]
       });
@@ -559,7 +559,7 @@ export class WebGPUSOMCache {
       const computePass = encoder.beginComputePass();
       computePass.setPipeline(computePipeline);
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(embeddingDim / 32);
+      computePass.dispatchWorkgroups(Math.ceil(embeddingDim / 32));
       computePass.end();
 
       encoder.copyBufferToBuffer(embeddingBuffer, 0, resultBuffer, 0, embeddingDim * 4);
@@ -567,8 +567,8 @@ export class WebGPUSOMCache {
 
       // Read result
       await resultBuffer.mapAsync(GPUMapMode.READ);
-      const embedding = new Float32Array(resultBuffer.getMappedRange();
-      embeddings.push(embedding.slice();
+      const embedding = new Float32Array(resultBuffer.getMappedRange());
+      embeddings.push(embedding.slice());
       resultBuffer.unmap();
 
       // Cleanup
@@ -582,7 +582,7 @@ export class WebGPUSOMCache {
   }
 
   private computeErrorEmbeddingsCPU(errors: NPMError[]): Float32Array[] {
-    // Fallback CPU implementation;
+    // Fallback CPU implementation
     return errors.map((error) => {
       const embedding = new Float32Array(128);
       const text = error.message.toLowerCase();
@@ -747,26 +747,26 @@ export class WebGPUSOMCache {
     // Write initial data
     this.device.queue.writeBuffer(adjacencyBuffer, 0, adjacencyMatrix);
     this.device.queue.writeBuffer(scoresBuffer, 0, pageRankScores);
-    this.device.queue.writeBuffer(paramsBuffer, 0, new Float32Array([numNodes, 0.85, 0, 0]);
+    this.device.queue.writeBuffer(paramsBuffer, 0, new Float32Array([numNodes, 0.85, 0, 0]));
 
-    // Create bind group;
+    // Create bind group
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
       entries: [
         { binding: 0, resource: { buffer: adjacencyBuffer } },
         { binding: 1, resource: { buffer: scoresBuffer } },
-        { binding: 2, resource: { buffer: newScoresBuffer } },>
+        { binding: 2, resource: { buffer: newScoresBuffer } },
         { binding: 3, resource: { buffer: paramsBuffer } }
       ]
     });
 
-    // Run PageRank iterations;
+    // Run PageRank iterations
     for (let iter = 0; iter < 20; iter++) {
       const encoder = this.device.createCommandEncoder();
       const computePass = encoder.beginComputePass();
       computePass.setPipeline(computePipeline);
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(numNodes / 64);
+      computePass.dispatchWorkgroups(Math.ceil(numNodes / 64));
       computePass.end();
 
       // Copy new scores back to current scores
@@ -782,7 +782,7 @@ export class WebGPUSOMCache {
     this.device.queue.submit([encoder.finish()]);
 
     await resultBuffer.mapAsync(GPUMapMode.READ);
-    const finalScores = new Float32Array(resultBuffer.getMappedRange();
+    const finalScores = new Float32Array(resultBuffer.getMappedRange());
 
     // Apply refined scores to todos;
     const refinedTodos = todos.map((todo, index) => ({
@@ -811,7 +811,7 @@ export class WebGPUSOMCache {
     // Tag overlap
     const tags1 = new Set(todo1.tags);
     const tags2 = new Set(todo2.tags);
-    const tagIntersection = new Set([...tags1].filter((x) => tags2.has(x));
+    const tagIntersection = new Set([...tags1].filter((x) => tags2.has(x)));
     const tagUnion = new Set([...tags1, ...tags2]);
     if (tagUnion.size > 0) {
       similarity += 0.3 * (tagIntersection.size / tagUnion.size);
@@ -820,7 +820,7 @@ export class WebGPUSOMCache {
     // File overlap in related errors
     const files1 = new Set(todo1.related_errors.map((e: any) => e.file);
     const files2 = new Set(todo2.related_errors.map((e: any) => e.file);
-    const fileIntersection = new Set([...files1].filter((x) => files2.has(x));
+    const fileIntersection = new Set([...files1].filter((x) => files2.has(x)));
     if (files1.size > 0 || files2.size > 0) {
       similarity += 0.3 * (fileIntersection.size / Math.max(files1.size, files2.size);
     }
@@ -1123,7 +1123,7 @@ export class WebGPUSOMCache {
           const cached = await this.getCachedResult(embeddingKey);
           if (!cached) {
             // Generate embedding using WebGPU if available
-            const embeddings = await this.computeErrorEmbeddingsGPU([)>;
+            const embeddings = await this.computeErrorEmbeddingsGPU([
               {
                 message: errorMessage,
                 file: '',
@@ -1144,7 +1144,7 @@ export class WebGPUSOMCache {
         }
 
         // Small delay between batches
-        await new Promise((resolve) => setTimeout(resolve, 100);
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
     } catch (error) {
       console.error('Precompute embeddings failed:', error);
@@ -1504,7 +1504,7 @@ export class WebGPUSOMCache {
       this.device.queue.submit([copyEncoder.finish()]);
 
       await resultBuffer.mapAsync(GPUMapMode.READ);
-      const similarities = new Float32Array(resultBuffer.getMappedRange();
+      const similarities = new Float32Array(resultBuffer.getMappedRange());
 
       // Filter by threshold and return results
       const results: any[] = [];
@@ -1647,7 +1647,7 @@ export class WebGPUSOMCache {
       this.device.queue.submit([copyEncoder.finish()]);
 
       await resultBuffer.mapAsync(GPUMapMode.READ);
-      const embedding = new Float32Array(resultBuffer.getMappedRange();
+      const embedding = new Float32Array(resultBuffer.getMappedRange());
       const result = new Float32Array(embedding);
 
       // Clean up
@@ -1767,7 +1767,7 @@ export class WebGPUSOMCache {
       this.device.queue.submit([copyEncoder.finish()]);
 
       await resultBuffer.mapAsync(GPUMapMode.READ);
-      const similarities = new Float32Array(resultBuffer.getMappedRange();
+      const similarities = new Float32Array(resultBuffer.getMappedRange());
 
       const results = Array.from(similarities)
         .map((similarity, index) => ({ similarity, index, metadata: metadata[index] })
@@ -1878,7 +1878,7 @@ export class WebGPUSOMCache {
       this.device.queue.submit([copyEncoder.finish()]);
 
       await resultBuffer.mapAsync(GPUMapMode.READ);
-      const quantizedData = new Int32Array(resultBuffer.getMappedRange();
+      const quantizedData = new Int32Array(resultBuffer.getMappedRange());
 
       // Convert to Int8Array per vector
       const results: Int8Array[] = [];

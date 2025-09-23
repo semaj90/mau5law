@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import IntegrationValidator from '$lib/components/validation/IntegrationValidator.svelte';
   import { page } from '$app/state';
   let pageTitle = 'Integration Validation - Legal AI Platform';

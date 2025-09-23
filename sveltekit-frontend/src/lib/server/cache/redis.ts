@@ -4,8 +4,7 @@ import { gzipSync, gunzipSync } from 'zlib';
 // In-memory L1 cache fallback
 const memoryCache = new Map<string, any>();
 const MEMORY_CACHE_MAX_SIZE = 1000;
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour default;
-}
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour default
 
 export interface CacheItem<T> {
   data: T;
@@ -36,8 +35,8 @@ class CacheService {
     const host = process.env.REDIS_HOST || '127.0.0.1';
     const port = process.env.REDIS_PORT || '6379';
 
-    const url = process.env.REDIS_URL ||
-      (password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`);
+    const url =
+      process.env.REDIS_URL || (password ? `redis://:${password}@${host}:${port}` : `redis://${host}:${port}`);
 
     try {
       // Dynamic import so builds don’t fail if ioredis is missing in some environments
@@ -105,7 +104,7 @@ class CacheService {
 
       const payload = gzipSync(JSON.stringify(value)).toString('base64');
       if (this.useRedis && this.redisClient) {
-        const seconds = Math.max(1, Math.floor(ttlMs / 1000);
+        const seconds = Math.max(1, Math.floor(ttlMs / 1000));
         try {
           if (typeof this.redisClient.setex === 'function') {
             await this.redisClient.setex(key, seconds, payload);
@@ -118,11 +117,7 @@ class CacheService {
               await this.redisClient.set(key, payload, 'EX', seconds);
             }
           } else {
-            this.setInMemory(
-              key,
-              JSON.parse(Buffer.from(payload, 'base64').toString('utf8')),
-              ttlMs
-            );
+            this.setInMemory(key, JSON.parse(Buffer.from(payload, 'base64').toString('utf8')), ttlMs);
           }
           return;
         } catch (e) {
@@ -273,7 +268,7 @@ class CacheService {
         });
       }
       // Memory fallback
-      return keys.map((key) => this.getFromMemory(key);
+      return keys.map(key => this.getFromMemory(key));
     } catch (e) {
       console.warn('Cache mget error:', (e as Error).message || e);
       return keys.map(() => null);
@@ -291,20 +286,11 @@ class CacheService {
   }
 
   // Search results
-  async getSearchResults(
-    query: string,
-    searchType: string,
-    filters: any = {}
-  ): Promise<any[] | null> {
+  async getSearchResults(query: string, searchType: string, filters: any = {}): Promise<any[] | null> {
     const key = `search:${searchType}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`;
     return this.get<any[]>(key);
   }
-  async setSearchResults(
-    query: string,
-    searchType: string,
-    results: any[],
-    filters: any = {}
-  ): Promise<void> {
+  async setSearchResults(query: string, searchType: string, results: any[], filters: any = {}): Promise<void> {
     const key = `search:${searchType}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`;
     await this.set(key, results, 5 * 60 * 1000);
   }
@@ -314,11 +300,7 @@ class CacheService {
     const cacheKey = `shader:${this.hashString(key)}`;
     return this.get<string>(cacheKey);
   }
-  async setShader(
-    key: string,
-    compiledWGSL: string,
-    ttlMs: number = 6 * 60 * 60 * 1000;
-  ): Promise<void> {
+  async setShader(key: string, compiledWGSL: string, ttlMs: number = 6 * 60 * 60 * 1000): Promise<void> {
     const cacheKey = `shader:${this.hashString(key)}`;
     await this.set(cacheKey, compiledWGSL, ttlMs);
   }
@@ -328,7 +310,11 @@ class CacheService {
     const item = memoryCache.get(key) as CacheItem<T> | undefined;
     if (!item) return null;
     const now = Date.now();
-    if (now > (item as { timestamp?: any; ttl?: any; data?: any }).timestamp + (item as { timestamp?: any; ttl?: any; data?: any }).ttl) {
+    if (
+      now >
+      (item as { timestamp?: any; ttl?: any; data?: any }).timestamp +
+        (item as { timestamp?: any; ttl?: any; data?: any }).ttl
+    ) {
       memoryCache.delete(key);
       return null;
     }

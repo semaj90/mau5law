@@ -6,7 +6,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits';;
   import {
     AlertTriangle,
@@ -432,9 +431,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       const query = searchQuery.toLowerCase();
       results = results.filter(
         (article) =>
-          article.title.toLowerCase.includes(query) ||
-          article.description.toLowerCase.includes(query) ||
-          article.content.toLowerCase.includes(query)
+          article.title.toLowerCase().includes(query) ||
+          article.description.toLowerCase().includes(query) ||
+          article.content.toLowerCase().includes(query)
       );
     }
     // Sort by popularity

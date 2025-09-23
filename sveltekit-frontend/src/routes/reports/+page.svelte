@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import TauriAPI from "$lib/tauri";
   import type { Report } from "$lib/types/index";
   import { onMount } from "svelte";
