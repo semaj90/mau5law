@@ -1,9 +1,16 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import UnoCSS from 'unocss/vite';
 
+// Ensure SSR can resolve SvelteKit internals even if plugin alias injection fails
+const generatedDir = fileURLToPath(new URL('./.svelte-kit/generated/', import.meta.url));
+const serverInternals = path.resolve(generatedDir, 'server');
+const publicInternals = path.resolve(generatedDir, 'client');
+
 export default defineConfig({
-  plugins: [UnoCSS(), sveltekit()],
+  plugins: [UnoCSS() as any, sveltekit() as any],
   server: {
     port: 5173,
     strictPort: true,
@@ -49,4 +56,11 @@ export default defineConfig({
     'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5432/legal_ai_db"',
   },
   clearScreen: false,
+  resolve: {
+    alias: {
+      __SERVER__: serverInternals,
+      __PUBLIC__: publicInternals,
+    },
+    dedupe: ['svelte'],
+  },
 });

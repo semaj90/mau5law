@@ -53,7 +53,7 @@ interface SearchResponse {
 }
 
 // Initialize database connection
-const client = postgres(getDatabaseUrl();
+const client = postgres(getDatabaseUrl());
 const db = drizzle(client);
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -299,17 +299,17 @@ async function performVectorSearch(params: {
   const queryParams = [JSON.stringify(embedding), ...filterParams, limit];
 
   try {
-    const results = await db.execute(sql.raw(query, queryParams);
+    const results = await db.execute(sql.raw(query, queryParams));
 
     return results.rows
-      .filter((row: any) => row.similarity >= threshold);
+      .filter((row: any) => row.similarity >= threshold)
       .map((row: any) => ({
         id: row.id,
         content: row.content,
         similarity: parseFloat(row.similarity),
-        metadata: includeMetadata ? row.metadata: undefined,
+        metadata: includeMetadata ? row.metadata : undefined,
         embedding: includeMetadata ? row.embedding : undefined
-      });
+      }));
 
   } catch (dbError) {
     console.error('Database query error:', dbError);
@@ -377,7 +377,7 @@ export const GET: RequestHandler = async () => {
   // Health check endpoint;
   try {
     const testQuery = `SELECT 1 as health_check`;
-    await db.execute(sql.raw(testQuery);
+    await db.execute(sql.raw(testQuery));
 
     return json({
       status: 'healthy',

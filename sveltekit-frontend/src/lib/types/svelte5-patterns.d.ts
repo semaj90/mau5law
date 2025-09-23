@@ -1,23 +1,14 @@
 // Svelte 5 TypeScript Patterns - Progressive Type Replacement
 // Replaces generic 'any' shims with proper Svelte 5 type definitions
 
-import type { Component, ComponentProps, Snippet } from 'svelte';
+import type { Component, Snippet } from 'svelte';
 import type { HTMLButtonAttributes, HTMLInputAttributes } from 'svelte/elements';
 
 // === COMPONENT PROPS PATTERNS ===
 
 // Enhanced Button Component Props (replaces generic Button any type);
 export interface EnhancedButtonProps extends HTMLButtonAttributes {
-  variant?:
-    | 'default'
-    | 'legal'
-    | 'evidence'
-    | 'case'
-    | 'destructive'
-    | 'outline'
-    | 'secondary'
-    | 'ghost'
-    | 'link';
+  variant?: 'default' | 'legal' | 'evidence' | 'case' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   loading?: boolean;
   disabled?: boolean;
@@ -216,7 +207,7 @@ export interface EvidenceSearchRequest {
 // === FORM TYPES ===
 
 // Form Submission Result (replaces generic FormSubmissionResult);
-export interface FormSubmissionResult<T = Record<string, unknown> {
+export interface FormSubmissionResult<T = Record<string, unknown>> {
   success: boolean;
   data?: T;
   errors?: Record<string, string[]>;
@@ -229,7 +220,7 @@ export interface BulkOperationResponse {
   processed: number;
   successful: number;
   failed: number;
-  errors?: Array<any>;
+  errors?: Array<unknown>;
 }
 
 // === DATABASE TYPES ===
@@ -240,7 +231,7 @@ export interface VectorSearchResult {
   content: string;
   similarity: number;
   metadata: Record<string, unknown>;
-  sourceType: "document" | "evidence" | "case";
+  sourceType: 'document' | 'evidence' | 'case';
   rankingMatrix: number[][];
   documentId?: string;
   chunkIndex?: number;
@@ -258,7 +249,7 @@ export interface VectorSearchOptions {
 // === COMPONENT COMPOSITION TYPES ===
 
 // Generic Component with Props
-export type EnhancedComponent<TProps = {}> = Component<TProps>;
+export type EnhancedComponent<TProps = Record<string, never>> = Component<TProps>;
 
 // Component Props Utility
 export type ExtractProps<TComponent> = TComponent extends Component<infer TProps> ? TProps : never;
@@ -293,7 +284,7 @@ export interface StoreState {
     theme: 'light' | 'dark' | 'system';
     sidebarOpen: boolean;
     loading: boolean;
-    notifications: Array<any>;
+    notifications: Array<unknown>;
   };
   cases: {
     current?: CaseState;

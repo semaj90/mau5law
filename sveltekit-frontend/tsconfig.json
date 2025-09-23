@@ -22,9 +22,13 @@
     "exactOptionalPropertyTypes": false,
     "noUncheckedIndexedAccess": false,
     "noPropertyAccessFromIndexSignature": false,
-    "suppressImplicitAnyIndexErrors": true,
-    "suppressExcessPropertyErrors": true,
-    "types": ["svelte", "vite/client", "@sveltejs/kit", "@webgpu/types", "node"],
+    "types": [
+      "svelte",
+      "vite/client",
+      "@sveltejs/kit",
+      "@webgpu/types",
+      "node"
+    ],
     "lib": ["es2022", "DOM", "DOM.Iterable"],
     "verbatimModuleSyntax": false,
     "noEmit": true,
@@ -32,7 +36,13 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["src", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
+  "include": [
+    "src",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.svelte",
+    "types.d.ts"
+  ],
   "exclude": [
     "node_modules",
     "build",
@@ -49,6 +59,7 @@
     "src/lib/server/gpu-thread-coordinator.ts",
     "src/lib/services/gpu-cache-orchestrator.ts",
     "src/lib/services/webgpu-texture-streaming.ts",
+    "src/lib/services/chr-rom-mipmap-integration.ts",
     "src/lib/types/drizzle-enhanced.d.ts",
     "src/lib/shims/**",
     "src/proto/**",

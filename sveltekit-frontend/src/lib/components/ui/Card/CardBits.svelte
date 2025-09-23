@@ -26,10 +26,10 @@
   const baseClasses = "legal-ai-card transition-all duration-300";
 
   const variantClasses = {
-    default: "bg-slate-800/60 border border-slate-700/50",
-    elevated: "bg-slate-800/80 border border-amber-500/20 shadow-2xl shadow-amber-500/10",
-    outlined: "bg-transparent border-2 border-amber-500/30",
-    filled: "bg-slate-800/90 border border-slate-600/50"
+    default: "legal-card bg-legal-surface/60 border border-legal-primary/20",
+    elevated: "legal-card-elevated bg-legal-surface/80 border border-legal-accent/20 shadow-2xl shadow-legal-accent/10",
+    outlined: "legal-card-outlined bg-transparent border-2 border-legal-accent/30",
+    filled: "legal-card bg-legal-surface/90 border border-legal-primary/30"
   };
 
   const paddingClasses = {
@@ -40,7 +40,7 @@
     xl: "p-10"
   };
 
-  const hoverClasses = hover ? "hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/20 hover:-translate-y-1" : "";
+  const hoverClasses = hover ? "hover:border-legal-accent/50 hover:shadow-lg hover:shadow-legal-accent/20 hover:-translate-y-1" : "";
 
   let computedClasses = $derived(cn(
     baseClasses,

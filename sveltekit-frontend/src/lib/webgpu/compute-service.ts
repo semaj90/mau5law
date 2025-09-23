@@ -5,7 +5,6 @@
  */
 
 import type { LegalAIRequest } from '../services/unified-legal-orchestrator.js';
-}
 
 export interface WebGPUComputeResult {
   success: boolean;
@@ -33,7 +32,7 @@ class WebGPUComputeService {
     
     try {
       // For now, return a stub implementation
-      // This can be expanded to use the existing WebGPU AI engine;
+      // This can be expanded to use the existing WebGPU AI engine
       const result = {
         success: true,
         data: {

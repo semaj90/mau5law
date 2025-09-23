@@ -1,0 +1,142 @@
+{
+  "Svelte 5 State Rune": {
+    "prefix": "state",
+    "body": ["let ${1:name} = \\$state(${2:defaultValue});"],
+    "description": "Create reactive state with $state rune"
+  },
+  "Svelte 5 Derived Rune": {
+    "prefix": "derived",
+    "body": ["let ${1:name} = \\$derived(${2:expression});"],
+    "description": "Create derived state with $derived rune"
+  },
+  "Svelte 5 Effect Rune": {
+    "prefix": "effect",
+    "body": [
+      "\\$effect(() => {",
+      "\t${1:// effect logic}",
+      "\t",
+      "\treturn () => {",
+      "\t\t${2:// cleanup}",
+      "\t};",
+      "});"
+    ],
+    "description": "Create effect with cleanup using $effect rune"
+  },
+  "Svelte 5 Props Rune": {
+    "prefix": "props",
+    "body": ["let { ${1:propName} } = \\$props();"],
+    "description": "Destructure props with $props rune"
+  },
+  "Svelte 5 Bindable Prop": {
+    "prefix": "bindable",
+    "body": ["let { ${1:value} = \\$bindable() } = \\$props();"],
+    "description": "Create bindable prop with $bindable rune"
+  },
+  "Svelte 5 Snippet": {
+    "prefix": "snippet",
+    "body": [
+      "{#snippet ${1:name}(${2:params})}",
+      "\t${3:<!-- snippet content -->}",
+      "{/snippet}"
+    ],
+    "description": "Create a Svelte 5 snippet"
+  },
+  "Render Snippet": {
+    "prefix": "render",
+    "body": ["{@render ${1:snippetName}(${2:args})}"],
+    "description": "Render a snippet with {@render}"
+  },
+  "Each Block with Key": {
+    "prefix": "each",
+    "body": [
+      "{#each ${1:items} as ${2:item} (${3:item.id})}",
+      "\t${4:<!-- content -->}",
+      "{/each}"
+    ],
+    "description": "Each block with key for efficient updates"
+  },
+  "If Else Block": {
+    "prefix": "if",
+    "body": [
+      "{#if ${1:condition}}",
+      "\t${2:<!-- if content -->}",
+      "{:else}",
+      "\t${3:<!-- else content -->}",
+      "{/if}"
+    ],
+    "description": "If-else conditional block"
+  },
+  "Await Block": {
+    "prefix": "await",
+    "body": [
+      "{#await ${1:promise}}",
+      "\t${2:<!-- loading -->}",
+      "{:then ${3:value}}",
+      "\t${4:<!-- success -->}",
+      "{:catch ${5:error}}",
+      "\t${6:<!-- error -->}",
+      "{/await}"
+    ],
+    "description": "Await block for handling promises"
+  },
+  "Svelte 5 Component with Runes": {
+    "prefix": "component",
+    "body": [
+      "<script${1: lang=\"ts\"}>",
+      "\tlet { ${2:prop} } = \\$props();",
+      "\tlet ${3:localState} = \\$state(${4:defaultValue});",
+      "\t",
+      "\t\\$effect(() => {",
+      "\t\t${5:// effect logic}",
+      "\t});",
+      "</script>",
+      "",
+      "${6:<!-- markup -->}",
+      "",
+      "<style>",
+      "\t${7:/* styles */}",
+      "</style>"
+    ],
+    "description": "Full Svelte 5 component template with runes"
+  },
+  "Event Handler (onclick)": {
+    "prefix": "onclick",
+    "body": ["onclick={() => ${1:action}}"],
+    "description": "Modern onclick event handler"
+  },
+  "Bind Directive": {
+    "prefix": "bind",
+    "body": ["bind:${1:property}={${2:variable}}"],
+    "description": "Bind directive for two-way data binding"
+  },
+  "Class Directive": {
+    "prefix": "class",
+    "body": ["class:${1:className}={${2:condition}}"],
+    "description": "Conditional class directive"
+  },
+  "Transition": {
+    "prefix": "transition",
+    "body": ["transition:${1:fade}={{ ${2:duration: 300} }}"],
+    "description": "Transition directive"
+  },
+  "HTML Tag": {
+    "prefix": "html",
+    "body": ["{@html ${1:htmlString}}"],
+    "description": "Render raw HTML with {@html}"
+  },
+  "Inspect Rune": {
+    "prefix": "inspect",
+    "body": ["\\$inspect(${1:value});"],
+    "description": "Debug reactive values with $inspect"
+  },
+  "Derived By Function": {
+    "prefix": "derivedby",
+    "body": [
+      "let ${1:name} = \\$derived.by(() => {",
+      "\t${2:// complex derivation logic}",
+      "\treturn ${3:result};",
+      "});"
+    ],
+    "description": "Complex derived state using $derived.by"
+  }
+}

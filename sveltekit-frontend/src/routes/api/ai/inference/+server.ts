@@ -34,7 +34,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     return new Response(JSON.stringify({
       text: (result as { response?: any; text?: any; eval_count?: any }).response || (result as { response?: any; text?: any; eval_count?: any }).text || '',
-      model: result?.model || "unknown" // @ts-ignore - Model property access || model || 'auto',
+      model: result?.model || model || 'auto',
       qualityScore: (result as { response?: any; text?: any; eval_count?: any }).eval_count ? Math.min(1, 0.6 + ((result as { response?: any; text?: any; eval_count?: any }).eval_count / 500)) : 0.75,
       latencyMs,
       tokens: (result as { response?: any; text?: any; eval_count?: any }).eval_count || undefined

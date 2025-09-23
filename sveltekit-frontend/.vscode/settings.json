@@ -1,5 +1,5 @@
 {
-  // Svelte 5 Support - Optimized
+  // Svelte 5 Support - Memory Optimized
   "svelte.enable-ts-plugin": true,
   "svelte.plugin.svelte.compilerWarnings": {
     "css-unused-selector": "ignore",
@@ -7,7 +7,7 @@
     "a11y-no-static-element-interactions": "ignore"
   },
 
-  // Performance Optimizations
+  // TypeScript Performance - Memory Optimized
   "typescript.preferences.includePackageJsonAutoImports": "off",
   "typescript.suggest.autoImports": false,
   "typescript.updateImportsOnFileMove.enabled": "never",
@@ -15,26 +15,38 @@
   "typescript.suggest.completeFunctionCalls": false,
   "typescript.referencesCodeLens.enabled": false,
   "typescript.implementationsCodeLens.enabled": false,
+  "typescript.tsserver.maxTsServerMemory": 2048,
+  "typescript.tsserver.watchOptions": {
+    "watchFile": "useFsEventsOnParentDirectory",
+    "excludeDirectories": ["**/node_modules", "**/.svelte-kit", "**/build"]
+  },
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "typescript.suggest.includeCompletionsForImportStatements": false,
+  "typescript.preferences.includeCompletionsForModuleExports": false,
+  "typescript.suggest.enabled": false,
+  "typescript.validate.enable": true,
 
-  // Prettier Configuration - Optimized for Large Codebase
-  "prettier.enable": true,
-  "prettier.requireConfig": true,
-  "prettier.documentSelectors": ["**/*.svelte"],
-  "prettier.ignorePath": ".prettierignore",
+  // Prettier Configuration - Optimized for Performance
+  "prettier.enable": false,
+  "prettier.requireConfig": false,
+  "editor.formatOnSave": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
 
-  // Default Formatter Settings - Optimized
+  // Default Formatter Settings - Disabled for Performance
   "[svelte]": {
     "editor.defaultFormatter": "svelte.svelte-vscode",
     "editor.formatOnSave": false,
-    "editor.formatOnPaste": false
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": null,
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false
   },
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": null,
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false
   },
@@ -42,40 +54,98 @@
   // ESLint Configuration - Disabled for Performance
   "eslint.enable": false,
 
-  // Editor Performance Settings
+  // Editor Performance Settings - Aggressive Optimization
   "editor.codeActionsOnSave": {},
-  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "editor.suggest.snippetsPreventQuickSuggestions": true,
   "editor.parameterHints.enabled": false,
   "editor.hover.enabled": false,
   "editor.lightbulb.enabled": "off",
   "editor.codeLens": false,
   "editor.foldingImportsByDefault": true,
   "editor.semanticHighlighting.enabled": false,
+  "editor.quickSuggestions": false,
+  "editor.suggestOnTriggerCharacters": false,
+  "editor.wordBasedSuggestions": "off",
+  "editor.suggest.localityBonus": false,
+  "editor.suggest.showStatusBar": false,
+  "editor.inlineSuggest.enabled": false,
 
   // File Associations
   "files.associations": {
     "*.svelte": "svelte"
   },
 
-  // Search Exclusions for Better Performance
+  // Search Exclusions - Extended for Better Performance
   "search.exclude": {
     "**/node_modules": true,
     "**/build": true,
     "**/.svelte-kit": true,
     "**/archived-components": true,
     "**/dist": true,
-    "**/.git": true
+    "**/.git": true,
+    "**/logs": true,
+    "**/coverage": true,
+    "**/tmp": true,
+    "**/*.log": true
   },
 
-  // File Watcher Exclusions
+  // File Watcher Exclusions - Extended
   "files.watcherExclude": {
     "**/node_modules/**": true,
     "**/build/**": true,
     "**/.svelte-kit/**": true,
     "**/archived-components/**": true,
-    "**/dist/**": true
+    "**/dist/**": true,
+    "**/logs/**": true,
+    "**/coverage/**": true,
+    "**/tmp/**": true,
+    "**/*.log": true
   },
 
-  // Svelte 5 Runes Support
-  "svelte.plugin.svelte.note-new-transformation": false
+  // Memory Management Settings
+  "workbench.settings.editor": "json",
+  "workbench.enableExperiments": false,
+  "workbench.tips.enabled": false,
+  "extensions.autoUpdate": false,
+  "extensions.autoCheckUpdates": false,
+  "telemetry.telemetryLevel": "off",
+
+  // Svelte 5 Language Server - Full @svelte-complete.txt Support
+  "svelte.plugin.svelte.note-new-transformation": false,
+  "svelte.plugin.typescript.enable": true,
+  "svelte.plugin.css.enable": true,
+  "svelte.plugin.html.enable": true,
+  "svelte.plugin.svelte.format.enable": true,
+  "svelte.plugin.svelte.hover.enable": true,
+  "svelte.plugin.svelte.completions.enable": true,
+  "svelte.plugin.svelte.diagnostics.enable": true,
+  "svelte.plugin.svelte.defaultScriptLanguage": "ts",
+  "svelte.plugin.svelte.compilerWarnings": {
+    "css-unused-selector": "ignore",
+    "a11y-click-events-have-key-events": "ignore",
+    "a11y-no-static-element-interactions": "ignore"
+  },
+
+  // Svelte 5 Runes & Template Syntax Support
+  "svelte.plugin.svelte.enable-ts-plugin": true,
+  "svelte.plugin.svelte.compilerOptions": {
+    "runes": true,
+    "modernAST": true
+  },
+
+  // Disable Heavy Features
+  "git.enabled": false,
+  "emmet.showExpandedAbbreviation": "never",
+  "breadcrumbs.enabled": false,
+  "outline.showVariables": false,
+  "outline.showFunctions": false,
+  "problems.showCurrentInStatus": false,
+
+  // Memory-specific optimizations
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.editor.revealIfOpen": false,
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.value": 5,
+  "workbench.editor.limit.perEditorGroup": true
 }

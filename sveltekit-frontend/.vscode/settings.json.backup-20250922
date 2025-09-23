@@ -1,0 +1,117 @@
+{
+  // Svelte 5 Support - Optimized
+  "svelte.enable-ts-plugin": true,
+  "svelte.plugin.svelte.compilerWarnings": {
+    "css-unused-selector": "ignore",
+    "a11y-click-events-have-key-events": "ignore",
+    "a11y-no-static-element-interactions": "ignore"
+  },
+
+  // Performance Optimizations
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.suggest.autoImports": false,
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "typescript.preferences.useLabelDetailsInCompletionEntries": false,
+  "typescript.suggest.completeFunctionCalls": false,
+  "typescript.referencesCodeLens.enabled": false,
+  "typescript.implementationsCodeLens.enabled": false,
+
+  // Prettier Configuration - Optimized for Large Codebase
+  "prettier.enable": true,
+  "prettier.requireConfig": true,
+  "prettier.documentSelectors": ["**/*.svelte"],
+  "prettier.ignorePath": ".prettierignore",
+
+  // Default Formatter Settings - Optimized
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode",
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false
+  },
+
+  // ESLint Configuration - Disabled for Performance
+  "eslint.enable": false,
+
+  // Editor Performance Settings
+  "editor.codeActionsOnSave": {},
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "editor.parameterHints.enabled": false,
+  "editor.hover.enabled": false,
+  "editor.lightbulb.enabled": "off",
+  "editor.codeLens": false,
+  "editor.foldingImportsByDefault": true,
+  "editor.semanticHighlighting.enabled": false,
+
+  // File Associations & Language Support
+  "files.associations": {
+    "*.svelte": "svelte",
+    "*.css": "css",
+    "*.scss": "scss",
+    "*.js": "javascript",
+    "*.ts": "typescript",
+    "*.json": "jsonc"
+  },
+
+  // TailwindCSS Configuration
+  "tailwindCSS.includeLanguages": {
+    "svelte": "html",
+    "javascript": "javascript",
+    "typescript": "typescript"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["class:([^=]+)\\s*=\\s*[\"']([^\"']*)[\"']", 2],
+    ["classList\\.(?:add|remove|toggle)\\([\"']([^\"']*)[\"']\\)", 1]
+  ],
+
+  // HTML/CSS/JavaScript Language Support for Svelte 5
+  "emmet.includeLanguages": {
+    "svelte": "html",
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact"
+  },
+  "emmet.showSuggestionsAsSnippets": true,
+  "html.suggest.html5": true,
+  "html.autoClosingTags": true,
+  "html.completion.attributeDefaultValue": "doublequotes",
+  "html.format.wrapAttributes": "preserve",
+  "css.completion.completePropertyWithSemicolon": true,
+  "css.completion.triggerPropertyValueCompletion": true,
+  "css.lint.unknownAtRules": "ignore",
+  "scss.completion.completePropertyWithSemicolon": true,
+  "javascript.suggest.autoImports": false,
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "javascript.preferences.includePackageJsonAutoImports": "off",
+  "javascript.format.semicolons": "insert",
+
+  // Search Exclusions for Better Performance
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/build": true,
+    "**/.svelte-kit": true,
+    "**/archived-components": true,
+    "**/dist": true,
+    "**/.git": true
+  },
+
+  // File Watcher Exclusions
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/build/**": true,
+    "**/.svelte-kit/**": true,
+    "**/archived-components/**": true,
+    "**/dist/**": true
+  },
+
+  // Svelte 5 Runes Support
+  "svelte.plugin.svelte.note-new-transformation": false
+}

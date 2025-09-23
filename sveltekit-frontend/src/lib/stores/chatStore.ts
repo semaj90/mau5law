@@ -4,10 +4,9 @@
  * Optimized for legal document analysis and precedent search
  */
 
-import { writable, derived, readonly } from "svelte/store";
-import crypto from "crypto";
+import { writable, derived, readonly, readable } from "svelte/store";
 
-// === TYPE DEFINITIONS ===;
+// === TYPE DEFINITIONS ===
 export interface ChatMessage {
   id: string;
   content: string;
@@ -55,7 +54,7 @@ export interface ServiceStatus {
   gemma3: "unknown" | "loading" | "ready" | "error";
 }
 
-// === CHAT STATE INTERFACE ===;
+// === CHAT STATE INTERFACE ===
 export interface ChatContext {
   messages: ChatMessage[];
   conversations: Conversation[];
@@ -69,23 +68,35 @@ export interface ChatContext {
   contextInjection: {
     enabled: boolean;
     documents: string[];
-    vectorResults: any[];
+    vectorResults: unknown[];
     precedents?: string[];
     caseContext?: unknown;
   };
 }
 
-// === INITIAL STATE ===;
+// === HELPERS ===
+const randomId = (): string => {
+  const g = typeof globalThis !== "undefined" ? (globalThis as { crypto?: Crypto }) : undefined;
+  const uuid = g?.crypto?.randomUUID?.();
+  if (uuid) return uuid;
+  let n: number;
+  if (g?.crypto?.getRandomValues) {
+    const buf = new Uint32Array(1);
+    g.crypto.getRandomValues(buf);
+    n = buf[0];
+  } else {
+    n = Math.floor(Math.random() * 1e9);
+  }
+  return `${n.toString(36)}${Date.now().toString(36)}`;
+};
+
+// === INITIAL STATE ===
 const initialState: ChatContext = {
   messages: [],
   conversations: [],
   currentConversation: null,
   error: null,
-  isLoading: false,
-  isTyping: false,
-  isStreaming: false,
-  modelStatus: "unknown"
-  }); const settings = {
+  settings: {
     model: "gemma3-legal",
     temperature: 0.1,
     maxTokens: 1024,
@@ -96,6 +107,10 @@ const initialState: ChatContext = {
     legalMode: true,
     citationMode: true
   },
+  isLoading: false,
+  isTyping: false,
+  isStreaming: false,
+  modelStatus: "unknown",
   contextInjection: {
     enabled: false,
     documents: [],
@@ -107,14 +122,20 @@ const initialState: ChatContext = {
 
 // === MAIN STORE ===
 export const chatStore = writable<ChatContext>(initialState);
-;
-// === SERVICE STATUS ===;
+
+// === SERVICE STATUS ===
 export const serviceStatus = writable<ServiceStatus>({
   ollama: "unknown",
   qdrant: "unknown",
   database: "unknown",
   gemma3: "unknown"
 });
+
+// Compatibility stores for existing UI components
+export const showProactivePrompt = writable<boolean>(false);
+export const aiPersonality = readable<{ name: string; displayName?: string }>(
+  { name: "Assistant", displayName: "Assistant" }
+);
 
 // === DERIVED STORES ===
 export const messages = derived(chatStore, ($store) => $store.messages);
@@ -128,16 +149,16 @@ export const settings = derived(chatStore, ($store) => $store.settings);
 export const modelStatus = derived(chatStore, ($store) => $store.modelStatus);
 export const contextInjection = derived(chatStore, ($store) => $store.contextInjection);
 export const conversationsList = derived(conversations, ($conversations) =>
-  [...$conversations].sort((a, b) => b.updated.getTime() - a.updated.getTime()
+  [...$conversations].sort((a, b) => b.updated.getTime() - a.updated.getTime())
 );
 export const isActiveChat = derived(currentConversation, ($conversation) => !!$conversation);
 
-// === ACTIONS ===;
+// === ACTIONS ===
 export const chatActions = {
-  // Create new conversation;
+  // Create new conversation
   newConversation: (title?: string, caseType?: string) => {
     const conversation: Conversation = {
-      id: crypto.randomUUID(),
+      id: randomId(),
       title: title || "New Legal Consultation",
       messages: [],
       created: new Date(),
@@ -154,17 +175,15 @@ export const chatActions = {
       currentConversation: conversation,
       conversations: [conversation, ...state.conversations],
       messages: []
-    });
+    }));
 
     return conversation.id;
   },
 
-  // Load conversation;
+  // Load conversation
   loadConversation: (conversationId: string) => {
     chatStore.update((state) => {
-      const conversation = state.conversations.find(
-        (c) => c.id === conversationId,
-      );
+      const conversation = state.conversations.find((c) => c.id === conversationId);
       return {
         ...state,
         currentConversation: conversation || null,
@@ -173,13 +192,17 @@ export const chatActions = {
     });
   },
 
-  // Add message;
-  addMessage: (content: string, role: "user" | "assistant" | "system", metadata?: unknown) => {
+  // Add message
+  addMessage: (
+    content: string,
+    role: "user" | "assistant" | "system",
+    metadata?: Partial<ChatMessage["metadata"]>
+  ) => {
     chatStore.update((state) => {
       if (!state.currentConversation) {
-        // Create new conversation if none exists;
+        // Create new conversation if none exists
         const conversation: Conversation = {
-          id: crypto.randomUUID(),
+          id: randomId(),
           title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
           messages: [],
           created: new Date(),
@@ -195,25 +218,21 @@ export const chatActions = {
       }
 
       const message: ChatMessage = {
-        id: crypto.randomUUID(),
+        id: randomId(),
         content,
         role,
         timestamp: new Date(),
-        conversationId: state.currentConversation.id,
+        conversationId: state.currentConversation!.id,
         metadata
       };
 
       const updatedMessages = [...state.messages, message];
-      state.currentConversation.messages = updatedMessages;
-      state.currentConversation.updated = new Date();
+      state.currentConversation!.messages = updatedMessages;
+      state.currentConversation!.updated = new Date();
 
       // Update title if it's the first user message
-      if (
-        role === "user" &&
-        updatedMessages.filter((m) => m.role === "user").length === 1;
-      ) {
-        state.currentConversation.title =
-          content.slice(0, 50) + (content.length > 50 ? "..." : "");
+      if (role === "user" && updatedMessages.filter((m) => m.role === "user").length === 1) {
+        state.currentConversation!.title = content.slice(0, 50) + (content.length > 50 ? "..." : "");
       }
 
       return {
@@ -223,7 +242,7 @@ export const chatActions = {
     });
   },
 
-  // Send message with streaming support;
+  // Send message with streaming support
   sendMessage: async (content: string) => {
     chatActions.addMessage(content, "user");
 
@@ -232,7 +251,7 @@ export const chatActions = {
       isLoading: true,
       isTyping: true,
       error: null
-    });
+    }));
 
     try {
       const response = await fetch("/api/ai/chat", {
@@ -250,46 +269,41 @@ export const chatActions = {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      // Handle streaming vs non-streaming responses;
-      if (response.headers.get("content-type")?.includes("text/stream")) {
+      // Handle streaming vs non-streaming responses
+      const ct = response.headers.get("content-type") || "";
+      if (ct.includes("text/stream") || ct.includes("text/event-stream")) {
         await handleStreamingResponse(response);
       } else {
         const data = await response.json();
         chatActions.addMessage(data.response, "assistant", {
-          model: data?.model || "unknown" // @ts-ignore - Model property access,
+          model: data?.model || "unknown",
           tokensUsed: data.tokensUsed,
           references: data.references,
           confidence: data.confidence,
           legalContext: data.legalContext
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error sending message:", error);
       chatStore.update((state) => ({
         ...state,
-        error:
-          error instanceof Error ? error : new Error("Failed to send message")
-      });
+        error: error instanceof Error ? error : new Error("Failed to send message")
+      }));
     } finally {
       chatStore.update((state) => ({
         ...state,
         isLoading: false,
         isTyping: false,
         isStreaming: false
-      });
+      }));
     }
   },
 
-  // Delete conversation;
+  // Delete conversation
   deleteConversation: (conversationId: string) => {
     chatStore.update((state) => {
-      const conversations = state.conversations.filter(
-        (c) => c.id !== conversationId,
-      );
-      const currentConversation =
-        state.currentConversation?.id === conversationId
-          ? null
-          : state.currentConversation;
+      const conversations = state.conversations.filter((c) => c.id !== conversationId);
+      const currentConversation = state.currentConversation?.id === conversationId ? null : state.currentConversation;
 
       return {
         ...state,
@@ -300,15 +314,15 @@ export const chatActions = {
     });
   },
 
-  // Update settings;
+  // Update settings
   updateSettings: (newSettings: Partial<ChatSettings>) => {
     chatStore.update((state) => ({
-      ...state
-      }); const settings = { ...state.settings, ...newSettings }
-    });
+      ...state,
+      settings: { ...state.settings, ...newSettings }
+    }));
   },
 
-  // Legal-specific context injection;
+  // Legal-specific context injection
   injectLegalContext: (documents: string[], precedents?: string[], caseContext?: unknown) => {
     chatStore.update((state) => ({
       ...state,
@@ -317,12 +331,12 @@ export const chatActions = {
         enabled: true,
         documents,
         precedents: precedents || [],
-        caseContext: caseContext || null
+        caseContext: caseContext ?? null
       }
-    });
+    }));
   },
 
-  // Context injection;
+  // Context injection
   injectContext: (documents: string[]) => {
     chatStore.update((state) => ({
       ...state,
@@ -331,7 +345,7 @@ export const chatActions = {
         enabled: true,
         documents
       }
-    });
+    }));
   },
 
   clearContext: () => {
@@ -344,12 +358,12 @@ export const chatActions = {
         precedents: [],
         caseContext: null
       }
-    });
+    }));
   },
 
-  // Model status;
+  // Model status
   checkModelStatus: async () => {
-    chatStore.update((state) => ({ ...state, modelStatus: "loading" });
+    chatStore.update((state) => ({ ...state, modelStatus: "loading" }));
 
     try {
       const response = await fetch("/api/ai/model-status");
@@ -358,21 +372,21 @@ export const chatActions = {
         chatStore.update((state) => ({
           ...state,
           modelStatus: data.status || "ready"
-        });
+        }));
       } else {
-        chatStore.update((state) => ({ ...state, modelStatus: "error" });
+        chatStore.update((state) => ({ ...state, modelStatus: "error" }));
       }
-    } catch (error: any) {
-      chatStore.update((state) => ({ ...state, modelStatus: "error" });
+    } catch (error: unknown) {
+      chatStore.update((state) => ({ ...state, modelStatus: "error" }));
     }
   },
 
-  // Error handling;
+  // Error handling
   clearError: () => {
-    chatStore.update((state) => ({ ...state, error: null });
+    chatStore.update((state) => ({ ...state, error: null }));
   },
 
-  // Reset chat;
+  // Reset chat
   resetChat: () => {
     chatStore.update((state) => ({
       ...state,
@@ -382,45 +396,42 @@ export const chatActions = {
       isLoading: false,
       isTyping: false,
       isStreaming: false
-    });
+    }));
   },
 
-  // Loading states;
+  // Loading states
   setLoading: (loading: boolean) => {
-    chatStore.update((state) => ({ ...state, isLoading: loading });
+    chatStore.update((state) => ({ ...state, isLoading: loading }));
   },
 
   setTyping: (typing: boolean) => {
-    chatStore.update((state) => ({ ...state, isTyping: typing });
+    chatStore.update((state) => ({ ...state, isTyping: typing }));
   },
 
   setStreaming: (streaming: boolean) => {
-    chatStore.update((state) => ({ ...state, isStreaming: streaming });
+    chatStore.update((state) => ({ ...state, isStreaming: streaming }));
   }
 };
 
-// === SERVICE ACTIONS ===;
+// === SERVICE ACTIONS ===
 export const serviceActions = {
   updateStatus: (
     service: keyof ServiceStatus,
-    status: ServiceStatus[keyof ServiceStatus],
+    status: ServiceStatus[keyof ServiceStatus]
   ) => {
-    serviceStatus.update((current) => ({ ...current, [service]: status });
+    serviceStatus.update((current) => ({ ...current, [service]: status }));
   },
 
   checkAllServices: async () => {
-    // Check Ollama;
+    // Check Ollama
     try {
       const ollamaResponse = await fetch("/api/ai/test-ollama");
-      serviceActions.updateStatus(
-        "ollama",
-        ollamaResponse.ok ? "connected" : "error",
-      );
+      serviceActions.updateStatus("ollama", ollamaResponse.ok ? "connected" : "error");
     } catch {
       serviceActions.updateStatus("ollama", "error");
     }
 
-    // Check Gemma3 model;
+    // Check Gemma3 model
     try {
       const modelResponse = await fetch("/api/ai/model-status");
       if (modelResponse.ok) {
@@ -433,31 +444,25 @@ export const serviceActions = {
       serviceActions.updateStatus("gemma3", "error");
     }
 
-    // Check database;
+    // Check database
     try {
       const dbResponse = await fetch("/api/health/database");
-      serviceActions.updateStatus(
-        "database",
-        dbResponse.ok ? "connected" : "error",
-      );
+      serviceActions.updateStatus("database", dbResponse.ok ? "connected" : "error");
     } catch {
       serviceActions.updateStatus("database", "error");
     }
 
-    // Check Qdrant;
+    // Check Qdrant
     try {
       const qdrantResponse = await fetch("/api/health/qdrant");
-      serviceActions.updateStatus(
-        "qdrant",
-        qdrantResponse.ok ? "connected" : "error",
-      );
+      serviceActions.updateStatus("qdrant", qdrantResponse.ok ? "connected" : "error");
     } catch {
       serviceActions.updateStatus("qdrant", "error");
     }
   }
 };
 
-// === HELPER FUNCTIONS ===;
+// === HELPER FUNCTIONS ===
 function getCurrentConversationId(): string | undefined {
   let currentId: string | undefined;
   const unsubscribe = chatStore.subscribe((state) => {
@@ -468,42 +473,44 @@ function getCurrentConversationId(): string | undefined {
 }
 
 function getSettings(): ChatSettings {
-  let settings: ChatSettings;
+  let settingsValue!: ChatSettings;
   const unsubscribe = chatStore.subscribe((state) => {
-    settings = state.settings;
+    settingsValue = state.settings;
   });
   unsubscribe();
-  return settings!;
+  return settingsValue;
 }
 
 function getContextInjection() {
-  let context: any;
+  let context: ChatContext["contextInjection"] | undefined;
   const unsubscribe = chatStore.subscribe((state) => {
     context = state.contextInjection;
   });
   unsubscribe();
-  return context;
+  return context!;
 }
 
-// Handle streaming responses;
-async function handleStreamingResponse(response: Response): Promise<any> {
+// Handle streaming responses
+async function handleStreamingResponse(response: Response): Promise<void> {
   if (!response.body) return;
 
-  chatStore.update((state) => ({ ...state, isStreaming: true });
+  chatStore.update((state) => ({ ...state, isStreaming: true }));
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let assistantMessage = "";
 
   try {
-    while (true) {
+    let doneFlag = false;
+    while (!doneFlag) {
       const { done, value } = await reader.read();
-      if (done) break;
+      doneFlag = !!done;
+      if (doneFlag) break;
 
-      const chunk = decoder.decode(value);
+      const chunk = decoder.decode(value, { stream: true });
       assistantMessage += chunk;
 
-      // Update the last message or create new one;
+      // Update the last message or create new one
       chatStore.update((state) => {
         const messages = [...state.messages];
         const lastMessage = messages[messages.length - 1];
@@ -515,7 +522,7 @@ async function handleStreamingResponse(response: Response): Promise<any> {
           };
         } else {
           messages.push({
-            id: crypto.randomUUID(),
+            id: randomId(),
             content: assistantMessage,
             role: "assistant",
             timestamp: new Date(),
@@ -526,16 +533,16 @@ async function handleStreamingResponse(response: Response): Promise<any> {
         return { ...state, messages };
       });
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Streaming error:", error);
     chatStore.update((state) => ({
       ...state,
       error: error instanceof Error ? error : new Error("Streaming failed")
-    });
+    }));
   }
 }
 
-// === XSTATE-LIKE COMPATIBILITY ===;
+// === XSTATE-LIKE COMPATIBILITY ===
 export interface XStateCompatibleState {
   context: ChatContext;
   matches: (state: string) => boolean;
@@ -557,7 +564,7 @@ export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateComp
         return false;
     }
   }
-});
+}));
 
 export function useChatActor() {
   return {
@@ -565,85 +572,16 @@ export function useChatActor() {
   };
 }
 
-// === LEGAL AI INTEGRATION ===;
-export const legalActions = {
-  // Search legal precedents;
-  searchPrecedents: async (query: string, jurisdiction?: string) => {
-    try {
-      const response = await fetch("/api/legal/precedents/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, jurisdiction })
-      });
-
-      if (response.ok) {
-        const precedents = await response.json();
-        chatStore.update((state) => ({
-          ...state,
-          contextInjection: {
-            ...state.contextInjection,
-            precedents: precedents.results || []
-          }
-        });
-        return precedents;
-      }
-    } catch (error: any) {
-      console.error("Error searching precedents:", error);
-    }
-    return null;
-  },
-
-  // Analyze legal document;
-  analyzeDocument: async (documentText: string) => {
-    try {
-      const response = await fetch("/api/legal/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: documentText })
-      });
-
-      if (response.ok) {
-        const analysis = await response.json();
-        return analysis;
-      }
-    } catch (error: any) {
-      console.error("Error analyzing document:", error);
-    }
-    return null;
-  },
-
-  // Extract legal entities;
-  extractEntities: async (text: string) => {
-    try {
-      const response = await fetch("/api/legal/entities", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text })
-      });
-
-      if (response.ok) {
-        return await response.json();
-      }
-    } catch (error: any) {
-      console.error("Error extracting entities:", error);
-    }
-    return null;
-  }
-};
-
-// === PERSISTENCE ===;
+// === PERSISTENCE ===
 export const persistenceHelpers = {
   saveToStorage: () => {
     if (typeof window === "undefined") return;
 
     const unsubscribe = chatStore.subscribe((state) => {
       try {
-        localStorage.setItem(
-          "chat-conversations",
-          JSON.stringify(state.conversations),
-        );
-        localStorage.setItem("chat-settings", JSON.stringify(state.settings);
-      } catch (error: any) {
+        localStorage.setItem("chat-conversations", JSON.stringify(state.conversations));
+        localStorage.setItem("chat-settings", JSON.stringify(state.settings));
+      } catch (error: unknown) {
         console.warn("Failed to save chat data to localStorage:", error);
       }
     });
@@ -655,33 +593,85 @@ export const persistenceHelpers = {
     if (typeof window === "undefined") return;
 
     try {
-      const conversations = localStorage.getItem("chat-conversations");
-      const settings = localStorage.getItem("chat-settings");
+      const conversationsStr = localStorage.getItem("chat-conversations");
+      const settingsStr = localStorage.getItem("chat-settings");
 
-      chatStore.update((state) => ({
-        ...state,
-        conversations: conversations;
-          ? JSON.parse(conversations).map((c: any) => ({
-              ...c,
-              created: new Date(c.created),
-              updated: new Date(c.updated),
-              messages: c.messages.map((m: any) => ({
-                ...m,
-                timestamp: new Date(m.timestamp)
-              }))
-            })
-          : state.conversations,
-        settings: settings
-          ? { ...state.settings, ...JSON.parse(settings) }
-          : state.settings
+      // Type guards
+      const isRecord = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === "object";
+      const asDate = (v: unknown): Date => (typeof v === "string" || typeof v === "number") ? new Date(v) : new Date();
+      const coerceMessage = (u: unknown): ChatMessage => {
+        if (!isRecord(u)) {
+          return { id: randomId(), content: "", role: "assistant", timestamp: new Date() };
+        }
+        const role = u["role"];
+        const roleVal: ChatMessage["role"] = role === "user" || role === "assistant" || role === "system" ? role : "assistant";
+        return {
+          id: typeof u["id"] === "string" ? (u["id"] as string) : randomId(),
+          content: typeof u["content"] === "string" ? (u["content"] as string) : "",
+          role: roleVal,
+          timestamp: asDate(u["timestamp"]),
+          conversationId: typeof u["conversationId"] === "string" ? (u["conversationId"] as string) : undefined,
+          metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
+        } as ChatMessage;
+      };
+
+      const coerceConversation = (u: unknown): Conversation => {
+        if (!isRecord(u)) {
+          return {
+            id: randomId(),
+            title: "Conversation",
+            messages: [],
+            created: new Date(),
+            updated: new Date()
+          };
+        }
+        const msgsUnknown = isRecord(u) ? (u["messages"] as unknown) : undefined;
+        const msgs: ChatMessage[] = Array.isArray(msgsUnknown) ? msgsUnknown.map(coerceMessage) : [];
+        return {
+          id: typeof u["id"] === "string" ? (u["id"] as string) : randomId(),
+          title: typeof u["title"] === "string" ? (u["title"] as string) : "Conversation",
+          messages: msgs,
+          created: asDate(u["created"]),
+          updated: asDate(u["updated"]),
+          metadata: isRecord(u["metadata"]) ? (u["metadata"] as Record<string, unknown>) : undefined
+        } as Conversation;
+      };
+
+      chatStore.update((state) => {
+        let conversations = state.conversations;
+        if (conversationsStr) {
+          const parsed = JSON.parse(conversationsStr) as unknown;
+          if (Array.isArray(parsed)) {
+            conversations = parsed.map(coerceConversation);
+          }
+        }
+
+        let newSettings = state.settings;
+        if (settingsStr) {
+          const parsedSettings = JSON.parse(settingsStr) as unknown;
+          if (isRecord(parsedSettings)) {
+            newSettings = { ...state.settings };
+            if (typeof parsedSettings["model"] === "string") newSettings.model = parsedSettings["model"] as string;
+            if (typeof parsedSettings["temperature"] === "number") newSettings.temperature = parsedSettings["temperature"] as number;
+            if (typeof parsedSettings["maxTokens"] === "number") newSettings.maxTokens = parsedSettings["maxTokens"] as number;
+            if (typeof parsedSettings["streaming"] === "boolean") newSettings.streaming = parsedSettings["streaming"] as boolean;
+            if (typeof parsedSettings["contextWindow"] === "number") newSettings.contextWindow = parsedSettings["contextWindow"] as number;
+            if (typeof parsedSettings["proactiveMode"] === "boolean") newSettings.proactiveMode = parsedSettings["proactiveMode"] as boolean;
+            if (typeof parsedSettings["emotionalMode"] === "boolean") newSettings.emotionalMode = parsedSettings["emotionalMode"] as boolean;
+            if (typeof parsedSettings["legalMode"] === "boolean") newSettings.legalMode = parsedSettings["legalMode"] as boolean;
+            if (typeof parsedSettings["citationMode"] === "boolean") newSettings.citationMode = parsedSettings["citationMode"] as boolean;
+          }
+        }
+
+        return { ...state, conversations, settings: newSettings };
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.warn("Failed to load chat data from localStorage:", error);
     }
   }
 };
 
-// Initialize persistence on client-side;
+// Initialize persistence on client-side
 if (typeof window !== "undefined") {
   persistenceHelpers.loadFromStorage();
   persistenceHelpers.saveToStorage();

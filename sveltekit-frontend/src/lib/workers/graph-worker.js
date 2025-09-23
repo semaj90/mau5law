@@ -266,7 +266,7 @@ class GraphWorker {
                         wasmResult = this.wasmModule.queryPrecedents();
                         break;
                     default:
-                        wasmResult = this.wasmModule.executeCypher(query);,
+                        wasmResult = this.wasmModule.executeCypher(query);
                 }
                 
                 const wasmLatency = performance.now() - startTime;
@@ -280,7 +280,7 @@ class GraphWorker {
                     cache_hit: false,
                     latency_ms: wasmLatency,
                     query_hash: queryHash,
-                    is_provisional: true // Mark as provisional,
+                    is_provisional: true // Mark as provisional
                 });
                 
                 // Cache WASM result for instant replay
@@ -393,12 +393,12 @@ class GraphWorker {
         // Use requestIdleCallback for background refresh
         if (typeof requestIdleCallback !== 'undefined') {
             requestIdleCallback(() => {
-                this.fetchAuthoritativeResult(query, params, queryHash, performance.now();
+                this.fetchAuthoritativeResult(query, params, queryHash, performance.now());
             }, { timeout: 5000 });
         } else {
             // Fallback to setTimeout
             setTimeout(() => {
-                this.fetchAuthoritativeResult(query, params, queryHash, performance.now();
+                this.fetchAuthoritativeResult(query, params, queryHash, performance.now());
             }, 100);
         }
     }
@@ -412,7 +412,7 @@ class GraphWorker {
             cache_hits: this.telemetry.cacheHits,
             cache_misses: this.telemetry.cacheMisses,
             hit_rate: totalQueries > 0 ? (this.telemetry.cacheHits / totalQueries * 100) : 0,
-            avg_latency_ms: latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length: 0,
+            avg_latency_ms: latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0,
             p95_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 95) : 0,
             p99_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 99) : 0,
             last_query_time: Date.now(),

@@ -148,7 +148,7 @@ class WebGPUCudaBridge {
 					throw new Error(`Unknown task type: ${task.type}`);
 			}
 
-			// Send result back to main thread;
+			// Send result back to main thread
 			self.postMessage({
 				type: 'task-complete',
 				taskId: task.id,
@@ -175,7 +175,7 @@ class WebGPUCudaBridge {
 	private async processInference(task: CudaProcessingTask): Promise<any> {
 		const { data, config } = task;
 		
-		// Try WebGPU-accelerated processing first;
+		// Try WebGPU-accelerated processing first
 		if (this.webgpuDevice?.isInitialized) {
 			try {
 				const result = await this.runWebGPUInference(data, config);
@@ -218,7 +218,7 @@ class WebGPUCudaBridge {
 				
 				var result = input_val * weight + bias;
 				
-				// ReLU activation;
+				// ReLU activation
 				if (result < activation_threshold) {
 					result = 0.0;
 				}
@@ -235,7 +235,7 @@ class WebGPUCudaBridge {
 		const inputArray = toFloat32Array(data);
 		const outputArray = new Float32Array(inputArray.length);
 
-		// Create buffers;
+		// Create buffers
 		const inputBuffer = device.createBuffer({
 			size: inputArray.byteLength,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
@@ -262,9 +262,9 @@ class WebGPUCudaBridge {
 		device.queue.writeBuffer(inputBuffer, 0, inputArray);
 		device.queue.writeBuffer(configBuffer, 0, configArray);
 
-		// Create bind group layout;
+		// Create bind group layout
 		const bindGroupLayout = device.createBindGroupLayout({
-			entries: [;
+			entries: [
 				{
 					binding: 0,
 					visibility: GPUShaderStage.COMPUTE,
@@ -274,7 +274,7 @@ class WebGPUCudaBridge {
 					binding: 1,
 					visibility: GPUShaderStage.COMPUTE,
 					buffer: { type: 'storage' }
-				},);
+				},
 				{
 					binding: 2,
 					visibility: GPUShaderStage.COMPUTE,
@@ -283,17 +283,17 @@ class WebGPUCudaBridge {
 			]
 		});
 
-		// Create bind group;
+		// Create bind group
 		const bindGroup = device.createBindGroup({
 			layout: bindGroupLayout,
 			entries: [
 				{ binding: 0, resource: { buffer: inputBuffer } },
-				{ binding: 1, resource: { buffer: outputBuffer } },)>
+				{ binding: 1, resource: { buffer: outputBuffer } },
 				{ binding: 2, resource: { buffer: configBuffer } }
 			]
 		});
 
-		// Create compute pipeline;
+		// Create compute pipeline
 		const computePipeline = device.createComputePipeline({
 			layout: device.createPipelineLayout({
 				bindGroupLayouts: [bindGroupLayout]
@@ -310,10 +310,10 @@ class WebGPUCudaBridge {
 		
 		passEncoder.setPipeline(computePipeline);
 		passEncoder.setBindGroup(0, bindGroup);
-		passEncoder.dispatchWorkgroups(Math.ceil(inputArray.length / 64);
+		passEncoder.dispatchWorkgroups(Math.ceil(inputArray.length / 64));
 		passEncoder.end();
 
-		// Copy result buffer to staging buffer;
+		// Copy result buffer to staging buffer
 		const stagingBuffer = device.createBuffer({
 			size: outputArray.byteLength,
 			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
@@ -415,7 +415,7 @@ class WebGPUCudaBridge {
 	private async processEmbedding(task: CudaProcessingTask): Promise<any> {
 		const { data, config } = task;
 		
-		// For embeddings, we primarily use Ollama or the Go microservice;
+		// For embeddings, we primarily use Ollama or the Go microservice
 		try {
 			const response = await fetch(`${this.ollamaEndpoint}/api/embeddings`, {
 				method: 'POST',
@@ -435,7 +435,7 @@ class WebGPUCudaBridge {
 			console.warn('⚠️ Ollama embedding failed, trying CUDA microservice:', error);
 		}
 
-		// Fallback to enhanced CUDA server vector search;
+		// Fallback to enhanced CUDA server vector search
 		const response = await fetch(`${this.cudaServiceEndpoint}/api/legal/vector-search`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -480,13 +480,13 @@ class WebGPUCudaBridge {
 		
 		switch (config.operation) {
 			case 'multiply':
-				return inputArray.map(x => x * (config.factor || 1.0);
+				return inputArray.map(x => x * (config.factor || 1.0));
 			case 'add':
-				return inputArray.map(x => x + (config.value || 0.0);
+				return inputArray.map(x => x + (config.value || 0.0));
 			case 'normalize':
 				const max = Math.max(...inputArray);
 				const min = Math.min(...inputArray);
-				return inputArray.map(x => (x - min) / (max - min);
+				return inputArray.map(x => (x - min) / (max - min));
 			default:
 				return Array.from(inputArray);
 		}
@@ -496,16 +496,16 @@ class WebGPUCudaBridge {
 		// CPU fallback for tensor operations
 		const inputArray = toFloat32Array(data);
 		
-		// Same operations as WebGPU version, but clearly marked as CPU fallback;
+		// Same operations as WebGPU version, but clearly marked as CPU fallback
 		switch (config.operation) {
 			case 'multiply':
-				return inputArray.map(x => x * (config.factor || 1.0);
+				return inputArray.map(x => x * (config.factor || 1.0));
 			case 'add':
-				return inputArray.map(x => x + (config.value || 0.0);
+				return inputArray.map(x => x + (config.value || 0.0));
 			case 'normalize':
 				const max = Math.max(...inputArray);
 				const min = Math.min(...inputArray);
-				return inputArray.map(x => (x - min) / (max - min);
+				return inputArray.map(x => (x - min) / (max - min));
 			default:
 				return Array.from(inputArray);
 		}
@@ -514,7 +514,7 @@ class WebGPUCudaBridge {
 	private async processImageOperations(task: CudaProcessingTask): Promise<any> {
 		const { data, config } = task;
 		
-		// Image processing operations;
+		// Image processing operations
 		if (this.webgpuDevice?.isInitialized) {
 			return await this.runWebGPUImageProcessing(data, config);
 		}
@@ -565,7 +565,7 @@ class WebGPUCudaBridge {
 // Initialize the bridge
 const bridge = new WebGPUCudaBridge();
 
-// Handle messages from main thread;
+// Handle messages from main thread
 self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 	const { type, payload, requestId } = event.data;
 	
@@ -590,7 +590,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 				});
 				break;
 				
-			case 'status':;
+			case 'status':
 				self.postMessage({
 					type: 'status-response',
 					requestId,

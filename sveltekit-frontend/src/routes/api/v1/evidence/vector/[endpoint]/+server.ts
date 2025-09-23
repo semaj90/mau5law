@@ -8,34 +8,37 @@ import { z } from 'zod';
 
 // Configuration
 const OLLAMA_BASE_URL = 'http://localhost:11434';
-const CUDA_SERVICE_URL = 'http://localhost:8096';
 const EMBEDDING_MODEL = 'nomic-embed-text:latest';
-const SIMILARITY_THRESHOLD = 0.65;
+// const SIMILARITY_THRESHOLD = 0.65; // Reserved for future threshold tuning
 
 // Advanced schemas;
 const VectorSearchSchema = z.object({
   query: z.string().min(1),
   searchType: z.enum(['semantic', 'legal', 'factual', 'temporal']).default('semantic'),
   evidenceTypes: z.array(z.string()).optional(),
-  timeRange: z.object({
-    start: z.string().optional(),
-    end: z.string().optional()
-  }).optional(),
-  weights: z.object({
-    semantic: z.number().min(0).max(1).default(0.4),
-    legal: z.number().min(0).max(1).default(0.3),
-    temporal: z.number().min(0).max(1).default(0.2),
-    contextual: z.number().min(0).max(1).default(0.1)
-  }).optional(),
+  timeRange: z
+    .object({
+      start: z.string().optional(),
+      end: z.string().optional(),
+    })
+    .optional(),
+  weights: z
+    .object({
+      semantic: z.number().min(0).max(1).default(0.4),
+      legal: z.number().min(0).max(1).default(0.3),
+      temporal: z.number().min(0).max(1).default(0.2),
+      contextual: z.number().min(0).max(1).default(0.1),
+    })
+    .optional(),
   minSimilarity: z.number().min(0).max(1).default(0.65),
-  maxResults: z.number().min(1).max(50).default(10)
+  maxResults: z.number().min(1).max(50).default(10),
 });
 
 const ClusterAnalysisSchema = z.object({
   evidenceIds: z.array(z.string().uuid()),
   clusterMethod: z.enum(['kmeans', 'hierarchical', 'dbscan']).default('kmeans'),
   numClusters: z.number().min(2).max(20).optional(),
-  includeOutliers: z.boolean().default(false)
+  includeOutliers: z.boolean().default(false),
 });
 
 // Types;
@@ -77,7 +80,6 @@ interface EvidenceCluster {
 
 // Advanced similarity calculation with multiple dimensions;
 class AdvancedSimilarityEngine {
-
   // Multi-dimensional similarity calculation
   static calculateAdvancedSimilarity(
     vector1: number[],
@@ -86,34 +88,24 @@ class AdvancedSimilarityEngine {
     metadata2: VectorEmbedding['metadata'],
     weights: { semantic: number; legal: number; temporal: number; contextual: number }
   ): { total: number; breakdown: SimilarityResult['similarityBreakdown'] } {
-
     // 1. Semantic similarity (cosine similarity)
     const semanticSim = this.cosineSimilarity(vector1, vector2);
 
     // 2. Legal context similarity (Jaccard index on legal terms)
-    const legalSim = this.jaccardSimilarity(
-      metadata1.legalContext,
-      metadata2.legalContext
-    );
+    const legalSim = this.jaccardSimilarity(metadata1.legalContext, metadata2.legalContext);
 
     // 3. Temporal similarity (time-based decay)
-    const temporalSim = this.temporalSimilarity(
-      metadata1.timestamp,
-      metadata2.timestamp
-    );
+    const temporalSim = this.temporalSimilarity(metadata1.timestamp, metadata2.timestamp);
 
     // 4. Contextual similarity (entity overlap)
-    const contextualSim = this.entitySimilarity(
-      metadata1.entityMentions,
-      metadata2.entityMentions
-    );
+    const contextualSim = this.entitySimilarity(metadata1.entityMentions, metadata2.entityMentions);
 
     // Weighted combination
     const totalSimilarity =
-      (semanticSim * weights.semantic) +
-      (legalSim * weights.legal) +
-      (temporalSim * weights.temporal) +
-      (contextualSim * weights.contextual);
+      semanticSim * weights.semantic +
+      legalSim * weights.legal +
+      temporalSim * weights.temporal +
+      contextualSim * weights.contextual;
 
     return {
       total: totalSimilarity,
@@ -121,8 +113,8 @@ class AdvancedSimilarityEngine {
         semantic: semanticSim,
         legal: legalSim,
         temporal: temporalSim,
-        contextual: contextualSim
-      }
+        contextual: contextualSim,
+      },
     };
   }
 
@@ -143,15 +135,15 @@ class AdvancedSimilarityEngine {
     normA = Math.sqrt(normA);
     normB = Math.sqrt(normB);
 
-    return (normA === 0 || normB === 0) ? 0 : dotProduct / (normA * normB);
+    return normA === 0 || normB === 0 ? 0 : dotProduct / (normA * normB);
   }
 
   // Jaccard similarity for sets;
   static jaccardSimilarity(set1: string[], set2: string[]): number {
-    const s1 = new Set(set1.map(s => s.toLowerCase());
-    const s2 = new Set(set2.map(s => s.toLowerCase());
+    const s1 = new Set(set1.map(s => s.toLowerCase()));
+    const s2 = new Set(set2.map(s => s.toLowerCase()));
 
-    const intersection = new Set([...s1].filter(x => s2.has(x));
+    const intersection = new Set([...s1].filter(x => s2.has(x)));
     const union = new Set([...s1, ...s2]);
 
     return union.size === 0 ? 0 : intersection.size / union.size;
@@ -177,7 +169,7 @@ class AdvancedSimilarityEngine {
   static performClustering(
     embeddings: VectorEmbedding[],
     numClusters: number,
-    method: 'kmeans' | 'hierarchical' | 'dbscan';
+    _method: 'kmeans' | 'hierarchical' | 'dbscan'
   ): EvidenceCluster[] {
     // Simplified K-means implementation
     const clusters: EvidenceCluster[] = [];
@@ -218,21 +210,17 @@ class AdvancedSimilarityEngine {
       for (let j = 0; j < centroids.length; j++) {
         const clusterPoints = embeddings.filter((_, i) => assignments[i] === j);
         if (clusterPoints.length > 0) {
-          centroids[j] = this.calculateCentroid(clusterPoints.map(p => p.vector);
+          centroids[j] = this.calculateCentroid(clusterPoints.map(p => p.vector));
         }
       }
     }
 
     // Build cluster results;
     for (let i = 0; i < numClusters; i++) {
-      const members = embeddings
-        .filter((_, idx) => assignments[idx] === i)
-        .map(e => e.id);
+      const members = embeddings.filter((_, idx) => assignments[idx] === i).map(e => e.id);
 
       if (members.length > 0) {
-        const commonThemes = this.extractCommonThemes(
-          embeddings.filter((_, idx) => assignments[idx] === i)
-        );
+        const commonThemes = this.extractCommonThemes(embeddings.filter((_, idx) => assignments[idx] === i));
 
         clusters.push({
           clusterId: `cluster_${i}`,
@@ -240,7 +228,7 @@ class AdvancedSimilarityEngine {
           members,
           commonThemes,
           clusterStrength: members.length / embeddings.length,
-          legalRelevance: this.assessLegalRelevance(commonThemes)
+          legalRelevance: this.assessLegalRelevance(commonThemes),
         });
       }
     }
@@ -251,7 +239,6 @@ class AdvancedSimilarityEngine {
   // Helper methods;
   static initializeCentroids(embeddings: VectorEmbedding[], k: number): number[][] {
     const centroids: number[][] = [];
-    const dim = embeddings[0]?.vector.length || 0;
 
     for (let i = 0; i < k; i++) {
       const randomIndex = Math.floor(Math.random() * embeddings.length);
@@ -288,7 +275,7 @@ class AdvancedSimilarityEngine {
       themeCount.set(theme, (themeCount.get(theme) || 0) + 1);
     }
 
-    return Array.from(themeCount.entries()
+    return Array.from(themeCount.entries())
       .filter(([_, count]) => count >= 2)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
@@ -297,8 +284,7 @@ class AdvancedSimilarityEngine {
 
   static assessLegalRelevance(themes: string[]): string {
     const legalKeywords = ['contract', 'violation', 'statute', 'regulation', 'compliance', 'liability'];
-    const relevantThemes = themes.filter(item => item.includes(keyword)
-    );
+    const relevantThemes = themes.filter(item => legalKeywords.some(keyword => item.toLowerCase().includes(keyword)));
 
     if (relevantThemes.length >= 3) return 'High';
     if (relevantThemes.length >= 1) return 'Medium';
@@ -312,32 +298,32 @@ const mockVectorDB = new Map<string, VectorEmbedding>();
 // Initialize with sample data;
 mockVectorDB.set('evidence-001', {
   id: 'evidence-001',
-  vector: Array.from({length: 384}, () => Math.random() - 0.5),
+  vector: Array.from({ length: 384 }, () => Math.random() - 0.5),
   metadata: {
     type: 'contract',
     timestamp: '2025-09-01T10:00:00Z',
     legalContext: ['contract law', 'breach', 'damages'],
     entityMentions: ['ABC Corp', 'John Smith', 'Contract 2023-001'],
-    topicTags: ['contract violation', 'financial penalty', 'breach of terms']
-  }
+    topicTags: ['contract violation', 'financial penalty', 'breach of terms'],
+  },
 });
 
 mockVectorDB.set('evidence-002', {
   id: 'evidence-002',
-  vector: Array.from({length: 384}, () => Math.random() - 0.5),
+  vector: Array.from({ length: 384 }, () => Math.random() - 0.5),
   metadata: {
     type: 'correspondence',
     timestamp: '2025-09-02T15:30:00Z',
     legalContext: ['communications', 'intent', 'evidence'],
     entityMentions: ['Jane Doe', 'Legal Dept', 'Email Thread'],
-    topicTags: ['communication evidence', 'intent to breach', 'legal awareness']
-  }
+    topicTags: ['communication evidence', 'intent to breach', 'legal awareness'],
+  },
 });
 
 /*
  * POST /api/v1/evidence/vector/search
  * Advanced vector similarity search with multi-dimensional scoring
- */;
+ */
 export const POST: RequestHandler = async ({ request, locals, url }) => {
   const endpoint = url.pathname.split('/').pop();
 
@@ -349,15 +335,8 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       }
 
       const body = await request.json();
-      const {
-        query,
-        searchType,
-        evidenceTypes,
-        timeRange,
-        weights,
-        minSimilarity,
-        maxResults
-      } = VectorSearchSchema.parse(body);
+      const { query, searchType, evidenceTypes, timeRange, weights, minSimilarity, maxResults } =
+        VectorSearchSchema.parse(body);
 
       // Generate query embedding
       const queryEmbedding = await generateEmbedding(query);
@@ -383,7 +362,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           timestamp: new Date().toISOString(),
           legalContext: extractLegalTerms(query),
           entityMentions: extractEntities(query),
-          topicTags: extractTopics(query)
+          topicTags: extractTopics(query),
         };
 
         const similarity = AdvancedSimilarityEngine.calculateAdvancedSimilarity(
@@ -402,7 +381,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
             similarityBreakdown: similarity.breakdown,
             matchingConcepts: findMatchingConcepts(queryMetadata.topicTags, embedding.metadata.topicTags),
             relevantEntities: findMatchingEntities(queryMetadata.entityMentions, embedding.metadata.entityMentions),
-            confidenceScore: calculateConfidenceScore(similarity.total, embedding.metadata.legalContext.length)
+            confidenceScore: calculateConfidenceScore(similarity.total, embedding.metadata.legalContext.length),
           });
         }
       }
@@ -420,33 +399,39 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           totalFound: results.length,
           searchMetrics: {
             avgSimilarity: results.reduce((sum, r) => sum + r.similarity, 0) / results.length || 0,
-            highConfidenceCount: results.filter(item => item.length),
-            processingTimeMs: Date.now() % 1000 // Mock processing time
-          }
-        }
+            highConfidenceCount: results.filter(r => r.similarity >= 0.85).length,
+            processingTimeMs: Date.now() % 1000, // Mock processing time
+          },
+        },
       });
-
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Advanced vector search failed:', error);
 
       if (error instanceof z.ZodError) {
-        return json({
-          message: 'Invalid search parameters',
-          details: error.errors
-        }, { status: 400 });
+        return json(
+          {
+            message: 'Invalid search parameters',
+            details: error.errors,
+          },
+          { status: 400 }
+        );
       }
 
-      return json({
-        message: 'Vector search failed',
-        details: error.message
-      }, { status: 500 });
+      const message = error instanceof Error ? error.message : String(error);
+      return json(
+        {
+          message: 'Vector search failed',
+          details: message,
+        },
+        { status: 500 }
+      );
     }
   }
 
   /*
    * POST /api/v1/evidence/vector/cluster
    * Evidence clustering analysis
-   */;
+   */
   if (endpoint === 'cluster') {
     try {
       if (!locals.session || !locals.user) {
@@ -454,17 +439,18 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       }
 
       const body = await request.json();
-      const { evidenceIds, clusterMethod, numClusters, includeOutliers } = ClusterAnalysisSchema.parse(body);
+      const { evidenceIds, clusterMethod, numClusters } = ClusterAnalysisSchema.parse(body);
 
       // Get embeddings for specified evidence
-      const embeddings = evidenceIds
-        .map(id => mockVectorDB.get(id)
-        .filter(Boolean) as VectorEmbedding[];
+      const embeddings = evidenceIds.map(id => mockVectorDB.get(id)).filter(Boolean) as VectorEmbedding[];
 
       if (embeddings.length < 2) {
-        return json({
-          message: 'At least 2 evidence items required for clustering'
-        }, { status: 400 });
+        return json(
+          {
+            message: 'At least 2 evidence items required for clustering',
+          },
+          { status: 400 }
+        );
       }
 
       // Perform clustering
@@ -478,13 +464,12 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       const clusterStats = {
         totalClusters: clusters.length,
         avgClusterSize: clusters.reduce((sum, c) => sum + c.members.length, 0) / clusters.length,
-        strongestCluster: clusters.reduce((max, c) =>
-          c.clusterStrength > max.clusterStrength ? c : max, clusters[0]),
+        strongestCluster: clusters.reduce((max, c) => (c.clusterStrength > max.clusterStrength ? c : max), clusters[0]),
         legalRelevanceDistribution: {
-          high: clusters.filter(item => item.length),
-          medium: clusters.filter(item => item.length),
-          low: clusters.filter(item => item.length)
-        }
+          high: clusters.filter(c => c.legalRelevance === 'High').length,
+          medium: clusters.filter(c => c.legalRelevance === 'Medium').length,
+          low: clusters.filter(c => c.legalRelevance === 'Low').length,
+        },
       };
 
       return json({
@@ -493,24 +478,30 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           clusters,
           statistics: clusterStats,
           method: clusterMethod,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       });
-
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Evidence clustering failed:', error);
 
       if (error instanceof z.ZodError) {
-        return json({
-          message: 'Invalid clustering parameters',
-          details: error.errors
-        }, { status: 400 });
+        return json(
+          {
+            message: 'Invalid clustering parameters',
+            details: error.errors,
+          },
+          { status: 400 }
+        );
       }
 
-      return json({
-        message: 'Clustering analysis failed',
-        details: error.message
-      }, { status: 500 });
+      const message = error instanceof Error ? error.message : String(error);
+      return json(
+        {
+          message: 'Clustering analysis failed',
+          details: message,
+        },
+        { status: 500 }
+      );
     }
   }
 
@@ -525,8 +516,8 @@ async function generateEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: EMBEDDING_MODEL,
-        prompt: text
-      })
+        prompt: text,
+      }),
     });
 
     if (!response.ok) {
@@ -537,19 +528,33 @@ async function generateEmbedding(text: string): Promise<number[]> {
     return data.embedding;
   } catch (error) {
     console.warn('Embedding generation failed, using mock:', error);
-    return Array.from({length: 384}, () => Math.random() - 0.5);
+    return Array.from({ length: 384 }, () => Math.random() - 0.5);
   }
 }
 
 function extractLegalTerms(text: string): string[] {
   const legalTerms = [
-    'contract', 'agreement', 'breach', 'violation', 'statute', 'regulation',
-    'liability', 'damages', 'negligence', 'evidence', 'testimony', 'precedent',
-    'jurisdiction', 'plaintiff', 'defendant', 'motion', 'injunction', 'settlement'
+    'contract',
+    'agreement',
+    'breach',
+    'violation',
+    'statute',
+    'regulation',
+    'liability',
+    'damages',
+    'negligence',
+    'evidence',
+    'testimony',
+    'precedent',
+    'jurisdiction',
+    'plaintiff',
+    'defendant',
+    'motion',
+    'injunction',
+    'settlement',
   ];
 
-  return legalTerms.filter(item => item.includes(term.toLowerCase()
-  );
+  return legalTerms.filter(item => text.toLowerCase().includes(item.toLowerCase()));
 }
 
 function extractEntities(text: string): string[] {
@@ -564,40 +569,46 @@ function extractEntities(text: string): string[] {
   // Extract potential person names (Title Case words)
   const nameRegex = /\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g;
   const names = text.match(nameRegex) || [];
-  entities.push(...names.slice(0, 5); // Limit to avoid noise
+  entities.push(...names.slice(0, 5)); // Limit to avoid noise
 
   return entities;
 }
 
 function extractTopics(text: string): string[] {
   const topicKeywords = [
-    'contract violation', 'breach of terms', 'financial penalty', 'legal compliance',
-    'regulatory violation', 'evidence tampering', 'witness testimony', 'document fraud',
-    'corporate liability', 'intellectual property', 'data breach', 'privacy violation'
+    'contract violation',
+    'breach of terms',
+    'financial penalty',
+    'legal compliance',
+    'regulatory violation',
+    'evidence tampering',
+    'witness testimony',
+    'document fraud',
+    'corporate liability',
+    'intellectual property',
+    'data breach',
+    'privacy violation',
   ];
 
-  return topicKeywords.filter(item => item.includes(topic.toLowerCase()
-  );
+  return topicKeywords.filter(item => text.toLowerCase().includes(item));
 }
 
 function findMatchingConcepts(concepts1: string[], concepts2: string[]): string[] {
-  const set1 = new Set(concepts1.map(c => c.toLowerCase());
-  const set2 = new Set(concepts2.map(c => c.toLowerCase());
+  const set2 = new Set(concepts2.map(c => c.toLowerCase()));
 
-  return concepts1.filter(c => set2.has(c.toLowerCase());
+  return concepts1.filter(c => set2.has(c.toLowerCase()));
 }
 
 function findMatchingEntities(entities1: string[], entities2: string[]): string[] {
-  const set1 = new Set(entities1.map(e => e.toLowerCase());
-  const set2 = new Set(entities2.map(e => e.toLowerCase());
+  const set2 = new Set(entities2.map(e => e.toLowerCase()));
 
-  return entities1.filter(e => set2.has(e.toLowerCase());
+  return entities1.filter(e => set2.has(e.toLowerCase()));
 }
 
 function calculateConfidenceScore(similarity: number, legalContextSize: number): number {
   // Base confidence on similarity and legal context richness
-  const basePonfidence = similarity;
+  const baseConfidence = similarity;
   const contextBonus = Math.min(legalContextSize * 0.1, 0.2);
 
-  return Math.min(basePonfidence + contextBonus, 1.0);
+  return Math.min(baseConfidence + contextBonus, 1.0);
 }

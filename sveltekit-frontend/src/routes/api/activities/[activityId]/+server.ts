@@ -1,6 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { caseActivities } from "$lib/server/db/schema-postgres";
 import { db } from "$lib/server/db/index";
+import { eq } from "drizzle-orm";
 import type { RequestHandler } from './$types.js';
 
 
@@ -19,7 +20,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const activityResult = await db
       .select()
       .from(caseActivities)
-      .where(eq(caseActivities.id, activityId)
+      .where(eq(caseActivities.id, activityId))
       .limit(1);
 
     if (!activityResult.length) {
@@ -50,7 +51,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const existingActivity = await db
       .select()
       .from(caseActivities)
-      .where(eq(caseActivities.id, activityId)
+      .where(eq(caseActivities.id, activityId))
       .limit(1);
 
     if (!existingActivity.length) {
@@ -88,7 +89,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const [updatedActivity] = await db
       .update(caseActivities)
       .set(updateData)
-      .where(eq(caseActivities.id, activityId)
+      .where(eq(caseActivities.id, activityId))
       .returning();
 
     return json(updatedActivity);
@@ -114,7 +115,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const existingActivity = await db
       .select()
       .from(caseActivities)
-      .where(eq(caseActivities.id, activityId)
+      .where(eq(caseActivities.id, activityId))
       .limit(1);
 
     if (!existingActivity.length) {
@@ -123,7 +124,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete the activity
     const [deletedActivity] = await db
       .delete(caseActivities)
-      .where(eq(caseActivities.id, activityId)
+      .where(eq(caseActivities.id, activityId))
       .returning();
 
     return json({ success: true, deletedActivity });
@@ -133,7 +134,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   }
 };
 
-// PATCH endpoint for partial updates (like status changes);
+// PATCH endpoint for partial updates (like status changes)
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
@@ -152,7 +153,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const existingActivity = await db
       .select()
       .from(caseActivities)
-      .where(eq(caseActivities.id, activityId)
+      .where(eq(caseActivities.id, activityId))
       .limit(1);
 
     if (!existingActivity.length) {
@@ -162,7 +163,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       updatedAt: new Date()
     };
 
-    // Handle specific patch operations;
+    // Handle specific patch operations
     if (data.operation === "complete") {
       updateData.status = "completed";
       updateData.completedAt = new Date();
@@ -202,7 +203,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
         (id) => id !== data.criminalId,
       );
     } else {
-      // Regular field updates;
+      // Regular field updates
       Object.keys(data).forEach((key) => {
         if (key !== "operation") {
           updateData[key] = data[key];
@@ -212,7 +213,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const [updatedActivity] = await db
       .update(caseActivities)
       .set(updateData)
-      .where(eq(caseActivities.id, activityId)
+      .where(eq(caseActivities.id, activityId))
       .returning();
 
     return json(updatedActivity);

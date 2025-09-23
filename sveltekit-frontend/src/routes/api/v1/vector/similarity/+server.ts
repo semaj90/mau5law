@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // CHR-ROM optimization: Convert to Float32Array with memory alignment
     const normalizedVectorA = new Float32Array(vectorA);
     const normalizedVectorB = vectorB ? new Float32Array(vectorB) : undefined;
-    const normalizedVectors = vectors?.map(v => new Float32Array(v);
+    const normalizedVectors = vectors?.map(v => new Float32Array(v));
 
     // Smart routing decision with enhanced heuristics
     const dataSize = normalizedVectorA.length + (normalizedVectorB?.length || 0) +
@@ -230,9 +230,9 @@ async function processCPUVectorOperation(params: {
       return vectors.map(vector => {
         switch (algorithm) {
           case 0: return cosineSimilarity(vectorA, vector);
-          case 1: return 1.0 / (1.0 + euclideanDistance(vectorA, vector);
+          case 1: return 1.0 / (1.0 + euclideanDistance(vectorA, vector));
           case 2: return dotProduct(vectorA, vector);
-          case 3: return 1.0 / (1.0 + manhattanDistance(vectorA, vector);
+          case 3: return 1.0 / (1.0 + manhattanDistance(vectorA, vector));
           default: return 0;
         }
       });
@@ -258,7 +258,7 @@ function cosineSimilarity(a: Float32Array, b: Float32Array): number {
 
   if (normA < 1e-12 || normB < 1e-12) return 0;
 
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
 function euclideanDistance(a: Float32Array, b: Float32Array): number {
@@ -319,7 +319,7 @@ function calculateComplexityScore(operation: string, dataSize: number, vectorCou
 
   const finalScore = baseScore * multiplier * batchMultiplier;
 
-  return Math.min(100, Math.max(0, finalScore);
+  return Math.min(100, Math.max(0, finalScore));
 }
 
 // WebGPU/WebGL2 client-side processing hints;
@@ -331,6 +331,6 @@ function generateClientOptimizationHints(operation: string, dataSize: number) {
     intel_gpu_optimized: true,
     memory_pattern: 'coalesced_access',
     shader_precision: dataSize > 1000 ? 'highp' : 'mediump',
-    workgroup_size: Math.min(256, Math.max(64, Math.floor(dataSize / 32))
+    workgroup_size: Math.min(256, Math.max(64, Math.floor(dataSize / 32)))
   };
 }

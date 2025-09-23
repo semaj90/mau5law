@@ -46,22 +46,22 @@ export default defineConfig({
         },
       },
     }),
-    // Temporarily disabled web fonts to fix 400 Bad Request error
-    // presetWebFonts({
-    //   fonts: {
-    //     mono: [
-    //       "JetBrains Mono",
-    //       "Roboto Mono",
-    //       "SF Mono",
-    //       "Monaco",
-    //       "Consolas",
-    //     ],
-    //     gothic: ["MS Gothic", "MS UI Gothic", "monospace"],
-    //     sans: ["Inter", "system-ui", "sans-serif"],
-    //     oswald: ["Oswald", "sans-serif"],
-    //     montserrat: ["Montserrat", "sans-serif"],
-    //   },
-    // }),
+    presetWebFonts({
+      fonts: {
+        mono: [
+          "JetBrains Mono",
+          "Roboto Mono",
+          "SF Mono",
+          "Monaco",
+          "Consolas",
+        ],
+        gothic: ["MS Gothic", "MS UI Gothic", "monospace"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        legal: ["Inter", "system-ui", "sans-serif"], // Legal AI primary
+        nier: ["IBM Plex Sans", "sans-serif"], // NieR theme
+        retro: ["Press Start 2P", "monospace"], // Gaming
+      },
+    }),
   ],
   transformers: [
     transformerDirectives(),

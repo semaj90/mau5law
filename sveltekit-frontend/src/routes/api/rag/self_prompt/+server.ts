@@ -17,7 +17,7 @@ async function initialVectorSearch(query: string, k: number): Promise<Passage[]>
     const targetDim = (dimRow as any[])[0]?.dim ?? queryEmbedding.length;
     if (queryEmbedding.length !== targetDim) {
       if (queryEmbedding.length > targetDim) queryEmbedding = queryEmbedding.slice(0, targetDim);
-      else queryEmbedding = queryEmbedding.concat(new Array(targetDim - queryEmbedding.length).fill(0);
+      else queryEmbedding = queryEmbedding.concat(new Array(targetDim - queryEmbedding.length).fill(0));
     }
     const embLiteral = `[${queryEmbedding.join(',')}]`;
     const rows = await sql`
@@ -55,7 +55,7 @@ function extractConcepts(passages: Passage[]): string[] {
       tokens.set(t, (tokens.get(t) ?? 0) + 1);
     }
   }
-  return Array.from(tokens.entries()
+  return Array.from(tokens.entries())
     .sort((a,b)=> b[1]-a[1])
     .slice(0, 15)
     .map(e=> e[0]);
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
   const core = await initialVectorSearch(query, k);
   const neighbors = core.length ? await fetchGraphNeighbors(core.map(p=>p.id), neighborK) : [];
-  const concepts = extractConcepts(core.concat(neighbors);
+  const concepts = extractConcepts(core.concat(neighbors));
   const prompt = composePrompt(query, core, neighbors, concepts);
   const payload = { query, prompt, coreIds: core.map(p=>p.id), neighborCount: neighbors.length, concepts, cached:false };
   await redis.setCache(cacheKey, payload, REDIS_TTL_SECONDS);

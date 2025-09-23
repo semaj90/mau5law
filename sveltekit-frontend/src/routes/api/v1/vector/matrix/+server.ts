@@ -44,7 +44,11 @@ interface MatrixResponse {
     parallelWorkers: number;
     memoryUsed: number;
     flops?: number; // Floating point operations count
+    matrixComplexity?: number;
+    totalApiTime?: number;
+    requestId?: string;
   };
+  clientOptimizations?: Record<string, unknown>;
 }
 
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -63,7 +67,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   } catch (err) {
     console.error('Matrix API error:', err);
-    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
+    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
 };
 
@@ -71,20 +75,9 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
   const startTime = Date.now();
   const body: MatrixOperation = await request.json();
 
-  const {
-    operation,
-    matrixA,
-    matrixB,
-    options = {}
-  } = body;
+  const { operation, matrixA, matrixB, options = {} } = body;
 
-  const {
-    useCUDA = true,
-    parallel = true,
-    precision = 'float32',
-    batchSize = 50,
-    workers = 8
-  } = options;
+  const { useCUDA = true, parallel = true, precision = 'float32', workers = 8 } = options;
 
   if (!matrixA || matrixA.length === 0) {
     throw error(400, 'matrixA is required and cannot be empty');
@@ -105,12 +98,13 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
 
   // Enhanced routing with tensor core optimization
   const matrixComplexity = calculateMatrixComplexity(operation, rowsA, colsA, matrixB);
-  const shouldUseCUDA = useCUDA && parallel && (
-    matrixComplexity > 50 ||
-    operation === 'multiply' ||
-    rowsA * colsA > 10000 ||
-    (matrixB && matrixB.length * matrixB[0].length > 10000)
-  );
+  const shouldUseCUDA =
+    useCUDA &&
+    parallel &&
+    (matrixComplexity > 50 ||
+      operation === 'multiply' ||
+      rowsA * colsA > 10000 ||
+      (matrixB && matrixB.length * matrixB[0].length > 10000));
 
   if (shouldUseCUDA) {
     // Route to CUDA service with tensor core acceleration;
@@ -121,7 +115,7 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
       precision,
       workers,
       requestId,
-      complexity: matrixComplexity
+      complexity: matrixComplexity,
     });
 
     result = cudaResult.result;
@@ -134,7 +128,7 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
       operation,
       matrixA,
       matrixB,
-      precision
+      precision,
     });
 
     // Estimate FLOPS for CPU operations
@@ -160,49 +154,45 @@ async function handleMatrixOperation(request: Request, requestId: string, apiSta
       flops,
       matrixComplexity,
       totalApiTime,
-      requestId
+      requestId,
     },
     clientOptimizations: {
       ...clientHints,
-      recommendedProcessing: shouldUseCUDA ? 'server_cuda_tensor' :
-                           clientHints.prefer_webgpu ? 'client_webgpu_compute' :
-                           clientHints.prefer_webgl2 ? 'client_webgl2_fragment' : 'client_wasm_simd',
+      recommendedProcessing: shouldUseCUDA
+        ? 'server_cuda_tensor'
+        : clientHints.prefer_webgpu
+          ? 'client_webgpu_compute'
+          : clientHints.prefer_webgl2
+            ? 'client_webgl2_fragment'
+            : 'client_wasm_simd',
       memoryOptimizations: {
         chrRomRegion: shouldUseCUDA,
         matrixTiling: true,
         cacheBlocking: rowsA > 256 || colsA > 256,
-        tensorCoreAlignment: shouldUseCUDA && (rowsA % 16 === 0) && (colsA % 16 === 0),
-        simdVectorization: !shouldUseCUDA
+        tensorCoreAlignment: shouldUseCUDA && rowsA % 16 === 0 && colsA % 16 === 0,
+        simdVectorization: !shouldUseCUDA,
       },
-      tensorCoreHints: shouldUseCUDA ? {
-        optimalTileSize: [16, 16],
-        mixedPrecision: true,
-        warpOptimization: true,
-        sharedMemoryTiling: true
-      } : undefined
-    }
+      tensorCoreHints: shouldUseCUDA
+        ? {
+            optimalTileSize: [16, 16],
+            mixedPrecision: true,
+            warpOptimization: true,
+            sharedMemoryTiling: true,
+          }
+        : undefined,
+    },
   };
 
   return json(response);
 }
 
-async function handleBatchOperation(request: Request, requestId: string, apiStartTime: number): Promise<Response> {
+async function handleBatchOperation(request: Request, _requestId: string, _apiStartTime: number): Promise<Response> {
   const startTime = Date.now();
   const body: MatrixBatchOperation = await request.json();
 
-  const {
-    operation,
-    matrices,
-    transformMatrix,
-    options = {}
-  } = body;
+  const { operation, matrices, transformMatrix, options = {} } = body;
 
-  const {
-    useCUDA = true,
-    parallel = true,
-    maxParallelWorkers = 8,
-    chunkSize = 10
-  } = options;
+  const { useCUDA = true, parallel = true, maxParallelWorkers = 8, chunkSize = 10 } = options;
 
   if (!matrices || matrices.length === 0) {
     throw error(400, 'matrices array is required and cannot be empty');
@@ -220,7 +210,7 @@ async function handleBatchOperation(request: Request, requestId: string, apiStar
       matrices,
       transformMatrix,
       maxParallelWorkers,
-      chunkSize
+      chunkSize,
     });
 
     result = cudaResult.result;
@@ -233,7 +223,7 @@ async function handleBatchOperation(request: Request, requestId: string, apiStar
       operation,
       matrices,
       transformMatrix,
-      chunkSize
+      chunkSize,
     });
 
     // Estimate total FLOPS for batch operations;
@@ -255,8 +245,8 @@ async function handleBatchOperation(request: Request, requestId: string, apiStar
       usedCUDA: useCUDA && parallel,
       parallelWorkers,
       memoryUsed,
-      flops: totalFlops
-    }
+      flops: totalFlops,
+    },
   };
 
   return json(response);
@@ -285,7 +275,7 @@ async function processCUDAMatrixOperation(params: {
       matrixB,
       precision,
       workers,
-      complexity_score: complexity
+      complexity_score: complexity,
     },
     gpu_config: {
       use_tensor_cores: true,
@@ -296,7 +286,7 @@ async function processCUDAMatrixOperation(params: {
       warp_specialization: true,
       shared_memory_tiling: matrixA.length > 64,
       compute_capability: '8.6',
-      mixed_precision_training: precision === 'float32' && complexity > 75
+      mixed_precision_training: precision === 'float32' && complexity > 75,
     },
     performance_hints: {
       matrix_type: 'legal_document_analysis',
@@ -307,24 +297,24 @@ async function processCUDAMatrixOperation(params: {
       vectorization_hints: {
         simd_width: 256,
         unroll_factor: 4,
-        prefetch_distance: 2
-      }
+        prefetch_distance: 2,
+      },
     },
     rtx_3060_specific: {
       sm_count: 34,
       max_threads_per_sm: 1536,
       shared_memory_per_sm: 65536,
       optimal_block_size: [16, 16],
-      memory_bandwidth_gbps: 448
-    }
+      memory_bandwidth_gbps: 448,
+    },
   };
 
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
@@ -337,7 +327,7 @@ async function processCUDAMatrixOperation(params: {
     result: result.matrix || result.result || [],
     flops: result.flops || 0,
     memoryUsed: result.memory_used || 0,
-    parallelWorkers: result.parallel_workers || 1
+    parallelWorkers: result.parallel_workers || 1,
   };
 }
 
@@ -358,22 +348,22 @@ async function processCUDABatchOperation(params: {
     data: {
       matrices,
       transformMatrix,
-      chunkSize
+      chunkSize,
     },
     gpu_config: {
       use_tensor_cores: true,
       memory_optimization: true,
       parallel_workers: maxParallelWorkers,
-      batch_processing: true
-    }
+      batch_processing: true,
+    },
   };
 
   const response = await fetch(cudaUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
@@ -386,7 +376,7 @@ async function processCUDABatchOperation(params: {
     result: result.matrices || result.result || [],
     flops: result.total_flops || 0,
     memoryUsed: result.memory_used || 0,
-    parallelWorkers: result.parallel_workers || 1
+    parallelWorkers: result.parallel_workers || 1,
   };
 }
 
@@ -431,10 +421,11 @@ async function processCPUBatchOperation(params: {
   for (let i = 0; i < matrices.length; i += chunkSize) {
     const chunk = matrices.slice(i, i + chunkSize);
 
-    const chunkResults = await Promise.all(chunk.map(async (matrix) => {
+    const chunkResults = await Promise.all(
+      chunk.map(async matrix => {
         switch (operation) {
           case 'batch_multiply':
-            if (!transformMatrix) throw new Error('transformMatrix required for batch_multiply'));
+            if (!transformMatrix) throw new Error('transformMatrix required for batch_multiply');
             return multiplyMatrices(matrix, transformMatrix);
 
           case 'batch_transpose':
@@ -465,7 +456,9 @@ function multiplyMatrices(a: number[][], b: number[][]): number[][] {
     throw new Error('Matrix dimensions incompatible for multiplication');
   }
 
-  const result: number[][] = Array(rowsA).fill(null).map(() => Array(colsB).fill(0);
+  const result: number[][] = Array(rowsA)
+    .fill(null)
+    .map(() => Array(colsB).fill(0));
 
   for (let i = 0; i < rowsA; i++) {
     for (let j = 0; j < colsB; j++) {
@@ -482,7 +475,9 @@ function transposeMatrix(matrix: number[][]): number[][] {
   const rows = matrix.length;
   const cols = matrix[0].length;
 
-  const result: number[][] = Array(cols).fill(null).map(() => Array(rows).fill(0);
+  const result: number[][] = Array(cols)
+    .fill(null)
+    .map(() => Array(rows).fill(0));
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
@@ -542,7 +537,7 @@ function inverseMatrix(matrix: number[][]): number[][] {
   }
 
   // Extract inverse matrix
-  return augmented.map(row => row.slice(n);
+  return augmented.map(row => row.slice(n));
 }
 
 function computeEigenvalues(matrix: number[][]): number[] {
@@ -569,7 +564,7 @@ function computeEigenvalues(matrix: number[][]): number[] {
     }
 
     // Normalize
-    const norm = Math.sqrt(newVector.reduce((sum, val) => sum + val * val, 0);
+    const norm = Math.sqrt(newVector.reduce((sum, val) => sum + val * val, 0));
     const newEigenvalue = norm;
 
     if (Math.abs(newEigenvalue - eigenvalue) < tolerance) {
@@ -603,14 +598,15 @@ function normalizeMatrix(matrix: number[][]): number[][] {
   }
 
   // Normalize
-  return matrix.map(row => row.map(val => val / norm);
+  return matrix.map(row => row.map(val => val / norm));
 }
 
 function estimateFLOPS(operation: string, rows: number, cols: number, matrixB?: number[][]): number {
   switch (operation) {
-    case 'multiply':
+    case 'multiply': {
       const colsB = matrixB?.[0]?.length || cols;
       return rows * cols * colsB * 2; // Multiply + Add
+    }
 
     case 'transpose':
       return rows * cols; // Simple copy operation
@@ -628,17 +624,17 @@ function estimateFLOPS(operation: string, rows: number, cols: number, matrixB?: 
 
 // Enhanced matrix complexity analysis for routing decisions;
 function calculateMatrixComplexity(operation: string, rows: number, cols: number, matrixB?: number[][]): number {
-  let baseComplexity = Math.log2(rows * cols + 1) * 10;
+  const baseComplexity = Math.log2(rows * cols + 1) * 10;
 
   // Operation-specific complexity multipliers;
   const operationMultipliers = {
-    'multiply': 2.0,       // Matrix multiplication is compute-intensive
-    'transpose': 0.5,      // Simple memory operation
-    'inverse': 3.0,        // Very compute-intensive
-    'eigenvalues': 3.5,    // Most complex operation
-    'svd': 4.0,           // Singular value decomposition
-    'qr': 2.5,            // QR factorization
-    'cholesky': 1.8       // Cholesky decomposition
+    'multiply': 2.0, // Matrix multiplication is compute-intensive
+    'transpose': 0.5, // Simple memory operation
+    'inverse': 3.0, // Very compute-intensive
+    'eigenvalues': 3.5, // Most complex operation
+    'svd': 4.0, // Singular value decomposition
+    'qr': 2.5, // QR factorization
+    'cholesky': 1.8, // Cholesky decomposition
   };
 
   const multiplier = operationMultipliers[operation as keyof typeof operationMultipliers] || 1.0;
@@ -647,12 +643,11 @@ function calculateMatrixComplexity(operation: string, rows: number, cols: number
   const sizeMultiplier = Math.log2(Math.max(rows, cols) + 1) / 10;
 
   // Second matrix impact for binary operations
-  const secondMatrixMultiplier = matrixB ?
-    Math.log2(matrixB.length * matrixB[0].length + 1) / 20 : 0;
+  const secondMatrixMultiplier = matrixB ? Math.log2(matrixB.length * matrixB[0].length + 1) / 20 : 0;
 
   const finalComplexity = baseComplexity * multiplier * (1 + sizeMultiplier + secondMatrixMultiplier);
 
-  return Math.min(100, Math.max(0, finalComplexity);
+  return Math.min(100, Math.max(0, finalComplexity));
 }
 
 // WebGPU/WebGL2/WASM client optimization hints for matrix operations;

@@ -1,18 +1,18 @@
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
+ *
  * Endpoint: case-scoring
  * Category: conservative
  * Memory Bank: PRG_ROM
  * Priority: 150
  * Redis Type: aiAnalysis
- * 
+ *
  * Performance Impact:
  * - Cache Strategy: conservative
  * - Memory Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
- * 
+ *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 
@@ -59,12 +59,12 @@ function deriveRisk(score: number): 'low' | 'medium' | 'high' | 'critical' {
 }
 
 function sampleCase(id: number, title: string, base: number): CaseScore {
-  const score = Math.min(100, Math.max(0, Math.round(base + (Math.random() * 10 - 5)));
+  const score = Math.min(100, Math.max(0, Math.round(base + (Math.random() * 10 - 5))));
   const now = new Date();
-  const created = new Date(now.getTime() - 1000 * 60 * 60 * 24 * (7 + id);
-  
+  const created = new Date(now.getTime() - 1000 * 60 * 60 * 24 * (7 + id));
+
   // Enhanced factors matching frontend component expectations
-  const factors: ScoreFactor[] = [;
+  const factors: ScoreFactor[] = [
     {
       category: 'Evidence Quality',
       weight: 0.3,
@@ -101,7 +101,7 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
       confidence: 65 + Math.round(Math.random() * 25)
     }
   ];
-  
+
   const recommendations = [
     'Prioritize key witness interviews and statement validation',
     'Strengthen evidence chain of custody documentation',
@@ -109,8 +109,8 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
     'Consider plea bargain negotiations based on evidence strength',
     'Schedule expert witness consultations for technical evidence',
     'Coordinate with forensic teams for physical evidence analysis'
-  ].slice(0, 2 + Math.floor(Math.random() * 3);
-  
+  ].slice(0, 2 + Math.floor(Math.random() * 3));
+
   return {
     id: `case_${id}`,
     title,
@@ -135,18 +135,18 @@ const originalGETHandler: RequestHandler = async () => {
     sampleCase(4, 'State v. Kim - Domestic Violence', 78),
     sampleCase(5, 'People v. Thompson - Cybercrime Investigation', 71)
   ];
-  
+
   // Add summary statistics matching frontend expectations
   const totalCases = cases.length;
   const avgRiskScore = Math.round(cases.reduce((sum, case_) => sum + case_.score, 0) / totalCases);
   const priorityBreakdown = {
-    critical: cases.filter(item => item.length),
-    high: cases.filter(item => item.length),
-    medium: cases.filter(item => item.length),
-    low: cases.filter(item => item.length)
+    critical: cases.filter((item) => item.priority === 'critical'),
+    high: cases.filter((item) => item.priority === 'high'),
+    medium: cases.filter((item) => item.priority === 'medium'),
+    low: cases.filter((item) => item.priority === 'low')
   };
-  
-  return json({ 
+
+  return json({
     cases,
     summary: {
       total_cases: totalCases,
@@ -192,7 +192,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       lastUpdated: new Date().toISOString()
     });
   } catch (error: any) {
-    return json()
+    return json(
       { error: 'Scoring failed', details: error?.message ?? String(error) },
       { status: 500 }
     );

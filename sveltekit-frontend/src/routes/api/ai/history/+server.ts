@@ -18,6 +18,8 @@
 
 import { aiHistory } from "$lib/db/schema/aiHistory";
 import { json } from "@sveltejs/kit";
+import { db } from '$lib/server/db/index';
+import { eq } from 'drizzle-orm';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types.js';
 
@@ -39,7 +41,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     const history = await db
       .select()
       .from(aiHistory)
-      .where(eq(aiHistory.userId, userId);
+      .where(eq(aiHistory.userId, userId));
     return json({ history });
   } catch (error: any) {
     return json({ error: "Failed to fetch AI history" }, { status: 500 });
