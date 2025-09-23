@@ -51,7 +51,7 @@ class HiddenMarkovModel {
     }
 
     // Convert states to observation sequence
-    const observations = sequence.map(state => this.stateToObservation(state);
+    const observations = sequence.map(state => this.stateToObservation(state));
 
     // Simple forward prediction for now
     const lastObs = observations[observations.length - 1];
@@ -329,7 +329,7 @@ export class QLoRATopologyPredictor {
   async updateWithActualPerformance(
     documentId: string,
     predictedConfig: QLoRAConfig,
-    actualPerformance: PerformanceSnapshot;
+    actualPerformance: PerformanceSnapshot
   ): Promise<void> {
     console.log(`📊 PERFORMANCE FEEDBACK: Updating models for ${documentId}`);
 
@@ -683,7 +683,7 @@ Recommend optimal QLoRA parameters for maximum accuracy and efficiency.
     for (const docType of documentTypes) {
       const baselineData = await lokiRedisCache.get(`perf_baseline:${docType}`);
       if (baselineData) {
-        this.performanceBaseline.set(docType, fastParse(baselineData);
+        this.performanceBaseline.set(docType, fastParse(baselineData));
       }
     }
   }
@@ -865,7 +865,7 @@ class WebGPUTopologyAccelerator {
       @group(0) @binding(0) var<storage, read> inputData: array<f32>;
       @group(0) @binding(1) var<storage, read_write> outputData: array<f32>;
 
-      @compute @workgroup_size(64);
+      @compute @workgroup_size(64)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         if (index >= arrayLength(&inputData)) { return; }

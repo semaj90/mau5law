@@ -1,22 +1,10 @@
 
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
-<script context="module">
-  // Svelte 5 runes are auto-imported
-
-  import 'nes.css/css/nes.min.css';
-
-
-  import { slide } from "svelte/transition";
-  
-
-<!-- AI Chat Message Component -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { onMount } from "svelte";
+  import { slide } from "svelte/transition";
+  import 'nes.css/css/nes.min.css';
 
   let {
     message,
@@ -28,7 +16,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       role: "user" | "assistant" | "system";
       content: string;
       timestamp: Date;
-      sources?: Array;
+      sources?: Array<any>;
       metadata?: {
         provider: "local" | "cloud" | "hybrid";
         model: string;
@@ -76,7 +64,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(1)}s`;
   }
-
+</script>
 
 <div
   class="container mx-auto px-4"
@@ -122,6 +110,20 @@ https://svelte.dev/e/element_invalid_closing_tag -->
             {message.metadata.provider}
           </span>
         {/if}
+      {:else if message.role === "system"}
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 1v6m0 6v6" />
+        </svg>
+        System
+      {/if}
     </div>
 
     <div class="container mx-auto px-4">
@@ -135,7 +137,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       <button aria-label="Action button"
         type="button"
         class="container mx-auto px-4"
-        onclick={(event: MouseEvent) => ) => copyToClipboard(}
+        onclick={() => copyToClipboard()}
         title="Copy message"
         aria-label="Copy message to clipboard"
       >
@@ -164,7 +166,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <button aria-label="Action button"
           type="button"
           class="container mx-auto px-4"
-          onclick={(event: MouseEvent) => ) => (isSourcesExpanded = !isSourcesExpanded}
+          onclick={() => (isSourcesExpanded = !isSourcesExpanded)}
           aria-expanded={isSourcesExpanded}
         >
           <svg
@@ -182,7 +184,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         </button>
 
         {#if isSourcesExpanded}
-          <div class="container mx-auto px-4" transitislide={{ duration: 200 }}>
+          <div class="container mx-auto px-4" transition:slide={{ duration: 200 }}>
             {#each message.sources as source (source.id)}
               <div class="container mx-auto px-4">
                 <div class="container mx-auto px-4">
@@ -207,7 +209,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         <button aria-label="Action button"
           type="button"
           class="container mx-auto px-4"
-          onclick={(event: MouseEvent) => ) => (isMetadataExpanded = !isMetadataExpanded}
+          onclick={() => (isMetadataExpanded = !isMetadataExpanded)}
           aria-expanded={isMetadataExpanded}
         >
           <svg
@@ -225,7 +227,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
         </button>
 
         {#if isMetadataExpanded}
-          <div class="container mx-auto px-4" transitislide={{ duration: 200 }}>
+          <div class="container mx-auto px-4" transition:slide={{ duration: 200 }}>
             <div class="container mx-auto px-4">
               <span class="container mx-auto px-4">Model:</span>
               <span class="container mx-auto px-4">{message.metadata.model}</span>

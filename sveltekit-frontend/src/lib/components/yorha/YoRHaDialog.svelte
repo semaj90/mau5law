@@ -405,7 +405,8 @@ background: currentColor color: var(--yorha-bg-primary, #0a0a0a);
     font-size: 12px;
   }
 /* Terminal Scan Effect */ .scan-effect {
-position: absolute top: 0;
+    position: absolute;
+    top: 0;
     left: -100%;
     width: 100%;
     height: 2px;

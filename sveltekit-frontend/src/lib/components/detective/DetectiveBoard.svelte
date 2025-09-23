@@ -104,9 +104,12 @@
   	});
 
   	// Enhanced system initialization
-  	$effect(async () => {
-  		await initializeEnhancedSystems();
-  		setupRealTimeUpdates();
+  	$effect(() => {
+  		// Run async function without blocking
+  		void (async () => {
+  			await initializeEnhancedSystems();
+  			setupRealTimeUpdates();
+  		})();
   	});
 
   	async function initializeEnhancedSystems() {
@@ -608,6 +611,7 @@
 										class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 										oncontextmenu={(e) => handleRightClick(e, item)}
 										onclick={() => handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id)}
+										onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id); } }}
 										role="button"
 										tabindex="0"
 									>
@@ -648,6 +652,7 @@
 								ondragend={(e) => handleCanvasDragEnd(e, item)}
 								oncontextmenu={(e) => handleRightClick(e, item)}
 								onclick={() => handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id)}
+								onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id); } }}
 								role="button"
 								tabindex="0"
 							>
@@ -829,211 +834,7 @@
 	@import url('https://unpkg.com/nes.css@2.3.0/css/nes.min.css');
 	@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
 
-	/* Detective Board Container */
-	.detective-board-container {
-		font-family: "Press Start 2P", cursive;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		min-height: 100vh;
-		padding: 20px;
-	}
-
-	/* Enhanced Header Styles */
-	.detective-header {
-		background: #212529 !important;
-		border: 4px solid #fff !important;
-		margin-bottom: 20px;
-		padding: 20px;
-	}
-
-	.header-content {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: 20px;
-	}
-
-	.detective-title h1 {
-		font-size: 24px;
-		margin-bottom: 10px;
-		color: #92cc41;
-	}
-
-	.detective-title .subtitle {
-		font-size: 10px;
-		color: #fff;
-		margin: 0;
-	}
-
-	/* System Status Grid */
-	.system-status-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-		gap: 10px;
-		margin-top: 15px;
-	}
-
-	.status-card {
-		padding: 10px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 5px;
-		min-height: 70px;
-		background: #ffffff;
-		border: 2px solid #212529;
-	}
-
-	.status-card.is-success {
-		background: #92cc41;
-		color: white;
-	}
-
-	.status-card.is-error {
-		background: #e76e55;
-		color: white;
-	}
-
-	.status-card.is-warning {
-		background: #f7d51d;
-		color: #212529;
-	}
-
-	.status-label {
-		font-size: 8px;
-		text-align: center;
-	}
-
-	.status-value {
-		font-size: 10px;
-		font-weight: bold;
-		text-align: center;
-	}
-
-	/* Control Panel */
-	.control-panel {
-		display: flex;
-		gap: 15px;
-		align-items: center;
-		flex-wrap: wrap;
-	}
-
-	.view-switcher {
-		display: flex;
-		gap: 10px;
-	}
-
-	/* Performance Bar */
-	.performance-bar {
-		background: #ffffff;
-		border: 4px solid #212529;
-		margin-bottom: 20px;
-		padding: 15px;
-	}
-
-	.perf-stats {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: 10px;
-	}
-
-	.stats-row {
-		display: flex;
-		gap: 20px;
-		align-items: center;
-		font-size: 10px;
-	}
-
-	.stats-row span {
-		display: flex;
-		align-items: center;
-		gap: 5px;
-	}
-
-	/* Enhanced Evidence Grid */
-	.evidence-grid-container {
-		width: 100%;
-	}
-
-	.evidence-columns {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-		gap: 20px;
-		width: 100%;
-	}
-
-	/* Enhanced Column Styles */
-	.evidence-column {
-		background: #ffffff;
-		border: 4px solid #212529;
-		min-height: 500px;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.evidence-column[data-column="new"] {
-		border-color: #92cc41;
-		background: #f8fff8;
-	}
-
-	.evidence-column[data-column="processing"] {
-		border-color: #f7d51d;
-		background: #fffef8;
-	}
-
-	.evidence-column[data-column="verified"] {
-		border-color: #e76e55;
-		background: #fff8f8;
-	}
-
-	.column-title {
-		font-size: 14px;
-		text-align: center;
-		margin-bottom: 0;
-		padding: 10px;
-	}
-
-	.column-header {
-		padding: 15px;
-		border-bottom: 2px solid #212529;
-		background: rgba(255, 255, 255, 0.5);
-	}
-
-	.column-status {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	/* Column Content */
-	.column-content {
-		flex: 1;
-		padding: 15px;
-		display: flex;
-		flex-direction: column;
-		gap: 15px;
-	}
-
-	/* Upload Section */
-	.upload-section {
-		background: rgba(146, 204, 65, 0.1);
-		border: 2px dashed #92cc41;
-		border-radius: 8px;
-		padding: 15px;
-		margin-bottom: 15px;
-	}
-
-	/* Evidence Items - Unused selectors removed */
-
-	/* GPU Processing and Vector Score - Unused selectors removed */
-
-	/* Board Main - Unused selector removed */
-
-	/* Responsive Design - Unused selectors removed */
-
-	/* Original Grid Pattern */
+	/* Grid Pattern */
 	.bg-grid-pattern {
 		background-image:
 			linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
@@ -1047,26 +848,23 @@
 			linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
 	}
 
-	.detective-board-nes {
-		/* Add any additional detective board styles here */
-	}
-
 	/* AI Assistant Integration Styles */
 	:global(.highlighted) {
-		@apply ring-2 ring-yellow-400 ring-opacity-75 shadow-lg;
+		box-shadow: 0 0 0 2px rgb(251 191 36 / 0.75), 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 		animation: pulse-highlight 2s ease-in-out;
 	}
 
 	:global(.selected) {
-		@apply ring-2 ring-primary ring-opacity-75 bg-primary/5;
+		box-shadow: 0 0 0 2px hsl(var(--primary) / 0.75);
+		background-color: hsl(var(--primary) / 0.05);
 	}
 
 	@keyframes pulse-highlight {
 		0%, 100% {
-			@apply ring-opacity-75;
+			box-shadow: 0 0 0 2px rgb(251 191 36 / 0.75), 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 		}
 		50% {
-			@apply ring-opacity-100 shadow-xl;
+			box-shadow: 0 0 0 2px rgb(251 191 36), 0 25px 25px -5px rgb(0 0 0 / 0.25), 0 10px 10px -5px rgb(0 0 0 / 0.04);
 			transform: scale(1.02);
 		}
 	}

@@ -451,7 +451,8 @@ flex-direction: column align-items: flex-start;
     }
 
     .modal-close {
-position: absolute top: 8px;
+      position: absolute;
+      top: 8px;
       right: 8px;
     }
 

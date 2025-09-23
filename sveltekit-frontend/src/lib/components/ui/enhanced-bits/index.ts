@@ -19,6 +19,11 @@ export { default as CardTitle } from './CardTitle.svelte';
 export { default as Input } from './Input.svelte';
 export { default as Label } from './Label.svelte';
 
+// Navigation Components
+export { default as LinkButton } from './LinkButton.svelte';
+export { default as YoRHaSearchBar } from './YoRHaSearchBar.svelte';
+export { default as ThemeToggle } from './ThemeToggle.svelte';
+
 // Complex AI Components (Enhanced behaviors - require migration)
 export { default as EmbeddingGemmaChat } from './EmbeddingGemmaChat.svelte';
 export { default as Board } from './Board.svelte';

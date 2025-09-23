@@ -67,7 +67,7 @@
         {/if}
       </p>
     </div>
-    <Button class="bits-btn" variant="ghost" size="sm" on:click={handleClear}>
+    <Button class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>
       Clear Chat
     </Button>
   </div>

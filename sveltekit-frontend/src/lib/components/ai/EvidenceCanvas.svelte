@@ -590,7 +590,7 @@
       <div class="nes-container is-rounded compliance-card">
         <h4 class="nes-text">Compliance Status</h4>
         <div class="compliance-status">
-          <span class="nes-badge {analysisResult.complianceStatus.toLowerCase.includes('compliant') ? 'is-success' : analysisResult.complianceStatus.toLowerCase.includes('violation') ? 'is-error' : 'is-warning'}">
+          <span class="nes-badge {analysisResult.complianceStatus.toLowerCase().includes('compliant') ? 'is-success' : analysisResult.complianceStatus.toLowerCase().includes('violation') ? 'is-error' : 'is-warning'}">
             {analysisResult.complianceStatus}
           </span>
         </div>

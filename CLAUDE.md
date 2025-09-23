@@ -39,3 +39,9 @@
   - tensorrt 10.11.0.33 ✅
 - **Activation Command**: `wsl bash -c "source ~/trt_env_310/bin/activate"`
 - **Status**: Ready for safetensor → .plan engine conversion
+- enhanced-bits  Fixed the Popover import issue in
+  DropdownBits.svelte. The problem was that Popover   
+  was being imported as a named import from "bits-ui",
+   but it should be imported as a namespace from      
+  "bits-ui/popover" to access the Root, Trigger, and  
+  Content sub-components.

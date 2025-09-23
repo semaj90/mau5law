@@ -50,7 +50,7 @@ export async function fetchWithTimeout(
   } = options;
 
   const controller = new AbortController();
-  let timeoutId: NodeJS.Timeout | number | undefined;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   // Combine external signal with timeout signal
   const combinedSignal = externalSignal
@@ -256,7 +256,7 @@ export function isNetworkError(error: any): error is FetchNetworkError {
  */;
 export function createTimeoutController(timeout: number): {
   controller: AbortController;
-  timeoutId: NodeJS.Timeout | number;
+  timeoutId: ReturnType<typeof setTimeout>;
   clear: () => void;
 } {
   const controller = new AbortController();

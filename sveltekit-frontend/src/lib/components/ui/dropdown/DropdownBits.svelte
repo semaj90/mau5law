@@ -3,7 +3,7 @@
 
   import 'nes.css/css/nes.min.css';
   import '$lib/styles/dropdown-global.css';
-  import { DropdownMenu } from "bits-ui";
+  import * as Popover from "bits-ui/popover";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   import { fade, scale } from 'svelte/transition';
@@ -40,14 +40,14 @@
   }
 </script>
 
-<DropdownMenu.Root bind:open onOpenChange={handleOpenChange}>
+<Popover.Root bind:open onOpenChange={handleOpenChange}>
   {#if trigger}
-    <DropdownMenu.Trigger class="legal-ai-dropdown-trigger">
+    <Popover.Trigger class="legal-ai-dropdown-trigger">
       {@render trigger()}
-    </DropdownMenu.Trigger>
+    </Popover.Trigger>
   {/if}
 
-  <DropdownMenu.Content
+  <Popover.Content
     class={contentClasses}
     side={placement}
     align="start"
@@ -59,8 +59,8 @@
     {#if children}
       {@render children()}
     {/if}
-  </DropdownMenu.Content>
-</DropdownMenu.Root>
+  </Popover.Content>
+</Popover.Root>
 
 <!-- Dropdown Item Component -->
 <script lang="ts" module>
@@ -75,9 +75,9 @@
 
 <!-- Export helper components for easier usage -->
 {#snippet DropdownItem({ class: className = '', disabled = false, destructive = false, children, onclick }: DropdownItemProps)}
-  <DropdownMenu.Item
+  <button
     class={cn(
-      "legal-ai-dropdown-item flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer",
+      "legal-ai-dropdown-item flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 cursor-pointer w-full text-left",
       destructive
         ? "text-red-400 hover:text-red-300 hover:bg-red-500/10"
         : "text-slate-300 hover:text-amber-400 hover:bg-slate-800/60",
@@ -90,21 +90,21 @@
     {#if children}
       {@render children()}
     {/if}
-  </DropdownMenu.Item>
+  </button>
 {/snippet}
 
 {#snippet DropdownSeparator({ class: className = '' }: { class?: string })}
-  <DropdownMenu.Separator
-    class={cn("h-px bg-amber-500/20 my-2", className)}
+  <hr
+    class={cn("h-px bg-amber-500/20 my-2 border-0", className)}
   />
 {/snippet}
 
 {#snippet DropdownLabel({ class: className = '', children }: { class?: string; children?: Snippet })}
-  <DropdownMenu.Label
+  <div
     class={cn("px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500", className)}
   >
     {#if children}
       {@render children()}
     {/if}
-  </DropdownMenu.Label>
+  </div>
 {/snippet}

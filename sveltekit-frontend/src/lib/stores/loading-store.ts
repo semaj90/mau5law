@@ -1,5 +1,4 @@
 import { writable } from 'svelte/store';
-}
 
 export interface LoadingOperation {
   id: string;

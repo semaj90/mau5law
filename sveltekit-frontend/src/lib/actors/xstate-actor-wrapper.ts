@@ -196,28 +196,34 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
 // ===== ACTOR FACTORY FUNCTIONS =====
 
 export function createEmbeddingActor(
-  input: EmbeddingActorInput;
+  input: EmbeddingActorInput
 ): ActorRefFrom<typeof embeddingActor> {
-  return createActor(embeddingActor, { input })
+  return createActor(embeddingActor, { input });
+}
 export function createDocumentProcessingActor(
-  input: DocumentProcessingInput;
+  input: DocumentProcessingInput
 ): ActorRefFrom<typeof documentProcessingActor> {
-  return createActor(documentProcessingActor, { input })
+  return createActor(documentProcessingActor, { input });
+}
 export function createLegalAnalysisActor(
-  input: LegalAnalysisInput;
+  input: LegalAnalysisInput
 ): ActorRefFrom<typeof legalAnalysisActor> {
-  return createActor(legalAnalysisActor, { input })
+  return createActor(legalAnalysisActor, { input });
+}
 export function createRAGSearchActor(input: RAGSearchInput): ActorRefFrom<typeof ragSearchActor> {
-  return createActor(ragSearchActor, { input })
+  return createActor(ragSearchActor, { input });
+}
 // ===== WORKFLOW ORCHESTRATION ACTOR =====
 export interface WorkflowInput {
   steps: Array<any>;
-  parallel?: boolean
+  parallel?: boolean;
+}
 export interface WorkflowOutput {
   results: Record<string, any>;
   totalTime: number;
   success: boolean;
-  errors: Array<any>
+  errors: Array<any>;
+}
 export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInput }) => {
   const startTime = Date.now();
   const results: Record<string, any> = {};
@@ -326,7 +332,9 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
 });
 
 export function createWorkflowActor(input: WorkflowInput): ActorRefFrom<typeof workflowActor> {
-  return createActor(workflowActor, { input })
+  return createActor(workflowActor, { input });
+}
+
 // ===== UTILITY FUNCTIONS =====
 
 export async function runActor<T>(actor: ActorRefFrom<any>): Promise<T> {
@@ -344,13 +352,19 @@ export async function runActor<T>(actor: ActorRefFrom<any>): Promise<T> {
       }
     });
     actor.start();
-  })
+  });
+}
+
 export function getActorOutput<T>(actor: ActorRefFrom<any>): T | undefined {
   const snapshot = actor.getSnapshot();
-  return snapshot.output as T
+  return snapshot.output as T;
+}
+
 export function isActorDone(actor: ActorRefFrom<any>): boolean {
   const snapshot = actor.getSnapshot();
-  return snapshot.status === 'done'
+  return snapshot.status === 'done';
+}
+
 export function hasActorError(actor: ActorRefFrom<any>): boolean {
   const snapshot = actor.getSnapshot();
   return snapshot.status === 'error';

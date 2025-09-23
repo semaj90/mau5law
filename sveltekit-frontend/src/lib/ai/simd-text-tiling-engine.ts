@@ -221,7 +221,7 @@ export class SIMDTextTilingEngine {
       console.error('SIMD tiling failed:', error);
 
       // Fallback: simple quantization
-      const combined = new Float32Array(embeddings.reduce((sum, emb) => sum + emb.length, 0);
+      const combined = new Float32Array(embeddings.reduce((sum, emb) => sum + emb.length, 0));
       let offset = 0;
       for (const embedding of embeddings) {
         // Apply 7-bit quantization directly;
@@ -240,7 +240,7 @@ export class SIMDTextTilingEngine {
    */
   private async compressToNESBits(
     tiledData: Float32Array,
-    originalText: string;
+    originalText: string
   ): Promise<CompressedTextTile[]> {
     const tiles: CompressedTextTile[] = [];
     const tileSize = this.config.tileSize;
@@ -289,7 +289,7 @@ export class SIMDTextTilingEngine {
    */
   private async compressToSevenBytes(
     tileData: Float32Array,
-    tileText: string;
+    tileText: string
   ): Promise<Uint8Array> {
     const compressed = new Uint8Array(7); // Exactly 7 bytes
 
@@ -388,8 +388,8 @@ export class SIMDTextTilingEngine {
 
   private getPatternID(text: string): number {
     const patterns = ['legal', 'technical', 'narrative', 'numeric', 'mixed'];
-    const scores = patterns.map((pattern) => this.calculatePatternScore(text, pattern);
-    return scores.indexOf(Math.max(...scores);
+    const scores = patterns.map((pattern) => this.calculatePatternScore(text, pattern));
+    return scores.indexOf(Math.max(...scores));
   }
 
   private calculateSemanticValue(data: Float32Array): number {

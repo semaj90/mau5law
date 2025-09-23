@@ -8,8 +8,15 @@
   import AccessibilitySettings from '$lib/components/ui/AccessibilitySettings.svelte';
   import { accessibilityService } from '$lib/services/accessibility-service';
 
+  interface User {
+    name?: string;
+    email?: string;
+    avatar?: string;
+    role?: string;
+  }
+
   interface Props {
-    user?: unknown;
+    user?: User | null;
     sidebarOpen?: boolean;
     variant?: 'full' | 'minimal' | 'demo';
   }
@@ -278,7 +285,7 @@
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent class="space-y-2">
+              <CardContent class="user-menu space-y-2">
                 <LinkButton href="/profile" variant="ghost" size="sm" class="w-full justify-start">
                   👤 Profile
                 </LinkButton>

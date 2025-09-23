@@ -469,7 +469,7 @@
 		onmouseup={handleMouseUp}
 		onwheel={handleWheel}
 		class="texture-canvas"
-		class:gpu-enabled={textureStreaming.stats.hasWebGL}
+		class:gpu-enabled={textureStreaming.stats().hasWebGL}
 		class:error={!!error}
 	/>
 
@@ -489,17 +489,17 @@
 
 	{#if mode !== 'courtroom' && isReady}
 		<div class="controls-overlay">
-			<button onclick={() => evidenceCanvas.setMode('view')} class:active={evidenceCanvas.getCanvasState.mode === 'view'}>
+			<button onclick={() => evidenceCanvas.setMode('view')} class:active={evidenceCanvas.getCanvasState().mode === 'view'}>
 				View
 			</button>
-			<button onclick={() => evidenceCanvas.setMode('edit')} class:active={evidenceCanvas.getCanvasState.mode === 'edit'}>
+			<button onclick={() => evidenceCanvas.setMode('edit')} class:active={evidenceCanvas.getCanvasState().mode === 'edit'}>
 				Edit
 			</button>
-			<button onclick={() => evidenceCanvas.setMode('present')} class:active={evidenceCanvas.getCanvasState.mode === 'present'}>
+			<button onclick={() => evidenceCanvas.setMode('present')} class:active={evidenceCanvas.getCanvasState().mode === 'present'}>
 				Present
 			</button>
 			<button onclick={() => evidenceCanvas.toggleConnections()}>
-				{evidenceCanvas.getCanvasState.showConnections ? 'Hide' : 'Show'} Connections
+				{evidenceCanvas.getCanvasState().showConnections ? 'Hide' : 'Show'} Connections
 			</button>
 			<button onclick={fitToContent}>Fit to Content</button>
 			<button onclick={clearCanvas}>Clear</button>
@@ -508,7 +508,7 @@
 </div>
 
 <style>
-	.legal-texture-canv.texture-canvas {
+	.legal-texture-canvas .texture-canvas {
 		display: block;
 		cursor: grab;
 		transition: filter 0.2s ease;

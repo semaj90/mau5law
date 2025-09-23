@@ -93,12 +93,12 @@
 <Dialog.Root {open} {onOpenChange}>
   <Dialog.Trigger>
     <Button class="legal-action-btn bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn">
-<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
       Analyze Case Documents
-
+    </Button>
   </Dialog.Trigger>
 
   <Dialog.Content class="legal-dialog max-w-2xl w-full bg-white border border-gray-200 rounded-lg shadow-xl">

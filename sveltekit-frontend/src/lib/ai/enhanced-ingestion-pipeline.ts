@@ -170,7 +170,7 @@ export class EnhancedIngestionPipeline {
   private copilotContext: CopilotArchitectureContext | null = null;
   private multimodalProcessors: Map<string, any> = new Map();
   private anchorPointCache: Map<string, AnchorPoint[]> = new Map();
-  
+
   // Add missing required properties
   private somRAG: SelfOrganizingMapRAG;
   private qdrantService: QdrantService;
@@ -205,7 +205,7 @@ export class EnhancedIngestionPipeline {
       maxEpochs: 100,
       clusterCount: 8
     });
-    
+
     this.qdrantService = new QdrantService();
 
     this.initializeCopilotIntegration();
