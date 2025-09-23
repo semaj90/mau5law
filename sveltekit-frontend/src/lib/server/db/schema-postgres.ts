@@ -17,7 +17,7 @@ import {
   pgEnum,
   index
 } from "drizzle-orm/pg-core";
-import { vector } from "drizzle-orm/pg-vector";
+// Note: vector type is handled via sql`` template in table definitions
 import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -56,7 +56,7 @@ export const users = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => ({
+  (table) => ({
     uniqueConstraints: [unique('users_email_unique').on(table.email)],
     indexes: [
       index('users_role_idx').on(table.role),
@@ -75,7 +75,7 @@ export const sessions = pgTable(
     userId: uuid('user_id').notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
   },
-  (table: any) => ({
+  (table) => ({
     foreignKeys: [
       foreignKey({
         columns: [table.userId],
@@ -94,7 +94,7 @@ export const emailVerificationCodes = pgTable(
     code: varchar('code', { length: 8 }).notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
   },
-  (table: any) => ({
+  (table) => ({
     foreignKeys: [
       foreignKey({
         columns: [table.userId],
@@ -112,7 +112,7 @@ export const passwordResetTokens = pgTable(
     userId: uuid('user_id').notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }).notNull(),
   },
-  (table: any) => ({
+  (table) => ({
     foreignKeys: [
       foreignKey({
         columns: [table.userId],
@@ -155,7 +155,7 @@ export const cases = pgTable(
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
     closedAt: timestamp('closed_at', { mode: 'string' }),
   },
-  (table: any) => ({
+  (table) => ({
     uniqueConstraints: [unique('cases_case_number_unique').on(table.caseNumber)],
     indexes: [
       index('cases_status_idx').on(table.status),
@@ -201,7 +201,7 @@ export const criminals = pgTable('criminals', {
   createdBy: uuid('created_by'),
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
-}, (table: any) => ({
+}, (table) => ({
   indexes: [
     index('criminals_first_name_idx').on(table.firstName),
     index('criminals_last_name_idx').on(table.lastName),
@@ -246,7 +246,7 @@ export const evidence = pgTable('evidence', {
   uploadedBy: uuid('uploaded_by'),
   uploadedAt: timestamp('uploaded_at', { mode: 'string' }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
-}, (table: any) => ({
+}, (table) => ({
   indexes: [
     index('evidence_case_id_idx').on(table.caseId),
     index('evidence_criminal_id_idx').on(table.criminalId),
@@ -299,9 +299,9 @@ export const legalDocuments = pgTable(
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
-    embedding: vector('embedding', { dimensions: 768 }),
+    embedding: text('embedding'), // Vector stored as text, converted in service layer
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -359,7 +359,7 @@ export const attachmentVerifications = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.verifiedBy],
       foreignColumns: [users.id],
@@ -393,7 +393,7 @@ export const canvasAnnotations = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.evidenceId],
       foreignColumns: [evidence.id],
@@ -424,7 +424,7 @@ export const canvasStates = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -460,7 +460,7 @@ export const aiReports = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -501,7 +501,7 @@ export const citations = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -540,7 +540,7 @@ export const reports = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -583,7 +583,7 @@ export const savedReports = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -615,7 +615,7 @@ export const themes = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.createdBy],
       foreignColumns: [users.id],
@@ -645,7 +645,7 @@ export const personsOfInterest = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -677,7 +677,7 @@ export const hashVerifications = pgTable(
     notes: text('notes'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.evidenceId],
       foreignColumns: [evidence.id],
@@ -718,7 +718,7 @@ export const userEmbeddings = pgTable(
     metadata: jsonb('metadata').default({}).notNull(),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
@@ -752,7 +752,7 @@ export const evidenceVectors = pgTable(
     metadata: jsonb('metadata').default({}).notNull(),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.evidenceId],
       foreignColumns: [evidence.id],
@@ -773,7 +773,7 @@ export const caseEmbeddings = pgTable(
     metadata: jsonb('metadata').default({}).notNull(),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -798,7 +798,7 @@ export const ragSessions = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
@@ -883,7 +883,7 @@ export const legalAnalysisSessions = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -923,7 +923,7 @@ export const legalResearch = pgTable(
     createdBy: uuid('created_by'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -952,7 +952,7 @@ export const vectorMetadata = pgTable(
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow(),
   },
-  (table: any) => [unique('vector_metadata_document_id_unique').on(table.documentId)]
+  (table) => [unique('vector_metadata_document_id_unique').on(table.documentId)]
 );
 // === CASE SCORING SYSTEM ===
 
@@ -973,7 +973,7 @@ export const caseScores = pgTable(
     calculatedAt: timestamp('calculated_at', { mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
@@ -1005,13 +1005,13 @@ export const userAiQueries = pgTable(
     tokensUsed: integer('tokens_used'),
     processingTime: integer('processing_time'),
     contextUsed: jsonb('context_used').default([]).notNull(),
-    embedding: vector('embedding', { dimensions: 768 }),
+    embedding: text('embedding'), // Vector stored as text, converted in service layer
     metadata: jsonb('metadata').default({}).notNull(),
     isSuccessful: boolean('is_successful').default(true).notNull(),
     errorMessage: text('error_message'),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
@@ -1044,7 +1044,7 @@ export const autoTags = pgTable(
     confirmedBy: uuid('confirmed_by'),
     confirmedAt: timestamp('confirmed_at', { mode: 'string' }),
   },
-  (table: any) => [
+  (table) => [
     foreignKey({
       columns: [table.confirmedBy],
       foreignColumns: [users.id],
@@ -1064,9 +1064,9 @@ export const embeddingCache = pgTable(
     textHash: text('text_hash').notNull(),
     model: varchar('model', { length: 100 }).notNull(),
     createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-    embedding: vector('embedding', { dimensions: 768 }).notNull(),
+    embedding: text('embedding').notNull(), // Vector stored as text, converted in service layer
   },
-  (table: any) => [unique('embedding_cache_text_hash_unique').on(table.textHash)]
+  (table) => [unique('embedding_cache_text_hash_unique').on(table.textHash)]
 );
 // === DOCUMENT CHUNKS ===
 
@@ -1079,7 +1079,7 @@ export const documentChunks = pgTable('document_chunks', {
   documentType: varchar('document_type', { length: 50 }).notNull(),
   chunkIndex: integer('chunk_index').notNull(),
   content: text('content').notNull(),
-  embedding: vector('embedding', { dimensions: 768 }).notNull(),
+  embedding: text('embedding').notNull(), // Vector stored as text, converted in service layer
   metadata: jsonb('metadata').default({}).notNull(),
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
 });
@@ -1129,7 +1129,7 @@ export type NewDocumentChunk = typeof documentChunks.$inferInsert;
 
 // === RELATIONS ===
 
-export const usersRelations = relations(users, ({ many }: { many: any }) => ({
+export const usersRelations = relations(users, ({ many }) => ({
   casesAsLead: many(cases, { relationName: 'leadProsecutor' }),
   casesCreated: many(cases, { relationName: 'createdBy' }),
   evidenceUploaded: many(evidence),
@@ -1139,14 +1139,14 @@ export const usersRelations = relations(users, ({ many }: { many: any }) => ({
   sessions: many(sessions),
 }));
 
-export const sessionsRelations = relations(sessions, ({ one }: { one: any }) => ({
+export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id],
   }),
 }));
 
-export const casesRelations = relations(cases, ({ one, many }: { one: any; many: any }) => ({
+export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
     references: [users.id],
@@ -1161,7 +1161,7 @@ export const casesRelations = relations(cases, ({ one, many }: { one: any; many:
   activities: many(caseActivities),
 }));
 
-export const criminalsRelations = relations(criminals, ({ one, many }: { one: any; many: any }) => ({
+export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
     references: [users.id],
@@ -1169,7 +1169,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }: { one: an
   evidence: many(evidence),
 }));
 
-export const evidenceRelations = relations(evidence, ({ one }: { one: any }) => ({
+export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
     references: [users.id],
@@ -1180,7 +1180,7 @@ export const evidenceRelations = relations(evidence, ({ one }: { one: any }) => 
   }),
 }));
 
-export const caseActivitiesRelations = relations(caseActivities, ({ one }: { one: any }) => ({
+export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
   case: one(cases, {
     fields: [caseActivities.caseId],
     references: [cases.id],
@@ -1197,7 +1197,7 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }: { one
   }),
 }));
 
-export const aiReportsRelations = relations(aiReports, ({ one }: { one: any }) => ({
+export const aiReportsRelations = relations(aiReports, ({ one }) => ({
   case: one(cases, {
     fields: [aiReports.caseId],
     references: [cases.id],
@@ -1208,7 +1208,7 @@ export const aiReportsRelations = relations(aiReports, ({ one }: { one: any }) =
   }),
 }));
 
-export const personsOfInterestRelations = relations(personsOfInterest, ({ one }: { one: any }) => ({
+export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
   case: one(cases, {
     fields: [personsOfInterest.caseId],
     references: [cases.id],
@@ -1219,7 +1219,7 @@ export const personsOfInterestRelations = relations(personsOfInterest, ({ one }:
   }),
 }));
 
-export const legalDocumentsRelations = relations(legalDocuments, ({ one }: { one: any }) => ({
+export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
   case: one(cases, {
     fields: [legalDocuments.caseId],
     references: [cases.id],
@@ -1230,14 +1230,14 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }: { one
   }),
 }));
 
-export const ragSessionsRelations = relations(ragSessions, ({ one }: { one: any }) => ({
+export const ragSessionsRelations = relations(ragSessions, ({ one }) => ({
   user: one(users, {
     fields: [ragSessions.userId],
     references: [users.id],
   }),
 }));
 
-export const userAiQueriesRelations = relations(userAiQueries, ({ one }: { one: any }) => ({
+export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
   user: one(users, {
     fields: [userAiQueries.userId],
     references: [users.id],
@@ -1248,7 +1248,7 @@ export const userAiQueriesRelations = relations(userAiQueries, ({ one }: { one: 
   }),
 }));
 
-export const autoTagsRelations = relations(autoTags, ({ one }: { one: any }) => ({
+export const autoTagsRelations = relations(autoTags, ({ one }) => ({
   confirmedBy: one(users, {
     fields: [autoTags.confirmedBy],
     references: [users.id],
@@ -1258,7 +1258,7 @@ export const autoTagsRelations = relations(autoTags, ({ one }: { one: any }) => 
 // === DATABASE CONNECTION & HELPERS ===
 
 // Database connection
-const connectionString = process.env.DATABASE_URL || "postgresql://legal_admin:123456@localhost:5433/legal_ai_db";
+const connectionString = process.env.DATABASE_URL || "postgresql://legal_admin:123456@localhost:5432/legal_ai_db";
 const client = postgres(connectionString);
 export const db = drizzle(client);
 
@@ -1266,41 +1266,4 @@ export const db = drizzle(client);
 export const helpers = { eq };
 
 // Export all tables for easy access
-export {
-  users,
-  sessions,
-  emailVerificationCodes,
-  passwordResetTokens,
-  cases,
-  criminals,
-  evidence,
-  legalDocuments,
-  caseActivities,
-  attachmentVerifications,
-  canvasAnnotations,
-  canvasStates,
-  aiReports,
-  citations,
-  reports,
-  savedReports,
-  themes,
-  personsOfInterest,
-  hashVerifications,
-  contentEmbeddings,
-  userEmbeddings,
-  chatEmbeddings,
-  evidenceVectors,
-  caseEmbeddings,
-  ragSessions,
-  ragMessages,
-  statutes,
-  legalPrecedents,
-  legalAnalysisSessions,
-  legalResearch,
-  vectorMetadata,
-  caseScores,
-  userAiQueries,
-  autoTags,
-  embeddingCache,
-  documentChunks,
-};
+// Note: do not re-export tables collectively to avoid redeclaration conflicts

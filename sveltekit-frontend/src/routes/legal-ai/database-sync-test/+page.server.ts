@@ -10,7 +10,7 @@ import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
 import { desc, eq, count, sql } from 'drizzle-orm';
 import { langExtractService } from '$lib/services/langextract-ollama-service.js';
 
-// Enhanced types for testing page;
+// Enhanced types for testing page
 export interface DatabaseSyncTestData {
   initialState: {
     langchainService: {
@@ -52,8 +52,8 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
       langExtractService.listAvailableModels().catch(() => [])
     ]);
 
-    const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value: false;
-    const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value: [];
+    const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value : false;
+    const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value : [];
 
     // Enhanced database queries for testing
     const [
@@ -73,8 +73,8 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           createdAt: ragSessions.createdAt
         })
         .from(ragSessions)
-        .where(eq(ragSessions.isActive, true)
-        .orderBy(desc(ragSessions.updatedAt)
+        .where(eq(ragSessions.isActive, true))
+        .orderBy(desc(ragSessions.updatedAt))
         .limit(10), // More sessions for testing
 
       // Recent documents with metadata
@@ -89,7 +89,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           processingMetadata: legalDocuments.processingMetadata
         })
         .from(legalDocuments)
-        .orderBy(desc(legalDocuments.createdAt)
+        .orderBy(desc(legalDocuments.createdAt))
         .limit(15), // More documents for testing
 
       // Total counts
@@ -116,17 +116,17 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
     ]);
 
     // Process results with error handling
-    const sessions = recentSessions.status === 'fulfilled' ? recentSessions.value: [];
-    const documents = recentDocuments.status === 'fulfilled' ? recentDocuments.value: [];
-    const counts = totalCounts.status === 'fulfilled' ? totalCounts.value: [{ count: 0 }, { count: 0 }];
-    const todayDocs = todayDocuments.status === 'fulfilled' ? todayDocuments.value: [{ count: 0 }];
-    const metrics = processingMetrics.status === 'fulfilled' ? processingMetrics.value: [{
+    const sessions = recentSessions.status === 'fulfilled' ? recentSessions.value : [];
+    const documents = recentDocuments.status === 'fulfilled' ? recentDocuments.value : [];
+    const counts = totalCounts.status === 'fulfilled' ? totalCounts.value : [{ count: 0 }, { count: 0 }];
+    const todayDocs = todayDocuments.status === 'fulfilled' ? todayDocuments.value : [{ count: 0 }];
+    const metrics = processingMetrics.status === 'fulfilled' ? processingMetrics.value : [{
       avgProcessingTime: 0,
       cacheHits: 0,
       totalProcessed: 0
     }];
 
-    // Calculate document counts per session;
+    // Calculate document counts per session
     const sessionsWithCounts = await Promise.all(sessions.map(async (session) => {
         try {
           const [{ count: docCount }] = await db

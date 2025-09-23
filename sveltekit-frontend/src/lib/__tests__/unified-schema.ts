@@ -319,7 +319,7 @@ export const citationPoints = pgTable("citation_points", {
 // === SAVED CITATIONS ===
 
 export const savedCitations = pgTable(
-  "saved_citations",);
+  "saved_citations",
   {
     id: text("id")
       .primaryKey()

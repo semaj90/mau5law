@@ -54,6 +54,7 @@
     "@unocss/preset-icons": "^66.5.1",
     "@unocss/preset-typography": "^66.5.1",
     "@unocss/preset-uno": "^66.5.1",
+    "@webgpu/types": "^0.1.65",
     "glob": "^10.4.5",
     "typescript": "^5.9.2",
     "unocss": "^66.5.1",

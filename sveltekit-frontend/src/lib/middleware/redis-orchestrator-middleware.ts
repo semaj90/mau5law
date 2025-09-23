@@ -8,6 +8,22 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import { appRedisOrchestrator } from '$lib/services/app-redis-orchestrator';
 
+type CacheStrategy = 'aggressive' | 'conservative' | 'minimal' | 'bypass';
+type MemoryBank = 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
+type AIQuery = { query: string; context: Record<string, unknown> };
+type RedisResult = {
+  cached?: boolean;
+  source?: string;
+  processing_time?: number;
+  response?: unknown;
+  sources?: unknown[];
+  confidence?: number;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
 /**
  * Universal Redis Orchestrator Wrapper
  * Wraps any existing API endpoint with Redis optimization
@@ -16,16 +32,16 @@ export function withRedisOrchestrator(
   originalHandler: RequestHandler,
   config: {
     endpointName: string;
-    cacheStrategy: 'aggressive' | 'conservative' | 'minimal' | 'bypass';
-    memoryBank: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
+    cacheStrategy: CacheStrategy;
+    memoryBank: MemoryBank;
     requiresFresh?: boolean; // For critical operations that shouldn't use cache
     maxCacheAge?: number; // Override default TTL
     customCacheKey?: (request: Request) => string;
-    aiQueryExtractor?: (body: any) => { query: string; context: any } | null;
+    aiQueryExtractor?: (body: unknown) => AIQuery | null;
   }
 ): RequestHandler {
   return async event => {
-    const { request, params, locals } = event;
+    const { request, locals } = event;
     const startTime = performance.now();
 
     try {
@@ -36,7 +52,7 @@ export function withRedisOrchestrator(
 
       // Extract AI query from request if this is an AI endpoint
       const body = await extractBody(request);
-      const aiQuery = config.aiQueryExtractor
+      const aiQuery: AIQuery | null = config.aiQueryExtractor
         ? config.aiQueryExtractor(body)
         : extractStandardAIQuery(body, config.endpointName);
 
@@ -49,7 +65,7 @@ export function withRedisOrchestrator(
       }
 
       // Generate session ID
-      const sessionId = generateSessionId(request, locals, params);
+      const sessionId = generateSessionId(request, locals);
 
       // Process through Redis orchestrator
       const result = await appRedisOrchestrator.processAIQuery(aiQuery.query, sessionId, {
@@ -61,56 +77,18 @@ export function withRedisOrchestrator(
       });
 
       // If we have a cached result, return it immediately;
-      if (
-        (
-          result as {
-            cached?: any;
-            source?: any;
-            processing_time?: any;
-            response?: any;
-            sources?: any;
-            confidence?: any;
-          }
-        ).cached ||
-        (
-          result as {
-            cached?: any;
-            source?: any;
-            processing_time?: any;
-            response?: any;
-            sources?: any;
-            confidence?: any;
-          }
-        ).source === 'queued'
-      ) {
-        console.log(
-          `🎮 [REDIS MIDDLEWARE] ${config.endpointName} - ${(result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).source.toUpperCase()} (${(result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }).processing_time.toFixed(2)}ms)`
-        );
+      const r = result as RedisResult;
+      if (r.cached || r.source === 'queued') {
+        const source = (r.source || 'unknown').toUpperCase();
+        const ms = typeof r.processing_time === 'number' ? r.processing_time.toFixed(2) : 'N/A';
+        console.log(`🎮 [REDIS MIDDLEWARE] ${config.endpointName} - ${source} (${ms}ms)`);
 
         return json({
           ...parseRedisResult(result),
           _redis_optimization: {
             endpoint: config.endpointName,
-            source: (
-              result as {
-                cached?: any;
-                source?: any;
-                processing_time?: any;
-                response?: any;
-                sources?: any;
-                confidence?: any;
-              }
-            ).source,
-            processing_time: (
-              result as {
-                cached?: any;
-                source?: any;
-                processing_time?: any;
-                response?: any;
-                sources?: any;
-                confidence?: any;
-              }
-            ).processing_time,
+            source: r.source,
+            processing_time: r.processing_time,
             cache_strategy: config.cacheStrategy,
             memory_bank: config.memoryBank,
             session_id: sessionId,
@@ -157,17 +135,18 @@ export const redisOptimized = {
       endpointName: 'ai-chat',
       cacheStrategy: 'aggressive',
       memoryBank: 'CHR_ROM',
-      aiQueryExtractor: body =>
-        body?.message
-          ? {
-              query: body.message,
-              context: {
-                caseId: body.caseId,
-                userId: body.userId,
-                useRAG: body.useRAG !== false,
-              },
-            }
-          : null,
+      aiQueryExtractor: (body: unknown) => {
+        if (!isRecord(body)) return null;
+        const msg = body['message'];
+        if (typeof msg !== 'string') return null;
+        const caseId = typeof body['caseId'] === 'string' ? (body['caseId'] as string) : undefined;
+        const userId = typeof body['userId'] === 'string' ? (body['userId'] as string) : undefined;
+        const useRAG = typeof body['useRAG'] === 'boolean' ? (body['useRAG'] as boolean) : true;
+        return {
+          query: msg,
+          context: { caseId, userId, useRAG },
+        };
+      },
     }),
 
   /** AI Analysis endpoints - conservative caching */
@@ -176,17 +155,17 @@ export const redisOptimized = {
       endpointName: 'ai-analysis',
       cacheStrategy: 'conservative',
       memoryBank: 'PRG_ROM',
-      aiQueryExtractor: body =>
-        body?.query || body?.content
-          ? {
-              query: body.query || body.content,
-              context: {
-                analysisType: body.analysisType || 'general',
-                caseId: body.caseId,
-                evidenceId: body.evidenceId,
-              },
-            }
-          : null,
+      aiQueryExtractor: (body: unknown) => {
+        if (!isRecord(body)) return null;
+        const q = body['query'];
+        const c = body['content'];
+        const query = typeof q === 'string' ? q : typeof c === 'string' ? c : undefined;
+        if (!query) return null;
+        const analysisType = typeof body['analysisType'] === 'string' ? (body['analysisType'] as string) : 'general';
+        const caseId = typeof body['caseId'] === 'string' ? (body['caseId'] as string) : undefined;
+        const evidenceId = typeof body['evidenceId'] === 'string' ? (body['evidenceId'] as string) : undefined;
+        return { query, context: { analysisType, caseId, evidenceId } };
+      },
     }),
 
   /** AI Search endpoints - aggressive caching */
@@ -195,17 +174,15 @@ export const redisOptimized = {
       endpointName: 'ai-search',
       cacheStrategy: 'aggressive',
       memoryBank: 'CHR_ROM',
-      aiQueryExtractor: body =>
-        body?.query
-          ? {
-              query: body.query,
-              context: {
-                searchType: body.searchType || 'semantic',
-                filters: body.filters || {},
-                maxResults: body.maxResults || 10,
-              },
-            }
-          : null,
+      aiQueryExtractor: (body: unknown) => {
+        if (!isRecord(body)) return null;
+        const q = body['query'];
+        if (typeof q !== 'string') return null;
+        const searchType = typeof body['searchType'] === 'string' ? (body['searchType'] as string) : 'semantic';
+        const filters = isRecord(body['filters']) ? (body['filters'] as Record<string, unknown>) : {};
+        const maxResults = typeof body['maxResults'] === 'number' ? (body['maxResults'] as number) : 10;
+        return { query: q, context: { searchType, filters, maxResults } };
+      },
     }),
 
   /** Document processing - minimal caching (often unique) */
@@ -215,17 +192,15 @@ export const redisOptimized = {
       cacheStrategy: 'minimal',
       memoryBank: 'SAVE_RAM',
       requiresFresh: true, // Document processing should be fresh;
-      aiQueryExtractor: body =>
-        body?.content
-          ? {
-              query: body.content.substring(0, 500), // Use first 500 chars as query;
-              context: {
-                documentType: body.documentType,
-                caseId: body.caseId,
-                processingMode: body.mode || 'standard',
-              },
-            }
-          : null,
+      aiQueryExtractor: (body: unknown) => {
+        if (!isRecord(body)) return null;
+        const content = body['content'];
+        if (typeof content !== 'string') return null;
+        const documentType = typeof body['documentType'] === 'string' ? (body['documentType'] as string) : undefined;
+        const caseId = typeof body['caseId'] === 'string' ? (body['caseId'] as string) : undefined;
+        const mode = typeof body['mode'] === 'string' ? (body['mode'] as string) : 'standard';
+        return { query: content.substring(0, 500), context: { documentType, caseId, processingMode: mode } };
+      },
     }),
 
   /** Evidence analysis - conservative caching */
@@ -234,17 +209,17 @@ export const redisOptimized = {
       endpointName: 'evidence-analysis',
       cacheStrategy: 'conservative',
       memoryBank: 'INTERNAL_RAM',
-      aiQueryExtractor: body =>
-        body?.evidenceContent || body?.query
-          ? {
-              query: body.evidenceContent || body.query,
-              context: {
-                evidenceId: body.evidenceId,
-                analysisType: body.analysisType,
-                caseId: body.caseId,
-              },
-            }
-          : null,
+      aiQueryExtractor: (body: unknown) => {
+        if (!isRecord(body)) return null;
+        const ec = body['evidenceContent'];
+        const q = body['query'];
+        const query = typeof ec === 'string' ? ec : typeof q === 'string' ? q : undefined;
+        if (!query) return null;
+        const evidenceId = typeof body['evidenceId'] === 'string' ? (body['evidenceId'] as string) : undefined;
+        const analysisType = typeof body['analysisType'] === 'string' ? (body['analysisType'] as string) : undefined;
+        const caseId = typeof body['caseId'] === 'string' ? (body['caseId'] as string) : undefined;
+        return { query, context: { evidenceId, analysisType, caseId } };
+      },
     }),
 
   /** Case scoring - aggressive caching */
@@ -253,17 +228,18 @@ export const redisOptimized = {
       endpointName: 'case-scoring',
       cacheStrategy: 'aggressive',
       memoryBank: 'CHR_ROM',
-      aiQueryExtractor: body =>
-        body?.caseData
-          ? {
-              query: JSON.stringify(body.caseData).substring(0, 1000),
-              context: {
-                caseId: body.caseId,
-                scoringMethod: body.method || 'standard',
-                criteria: body.criteria || {},
-              },
-            }
-          : null,
+      aiQueryExtractor: (body: unknown) => {
+        if (!isRecord(body)) return null;
+        const caseData = body['caseData'];
+        if (typeof caseData !== 'object' || caseData === null) return null;
+        const caseId = typeof body['caseId'] === 'string' ? (body['caseId'] as string) : undefined;
+        const method = typeof body['method'] === 'string' ? (body['method'] as string) : 'standard';
+        const criteria = isRecord(body['criteria']) ? (body['criteria'] as Record<string, unknown>) : {};
+        return {
+          query: JSON.stringify(caseData).substring(0, 1000),
+          context: { caseId, scoringMethod: method, criteria },
+        };
+      },
     }),
 
   /** Generic AI endpoint wrapper */
@@ -294,7 +270,9 @@ export function optimizeEndpoints(
     if (config.type === 'generic' && config.customName) {
       optimizedEndpoints[key] = redisOptimized.generic(config.customName, config.handler);
     } else if (config.type in redisOptimized) {
-      optimizedEndpoints[key] = (redisOptimized[config.type] as any)(config.handler);
+      optimizedEndpoints[key] = (redisOptimized[config.type] as unknown as (h: RequestHandler) => RequestHandler)(
+        config.handler
+      );
     }
   }
 
@@ -308,7 +286,7 @@ function isAIEndpoint(endpointName: string): boolean {
   return aiKeywords.some(keyword => endpointName.toLowerCase().includes(keyword));
 }
 
-async function extractBody(request: Request): Promise<any> {
+async function extractBody(request: Request): Promise<unknown> {
   if (request.method !== 'POST' && request.method !== 'PUT') {
     return {};
   }
@@ -320,7 +298,7 @@ async function extractBody(request: Request): Promise<any> {
   }
 }
 
-function recreateRequest(originalRequest: Request, body: any): Request {
+function recreateRequest(originalRequest: Request, body: unknown): Request {
   if (originalRequest.method !== 'POST' && originalRequest.method !== 'PUT') {
     return originalRequest;
   }
@@ -332,17 +310,21 @@ function recreateRequest(originalRequest: Request, body: any): Request {
   });
 }
 
-function extractStandardAIQuery(body: any, endpoint: string): { query: string; context: any } | null {
+function extractStandardAIQuery(body: unknown, _endpoint: string): AIQuery | null {
   // Standard query extraction patterns
   const queryFields = ['query', 'message', 'content', 'prompt', 'text', 'input'];
 
+  const obj = typeof body === 'object' && body !== null ? (body as Record<string, unknown>) : undefined;
+  if (!obj) return null;
+
   for (const field of queryFields) {
-    if (body[field] && typeof body[field] === 'string') {
+    const value = obj[field];
+    if (typeof value === 'string') {
       return {
-        query: body[field],
+        query: value,
         context: {
-          ...body,
-          [field]: undefined, // Remove query from context
+          ...obj,
+          [field]: undefined,
         },
       };
     }
@@ -351,9 +333,13 @@ function extractStandardAIQuery(body: any, endpoint: string): { query: string; c
   return null;
 }
 
-function generateSessionId(request: Request, locals: any, params: any): string {
+function generateSessionId(request: Request, locals: unknown): string {
   // Generate session ID from user, IP, or create anonymous session
-  const userId = locals?.user?.id || locals?.userId;
+  const l = isRecord(locals) ? (locals as Record<string, unknown>) : {};
+  const user = isRecord(l.user) ? (l.user as Record<string, unknown>) : undefined;
+  const userId =
+    (typeof user?.id === 'string' ? (user.id as string) : undefined) ||
+    (typeof l.userId === 'string' ? (l.userId as string) : undefined);
   if (userId) return `user_${userId}`;
 
   const ip = request.headers.get('x-forwarded-for') || 'unknown';
@@ -382,74 +368,23 @@ function calculatePriority(strategy: string, endpoint: string): number {
   return Math.min(255, base + modifier);
 }
 
-function parseRedisResult(result: any): any {
+function parseRedisResult(result: unknown): Record<string, unknown> {
   try {
     // If result contains structured data, parse it;
-    if (
-      typeof (
-        result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }
-      ).response === 'string' &&
-      (
-        result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }
-      ).response.startsWith('{')
-    ) {
-      return JSON.parse(
-        (
-          result as {
-            cached?: any;
-            source?: any;
-            processing_time?: any;
-            response?: any;
-            sources?: any;
-            confidence?: any;
-          }
-        ).response
-      );
+    const rr = result as RedisResult & { response?: string };
+    if (typeof rr.response === 'string' && rr.response.startsWith('{')) {
+      return JSON.parse(rr.response);
     }
 
     return {
-      response: (
-        result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }
-      ).response,
-      sources:
-        (
-          result as {
-            cached?: any;
-            source?: any;
-            processing_time?: any;
-            response?: any;
-            sources?: any;
-            confidence?: any;
-          }
-        ).sources || [],
-      confidence:
-        (
-          result as {
-            cached?: any;
-            source?: any;
-            processing_time?: any;
-            response?: any;
-            sources?: any;
-            confidence?: any;
-          }
-        ).confidence || 0.8,
-      processing_time: (
-        result as { cached?: any; source?: any; processing_time?: any; response?: any; sources?: any; confidence?: any }
-      ).processing_time,
+      response: (rr as RedisResult).response,
+      sources: (rr as RedisResult).sources || [],
+      confidence: (rr as RedisResult).confidence ?? 0.8,
+      processing_time: (rr as RedisResult).processing_time,
     };
   } catch {
     return {
-      response:
-        (
-          result as {
-            cached?: any;
-            source?: any;
-            processing_time?: any;
-            response?: any;
-            sources?: any;
-            confidence?: any;
-          }
-        ).response || 'Redis optimization result',
+      response: (result as Record<string, unknown>)?.['response'] ?? 'Redis optimization result',
     };
   }
 }
@@ -458,8 +393,8 @@ async function cacheOriginalResult(
   originalResult: Response,
   query: string,
   sessionId: string,
-  config: any,
-  processingTime: number
+  config: { endpointName: string },
+  _processingTime: number
 ): Promise<void> {
   try {
     // Avoid consuming the original response body here (may be streaming)
@@ -475,7 +410,7 @@ async function cacheOriginalResult(
   }
 }
 
-function addRedisMetadata(response: Response, metadata: any): Response {
+function addRedisMetadata(response: Response, metadata: Record<string, unknown>): Response {
   // Preserve original body; attach metadata in a response header
   const headers = new Headers(response.headers);
   try {

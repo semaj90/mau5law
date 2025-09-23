@@ -83,6 +83,9 @@ export const REDIS_DATABASES = {
   ANALYTICS: 7,       // User analytics and metrics
   TEMP_STORAGE: 8,    // Temporary storage
   VECTOR_CACHE: 9,    // Vector embedding cache
+  TENSORRT_CACHE: 10, // TensorRT-LLM model cache
+  GEMMA_EMBEDDINGS: 11, // Gemma embedding cache
+  PGVECTOR_CACHE: 12, // PostgreSQL vector index cache
 } as const;
 
 // Service-specific configurations;
@@ -133,6 +136,33 @@ export const SERVICE_CONFIGS = {
     db: 0, // Pub/Sub uses db 0
     lazyConnect: false, // Immediate connection for pub/sub
     enableOfflineQueue: false
+  },
+
+  // TensorRT-LLM caching;
+  TENSORRT_LLM: {
+    ...REDIS_BASE_CONFIG,
+    db: REDIS_DATABASES.TENSORRT_CACHE,
+    keyPrefix: 'tensorrt:',
+    commandTimeout: 30000, // Longer timeout for model operations
+    maxLoadingTimeout: 60000
+  },
+
+  // Gemma embeddings caching;
+  GEMMA_EMBEDDINGS: {
+    ...REDIS_BASE_CONFIG,
+    db: REDIS_DATABASES.GEMMA_EMBEDDINGS,
+    keyPrefix: 'gemma:',
+    commandTimeout: 20000, // Optimized for embedding operations
+    enableAutoPipelining: true
+  },
+
+  // PostgreSQL vector cache;
+  PGVECTOR_CACHE: {
+    ...REDIS_BASE_CONFIG,
+    db: REDIS_DATABASES.PGVECTOR_CACHE,
+    keyPrefix: 'pgvector:',
+    commandTimeout: 15000,
+    enableAutoPipelining: true
   }
 } as const;
 

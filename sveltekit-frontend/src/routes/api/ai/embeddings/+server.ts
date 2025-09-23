@@ -1,340 +1,197 @@
 /**
- * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
- * 
- * Endpoint: embeddings
- * Category: conservative
- * Memory Bank: PRG_ROM
- * Priority: 150
- * Redis Type: aiAnalysis
- * 
- * Performance Impact:
- * - Cache Strategy: conservative
- * - Memory Bank: PRG_ROM (Nintendo-style)
- * - Cache hits: ~2ms response time
- * - Fresh queries: Background processing for complex requests
- * 
- * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
+ * Gemma Embeddings API with PostgreSQL pgvector Integration
+ * High-performance embedding generation with Redis caching
  */
 
-/**
- * AI Embeddings API - Generate embeddings using multiple backends
- * Supports Ollama, vLLM, and fallback services for vector generation
- */
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
+import { gemmaEmbeddingsService } from '$lib/services/gemma-embeddings-service';
 
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { ollamaConfig } from '$lib/services/ollama-config-service.js';
-import { ENV_CONFIG } from '$lib/config/environment.js';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+// Request validation schema
+const EmbeddingRequestSchema = z.object({
+  text: z.string().min(1),
+  model: z.string().default('nomic-embed-text:latest'),
+  document_type: z.enum(['legal_document', 'evidence', 'case', 'note']).optional(),
+  metadata: z.record(z.any()).optional(),
+  normalize: z.boolean().default(true)
+});
 
-const VLLM_ENDPOINT = process.env.VLLM_ENDPOINT || 'http://localhost:8000/v1';
+const VectorSearchSchema = z.object({
+  query: z.string().min(1),
+  limit: z.number().min(1).max(100).default(10),
+  similarity_threshold: z.number().min(0).max(1).default(0.7),
+  document_types: z.array(z.string()).optional(),
+  filters: z.record(z.any()).optional()
+});
 
-interface EmbeddingRequest {
-  text: string;
-  model?: string;
-  dimensions?: number;
-}
+const BatchEmbeddingSchema = z.object({
+  texts: z.array(z.string()).min(1).max(100),
+  model: z.string().default('nomic-embed-text:latest'),
+  document_type: z.enum(['legal_document', 'evidence', 'case', 'note']).optional(),
+  metadata: z.record(z.any()).optional()
+});
 
-interface EmbeddingResponse {
-  embedding: number[];
-  model: string;
-  backend: string;
-  dimensions: number;
-  processingTime: number;
-}
-
-/**
- * Generate embeddings using available AI backends
- */;
-const originalPOSTHandler: RequestHandler = async ({ request }) => {
-  const startTime = performance.now();
-
+export const POST: RequestHandler = async ({ request, url }) => {
   try {
-    const body: EmbeddingRequest = await request.json();
+    const action = url.searchParams.get('action') || 'embed';
+    const body = await request.json();
 
-    if (!body.text) {
-      return json({ error: 'Text is required' }, { status: 400 });
-    }
-
-    const text = body.text.trim();
-    const model = body?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text';
-    const targetDimensions = body.dimensions || 768;
-
-    // Try backends in order of preference
-    const backends = ['ollama', 'vllm', 'fallback'];
-
-    for (const backend of backends) {
-      try {
-        const result = await generateEmbedding(text, model, backend, targetDimensions);
-        if (result) {
-          const processingTime = performance.now() - startTime;
+    switch (action) {
+      case 'embed':
+        // Validate embedding request
+        const validatedData = EmbeddingRequestSchema.safeParse(body);
+        if (!validatedData.success) {
           return json({
-            embedding: (result as { embedding?: any; backend?: any }).embedding,
-            model: result?.model || "unknown" // @ts-ignore - Model property access,
-            backend: (result as { embedding?: any; backend?: any }).backend,
-            dimensions: (result as { embedding?: any; backend?: any }).embedding.length,
-            processingTime: Math.round(processingTime)
-          } as EmbeddingResponse);
+            success: false,
+            error: 'Invalid request data',
+            details: validatedData.error.flatten()
+          }, { status: 400 });
         }
-      } catch (error) {
-        console.error(`❌ ${backend} embedding failed:`, error);
-        // Continue to next backend
-      }
-    }
 
-    return json({ error: 'All embedding backends unavailable' }, { status: 503 });
+        // Generate embedding
+        const result = await gemmaEmbeddingsService.generateEmbedding(validatedData.data);
+
+        return json({
+          success: result.success,
+          data: result.success ? {
+            embedding: result.embedding,
+            dimensions: result.dimensions,
+            model: result.model,
+            processing_time: result.processing_time,
+            cached: result.cached,
+            text_hash: result.text_hash
+          } : undefined,
+          error: result.error
+        });
+
+      case 'search':
+        // Validate search request
+        const searchData = VectorSearchSchema.safeParse(body);
+        if (!searchData.success) {
+          return json({
+            success: false,
+            error: 'Invalid search request',
+            details: searchData.error.flatten()
+          }, { status: 400 });
+        }
+
+        // First generate embedding for the query
+        const queryEmbedding = await gemmaEmbeddingsService.generateEmbedding({
+          text: searchData.data.query
+        });
+
+        if (!queryEmbedding.success || !queryEmbedding.embedding) {
+          return json({
+            success: false,
+            error: 'Failed to generate query embedding'
+          }, { status: 500 });
+        }
+
+        // Perform vector search
+        const searchResults = await gemmaEmbeddingsService.vectorSearch({
+          query_embedding: queryEmbedding.embedding,
+          limit: searchData.data.limit,
+          similarity_threshold: searchData.data.similarity_threshold,
+          document_types: searchData.data.document_types,
+          filters: searchData.data.filters
+        });
+
+        return json({
+          success: true,
+          data: {
+            query: searchData.data.query,
+            results: searchResults,
+            query_embedding_time: queryEmbedding.processing_time,
+            total_results: searchResults.length
+          }
+        });
+
+      case 'batch':
+        // Validate batch request
+        const batchData = BatchEmbeddingSchema.safeParse(body);
+        if (!batchData.success) {
+          return json({
+            success: false,
+            error: 'Invalid batch request',
+            details: batchData.error.flatten()
+          }, { status: 400 });
+        }
+
+        // Process batch embeddings
+        const batchResults = await gemmaEmbeddingsService.batchGenerateEmbeddings(
+          batchData.data.texts,
+          {
+            model: batchData.data.model,
+            document_type: batchData.data.document_type,
+            metadata: batchData.data.metadata
+          }
+        );
+
+        return json({
+          success: true,
+          data: {
+            embeddings: batchResults,
+            total_processed: batchResults.length,
+            successful: batchResults.filter(r => r.success).length,
+            failed: batchResults.filter(r => !r.success).length
+          }
+        });
+
+      default:
+        return json({
+          success: false,
+          error: 'Unknown action'
+        }, { status: 400 });
+    }
   } catch (error) {
-    console.error('Embedding API error:', error);
-    return json();
-      {
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message: String(error)
-      },
-      { status: 500 }
-    );
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Processing failed'
+    }, { status: 500 });
   }
 };
 
-/**
- * Get embedding backend health status
- */;
-const originalGETHandler: RequestHandler = async () => {
-  const health = {
-    ollama: await checkOllamaHealth(),
-    vllm: await checkVLLMHealth(),
-    timestamp: Date.now()
-  };
+export const GET: RequestHandler = async ({ url }) => {
+  try {
+    const action = url.searchParams.get('action') || 'status';
 
-  return json(health);
+    switch (action) {
+      case 'status':
+        return json({
+          success: true,
+          data: {
+            status: 'Gemma embeddings service available',
+            models: ['nomic-embed-text:latest'],
+            dimensions: 384,
+            features: ['caching', 'pgvector', 'batch_processing', 'vector_search']
+          }
+        });
+
+      case 'stats':
+        const stats = await gemmaEmbeddingsService.getIndexStats();
+        return json({
+          success: true,
+          data: stats
+        });
+
+      case 'optimize':
+        await gemmaEmbeddingsService.optimizeIndexes();
+        return json({
+          success: true,
+          data: { message: 'Vector indexes optimized successfully' }
+        });
+
+      default:
+        return json({
+          success: false,
+          error: 'Unknown action'
+        }, { status: 400 });
+    }
+  } catch (error) {
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Request failed'
+    }, { status: 500 });
+  }
 };
 
-/**
- * Generate embedding using specific backend
- */
-async function generateEmbedding(
-  text: string,
-  model: string,
-  backend: string,
-  targetDimensions: number;
-): Promise<any> {
-  switch (backend) {
-    case 'ollama':
-      return await generateOllamaEmbedding(text, model);
-
-    case 'vllm':
-      return await generateVLLMEmbedding(text, model);
-
-    case 'fallback':
-      return await generateFallbackEmbedding(text, targetDimensions);
-
-    default:
-      return null;
-  }
-}
-
-/**
- * Generate embedding using Ollama
- */;
-async function generateOllamaEmbedding(text: string, model: string) {
-  try {
-    const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model,
-        prompt: text
-      }),
-      signal: AbortSignal.timeout(30000)
-    });
-
-    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`Ollama responded with ${(response as { ok?: any; status?: any; json?: any }).status}`);
-    }
-
-    const data = await (response as { ok?: any; status?: any; json?: any }).json();
-
-    if (!(data as { embedding?: any; data?: any; models?: any }).embedding || !Array.isArray((data as { embedding?: any; data?: any; models?: any }).embedding)) {
-      throw new Error('Invalid embedding format from Ollama');
-    }
-
-    return {
-      embedding: (data as { embedding?: any; data?: any; models?: any }).embedding,
-      model,
-      backend: 'ollama'
-    };
-  } catch (error) {
-    console.error('Ollama embedding error:', error);
-    throw error;
-  }
-}
-
-/**
- * Generate embedding using vLLM (OpenAI-compatible)
- */;
-async function generateVLLMEmbedding(text: string, model: string) {
-  try {
-    const response = await fetch(`${VLLM_ENDPOINT}/embeddings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: model || 'sentence-transformers/all-MiniLM-L6-v2',
-        input: text
-      }),
-      signal: AbortSignal.timeout(30000)
-    });
-
-    if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-      throw new Error(`vLLM responded with ${(response as { ok?: any; status?: any; json?: any }).status}`);
-    }
-
-    const data = await (response as { ok?: any; status?: any; json?: any }).json();
-
-    if (!(data as { embedding?: any; data?: any; models?: any }).data?.[0]?.embedding) {
-      throw new Error('Invalid embedding format from vLLM');
-    }
-
-    return {
-      embedding: (data as { embedding?: any; data?: any; models?: any }).data[0].embedding,
-      model: data?.model || "unknown" // @ts-ignore - Model property access || model,
-      backend: 'vllm'
-    };
-  } catch (error) {
-    console.error('vLLM embedding error:', error);
-    throw error;
-  }
-}
-
-/**
- * Generate fallback embedding using simple text analysis
- * This is a basic implementation - in production you'd use a proper embedding model
- */;
-async function generateFallbackEmbedding(text: string, dimensions: number) {
-  try {
-    // Simple bag-of-words + TF-IDF approach for fallback
-    const words = text
-      .toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
-      .split(/\s+/)
-      .filter((w: string) => w.length > 2);
-
-    // Create a basic embedding based on text features
-    const embedding = new Array(dimensions).fill(0);
-
-    // Hash-based feature extraction;
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-      const hash = simpleHash(word);
-
-      for (let j = 0; j < dimensions; j++) {
-        const feature = (hash + j) % dimensions;
-        embedding[feature] += 1.0 / Math.sqrt(words.length);
-      }
-    }
-
-    // Normalize the vector
-    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
-    if (magnitude > 0) {
-      for (let i = 0; i < embedding.length; i++) {
-        embedding[i] /= magnitude;
-      }
-    }
-
-    // Add some text-specific features
-    const textLength = text.length;
-    const avgWordLength = words.reduce((sum, w) => sum + w.length, 0) / words.length;
-    const uniqueWords = new Set(words).size;
-
-    // Incorporate these features into the embedding;
-    if (dimensions > 10) {
-      embedding[0] = Math.tanh(textLength / 1000); // Text length feature
-      embedding[1] = Math.tanh(avgWordLength / 10); // Avg word length feature
-      embedding[2] = Math.tanh(uniqueWords / words.length); // Vocabulary diversity
-    }
-
-    return {
-      embedding,
-      model: 'fallback-tfidf',
-      backend: 'fallback'
-    };
-  } catch (error) {
-    console.error('Fallback embedding error:', error);
-    throw error;
-  }
-}
-
-/**
- * Simple hash function for consistent word hashing
- */;
-function simpleHash(str: string): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32-bit integer
-  }
-  return Math.abs(hash);
-}
-
-/**
- * Check Ollama health
- */;
-async function checkOllamaHealth(): Promise<any> {
-  try {
-    const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/tags`, {
-      signal: AbortSignal.timeout(5000)
-    });
-
-    if ((response as { ok?: any; status?: any; json?: any }).ok) {
-      const data = await (response as { ok?: any; status?: any; json?: any }).json();
-      const models = (data as { embedding?: any; data?: any; models?: any }).models?.map((m: any) => m.name) || [];
-      const hasEmbeddingModel = models.some(
-        (name: string) =>
-          name.includes('nomic-embed') || name.includes('embed') || name.includes('sentence')
-      );
-
-      return {
-        healthy: true,
-        models: models,
-        hasEmbeddingModel
-      };
-    } else {
-      return { healthy: false, error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
-    }
-  } catch (error) {
-    return {
-      healthy: false,
-      error: error instanceof Error ? error.message: 'Connection failed'
-    };
-  }
-}
-
-/**
- * Check vLLM health
- */;
-async function checkVLLMHealth(): Promise<any> {
-  try {
-    const response = await fetch(`${VLLM_ENDPOINT}/models`, {
-      signal: AbortSignal.timeout(5000)
-    });
-
-    if ((response as { ok?: any; status?: any; json?: any }).ok) {
-      const data = await (response as { ok?: any; status?: any; json?: any }).json();
-      const models = (data as { embedding?: any; data?: any; models?: any }).data?.map((m: any) => m.id) || [];
-
-      return {
-        healthy: true,
-        models
-      };
-    } else {
-      return { healthy: false, error: `HTTP ${(response as { ok?: any; status?: any; json?: any }).status}` };
-    }
-  } catch (error) {
-    return {
-      healthy: false,
-      error: error instanceof Error ? error.message: 'Connection failed'
-    };
-  }
-}
-
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
-export const GET = redisOptimized.aiAnalysis(originalGETHandler);

@@ -1,5 +1,6 @@
 // Enhanced-bits + pgvector embeddings schema
-import { pgTable, uuid, text, timestamp, vector, integer, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, jsonb } from "drizzle-orm/pg-core";
+import { vector } from "pgvector/drizzle-orm";
 import { sql } from "drizzle-orm";
 
 // Embeddings table for the enhanced-bits demo;

@@ -2,12 +2,13 @@
 // Switched to postgres-js driver for Drizzle (faster, matches 'postgres' client instance)
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from "postgres";
-import { pgTable, serial, text, timestamp, jsonb, vector, real, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, timestamp, jsonb, real, uuid } from 'drizzle-orm/pg-core';
+import { vector } from 'pgvector/drizzle-orm';
 import * as schema from './db/schema.js';
 
 // Database connection configuration
 const connectionString = process.env.DATABASE_URL ||
-  `postgresql://${process.env.POSTGRES_USER || 'legal_admin'}:${process.env.POSTGRES_PASSWORD || '123456'}@${process.env.POSTGRES_HOST || 'localhost'}:${process.env.POSTGRES_PORT || '5433'}/${process.env.POSTGRES_DB || 'legal_ai_db'}`;
+  `postgresql://${process.env.POSTGRES_USER || 'legal_admin'}:${process.env.POSTGRES_PASSWORD || '123456'}@${process.env.POSTGRES_HOST || 'localhost'}:${process.env.POSTGRES_PORT || '5432'}/${process.env.POSTGRES_DB || 'legal_ai_db'}`;
 
 // Create PostgreSQL connection with proper configuration;
 const sql = postgres(connectionString, {

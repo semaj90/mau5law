@@ -4,7 +4,8 @@
 // Do NOT import from '$lib/database/schema' for authentication/session logic.
 // Use '$lib/server/db/schema-postgres' instead. A runtime guard below logs when
 // auth-critical tables are imported from this module.
-import { pgTable, text, timestamp, integer, boolean, json, uuid, varchar, vector } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, boolean, json, uuid, varchar } from "drizzle-orm/pg-core";
+import { vector } from "pgvector/drizzle-orm";
 import { sql } from 'drizzle-orm';
 
 // Users table with enhanced authentication fields;
