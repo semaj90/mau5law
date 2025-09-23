@@ -1,4 +1,5 @@
 
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 // Lightweight in-memory topology extractor (would be replaced by real scanners / registries)

@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     let totalCount = 0;
     let aiMetadata: any = null;
 
-    // Enhanced AI and Vector Search capabilities;
+    // Enhanced AI and Vector Search capabilities
     if (useAI && search) {
       try {
         const aiResponse = await fetch('http://localhost:11434/api/generate', {
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       }
     }
 
-    // Vector search with Qdrant integration;
+    // Vector search with Qdrant integration
     if (vectorSearch && search) {
       try {
         const vectorResponse = await fetch('http://localhost:6333/collections/legal_documents/points/search', {
@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           )
           .limit(limit)
           .offset(offset)
-    .orderBy(order === "asc" ? legalDocuments.created_at: desc(legalDocuments.created_at);
+    .orderBy(order === "asc" ? legalDocuments.created_at: desc(legalDocuments.created_at));
 
         data = await documentsQuery;
 
@@ -134,31 +134,31 @@ export const GET: RequestHandler = async ({ url, request }) => {
       case "cases":
         const casesQuery = db
           .select()
-          .from(cases)
+          .from(casesTable)
           .where(
             search
               ? or(
-                  like(cases.title, `%${search}%`),
-                  like(cases.description, `%${search}%`),
-                  like(cases.caseNumber, `%${search}%`)
+                  like(casesTable.title, `%${search}%`),
+                  like(casesTable.description, `%${search}%`),
+                  like(casesTable.caseNumber, `%${search}%`)
                 )
               : sql`true`
           )
           .limit(limit)
           .offset(offset)
-          .orderBy(order === "asc" ? sql`${cases[sort]} ASC` : sql`${cases[sort]} DESC`);
+          .orderBy(order === "asc" ? sql`${casesTable[sort]} ASC` : sql`${casesTable[sort]} DESC`);
 
         data = await casesQuery;
 
         const caseCountResult = await db
           .select({ count: sql`count(*)` })
-          .from(cases)
+          .from(casesTable)
           .where(
             search
               ? or(
-                  like(cases.title, `%${search}%`),
-                  like(cases.description, `%${search}%`),
-                  like(cases.caseNumber, `%${search}%`)
+                  like(casesTable.title, `%${search}%`),
+                  like(casesTable.description, `%${search}%`),
+                  like(casesTable.caseNumber, `%${search}%`)
                 )
               : sql`true`
           );
@@ -169,31 +169,31 @@ export const GET: RequestHandler = async ({ url, request }) => {
       case "evidence":
         const evidenceQuery = db
           .select()
-          .from(evidence)
+          .from(evidenceTable)
           .where(
             search
               ? or(
-                  like(evidence.title, `%${search}%`),
-                  like(evidence.description, `%${search}%`),
-                  like(evidence.evidenceType, `%${search}%`)
+                  like(evidenceTable.title, `%${search}%`),
+                  like(evidenceTable.description, `%${search}%`),
+                  like(evidenceTable.evidenceType, `%${search}%`)
                 )
               : sql`true`
           )
           .limit(limit)
           .offset(offset)
-          .orderBy(order === "asc" ? sql`${evidence[sort]} ASC` : sql`${evidence[sort]} DESC`);
+          .orderBy(order === "asc" ? sql`${evidenceTable[sort]} ASC` : sql`${evidenceTable[sort]} DESC`);
 
         data = await evidenceQuery;
 
         const evidenceCountResult = await db
           .select({ count: sql`count(*)` })
-          .from(evidence)
+          .from(evidenceTable)
           .where(
             search
               ? or(
-                  like(evidence.title, `%${search}%`),
-                  like(evidence.description, `%${search}%`),
-                  like(evidence.evidenceType, `%${search}%`)
+                  like(evidenceTable.title, `%${search}%`),
+                  like(evidenceTable.description, `%${search}%`),
+                  like(evidenceTable.evidenceType, `%${search}%`)
                 )
               : sql`true`
           );
@@ -206,16 +206,16 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
 
     // Format data for YoRHa interface
-    const formattedData = (data as { map?: any }).map((item, index) => ({
+    const formattedData = data.map((item: any, index) => ({
       ...item,
       yorha_id: `${dataType.toUpperCase()}-${String(offset + index + 1).padStart(6, '0')}`,
-      yorha_status: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).status || 'ACTIVE',
+      yorha_status: item.status || 'ACTIVE',
       yorha_type: dataType.toUpperCase(),
-      yorha_priority: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).priority || 'MEDIUM',
-      yorha_processed: !!(item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).processedAt || !!(item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).analyzedAt,
-      yorha_confidence: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).confidenceScore || 0.75,
-      yorha_timestamp: (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).createdAt || (item as { status?: any; priority?: any; processedAt?: any; analyzedAt?: any; confidenceScore?: any; createdAt?: any; uploadDate?: any }).uploadDate || new Date()
-    });
+      yorha_priority: item.priority || 'MEDIUM',
+      yorha_processed: !!(item.processedAt || item.analyzedAt),
+      yorha_confidence: item.confidenceScore || 0.75,
+      yorha_timestamp: item.createdAt || item.uploadDate || new Date()
+    }));
 
     return json({
       success: true,
@@ -256,7 +256,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         success: false,
         error: error.message || "Failed to fetch legal data",
         service: "yorha-legal-data-api"
-      },)
+      },
       { status: 500 }
     );
   }
@@ -268,7 +268,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!dataType || !itemData) {
       return json(
-        { success: false, error: "Missing dataType or data" },)
+        { success: false, error: "Missing dataType or data" },
         { status: 400 }
       );
     }
@@ -276,7 +276,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let result: any;
 
     switch (dataType) {
-      case "documents":;
+      case "documents":
   result = await db.insert(legalDocuments).values({
           title: itemData.title,
           content: itemData.content,
@@ -293,8 +293,8 @@ export const POST: RequestHandler = async ({ request }) => {
   } as any).returning();
         break;
 
-      case "cases":;
-  result = await db.insert(cases).values({
+      case "cases":
+  result = await db.insert(casesTable).values({
           title: itemData.title,
           description: itemData.description,
           caseNumber: itemData.caseNumber,
@@ -306,8 +306,8 @@ export const POST: RequestHandler = async ({ request }) => {
   } as any).returning();
         break;
 
-      case "evidence":;
-  result = await db.insert(evidence).values({
+      case "evidence":
+  result = await db.insert(evidenceTable).values({
           title: itemData.title,
           description: itemData.description,
           evidenceType: itemData.evidenceType || 'document',
@@ -338,7 +338,7 @@ export const POST: RequestHandler = async ({ request }) => {
         success: false,
         error: error.message || "Failed to create legal data",
         service: "yorha-legal-data-api"
-      },)
+      },
       { status: 500 }
     );
   }
@@ -350,7 +350,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
     if (!dataType || !id || !itemData) {
       return json(
-        { success: false, error: "Missing dataType, id, or data" },)
+        { success: false, error: "Missing dataType, id, or data" },
         { status: 400 }
       );
     }
@@ -360,34 +360,34 @@ export const PUT: RequestHandler = async ({ request }) => {
     switch (dataType) {
       case "documents":
         result = await db
-          .update(legalDocuments);
+          .update(legalDocuments)
           .set({
             ...itemData,
             updatedAt: new Date()
           })
-          .where(eq(legalDocuments.id, id)
+          .where(eq(legalDocuments.id, id))
           .returning();
         break;
 
       case "cases":
         result = await db
-          .update(cases);
+          .update(casesTable)
           .set({
             ...itemData,
             updatedAt: new Date()
           })
-          .where(eq(cases.id, id)
+          .where(eq(casesTable.id, id))
           .returning();
         break;
 
       case "evidence":
         result = await db
-          .update(evidence);
+          .update(evidenceTable)
           .set({
             ...itemData,
             updatedAt: new Date()
           })
-          .where(eq(evidence.id, id)
+          .where(eq(evidenceTable.id, id))
           .returning();
         break;
 
@@ -397,7 +397,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
     if (!(result as { length?: any }).length) {
       return json(
-        { success: false, error: `${dataType} not found` },)
+        { success: false, error: `${dataType} not found` },
         { status: 404 }
       );
     }
@@ -415,7 +415,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         success: false,
         error: error.message || "Failed to update legal data",
         service: "yorha-legal-data-api"
-      },)
+      },
       { status: 500 }
     );
   }
@@ -427,7 +427,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
 
     if (!dataType || !id) {
       return json(
-        { success: false, error: "Missing dataType or id" },)
+        { success: false, error: "Missing dataType or id" },
         { status: 400 }
       );
     }
@@ -438,21 +438,21 @@ export const DELETE: RequestHandler = async ({ request }) => {
       case "documents":
         result = await db
           .delete(legalDocuments)
-          .where(eq(legalDocuments.id, id)
+          .where(eq(legalDocuments.id, id))
           .returning();
         break;
 
       case "cases":
         result = await db
-          .delete(cases)
-          .where(eq(cases.id, id)
+          .delete(casesTable)
+          .where(eq(casesTable.id, id))
           .returning();
         break;
 
       case "evidence":
         result = await db
-          .delete(evidence)
-          .where(eq(evidence.id, id)
+          .delete(evidenceTable)
+          .where(eq(evidenceTable.id, id))
           .returning();
         break;
 
@@ -462,7 +462,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
 
     if (!(result as { length?: any }).length) {
       return json(
-        { success: false, error: `${dataType} not found` },)
+        { success: false, error: `${dataType} not found` },
         { status: 404 }
       );
     }
@@ -479,7 +479,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
         success: false,
         error: error.message || "Failed to delete legal data",
         service: "yorha-legal-data-api"
-      },)
+      },
       { status: 500 }
     );
   }

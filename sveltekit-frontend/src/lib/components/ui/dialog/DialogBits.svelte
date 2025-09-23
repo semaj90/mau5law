@@ -41,7 +41,7 @@
   };
 
   let dialogClasses = $derived(cn(
-    "legal-ai-dialog fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 gap-4 border border-amber-500/20 bg-slate-900/95 backdrop-blur-md p-6 shadow-2xl shadow-amber-500/10 rounded-2xl",
+    "legal-ai-dialog fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 gap-4 border border-legal-accent/20 bg-legal-background/95 backdrop-blur-md p-6 shadow-2xl shadow-legal-accent/10 rounded-2xl",
     sizeClasses[size],
     className
   ));
@@ -76,13 +76,13 @@
       {#if title || description}
         <div class="legal-ai-dialog-header space-y-2 mb-6">
           {#if title}
-            <DialogPrimitive.Title class="text-2xl font-bold text-amber-400 tracking-tight">
+            <DialogPrimitive.Title class="text-2xl font-bold text-legal-accent tracking-tight">
               {title}
             </DialogPrimitive.Title>
           {/if}
 
           {#if description}
-            <DialogPrimitive.Description class="text-slate-400 text-base">
+            <DialogPrimitive.Description class="text-legal-secondary text-base">
               {description}
             </DialogPrimitive.Description>
           {/if}
@@ -97,7 +97,7 @@
 
       <!-- Close Button -->
       <DialogPrimitive.Close
-        class="absolute right-4 top-4 p-2 text-slate-400 hover:text-amber-400 transition-colors rounded-lg hover:bg-slate-800/50"
+        class="absolute right-4 top-4 p-2 text-legal-secondary hover:text-legal-accent transition-colors rounded-lg hover:bg-legal-surface/50"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

@@ -1,4 +1,5 @@
 import cluster from "node:cluster";
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 
@@ -60,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       error: 'Failed to get cluster status',
-      message: error instanceof Error ? error.message: 'Unknown error',
+      message: error instanceof Error ? error.message : 'Unknown error',
       fallback: {
         health: {
           totalWorkers: 1,

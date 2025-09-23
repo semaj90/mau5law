@@ -52,7 +52,7 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    // Extra server-side constraints not encoded in schema;
+    // Extra server-side constraints not encoded in schema
     if (form.data.password !== form.data.confirmPassword) {
       return message(form, "Passwords do not match", { status: 400 });
     }
@@ -77,7 +77,7 @@ export const actions: Actions = {
       const nameValue = String(form.data.name || '');
 
       const [newUser] = await db
-        .insert(users);
+        .insert(users)
         .values({
           email: form.data.email,
           hashed_password: hashedPassword,

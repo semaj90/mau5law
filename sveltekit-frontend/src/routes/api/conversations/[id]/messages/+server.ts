@@ -66,7 +66,7 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
       metadata
     });
 
-    return apiSuccess()
+    return apiSuccess(
       { message },
       'Message added successfully',
       requestId

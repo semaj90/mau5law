@@ -184,7 +184,7 @@ const createEvidenceStore = () => {
       return;
     }
 
-    update((state) => ({ ...state, isLoading: true, error: null });
+    update((state) => ({ ...state, isLoading: true, error: null }));
 
     try {
       const response = await fetch(`/api/evidence/list?caseId=${caseId}`, {
@@ -213,7 +213,7 @@ const createEvidenceStore = () => {
         stats,
         isLoading: false,
         error: null
-      });
+      }));
 
       // Log access for audit trail
       await logEvidenceAccess(caseId, 'case_evidence_accessed');
@@ -226,7 +226,7 @@ const createEvidenceStore = () => {
         filtered_evidence: [],
         isLoading: false,
         error: error.message
-      });
+      }));
     }
   };
 
@@ -241,14 +241,14 @@ const createEvidenceStore = () => {
 
     // Add new evidence with comprehensive metadata
     addEvidence: async (
-      newEvidenceData: Omit<Evidence, "id" | "x" | "y" | "caseId" | "created_at" | "updated_at" | "chain_of_custody" | "access_log">;
+      newEvidenceData: Omit<Evidence, "id" | "x" | "y" | "caseId" | "created_at" | "updated_at" | "chain_of_custody" | "access_log">
     ) => {
-      update((state) => ({ ...state, isLoading: true });
+      update((state) => ({ ...state, isLoading: true }));
       const currentCaseId = get(selectedCase);
 
       if (!currentCaseId) {
         const err = "No case selected to add evidence to.";
-        update((state) => ({ ...state, isLoading: false, error: err });
+        update((state) => ({ ...state, isLoading: false, error: err }));
         console.error(err);
         return;
       }
@@ -296,7 +296,7 @@ const createEvidenceStore = () => {
           evidence: [...state.evidence, createdEvidence],
           filtered_evidence: applyFilter([...state.evidence, createdEvidence], state.current_filter),
           isLoading: false
-        });
+        }));
 
         // Log evidence addition
         await logEvidenceAccess(createdEvidence.id, 'evidence_added');
@@ -308,7 +308,7 @@ const createEvidenceStore = () => {
           ...state,
           isLoading: false,
           error: error.message
-        });
+        }));
         console.error("Error adding evidence:", error);
         throw error;
       }
@@ -317,7 +317,7 @@ const createEvidenceStore = () => {
     // Update evidence with optimistic updates and chain of custody
     updateEvidence: async (
       evidenceId: string,
-      updates: Partial<Omit<Evidence, "id" | "caseId" | "created_at">,
+      updates: Partial<Omit<Evidence, "id" | "caseId" | "created_at">>,
       chainOfCustodyAction?: {
         action: ChainOfCustodyEntry['action'];
         person: string;
@@ -399,7 +399,7 @@ const createEvidenceStore = () => {
               state.current_filter
             ),
             error: error.message
-          });
+          }));
         }
         throw error;
       }
@@ -447,7 +447,7 @@ const createEvidenceStore = () => {
           evidence: originalList,
           filtered_evidence: applyFilter(originalList, state.current_filter),
           error: error.message
-        });
+        }));
         throw error;
       }
     },
@@ -457,7 +457,7 @@ const createEvidenceStore = () => {
       update((state) => ({
         ...state,
         processing_queue: [...state.processing_queue, evidenceId]
-      });
+      }));
 
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/process`, {
@@ -486,7 +486,7 @@ const createEvidenceStore = () => {
             state.current_filter
           ),
           processing_queue: state.processing_queue.filter(id => id !== evidenceId)
-        });
+        }));
 
         // Log evidence processing
         await logEvidenceAccess(evidenceId, 'evidence_processed', { type: processingType });
@@ -498,7 +498,7 @@ const createEvidenceStore = () => {
           ...state,
           processing_queue: state.processing_queue.filter(id => id !== evidenceId),
           error: error.message
-        });
+        }));
         throw error;
       }
     },
@@ -601,7 +601,7 @@ const createEvidenceStore = () => {
         return updatedEvidence;
 
       } catch (error: any) {
-        update((state) => ({ ...state, error: error.message });
+        update((state) => ({ ...state, error: error.message }));
         throw error;
       }
     },
@@ -661,7 +661,7 @@ const createEvidenceStore = () => {
                 resolved: false
               }
             ]
-          });
+          }));
         }
 
         return validation;
@@ -674,7 +674,7 @@ const createEvidenceStore = () => {
 
     // Utility methods;
     clearError: () => {
-      update((state) => ({ ...state, error: null });
+      update((state) => ({ ...state, error: null }));
     },
 
     clearFilter: () => {
@@ -682,7 +682,7 @@ const createEvidenceStore = () => {
         ...state,
         current_filter: null,
         filtered_evidence: state.evidence
-      });
+      }));
     },
 
     refreshStats: async () => {
@@ -696,7 +696,7 @@ const createEvidenceStore = () => {
 
         if ((response as { ok?: any; json?: any; blob?: any }).ok) {
           const stats = await (response as { ok?: any; json?: any; blob?: any }).json();
-          update((state) => ({ ...state, stats });
+          update((state) => ({ ...state, stats }));
         }
       } catch (error: any) {
         console.error("Failed to refresh stats:", error);
@@ -741,7 +741,7 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
     }
 
     // Confidentiality filter
-    if (filter.confidentiality_level && filter.confidentiality_level.length > 0 &&;
+    if (filter.confidentiality_level && filter.confidentiality_level.length > 0 &&
         !filter.confidentiality_level.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).confidentiality_level)) {
       return false;
     }
@@ -762,7 +762,7 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
     }
 
     // Collected by filter
-    if (filter.collected_by && filter.collected_by.length > 0 &&;
+    if (filter.collected_by && filter.collected_by.length > 0 &&
         !filter.collected_by.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).collected_by)) {
       return false;
     }
@@ -845,19 +845,19 @@ export const evidenceError = derived(evidenceStore, ($s) => $s.error);
 export const evidenceStats = derived(evidenceStore, ($s) => $s.stats);
 export const pendingEvidenceIds = derived(evidenceStore, ($s) => $s.processing_queue);
 export const allSecurityAlerts = derived(evidenceStore, ($s) => $s.security_alerts);
-export const securityAlerts = derived(evidenceStore, ($s) => $s.security_alerts.filter(a => !a.resolved);
+export const securityAlerts = derived(evidenceStore, ($s) => $s.security_alerts.filter(a => !a.resolved));
 
 // Helper utilities (exported as standalone functions);
 export function getUnprocessedEvidence(evidence: Evidence[]): Evidence[] {
-  return evidence.filter(item => item.processed);
+  return evidence.filter(item => !item.processed);
 }
 
 export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
   const stats: EvidenceStats = {
     total_count: evidence.length,
-    by_type: Record<string, any>,
-    by_priority: Record<string, any>,
-    by_confidentiality: Record<string, any>,
+    by_type: {},
+    by_priority: {},
+    by_confidentiality: {},
     processed_count: 0,
     unprocessed_count: 0,
     encrypted_count: 0,

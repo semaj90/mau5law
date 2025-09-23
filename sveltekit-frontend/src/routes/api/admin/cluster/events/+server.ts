@@ -1,12 +1,11 @@
 import { EventEmitter } from "events";
 import type { RequestHandler } from './$types.js';
-
+import cluster from 'node:cluster';
 
 /*
  * Cluster Events API Endpoint (Server-Sent Events)
  * Provides real-time cluster health and worker metrics via SSE
- */;
-}
+ */
 
 export interface Worker {
   id: string;
@@ -24,7 +23,7 @@ export const GET: RequestHandler = async ({ request }) => {
     });
   }
 
-  // Only available from primary process;
+  // Only available from primary process
   if (!cluster.isPrimary) {
     return new Response('data: {"error": "SSE only available from primary process"}\n\n', {
       status: 503,
@@ -36,12 +35,12 @@ export const GET: RequestHandler = async ({ request }) => {
     });
   }
 
-  // Create readable stream for SSE;
+  // Create readable stream for SSE
   const stream = new ReadableStream({
     start(controller) {
       console.log('📡 SSE client connected to cluster monitoring');
 
-      // Send initial connection event;
+      // Send initial connection event
       sendSSEEvent(controller, 'connected', {
         timestamp: Date.now(),
         message: 'Connected to cluster monitoring'
@@ -56,7 +55,7 @@ export const GET: RequestHandler = async ({ request }) => {
           fallback: true
         });
         
-        // Send fallback single-process data every 5 seconds;
+        // Send fallback single-process data every 5 seconds
         const fallbackInterval = setInterval(() => {
           try {
             sendSSEEvent(controller, 'health', {
@@ -96,12 +95,12 @@ export const GET: RequestHandler = async ({ request }) => {
 
         // Store interval for cleanup
         globalThis.sseCleanupTasks = globalThis.sseCleanupTasks || [];
-        globalThis.sseCleanupTasks.push(() => clearInterval(fallbackInterval);
+        globalThis.sseCleanupTasks.push(() => clearInterval(fallbackInterval));
 
         return;
       }
 
-      // Send initial data;
+      // Send initial data
       try {
         const health = clusterManager.getHealth();
         const workers = clusterManager.getWorkerMetrics();
@@ -115,7 +114,7 @@ export const GET: RequestHandler = async ({ request }) => {
         });
       }
 
-      // Setup periodic updates;
+      // Setup periodic updates
       const updateInterval = setInterval(() => {
         try {
           if (!clusterManager) return;
@@ -126,7 +125,7 @@ export const GET: RequestHandler = async ({ request }) => {
           sendSSEEvent(controller, 'health', health);
           sendSSEEvent(controller, 'workers', workers);
 
-          // Send heartbeat;
+          // Send heartbeat
           sendSSEEvent(controller, 'heartbeat', {
             timestamp: Date.now(),
             uptime: process.uptime()
@@ -154,9 +153,9 @@ export const GET: RequestHandler = async ({ request }) => {
     },
 
     cancel() {
-      // Cleanup when client disconnects;
+      // Cleanup when client disconnects
       if (globalThis.sseCleanupTasks) {
-        globalThis.sseCleanupTasks.forEach((cleanup: any) => cleanup();
+        globalThis.sseCleanupTasks.forEach((cleanup: any) => cleanup());
         globalThis.sseCleanupTasks = [];
       }
     }
@@ -180,11 +179,11 @@ export const GET: RequestHandler = async ({ request }) => {
 function sendSSEEvent(
   controller: ReadableStreamDefaultController, 
   type: string, 
-  data: any;
+  data: any
 ): void {
   try {
     const event = `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
-    controller.enqueue(new TextEncoder().encode(event);
+    controller.enqueue(new TextEncoder().encode(event));
   } catch (error: any) {
     console.error('Failed to send SSE event:', error);
   }
@@ -192,54 +191,54 @@ function sendSSEEvent(
 
 /*
  * Setup cluster event listeners for real-time updates
- */;
+ */
 function setupClusterEventListeners(controller: ReadableStreamDefaultController) {
   const handlers: { [key: string]: (...args: any[]) => void } = {};
 
-  // Worker online event;
-  handlers.online = (worker: Worker) => {
+  // Worker online event
+  handlers.online = (worker: any) => {
     sendSSEEvent(controller, 'worker_online', {
       workerId: worker.id,
-      pid: worker.process.pid,
+      pid: worker.process?.pid,
       timestamp: Date.now()
     });
   };
 
-  // Worker disconnect event;
-  handlers.disconnect = (worker: Worker) => {
+  // Worker disconnect event
+  handlers.disconnect = (worker: any) => {
     sendSSEEvent(controller, 'worker_disconnect', {
       workerId: worker.id,
-      pid: worker.process.pid,
+      pid: worker.process?.pid,
       timestamp: Date.now()
     });
   };
 
-  // Worker exit event;
-  handlers.exit = (worker: Worker, code: number, signal: string) => {
+  // Worker exit event
+  handlers.exit = (worker: any, code: number, signal: string) => {
     sendSSEEvent(controller, 'worker_exit', {
       workerId: worker.id,
-      pid: worker.process.pid,
+      pid: worker.process?.pid,
       code,
       signal,
       timestamp: Date.now()
     });
   };
 
-  // Worker fork event;
-  handlers.fork = (worker: Worker) => {
+  // Worker fork event
+  handlers.fork = (worker: any) => {
     sendSSEEvent(controller, 'worker_fork', {
       workerId: worker.id,
-      pid: worker.process.pid,
+      pid: worker.process?.pid,
       timestamp: Date.now()
     });
   };
 
-  // Register all handlers;
+  // Register all handlers
   Object.entries(handlers).forEach(([event, handler]) => {
     cluster.on(event as any, handler);
   });
 
-  // Setup process monitoring;
+  // Setup process monitoring
   const processMonitor = setInterval(() => {
     const memoryUsage = process.memoryUsage();
     const cpuUsage = process.cpuUsage();
@@ -287,10 +286,10 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
     });
   }
 
-  // Return cleanup function;
+  // Return cleanup function
   return {
     cleanup: () => {
-      // Remove cluster event listeners;
+      // Remove cluster event listeners
       Object.entries(handlers).forEach(([event, handler]) => {
         cluster.removeListener(event as any, handler);
       });
@@ -298,7 +297,7 @@ function setupClusterEventListeners(controller: ReadableStreamDefaultController)
       // Clear process monitor
       clearInterval(processMonitor);
 
-      // Remove custom event listeners;
+      // Remove custom event listeners
       if (clusterManager && typeof clusterManager.removeAllListeners === 'function') {
         clusterManager.removeAllListeners();
       }

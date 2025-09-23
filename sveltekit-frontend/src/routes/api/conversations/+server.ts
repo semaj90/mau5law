@@ -20,9 +20,9 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
   try {
     const conversations = await conversationService.getUserConversations(userId, limit);
     
-    return apiSuccess()
-      { conversations }, 
-      `Retrieved ${conversations.length} conversations`, 
+    return apiSuccess(
+      { conversations },
+      `Retrieved ${conversations.length} conversations`,
       requestId
     );
   } catch (err: any) {
@@ -61,7 +61,7 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
       context
     });
 
-    return apiSuccess()
+    return apiSuccess(
       { conversation },
       'Conversation created successfully',
       requestId

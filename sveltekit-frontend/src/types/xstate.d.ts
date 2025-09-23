@@ -80,7 +80,6 @@ export type JobType =
   | 'ai_chat'
   | 'notification'
   | 'search_indexing';
-}
 
 export interface JobDefinition {
   id: string;

@@ -329,7 +329,7 @@ export class AuthService {
         status: i % 2 === 0 ? 'active' : 'closed',
         created_at: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
         updated_at: new Date()
-      });
+      }));
     } catch (error) {
       console.error('Failed to get sample cases:', error);
       return [];

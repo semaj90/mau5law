@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw error(400, 'Invalid chunk data.');
     }
     const tempFilePath = join(UPLOAD_DIR, fileId);
-    await appendFile(tempFilePath, Buffer.from(await chunk.arrayBuffer());
+    await appendFile(tempFilePath, Buffer.from(await chunk.arrayBuffer()));
 
     return json({ success: true });
   } catch (err: any) {

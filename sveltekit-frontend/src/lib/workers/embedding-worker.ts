@@ -5,12 +5,11 @@
  * Runs complex computations off the main thread for better UI performance
  */
 
-import type { 
-  EmbeddingResult, 
-  BatchEmbeddingResult, 
-  DocumentChunk 
+import type {
+  EmbeddingResult,
+  BatchEmbeddingResult,
+  DocumentChunk
 } from '$lib/services/nomic-embedding-service';
-}
 
 export interface WorkerMessage {
   id: string;
@@ -49,7 +48,7 @@ export interface SimilarityTask {
   maxResults: number;
 }
 
-// Worker implementation;
+// Worker implementation
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   // We're in a worker context
   
@@ -58,7 +57,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     private cache = new Map<string, any>();
     
     constructor() {
-      self.addEventListener('message', this.handleMessage.bind(this);
+      self.addEventListener('message', this.handleMessage.bind(this));
       console.log('🔧 Embedding Worker initialized');
     }
     
@@ -107,7 +106,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       const startTime = Date.now();
       let processed = 0;
       
-      // Process in batches;
+      // Process in batches
       for (let i = 0; i < texts.length; i += batchSize) {
         const batch = texts.slice(i, i + batchSize);
         
@@ -118,7 +117,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           
           processed += batch.length;
           
-          // Report progress;
+          // Report progress
           this.postResponse({
             id: taskId,
             success: true,
@@ -127,7 +126,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           });
           
           // Small delay to prevent overwhelming
-          await new Promise((resolve: any) => setTimeout(resolve, 10);
+          await new Promise((resolve: any) => setTimeout(resolve, 10));
         } catch (error: any) {
           batch.forEach((text, index) => {
             errors.push({
@@ -144,7 +143,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return {
         results,
         totalProcessed: results.length,
-        averageTime: results.length > 0 ? totalTime / results.length: 0,
+        averageTime: results.length > 0 ? totalTime / results.length : 0,
         errors,
         metrics: {
           tokenCount: this.estimateTokenCount(texts),
@@ -175,7 +174,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           }
         });
         
-        // Report progress;
+        // Report progress
         if (index % 10 === 0) {
           this.postResponse({
             id: taskId,
@@ -189,7 +188,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return documentChunks;
     }
     
-    private async processSimilarity(task: SimilarityTask, taskId: string): Promise<Array<any> {
+    private async processSimilarity(task: SimilarityTask, taskId: string): Promise<Array<any>> {
       const { queryEmbedding, targetEmbeddings, threshold, maxResults } = task;
       
       const similarities: Array<any> = [];
@@ -201,7 +200,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
           similarities.push({ index: i, similarity });
         }
         
-        // Report progress every 100 items;
+        // Report progress every 100 items
         if (i % 100 === 0) {
           this.postResponse({
             id: taskId,
@@ -259,7 +258,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         const sentenceLength = sentence.length;
         
         if (currentSize + sentenceLength > chunkSize && currentChunk.length > 0) {
-          chunks.push(currentChunk.trim();
+          chunks.push(currentChunk.trim());
           
           // Handle overlap
           const overlapText = currentChunk.slice(-overlap);
@@ -318,7 +317,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       
       switch (operation) {
         case 'normalize':
-          return vectors.map((v: number[]) => this.normalizeVector(v);
+          return vectors.map((v: number[]) => this.normalizeVector(v));
         case 'average':
           return this.averageVectors(vectors);
         case 'distance':
@@ -344,7 +343,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       }
     }
     
-    // Utility methods;
+    // Utility methods
     private estimateTokenCount(texts: string[]): number {
       return texts.reduce((total, text) => total + Math.ceil(text.length / 4), 0);
     }
@@ -370,7 +369,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       word = word.replace(/^y/, '');
       const matches = word.match(/[aeiouy]{1,2}/g);
       
-      return matches ? matches.length: 1;
+      return matches ? matches.length : 1;
     }
     
     private extractKeyPhrases(text: string): string[] {
@@ -378,7 +377,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       const words = text.toLowerCase().split(/\s+/);
       const phrases: Record<string, number> = {};
       
-      // Extract 2-word and 3-word phrases;
+      // Extract 2-word and 3-word phrases
       for (let i = 0; i < words.length - 1; i++) {
         const phrase2 = words.slice(i, i + 2).join(' ');
         phrases[phrase2] = (phrases[phrase2] || 0) + 1;
@@ -408,11 +407,11 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         if (negativeWords.includes(word)) score -= 1;
       });
       
-      return Math.max(-1, Math.min(1, score / Math.sqrt(words.length));
+      return Math.max(-1, Math.min(1, score / Math.sqrt(words.length)));
     }
     
     private normalizeVector(vector: number[]): number[] {
-      const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
+      const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
       return magnitude > 0 ? vector.map((val: any) => val / magnitude) : vector;
     }
     
@@ -449,7 +448,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     }
     
     private euclideanDistance(a: number[], b: number[]): number {
-      return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0);
+      return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
     }
     
     private flattenObject(obj: any, prefix = ''): Record<string, any> {
@@ -460,7 +459,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         const newKey = prefix ? `${prefix}.${key}` : key;
         
         if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
-          Object.assign(flattened, this.flattenObject(value, newKey);
+          Object.assign(flattened, this.flattenObject(value, newKey));
         } else {
           flattened[newKey] = value;
         }
@@ -507,7 +506,7 @@ export class EmbeddingWorkerManager {
   private pendingTasks = new Map<string, {
     resolve: (value: any) => void;
     reject: (error: Error) => void;
-    onProgress?: (progress: number, data?: unknown) => void;
+    onProgress?: (progress: number, data?: unknown) => void
   }>();
   
   constructor() {
@@ -523,10 +522,10 @@ export class EmbeddingWorkerManager {
       `;
       
       const blob = new Blob([workerCode], { type: 'application/javascript' });
-      this.worker = new Worker(URL.createObjectURL(blob);
+      this.worker = new Worker(URL.createObjectURL(blob));
       
-      this.worker.addEventListener('message', this.handleWorkerMessage.bind(this);
-      this.worker.addEventListener('error', this.handleWorkerError.bind(this);
+      this.worker.addEventListener('message', this.handleWorkerMessage.bind(this));
+      this.worker.addEventListener('error', this.handleWorkerError.bind(this));
     }
   }
   
@@ -544,7 +543,7 @@ export class EmbeddingWorkerManager {
     if (success) {
       task.resolve(data);
     } else {
-      task.reject(new Error(error || 'Worker task failed');
+      task.reject(new Error(error || 'Worker task failed'));
     }
     
     this.pendingTasks.delete(id);
@@ -555,7 +554,7 @@ export class EmbeddingWorkerManager {
     
     // Reject all pending tasks;
     for (const [id, task] of this.pendingTasks) {
-      task.reject(new Error(`Worker error: ${event.error?.message || 'Unknown error'}`);
+      task.reject(new Error(`Worker error: ${event.error?.message || 'Unknown error'}`));
     }
     
     this.pendingTasks.clear();
@@ -563,29 +562,29 @@ export class EmbeddingWorkerManager {
   
   public async processEmbeddings(
     task: EmbeddingTask,
-    onProgress?: (progress: number, data?: unknown) => void;
+    onProgress?: (progress: number, data?: unknown) => void
   ): Promise<BatchEmbeddingResult> {
     return this.executeTask('embeddings', task, onProgress);
   }
   
   public async processChunking(
     task: ChunkingTask,
-    onProgress?: (progress: number, data?: unknown) => void;
+    onProgress?: (progress: number, data?: unknown) => void
   ): Promise<DocumentChunk[]> {
     return this.executeTask('chunking', task, onProgress);
   }
   
   public async processSimilarity(
     task: SimilarityTask,
-    onProgress?: (progress: number, data?: unknown) => void;
-  ): Promise<Array<any> {
+    onProgress?: (progress: number, data?: unknown) => void
+  ): Promise<Array<any>> {
     return this.executeTask('similarity', task, onProgress);
   }
   
   public async processGeneral(
     data: any,
     options: any,
-    onProgress?: (progress: number, data?: unknown) => void;
+    onProgress?: (progress: number, data?: unknown) => void
   ): Promise<any> {
     return this.executeTask('processing', data, onProgress, options);
   }
@@ -594,7 +593,7 @@ export class EmbeddingWorkerManager {
     type: WorkerMessage['type'],
     data: any,
     onProgress?: (progress: number, data?: unknown) => void,
-    options?: unknown;
+    options?: unknown
   ): Promise<any> {
     if (!this.worker) {
       throw new Error('Worker not available');
@@ -622,7 +621,7 @@ export class EmbeddingWorkerManager {
     
     // Reject all pending tasks;
     for (const [id, task] of this.pendingTasks) {
-      task.reject(new Error('Worker terminated');
+      task.reject(new Error('Worker terminated'));
     }
     
     this.pendingTasks.clear();

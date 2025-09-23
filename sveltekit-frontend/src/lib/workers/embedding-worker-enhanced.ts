@@ -56,7 +56,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Initialize worker with Redis and LokiStore integration
-   */;
+   */
   private async initializeWorker(): Promise<void> {
     if (this.initialized) return;
 
@@ -81,7 +81,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Start the worker loop
-   */;
+   */
   async start(): Promise<void> {
     if (this.running) {
       console.log('Enhanced worker already running');
@@ -93,7 +93,7 @@ export class EnhancedEmbeddingWorker {
     this.running = true;
     console.log('🚀 Starting enhanced embedding worker loop...');
 
-    // Start the main processing loop;
+    // Start the main processing loop
     this.runWorkerLoop().catch((error) => {
       console.error('❌ Enhanced worker loop failed:', error);
       this.running = false;
@@ -105,7 +105,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Stop the worker
-   */;
+   */
   async stop(): Promise<void> {
     this.running = false;
 
@@ -113,7 +113,7 @@ export class EnhancedEmbeddingWorker {
       clearTimeout(this.batchTimer);
     }
 
-    // Process any remaining jobs in batch;
+    // Process any remaining jobs in batch
     if (this.currentBatch.length > 0) {
       await this.processBatch(this.currentBatch);
       this.currentBatch = [];
@@ -124,7 +124,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Main worker loop - processes jobs from Redis queue
-   */;
+   */
   private async runWorkerLoop(): Promise<void> {
     if (!this.redis) {
       console.error('❌ No Redis client available for enhanced worker loop');
@@ -155,7 +155,7 @@ export class EnhancedEmbeddingWorker {
 
         const job: EmbeddingJob = JSON.parse(jobData as string);
 
-        // Ensure job has ID and timestamp;
+        // Ensure job has ID and timestamp
         if (!job.id) {
           job.id = `job_${Date.now()}_${Math.random().toString(36).slice(2)}`;
         }
@@ -164,7 +164,7 @@ export class EnhancedEmbeddingWorker {
         // Add to batch for processing
         this.currentBatch.push(job);
 
-        // Process batch if it's full;
+        // Process batch if it's full
         if (this.currentBatch.length >= this.batchSize) {
           await this.processBatch([...this.currentBatch]);
           this.currentBatch = [];
@@ -179,7 +179,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Start batch processor timer
-   */;
+   */
   private startBatchProcessor(): void {
     this.batchTimer = setTimeout(async () => {
       if (this.currentBatch.length > 0 && this.running) {
@@ -195,7 +195,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Process a batch of jobs with optimization
-   */;
+   */
   private async processBatch(jobs: EmbeddingJob[]): Promise<void> {
     const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     console.log(`📦 Processing batch ${batchId} with ${jobs.length} embedding jobs`);
@@ -203,7 +203,7 @@ export class EnhancedEmbeddingWorker {
     // Group jobs by model for efficient processing
     const jobsByModel = this.groupJobsByModel(jobs);
 
-    // Process each model group;
+    // Process each model group
     for (const [model, modelJobs] of Object.entries(jobsByModel)) {
       await this.processModelBatch(modelJobs, model, batchId);
     }
@@ -215,20 +215,20 @@ export class EnhancedEmbeddingWorker {
   private async processModelBatch(
     jobs: EmbeddingJob[],
     model: string,
-    batchId: string;
+    batchId: string
   ): Promise<void> {
     // Process jobs in parallel with limited concurrency
     const chunks = this.chunkArray(jobs, this.concurrencyLimit);
 
     for (const chunk of chunks) {
-      const promises = chunk.map((job) => this.processJobWithLifecycle(job, batchId);
+      const promises = chunk.map((job) => this.processJobWithLifecycle(job, batchId));
       await Promise.allSettled(promises);
     }
   }
 
   /**
    * Process individual job with full XState lifecycle management
-   */;
+   */
   private async processJobWithLifecycle(job: EmbeddingJob, batchId?: string): Promise<void> {
     const startTime = Date.now();
 
@@ -246,13 +246,13 @@ export class EnhancedEmbeddingWorker {
         return;
       }
 
-      // Step 2: Mark job as starting in LokiStore;
+      // Step 2: Mark job as starting in LokiStore
       await globalLoki.startJob({
         id: job.id,
         type: 'embedding-generation',
         metadata: {
           text: job.text.slice(0, 100) + '...',
-          model: job?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
+          model: job.model || 'nomic-embed-text',
           textLength: job.text.length,
           batchId,
           priority: job.priority || 1
@@ -268,7 +268,7 @@ export class EnhancedEmbeddingWorker {
       let cached = false;
 
       try {
-        embedding = await this.getCachedEmbedding(job.text, job?.model || "unknown" // @ts-ignore - Model property access);
+        embedding = await this.getCachedEmbedding(job.text, job.model);
         cached = !!embedding;
 
         if (cached) {
@@ -278,14 +278,14 @@ export class EnhancedEmbeddingWorker {
         console.warn('Cache lookup failed:', error);
       }
 
-      // Step 5: Generate embedding if not cached;
+      // Step 5: Generate embedding if not cached
       if (!embedding) {
         await globalLoki.updateProgress(job.id, 50);
-        embedding = await this.generateEmbedding(job.text, job?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text');
+        embedding = await this.generateEmbedding(job.text, job.model || 'nomic-embed-text');
 
         if (embedding && embedding.length > 0) {
           // Cache the new embedding asynchronously
-          this.setCachedEmbedding(job.text, embedding, job?.model || "unknown" // @ts-ignore - Model property access).catch(console.warn);
+          this.setCachedEmbedding(job.text, embedding, job.model).catch(console.warn);
         }
       }
 
@@ -295,7 +295,7 @@ export class EnhancedEmbeddingWorker {
 
       // Step 6: Persist to database with progress update
       await globalLoki.updateProgress(job.id, 75);
-      await this.upsertEmbeddingToDB(job.id, job?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text', embedding, {
+      await this.upsertEmbeddingToDB(job.id, job.model || 'nomic-embed-text', embedding, {
         ...(job.meta || {}),
         batchId,
         textLength: job.text.length,
@@ -326,7 +326,7 @@ export class EnhancedEmbeddingWorker {
       // Mark as failed in global state
       await globalLoki.failJob(job.id, errorMessage);
 
-      // Remove idempotency key so job can be retried;
+      // Remove idempotency key so job can be retried
       try {
         if (this.redis) {
           await this.redis.del(`job:processed:${job.id}`);
@@ -342,7 +342,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Check if job has already been processed (idempotency with Redis SET NX)
-   */;
+   */
   private async checkIdempotency(jobId: string): Promise<boolean> {
     if (!this.redis) return false;
 
@@ -350,7 +350,7 @@ export class EnhancedEmbeddingWorker {
       const dedupKey = `job:processed:${jobId}`;
       // SET NX with 24h TTL - returns null if key already exists
       const wasSet = await this.redis.set(dedupKey, '1', { NX: true, EX: 24 * 60 * 60 });
-      return !wasSet; // If wasSet is null/false, job was already processed;
+      return !wasSet; // If wasSet is null/false, job was already processed
     } catch (error) {
       console.warn('Idempotency check failed:', error);
       return false; // Err on the side of processing
@@ -359,7 +359,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Get cached embedding with efficient key generation
-   */;
+   */
   private async getCachedEmbedding(text: string, model?: string): Promise<number[] | null> {
     const modelKey = model || 'nomic-embed-text';
     // Use SHA-256 hash for consistent key generation
@@ -375,7 +375,7 @@ export class EnhancedEmbeddingWorker {
   private async setCachedEmbedding(
     text: string,
     embedding: number[],
-    model?: string;
+    model?: string
   ): Promise<void> {
     const modelKey = model || 'nomic-embed-text';
     const textHash = Buffer.from(text).toString('base64').slice(0, 64);
@@ -389,7 +389,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Generate embedding - replace with actual embedding service call
-   */;
+   */
   private async generateEmbedding(text: string, model: string): Promise<number[]> {
     // Simulate realistic processing time based on text length
     const baseTime = 200;
@@ -405,7 +405,7 @@ export class EnhancedEmbeddingWorker {
     const embedding = Array.from({ length: embeddingSize }, () => (Math.random() - 0.5) * 2);
 
     // Normalize the vector
-    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
+    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
     return magnitude > 0 ? embedding.map((val) => val / magnitude) : embedding;
   }
 
@@ -416,7 +416,7 @@ export class EnhancedEmbeddingWorker {
     id: string,
     model: string,
     embedding: number[],
-    meta: Record<string, any>;
+    meta: Record<string, any>
   ): Promise<void> {
     try {
       // Convert embedding to pgvector format: '[0.1,0.2,0.3,...]'
@@ -444,7 +444,7 @@ export class EnhancedEmbeddingWorker {
         DO UPDATE SET
           embedding = EXCLUDED.embedding,
           meta = EXCLUDED.meta,
-          model = EXCLUDED?.model || "unknown" // @ts-ignore - Model property access,
+          model = EXCLUDED.model,
           updated_at = NOW()
       `);
 
@@ -457,7 +457,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Handle job retry logic with exponential backoff
-   */;
+   */
   private async handleJobRetry(job: EmbeddingJob, error: string): Promise<void> {
     const retryCount = (job.retryCount || 0) + 1;
 
@@ -481,12 +481,12 @@ export class EnhancedEmbeddingWorker {
 
       setTimeout(async () => {
         if (this.redis && this.running) {
-          await this.redis.rPush(this.queueName, JSON.stringify(retryJob);
+          await this.redis.rPush(this.queueName, JSON.stringify(retryJob));
         }
       }, delay);
     } else {
       console.log(`💀 Job ${job.id} exceeded max retries, marking as permanently failed`);
-      // Optionally move to dead letter queue;
+      // Optionally move to dead letter queue
       if (this.redis) {
         await this.redis.rPush(
           'embedding:dlq',
@@ -503,12 +503,12 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Group jobs by model for batch optimization
-   */;
+   */
   private groupJobsByModel(jobs: EmbeddingJob[]): Record<string, EmbeddingJob[]> {
     const grouped: Record<string, EmbeddingJob[]> = {};
 
     for (const job of jobs) {
-      const model = job?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text';
+      const model = job.model || 'nomic-embed-text';
       if (!grouped[model]) {
         grouped[model] = [];
       }
@@ -520,22 +520,22 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Utility functions
-   */;
+   */
   private chunkArray<T>(array: T[], chunkSize: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize);
+      chunks.push(array.slice(i, i + chunkSize));
     }
     return chunks;
   }
 
   private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms);
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
    * Get comprehensive worker statistics
-   */;
+   */
   getStats(): any {
     return {
       running: this.running,
@@ -558,7 +558,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Enqueue a job for processing
-   */;
+   */
   async enqueueJob(job: Omit<EmbeddingJob, 'id'> & { id?: string }): Promise<string> {
     if (!this.redis) {
       throw new Error('Redis not available for job enqueueing');
@@ -571,7 +571,7 @@ export class EnhancedEmbeddingWorker {
       createdAt: Date.now()
     };
 
-    await this.redis.rPush(this.queueName, JSON.stringify(fullJob);
+    await this.redis.rPush(this.queueName, JSON.stringify(fullJob));
     console.log(`📥 Enqueued job ${jobId} for processing`);
 
     return jobId;
@@ -579,7 +579,7 @@ export class EnhancedEmbeddingWorker {
 
   /**
    * Get queue status
-   */;
+   */
   async getQueueStatus(): Promise<any> {
     if (!this.redis) {
       return { queueLength: 0, processingQueueLength: 0, dlqLength: 0 };
@@ -599,11 +599,11 @@ export class EnhancedEmbeddingWorker {
 export const enhancedEmbeddingWorker = new EnhancedEmbeddingWorker();
 
 // Auto-start worker if this module is imported in a worker context
-// Temporarily re-enabled for debugging;
+// Temporarily re-enabled for debugging
 if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
   enhancedEmbeddingWorker.start().catch(console.error);
 
-  // Graceful shutdown handling;
+  // Graceful shutdown handling
   process.on('SIGINT', async () => {
     console.log('Received SIGINT, shutting down embedding worker...');
     await enhancedEmbeddingWorker.stop();

@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ url, fetch }) => {
   try {
-    // Define YoRHa 3D component specifications for SSR;
+    // Define YoRHa 3D component specifications for SSR
     const componentSpecs = {
       button: {
         id: 'yorha-button-3d',
@@ -107,7 +107,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       }
     };
 
-    // Generate component gallery data;
+    // Generate component gallery data
     const galleryData = {
       categories: [
         { id: 'input', name: 'Input Components', count: 2 },
@@ -125,7 +125,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       ]
     };
 
-    // Generate demo code snippets;
+    // Generate demo code snippets
     const codeSnippets = {
       button: `<script>
   import { YoRHaButton3D } from '$lib/components/three/yorha-ui';
@@ -138,7 +138,7 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
   };
 </script>
 
-<YoRHaButton3D >
+<YoRHaButton3D
   {...buttonConfig}
   onclick={() => console.log('YoRHa button clicked')}
 />`,
@@ -196,9 +196,9 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
     console.error('Error loading YoRHa components data:', error);
     
     return {
-      specs: Record<string, any>,
+      specs: {},
       gallery: { categories: [], components: [], totalComponents: 0, previewModes: [] },
-      codeSnippets: Record<string, any>,
+      codeSnippets: {},
       initialLoad: false,
       timestamp: new Date().toISOString(),
       error: 'Failed to load components data'

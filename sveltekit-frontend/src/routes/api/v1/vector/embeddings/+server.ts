@@ -347,11 +347,11 @@ async function chunkText(text: string, options: {
 
   if (preserveParagraphs) {
     // Split by paragraphs first, then chunk if needed
-    const paragraphs = text.split(/\n\s*\n/).filter(item => item.length) > 0);
+    const paragraphs = text.split(/\n\s*\n/).filter(item => item.length > 0);
 
     for (const paragraph of paragraphs) {
       if (paragraph.length <= chunkSize) {
-        chunks.push(paragraph.trim();
+        chunks.push(paragraph.trim());
       } else {
         // Chunk large paragraphs
         const subChunks = chunkBySize(paragraph, chunkSize, chunkOverlap);
@@ -428,9 +428,9 @@ function calculateTextComplexity(texts: string[]): number {
     const citationScore = Math.min(15, citationCount * 3);
 
     // Sentence structure complexity
-    const sentences = text.split(/[.!?]+/).filter(item => item.length) > 10);
+    const sentences = text.split(/[.!?]+/).filter(item => item.length > 10);
     const avgSentenceLength = sentences.length > 0 ?
-      text.length / sentences.length: 0;
+      text.length / sentences.length : 0;
     const structureScore = Math.min(10, avgSentenceLength / 10);
 
     complexity = lengthScore + legalTermScore + citationScore + structureScore;

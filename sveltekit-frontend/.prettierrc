@@ -17,7 +17,9 @@
         "svelteStrictMode": false,
         "svelteAllowShorthand": true,
         "svelteIndentScriptAndStyle": true,
-        "svelteSortOrder": "options-scripts-markup-styles"
+        "svelteSortOrder": "options-scripts-markup-styles",
+        "svelteRuneSupport": true,
+        "svelteBracketNewLine": false
       }
     },
     {

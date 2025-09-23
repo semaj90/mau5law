@@ -51,7 +51,7 @@ declare module 'redis' {
 // Stubs for local server/db modules (export what's referenced in errors);
 declare module '$lib/server/db/client.js' {
   /** Minimal typed exports for common query usage in the codebase */
-  export const query: <T = unknown>(sql: string, params?: unknown[]) => Promise<DBQueryResult<T>;
+  export const query: <T = unknown>(sql: string, params?: unknown[]) => Promise<DBQueryResult<T>>;
   export const ensureEvidenceTable: () => Promise<void> | void;
   const client: DBClient;
   export default client;
@@ -105,7 +105,7 @@ declare interface RowList<T = unknown[]> {
   [k: string]: unknown;
 }
 
-/** Standardized minimal DB query result returned by many adapters */;
+/** Standardized minimal DB query result returned by many adapters */
 declare interface DBQueryResult<T = unknown> {
   rows?: T[];
   rowCount?: number;
@@ -114,9 +114,9 @@ declare interface DBQueryResult<T = unknown> {
   [k: string]: unknown;
 }
 
-/** Minimal DB client shape used by server code */;
+/** Minimal DB client shape used by server code */
 declare interface DBClient {
-  query?: <T = unknown>(sql: string, params?: unknown[]) => Promise<DBQueryResult<T>;
+  query?: <T = unknown>(sql: string, params?: unknown[]) => Promise<DBQueryResult<T>>;
   execute?: (sql: string, params?: unknown[]) => Promise<unknown>;
   close?: () => Promise<void> | void;
   [k: string]: unknown;
@@ -203,6 +203,6 @@ declare type RowListOfRecords = RowList<Record<string, unknown>[]>;
 
 /** Small aliases used at many call sites to reduce implicit-any errors */
 declare type TableParam = string | { name?: string } | unknown;
-declare type ResultLike<T = Record<string, unknown> = DBQueryResult<T> | RowList<T[]> | unknown;
+declare type ResultLike<T = Record<string, unknown>> = DBQueryResult<T> | RowList<T[]> | unknown;
 declare type ItemLike = Record<string, unknown> | unknown;
 

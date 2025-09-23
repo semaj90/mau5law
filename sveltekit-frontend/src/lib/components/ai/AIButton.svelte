@@ -114,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
 				<div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-yorha-border"></div>
 			</div>
 		{/if}
-		
+
 		<button
 			bind:this={buttonElement}
 			type="button"
@@ -146,11 +146,11 @@ https://svelte.dev/e/js_parse_error -->
 		>
 			<!-- Background Effects -->
 			<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-			
+
 			<!-- Floating Particles -->
 			<div class="absolute inset-0 overflow-hidden">
 				{#each Array(3) as _, i}
-					<div 
+					<div
 						class="absolute w-1 h-1 bg-white/40 rounded-full animate-float"
 						style="
 							left: {20 + (i * 30)}%;
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
 					></div>
 				{/each}
 			</div>
-			
+
 			<!-- Content -->
 			<div class="relative z-10 flex flex-col items-center justify-center">
 				{#if loading}
@@ -177,15 +177,15 @@ https://svelte.dev/e/js_parse_error -->
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
 						</svg>
 					</div>
-					
+
 					<!-- Label -->
 					<span class="text-xs font-bold tracking-wider">AI</span>
 				{/if}
 			</div>
-			
+
 			<!-- Notification Badge -->
 			{#if notification && notificationCount > 0}
-				<div 
+				<div
 					class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-bounce"
 					in:fly={{ y: -10, duration: 300 }}
 				>
@@ -213,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
 			opacity: 0;
 		}
 	}
-	
+
 	.animate-float {
 		animation: float 3s linear infinite;
 	}

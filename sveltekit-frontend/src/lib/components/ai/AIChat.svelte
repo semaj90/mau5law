@@ -1,12 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name
-https://svelte.dev/e/attribute_invalid_name -->
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-
   import { useChatActor, chatActions } from '$lib/stores/chatStore';
   import {
     Card,
@@ -21,16 +17,16 @@ https://svelte.dev/e/attribute_invalid_name -->
   import { serviceStatus } from '$lib/stores/chatStore';
 
   // Use the XState machine through the store
-  const { state } = useChatActor();
+  const actor = useChatActor();
+  const stateStore = actor.state;
   let userInput = $state('');
   let chatContainer: HTMLElement | null = null;
-  let chatContainer = $state<HTMLElement | null>(null);
 
   // Send message handler
   function handleSubmit() {
     if (!userInput.trim()) return;
     chatActions.sendMessage(userInput);
-  userInput = '';
+    userInput = '';
   }
 
   // Clear chat handler
@@ -40,8 +36,9 @@ https://svelte.dev/e/attribute_invalid_name -->
 
   // Update scroll when messages change
   $effect(() => {
-    if ($state.context.messages && chatContainer) {
-      // Wait for DOM update
+    // Accessing $stateStore will auto-subscribe
+    const msgs = $stateStore.context.messages;
+    if (msgs && chatContainer) {
       setTimeout(() => {
         if (chatContainer) {
           chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -70,28 +67,28 @@ https://svelte.dev/e/attribute_invalid_name -->
         {/if}
       </p>
     </div>
-  <Button class="bits-btn" variant="ghost" size="sm" onclick={(event: MouseEvent) => handleClear}>
-Clear Chat
-
+    <Button class="bits-btn" variant="ghost" size="sm" on:click={handleClear}>
+      Clear Chat
+    </Button>
   </div>
 
   <!-- Chat messages -->
   <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">
-    {#each $state.context.messages as message, i (i)}
+    {#each $stateStore.context.messages as message, i (message.id)}
       <div class="chat-message {message.role === 'user' ? 'user' : 'assistant'}">
         <div class="message-bubble">
           {@html message.content.replace(/\n/g, '<br>')}
-          {#if $state.matches('loading') && i === $state.context.messages.length - 1}
+          {#if $stateStore.matches('loading') && i === $stateStore.context.messages.length - 1}
             <span class="typing-indicator"></span>
           {/if}
         </div>
       </div>
     {/each}
 
-    {#if $state.matches('error')}
+    {#if $stateStore.matches('error')}
       <div class="chat-message error" aria-live="polite" role="alert">
         <div class="message-bubble error-bubble" aria-live="polite" role="alert">
-          <p>Error: {$state.context.error?.message || 'Unknown error'}</p>
+          <p>Error: {$stateStore.context.error?.message || 'Unknown error'}</p>
           <p>Please try again.</p>
         </div>
       </div>
@@ -105,11 +102,12 @@ Clear Chat
         type="text"
         placeholder="Ask about your legal case..."
         bind:value={userInput}
-        disabled={$state.matches('loading')}
+        disabled={$stateStore.matches('loading')}
         class="flex-1"
       />
-      <Button class="bits-btn" type="submit" disabled={$state.matches('loading') || !userInput.trim()}>
-{$state.matches('loading') ? 'Thinking...' : 'Send'}
+      <Button class="bits-btn" type="submit" disabled={$stateStore.matches('loading') || !userInput.trim()}>
+        {$stateStore.matches('loading') ? 'Thinking...' : 'Send'}
+      </Button>
 
     </form>
   </div>
