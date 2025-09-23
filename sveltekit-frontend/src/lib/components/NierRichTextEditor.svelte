@@ -7,7 +7,6 @@ https://svelte.dev/e/component_invalid_directive -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   interface Props {
     content?: unknown;
     placeholder?: unknown;

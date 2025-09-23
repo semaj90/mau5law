@@ -2,7 +2,6 @@
   // Svelte 5 runes are auto-imported
 
   import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   import { Select as BitsSelect } from 'bits-ui';
   import { cn } from '$lib/utils/cn';
   import { ChevronDown, Check } from 'lucide-svelte';

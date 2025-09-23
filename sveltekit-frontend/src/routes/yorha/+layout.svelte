@@ -2,7 +2,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   let { children  }: { children : unknown } = $props();
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';

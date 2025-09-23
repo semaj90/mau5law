@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from "svelte";
   import { apiFetch } from "$lib/api/clients/api-client";
   import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator';
@@ -724,17 +723,17 @@
     padding: 1rem;
   }
 
-  .evidence-.uploading {
+  .evidence-item.uploading {
     border-color: #ffc107;
     background-color: #fff8e1;
   }
 
-  .evidence-.uploaded {
+  .evidence-item.uploaded {
     border-color: #28a745;
     background-color: #f1f8e9;
   }
 
-  .evidence-.failed {
+  .evidence-item.failed {
     border-color: #dc3545;
     background-color: #ffebee;
   }

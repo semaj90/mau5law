@@ -14,16 +14,24 @@
 	import { MessageSquare, Bot, User, Loader, Lightbulb, Link, FileText, Search, Zap } from 'lucide-svelte';
 	import {   } from "svelte";
 
-	// Props using Svelte 5 $props rune
-	let {
-		caseId = '',
-		selectedEvidenceIds = [],
-		isVisible = true
-	}: {
+	// Svelte 5: Replace event dispatcher with callback props
+	interface Props {
 		caseId?: string;
 		selectedEvidenceIds?: string[];
 		isVisible?: boolean;
-	} = $props();
+		onEvidenceSelect?: (data: { evidenceId: string }) => void;
+		onEvidenceHighlight?: (data: { evidenceIds: string[] }) => void;
+		onActionTrigger?: (data: { type: string; data: any }) => void;
+	}
+
+	let {
+		caseId = 'case-001',
+		selectedEvidenceIds = [],
+		isVisible = true,
+		onEvidenceSelect,
+		onEvidenceHighlight,
+		onActionTrigger
+	}: Props = $props();
 
 	// Svelte 5 state
 	let userInput = $state('');
@@ -34,21 +42,6 @@
 	let useAcceleration = $state(false);
 	let accelerationStatus = $state<'initializing' | 'ready' | 'error' | 'disabled'>('disabled');
 	let lastAccelerationResults = $state<any>(null);
-
-	// Svelte 5: Replace event dispatcher with callback props
-	interface Props {
-		caseId?: string;
-		onEvidenceSelect?: (data: { evidenceId: string }) => void;
-		onEvidenceHighlight?: (data: { evidenceIds: string[] }) => void;
-		onActionTrigger?: (data: { type: string; data: any }) => void;
-	}
-
-	let {
-		caseId = 'case-001',
-		onEvidenceSelect,
-		onEvidenceHighlight,
-		onActionTrigger
-	}: Props = $props();
 
 	// Reactive values using Svelte 5 $derived - properly connected to unified store
 	const messages = $derived(aiAssistant.currentMessages);

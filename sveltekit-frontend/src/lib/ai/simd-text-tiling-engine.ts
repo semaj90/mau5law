@@ -396,17 +396,7 @@ export class SIMDTextTilingEngine {
     const sum = Array.from(data).reduce((a, b) => a + Math.abs(b), 0);
     return (
       Math.floor(
-        (sum /;
-          (data as {
-              type?: any;
-              length?: any;
-              semanticDensity?: any;
-              tokenCount?: any;
-              categories?: any;
-              patternId?: any;
-            }
-          ).length) *
-          16383
+        (sum / data.length) * 16383
       ) % 16383
     ); // 14-bit value
   }
@@ -417,7 +407,7 @@ export class SIMDTextTilingEngine {
   }
 
   private generateEmbeddingSignature(data: Float32Array): number {
-    // Create a 14-bit signature from embedding data;
+    // Create a 14-bit signature from embedding data
     const signature = Array.from(data).reduce((acc, val, idx) => {
       return (acc + Math.floor(val * 127) * (idx + 1)) % 16383;
     }, 0);
@@ -425,22 +415,13 @@ export class SIMDTextTilingEngine {
   }
 
   private calculateSemanticDensity(data: Float32Array): number {
-    const variance = this.calculateVariance(Array.from(data);
+    const variance = this.calculateVariance(Array.from(data));
     return Math.min(variance * 10, 1.0); // Normalize to 0-1
   }
 
   private identifyPattern(data: Float32Array): string {
     const mean =
-      Array.from(data).reduce((a, b) => a + b, 0) /;
-      (data as {
-          type?: any;
-          length?: any;
-          semanticDensity?: any;
-          tokenCount?: any;
-          categories?: any;
-          patternId?: any;
-        }
-      ).length;
+      Array.from(data).reduce((a, b) => a + b, 0) / data.length;
     if (mean > 0.5) return 'high-semantic';
     if (mean < -0.5) return 'low-semantic';
     return 'neutral';
@@ -582,7 +563,7 @@ export class SIMDTextTilingEngine {
   }
 }
 
-// Export singleton instance;
+// Export singleton instance
 export const simdTextTilingEngine = new SIMDTextTilingEngine({
   compressionRatio: 109, // Target 109:1 for 7-byte representation
   tileSize: 16,

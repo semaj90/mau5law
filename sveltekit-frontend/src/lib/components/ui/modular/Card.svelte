@@ -6,7 +6,6 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
 
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
 

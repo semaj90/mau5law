@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   	import SearchInput from './SearchInput.svelte';
   	import { Filter, ArrowUpDown } from 'lucide-svelte';
 

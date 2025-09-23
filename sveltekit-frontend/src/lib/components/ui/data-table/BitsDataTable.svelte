@@ -2,7 +2,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { cn } from '$lib/utils';
   import { ChevronDown, ChevronUp, Search, Filter, Download } from 'lucide-svelte';
 

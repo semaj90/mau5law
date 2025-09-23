@@ -1,9 +1,34 @@
 <script lang="ts">
-  export let title: string = 'Card Title';
-  export let content: string = 'This is a NES.css styled card component.';
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    title?: string;
+    subtitle?: string;
+    footer?: string;
+    content?: string;
+    children?: Snippet;
+  }
+
+  let {
+    title = 'Card Title',
+    subtitle,
+    footer,
+    content = 'This is a NES.css styled card component.',
+    children
+  }: Props = $props();
 </script>
 
 <section class="nes-container with-title is-dark">
   <h3 class="title">{title}</h3>
-  <p>{content}</p>
+  {#if subtitle}
+    <p class="subtitle">{subtitle}</p>
+  {/if}
+  {#if children}
+    {@render children()}
+  {:else}
+    <p>{content}</p>
+  {/if}
+  {#if footer}
+    <div class="footer">{footer}</div>
+  {/if}
 </section>

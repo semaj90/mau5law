@@ -4,7 +4,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   interface Props {
     onedit?: (event?: any) => void;
     ondelete?: (event?: any) => void;

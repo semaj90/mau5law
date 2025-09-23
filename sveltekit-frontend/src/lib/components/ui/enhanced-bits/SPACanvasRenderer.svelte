@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   /**
    * Single Page App Canvas Renderer
    * Full-screen canvas UX with navigation, using gemma3:legal-latest

@@ -5,7 +5,6 @@ Automatically handles server upload with localStorage fallback
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
   import type { UploadResponse } from '$lib/services/enhanced-file-upload.js';

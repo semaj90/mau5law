@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
   // Re-export bits-ui components for compound component usage
   export {
     Root,
@@ -9,7 +9,6 @@
 </script>
 
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import {
     Root as TabsRoot,
     List as TabsList,

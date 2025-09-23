@@ -1,13 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `` attempted to close an element that was not open -->
-<script>
-  // Svelte 5 runes are auto-imported
+<script lang="ts">
+  interface Props {
+    data?: any;
+  }
 
-  import 'nes.css/css/nes.min.css';
-
-  // Basic CachePerformanceMonitor component
-  let { data = } = $props();
+  let { data = null }: Props = $props();
 
   // Placeholder implementation
   let status = $derived('operational');

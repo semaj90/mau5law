@@ -15,7 +15,6 @@ https://svelte.dev/e/js_parse_error -->
 
 // Type interfaces for the component
 
-  import 'nes.css/css/nes.min.css';
   import { getContext, onMount } from 'svelte';
 
   // UI components (Svelte 5 + melt v0.39.0 compatible)

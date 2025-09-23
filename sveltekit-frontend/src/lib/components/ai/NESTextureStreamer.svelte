@@ -2,7 +2,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
   import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';

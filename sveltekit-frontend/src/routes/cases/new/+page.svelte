@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   // Page data (SvelteKit): receive `data` from the page's load function
   import { goto } from "$app/navigation";
   import EnhancedCaseForm from "$lib/components/forms/EnhancedCaseForm.svelte";

@@ -6,7 +6,6 @@ https://svelte.dev/e/slot_snippet_conflict -->
   Demonstrates the perfect marriage of headless functionality with retro styling
 -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { Dialog } from "bits-ui";
   import type { Snippet } from 'svelte';
 

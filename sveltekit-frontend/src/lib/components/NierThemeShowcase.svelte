@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import Button from 'bits-ui';
   // import * as Dialog from 'bits-ui'; // Removed melt dependency
   import { fly, fade } from 'svelte/transition';

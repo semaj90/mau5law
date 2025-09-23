@@ -5,7 +5,6 @@ https://svelte.dev/e/attribute_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import {
     Card,
@@ -165,9 +164,9 @@ https://svelte.dev/e/attribute_duplicate -->
   		if (searchQuery.trim()) {
   			const query = searchQuery.toLowerCase();
   			filtered = filtered.filter(item => item.includes)(query) ||
-  				c.authors.toLowerCase.includes(query) ||
-  				c.source.toLowerCase.includes(query) ||
-  				c.notes.toLowerCase.includes(query) ||
+  				c.authors.toLowerCase().includes(query) ||
+  				c.source.toLowerCase().includes(query) ||
+  				c.notes.toLowerCase().includes(query) ||
   				c.tags.some.includes(query))
   			);
   		}

@@ -1,7 +1,12 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import ModernButton from '$lib/components/ui/button/Button.svelte';
+
+  interface UploadResponse {
+    success?: boolean;
+    error?: string;
+    data?: any;
+  }
 
   let fileInput: HTMLInputElement;
   let selectedFile = $state<File | null>(null);
@@ -61,10 +66,11 @@
         body: formData
       });
 
-      const result = await (response as { json?: unknown }).json();
+      const result = await response.json();
 
-      if ((result as { success?: unknown; error?: unknown }).success) {
-        uploadResult = result;
+      const typedResult = result as UploadResponse;
+      if (typedResult.success) {
+        uploadResult = typedResult;
 
         // Reset form
         selectedFile = null;
@@ -73,7 +79,7 @@
         documentType = '';
         title = '';
       } else {
-        errorMessage = (result as { success?: unknown; error?: unknown }).error || 'Upload failed';
+        errorMessage = typedResult.error || 'Upload failed';
       }
     } catch (error: unknown) {
       errorMessage = (error as Error)?.message || String(error) || 'Network error during upload';

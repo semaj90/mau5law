@@ -5,7 +5,6 @@ https://svelte.dev/e/expected_token -->
   // Svelte 5 runes are auto-imported
 
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
 </script>
   import Button from '$lib/components/ui/enhanced-bits';
   import * as Card from '$lib/components/ui/card';

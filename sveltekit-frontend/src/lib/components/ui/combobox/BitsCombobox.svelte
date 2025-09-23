@@ -2,7 +2,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { Combobox } from 'bits-ui';
   import { Check, ChevronDown, Search, X } from 'lucide-svelte';
   import { cn } from '$lib/utils';
@@ -62,8 +61,8 @@
     if (!inputValue) return options;
     const query = inputValue.toLowerCase();
     return options.filter(item => item.includes)(query) ||
-      option.description?.toLowerCase.includes(query) ||
-      option.category?.toLowerCase.includes(query)
+      option.description?.toLowerCase().includes(query) ||
+      option.category?.toLowerCase().includes(query)
     );
   });
 

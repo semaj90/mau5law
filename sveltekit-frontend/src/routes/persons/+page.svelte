@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
     Search, Users, Plus, Eye, Edit, Filter, Grid, List,
@@ -145,8 +144,8 @@
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(item => item.includes)(query) ||
         person.aliases.some.includes(query)) ||
-        person.relationship.toLowerCase.includes(query) ||
-        person.profileData.occupation?.toLowerCase.includes(query) ||
+        person.relationship.toLowerCase().includes(query) ||
+        person.profileData.occupation?.toLowerCase().includes(query) ||
         person.tags.some.includes(query))
       );
     }

@@ -4,7 +4,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { goto } from "$app/navigation";
   import { citationStore } from "$lib/stores/citations";
   // // Replaced melt with bits-ui components // Removed melt dependency
@@ -123,8 +122,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Filter commands based on search query
   let filteredCommands = $derived(commands.filter(
     (cmd) =>
-      cmd.label.toLowerCase.includes(searchQuery.toLowerCase()) ||
-      cmd.category.toLowerCase.includes(searchQuery.toLowerCase())
+      cmd.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      cmd.category.toLowerCase().includes(searchQuery.toLowerCase())
   ));
 
   // Group commands by category

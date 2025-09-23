@@ -1,6 +1,5 @@
 <!-- Legal AI Command Palette - Global Search Component -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { Command } from 'bits-ui';
   import { Search, FileText, Users, Calendar, Gavel } from 'lucide-svelte';
   import { cn } from '$lib/utils';

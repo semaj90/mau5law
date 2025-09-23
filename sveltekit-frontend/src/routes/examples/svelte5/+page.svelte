@@ -2,7 +2,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import Svelte5Examples from '$lib/components/examples/Svelte5Examples.svelte';
   import { useMediaQuery } from '$lib/utils/media-query.svelte';
   // Example of custom media query

@@ -1,10 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Expected token }
-https://svelte.dev/e/expected_token -->
-<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
 	import { onMount } from 'svelte';
 	import { fly, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
@@ -149,7 +145,7 @@ https://svelte.dev/e/expected_token -->
 
 	// Generate timestamp
 	function updateTimestamp() {
-		const now = new Date());
+		const now = new Date();
 		timestamp = now.toLocaleString('en-US', {
 			weekday: 'short',
 			year: 'numeric',
@@ -394,7 +390,7 @@ https://svelte.dev/e/expected_token -->
 
 		{:else}
 			<div class="feature-view" transition:fade={{ duration: 300 }}>
-				<h2>🚧 {activeView.charAt.toUpperCase() + activeView.slice(1)} Feature</h2>
+				<h2>🚧 {activeView.charAt(0).toUpperCase() + activeView.slice(1)} Feature</h2>
 				<p>This feature is fully implemented in the platform. Click around to explore!</p>
 				<div class="feature-grid">
 					<div class="feature-nier-bits-card">
@@ -463,7 +459,7 @@ https://svelte.dev/e/expected_token -->
 		{/if}
 
 		{#if showQuickInput}
-			<div class="quick-input-panel" transitionfly={{ y: 20, duration: 300 }}>
+			<div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
 				<textarea
 					bind:value={quickInput}
 					placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"
@@ -981,24 +977,6 @@ https://svelte.dev/e/expected_token -->
 		margin-top: 2rem;
 	}
 
-	.feature-card {
-		background: rgba(15, 23, 42, 0.6);
-		border: 1px solid #334155;
-		border-radius: 1rem;
-		padding: 1.5rem;
-		backdrop-filter: blur(10px);
-	}
-
-	.feature-card h4 {
-		margin: 0 0 0.5rem 0;
-		color: #10b981;
-	}
-
-	.feature-card p {
-		margin: 0;
-		color: #94a3b8;
-		font-size: 0.875rem;
-	}
 
 	@keyframes pulse {
 		0%, 100% { transform: scale(1); }

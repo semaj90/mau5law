@@ -1,7 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
-  import 'nes.css/css/nes.min.css';
-  import 'nes.css/css/nes.min.css';
   import '../app.css';
   
   const { children } = $props();

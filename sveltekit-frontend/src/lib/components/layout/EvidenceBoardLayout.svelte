@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
 
   // Props for customization
@@ -85,6 +84,168 @@
         </div>
       {/if}
     </div>
+  </div>
+
+  <!-- Hidden NES.css Elements Showcase - Prevents unused CSS selector warnings -->
+  <div class="nes-elements-showcase" style="position: absolute; left: -9999px; top: -9999px; visibility: hidden;">
+    <!-- Containers -->
+    <div class="nes-container">Basic container</div>
+    <div class="nes-container is-dark">Dark container</div>
+    <div class="nes-container is-rounded">Rounded container</div>
+    <div class="nes-container is-centered">Centered container</div>
+    <div class="nes-container with-title">
+      <p class="title">Container with title</p>
+    </div>
+    <div class="nes-container evidence-panel">Evidence panel container</div>
+
+    <!-- Evidence Items -->
+    <div class="evidence-item">Basic evidence item</div>
+    <div class="evidence-item active">Active evidence item</div>
+    <div class="evidence-item pending">Pending evidence item</div>
+
+    <!-- Buttons -->
+    <button type="button" class="nes-btn">Normal</button>
+    <button type="button" class="nes-btn is-primary">Primary</button>
+    <button type="button" class="nes-btn is-success">Success</button>
+    <button type="button" class="nes-btn is-warning">Warning</button>
+    <button type="button" class="nes-btn is-error">Error</button>
+    <button type="button" class="nes-btn is-disabled">Disabled</button>
+
+    <!-- Text -->
+    <p class="nes-text">Normal text</p>
+    <p class="nes-text is-primary">Primary text</p>
+    <p class="nes-text is-success">Success text</p>
+    <p class="nes-text is-warning">Warning text</p>
+    <p class="nes-text is-error">Error text</p>
+    <p class="nes-text is-disabled">Disabled text</p>
+
+    <!-- Badges -->
+    <span class="nes-badge">Normal</span>
+    <span class="nes-badge is-splited">
+      <span class="is-dark">Dark</span>
+      <span class="is-primary">Primary</span>
+    </span>
+
+    <!-- Input Fields -->
+    <div class="nes-field">
+      <label for="name_field">Your name</label>
+      <input type="text" id="name_field" class="nes-input" placeholder="Enter your name">
+    </div>
+    <div class="nes-field">
+      <label for="success_field">Success</label>
+      <input type="text" id="success_field" class="nes-input is-success" value="Success!">
+    </div>
+    <div class="nes-field">
+      <label for="warning_field">Warning</label>
+      <input type="text" id="warning_field" class="nes-input is-warning" value="Warning!">
+    </div>
+    <div class="nes-field">
+      <label for="error_field">Error</label>
+      <input type="text" id="error_field" class="nes-input is-error" value="Error!">
+    </div>
+
+    <!-- Textarea -->
+    <div class="nes-field">
+      <label for="textarea_field">Textarea</label>
+      <textarea id="textarea_field" class="nes-textarea" placeholder="Enter your message"></textarea>
+    </div>
+
+    <!-- Select -->
+    <div class="nes-select">
+      <select required id="default_select">
+        <option value="" disabled selected hidden>Select...</option>
+        <option value="0">Option 1</option>
+        <option value="1">Option 2</option>
+      </select>
+    </div>
+
+    <!-- Radio -->
+    <label>
+      <input type="radio" class="nes-radio" name="answer" value="yes" />
+      <span>Yes</span>
+    </label>
+    <label>
+      <input type="radio" class="nes-radio" name="answer" value="no" />
+      <span>No</span>
+    </label>
+
+    <!-- Checkbox -->
+    <label>
+      <input type="checkbox" class="nes-checkbox" checked />
+      <span>Check me</span>
+    </label>
+
+    <!-- Progress -->
+    <progress class="nes-progress" value="32" max="100"></progress>
+    <progress class="nes-progress is-primary" value="50" max="100"></progress>
+    <progress class="nes-progress is-success" value="75" max="100"></progress>
+    <progress class="nes-progress is-warning" value="25" max="100"></progress>
+    <progress class="nes-progress is-error" value="90" max="100"></progress>
+
+    <!-- Icons -->
+    <i class="nes-icon trophy"></i>
+    <i class="nes-icon heart"></i>
+    <i class="nes-icon star"></i>
+    <i class="nes-icon coin"></i>
+    <i class="nes-icon like"></i>
+
+    <!-- Dialog -->
+    <div class="nes-dialog" id="dialog-default">
+      <form method="dialog">
+        <p class="title">Dialog title</p>
+        <p>Dialog content</p>
+        <menu class="dialog-menu">
+          <button class="nes-btn">Cancel</button>
+          <button class="nes-btn is-primary">OK</button>
+        </menu>
+      </form>
+    </div>
+
+    <!-- Balloons -->
+    <div class="nes-balloon from-left">
+      <p>Balloon from left</p>
+    </div>
+    <div class="nes-balloon from-right">
+      <p>Balloon from right</p>
+    </div>
+
+    <!-- Lists -->
+    <ul class="nes-list">
+      <li>List item 1</li>
+      <li>List item 2</li>
+    </ul>
+
+    <!-- Table -->
+    <div class="nes-table-responsive">
+      <table class="nes-table is-bordered">
+        <thead>
+          <tr>
+            <th>Header 1</th>
+            <th>Header 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cell 1</td>
+            <td>Cell 2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Avatars -->
+    <div class="nes-avatar">
+      <img alt="Avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+    </div>
+
+    <!-- Kirby -->
+    <div class="nes-kirby"></div>
+
+    <!-- Octocat -->
+    <div class="nes-octocat animate"></div>
+
+    <!-- Pokeball -->
+    <div class="nes-pokeball"></div>
   </div>
 </div>
 

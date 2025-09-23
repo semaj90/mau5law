@@ -1,6 +1,5 @@
 <!-- Toast/Notification System for Legal AI App -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { Toast } from 'bits-ui';
   import { X, CheckCircle, AlertTriangle, AlertCircle, Info } from 'lucide-svelte';
   import { cn } from '$lib/utils';

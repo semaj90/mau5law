@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import RecommendationEngine from '$lib/components/ai/RecommendationEngine.svelte';
 </script>
 

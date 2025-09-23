@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import type { HTMLButtonAttributes } from 'svelte/elements';
   
   interface LoadingButtonProps extends Omit<HTMLButtonAttributes, 'type'> {

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/nes-button.svelte';
   import { CaseLogic, type CaseFile } from '$lib/core/logic/case-logic';

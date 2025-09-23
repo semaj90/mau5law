@@ -4,7 +4,6 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- AI Dialog: Svelte 5, Bits UI, UnoCSS, transitions, analytics logging -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   import { accessibleClick } from '$lib/actions/accessibleClick';
 
   interface Props {

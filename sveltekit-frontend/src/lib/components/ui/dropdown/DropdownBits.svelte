@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import '$lib/styles/dropdown-global.css';
   import * as Popover from "bits-ui/popover";
   import type { Snippet } from 'svelte';

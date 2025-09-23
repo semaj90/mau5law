@@ -4,7 +4,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   interface Props import type { User } from '$lib/types/user';
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
@@ -204,8 +203,8 @@ https://svelte.dev/e/js_parse_error -->
     if (searchQuery.trim()) {
       filteredShortcuts = allShortcuts.filter(
         (s) =>
-          s.key.toLowerCase.includes(searchQuery.toLowerCase()) ||
-          s.description.toLowerCase.includes(searchQuery.toLowerCase())
+          s.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     } else {
       filteredShortcuts = allShortcuts;
@@ -309,10 +308,10 @@ https://svelte.dev/e/js_parse_error -->
     if (searchQuery.trim()) {
       filteredCommands = commands.filter(
         (cmd) =>
-          cmd.title.toLowerCase.includes(searchQuery.toLowerCase()) ||
-          cmd.description.toLowerCase.includes(searchQuery.toLowerCase()) ||
+          cmd.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          cmd.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
           cmd.keywords.some((keyword) =>
-            keyword.toLowerCase.includes(searchQuery.toLowerCase())
+            keyword.toLowerCase().includes(searchQuery.toLowerCase())
           )
       );
     } else {

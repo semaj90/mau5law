@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
@@ -42,15 +41,15 @@
   let contextY = 0;
 
   // Derived reactive values
-  $: name = poi?.name ?? "";
-  $: aliases: string[] = poi?.aliases ?? [];
-  $: profileData = poi?.profileData ?? { who: "", what: "", why: "", how: "" };
-  $: posX = poi?.posX ?? 100;
-  $: posY = poi?.posY ?? 100;
-  $: relationship = poi?.relationship ?? "";
-  $: threatLevel = poi?.threatLevel ?? "low";
-  $: status = poi?.status ?? "active";
-  $: tags: string[] = poi?.tags ?? [];
+  let name = $derived(poi?.name ?? "");
+  let aliases: string[] = $derived(poi?.aliases ?? []);
+  let profileData = $derived(poi?.profileData ?? { who: "", what: "", why: "", how: "" });
+  let posX = $derived(poi?.posX ?? 100);
+  let posY = $derived(poi?.posY ?? 100);
+  let relationship = $derived(poi?.relationship ?? "");
+  let threatLevel = $derived(poi?.threatLevel ?? "low");
+  let status = $derived(poi?.status ?? "active");
+  let tags: string[] = $derived(poi?.tags ?? []);
 
   type FormShape = {
     name: string;
@@ -73,7 +72,8 @@
   };
 
   // Initialize form when component mounts or poi changes
-  $: if (!isEditing) {
+  $effect(() => {
+    if (!isEditing) {
     formData = {
       name,
       aliases: aliases.join(", "),
@@ -83,7 +83,8 @@
       status,
       tags: tags.join(", "),
     };
-  }
+    }
+  });
 
   function startEditing() {
     isEditing = true;

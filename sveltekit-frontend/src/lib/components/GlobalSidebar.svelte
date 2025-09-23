@@ -5,7 +5,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { user, isAuthenticated } from '$lib/stores/sessionStore.svelte.js';
+  import { user, isAuthenticated } from '$lib/stores/sessionStore.svelte';
   import { userDataActions, userCases, userEvidence, userCitations, userReports, userAIConversations, userStats } from '$lib/stores/userDataStore.svelte.js';
   import {
     formatRelativeTime,
@@ -45,12 +45,12 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   let showAIAssistant = $state(false);
 
   // Derived reactive data
-  $: currentUser = user;
-  $: authenticated = isAuthenticated;
-  $: stats = userStats;
+  let currentUser = $derived(user);
+  let authenticated = $derived(isAuthenticated);
+  let stats = $derived(userStats);
 
   // Filtered data based on search
-  $: filteredCases = $derived(
+  let filteredCases = $derived(
     userCases.filter(c =>
       c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (c.description && c.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -58,7 +58,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     ).slice(0, 10)
   );
 
-  $: filteredEvidence = $derived(
+  let filteredEvidence = $derived(
     userEvidence.filter(e =>
       e.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (e.notes && e.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -66,7 +66,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     ).slice(0, 10)
   );
 
-  $: filteredCitations = $derived(
+  let filteredCitations = $derived(
     userCitations.filter(c =>
       c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -74,7 +74,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     ).slice(0, 10)
   );
 
-  $: filteredReports = $derived(
+  let filteredReports = $derived(
     userReports.filter(r =>
       r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       r.content.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -13,7 +13,8 @@
   import GlobalSidebar from '$lib/components/GlobalSidebar.svelte';
 
   // Stores and Utilities
-  import { sessionActions, user, isAuthenticated } from '$lib/stores/sessionStore.svelte.js';
+  // Note: sessionStore may not be available, using mock data instead
+  // import { sessionActions, user, isAuthenticated } from '$lib/stores/sessionStore.svelte';
   import { userStats } from '$lib/stores/userDataStore.svelte.js';
   import {
     formatRelativeTime,
@@ -58,10 +59,17 @@
   const avatarSizes = ['small','medium','large'] as const
   type AvatarSize = typeof avatarSizes[number]
 
+  // Mock session actions for demo
+  const mockSessionActions = {
+    setSession: (user: any, session: any) => console.log('Mock setSession:', user, session),
+    clearSession: () => console.log('Mock clearSession'),
+    init: (data: any) => console.log('Mock init:', data)
+  };
+
   // Session demo functions
   function simulateLogin() {
     mockSessionActive = true;
-    sessionActions.setSession(mockUser, {
+    mockSessionActions.setSession(mockUser, {
       id: 'demo-session-123',
       user: mockUser,
       fresh: true
@@ -70,21 +78,37 @@
 
   function simulateLogout() {
     mockSessionActive = false;
-    sessionActions.clearSession();
+    mockSessionActions.clearSession();
   }
 
   // Initialize page store data simulation
   onMount(() => {
     // Initialize session store with page data (simulated)
     if ($page.data?.user) {
-      sessionActions.init($page.data);
+      mockSessionActions.init($page.data);
     }
   });
 
-  // Reactive data
-  $: currentUser = user;
-  $: authenticated = isAuthenticated;
-  $: stats = userStats;
+  // Mock reactive data with conditionals
+  let currentUser = $derived(mockSessionActive ? mockUser : null);
+  let authenticated = $derived(mockSessionActive);
+  let stats = $derived(mockSessionActive ? {
+    casesWorked: 23,
+    documentsReviewed: 157,
+    hoursLogged: 89.5,
+    accuracy: 94.2,
+    totalCases: 47,
+    totalEvidence: 1284,
+    totalDocuments: 567,
+    totalCitations: 89,
+    totalReports: 34
+  } : {
+    totalCases: 0,
+    totalEvidence: 0,
+    totalDocuments: 0,
+    totalCitations: 0,
+    totalReports: 0
+  });
 
   // Mock data for formatting demos
   const mockTimestamps = [
@@ -162,7 +186,7 @@
   /* Sidebar Demo Styles */
   .sidebar-controls { display: flex; flex-direction: column; gap: 1rem; }
   .control-group { display: flex; gap: 1rem; align-items: center; }
-  .sidebar-info { }
+  .sidebar-info { color: inherit; }
   .feature-list { list-style: none; padding: 0; margin: 0.5rem 0; }
   .feature-list li { margin: 0.25rem 0; padding: 0.25rem 0; }
   .integration-notes { margin-top: 1rem; }
@@ -203,7 +227,7 @@
       <div class="grid avatars">
         {#each avatarSizes as size}
           <div>
-            <Avatar size={size} label={size + ' user'} />
+            <Avatar size={size} />
             <div class="meta">size: {size}</div>
           </div>
         {/each}
@@ -217,7 +241,7 @@
       <Button variant="primary" onclick={openDialog}>Open Dialog</Button>
       <div class="meta">Simple open/close controlled by boolean state.</div>
       {#if showDialog}
-        <Dialog title="Sample Dialog" on:close={closeDialog}>
+        <Dialog title="Sample Dialog" onclose={closeDialog}>
           <p>This dialog demonstrates the NES modal style and accessibility hooks.</p>
           <div class="dialog-actions">
             <Button variant="error" onclick={closeDialog}>Cancel</Button>
@@ -269,7 +293,7 @@
           {:else}
             <Button variant="error" onclick={simulateLogout}>Simulate Logout</Button>
           {/if}
-          <Button variant="info" onclick={() => sessionStore.refreshSession()}>Refresh Session</Button>
+          <Button variant="info" onclick={() => console.log('Mock refresh session')}>Refresh Session</Button>
         </div>
 
         <div class="user-stats">

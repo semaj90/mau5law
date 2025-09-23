@@ -1,29 +1,8 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script context="module" lang="ts">
-  // Svelte 5 runes are auto-imported
-
-  import 'nes.css/css/nes.min.css';
-</script>
-  // Keep module import for Svelte runes; ambient types are provided globally.
-  export ;
-</script>
-
 <script lang="ts">
-
-  interface Props {
-    user: User | null ;
-  }
-  let {
-    user = null
-  }: Props = $props();
-
   import { goto } from "$app/navigation";
-  import { page } from "$app/state";
+  import { page } from "$app/stores";
   import SearchInput from "./SearchInput.svelte";
   import type { User } from "$lib/types/user";
-
   import {
     FolderOpen,
     Home,
@@ -34,6 +13,12 @@ https://svelte.dev/e/js_parse_error -->
     Shield,
     User as UserIcon,
   } from "lucide-svelte";
+
+  interface Props {
+    user?: User | null;
+  }
+
+  let { user = null }: Props = $props();
 
   let searchQuery = $state('');
   let userMenuOpen = $state(false);
@@ -167,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
                 </span>
               {/if}
             </div>
-            <span class="user-name">{user.name}</span>
+            <span class="user-name">{user?.name || 'Guest'}</span>
             <MoreVertical size={16} aria-hidden="true" />
           </button>
 
@@ -232,7 +217,7 @@ https://svelte.dev/e/js_parse_error -->
   ></div>
 {/if}
 
-<style>
+<style lang="postcss">
   /* @unocss-include */
   .app-header {
     @apply fixed top-0 left-0 right-0 h-16 bg-card border-b border-border z-30;

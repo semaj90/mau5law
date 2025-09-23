@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   // Removed rune imports ($props, $effect, $state) - they are provided by the Svelte compiler and must not be imported
   import { onDestroy } from 'svelte';
   import Editor from '@tinymce/tinymce-svelte';

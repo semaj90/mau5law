@@ -1,14 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open
-https://svelte.dev/e/element_invalid_closing_tag -->
-<!-- @migration-task Error while migrating Svelte code: `</div>` attempted to close an element that was not open -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // Svelte 5 runes are built-in, no import needed
   import * as Card from '$lib/components/ui/card';
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import { Badge } from '$lib/components/ui/badge';
   import { Progress } from '$lib/components/ui/progress';
   import {
@@ -172,15 +168,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     <div class="analysis-dashboard">
       <!-- Top Row - Key Metrics -->
       <div class="metrics-row">
-        <div.Root class="metric-nier-bits-card nes-container">
-          <div.Header class="metric-header nes-container">
+        <Card.Root class="metric-nier-bits-card nes-container">
+          <Card.Header class="metric-header nes-container">
             <BarChart3 class="metric-icon" />
             <div>
-              <div.Title class="nes-container">Case Metrics</div.Title>
-              <div.Description class="nes-container">Investigation Progress</div.Description>
+              <Card.Title class="nes-container">Case Metrics</Card.Title>
+              <Card.Description class="nes-container">Investigation Progress</Card.Description>
             </div>
-          </div.Header>
-          <div.Content class="metric-content nes-container">
+          </Card.Header>
+          <Card.Content class="metric-content nes-container">
             <div class="metric-grid">
               <div class="metric-item">
                 <span class="metric-number">{analysisData.caseMetrics.total}</span>
@@ -195,18 +191,18 @@ https://svelte.dev/e/element_invalid_closing_tag -->
                 <span class="metric-label">Success Rate</span>
               </div>
             </div>
-          </div>
-        </div>
+          </Card.Content>
+        </Card.Root>
 
-        <div.Root class="metric-nier-bits-card nes-container">
-          <div.Header class="metric-header nes-container">
+        <Card.Root class="metric-nier-bits-card nes-container">
+          <Card.Header class="metric-header nes-container">
             <Database class="metric-icon" />
             <div>
-              <div.Title class="nes-container">Evidence Analysis</div.Title>
-              <div.Description class="nes-container">Processing Status</div.Description>
+              <Card.Title class="nes-container">Evidence Analysis</Card.Title>
+              <Card.Description class="nes-container">Processing Status</Card.Description>
             </div>
-          </div.Header>
-          <div.Content class="metric-content nes-container">
+          </Card.Header>
+          <Card.Content class="metric-content nes-container">
             <div class="progress-section">
               <div class="progress-item">
                 <span class="progress-label">Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis.total})</span>
@@ -220,15 +216,15 @@ https://svelte.dev/e/element_invalid_closing_tag -->
           </div>
         </div>
 
-        <div.Root class="metric-nier-bits-card nes-container">
-          <div.Header class="metric-header nes-container">
+        <Card.Root class="metric-nier-bits-card nes-container">
+          <Card.Header class="metric-header nes-container">
             <AlertCircle class="metric-icon" />
             <div>
               <div.Title class="nes-container">Threat Assessment</div.Title>
               <div.Description class="nes-container">Risk Analysis</div.Description>
             </div>
-          </div.Header>
-          <div.Content class="metric-content nes-container">
+          </Card.Header>
+          <Card.Content class="metric-content nes-container">
             <div class="threat-grid">
               <div class="threat-item critical">
                 <span class="threat-number">{analysisData.threatAssessment.critical}</span>
@@ -252,14 +248,14 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       </div>
 
       <!-- AI Performance Panel -->
-      <div.Root class="ai-performance-nier-bits-card nes-container">
-        <div.Header class="nes-container">
+      <Card.Root class="ai-performance-nier-bits-card nes-container">
+        <Card.Header class="nes-container">
           <div.Title class="flex items-center gap-2 nes-container">
             <Brain class="w-5 h-5" />
             AI PERFORMANCE METRICS
           </div.Title>
-        </div.Header>
-        <div.Content class="ai-performance-content nes-container">
+        </Card.Header>
+        <Card.Content class="ai-performance-content nes-container">
           <div class="performance-metrics">
             <div class="performance-item">
               <div class="performance-label">Accuracy</div>
@@ -285,12 +281,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       </div>
 
       <!-- Recent Analyses -->
-      <div.Root class="recent-analyses-nier-bits-card nes-container">
-        <div.Header class="nes-container">
+      <Card.Root class="recent-analyses-nier-bits-card nes-container">
+        <Card.Header class="nes-container">
           <div.Title class="nes-container">RECENT ANALYSES</div.Title>
           <div.Description class="nes-container">Latest AI-powered investigations</div.Description>
-        </div.Header>
-        <div.Content class="analyses-content nes-container">
+        </Card.Header>
+        <Card.Content class="analyses-content nes-container">
           <div class="analyses-list">
             {#each recentAnalyses as analysis (analysis.id)}
               <div class="analysis-item">

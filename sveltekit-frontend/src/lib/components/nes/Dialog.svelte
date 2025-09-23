@@ -1,18 +1,39 @@
 <script lang="ts">
-  export let open: boolean = false;
-  export let message: string = 'Are you sure?';
-  export let onConfirm: () => void = () => {};
-  export let onCancel: () => void = () => {};
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    open?: boolean;
+    title?: string;
+    message?: string;
+    onclose?: () => void;
+    onConfirm?: () => void;
+    onCancel?: () => void;
+    children?: Snippet;
+  }
+
+  let {
+    open = false,
+    title = 'Confirm',
+    message = 'Are you sure?',
+    onclose = () => {},
+    onConfirm = () => {},
+    onCancel = () => {},
+    children
+  }: Props = $props();
 </script>
 
 {#if open}
   <dialog class="nes-dialog is-rounded" open>
     <form method="dialog">
-      <p class="title">Confirm</p>
-      <p>{message}</p>
+      <p class="title">{title}</p>
+      {#if children}
+        {@render children()}
+      {:else}
+        <p>{message}</p>
+      {/if}
       <menu class="dialog-menu">
-        <button type="button" class="nes-btn" onclick={onCancel}>Cancel</button>
-        <button type="button" class="nes-btn is-primary" onclick={onConfirm}>OK</button>
+        <button type="button" class="nes-btn" onclick={onCancel || onclose}>Cancel</button>
+        <button type="button" class="nes-btn is-primary" onclick={onConfirm || onclose}>OK</button>
       </menu>
     </form>
   </dialog>

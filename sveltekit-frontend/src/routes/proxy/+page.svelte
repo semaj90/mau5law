@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   interface Props {
     data: { message: string; path: string; targetExample: string; now: string };
   }

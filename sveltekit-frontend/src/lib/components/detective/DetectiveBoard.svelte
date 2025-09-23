@@ -700,10 +700,10 @@
 			<div class="w-80 flex-shrink-0">
 				<AIAssistantPanel
 					{caseId}
-					selectedEvidenceIds={selectedEvidenceIds}
-					on:evidence-select={(e) => handleEvidenceSelect(e.detail.evidenceId)}
-					on:evidence-highlight={(e) => handleEvidenceHighlight(e.detail.evidenceIds)}
-					on:action-trigger={handleAIActionTrigger}
+					{selectedEvidenceIds}
+					onEvidenceSelect={(data) => handleEvidenceSelect(data.evidenceId)}
+					onEvidenceHighlight={(data) => handleEvidenceHighlight(data.evidenceIds)}
+					onActionTrigger={(data) => handleAIActionTrigger({ detail: data })}
 				/>
 			</div>
 		{/if}
@@ -781,6 +781,7 @@
 		class="fixed z-50 inset-0 bg-black/60 flex items-center justify-center"
 	 role="button" tabindex="0"
                 onclick={(e) => { if (e.target === e.currentTarget) closeFindModal(); }}
+                onkeydown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) { e.preventDefault(); closeFindModal(); } }}
 	>
 		<div
 			class="bg-background border border-primary rounded-lg shadow-lg p-6 w-full max-w-lg"

@@ -10,7 +10,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { UiButton as Button, UiInput as Input, UiLabel as Label, UiCard as Card, UiCardContent as CardContent, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiBadge as Badge } from '$lib/components/ui';

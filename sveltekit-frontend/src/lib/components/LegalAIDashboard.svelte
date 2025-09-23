@@ -24,8 +24,8 @@
   let filteredCases = $derived(
     websocketStore.dashboardData.cases.filter((case_: any) =>
       searchQuery === '' ||
-      case_.title.toLowerCase.includes(searchQuery.toLowerCase()) ||
-      case_.description.toLowerCase.includes(searchQuery.toLowerCase())
+      case_.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      case_.description.toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 

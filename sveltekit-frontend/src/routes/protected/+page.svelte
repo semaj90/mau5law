@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();

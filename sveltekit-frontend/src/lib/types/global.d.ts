@@ -30,8 +30,8 @@ declare module '@qdrant/js-client-rest' {
   }
 
   export interface Filter {
-    must?: Array<Record<string, any>;
-    should?: Array<Record<string, any>;
+    must?: Array<Record<string, any>>;
+    should?: Array<Record<string, any>>;
   }
 
   export interface SearchRequest {

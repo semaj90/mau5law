@@ -1,15 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script context="module" lang="ts">
-  // Svelte 5 runes are auto-imported
-
-  import 'nes.css/css/nes.min.css';
-</script>
-// Svelte runes are declared globally in `src/types/svelte-helpers.d.ts`.
-export ;
-</script>
-
 <script lang="ts">
   import Fuse from "fuse.js";
   import { onMount } from "svelte";

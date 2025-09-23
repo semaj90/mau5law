@@ -2,7 +2,6 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier 'string' has already been declared -->
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   let { title, description, path, icon: unknown, ariaLabel = title  }: { title, description, path, icon: unknown, ariaLabel = title : unknown } = $props();
 
   import { goto } from '$app/navigation';

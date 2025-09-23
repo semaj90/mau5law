@@ -4,7 +4,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
 
   import {   } from "svelte";
   import Button from 'bits-ui';
@@ -137,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
 
       for (const sentence of sentences) {
         const factScore = factIndicators.reduce((score, indicator) => {
-          return score + (sentence.toLowerCase.includes(indicator) ? 1 : 0);
+          return score + (sentence.toLowerCase().includes(indicator) ? 1 : 0);
         }, 0);
 
         if (factScore >= 2 && sentence.trim.length > 30) {

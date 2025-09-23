@@ -13,7 +13,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy,   } from "svelte";
   import { page } from '$app/state';
   import DetectiveWebSocketManager from '$lib/websocket/DetectiveWebSocketManager.js';
@@ -78,9 +77,9 @@
       // Text search
       if (searchQuery) {
         const searchLower = searchQuery.toLowerCase();
-        const matchesSearch = evidence.title?.toLowerCase.includes(searchLower) ||
-                             evidence.description?.toLowerCase.includes(searchLower) ||
-                             evidence.evidenceType?.toLowerCase.includes(searchLower);
+        const matchesSearch = evidence.title?.toLowerCase().includes(searchLower) ||
+                             evidence.description?.toLowerCase().includes(searchLower) ||
+                             evidence.evidenceType?.toLowerCase().includes(searchLower);
         if (!matchesSearch) return false;
       }
       

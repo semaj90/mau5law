@@ -8,7 +8,6 @@ https://svelte.dev/e/attribute_invalid_name -->
   // Svelte 5 runes are auto-imported
 
   import { debounce } from '$lib/utils/debounce';
-  import 'nes.css/css/nes.min.css';
   	import { onMount, tick } from 'svelte';
   	import { fade, fly, scale } from 'svelte/transition';
   	import { quintOut, elasticOut } from 'svelte/easing';

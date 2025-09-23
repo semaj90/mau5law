@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import SelfPromptingDemo from '$lib/components/dev/SelfPromptingDemo.svelte';
 </script>
 

@@ -3,7 +3,6 @@
 
   import { aiAccessibilityPatterns } from '$lib/services/ai-accessibility-patterns';
   import { accessibilityService } from '$lib/services/accessibility-service';
-  import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -29,7 +28,7 @@
 
   $effect(() => {
     // Initialize AI accessibility patterns
-    aiAccessibilityPatterns.updateOptions({
+    aiAccessibilityPatterns?.updateOptions({
       enableVoiceCommands,
       progressiveDisclosure: showProgressiveDisclosure,
       enhancedFocusIndicators: true,
@@ -46,22 +45,20 @@
       }
     };
 
-    document.addEventListener('keydown', handleKeyboard);
+    if (typeof document !== 'undefined') document.addEventListener('keydown', handleKeyboard);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyboard);
-      if (voiceCommandsActive) {
-        aiAccessibilityPatterns.stopVoiceCommands();
-      }
+      if (typeof document !== 'undefined') document.removeEventListener('keydown', handleKeyboard);
+      if (voiceCommandsActive) aiAccessibilityPatterns?.stopVoiceCommands();
     };
   });
 
   function toggleVoiceCommands() {
     if (voiceCommandsActive) {
-      aiAccessibilityPatterns.stopVoiceCommands();
+      aiAccessibilityPatterns?.stopVoiceCommands();
       voiceCommandsActive = false;
     } else {
-      aiAccessibilityPatterns.startVoiceCommands();
+      aiAccessibilityPatterns?.startVoiceCommands();
       voiceCommandsActive = true;
     }
   }
@@ -69,16 +66,16 @@
   // React to status changes
   $effect(() => {
     if (status === 'processing') {
-      aiAccessibilityPatterns.announceAIOperation(operation, 'started');
+      aiAccessibilityPatterns?.announceAIOperation(operation, 'started');
     } else if (status === 'completed' && aiResult) {
-      aiAccessibilityPatterns.announceAIOperation(operation, 'completed', 'Results are ready for review');
+      aiAccessibilityPatterns?.announceAIOperation(operation, 'completed', 'Results are ready for review');
 
       // Create accessible result if container is available
       if (containerElement && showProgressiveDisclosure) {
         createAccessibleResult();
       }
     } else if (status === 'error') {
-      aiAccessibilityPatterns.announceAIOperation(operation, 'error', 'Please check the error message and try again');
+      aiAccessibilityPatterns?.announceAIOperation(operation, 'error', 'Please check the error message and try again');
     }
   });
 
@@ -90,20 +87,21 @@
 
     if (showProgressiveDisclosure && typeof aiResult === 'object') {
       // Create progressive disclosure for complex results
-      const summary = aiResult.summary || `${operation} completed with ${Object.keys.length} sections`;
-      const levels = Object.entries.map(([key, value], index) => ({
-        label: key.charAt.toUpperCase() + key.slice(1),
+      const obj = aiResult as Record<string, unknown>;
+      const summary = (obj as any).summary || `${operation} completed with ${Object.keys(obj).length} sections`;
+      const levels = Object.entries(obj).map(([key, value], index) => ({
+        label: key.charAt(0).toUpperCase() + key.slice(1),
         content: value,
         level: index + 1
       }));
 
-      aiAccessibilityPatterns.createProgressiveDisclosure(containerElement, aiResult, {
+      aiAccessibilityPatterns?.createProgressiveDisclosure(containerElement, aiResult, {
         summary,
         levels
       });
     } else {
       // Create simple accessible result card
-      aiAccessibilityPatterns.createAccessibleAIResult(aiResult, containerElement);
+      aiAccessibilityPatterns?.createAccessibleAIResult(aiResult, containerElement);
     }
   }
 
@@ -115,14 +113,14 @@
 <div
   class="ai-accessibility-wrapper"
   role="region"
-  aria-label="{operation} interface with accessibility enhancements"
+  aria-label={`${operation} interface with accessibility enhancements`}
 >
   <!-- Voice Commands Toggle -->
   {#if enableVoiceCommands}
     <div class="voice-commands-control">
       <button
-        class="voice-toggle nes-btn {voiceCommandsActive ? 'is-success' : 'is-primary'}"
-        onclick={handleVoiceCommand}
+        class={`voice-toggle nes-btn ${voiceCommandsActive ? 'is-success' : 'is-primary'}`}
+        on:click={handleVoiceCommand}
         aria-pressed={voiceCommandsActive}
         aria-label="Toggle voice commands (Ctrl+Shift+V)"
         title="Voice Commands (Ctrl+Shift+V)"
@@ -172,7 +170,7 @@
     class="ai-content-area"
     bind:this={containerElement}
     role="main"
-    aria-label="{operation} results"
+    aria-label={`${operation} results`}
   >
     {#if children}
       {@render children()}

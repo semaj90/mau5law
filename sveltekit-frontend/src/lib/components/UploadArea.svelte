@@ -4,7 +4,6 @@ https://svelte.dev/e/rune_missing_parentheses -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
 
   import { preventDefault } from 'svelte/legacy';
   interface Props {

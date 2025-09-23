@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   /**
    * Intelligent Renderer: Decides between regular DOM and canvas
    * 90% regular Enhanced-Bits + NES.css, 10% gaming LOD for glyph-heavy processes

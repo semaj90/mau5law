@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
   	import { cn } from "$lib/utils.js";
   	import type { ScrollAreaRootProps } from "bits-ui";

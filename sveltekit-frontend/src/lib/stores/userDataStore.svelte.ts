@@ -4,7 +4,7 @@
  * Integrates with session store and provides drizzle-orm ready structure
  */
 
-import { sessionState, sessionActions } from './sessionStore.svelte.js';
+import { sessionState, sessionActions } from './sessionStore.svelte';
 import { browser } from '$app/environment';
 import { formatRelativeTime, formatDetailedTimestamp } from '$lib/utils/formatting';
 

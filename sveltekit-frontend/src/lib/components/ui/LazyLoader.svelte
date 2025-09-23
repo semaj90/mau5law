@@ -72,7 +72,7 @@
     </button>
   </div>
 {:else if Component}
-  <svelte:component this={Component} {...componentProps} />
+  <Component {...componentProps} />
 {/if}
 
 <style>

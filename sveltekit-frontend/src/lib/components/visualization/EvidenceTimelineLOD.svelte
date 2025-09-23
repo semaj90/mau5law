@@ -18,7 +18,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
@@ -376,8 +375,8 @@
       if (event.importance < Math.max(config.minImportance, importanceThreshold)) return false;
       
       // Check search query
-      if (searchQuery && !event.title.toLowerCase.includes(searchQuery.toLowerCase()) && 
-          !event.description.toLowerCase.includes(searchQuery.toLowerCase())) return false;
+      if (searchQuery && !event.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
+          !event.description.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       
       // Check time range
       if (event.timestamp < timeRange.start || event.timestamp > timeRange.end) return false;

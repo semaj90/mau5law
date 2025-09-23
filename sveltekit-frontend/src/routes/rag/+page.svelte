@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import RAGSearchComponent from '$lib/components/RAGSearchComponent.svelte';
 </script>
 

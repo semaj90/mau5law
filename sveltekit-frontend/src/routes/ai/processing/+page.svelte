@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import { glyphShaderCacheBridge } from '$lib/cache/glyph-shader-cache-bridge';
@@ -43,7 +42,8 @@
     analysisType: 'semantic',
     priority: 'normal',
     useGPU: true,
-    errors: });
+    errors: []
+  });
   let selectedBankView = $state('RAM');
   let realTimeStats = $state(true);
 
@@ -216,7 +216,7 @@
         analysisType: 'semantic',
         priority: 'normal', 
         useGPU: true,
-        errors: };
+        errors: []
 
     } catch (error) {
       console.error('Failed to submit job:', error);

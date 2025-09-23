@@ -3,7 +3,6 @@
   // Svelte 5 runes are auto-imported
 
   // @ts-nocheck - Service import compatibility
-  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
   import Progress from '$lib/components/ui/progress/Progress.svelte';

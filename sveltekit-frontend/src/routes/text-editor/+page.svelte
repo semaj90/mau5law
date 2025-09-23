@@ -8,7 +8,6 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import {
     Card,

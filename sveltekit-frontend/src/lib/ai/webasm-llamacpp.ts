@@ -635,8 +635,8 @@ class WebAssemblyLlamaService {
         return;
       }
 
-      const timeout = setTimeout(() => {
-        reject(new Error('Worker generation timeout');
+      const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
+        reject(new Error('Worker generation timeout'));
       }, 30000);
 
       const messageHandler = (e: MessageEvent) => {

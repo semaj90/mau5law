@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   // runtime helper $props() is provided by the runes compiler; do not import it.
 
   import { cn } from "$lib/utils";

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   const { children: unknown } = $props();
 
   // Svelte 5 layout for /proxy subtree.

@@ -2,7 +2,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   interface Props {
     disabled?: unknown;
     onReportGenerate: (reportType: string) => void;

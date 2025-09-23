@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
 
   // Basic Select wrapper that uses enhanced-bits Select
   import EnhancedSelect from '$lib/enhanced-bits/Select.svelte';

@@ -6,7 +6,6 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
   // import { Accordion } from 'bits-ui'; // Replaced melt with bits-ui components

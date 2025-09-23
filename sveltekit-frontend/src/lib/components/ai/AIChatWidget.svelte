@@ -4,7 +4,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
   import * as Dialog from '$lib/components/ui/dialog/index.js';

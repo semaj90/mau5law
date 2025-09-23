@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   	import { page } from '$app/state';
   	import GamingHUD from './GamingHUD.svelte';
   	import GamingPanel from './GamingPanel.svelte';

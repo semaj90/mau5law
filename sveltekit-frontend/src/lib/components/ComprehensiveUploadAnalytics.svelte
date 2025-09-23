@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   /**
    * Comprehensive Upload Analytics Interface
    * Svelte 5 component that integrates with the upload analytics XState machine

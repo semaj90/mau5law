@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-  import 'nes.css/css/nes.min.css';
   interface Props {
     title?: string;
     type?: 'menu' | 'info' | 'stats' | 'inventory' | 'battle' | 'magic';

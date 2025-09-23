@@ -3,7 +3,6 @@
   // Svelte 5 runes are auto-imported
 
   import { debounce } from '$lib/utils/debounce';
-  import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import {  , onMount  } from "svelte";
 

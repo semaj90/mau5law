@@ -8,7 +8,6 @@ Features: Case management, evidence upload, AI chat, vector search
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import type { SearchResults } from "$lib/types/global";
   import {
     Card,

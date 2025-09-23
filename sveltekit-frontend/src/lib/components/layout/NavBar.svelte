@@ -18,7 +18,7 @@
   interface Props {
     user?: User | null;
     sidebarOpen?: boolean;
-    variant?: 'full' | 'minimal' | 'demo';
+    variant?: 'full' | 'minimal' | 'demo' | 'admin';
   }
 
   let {
@@ -329,7 +329,7 @@
         theme={isDemo ? 'yorha' : 'legal'}
         placeholder="Search legal documents, cases, evidence..."
         autofocus={true}
-        onsearch={handleSearch}
+        on:search={handleSearch}
         onblur={() => setTimeout(() => showSearch = false, 100)}
         maxSuggestions={6}
       />
@@ -453,11 +453,6 @@
     gap: 0.75rem;
   }
 
-  .user-menu {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
 
   .user-name {
     color: var(--color-text-secondary);
@@ -512,11 +507,6 @@
   }
 
   /* Tab Navigation */
-  .nav-tabs {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
 
   .tabs-list {
     display: flex;
@@ -600,12 +590,6 @@
     font-size: 1.25rem;
   }
 
-  .user-avatar img,
-  .user-avatar-large img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 
   .user-info {
     display: flex;
@@ -637,13 +621,6 @@
     transform: rotate(180deg);
   }
 
-  .user-dropdown-card {
-    min-width: 250px;
-    margin-top: 0.5rem;
-    border: 1px solid var(--color-border);
-    background: var(--color-bg-primary);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  }
 
   /* Search Overlay */
   .search-overlay {

@@ -14,7 +14,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import {  , onMount  } from "svelte";
   import { Combobox } from 'bits-ui';
   import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';

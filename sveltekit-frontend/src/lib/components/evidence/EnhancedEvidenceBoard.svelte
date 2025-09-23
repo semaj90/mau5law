@@ -6,7 +6,6 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
   import FabricEvidenceCanvas from '../canvas/FabricEvidenceCanvas.svelte';
@@ -191,8 +190,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     let filtered = evidenceItems;
 
     if (searchQuery.trim()) {
-      filtered = filtered.filter(item => item.filename).toLowerCase.includes(searchQuery.toLowerCase()) ||
-        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.summary?.toLowerCase.includes(searchQuery.toLowerCase()) ||
+      filtered = filtered.filter(item => item.filename).toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.relevantLaws?.some.includes(searchQuery.toLowerCase())
         )
       );
@@ -646,7 +645,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             );
 
             const recs = (analysis.unifiedInsights?.recommendations || []).filter((r: unknown) =>
-              String(r.action || '').toLowerCase.includes-filename.toLowerCase())
+              String(r.action || '').toLowerCase().includes-filename.toLowerCase())
             );
 
             return {

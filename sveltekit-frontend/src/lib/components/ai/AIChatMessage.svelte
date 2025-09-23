@@ -4,7 +4,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { slide } from "svelte/transition";
-  import 'nes.css/css/nes.min.css';
 
   let {
     message,
@@ -67,12 +66,12 @@
 </script>
 
 <div
-  class="container mx-auto px-4"
+  class="chat-message {message.role}"
   role="article"
   aria-label="{message.role} message"
 >
-  <div class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
+  <div class="message-header">
+    <div class="message-role">
       {#if message.role === "user"}
         <svg
           width="20"
@@ -104,7 +103,7 @@
         AI Assistant
         {#if message.metadata?.provider}
           <span
-            class="container mx-auto px-4"
+            class="provider-badge"
             class:local={message.metadata.provider === "local"}
           >
             {message.metadata.provider}
@@ -126,17 +125,17 @@
       {/if}
     </div>
 
-    <div class="container mx-auto px-4">
+    <div class="message-actions">
       <span
-        class="container mx-auto px-4"
+        class="timestamp"
         title="Message sent at {new Date(message.timestamp).toLocaleString()}"
       >
         {formattedTime}
       </span>
 
-      <button aria-label="Action button"
+      <button
         type="button"
-        class="container mx-auto px-4"
+        class="action-btn"
         onclick={() => copyToClipboard()}
         title="Copy message"
         aria-label="Copy message to clipboard"
@@ -156,18 +155,19 @@
     </div>
   </div>
 
-  <div class="container mx-auto px-4">
-    <div class="container mx-auto px-4">
+  <div class="message-content">
+    <div class="content-text">
       {message.content}
     </div>
 
     {#if showSources && message.sources && message.sources.length > 0}
-      <div class="container mx-auto px-4">
-        <button aria-label="Action button"
+      <div class="sources-section">
+        <button
           type="button"
-          class="container mx-auto px-4"
+          class="sources-toggle"
           onclick={() => (isSourcesExpanded = !isSourcesExpanded)}
           aria-expanded={isSourcesExpanded}
+          aria-label="Toggle sources visibility"
         >
           <svg
             width="16"
@@ -184,17 +184,17 @@
         </button>
 
         {#if isSourcesExpanded}
-          <div class="container mx-auto px-4" transition:slide={{ duration: 200 }}>
+          <div class="sources-list" transition:slide={{ duration: 200 }}>
             {#each message.sources as source (source.id)}
-              <div class="container mx-auto px-4">
-                <div class="container mx-auto px-4">
-                  <span class="container mx-auto px-4">{source.title}</span>
-                  <span class="container mx-auto px-4"
+              <div class="source-item">
+                <div class="source-header">
+                  <span class="source-title">{source.title}</span>
+                  <span class="source-score"
                     >{Math.round(source.score * 100)}%</span
                   >
-                  <span class="container mx-auto px-4">{source.type}</span>
+                  <span class="source-type">{source.type}</span>
                 </div>
-                <div class="container mx-auto px-4">
+                <div class="source-content">
                   {source.content}
                 </div>
               </div>
@@ -205,12 +205,13 @@
     {/if}
 
     {#if showMetadata && message.metadata}
-      <div class="container mx-auto px-4">
-        <button aria-label="Action button"
+      <div class="metadata-section">
+        <button
           type="button"
-          class="container mx-auto px-4"
+          class="metadata-toggle"
           onclick={() => (isMetadataExpanded = !isMetadataExpanded)}
           aria-expanded={isMetadataExpanded}
+          aria-label="Toggle metadata visibility"
         >
           <svg
             width="16"
@@ -227,31 +228,31 @@
         </button>
 
         {#if isMetadataExpanded}
-          <div class="container mx-auto px-4" transition:slide={{ duration: 200 }}>
-            <div class="container mx-auto px-4">
-              <span class="container mx-auto px-4">Model:</span>
-              <span class="container mx-auto px-4">{message.metadata.model}</span>
+          <div class="metadata-content" transition:slide={{ duration: 200 }}>
+            <div class="metadata-item">
+              <span class="label">Model:</span>
+              <span class="value">{message.metadata.model}</span>
             </div>
-            <div class="container mx-auto px-4">
-              <span class="container mx-auto px-4">Provider:</span>
-              <span class="container mx-auto px-4">{message.metadata.provider}</span>
+            <div class="metadata-item">
+              <span class="label">Provider:</span>
+              <span class="value">{message.metadata.provider}</span>
             </div>
-            <div class="container mx-auto px-4">
-              <span class="container mx-auto px-4">Confidence:</span>
-              <span class="container mx-auto px-4"
+            <div class="metadata-item">
+              <span class="label">Confidence:</span>
+              <span class="value"
                 >{formatConfidence(message.metadata.confidence)}</span
               >
             </div>
-            <div class="container mx-auto px-4">
-              <span class="container mx-auto px-4">Response Time:</span>
-              <span class="container mx-auto px-4"
+            <div class="metadata-item">
+              <span class="label">Response Time:</span>
+              <span class="value"
                 >{formatExecutionTime(message.metadata.executionTime)}</span
               >
             </div>
             {#if message.metadata.fromCache}
-              <div class="container mx-auto px-4">
-                <span class="container mx-auto px-4">Source:</span>
-                <span class="container mx-auto px-4">Cached</span>
+              <div class="metadata-item">
+                <span class="label">Source:</span>
+                <span class="value cache">Cached</span>
               </div>
             {/if}
           </div>

@@ -28,9 +28,9 @@ export class ClientEmbeddingGenerator {
       // Initialize web worker for embedding generation
       this.worker = new Worker('/workers/embedding-worker.js');
       
-      // Wait for worker initialization;
+      // Wait for worker initialization
       await new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Worker initialization timeout')), 30000);
+        const timeout: ReturnType<typeof setTimeout> = setTimeout(() => reject(new Error('Worker initialization timeout')), 30000);
         this.worker!.onmessage = (event: any) => {
           if (event.data.type === 'initialized') {
             clearTimeout(timeout);
@@ -71,17 +71,17 @@ export class ClientEmbeddingGenerator {
 
     try {
       return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('Embedding generation timeout');
+        const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
+          reject(new Error('Embedding generation timeout'));
         }, 60000); // 60 second timeout
 
         this.worker!.onmessage = (event: any) => {
           clearTimeout(timeout);
-          
+
           if (event.data.success) {
-            resolve(new Float32Array(event.data.embedding);
+            resolve(new Float32Array(event.data.embedding));
           } else {
-            reject(new Error(event.data.error);
+            reject(new Error(event.data.error));
           }
         };
 
@@ -127,8 +127,8 @@ export class ClientEmbeddingGenerator {
 
     try {
       return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('Batch embedding timeout');
+        const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
+          reject(new Error('Batch embedding timeout'));
         }, 120000); // 2 minute timeout for batches
 
         this.worker!.onmessage = (event: any) => {
@@ -306,7 +306,7 @@ export class ClientEmbeddingGenerator {
 
     try {
       return new Promise((resolve) => {
-        const timeout = setTimeout(() => resolve(null), 5000);
+        const timeout: ReturnType<typeof setTimeout> = setTimeout(() => resolve(null), 5000);
 
         this.worker!.onmessage = (event: any) => {
           if (event.data.type === 'memory_stats') {

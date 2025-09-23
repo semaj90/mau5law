@@ -14,7 +14,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy,   } from "svelte";
   import { page } from '$app/state';
   import HeadlessTypingListener from '$lib/components/HeadlessTypingListener.svelte';
@@ -193,13 +192,13 @@
     contextualPrompts = [...event.detail.prompts];
     
     // Add detective-specific contextual prompts
-    if (userInput.toLowerCase.includes('evidence')) {
+    if (userInput.toLowerCase().includes('evidence')) {
       contextualPrompts.push('Analyze evidence connections?');
     }
-    if (userInput.toLowerCase.includes('suspect') || userInput.toLowerCase.includes('person')) {
+    if (userInput.toLowerCase().includes('suspect') || userInput.toLowerCase().includes('person')) {
       contextualPrompts.push('Map person relationships?');
     }
-    if (userInput.toLowerCase.includes('location') || userInput.toLowerCase.includes('place')) {
+    if (userInput.toLowerCase().includes('location') || userInput.toLowerCase().includes('place')) {
       contextualPrompts.push('Generate location timeline?');
     }
     

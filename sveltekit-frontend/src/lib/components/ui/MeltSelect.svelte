@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   	import type {    Snippet    } from 'svelte';
   	import { Select as BitsSelect } from 'bits-ui';
   	import {   } from "svelte";

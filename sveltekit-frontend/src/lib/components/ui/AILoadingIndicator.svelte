@@ -39,7 +39,7 @@
 
   let startTime = Date.now();
   let elapsedTime = 0;
-  let intervalId: number;
+  let intervalId: ReturnType<typeof setInterval> | null = null;
 
   $effect(() => { progressTween.set(progress); });
 
@@ -111,6 +111,7 @@
   onDestroy(() => {
     if (intervalId) {
       clearInterval(intervalId);
+      intervalId = null;
     }
   });
 
@@ -123,7 +124,7 @@
     } else {
       if (intervalId) {
         clearInterval(intervalId);
-        intervalId = 0;
+        intervalId = null;
       }
     }
   });
@@ -422,7 +423,7 @@
     overflow: hidden;
   }
 
-  .loading-shimmer: :after {
+  .loading-shimmer::after {
     position: absolute;
     top: 0;
     right: 0;

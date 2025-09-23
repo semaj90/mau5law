@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   const { data } = $props();
 
   import { onMount } from 'svelte';
@@ -75,9 +74,9 @@
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
           const matchesSearch =
-            user.email.toLowerCase.includes(query) ||
-            user.firstName?.toLowerCase.includes(query) ||
-            user.lastName?.toLowerCase.includes(query);
+            user.email.toLowerCase().includes(query) ||
+            user.firstName?.toLowerCase().includes(query) ||
+            user.lastName?.toLowerCase().includes(query);
 
           if (!matchesSearch) return false;
         }
@@ -199,12 +198,13 @@
 
   // Zod schemas for form validation (edit + create)
   const createUserSchema = z
-    .object.email({ message: 'Invalid email address' }),
-      firstName: z.string.max-optional.or(z.literal('')),
-      lastName: z.string.max-optional.or(z.literal('')),
+    .object({
+      email: z.string().email({ message: 'Invalid email address' }),
+      firstName: z.string().max(50).optional().or(z.literal('')),
+      lastName: z.string().max(50).optional().or(z.literal('')),
       role: z.string(),
-      password: z.string.min(8, { message: 'Password must be at least 8 characters' }),
-      confirmPassword: z.string.min(8)
+      password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
+      confirmPassword: z.string().min(8)
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: 'Passwords do not match',

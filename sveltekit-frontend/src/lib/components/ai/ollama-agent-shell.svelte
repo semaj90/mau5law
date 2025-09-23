@@ -5,7 +5,6 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import type { OllamaAgentShellProps } from '$lib/types/component-props.js';
 
   import { agentShellMachine } from "$lib/machines/agentShellMachine";

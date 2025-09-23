@@ -4,7 +4,6 @@
 -->
 
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import LegalDocumentDrafting from '$lib/components/ai/LegalDocumentDrafting.svelte';
 </script>
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   // Props are defined as $props() rune, no import needed
 
   import { cn } from "../../../utils";

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import CRUDDashboard from "$lib/components/CRUDDashboard.svelte";
 </script>
 

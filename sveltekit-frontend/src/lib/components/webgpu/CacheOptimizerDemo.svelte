@@ -7,7 +7,6 @@ https://svelte.dev/e/expected_token -->
   // Component props
   let { ...props }: unknown = $props();
 
-  import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
   

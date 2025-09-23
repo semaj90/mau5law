@@ -134,7 +134,6 @@
 </div>
 
 <style>
-  @import 'nes.css/css/nes.min.css';
 
   .input-wrapper {
     @apply space-y-1;

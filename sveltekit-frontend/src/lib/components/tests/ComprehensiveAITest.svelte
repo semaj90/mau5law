@@ -1,7 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
 
-  import 'nes.css/css/nes.min.css';
   import { aiAssistant } from '$lib/stores/ai-assistant-unified.svelte.js';
   import { browserLocalAI, legalLocalAI } from '$lib/ai/browser-local-ai.js';
   import { cudaServiceWorker, legalCUDAService } from '$lib/ai/cuda-service-worker.js';
